@@ -1,0 +1,46 @@
+.iconbox-group {
+    display: flex;
+
+    .iconbox {
+        margin: 0;
+    }
+}
+
+.iconbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    vertical-align: middle;
+    border-radius: 6.25rem;
+    transition: all .2s ease-in;
+
+    &.iconbox-pill{
+        padding: 0 0.9375rem 0 0.625rem;
+    }
+
+
+    &__icon {
+        height: 2.3rem;
+        width: 2.3rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        font-size: 1.25rem;
+
+        @media screen and (max-width:380px) {
+            height: 2rem;
+            width: 2rem;
+        }
+
+        &.mdi {
+            margin: 0 !important;
+            font-size: 1.2rem;
+
+            &:before {
+                font-size: 1.2rem;
+            }
+        }
+    }
+}

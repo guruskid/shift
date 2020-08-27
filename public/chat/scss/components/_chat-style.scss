@@ -1,0 +1,214 @@
+.chatstyle-01{
+
+    .ca-received{
+        display: flex;
+        align-items: flex-end;
+        margin: 0.3125rem 0;
+        font-size: 0.9375rem;
+
+        .user-avatar{
+            margin-right: 0.625rem;
+        }
+
+        &__msgwrapper{
+            display: flex;
+            flex: 1 1 auto;
+            width: 100%;
+            justify-content: flex-start;
+            align-items: center;
+
+            &:hover .ca-msg-actions{
+                visibility: visible;
+            }
+        }
+
+        .ca-msg-actions{
+            visibility: hidden;
+        }
+
+        &__msg-group{
+            max-width: 60%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            @media only screen and (max-width:1600px) {
+                max-width: 70%;
+            }
+            @media only screen and (max-width:576px) {
+                max-width: 80%;
+            }
+            @media only screen and (max-width:400px) {
+                max-width: 100%;
+            }
+        }
+
+        &__msg{
+            border-radius: 0.8rem 0.8rem 0.8rem 0;
+            position: relative;
+            padding: 1rem 1rem;
+            font-weight: 500;
+            min-width: 15.625rem;
+
+            &:not(:last-of-type){
+                margin: 0.3125rem 0;
+            }
+        }
+
+        &__msg-media{
+            width: 7.5rem;
+            float: left;
+            
+
+            @media only screen and (max-width:768px) {
+               width: 50%;
+               padding: 0.125rem;
+            }
+
+            &:not(:last-of-type){
+                margin-right: 0.3125rem;
+                margin-bottom: 0.3125rem;
+
+                @media only screen and (max-width:768px) {
+                   margin: 0;
+                 }
+            }
+            img{
+                height: auto;
+                max-width: 100%;
+                border-radius: 0.5rem;
+            }
+        }
+    }
+
+    .ca-send{
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        font-size: 0.9375rem;
+
+        .user-avatar{
+            margin-left: 0.625rem;
+
+            @media only screen and (max-width:576px) {
+                display: none;
+            }
+        }
+
+        &__msgwrapper{
+            display: flex;
+            flex: 1 1 auto;
+            width: 100%;
+            align-items: center;
+            justify-content: flex-end;
+            margin: 0.3125rem 0;
+            position: relative;
+
+            &:hover .ca-msg-actions{
+                visibility: visible;
+            }
+        }
+
+        .ca-msg-actions{
+            visibility: hidden;
+        }
+
+        &__msg-group{
+            max-width: 60%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+
+            @media only screen and (max-width:1600px) {
+                max-width: 70%;
+            }
+            @media only screen and (max-width:576px) {
+                max-width: 80%;
+            }
+            @media only screen and (max-width:400px) {
+                max-width: 100%;
+            }
+        }
+
+        &__msg{
+            border-radius: 0.8rem 0.8rem 0 0.8rem;
+            position: relative;
+            padding: 1rem 1rem;
+            font-weight: 500;
+            min-width: 15.625rem;
+           
+
+            &:not(:last-of-type){
+                margin: 0.3125rem 0;
+            }
+        }
+
+        &__msg-media{
+            width: 7.5rem;
+            float: left;
+
+            @media only screen and (max-width:768px) {
+               width: 50%;
+               padding: 0.125rem;
+            }
+
+            &:not(:last-of-type){
+                margin-right: 0.3125rem;
+                margin-bottom: 0.3125rem;
+
+                @media only screen and (max-width:768px) {
+                   margin: 0;
+                 }
+            }
+            img{
+                height: auto;
+                max-width: 100%;
+                border-radius: 0.5rem;
+            }
+        }
+    }
+
+    
+    .metadata {
+        display: flex;
+        align-items: center;
+      
+        .time {
+          font-size: 0.625rem;
+          display: inline-block;
+        }
+      
+        .tick {
+          margin-left: 0.125rem;
+        }
+      }  
+}
+
+.ca{
+    &__file{
+        display: flex;
+        align-items: center;
+    }
+
+
+    &__fileicon{
+        margin-right: 0.625rem;
+    }
+
+    &__filename{
+        display: flex;
+        flex-direction: column;
+
+        &--title{
+            font-weight: 600;
+        }
+
+        &--size{
+            font-weight: 400;
+            font-size: 0.6875rem;
+        }
+    }
+
+}

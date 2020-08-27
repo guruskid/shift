@@ -1,0 +1,15 @@
+
+.back2homepage{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    @media screen and (min-width:768px){
+        display: none;
+    }
+
+    span{
+        margin-left: 0.3125rem;
+        font-weight: 500;
+    }
+}

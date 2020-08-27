@@ -1,0 +1,285 @@
+.calling-modal {
+    .modal-body {
+        padding: 5rem 1rem;
+    }
+}
+
+.call-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 2rem 3rem 0;
+}
+
+.call-hangup {
+    height: 4.375rem;
+    width: 4.375rem;
+    position: relative;
+    cursor: pointer;
+    border-radius: 50%;
+    line-height: 4.375rem;
+    text-align: center;
+    transition: all 0.2s ease-out;
+
+    &:hover {
+        transform: scale(1.2)
+    }
+}
+
+.call-pickup {
+    height: 4.375rem;
+    width: 4.375rem;
+    position: relative;
+    cursor: pointer;
+    border-radius: 50%;
+    line-height: 4.375rem;
+    text-align: center;
+    transition: all 0.2s ease-in;
+
+    &:hover {
+        transform: scale(1.2);
+    }
+
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4.25rem;
+        height: 4.25rem;
+        border-radius: 50%;
+        animation: plusing 3s infinite;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4.25rem;
+        height: 4.25rem;
+        border-radius: 50%;
+        animation: plusing 3s infinite;
+        animation-delay: .9s;
+    }
+}
+
+@keyframes plusing {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .5;
+    }
+
+    100% {
+        transform: scale(2);
+        opacity: 0;
+
+    }
+}
+
+.call-options {
+    padding: 1.875rem 3.125rem;
+
+    &__iconbox {
+        cursor: pointer;
+        height: 3.125rem;
+        width: 3.125rem;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6.25rem;
+    }
+
+    h6 {
+        font-size: $font-size-sm;
+        margin-top: 0.375rem;
+    }
+
+
+}
+
+#outGoingCall {
+    .call-actions {
+        padding-bottom: 1rem;
+    }
+}
+
+
+.modal-open .videocall-modal {
+    height: 100%;
+    max-height: 100%;
+
+    &.group-video-call{
+        .icvideo-contact {
+
+            &__inner {
+    
+                @media only screen and (max-width:768px) {
+                    object-fit: cover;
+                    height: 48vh;
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    @media only screen and (max-width:992px) {
+        .modal-dialog {
+            min-width: 100%;
+        }
+    }
+
+    @media only screen and (max-width:768px) {
+        .modal-dialog {
+            min-width: 100%;
+            min-height: 100%;
+            margin: 0;
+
+            .modal-content{
+                border: 0;
+                border-radius: 0;
+            }
+        }
+    }
+}
+
+.icvideocallwrapper {
+    position: relative;
+    .icvideo-contact {
+
+        &__inner {
+            border-radius: 0.25rem;
+
+            @media only screen and (max-width:768px) {
+                height: 100vh;
+                object-fit: cover;
+            }
+        }
+    }
+
+    .icvideo-user {
+        position: absolute;
+        right: 0.625rem;
+        top: 0.625rem;
+        overflow: hidden;
+        height: 9.375rem;
+        width: 9.375rem;
+
+
+        img {
+            border-radius: 0.25rem;
+            height: auto;
+            width: auto;
+            max-width: 9.375rem;
+            padding: 0.25rem;
+        }
+    }
+
+    .icvideo-actions {
+        padding: 0.625rem 0.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        @media only screen and (max-width:768px) {
+            flex-direction: column;
+            border-radius: 0.25rem;
+             position: absolute;
+            left: 0.625rem;
+            right: 0.625rem;
+            bottom: 0;
+        }
+
+        &__left {
+            padding-left: 32px;
+
+            @media only screen and (max-width:768px) {
+                padding: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            &--duration {
+                font-weight: 700;
+                font-size: 1.5rem;
+            }
+        }
+
+        &__middle {
+            @media only screen and (max-width:768px) {
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        &__right {
+            padding-right: 32px;
+
+            @media only screen and (max-width:768px) {
+                margin-bottom: 0.5rem;
+                padding: 0;
+            }
+        }
+    }
+}
+
+.userprofile-name{
+    h4{
+        margin: 0;
+    }
+
+    span{
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+}
+
+.call-duration{
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-top: 1rem;
+}
+
+.voicecall-modal .modal-content{
+    padding: 2rem 0;
+}
+
+.calller-group{
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0;
+
+    .user-avatar{
+        &:not(:last-of-type){
+            margin-right: 1rem;
+        }
+
+        &:hover{
+            .caller-mute{
+                display: block;
+            }
+        }
+
+        .caller-mute{
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            border-radius: 6.25rem;
+            transition: all 0.2s ease-in;
+
+            i{
+                position: absolute;
+                top: 1.25rem;
+                left: 1.875rem;
+            }
+        }
+    }
+}

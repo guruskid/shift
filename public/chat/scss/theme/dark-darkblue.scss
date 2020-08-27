@@ -1,0 +1,241 @@
+@import "./../abstracts/mixins";
+
+
+.dark-darkblue-theme {
+
+    $primary:       #ae6eea;
+    $secondary:     #6c757d;
+    $green:         #3cd572;
+    $success:       #20c997;
+    $info:          #007bff;
+    $brand:         #3F51B5;
+    $warning:       #ffc107;
+    $red:           #f44336;
+    $danger:        #dc3545;
+    $light:         #f8f9fa;
+    $dark:          #343a40;
+    $black:          #000000;
+    $white:         #263238;
+    $light-100:     rgba(255, 255, 255,0.8);
+    $light-800:     #37474f;
+    $light-900:     #263238;
+    $dark-125:      rgba(0,0,0,0.125);
+    $body-color: #d3d4d5;
+    $font-color: #949aa2;
+    $text-dark: #aaaaaa;
+    $text-dark-2: #a2a2a2;
+    $dark-faded-text: #979797;
+    $border-color: #37474f;
+    $user-avater-border-color: #fff;
+    $call-duration-color: #858585;
+    $calling-title-color: #8d9093;
+    $metadata-color: #a4beda;
+    $btn-hover-color: #eaedf2;
+    $bg-iconbox: rgba(60, 64, 67, 0.078);
+    $bg-list-active: rgba(0, 123, 255, 0.05);
+    $message-preview-color:#6e6e6e;
+    $chat-date-color: rgba(34, 34, 34, 0.4);
+    $chat-date-line:  rgba(34, 34, 34, 0.1);
+    $bg-nav-active-badge : #f8f9fa;
+    $text-nav-active-badge : #212529;
+    $transparent: transparent;
+    $mfb-button-box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+    $color-inherit: inherit;
+
+
+    @include themes(
+        $primary,
+        $secondary,
+        $green,
+        $success,
+        $info,
+        $brand,
+        $warning,
+        $red,
+        $danger,
+        $light,
+        $dark,
+        $black,
+        $white,
+        $light-100,
+        $light-800,
+        $light-900,
+        $dark-125,
+        $transparent,
+        $body-color,
+        $font-color,
+        $text-dark,
+        $text-dark-2,
+        $dark-faded-text,
+        $border-color,
+        $user-avater-border-color,
+        $call-duration-color,
+        $calling-title-color,
+        $metadata-color,
+        $btn-hover-color,
+        $bg-iconbox,
+        $bg-list-active,
+        $message-preview-color,
+        $chat-date-color,
+        $chat-date-line,
+        $bg-nav-active-badge,
+        $text-nav-active-badge,
+        $mfb-button-box-shadow,
+        $color-inherit,
+    );
+}
+
+//theme adjustment
+body.dark-darkblue-theme {
+
+    background-color: #263238;
+    color: #d3d4d5;
+
+    .chatstyle-01 {
+
+        .ca-received {
+            &__msg {
+                background: #37474f;
+            }
+        }
+
+        .ca-send {
+            &__msg {
+                color: #fff;
+            }
+        }
+
+    }
+
+    .ca-sidebar__body .ca-navigation-tabs .nav-style-2 ul.nav li {
+        background: #37474f;
+    }
+
+    .mfb-component__button--main .mdi,
+    .mfb-component__button--main:focus,
+    .mfb-component__button--main:hover {
+        color: #f4f4f4;
+    }
+
+    .mfb-component__button--child .mdi,
+    .mfb-component__button--child:focus,
+    .mfb-component__button--child:hover {
+        color: #f4f4f4;
+    }
+
+    .composer__left--sticker,
+    .ca-content__callstab .ca-call-details-card {
+        background: #37474f;
+    }
+
+    .composer__right--send i {
+        color: #f4f4f4;
+    }
+
+    .iconbox.btn-solid-danger .mdi,
+    .iconbox.btn-solid-info .mdi,
+    .iconbox.btn-solid-primary .mdi,
+    .iconbox.btn-solid-secondary .mdi,
+    .iconbox.btn-solid-success .mdi,
+    .iconbox.btn-solid-warning .mdi {
+        color: #f4f4f4;
+    }
+
+    .modal-content {
+        background: #37474f;
+    }
+
+    .call-hangup i {
+        color: #f4f4f4;
+    }
+
+    .border {
+        border-color: #37474f !important;
+    }
+
+    .btn-outline-light:not(:disabled):not(.disabled).active,
+    .btn-outline-light:not(:disabled):not(.disabled):active,
+    .show>.btn-outline-light.dropdown-toggle {
+        color: #f4f4f4;
+    }
+
+    .setting-sunheading.setting-sunheading-style01 {
+        color: #f4f4f4;
+    }
+
+    .card {
+        border-color: #37474f;
+        background: #37474f;
+        background: #455A64;
+    }
+
+    .modal-header {
+        border-color: #455a64;
+    }
+
+    .nav-style-vertical-1 .nav-link.active .settingmenu i {
+        color: #f4f4f4;
+    }
+
+    .nav-style-vertical-1 .nav.flex-column {
+        border-color: #455a64;
+    }
+
+    .user-avatar-closer .mdi {
+        color: #f4f4f4;
+    }
+
+    .form-control {
+        background: #263238;
+        border-color: #37474f;
+        color: #f4f4f4;
+    }
+
+    .input-group-text {
+        background: #263238;
+        border-color: #37474f;
+    }
+
+
+    .dial-pad-wrap .dial-table .dial-key-wrap:hover {
+        color: #f4f4f4;
+
+        .dial-sub-key,
+        .mdi {
+            color: #f4f4f4;
+        }
+    }
+
+    .close {
+        color: #fff;
+    }
+
+    .modal-content .ca-profile-name {
+        color: #fff;
+    }
+
+    .dropdown-menu.show {
+        background: #455A64;
+
+        .dropdown-item {
+            color: #f4f4f4;
+
+            &:focus,
+            &:hover {
+                background: #546e7a;
+            }
+        }
+    }
+
+    .ca-content-wrapper {
+        border-color: #37474f;
+    }
+
+    .conversation-panel{
+        &__body{
+            background-image: url(../../assets/images/bg/background.png)!important;
+            background-repeat: repeat !important;
+        }
+    }
+
+}

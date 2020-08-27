@@ -1,0 +1,96 @@
+@import "./../abstracts/mixins";
+
+
+.light-pink-theme {
+
+    $primary:       #ae6eea;
+    $secondary:     #6c757d;
+    $green:         #3cd572;
+    $success:       #20c997;
+    $info:          #007bff;
+    $brand:          #e91e63;
+    $warning:       #ffc107;
+    $red:           #f44336;
+    $danger:        #dc3545;
+    $light:         #f8f9fa;
+    $dark:          #343a40;
+    $black:          #000000;
+    $white:         #ffffff;
+    $light-100:     rgba(255, 255, 255,0.8);
+    $light-800:     #fafafa;
+    $light-900:     #eaedf2;
+    $dark-125:      rgba(0,0,0,0.125);
+    $body-color: #3c4043;
+    $font-color: #949aa2;
+    $text-dark: #aaaaaa;
+    $text-dark-2: #a2a2a2;
+    $dark-faded-text: #979797;
+    $border-color: #dadce0;
+    $user-avater-border-color: #fff;
+    $call-duration-color: #858585;
+    $calling-title-color: #8d9093;
+    $metadata-color: #a4beda;
+    $btn-hover-color: #eaedf2;
+    $bg-iconbox: rgba(60, 64, 67, 0.078);
+    $bg-list-active: rgba(0, 123, 255, 0.05);
+    $message-preview-color:#6e6e6e;
+    $chat-date-color: rgba(34, 34, 34, 0.4);
+    $chat-date-line:  rgba(34, 34, 34, 0.1);
+    $bg-nav-active-badge : #f8f9fa;
+    $text-nav-active-badge : #212529;
+    $transparent: transparent;
+    $mfb-button-box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+    $color-inherit: inherit;
+
+
+    @include themes(
+        $primary,
+        $secondary,
+        $green,
+        $success,
+        $info,
+        $brand,
+        $warning,
+        $red,
+        $danger,
+        $light,
+        $dark,
+        $black,
+        $white,
+        $light-100,
+        $light-800,
+        $light-900,
+        $dark-125,
+        $transparent,
+        $body-color,
+        $font-color,
+        $text-dark,
+        $text-dark-2,
+        $dark-faded-text,
+        $border-color,
+        $user-avater-border-color,
+        $call-duration-color,
+        $calling-title-color,
+        $metadata-color,
+        $btn-hover-color,
+        $bg-iconbox,
+        $bg-list-active,
+        $message-preview-color,
+        $chat-date-color,
+        $chat-date-line,
+        $bg-nav-active-badge,
+        $text-nav-active-badge,
+        $mfb-button-box-shadow,
+        $color-inherit,
+    );
+}
+
+body.light-pink-theme{
+
+    .conversation-panel{
+        &__body{
+            background-image: url(../../assets/images/bg/background.png)!important;
+            background-repeat: repeat !important;
+        }
+    }
+}

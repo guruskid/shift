@@ -1,0 +1,80 @@
+.ca-sidebar{
+    &__header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        position: relative;
+
+    }
+
+    &__body{
+
+        height: calc(100vh-4.5625rem);
+
+        .ca-navigation-tabs{
+
+            .nav-style-1{
+                ul.nav{
+                    display: flex;
+                    justify-content: space-around;
+                    li{
+    
+                        a{
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            text-transform: uppercase;
+                            font-size: 0.6875rem;
+                            font-weight: 600;
+                        }
+                    }
+                }
+            }
+           
+            .nav-style-2{
+                ul.nav{
+                    display: flex;
+                    justify-content: center;
+                    border-bottom: 0 !important;
+                    li{
+                        padding: 0.3125rem;
+                        
+
+                        &:first-of-type{
+                            border-radius: 0.25rem 0 0 0.25rem;
+                            padding: 0.3125rem 0 0.3125rem 0.3125rem;
+                        }
+                        &:last-of-type{
+                            border-radius: 0 0.25rem 0.25rem 0;
+                            padding: 0.3125rem 0.3125rem 0.3125rem 0;
+                        }
+                        a{
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            text-transform: uppercase;
+                            font-size: 0.6875rem;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.sidebar-userlist{
+    position: relative;
+    height: calc(100vh-13.3125rem);
+
+}
+
+.sidebar-contactlist{
+    position: relative;
+    height: calc(100vh-8.6875rem);
+
+    
+}

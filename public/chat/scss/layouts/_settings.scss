@@ -1,0 +1,348 @@
+.nav-style-vertical-1{
+
+    .nav.flex-column{
+        height: 100%;
+    }
+    
+    .nav-link{
+        color: inherit;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        border-radius: 0;
+    }
+}
+
+
+
+button.close:focus{
+    outline: none;
+}
+
+.settingmenu{
+    display: flex;
+    align-items: center;
+
+    &__icon{
+        i{
+            margin-right: 1rem;
+
+            &::before{
+                font-size: 1.25rem;
+            }
+        }
+    }
+}
+
+
+
+.modal-open .settings-modal-dialog{
+
+    .tab-content{
+        max-height: 28.125rem;
+        min-height: 28.125rem;
+        overflow-y: auto;
+    }
+
+    .modal-dialog{
+        @media only screen and (max-width:992px){
+            max-width: 100%;
+        }
+        @media only screen and (max-width:768px){
+           margin: 0;
+        }
+    }
+
+    .modal-content{
+        @media only screen and (max-width:768px){
+            min-height: 100vh;
+            margin: 0;
+            border: 0;
+            border-radius: 0;
+         }
+    }
+
+    .settings-nav-menu{
+        @media only screen and (max-width:768px){
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .nav .nav-link.active{
+            .settings-nav-content{
+
+                @media only screen and (max-width:768px){
+                    right: 0;
+                }
+              
+            }
+        }
+    }
+
+    .settings-nav-content{
+        @media only screen and (max-width:768px){
+            position: absolute;
+            top: 0;
+            right: -100%;
+            bottom: 0;
+            max-width: 100%;
+            padding: 0.9375rem;
+            margin: 0;
+         }
+       
+    }
+
+    .settings-accordion{
+        @media only screen and (max-width:768px){
+            padding: 0;
+        }
+       
+    }
+}
+
+
+.setting-sunheading{
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
+   
+    
+    &.setting-sunheading-style01{
+        display: inline-block;
+        padding: 0.625rem 0.9375rem 0.625rem 0.625rem;
+        border-radius: 0 1.5625rem 1.5625rem 0;
+    }
+}
+
+.ca-setting-list{
+    margin-top: 1rem;
+
+    .btn-link{
+        text-decoration: none;
+    }
+
+    li{
+       
+        &:not(:last-of-type){
+            padding-bottom: 0.625rem;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+   
+
+    .ca-setting-type{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .ca-setting-name{
+            display: flex;
+            flex-direction: column;
+          width: 80%;
+
+            .ca-setting-name-main{
+                font-weight: 600;
+                font-size: 1rem;
+            }
+
+            .ca-setting-name-sub{
+                font-size: 0.6875rem;
+                line-height: 1;
+            }
+        }
+    }
+
+    .btn-link.dropdown-toggle{
+        font-size: $font-size-sm;
+        font-weight: 500;
+
+    }
+}
+
+.settings-inside-wrapper,
+.settings-accordion{
+    padding: 1rem 2rem 1rem 0;
+
+    .card{
+       border-radius: 0;
+
+       .setting-list{
+        padding: .5rem 0;
+       }
+    }
+}
+
+
+
+.ps-list{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 1.25rem;
+
+    @media only screen and (max-width:359px) {
+       flex-direction: column;
+       align-items: flex-start;
+    }
+
+
+    &__left{
+
+        display: flex;
+        align-items: center;
+
+        &--icon{
+            margin-right: 0.625rem;
+
+            @media only screen and (max-width:359px) {
+                display: none;
+             }
+         
+        }
+
+        &--name{
+            font-weight: 600;
+        }
+    }
+
+}
+
+
+
+
+.theme {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    margin: 2px;
+    border: 1px solid $border-color;
+ }
+ 
+ .theme.selected {
+    border: 2px solid #00c7ff;
+ }
+ 
+ .theme.default-theme {
+    background: #007bff;
+ }
+ .theme.purple-theme {
+    background: $primary;
+ }
+ .theme.pink-theme {
+    background: #e91e63;
+ }
+ .theme.lightpink-theme {
+    background: #F48FB1;
+ }
+ .theme.green-theme {
+    background: #4CAF50;
+ }
+ .theme.red-theme {
+    background: #F44336;
+ }
+ .theme.orange-theme {
+    background: #FF9800;
+ }
+ .theme.blue-theme {
+    background: #00BCD4;
+ }
+ .theme.darkblue-theme {
+    background: #3F51B5;
+ }
+ 
+ .conversation-panel__body.bg1 {
+   background-image: url(./../assets/images/bg/asfalt.png) !important; 
+ }
+ 
+ .conversation-panel__body.bg2 {
+   background-image: url(./../assets/images/bg/bg-01.png) !important; 
+ }
+ 
+ .conversation-panel__body.bg3 {
+   background-image: url(./../assets/images/bg/binding_dark.png) !important; 
+ }
+ 
+ .conversation-panel__body.bg4 {
+   background-image: url(./../assets/images/bg/cream_pixels.png) !important;
+ }
+ 
+ .conversation-panel__body.bg5 {
+   background-image: url(./../assets/images/bg/grey.png) !important;
+ }
+ 
+ .conversation-panel__body.bg6 {
+   background-image: url(./../assets/images/bg/kindajean.png) !important;
+ }
+ 
+ .conversation-panel__body.bg7 {
+   background-image: url(./../assets/images/bg/linedpaper.png) !important;
+ }
+ 
+ .conversation-panel__body.bg8 {
+   background-image: url(./../assets/images/bg/norwegian_rose.png) !important;
+ }
+ 
+ .conversation-panel__body.bg9 {
+   background-image: url(./../assets/images/bg/ripples.png) !important;
+ }
+ 
+ .conversation-panel__body.bg10 {
+   background-image: url(./../assets/images/bg/skelatal_weave.png) !important;
+ }
+ 
+ .conversation-panel__body.bg11 {
+   background-image: url(./../assets/images/bg/subtle_carbon.png) !important;
+ }
+ 
+ .conversation-panel__body.bg12 {
+   background-image: url(./../assets/images/bg/subtle_white_feathers.png) !important;
+ }
+ 
+ [data-bg="bg1"] {
+   background-image: url(./../assets/images/bg/asfalt.png); 
+ }
+ 
+ [data-bg="bg2"] {
+   background-image: url(./../assets/images/bg/bg-01.png); 
+ }
+ 
+ [data-bg="bg3"] {
+   background-image: url(./../assets/images/bg/binding_dark.png); 
+ }
+ 
+ [data-bg="bg4"] {
+   background-image: url(./../assets/images/bg/cream_pixels.png); 
+ }
+ 
+ [data-bg="bg5"] {
+   background-image: url(./../assets/images/bg/grey.png); 
+ }
+ 
+ [data-bg="bg6"] {
+   background-image: url(./../assets/images/bg/kindajean.png); 
+ }
+ 
+ [data-bg="bg7"] {
+   background-image: url(./../assets/images/bg/linedpaper.png); 
+ }
+ 
+ [data-bg="bg8"] {
+   background-image: url(./../assets/images/bg/norwegian_rose.png); 
+ }
+ 
+ [data-bg="bg9"] {
+   background-image: url(./../assets/images/bg/ripples.png); 
+ }
+ 
+ [data-bg="bg10"] {
+   background-image: url(./../assets/images/bg/skelatal_weave.png); 
+ }
+ 
+ [data-bg="bg11"] {
+   background-image: url(./../assets/images/bg/subtle_carbon.png); 
+ }
+ 
+ [data-bg="bg12"] {
+   background-image: url(./../assets/images/bg/subtle_white_feathers.png); 
+ }
+ 

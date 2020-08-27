@@ -1,0 +1,32 @@
+//ABSTRACTS
+@import './abstracts/variables';
+@import './abstracts/base';
+@import './abstracts/utilities';
+
+
+
+//COMPONENTS
+@import './components/user-avatar';
+@import './components/iconbox';
+@import './components/searchbar';
+@import './components/mfb';
+@import './components/chat-style';
+@import './components/composer';
+@import './components/informatation-panel';
+@import './components/calling-screen';
+@import './components/switch';
+@import './components/accordian';
+@import './components/modal';
+@import './components/dialpad';
+
+//LAYOUTS
+@import './layouts/rtl';
+@import './layouts/layouts';
+@import './layouts/sidebar';
+@import './layouts/conversation';
+@import './layouts/calllist';
+@import './layouts/contactlist';
+@import './layouts/settings';
+
+@import './abstracts/bootstrap-extended';
+

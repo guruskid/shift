@@ -1,0 +1,29 @@
+.dropdown-menu {
+    font-size: $font-size-sm;
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+
+        span {
+            &:first-of-type {
+                padding-right: 0.625rem;
+            }
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.dropdown-toggle::after {
+    border: none;
+    display: inline-block;
+    margin-left: 0;
+    font-family: "Material Design Icons";
+    content: "\F140";
+    font-size: 1rem;
+    vertical-align: middle;
+}

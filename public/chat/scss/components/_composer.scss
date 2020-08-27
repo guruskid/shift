@@ -1,0 +1,201 @@
+.composer {
+    display: flex;
+    justify-content: space-between;
+
+    @media only screen and (max-width:350px) {
+        align-items: center;
+    }
+
+    &__left {
+        display: flex;
+        align-items: center;
+
+        @media only screen and (max-width:350px) {
+            flex-direction: column;
+        }
+
+        &--sticker {
+            cursor: pointer;
+            border-radius: 0.5rem;
+            padding: 0 0.5rem;
+
+            i::before {
+                font-size: 2.125rem;
+            }
+
+            @media only screen and (max-width:576px) {
+
+                i::before {
+                    font-size: 1.375rem;
+
+                    @media only screen and (max-width:576px) {
+                        line-height: 1;
+                    }
+                }
+
+            }
+
+            @media only screen and (max-width:420px) {
+                padding: 0 0.25rem;
+            }
+
+            @media only screen and (max-width:350px) {
+                line-height: 1;
+            }
+
+        }
+
+        &--emoticon {
+            cursor: pointer;
+            margin-left: 0.625rem;
+
+            i {
+
+                &::before {
+                    font-size: 1.5rem;
+
+
+                    @media only screen and (max-width:576px) {
+                        line-height: 1;
+                    }
+                }
+
+            }
+
+            @media only screen and (max-width:576px) {
+                margin: 0;
+            }
+
+            @media only screen and (max-width:350px) {
+                line-height: 1;
+            }
+        }
+
+
+    }
+
+    &__middle {
+        flex: 1 1 auto;
+        position: relative;
+        padding-left: 1rem;
+        margin-right: 1rem;
+
+        @media only screen and (max-width:420px) {
+            padding-left: 0.3rem;
+            margin-right: 0.3rem;
+
+        }
+
+
+        .form-control {
+            border-radius: 6.25rem;
+            overflow: hidden;
+            resize: none;
+            padding: 0.9rem 8rem 0.9rem 1.5rem;
+
+            @media only screen and (max-width:576px) {
+                padding: .9rem 4.7rem .9rem .9rem;
+                font-size: $font-size-sm;
+            }
+
+            @media only screen and (max-width:420px) {
+                padding: .9rem 3.8rem .9rem .9rem;
+            }
+        }
+
+        &--attachment {
+            position: absolute;
+            top: 0.625rem;
+            right: 5.75rem;
+            cursor: pointer;
+
+            i {
+                &::after {
+                    @media only screen and (max-width:576px) {
+                        font-size: 1.375rem;
+                    }
+                }
+            }
+
+
+
+            @media only screen and (max-width:576px) {
+                right: 2.1875rem;
+            }
+        }
+
+        &--photo {
+            position: absolute;
+            top: 0.625rem;
+            right: 3.5rem;
+            cursor: pointer;
+
+            i {
+                &::after {
+                    @media only screen and (max-width:576px) {
+                        font-size: 1.375rem;
+                    }
+                }
+            }
+
+            @media only screen and (max-width:576px) {
+                right: 0.625rem;
+            }
+        }
+
+        &--microphone {
+            position: absolute;
+            top: 0.625rem;
+            right: 1.25rem;
+            cursor: pointer;
+
+            @media only screen and (max-width:576px) {
+                display: none;
+            }
+        }
+    }
+
+    &__right {
+        display: flex;
+        align-items: center;
+
+        &--send {
+            border: none;
+            border-radius: 6.25rem;
+            height: 2.8125rem;
+            width: 2.8125rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+
+            @media only screen and (max-width:576px) {
+                display: none;
+            }
+
+        }
+
+        &--microphone {
+
+            display: none;
+
+            @media only screen and (max-width:576px) {
+                border: none;
+                border-radius: 6.25rem;
+                height: 2.8125rem;
+                width: 2.8125rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+
+            @media only screen and (max-width:576px) {
+                height: 2.1875rem;
+                width: 2.1875rem;
+            }
+
+
+        }
+    }
+}

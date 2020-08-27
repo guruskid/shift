@@ -1,0 +1,428 @@
+
+@media only screen and (max-width: 768px) {
+h1, h2, h3, h4, h5, h6, p, td, th, button {
+    font-size: 90% !important;
+    } 
+}
+.text-custom {
+    color: #000070 !important;
+}
+
+.text-accent {
+    color: #00B9CD !important;
+}
+
+
+.bg-custom {
+    background-color: #000070 !important;
+    color: white;
+}
+
+.bg-grey {
+    background-color: #c4c4c4;
+    color: white;
+}
+
+.bg-custom-gradient {
+    background: rgba(0, 0, 112, 0.75);
+    color: white;
+}
+
+.bg-custom-gradient:hover {
+    background: rgba(2, 2, 90, 0.75);
+    color: white;
+}
+
+.bg-custom-grey {
+    background: rgba(23, 23, 54, 0.8) !important;
+}
+
+.bg-custom-accent {
+    background: #00B9CD !important;
+    color: white !important;
+}
+
+.btn-custom-accent {
+    background: #00B9CD;
+    color: white;
+}
+
+.btn-custom-accent:hover {
+    background: rgb(8, 138, 150);
+    color: white;
+}
+
+.c-rounded {
+    border-radius: 10px !important;
+}
+
+.c-rounded-top {
+    border-radius: 10px 10px 0px 0px !important;
+}
+
+.border-custom{
+    border-color: #000070;
+}
+
+.c-rounded-bottom {
+    border-radius: 0px 0px 10px 10px !important;
+}
+
+.c-btn-rounded{
+    border-radius: 50px;
+}
+
+.dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 10;
+    background-color: yellow;
+}
+
+a:hover {
+    text-decoration: none;
+
+}
+
+.card,
+.card-header {
+    border-radius: 10px;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* Calculator  */
+.calculator-box {
+    background: rgba(0, 0, 112, 0.75);
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px 20px;
+}
+
+.calculator-box label {
+    color: white;
+}
+
+.calculator-box select {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    color: white;
+    border: none;
+    padding: 10px;
+    height: unset;
+
+}
+
+.calculator-box #value {
+    background: transparent;
+    border-width: 0px 0px 1px 0px;
+    color: white;
+    padding: 10px;
+
+}
+
+/* Crypto calculator */
+.crypto-input{
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    color: white;
+    border: none;
+}
+
+.crypto-input:disabled{
+    background: rgba(255, 255, 255, 0.1);
+
+}
+
+/* Bills payment */
+.bills-box {
+    background: #00B9CD;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    margin: 20px;
+    padding: 10px 20px;
+}
+
+.bills-box label {
+    color: white;
+}
+
+.bills-box select, .bills-box input {
+
+    border-radius: 30px;
+    color: black;
+    border: none;
+    padding: 10px;
+    height: unset;
+
+}
+
+.bills-box #value {
+    background: transparent;
+    border-width: 0px 0px 1px 0px;
+    color: white;
+    padding: 10px;
+
+}
+
+/* Trade details */
+.trade-details-box {
+    margin: 20px;
+}
+
+.trade-details-box .card-header {
+    border-radius: 10px 10px 0px 0px;
+}
+
+.trade-details-box li {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+
+/* Profile page */
+.profile-details td {
+    padding: 20px;
+    color: #000070;
+}
+
+.profile-details span {
+    color: #00B9CD;
+}
+
+
+.profile-details input {
+    color: #000070;
+    border: none;
+    background-color: transparent;
+}
+
+
+.user-balance-box {
+    height: auto;
+    background-color: #c4c4c4;
+    border-radius: 0px 0px 10px 10px !important;
+}
+
+
+.user-balance-box .profile-img {
+    position: relative;
+    top: -60px;
+
+}
+
+.user-balance-box .profile-img button {
+    border-radius: 50px;
+    color: #000070;
+    background-color: white;
+    font-size: unset;
+    margin-top: 20px;
+}
+
+.user-balance-box .name {
+    background-color: white;
+    border-radius: 30px;
+    padding: 15px;
+    text-align: center;
+    color: #000070;
+
+}
+
+.user-balance-box .box-1 {
+    height: auto;
+    padding: 10px 10px;
+    text-align: center;
+    color: white;
+    background-color: rgba(0, 0, 112, 0.75);
+    padding-bottom: 30px;
+    border-radius: 10px 10px 0px 0px !important;
+}
+
+.user-balance-box .box-2 {
+    height: auto;
+    padding: 10px 10px;
+
+}
+
+.user-balance-box .box-2 .btn {
+    display: block;
+    text-align: left;
+    color: #000070;
+    background-color: white;
+    border-radius: 20px;
+    border-width: 0px;
+    font-size: unset;
+    padding: 5px 80px 10px 10px;
+    margin: 0px auto;
+}
+
+.user-balance-box .box-2 .balances {
+    position: relative;
+    bottom: 40px;
+}
+
+.user-balance-box .box-3 {
+    padding: 15px;
+    background-color: #00B9CD;
+    border-radius: 10px !important;
+}
+
+
+
+/* Live exchange rates */
+.live-feeds strong {
+    color: #000070;
+}
+
+/* Portfolio Item */
+.portfolio-btn {
+    background-color: #00B9CD;
+    color: white;
+    border-radius: 20px;
+}
+
+.portfolio-btn:hover {
+    background-color: rgb(16, 113, 124);
+    color: white;
+}
+
+
+
+/* Wallet */
+.wallet .card-body{
+    position: relative;
+    bottom: 40px;
+    padding: 0px;
+}
+
+
+.wallet .wallet-balance {
+    padding-top: 50px;
+    padding-bottom: 100px;
+}
+
+.wallet .wallet-actions {
+    width: 90%;
+    margin: 2px auto;
+    background: #FFFFFF;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 0.2rem;
+}
+
+
+.wallet .wallet-actions .wallet-action-btn {
+    padding: .5rem ;
+    color: #000070;
+    display: block;
+    /* border: dashed #c4c4c4 1px; */
+    margin: 5px auto;
+    text-align: center;
+}
+
+.wallet .wallet-actions .wallet-action-btn i {
+    font-size: 1.5rem;
+    line-height: 0em;
+}
+
+
+.wallet-buttons{
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wallet-pin{
+    border: none;
+    text-align: center;
+    background: transparent;
+    font-size: 36px;
+}
+
+.wallet-pin::placeholder{
+    color: black;
+    text-align: center;
+    font-size: 36px;
+}
+
+
+/* ??? */
+
+
+.dashboard-wallets {
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    /* height: 14em; */
+    background-color: white;
+    position: relative;
+}
+
+
+.dashboard-wallets .ongoing-txn {
+    position: relative;
+    bottom: 45px;
+}
+
+
+/* Notifications */
+.dropdown .notifications {
+    min-width: 400px;
+    background: #676B87;
+    border-radius: 0px 0px 20px 20px ;
+    color: white;
+    padding: 20px;
+}
+
+.dropdown hr{
+    border-color: #8287A0;
+    margin: 5px 2px;
+}
+
+
+.notifications-list{
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+
+.notifications-list .media p {
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.notification-counter{
+    font-size: 11px;
+    position: absolute;
+    left: 20px;
+    top: 10px;
+}
+
+
+/* Scroll bar */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #00B9CD;
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00B9CD;
+  }

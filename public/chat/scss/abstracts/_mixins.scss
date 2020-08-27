@@ -1,0 +1,1061 @@
+@mixin themes ($primary,
+    $secondary,
+    $green,
+    $success,
+    $info,
+    $brand,
+    $warning,
+    $red,
+    $danger,
+    $light,
+    $dark,
+    $black,
+    $white,
+    $light-100,
+    $light-800,
+    $light-900,
+    $dark-125,
+    $transparent,
+    $body-color,
+    $font-color,
+    $text-dark,
+    $text-dark-2,
+    $dark-faded-text,
+    $border-color,
+    $user-avater-border-color,
+    $call-duration-color,
+    $calling-title-color,
+    $metadata-color,
+    $btn-hover-color,
+    $bg-iconbox,
+    $bg-list-active,
+    $message-preview-color,
+    $chat-date-color,
+    $chat-date-line,
+    $bg-nav-active-badge,
+    $text-nav-active-badge,
+    $mfb-button-box-shadow,
+    $color-inherit,
+) {
+
+    body {
+        color: $body-color;
+    }
+
+    body.rtl{
+        .ca-content-wrapper {
+            border-right: 1px solid $border-color;
+        }
+    
+        .information-panel {
+            border-right: 1px solid $border-color;
+        }
+    }
+
+    .mdi {
+        color: $font-color;
+    }
+
+    .text-danger {
+        .mdi {
+            color: $danger;
+        }
+    }
+
+    .dropdown-item {
+
+        &:active,
+        &.active {
+            background: $light;
+            color: $color-inherit;
+        }
+    }
+
+    .badge-info {
+        background-color: $brand;
+    }
+
+    .nav-pills .nav-link.active, 
+    .nav-pills .show>.nav-link {
+        background-color: $brand;
+    }
+
+    .badge-primary {
+        background-color: $brand;
+    }
+    
+    
+
+    .accordion {
+
+        &.settings-accordion {
+            .card {
+                overflow: initial;
+
+                .card-header {
+                    background: $transparent;
+                }
+            }
+        }
+
+        &.accordion-ungrouped {
+            .card {
+                border: 1px solid $dark-125;
+
+                &:not(:first-of-type):not(:last-of-type) {
+                    border: 1px solid $dark-125;
+                }
+            }
+        }
+    }
+
+    .call-hangup {
+        background: $red;
+
+        i {
+            color: $white;
+        }
+    }
+
+    .call-pickup {
+        background: $green;
+
+        i {
+            color: $white;
+        }
+
+        &::after {
+            border: 2px solid $green;
+        }
+
+        &::before {
+            border: 2px solid $green;
+        }
+    }
+
+    .call-options {
+
+        &__iconbox {
+            &:hover {
+                background: $light-900;
+            }
+
+            &.active {
+                background: $light-900;
+            }
+        }
+
+        h6 {
+            color: $calling-title-color;
+        }
+    }
+
+    .icvideocallwrapper {
+        .icvideo-user {
+            img {
+                background-color: $white;
+            }
+        }
+
+    }
+
+    .userprofile-name {
+        span {
+            color: $dark-faded-text;
+        }
+    }
+
+    .calller-group {
+        .user-avatar {
+            .caller-mute {
+                background: $red;
+
+                i {
+                    color: $white;
+                }
+            }
+        }
+    }
+
+    .profile-dialog {
+
+        .modal-content {
+    
+            .modal-body {
+    
+                .profile-settings-list {
+                    background: $white;
+                }
+            }
+        }
+    }
+    
+
+    .chatstyle-01 {
+
+        .ca-received {
+            &__msg {
+                background: $white;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            }
+        }
+
+        .ca-send {
+            &__msg {
+                background: $brand;
+                color: $white;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            }
+        }
+
+        .metadata {
+            .time {
+                color: $metadata-color;
+            }
+        }
+    }
+
+    .composer {
+
+        &__left {
+            &--sticker {
+                background: lighten($color: $brand, $amount: 45);
+
+                i::before {
+                    color: $brand;
+                }
+
+                @media only screen and (max-width:576px) {
+                    background: $transparent;
+
+                    i::before {
+                        color: $color-inherit;
+                    }
+                }
+            }
+
+            &--emoticon {
+                i {
+                    &:hover {
+                        color: $brand;
+                    }
+                }
+            }
+
+
+        }
+
+        &__middle {
+            &--attachment {
+                i {
+                    &:hover {
+                        color: $brand;
+                    }
+                }
+            }
+
+            &--photo {
+                i {
+                    &:hover {
+                        color: $brand;
+                    }
+                }
+            }
+
+            &--microphone {
+                i:hover {
+                    color: $brand;
+                }
+            }
+        }
+
+        &__right {
+            &--send {
+                background: $brand;
+
+                i {
+                    color: $white;
+                }
+            }
+
+            &--microphone {
+                @media only screen and (max-width:576px) {
+                    background: $brand;
+
+                    i {
+                        color: $white;
+                    }
+                }
+            }
+        }
+    }
+
+    .dial-pad-wrap {
+
+        .dial-screen {
+            background: $light-900;
+            border: 1px solid $light-900;
+        }
+
+        .dial-table {
+            .dial-table-col {
+                border: 1px solid $light-900;
+            }
+
+            .dial-sub-key {
+                color: $text-dark;
+            }
+        }
+
+
+        .dial-table .dial-key-wrap {
+
+            &.active,
+            &:hover {
+                color: $light-900;
+                background: $brand;
+
+                .mdi {
+                    color: $white;
+                }
+            }
+
+            &.active .dial-sub-key,
+            &:hover .dial-sub-key {
+                color: $light-900;
+            }
+        }
+    }
+
+    .iconbox-dropdown.show {
+        .iconbox {
+            background: $bg-iconbox;
+        }
+    }
+
+    .iconbox {
+        &.btn-hovered-light {
+
+            &:focus,
+            &:hover,
+            &:active {
+                background: $bg-iconbox;
+            }
+        }
+
+        &.btn-outline-light {
+            color: $color-inherit;
+            border: 1px solid $border-color;
+
+            &:focus,
+            &:hover,
+            &:active {
+                background: $bg-iconbox;
+            }
+        }
+
+
+
+        &.btn-solid-primary {
+            background: $primary;
+        }
+
+        &.btn-solid-secondary {
+            background: $secondary;
+        }
+
+        &.btn-solid-success {
+            background: $success;
+        }
+
+        &.btn-solid-info {
+            background: $brand;
+        }
+
+        &.btn-solid-warning {
+            background: $warning;
+        }
+
+        &.btn-solid-danger {
+            background: $danger;
+        }
+
+
+        &.btn-solid-primary,
+        &.btn-solid-secondary,
+        &.btn-solid-success,
+        &.btn-solid-info,
+        &.btn-solid-warning,
+        &.btn-solid-danger {
+            .mdi {
+                color: $white;
+            }
+        }
+    }
+
+    .information-panel {
+        background: $white;
+        border-left: 1px solid $border-color;
+
+        &__head {
+            border-bottom: 1px solid $border-color;
+        }
+
+        &__closer {
+            &:hover {
+                background: $light-900;
+            }
+        }
+
+        &__body {
+
+            .social-icon-box {
+                .social-icon {
+                    &:hover i {
+                        color: $brand;
+                    }
+                }
+            }
+
+            .accordion {
+                &.accordion-ungrouped .card {
+                    border: 1px solid $dark-125;
+                }
+            }
+        }
+
+    }
+
+    body.info-panel-opened {
+
+        .personal-information-panel,
+        .group-information-panel {
+            background: $white;
+        }
+    }
+
+    .backdrop-overlay {
+        @media only screen and (max-width:1200px) {
+            background: $dark-125;
+        }
+    }
+
+    .documentlist-wrapper {
+        li:not(:last-of-type) {
+            border-bottom: 1px solid $border-color;
+        }
+    }
+
+    .doclistall {
+        background: $light-900;
+    }
+
+    .iconbox-searchbar {
+        border-bottom: 1px solid $transparent;
+
+        &.search-visible {
+            border-bottom: 1px solid $border-color;
+        }
+
+        .search-close {
+            color: $color-inherit;
+        }
+
+        .search-submit {
+            background-color: $transparent;
+
+            &:hover,
+            &:active {
+                background: $bg-iconbox;
+            }
+        }
+    }
+
+    .user-avatar-group {
+
+        .user-avatar {
+            border: 2px solid $user-avater-border-color;
+        }
+
+    }
+
+    .user-avatar {
+
+        span {
+            color: $color-inherit;
+        }
+
+        &.avatar-primary {
+            background: lighten($color: $primary, $amount: 25);
+            color: $primary;
+
+            .mdi::before {
+                color: $primary;
+            }
+        }
+
+        &.avatar-info {
+            background: lighten($color: $info, $amount: 40);
+            color: $brand;
+
+            .mdi::before {
+                color: $info;
+            }
+        }
+
+        &.avatar-success {
+            background: lighten($color: $success, $amount: 40);
+            color: $success;
+
+            .mdi::before {
+                color: $success;
+            }
+        }
+
+        &.avatar-danger {
+            background: lighten($color: $danger, $amount: 40);
+            color: $danger;
+
+            .mdi::before {
+                color: $danger;
+            }
+        }
+
+        &.avatar-warning {
+            background: lighten($color: $warning, $amount: 40);
+            color: $warning;
+
+            .mdi::before {
+                color: $warning;
+            }
+
+        }
+
+        &.avatar-secondary {
+            background: lighten($color: $secondary, $amount: 40);
+            color: $secondary;
+
+            .mdi::before {
+                color: $secondary;
+            }
+        }
+
+    }
+
+    .user-avatar-closer {
+        background: $danger;
+
+        .mdi {
+            color: $white;
+        }
+    }
+
+    .calllist {
+
+        &.active {
+            background: $bg-list-active;
+
+            &::before {
+                background: $brand;
+            }
+        }
+
+        border-bottom: 1px solid $border-color;
+
+        .user-avatar {
+            box-shadow: inset 0 0 0.8125rem 0.1875rem $dark-125;
+        }
+
+
+    }
+
+    .ca-content {
+
+        &__callstab {
+
+            .ca-call-details-card {
+                background: $light;
+            }
+        }
+
+    }
+
+    .ca-call-details-history {
+
+        .call-outline-btn {
+            border: 1px solid $border-color;
+
+            &.call-incoming-icon {
+                border-color: $success;
+
+                .mdi {
+                    color: $success;
+                }
+            }
+
+            &.call-outgoing-icon {
+                border-color: $warning;
+
+                .mdi {
+                    color: $warning;
+                }
+            }
+
+            &.call-missed-icon {
+                border-color: $danger;
+
+                .mdi {
+                    color: $danger;
+                }
+            }
+        }
+
+
+        .ca-call-history {
+
+
+            &__right {
+                .ca-call-duration {
+                    color: $call-duration-color;
+                }
+            }
+        }
+    }
+
+
+    .contactlist {
+        border-bottom: 1px solid $border-color;
+
+
+
+        &.active {
+            background: $bg-list-active;
+
+            &::before {
+                background: $brand;
+            }
+        }
+
+        .user-avatar {
+            box-shadow: inset 0 0 0.8125rem 0.1875rem $dark-125;
+        }
+
+
+    }
+
+
+    .alphabet-series {
+        background: $light-800;
+        border-right: 1px solid $border-color;
+    }
+
+    .ca-profile-info {
+        .ca-profile-pic {
+            border: 0.25rem solid $light;
+        }
+    }
+
+    .ca-overlay {
+        background: linear-gradient($transparent, $dark-125);
+    }
+
+    .ca-profile-actions {
+        background: $white;
+
+        @media only screen and (max-width:992px) {
+            background: $transparent;
+        }
+    }
+
+
+    .conversation {
+        border-bottom: 1px solid $border-color;
+
+        .user-avatar {
+            box-shadow: inset 0px 0px 0.8125rem 0.1875rem $dark-125;
+
+            &::after {
+                border: 2px solid $white;
+
+            }
+
+            &.online::after {
+                background: $success;
+            }
+
+            &.offline::after {
+                background: $secondary;
+            }
+
+            &.recently-active::after {
+                background: $warning;
+            }
+        }
+
+        &__message {
+            color: $text-dark-2;
+        }
+
+        &__time {
+            color: $metadata-color;
+        }
+
+
+        // &.unread {
+        //     background: lighten($color: $brand, $amount: 48);
+
+        //     .conversation__name--title {
+        //         color: $dark;
+        //     }
+
+        //     .conversation__message-preview {
+        //         color: $message-preview-color;
+        //     }
+        // }
+
+        &.active {
+            background: $bg-list-active;
+            // background: lighten($color: $brand, $amount: 49);
+
+            &::before {
+                background: $brand;
+            }
+        }
+    }
+
+    .conversation-wrapper {
+
+        .conversation-panel {
+            background: $white;
+
+            &__back-button {
+
+                @media only screen and (max-width:992px) {
+
+                    &:hover,
+                    &:active {
+                        background: $light-900;
+                    }
+                }
+
+            }
+
+
+            &__head {
+                border-bottom: 1px solid $border-color;
+
+                .conversation__actions {
+
+                    .action-icon {
+
+                        &:hover {
+                            background: $light-900;
+
+                        }
+                    }
+                }
+            }
+
+            &__body {
+                background: $light-900;
+            }
+
+            &__footer {
+                background: $white;
+            }
+
+        }
+
+        .information-panel__body {
+
+            .user-table-info{
+                color: $body-color;
+            }
+        }
+    }
+
+    .chat-date {
+        color: $chat-date-color;
+
+        span {
+
+
+            &:before {
+                background-color: $chat-date-line;
+            }
+
+            &:after {
+                background-color: $chat-date-line;
+                ;
+            }
+        }
+    }
+
+    .ca-main-wrapper {
+
+
+        .ca-sidebar-wrapper {
+            border-right: 1px solid $border-color;
+        }
+
+        .ca-content-wrapper {
+
+            @media only screen and (max-width:992px) {
+
+                &.open {
+                    background: $white;
+
+                }
+            }
+        }
+
+    }
+
+    .nav-style-vertical-1 {
+
+        .nav.flex-column {
+            border-right: 1px solid $border-color;
+        }
+
+        .nav-link {
+
+            &.active {
+
+                .settingmenu {
+                    i {
+                        color: $white;
+                    }
+                }
+
+                &:hover {
+                    background: $brand;
+                }
+            }
+
+            &:hover {
+                background: $light-900;
+            }
+        }
+    }
+
+    .modal-open .settings-modal-dialog {
+        .settings-nav-content {
+            @media only screen and (max-width:768px) {
+                background: $white;
+            }
+
+        }
+    }
+
+
+    .setting-sunheading {
+        &.setting-sunheading-style01 {
+            background: $brand;
+            color: $white;
+        }
+    }
+
+    .ca-setting-list {
+
+        .ca-setting-type .ca-setting-name .ca-setting-name-sub {
+            color: $text-dark-2;
+        }
+
+        li {
+            &:not(:last-of-type) {
+                border-bottom: 1px solid $border-color;
+            }
+        }
+
+
+
+        .btn-link.dropdown-toggle {
+            color: $color-inherit;
+
+        }
+    }
+
+    .ps-list {
+        border-bottom: 1px solid $border-color;
+
+    }
+
+    .ca-sidebar {
+        &__header {
+            border-bottom: 1px solid $border-color;
+        }
+
+        &__body {
+
+
+            .ca-navigation-tabs {
+
+                .nav-style-1 {
+                    ul.nav {
+                        border-bottom: 1px solid $border-color;
+                        // background: $light-800;
+
+                        li {
+
+                            a {
+                                color: $color-inherit;
+
+                                &.active {
+                                    color: $brand;
+
+                                    .mdi {
+                                        color: $brand;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .nav-style-2 {
+                    ul.nav {
+                        background: $transparent;
+
+                        li {
+                            background: $light-900;
+
+                            a {
+                                color: $font-color;
+
+                                &.active {
+                                    color: $light;
+
+                                    .mdi {
+                                        color: $light;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #caChatsTabInside {
+        .nav-link.active {
+            .badge-primary {
+                color: $text-nav-active-badge;
+                background-color: $bg-nav-active-badge;
+            }
+        }
+    }
+
+
+    .mfb-component__button--main {
+        box-shadow: $mfb-button-box-shadow;
+        color: $white;
+        background-color: $brand;
+
+        .mdi {
+            color: $white;
+        }
+
+        &:focus,
+        &:hover {
+            color: $white;
+        }
+    }
+
+    .mfb-component__button--child {
+        box-shadow: $mfb-button-box-shadow;
+        color: $white;
+        background-color: $secondary;
+
+        .mdi {
+            color: $white;
+        }
+
+        &:focus,
+        &:hover {
+            color: $white;
+        }
+    }
+
+    [data-mfb-label]:after {
+        background: $brand;
+        color: $light;
+    }
+
+
+    .material-switch > {
+        input {
+            background-color: lighten($color: $black, $amount: 70);
+        }
+    
+        span {
+        &:before {
+            background-color: lighten($color: $black, $amount: 70);
+        }
+    
+        &:after {
+            background-color: $white;
+            box-shadow: 0 3px 1px -2px lighten($color: $black, $amount: 90),
+                        0 2px 2px 0 lighten($color: $black, $amount: 83), 
+                        0 1px 5px 0 lighten($color: $black, $amount: 82);
+        }
+        }
+    
+        input {
+        &:checked {
+            background-color: $brand;
+    
+            + span {
+            &:before {
+                background-color: lighten($color: $brand, $amount: 30);
+            }
+    
+            &:after {
+                background-color: $brand;
+            }
+            }
+        }
+    
+        &:active + span:before {
+            background-color: lighten($color: $brand, $amount: 30);
+        }
+    
+        &:checked:active + span:before {
+            background-color: lighten($color: $dark, $amount: 40);
+        }
+    
+        &:disabled + span {
+            color: $black;
+    
+            &:before {
+                background-color: lighten($color: $dark, $amount: 40);
+            }
+        }
+    
+        &:checked:disabled + span:before {
+            background-color: lighten($color: $brand, $amount: 30);
+        }
+        }
+    }
+    
+    .setting-sunheading {
+        color: $text-dark-2;
+    }
+
+    .modal-content .ca-profile-name{
+        color: $white;
+    }
+
+    .theme-customizer{
+    
+        &.active{
+            background: $light-800;
+        }
+    }
+    
+    .theme-customizer-opener{
+        background: $light-800;
+        border: 1px solid $border-color;
+    }
+
+}

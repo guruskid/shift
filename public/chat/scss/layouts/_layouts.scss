@@ -1,0 +1,95 @@
+.ca-main-conatiner{
+    display: flex;
+    flex: 1 1 auto;
+    width: 100%;
+    position: relative;
+}
+
+.ca-main-wrapper{
+
+    display: flex;
+    flex: 1 1 auto;
+    width: 100%;
+
+    .ca-sidebar-wrapper{
+        width: 26.25rem;
+        max-width: 26.25rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1 0 auto;
+        min-height: 100vh;
+        max-height: 100vh;
+
+        @media only screen and (max-width:1600px) {
+            width: 21.875rem;
+            max-width: 21.875rem;
+        }
+        @media only screen and (max-width:992px) {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+
+        .ca-sidebar{
+            position: relative;
+        }
+    }
+    
+    .ca-content-wrapper{
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        flex-basis: 100%;
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
+        position: relative;
+
+
+        @media only screen and (max-width:992px) {
+            position: fixed;
+            width: 100%;
+            left: 100%;
+            top: 0;
+            bottom: 0;
+            z-index: 1020;
+            visibility: hidden;
+            transition-timing-function: ease-in-out;
+            transition-duration: .3s;
+            transition-property: left, visibility;
+
+
+            &.open {
+                visibility: visible;
+                left: 0;                
+            }
+        }
+
+        .ca-content{
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+       
+            &__chatstab{
+                display: flex;
+                flex: 1 1 auto;
+
+                &--personal,
+                &--group{
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1 1 auto;
+                    justify-content: space-between;
+                }
+            }
+
+            &__chatstab--group,
+            &__callstab,
+            &__contactstab{
+                display: none;
+            }
+        }
+    }
+
+}
+

@@ -1,0 +1,80 @@
+.accordion {
+
+    &.settings-accordion{
+        padding: 1rem 2rem 1rem 0;
+
+        .card{
+            overflow: initial;
+        }
+    }
+
+    .card {
+        margin: 0;
+
+        .card-header {
+            padding: 0;
+            align-items: initial;
+            
+
+            .card-title {
+                cursor: pointer;
+                padding: 0.625rem 1.25rem;
+                flex: 1;
+                font-size: $font-size-sm;
+                height: 100%;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                margin: 0;
+
+                i{
+                    margin-right: 0.625rem;
+                }
+            }
+        }
+    }
+
+    .btn-link {
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    &.accordion-arrow-toggler{
+
+        .card-title {
+            cursor: pointer;
+
+            &::after {
+                content: "\F140";
+                font-family: "Material Design Icons";
+                display: inline-block;
+                position: absolute;
+                right: 1rem;
+                font-size: 1.125rem;
+            }
+
+            &.collapsed{
+                &::after {
+                    content: "\F142";
+                    font-family: "Material Design Icons";
+                }
+            }
+        }
+    }
+
+    &.accordion-ungrouped{
+        .card{
+            margin-bottom: 1rem;
+            border-radius: 0;
+
+            &:last-child{
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    
+}

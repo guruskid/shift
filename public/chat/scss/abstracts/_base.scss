@@ -1,0 +1,20 @@
+body {
+    font-family:"Archivo", sans-serif;
+    font-size: $font-size-sm;
+    overflow: hidden;
+}
+
+.mdi{
+    color: $font-color;
+}
+
+.list-unstyled{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.badge-font-size{
+    font-size: 0.5625rem;
+}
+

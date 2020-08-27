@@ -1,0 +1,140 @@
+.searchbar {
+    padding: .5rem 0;
+
+    .input-group {
+        .form-control {
+            height: auto;
+        }
+    }
+}
+
+.modal-open {
+
+    .modal-contact-list {
+        max-height: 28.125rem;
+        min-height: 28.125rem;
+        position: relative;
+
+        @media only screen and (max-width:768px) {
+            max-height: calc(100vh - 9.5rem);
+        }
+    }
+}
+
+
+.dialpad-opener {
+    cursor: pointer;
+}
+
+.modal-dialpad {
+    display: none;
+    max-height: 28.125rem;
+    min-height: 28.125rem;
+}
+
+.group-members {
+
+    &__title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.625rem;
+    }
+
+    &__avatar {
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+.profile-dialog {
+
+    .modal-content {
+        border-radius: 0;
+        border: 0;
+
+        .modal-header {
+            @media only screen and (max-width:768px) {
+                padding: 0.5rem 0.5rem;
+            }
+        }
+
+        .modal-body {
+
+            .ca-profile-thumb {
+                height: 11rem;
+                background-position: center center;
+            }
+
+            .ca-profile-info {
+
+                margin: 0 auto 0;
+
+                .ca-profile-pic {
+                    height: 7.5rem;
+                    width: 7.5rem;
+                    min-width: 7.5rem;
+                    margin: 0 auto;
+                }
+
+                .ca-profile-name {
+                    font-size: 1.375rem;
+                    margin-top: 10px;
+                    white-space: nowrap;
+                }
+            }
+
+            .profile-settings-list {
+                position: relative;
+                height: calc(100vh-18.6rem);
+            }
+        }
+    }
+}
+
+.profile-modal-close{
+    cursor: pointer;
+    margin-left: auto;
+    @media screen and (max-width:768px){
+        display: none;
+    }
+}
+
+
+.theme-customizer{
+    position: fixed;
+    z-index: 999;
+    top: 50%;
+    transform: translateY(-50%);
+    right: -240px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease-in;
+    width: 280px;
+    border-radius: 4px 0 0 4px;
+
+    &.active{
+        right: 0;
+        box-shadow: 0 20px 40px 10px rgba(0, 0, 0, 0.2);
+
+        .theme-customizer-opener{
+            margin-left: -44px;
+
+        }
+    }
+}
+
+.theme-customizer-opener{
+    border-radius: 6px 0 0 6px;
+    transition: all 0.2s ease-in;
+    position: relative;
+    z-index: 100;
+    list-style: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.theme-customizer-content{
+    padding: 15px 10px;
+}

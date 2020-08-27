@@ -1,0 +1,67 @@
+.iconbox-searchbar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 1rem;
+    z-index: 10;
+    transition: all .2s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+
+    &.search-visible {
+        opacity: 1;
+        visibility: visible;
+        animation: all 0.2s ease-in-out;
+    }
+
+    .form-control {
+        position: absolute;
+        left: 0;
+        top: 0;
+        border: 0px;
+        padding: 0 3.375rem 0 3.125rem;
+        height: 100%;
+        max-width: 100%;
+        outline: none;
+        font-size: 0.875rem;
+
+        &:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    }
+
+    .search-close {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3.125rem;
+        height: 100%;
+        text-align: center;
+        display: table;
+        text-decoration: none;
+
+        i {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    }
+
+    .search-submit{
+        position: absolute;
+        right: 0.625rem;
+        top: $font-size-sm;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        width: 2.8125rem;
+        height: 2.8125rem;
+        border-radius: 6.25rem;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
