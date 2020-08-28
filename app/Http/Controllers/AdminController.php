@@ -387,7 +387,6 @@ class AdminController extends Controller
 
     public function walletTransactions($id = null)
     {
-
         if ($id == null) {
             $transactions = NairaTransaction::latest()->get();
             $segment = 'All Wallet';
@@ -406,21 +405,9 @@ class AdminController extends Controller
         if (!$n) {
             return redirect()->route('user.portfolio')->with(['error' => 'No Naira wallet associated to this account']);
         }
-        $credit_txns = NairaTransaction::whereIn('transaction_type_id', [1, 5, 16] )->latest()->paginate(1000);
+        $credit_txns = NairaTransaction::whereIn('transaction_type_id', [5, 16, 17] )->latest()->paginate(1000);
         $debit_txns = NairaTransaction::whereIn('transaction_type_id', [4, 6] )->latest()->paginate(1000);
-        /* $credit_txns = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(20); */
-        /* $dr_total = 0;
-        $cr_total = ; */
-        /* foreach ($credit_txns as $t ) {
-            if ($t->cr_user_id == Auth::user()->id) {
-                $t->trans_type = 'Credit';
-                $cr_total += $t->amount;
-            } else {
-                $t->trans_type = 'Debit';
-                $dr_total += $t->amount;
-            }
 
-        } */
         return view('admin.admin_wallet', compact(['n',  'credit_txns', 'debit_txns']) );
     }
 

@@ -52,20 +52,20 @@ $not = $nots->last();
         }
 
     </style>
-         <script>
-            window.Laravel = {!! json_encode([
-                'csrfToken'=> csrf_token(),
-                'user'=> [
-                    'authenticated' => auth()->check(),
-                    'id' => auth()->check() ? auth()->user()->id : null,
-                    'first_name' => auth()->check() ? auth()->user()->first_name : null,
-                    'last_name' => auth()->check() ? auth()->user()->last_name : null,
-                    'email' => auth()->check() ? auth()->user()->email : null,
-                    ]
-                ])
-            !!};
-
+    <script>
+        window.Laravel = {!! json_encode([
+            'csrfToken'=> csrf_token(),
+            'user'=> [
+                'authenticated' => auth()->check(),
+                'id' => auth()->check() ? auth()->user()->id : null,
+                'first_name' => auth()->check() ? auth()->user()->first_name : null,
+                'last_name' => auth()->check() ? auth()->user()->last_name : null,
+                'email' => auth()->check() ? auth()->user()->email : null,
+                ]
+            ])
+        !!};
     </script>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
 
@@ -117,22 +117,6 @@ $not = $nots->last();
                 <div class="btn-group">
                     @auth
                     <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
-                    {{-- <div class="dropdown">
-                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
-                            <i class="fa fa-bell mx-2 fa-2x text-warning "></i>
-                        </a>
-                        <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-left">
-                            @foreach ($nots as $not)
-                            <div class="media p-2">
-                                <i class="fa fa-2x fa-bell mr-1 text-warning"></i>
-                                <p class="media-body ">
-                                    <strong>{{$not->title}}</strong>
-                                    {{$not->body}}
-                                </p>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div> --}}
                     @endauth
                 </div>
             </div>
@@ -146,21 +130,6 @@ $not = $nots->last();
                                     <div class="btn-group">
                                         @auth
                                         <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
-                                        {{-- <div class="dropdown">
-                                            <a href="#" data-toggle="dropdown"><i
-                                                    class="fa fa-bell mx-2 fa-2x text-white"></i></a>
-                                            <div class="dropdown-menu">
-                                                @foreach ($nots as $not)
-                                                <div class="media p-2">
-                                                    <i class="fa fa-2x fa-bell mr-1 text-warning"></i>
-                                                    <p class="media-body">
-                                                        <strong>{{$not->title}}</strong>
-                                                        {{$not->body}}
-                                                    </p>
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                        </div> --}}
                                         @if (Auth::user()->role == 999 OR Auth::user()->role == 888 )
                                         <div class="dropdown">
                                             <a data-toggle="dropdown" class="p-0 btn">

@@ -47,8 +47,9 @@
                             <i class="pe-7s-graph1 icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Admin Wallet Transctions</div>
-
+                        <div>Admin Wallet Transctions
+                            <div class="page-title-subheading">{{Auth::user()->nairaWallet->account_number }} -- {{Auth::user()->nairaWallet->account_name }} </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,7 +62,8 @@
                                 <div class="widget-heading">Total Credits</div>
                             </div>
                             <div class="widget-content-right">
-                                <div class="widget-numbers text-white"><span>₦{{number_format($credit_txns->sum('amount')) }}</span></div>
+                                <div class="widget-numbers text-white">
+                                    <span>₦{{number_format($credit_txns->sum('amount')) }}</span></div>
                             </div>
                         </div>
                     </div>
@@ -73,7 +75,8 @@
                                 <div class="widget-heading">Total Debits</div>
                             </div>
                             <div class="widget-content-right">
-                                <div class="widget-numbers text-white"><span>₦{{number_format($debit_txns->sum('amount')) }}</span></div>
+                                <div class="widget-numbers text-white">
+                                    <span>₦{{number_format($debit_txns->sum('amount')) }}</span></div>
                             </div>
                         </div>
                     </div>
@@ -85,7 +88,9 @@
                                 <div class="widget-heading">Balance</div>
                             </div>
                             <div class="widget-content-right">
-                                <div class="widget-numbers text-white"><span>₦{{number_format($credit_txns->sum('amount') - $debit_txns->sum('amount') ) }}</span></div>
+                                <div class="widget-numbers text-white">
+                                    <span>₦{{number_format($credit_txns->sum('amount') - $debit_txns->sum('amount') ) }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -98,7 +103,8 @@
                             <ul class="nav nav-tabs nav-justified">
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0"
                                         class="active nav-link">Credit Transactions</a></li>
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Debit Transactions</a>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Debit
+                                        Transactions</a>
                                 </li>
                             </ul>
                             <div class="tab-content">
@@ -108,6 +114,7 @@
                                         <table class="mb-2 transactions-table table">
                                             <thead>
                                                 <tr>
+                                                    <th class="text-center">Id</th>
                                                     <th class="text-center">Reference id</th>
                                                     <th class="text-center">Cr. Account</th>
                                                     <th class="text-center">Dr. Account</th>
@@ -118,9 +125,10 @@
                                                     <th class="text-center">Date</th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="bg-custom-accent">
+                                            <tbody>
                                                 @foreach ($credit_txns as $t)
-                                                <tr class="bg-custom-accent">
+                                                <tr>
+                                                    <td class="text-center">{{$t->id}}</td>
                                                     <td class="text-center">{{$t->reference}}</td>
                                                     <td class="text-center">{{$t->cr_acct_name}}</td>
                                                     <td class="text-center">{{$t->dr_acct_name}}</td>
@@ -143,6 +151,7 @@
                                         <table class="mb-2 transactions-table table">
                                             <thead>
                                                 <tr>
+                                                    <th class="text-center">Id</th>
                                                     <th class="text-center">Reference id</th>
                                                     <th class="text-center">Cr. Account</th>
                                                     <th class="text-center">Dr. Account</th>
@@ -153,9 +162,10 @@
                                                     <th class="text-center">Date</th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="bg-custom-accent">
+                                            <tbody>
                                                 @foreach ($debit_txns as $t)
-                                                <tr class="bg-custom-accent">
+                                                <tr>
+                                                    <td class="text-center">{{$t->id}}</td>
                                                     <td class="text-center">{{$t->reference}}</td>
                                                     <td class="text-center">{{$t->cr_acct_name}}</td>
                                                     <td class="text-center">{{$t->dr_acct_name}}</td>
