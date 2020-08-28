@@ -398,6 +398,18 @@ class AdminController extends Controller
 
         return view('admin.naira_transactions', compact(['segment', 'transactions' ]));
     }
+    public function walletTransactionsSortByDate(Request $request)
+    {
+
+        $data = $request->validate([
+            'start' => 'required|date|string',
+            'end' => 'required|date|string',
+        ]);
+        $transactions = NairaTransaction::whereBetween('created_at', [$data['start'], $data['end']])->get();
+        $segment = 'All Wallet';
+
+        return view('admin.naira_transactions', compact(['segment', 'transactions' ]));
+    }
 
 
     public function getUser($email)
