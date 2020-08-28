@@ -405,7 +405,8 @@ class AdminController extends Controller
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = NairaTransaction::whereBetween('created_at', [$data['start'], $data['end']])->get();
+        //$transactions = NairaTransaction::whereBetween('created_at', [$data['start'], $data['end']])->get();
+        $transactions = NairaTransaction::where('created_at','>=', $data['start'])->where('created_at','<=', $data['end'])->get();
         $segment = 'All Wallet';
 
         return view('admin.naira_transactions', compact(['segment', 'transactions' ]));
