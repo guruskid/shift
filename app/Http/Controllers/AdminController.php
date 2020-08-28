@@ -406,8 +406,8 @@ class AdminController extends Controller
         if (!$n) {
             return redirect()->route('user.portfolio')->with(['error' => 'No Naira wallet associated to this account']);
         }
-        $credit_txns = NairaTransaction::whereIn('transaction_type_id', [1, 5, 16] )->latest()->paginate(30);
-        $debit_txns = NairaTransaction::whereIn('transaction_type_id', [4, 6] )->latest()->paginate(30);
+        $credit_txns = NairaTransaction::whereIn('transaction_type_id', [1, 5, 16] )->latest()->paginate(1000);
+        $debit_txns = NairaTransaction::whereIn('transaction_type_id', [4, 6] )->latest()->paginate(1000);
         /* $credit_txns = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->orderBy('id', 'desc')->paginate(20); */
         /* $dr_total = 0;
         $cr_total = ; */

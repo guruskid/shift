@@ -113,7 +113,6 @@
                                                     <th class="text-center">Dr. Account</th>
                                                     <th class="text-center">Amount</th>
                                                     <th class="text-center">Narration</th>
-                                                    <th class="text-center">Type</th>
                                                     <th class="text-center">Trans. Type</th>
                                                     <th class="text-center">Status</th>
                                                     <th class="text-center">Date</th>
@@ -128,7 +127,6 @@
                                                     <td class="text-center">₦{{number_format($t->amount)}}</td>
                                                     <td class="text-center">{{$t->narration}}</td>
                                                     <td class="text-center">{{ucwords($t->transactionType->name)}}</td>
-                                                    <td class="text-center">{{ucwords($t->trans_type)}}</td>
                                                     <td class="text-center">{{ucwords($t->status)}} </td>
                                                     <td class="text-center">{{$t->created_at->format('d M y ')}}</td>
                                                 </tr>
@@ -150,7 +148,6 @@
                                                     <th class="text-center">Dr. Account</th>
                                                     <th class="text-center">Amount</th>
                                                     <th class="text-center">Narration</th>
-                                                    <th class="text-center">Type</th>
                                                     <th class="text-center">Trans. Type</th>
                                                     <th class="text-center">Status</th>
                                                     <th class="text-center">Date</th>
@@ -165,7 +162,6 @@
                                                     <td class="text-center">₦{{number_format($t->amount)}}</td>
                                                     <td class="text-center">{{$t->narration}}</td>
                                                     <td class="text-center">{{ucwords($t->transactionType->name)}}</td>
-                                                    <td class="text-center">{{ucwords($t->trans_type)}}</td>
                                                     <td class="text-center">{{ucwords($t->status)}} </td>
                                                     <td class="text-center">{{$t->created_at->format('d M y ')}}</td>
                                                 </tr>
