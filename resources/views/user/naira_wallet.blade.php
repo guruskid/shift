@@ -255,7 +255,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" onclick="postAmount()" data-toggle="modal" data-target="#confirm-modal"
+                    <button type="button" id="sign-up-btn" onclick="postAmount()" data-toggle="modal" data-target="#confirm-modal"
                         class="btn btn-block c-rounded bg-custom-gradient">
                         Confirm
                     </button>

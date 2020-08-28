@@ -85,7 +85,7 @@
                     </a>
                 </div>
                 <div class="col-md-3 col-xl-3">
-                    <a class="text-white" style="text-decoration: none">
+                    <a href="{{route('admin.admin-wallet')}} " class="text-white" style="text-decoration: none">
                         <div class="card mb-3 widget-content bg-custom-gradient">
                             <div class="widget-content-wrapper py-5 text-white">
                                 <div class="widget-content- mx-auto">
