@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bank;
 use App\Card;
 use App\Notification;
 use App\Rate;
@@ -386,7 +387,6 @@ class AdminController extends Controller
 
     public function walletTransactions($id = null)
     {
-
         if ($id == null) {
             $transactions = NairaTransaction::latest()->get();
             $segment = 'All Wallet';
@@ -410,6 +410,18 @@ class AdminController extends Controller
         $segment = 'All Wallet';
 
         return view('admin.naira_transactions', compact(['segment', 'transactions' ]));
+    }
+
+    public function adminWallet()
+    {
+        $n = Auth::user()->nairaWallet;
+        if (!$n) {
+            return redirect()->route('user.portfolio')->with(['error' => 'No Naira wallet associated to this account']);
+        }
+        $credit_txns = NairaTransaction::whereIn('transaction_type_id', [5, 16, 17] )->latest()->paginate(1000);
+        $debit_txns = NairaTransaction::whereIn('transaction_type_id', [4, 6] )->latest()->paginate(1000);
+
+        return view('admin.admin_wallet', compact(['n',  'credit_txns', 'debit_txns']) );
     }
 
 

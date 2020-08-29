@@ -1,624 +1,378 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 @section('content')
-<div class="app-main">
-    <div class="app-sidebar sidebar-shadow">
-        <div class="app-header__logo">
-            <div class="logo-src"></div>
-            <div class="header__pane ml-auto">
-                <div>
-                    <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
-                        data-class="closed-sidebar">
-                        <span class="hamburger-box">
-                            <span class="hamburger-inner"></span>
-                        </span>
-                    </button>
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+        {{-- <div class="row layout-top-spacing">
+            <div class="col-md-12">
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" data-dismiss="alert" class="close">×</button>
+                    <div class="row justify-content-center">
+                        <div class="left col-xl-5 col-lg-12 col-md-12 col-12">
+                            <strong>Hi Simeon,</strong>
+                            <p>Welcome to DANTOWN DASHBOARD. <br> Will you like us to show you around the dashboard?</p>
+                        </div>
+                         <div class="right col-xl-6 col-lg-12 col-md-12 col-12">
+                             <button class="btn btn-primary">YES! Please</button>
+                             <button class="btn btn-outline-primary">Maybe Later</button>
+                         </div>
+                    </div>
                 </div>
+            </div>
+        </div> --}}
+        <div class="dashboard-title d-flex">
+            <ion-icon name="home-outline"></ion-icon>
+            <div class="description">
+                <h5>Dashboard Home</h5>
+                <P>Hi DANTOWN ADMIN, good to see you again Boss.</P>
             </div>
         </div>
-        <div class="app-header__mobile-menu">
-            <div>
-                <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
-                    <span class="hamburger-box">
-                        <span class="hamburger-inner"></span>
-                    </span>
-                </button>
-            </div>
-        </div>
-        <div class="app-header__menu">
-            <span>
-                <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
-                    <span class="btn-icon-wrapper">
-                        <i class="fa fa-ellipsis-v fa-w-6"></i>
-                    </span>
-                </button>
-            </span>
-        </div>
-        {{-- User Side bar --}}
-        @include('layouts.partials.admin')
-
-    </div>
-    <div class="app-main__outer">
-        <div class="app-main__inner">
-            <div class="app-page-title">
-                <div class="page-title-wrapper">
-                    <div class="page-title-heading">
-                        <div class="page-title-icon">
-                            <i class="pe-7s-home icon-gradient bg-night-sky">
-                            </i>
+            <div class="row layout-top-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="">Users Balnce</h5>
+                                <a href="{{route('admin.wallet-transactions')}} ">View all</a>
+                            </div>
+                            <div class="widget-n">
+                                <h5>₦{{number_format($users_wallet_balance)}}</h5>
+                            </div>
                         </div>
-                        <div>Dashboard Home
-                            <div class="page-title-subheading">Hi {{Auth::user()->first_name}}, good to see you again
-                                Boss.
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="">Rubies Balance </h5>
+                                <p>From Rubies API</p>
+                            </div>
+                            <div class="widget-n">
+                                <h5>₦{{number_format($rubies_balance)}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="">Comp Bal </h5>
+                                <a href="{{route('admin.admin-wallet')}} ">View all</a>
+                            </div>
+                            <div class="widget-n">
+                                <h5>₦{{number_format($company_balance)}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="">Transfer Changes</h5>
+                                <p>..</p>
+                            </div>
+                            <div class="widget-n">
+                                <h5>₦{{number_format($charges)}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-chart-one">
+                    <div class="widget-heading">
+                        <h5 class="">Revenue</h5>
+                        <ul class="tabs tab-pills">
+                            <li><a href="javascript:void(0);" id="tb_1" class="tabmenu">Monthly</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="widget-content">
+                        <div class="tabs tab-content">
+                            <div id="content_1" class="tabcontent">
+                                <div id="revenueMonthly"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
 
-                <div class="col-md-3 col-xl-3">
-                    <a href="{{route('admin.wallet-transactions')}} " class="text-white" style="text-decoration: none">
-                        <div class="card mb-3 widget-content bg-alternate">
-                            <div class="widget-content-wrapper py-5 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Users Balance</h5>
-                                        <h5>₦{{number_format($users_wallet_balance)}}</h5>
-                                    </div>
+            <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="widget widget-chart-two mb-4">
+                            <div class="widget-heading">
+                                <div>
+                                    <h5 class="">Buy transactions via Wallet</h5>
+                                    <a href="{{route('admin.wallet-transactions', 5)}} ">View all</a>
+                                </div>
+                                <div class="widget-n">
+                                    <h5>₦{{number_format($buy_txns_wallet)}}</h5>
                                 </div>
                             </div>
                         </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-xl-3">
-                    <a class="text-white" style="text-decoration: none">
-                        <div class="card mb-3 widget-content bg-amy-crisp">
-                            <div class="widget-content-wrapper py-5 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Rubies Balance</h5>
-                                        <h5>₦{{number_format($rubies_balance)}}</h5>
-                                    </div>
+                        <div class="w-100"></div>
+                        <div class="widget widget-chart-two mb-4">
+                            <div class="widget-heading">
+                                <div>
+                                    <h5 class="">Withdraw Transaction </h5>
+                                    <a href="{{route('admin.wallet-transactions', 3)}} ">View all</a>
+                                </div>
+                                <div class="widget-n">
+                                    <h5>₦{{number_format($withdraw_txns)}}</h5>
                                 </div>
                             </div>
                         </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-xl-3">
-                    <a class="text-white" style="text-decoration: none">
-                        <div class="card mb-3 widget-content bg-custom-gradient">
-                            <div class="widget-content-wrapper py-5 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Company's Balance</h5>
-                                        <h5>₦{{number_format($company_balance)}}</h5>
-                                    </div>
+                        <div class="w-100"></div>
+                        <div class="widget widget-chart-two">
+                            <div class="widget-heading">
+                                <div>
+                                    <h5 class="">Airtime Transaction </h5>
+                                    <a href="{{route('admin.wallet-transactions', 9)}} ">View all</a>
+                                </div>
+                                <div class="widget-n">
+                                    <h5>₦{{number_format($airtime_txns)}}</h5>
                                 </div>
                             </div>
                         </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-xl-3">
-                    <a class="text-white" style="text-decoration: none">
-                        <div class="card mb-3 widget-content bg-royal">
-                            <div class="widget-content-wrapper py-5 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Transfer Charges</h5>
-                                        <h5>₦{{number_format($charges)}}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
+
+                    </div>
                 </div>
             </div>
 
-            <div class="row mb-3">
 
-                <div class="col-md-8">
-                    <div class="card card-body shadow p-5" style="height: 400px;">
-                        <h3>Card and Crypto Transactions Chart</h3>
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="widget widget-table-two mb-4">
+                            <div class="widget-heading">
+                                <h5 class="">GIFT CARD TRANSACTIONS</h5>
+                            </div>
+
+                            <div class="widget-content">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th><div class="th-content">Asset</div></th>
+                                                <th><div class="th-content">Type</div></th>
+                                                <th><div class="th-content">Value</div></th>
+                                                <th><div class="th-content th-heading">Cash</div></th>
+                                                <th><div class="th-content">User</div></th>
+                                                <th><div class="th-content">Status</div></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($g_txns as $t)
+                                            <tr>
+                                                <td><div class="td-content customer-name">{{ucwords($t->card)}}</div></td>
+                                                <td><div class="td-content product-brand">{{$t->type}}</div></td>
+                                                <td><div class="td-content">{{$t->amount}}</div></td>
+                                                <td><div class="td-content pricing"><span class="">₦{{number_format($t->amount_paid)}}</span></div></td>
+                                                <td><div class="td-content pricing"><span class="">{{$t->user->first_name}}</span></div></td>
+                                                <td><div class="td-content">
+                                                    @switch($t->status)
+                                                    @case('success')
+                                                    <span class="badge badge-success text-uppercase">{{$t->status}}</span>
+                                                    @break
+                                                    @case("failed")
+                                                    <span class="badge badge-danger text-uppercase">{{$t->status}}</span>
+                                                    @break
+                                                    @case('declined')
+                                                    <span class="badge badge-warning text-uppercase">{{$t->status}}</span>
+                                                    @break
+                                                    @case('waiting')
+                                                    <span class="badge badge-info text-uppercase">{{$t->status}}</span>
+                                                    @break
+                                                    @default
+                                                    <span class="badge badge-success text-uppercase">{{$t->status}}</span>
+                                                    @endswitch
+                                                </div></td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="View-all">
+                                        <a href="{{route('admin.transactions')}}">View all </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-100"></div>
+                        <div class="widget widget-table-two">
+                            <div class="widget-heading">
+                                <h5 class="">CRYPTO TRANSACTIONS </h5>
+                            </div>
+
+                            <div class="widget-content">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th><div class="th-content">Asset</div></th>
+                                                <th><div class="th-content">Type</div></th>
+                                                <th><div class="th-content">Value</div></th>
+                                                <th><div class="th-content th-heading">Cash</div></th>
+                                                <th><div class="th-content">User</div></th>
+                                                <th><div class="th-content">Status</div></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($c_txns as $t)
+                                            <tr>
+                                                <td><div class="td-content customer-name">{{ucwords($t->card)}}</div></td>
+                                                <td><div class="td-content product-brand">{{$t->type}}</div></td>
+                                                <td><div class="td-content">{{$t->amount}}</div></td>
+                                                <td><div class="td-content pricing"><span class="">₦{{number_format($t->amount_paid)}}</span></div></td>
+                                                <td><div class="td-content pricing"><span class="">{{$t->user->first_name}}</span></div></td>
+                                                <td><div class="td-content">
+                                                    @switch($t->status)
+                                                    @case('success')
+                                                    <span class="badge badge-success text-uppercase">{{$t->status}}</span>
+                                                    @break
+                                                    @case("failed")
+                                                    <span class="badge badge-danger text-uppercase">{{$t->status}}</span>
+                                                    @break
+                                                    @case('declined')
+                                                    <span class="badge badge-warning text-uppercase">{{$t->status}}</span>
+                                                    @break
+                                                    @case('waiting')
+                                                    <span class="badge badge-info text-uppercase">{{$t->status}}</span>
+                                                    @break
+                                                    @default
+                                                    <span class="badge badge-success text-uppercase">{{$t->status}}</span>
+                                                    @endswitch
+                                                </div></td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="View-all">
+                                        <a href="{{route('admin.transactions')}}">View all </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-                {{-- Recent Transactions --}}
-                <div class="col-md-4">
-                    <a href="{{route('admin.wallet-transactions', 5)}}" class="text-white" style="text-decoration: none">
-                        <div class="card mb-3 widget-content bg-warm-flame">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Buy Transactions via wallet</h5>
-                                        <h5>₦{{number_format($buy_txns_wallet)}}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{{route('admin.wallet-transactions', 3)}}" class="text-white" style="text-decoration: none">
-                        <div class="card mb-3 widget-content bg-sunny-morning">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Withdraw Transactions</h5>
-                                        <h5>₦{{number_format($withdraw_txns)}}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="{{route('admin.wallet-transactions', 9)}}" class="text-white" style="text-decoration: none">
-                        <div class="card mb-3 widget-content bg-tempting-azure">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Airtime Transactions</h5>
-                                        <h5>₦{{number_format($airtime_txns)}}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-
-
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 col-lg-6">
-                    <div class="main-card mb-3 card">
-                        <div class="card-header">Gift Card Transactions </div>
-                        <div class="card-body px-1">
-                            <div class="table-responsive">
-                                <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Asset</th>
-                                            <th class="text-center">Type</th>
-                                            <th class="text-center">Value</th>
-                                            <th class="text-center">Cash</th>
-                                            <th class="text-center">User</th>
-                                            <th class="text-center">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($g_txns as $t)
-                                        <tr>
-                                            <td class="text-center">{{ucwords($t->card)}}</td>
-                                            <td class="text-center">{{$t->type}}</td>
-                                            <td class="text-center">{{$t->amount}}</td>
-                                            <td class="text-center">{{number_format($t->amount_paid)}}</td>
-                                            <td class="text-center"> {{$t->user->first_name}} </td>
-                                            <td class="text-center">
-                                                @switch($t->status)
-                                                @case('success')
-                                                <div class="badge badge-success">{{$t->status}}</div>
-                                                @break
-                                                @case("failed")
-                                                <div class="badge badge-danger">{{$t->status}}</div>
-                                                @break
-                                                @case('declined')
-                                                <div class="badge badge-warning">{{$t->status}}</div>
-                                                @break
-                                                @case('waiting')
-                                                <div class="badge badge-info">{{$t->status}}</div>
-                                                @break
-                                                @default
-                                                <div class="badge badge-success">{{$t->status}}</div>
-
-                                                @endswitch
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <tfoot>
-                                    <a class="m-3" href=" {{route('admin.transactions')}} ">View all</button></a>
-                                </tfoot>
-                            </div>
-                        </div>
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-table-two mb-4">
+                    <div class="widget-heading">
+                        <h5 class="">Wallet Transactions</h5>
                     </div>
 
-                    <div class="main-card mb-3 card">
-                        <div class="card-header">Crypto Transactions </div>
-                        <div class="card-body px-1">
-                            <div class="table-responsive">
-                                <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Asset</th>
-                                            <th class="text-center">Type</th>
-                                            <th class="text-center">Value</th>
-                                            <th class="text-center">Cash</th>
-                                            <th class="text-center">User</th>
-                                            <th class="text-center">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($c_txns as $t)
-                                        <tr>
-                                            <td class="text-center">{{ucwords($t->card)}}</td>
-                                            <td class="text-center">{{$t->type}}</td>
-                                            <td class="text-center">{{$t->amount}}</td>
-                                            <td class="text-center">{{number_format($t->amount_paid)}}</td>
-                                            <td class="text-center"> {{$t->user->first_name}} </td>
-                                            <td class="text-center">
-                                                @switch($t->status)
-                                                @case('success')
-                                                <div class="badge badge-success">{{$t->status}}</div>
-                                                @break
-                                                @case("failed")
-                                                <div class="badge badge-danger">{{$t->status}}</div>
-                                                @break
-                                                @case('declined')
-                                                <div class="badge badge-warning">{{$t->status}}</div>
-                                                @break
-                                                @case('waiting')
-                                                <div class="badge badge-info">{{$t->status}}</div>
-                                                @break
-                                                @default
-                                                <div class="badge badge-success">{{$t->status}}</div>
-
-                                                @endswitch
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <tfoot>
-                                    <a class="m-3" href=" {{route('admin.transactions')}} ">View all</button></a>
-                                </tfoot>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="main-card mb-3 card">
-                        <div class="card-header">Wallet Transactions </div>
-                        <div class="card-body px-1">
-                            <div class="table-responsive">
-                                <table class="align-middle mb-0 table table-borderless table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Type</th>
-                                            <th class="text-center">Amount</th>
-                                            <th class="text-center">User</th>
-                                            <th class="text-center">Prev. Bal</th>
-                                            <th class="text-center">Cur. Bal</th>
-                                            <th class="text-center">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($n_txns as $t)
-                                        <tr>
-                                            <td class="text-center">{{ucwords($t->transactionType->name)}}</td>
-                                            <td class="text-center">₦{{number_format($t->amount) }}</td>
-                                            <td class="text-center"> {{$t->user->first_name}} </td>
-                                            <td class="text-center">₦{{number_format($t->previous_balance) }}</td>
-                                            <td class="text-center">{{number_format($t->current_balance)}}</td>
-                                            <td class="text-center">
-                                                @switch($t->status)
-                                                @case('success')
-                                                <div class="badge badge-success">{{$t->status}}</div>
-                                                @break
-                                                @case("failed")
-                                                <div class="badge badge-danger">{{$t->status}}</div>
-                                                @break
-                                                @case('refunded')
-                                                <div class="badge badge-warning">{{$t->status}}</div>
-                                                @break
-                                                @case('pending')
-                                                <div class="badge badge-info">{{$t->status}}</div>
-                                                @break
-                                                @default
-                                                <div class="badge badge-success">{{$t->status}}</div>
-
-                                                @endswitch
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <tfoot>
-                                    <a href="{{route('admin.wallet-transactions')}}" class="m-3">View all</button></a>
-                                </tfoot>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="main-card mb-3 pb-3 card">
-                        <div class="card-header d-flex justify-content-between">
-                            <div class="">
-                                Recent users
-                            </div>
-                        </div>
-                        <div class="table-responsive p-3">
-                            <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                    <div class="widget-content">
+                        <div class="table-responsive">
+                            <table class="table">
                                 <thead>
                                     <tr>
-                                        <th> Name</th>
-                                        {{-- <th >Last name</th> --}}
-                                        <th >Email</th>
-                                        <th >Phone</th>
-                                        <th >Wallet balance</th>
-                                        <th >Date added</th>
+                                        <th><div class="th-content">Type</div></th>
+                                        <th><div class="th-content">Amount</div></th>
+                                        <th><div class="th-content">User</div></th>
+                                        <th><div class="th-content th-heading">Prey.Bal</div></th>
+                                        <th><div class="th-content">Cur.Bal</div></th>
+                                        <th><div class="th-content">Status</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($n_txns as $t)
+                                    <tr>
+                                        <td><div class="td-content customer-name">{{ucwords($t->transactionType->name)}}</div></td>
+                                        <td><div class="td-content product-brand">₦{{number_format($t->amount) }}</div></td>
+                                        <td><div class="td-content">{{$t->user->first_name}}</div></td>
+                                        <td><div class="td-content pricing"><span class="">₦{{number_format($t->previous_balance) }}</span></div></td>
+                                        <td><div class="td-content pricing"><span class="">₦{{number_format($t->current_balance)}}</span></div></td>
+                                        <td><div class="td-content"><span class="badge badge-success">{{$t->status}} </span></div></td>
+                                    </tr>
+                                    @endforeach
+
+                                </tbody>
+                            </table>
+                            <div class="View-all">
+                                <a href="{{route('admin.wallet-transactions')}}">View all </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget widget-table-two mb-4">
+                    <div class="widget-heading">
+                        <h5 class="">Recent Users</h5>
+                    </div>
+
+                    <div class="widget-content">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th><div class="th-content">Name</div></th>
+                                        <th><div class="th-content">Email</div></th>
+                                        <th><div class="th-content">Phone</div></th>
+                                        <th><div class="th-content th-heading">Wallet Balance</div></th>
+                                        <th><div class="th-content">Date</div></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($users as $u)
                                     <tr>
-                                        <td ><a href=" {{route('admin.user', [$u->id, $u->email ] )}} "> {{ucwords(Str::limit($u->first_name, 10, '..') )}}</a> </td>
-                                        {{-- <td >{{$u->last_name}}</td> --}}
-                                        <td >{{Str::limit($u->email, 12, '...') }}</td>
-                                        <td >{{$u->phone}}</td>
-                                        <td >
-                                            {{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }}
-                                        </td>
-                                        <td >{{$u->created_at->format('d M y')}}</td>
+                                        <td><div class="td-content customer-name"><a href=" {{route('admin.user', [$u->id, $u->email ] )}} "> {{ucwords(Str::limit($u->first_name, 10, '..') )}}</a></div></td>
+                                        <td><div class="td-content product-brand">{{Str::limit($u->email, 12, '...') }}</div></td>
+                                        <td><div class="td-content">{{$u->phone}}</div></td>
+                                        <td><div class="td-content pricing"><span class="">₦{{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }}</span></div></td>
+                                        <td><div class="td-content pricing"><span class="">{{$u->created_at->format('d m')}}</span></div></td>
                                     </tr>
                                     @endforeach
+
                                 </tbody>
                             </table>
-                            <tfoot>
-                                <a class="m-3" href=" {{route('admin.users')}} ">View all</button></a>
-                            </tfoot>
-                        </div>
-                    </div>
-                    {{-- <div class="main-card mb-3 card">
-                        <div class="card-header">
-                            Transactions overview
-                        </div>
-                        <div class="card-body">
-                            {!! $usersChart->container() !!}
-                        </div>
-                    </div> --}}
-                </div>
-
-            </div>
-
-            {{-- Transactions and Users Overview --}}
-            @if (Auth::user()->role == 999)
-            <div class="row">
-                <div class="main-card mb-3 card col-md-10">
-                    <div class="no-gutters row">
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Total Transactions</div>
-                                                        <div class="widget-subheading">Total cash value </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Total Transactions</div>
-                                                        <div class="widget-subheading">Total Count of succcessful
-                                                            transactions</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Buy</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-info">
-                                                            N{{number_format($buyCash)}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Buy</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-info">{{$buyCount}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Sell</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-success">
-                                                            N{{number_format($sellCash)}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Sell</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-success">{{$sellCount}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="main-card mb-3 card col-md-2 ">
-                    <div class="card-header">Total Users</div>
-                    <div class="card-body">
-                        <h4 class="text-center"><strong>{{$users_count}}</strong></h4>
-                    </div>
-
-                </div>
-            </div>
-            @endif
-
-            @if (Auth::user()->role == 888)
-            <div class="row">
-                <div class="main-card mb-3 card col-md-12">
-                    <div class="no-gutters row">
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Total Transactions</div>
-                                                        <div class="widget-subheading">Total cash value </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Total Transactions</div>
-                                                        <div class="widget-subheading">Total Count of succcessful
-                                                            transactions</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Buy</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-info">
-                                                            N{{number_format($pBuyCash)}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Buy</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-info">{{$pBuyCount}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Sell</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-success">
-                                                            N{{number_format($pSellCash)}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Sell</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-success">{{$pSellCount}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                            <div class="View-all">
+                                <a href="{{route('admin.users')}}">View all </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @endif
+
+
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-table-three">
+
+                    <div class="widget-content">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr class="border">
+                                        <td><div class="td-content total"><h5>Total Transactions</h5> <p>Total cash value</p></div></td>
+                                        <td><div class="td-content total"><h5>Buy</h5> <p>Transaction</p></div></td>
+                                        <td><div class="td-content total"><h5 class="buy-n">₦{{number_format($buyCash)}}</h5></div></td>
+                                        <td><div class="td-content total"><h5>Sell</h5> <p>Transaction</p></div></td>
+                                        <td><div class="td-content total"><h5 class="sell-n">₦{{number_format($sellCash)}}</h5></div></td>
+                                        <td><div class="td-content total"><h5 class="user">TOTAL USERS</h5></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="td-content total"><h5>Total Transactions</h5> <p>Total cash value</p></div></td>
+                                        <td><div class="td-content total"><h5>Buy</h5> <p>Transaction</p></div></td>
+                                        <td><div class="td-content total"><h5 class="buy-n">{{$buyCount}}</h5></div></td>
+                                        <td><div class="td-content total"><h5>Sell</h5> <p>Transaction</p></div></td>
+                                        <td><div class="td-content total"><h5 class="sell-n">{{$sellCount}}</h5></div></td>
+                                        <td><div class="td-content total"><h5 class="user-n">{{$users_count}}</h5></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
-    </div>
-</div>
 
-@if($usersChart)
-{!! $usersChart->script() !!}
-@endif
+    </div>
+
+</div>
 @endsection

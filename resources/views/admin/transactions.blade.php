@@ -183,6 +183,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <th class="text-center">Tran. type</th>
                                         <th class="text-center">Asset value</th>
                                         <th class="text-center">Cash value</th>
+                                        <th class="text-center">Wallet ID</th>
                                         <th class="text-center">User</th>
                                         <th class="text-center">Bank Details</th>
                                         <th class="text-center">Wallet?</th>
@@ -216,6 +217,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td class="text-center">{{$t->type}}</td>
                                         <td class="text-center">{{$t->amount}}</td>
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                        <td class="text-center">{{$t->wallet_id}}</td>
                                         <td class="text-center"><a
                                                 href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
                                                 {{$t->user->first_name." ".$t->user->last_name}}</a> </td>

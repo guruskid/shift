@@ -478,6 +478,11 @@ class NairaWalletController extends Controller
         $nw->amount += $r->amount;
         $nw->save();
 
+        $ttid = 1;
+        if ($nw->user->role == 999) {
+            $ttid = 17;
+        }
+
         $reference = \Str::random(2) . '-' . time();
         $msg = 'Originatoraccountnumber: ' . $r->originatoraccountnumber;
         $msg .= 'amount ' . $r->amount;
@@ -500,7 +505,7 @@ class NairaWalletController extends Controller
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $nw->amount;
         $nt->charge = 0;
-        $nt->transaction_type_id = 1;
+        $nt->transaction_type_id = $ttid;
 
 
         $nt->cr_user_id = $nw->user->id;
