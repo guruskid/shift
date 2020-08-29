@@ -64,14 +64,15 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between ">
                             {{$segment}} Transactions
-                            <form action="" class="form-inline p-2" >
+                            <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2" method="POST">
+                                @csrf
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
-                                    <input type="date" name="" class="ml-2 form-control">
+                                    <input type="date" name="start" class="ml-2 form-control">
                                 </div>
                                 <div class="form-group mr-2">
                                     <label for="">End date </label>
-                                    <input type="date" name="" class="ml-2 form-control">
+                                    <input type="date" name="end" class="ml-2 form-control">
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>

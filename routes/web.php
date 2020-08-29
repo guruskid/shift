@@ -171,7 +171,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::post('/search', 'AdminController@searchUser' )->name('admin.search');
 
     Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
+    Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');
     Route::get('/admin-wallet', 'AdminController@adminWallet')->name('admin.admin-wallet');
+
 
 });
 
