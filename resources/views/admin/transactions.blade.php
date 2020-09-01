@@ -173,7 +173,20 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
             <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
-                        <div class="card-header">{{$segment}} Transactions </div>
+                        <div class="card-header justify-content-between">{{$segment}} Transactions
+                            <form action="{{route('admin.transactions-by-date')}}" class="form-inline p-2" method="POST">
+                                @csrf
+                                <div class="form-group mr-2">
+                                    <label for="">Start date </label>
+                                    <input type="date" name="start" class="ml-2 form-control">
+                                </div>
+                                <div class="form-group mr-2">
+                                    <label for="">End date </label>
+                                    <input type="date" name="end" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                            </form>
+                        </div>
                         <div class="table-responsive p-3">
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>

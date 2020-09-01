@@ -51,7 +51,7 @@
                                         <img src="{{asset('storage/pop/'.$pop->path)}}" class="img-fluid" alt="image">
                                         <div class="d-flex justify-content-between">
                                             <a href="{{asset('storage/pop/'.$pop->path)}}">View</a><br>
-                                            <i>By {{$pop->user->first_name}}</i>
+                                            {{-- <i>By {{$pop->user->first_name}}</i> --}}
                                         </div>
                                     </div>
                                 @endforeach

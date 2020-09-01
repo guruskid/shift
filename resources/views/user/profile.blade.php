@@ -454,13 +454,13 @@ if (Auth::user()->nairaWallet) {
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="">New wallet pin</label>
-                                <input type="password" class="form-control" required name="new_password" minlength="4" maxlength="4" >
+                                <input type="password" class="form-control" placeholder="- - - -" required name="new_password" minlength="4" maxlength="4" >
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="">Confirm wallet pin</label>
-                                <input type="password" class="form-control" required name="new_password_confirmation">
+                                <input type="password" class="form-control" placeholder="- - - -" required name="new_password_confirmation">
                             </div>
                         </div>
                     </div>

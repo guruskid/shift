@@ -132,6 +132,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
     Route::get('/transactions/declined', 'AdminController@declinedTransac')->name('admin.declined_transac');
     Route::get('/transactions/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
     Route::post('/edit-transactions', 'AdminController@editTransaction' )->name('admin.edit_transaction');
+    Route::post('/asset-transactions', 'AdminController@assetTransactionsSortByDate')->name('admin.transactions-by-date');
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
 

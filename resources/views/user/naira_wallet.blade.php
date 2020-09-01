@@ -62,6 +62,9 @@
                                 @endforeach
                             </ul>
                             @endif
+                            @if (Auth::user()->nairaWallet->password == null)
+                            <p class="text-info">Please visit <a href="{{route('user.profile')}}">account settings </a>to reset your wallet password before initiating a wallet transaction </p>
+                            @endif
                             <div class="row my-3">
                                 <div class="col-md-6 mb-3">
                                     <div class="card wallet">

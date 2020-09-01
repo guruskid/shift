@@ -18,7 +18,10 @@ class Admin
         $user = Auth::user();
 
         if($user->role == 999 || $user->role == 888 ){
-             return $next($request);
+            if ($user->status != 'active') {
+                abort(404);
+            }
+            return $next($request);
         }else{
             abort(404);
         }

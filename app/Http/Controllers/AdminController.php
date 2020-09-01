@@ -295,6 +295,19 @@ class AdminController extends Controller
         return view('admin.assigned-transactions', compact(['transactions']));
     }
 
+    public function assetTransactionsSortByDate(Request $request)
+    {
+
+        $data = $request->validate([
+            'start' => 'required|date|string',
+            'end' => 'required|date|string',
+        ]);
+        $transactions = NairaTransaction::where('created_at','>=', $data['start'])->where('created_at','<=', $data['end'])->get();
+        $segment = 'All Wallet';
+
+        return view('admin.naira_transactions', compact(['segment', 'transactions' ]));
+    }
+
     public function getTransac($id)
     {
         $transac = Transaction::find($id);
@@ -405,7 +418,6 @@ class AdminController extends Controller
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        //$transactions = NairaTransaction::whereBetween('created_at', [$data['start'], $data['end']])->get();
         $transactions = NairaTransaction::where('created_at','>=', $data['start'])->where('created_at','<=', $data['end'])->get();
         $segment = 'All Wallet';
 
