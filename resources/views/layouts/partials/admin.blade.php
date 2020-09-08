@@ -38,30 +38,39 @@
                             </i>Sell transactions
                         </a>
                     </li>
+
                     <li>
-                        <a href="{{route('admin.success_transac')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.success_transac' ? 'mm-active' : '' }} ">
+                        <a href="{{route('admin.transactions-status', 'success')}}" >
                             <i class="metismenu-icon">
                             </i>Successful transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.waiting_transac')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.waiting_transac' ? 'mm-active' : '' }} ">
+                        <a href="{{route('admin.transactions-status', 'approved')}}" >
+                            <i class="metismenu-icon">
+                            </i>Approved transactions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('admin.transactions-status', 'in progress')}}" >
+                            <i class="metismenu-icon">
+                            </i>In Progress Transactions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('admin.transactions-status', 'waiting')}}" >
                             <i class="metismenu-icon">
                             </i>Waiting transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.declined_transac')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.declined_transac' ? 'mm-active' : '' }} ">
+                        <a href="{{route('admin.transactions-status', 'declined')}}" >
                             <i class="metismenu-icon">
                             </i>Declined transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.failed_transac')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.failed_transac' ? 'mm-active' : '' }} ">
+                        <a href="{{route('admin.transactions-status', 'failed')}}" >
                             <i class="metismenu-icon">
                             </i>Failed transactions
                         </a>
@@ -85,6 +94,7 @@
                 </a>
             </li>
 
+            @if (!in_array(Auth::user()->role, [889, 777]))
             <li class="my-3">
                 <a href="{{route('admin.assigned-transactions')}}"
                     class=" {{ Route::currentRouteName() == 'admin.assigned-transactions' ? 'mm-active' : '' }} ">
@@ -92,14 +102,15 @@
                     Assigned Transactions
                 </a>
             </li>
-
+            @endif
+{{--
             <li class="my-3">
                 <a href="{{route('admin.chat',1)}}"
                     class=" {{ Route::currentRouteName() == 'admin.chat' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-chat"></i>
                     Chats
                 </a>
-            </li>
+            </li> --}}
 
             {{-- for Super Admin Only --}}
             @if (Auth::user()->role == 999 )
@@ -142,6 +153,14 @@
                         class=" {{ Route::currentRouteName() == 'admin.chat_agents' ? 'mm-active' : '' }} ">
                         <i class="metismenu-icon pe-7s-users"></i>
                         Chat Agents
+                    </a>
+                </li>
+
+                <li class="my-3">
+                    <a href="{{route('admin.accountants')}}"
+                        class=" {{ Route::currentRouteName() == 'admin.accountants' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-users"></i>
+                        Accountants
                     </a>
                 </li>
             @endif

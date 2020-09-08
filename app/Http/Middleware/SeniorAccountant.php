@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Middleware;
-use Illuminate\Support\Facades\Auth;
-use Closure;
 
-class Admin
+use Closure;
+use Illuminate\Support\Facades\Auth;
+
+class SeniorAccountant
 {
     /**
      * Handle an incoming request.
@@ -17,7 +18,7 @@ class Admin
     {
         $user = Auth::user();
 
-        if($user->role == 999 || $user->role == 888 || $user->role == 889 || $user->role == 777 ){
+        if($user->role == 999 || $user->role == 889){
             if ($user->status != 'active') {
                 abort(404);
             }

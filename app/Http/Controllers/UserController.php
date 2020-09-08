@@ -295,7 +295,7 @@ class UserController extends Controller
         }
 
         $online_agent = User::where('role', 888)->where('status', 'active')->first();
-        if ($online_agent->count() == 0) {
+        if (!$online_agent) {
             $online_agent = User::where('role', 999)->first();
         }
 
@@ -320,7 +320,9 @@ class UserController extends Controller
                     ]);
                 }
             }
+
             $card_id = Card::where('name', $r->card)->first()->id;
+
 
             $t = new Transaction();
             $t->uid = uniqid();

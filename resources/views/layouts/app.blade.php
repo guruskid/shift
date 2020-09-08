@@ -198,7 +198,23 @@ $not = $nots->last();
                                         @endauth
                                     </div>
                                     <div class="widget-subheading">
-                                        Hi there
+                                        @switch(Auth::user()->role)
+                                        @case(999)
+                                            Super Admin
+                                            @break
+                                        @case(889)
+                                            Senior Accountant
+                                            @break
+                                            @case(777)
+                                            Junior Accountant
+                                            @break
+                                            @case(888)
+                                            Sales Rep.
+                                            @break
+                                        @default
+                                        Hi! there
+
+                                    @endswitch
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +242,7 @@ $not = $nots->last();
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
     @auth
-    @if (Auth::user()->role == 999 || Auth::user()->role == 888 )
+    @if (Auth::user()->role == 999 || Auth::user()->role == 888 || Auth::user()->role == 889 || Auth::user()->role == 777 )
     <script src="{{asset('js/sa.js')}}"></script>
     @endif
     @endauth
@@ -260,14 +276,6 @@ $not = $nots->last();
 
     </script>
     @endif
-
-    <script>
-        $('.btn-message').click(function () {
-            $('#box-message').toggle();
-            $('#scroll-msg').scrollTop($('#scroll-msg')[0].scrollHeight - $('#scroll-msg')[0].clientHeight);
-        });
-
-    </script>
 
 </body>
 

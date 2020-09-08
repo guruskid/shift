@@ -18,6 +18,11 @@ class Transaction extends Model
         return $this->belongsTo('App\User', 'agent_id', 'id');
     }
 
+    public function accountant()
+    {
+        return $this->belongsTo('App\User', 'accountant_id', 'id');
+    }
+
     public function pops()
     {
         return $this->hasMany('App\Pop')->orderBy('created_at', 'desc');

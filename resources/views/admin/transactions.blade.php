@@ -51,7 +51,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                             <i class="pe-7s-timer icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div> {{$segment}} Transactions
+                        <div class="text-capitalize"> {{$segment}} Transactions
                             <div class="page-title-subheading">
                             </div>
                         </div>
@@ -174,15 +174,16 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between">{{$segment}} Transactions
-                            <form action="{{route('admin.transactions-by-date')}}" class="form-inline p-2" method="POST">
+                            <form action="{{route('admin.transactions-by-date')}}" class="form-inline p-2"
+                                method="POST">
                                 @csrf
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
-                                    <input type="date" name="start" class="ml-2 form-control">
+                                    <input type="date" required name="start" class="ml-2 form-control">
                                 </div>
                                 <div class="form-group mr-2">
                                     <label for="">End date </label>
-                                    <input type="date" name="end" class="ml-2 form-control">
+                                    <input type="date" required name="end" class="ml-2 form-control">
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
@@ -205,6 +206,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         @if (Auth::user()->role == 999)
                                         <th class="text-center">Last Edit</th>
                                         <th class="text-center">Agent</th>
+                                        <th class="text-center">Accountant</th>
                                         @endif
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -259,41 +261,46 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         @if (Auth::user()->role == 999)
                                         <td class="text-center"> {{$t->last_edited}} </td>
                                         <td class="text-center"> {{$t->agent->first_name}} </td>
+                                        <td class="text-center"> {{$t->accountant->first_name ?? 'None' }} </td>
+                                        @endif
+
                                         <td>
-                                            <a href="#" data-toggle="modal" data-target="#edit-transac"
-                                                onclick="editTransac({{$t->id}})"><span
-                                                    class="btn btn-sm btn-info">Edit</span></a>
-                                            {{-- <a href="#" onclick="deleteTransac({{$t->id}})"><span
-                                                class="btn btn-sm btn-danger">Delete</span></a> --}}
                                             <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
                                                 <span class="btn btn-sm btn-success">View</span>
                                             </a>
-                                            @if ($t->status == 'approved' )
-                                            <button data-toggle="modal" data-target="#confirm-modal"
-                                                onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
-                                                class="btn btn-sm btn-outline-success">Pay</button>
-                                            @elseif($t->status == 'success')
-                                            <button data-toggle="modal" data-target="#refund-modal"
-                                            onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
-                                            class="btn btn-sm btn-outline-success">Refund</button>
+
+                                            @if (Auth::user()->role == 999 || Auth::user()->role == 889 || Auth::user()->role == 777)
+                                                @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
+                                                <a href="#" data-toggle="modal" data-target="#edit-transac"
+                                                    onclick="editTransac({{$t->id}})"><span
+                                                        class="btn btn-sm btn-info">Edit</span></a>
+                                                @endif
+
+                                                @if ($t->status == 'approved')
+                                                <button data-toggle="modal" data-target="#confirm-modal"
+                                                    onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                    class="btn btn-sm btn-outline-success">Pay</button>
+                                                @elseif($t->status == 'success')
+                                                <button data-toggle="modal" data-target="#refund-modal"
+                                                    onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                    class="btn btn-sm btn-outline-success">Refund</button>
+                                                @endif
+
+                                            @endif
+
+                                            @if (Auth::user()->role == 888)
+                                                @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
+                                                <a href="#" data-toggle="modal" data-target="#edit-transac"
+                                                    onclick="editTransac({{$t->id}})"><span
+                                                        class="btn btn-sm btn-info">Edit</span></a>
+                                                @endif
                                             @endif
                                         </td>
-                                        @endif
-                                        @if (Auth::user()->role == 888)
-                                        <td>
-                                            <a href="#" data-toggle="modal" data-target="#edit-transac"
-                                                onclick="editTransac({{$t->id}})"><span
-                                                    class="btn btn-sm btn-info">Edit</span></a>
-                                            <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
-                                                <span class="btn btn-success">View</span>
-                                            </a>
-                                        </td>
-                                        @endif
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{$transactions->links()}}
+                            {{$transactions->links() ?? '' }}
                         </div>
                     </div>
                 </div>
@@ -327,7 +334,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Card</label>
-                                <select name="card"   class="form-control">
+                                <select name="card" class="form-control">
                                     <option value="" id="e_card"></option>
                                     @foreach ($cards as $card)
                                     <option value=" {{$card->name}} "> {{ ucfirst($card->name) }} </option>
@@ -339,7 +346,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Country</label>
-                                <select name="country"  class="form-control">
+                                <select name="country" class="form-control">
                                     <option value="" id="e_country"></option>
                                     <option value="USD">USD</option>
                                     <option value="EUR">EUR</option>
@@ -354,14 +361,14 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Unit</label>
-                                <input type="text"  placeholder="Value" id="e_amount" class="form-control" name="amount">
+                                <input type="text" placeholder="Value" id="e_amount" class="form-control" name="amount">
                             </div>
                         </div>
 
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Cash Value</label>
-                                <input type="text"  placeholder="Amount paid" id="e_amount_paid" class="form-control"
+                                <input type="text" placeholder="Amount paid" id="e_amount_paid" class="form-control"
                                     name="amount_paid">
                             </div>
                         </div>
@@ -372,7 +379,9 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                 <label for="">Status</label>
                                 <select name="status" class="form-control">
                                     <option value="" id="e_status"></option>
+                                    @if (in_array(Auth::user()->role, [889, 777, 999]))
                                     <option value="success">Success</option>
+                                    @endif
                                     <option value="approved">Approved (cleared to pay)</option>
                                     <option value="waiting">Waiting</option>
                                     <option value="in progress">In progress</option>
@@ -384,8 +393,8 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div class="col">
                             <div class="form-group">
                                 <label for="">Transac Type</label>
-                                <select name="trade_type"  class="form-control">
-                                    <option value=""  id="e_trade_type"></option>
+                                <select name="trade_type" class="form-control">
+                                    <option value="" id="e_trade_type"></option>
                                     <option value="buy">Buy</option>
                                     <option value="sell">Sell</option>
                                 </select>

@@ -71,7 +71,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="">Transfer Changes</h5>
-                                <p>..</p>
+                                <a href="{{route('admin.wallet-charges')}} ">View all</a>
                             </div>
                             <div class="widget-n">
                                 <h5>₦{{number_format($charges)}}</h5>

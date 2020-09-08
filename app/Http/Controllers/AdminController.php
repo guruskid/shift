@@ -16,6 +16,7 @@ use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\TransactionType;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -93,17 +94,26 @@ class AdminController extends Controller
         $airtime_txns = NairaTransaction::where('transaction_type_id', 9)->sum('amount');
         $buy_txns_wallet = NairaTransaction::where('transaction_type_id', 5)->sum('amount');
 
-        $g_txns = Transaction::whereHas('asset', function ($query){
+        $g_txns = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-        } )->latest()->get()->take(4);
+        })->latest()->get()->take(4);
 
-        $c_txns = Transaction::whereHas('asset', function ($query){
+        $c_txns = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 1);
-        } )->latest()->get()->take(4);
+        })->latest()->get()->take(4);
 
         $n_txns = NairaTransaction::latest()->get()->take(4);
 
-        if (Auth::user()->role == 999) {
+        /* Get count of transactions from when an agent was last activated */
+        $au =Auth::user();
+        $a_w_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'waiting')->count();
+        $a_i_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'in progress')->count();
+        $a_s_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'success')->count();
+        $a_a_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'approved')->count();
+        $all_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->count();
+
+
+        if (Auth::user()->role == 999) { //Super admin
             return view(
                 'admin.super_dashboard',
                 compact([
@@ -115,17 +125,29 @@ class AdminController extends Controller
                     'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges'
                 ])
             );
-        } else {
+        } else if (Auth::user()->role == 888) { // sales rep
             return view(
                 'admin.dashboard',
                 compact([
                     'transactions', 'users', 'users_count', 'notifications', 'usersChart',
+                    'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
                 ])
             );
+        } else if (Auth::user()->role == 889 || Auth::user()->role == 777) { //Accountants
+            return view(
+                'admin.accountant_dashboard',
+                compact([
+                    'transactions', 'users', 'users_count', 'notifications', 'usersChart',
+                    'withdraw_txns', 'airtime_txns', 'buy_txns_wallet',
+                    'g_txns', 'c_txns', 'n_txns',
+                    'buyCash', 'sellCash', 'buyCount', 'sellCount',
+                    'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount',
+                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges'
+                ])
+            );
         }
-
     }
 
     public function cards()
@@ -233,7 +255,7 @@ class AdminController extends Controller
 
     public function transactions()
     {
-        $transactions = Transaction::orderBy('created_at', 'desc')->paginate(20);
+        $transactions = Transaction::latest()->paginate(1000);
         $segment = 'All';
 
         return view('admin.transactions', compact(['transactions', 'segment']));
@@ -241,43 +263,22 @@ class AdminController extends Controller
 
     public function buyTransac()
     {
-        $transactions = Transaction::where('type', 'buy')->orderBy('created_at', 'desc')->paginate(20);
+        $transactions = Transaction::where('type', 'buy')->latest()->paginate(1000);
         $segment = 'Buy';
         return view('admin.transactions', compact(['transactions', 'segment']));
     }
 
     public function sellTransac()
     {
-        $transactions = Transaction::where('type', 'sell')->orderBy('created_at', 'desc')->paginate(20);
+        $transactions = Transaction::where('type', 'sell')->latest()->paginate(1000);
         $segment = 'Sell';
         return view('admin.transactions', compact(['transactions', 'segment']));
     }
 
-    public function successTransac()
+    public function txnByStatus($status)
     {
-        $transactions = Transaction::where('status', 'success')->orderBy('created_at', 'desc')->paginate(20);
-        $segment = 'Successfull';
-        return view('admin.transactions', compact(['transactions', 'segment']));
-    }
-
-    public function failedTransac()
-    {
-        $transactions = Transaction::where('status', 'failed')->orderBy('created_at', 'desc')->paginate(20);
-        $segment = 'Failed';
-        return view('admin.transactions', compact(['transactions', 'segment']));
-    }
-
-    public function waitingTransac()
-    {
-        $transactions = Transaction::where('status', 'waiting')->orderBy('created_at', 'desc')->paginate(20);
-        $segment = 'waiting';
-        return view('admin.transactions', compact(['transactions', 'segment']));
-    }
-
-    public function declinedTransac()
-    {
-        $transactions = Transaction::where('status', 'declined')->orderBy('created_at', 'desc')->paginate(20);
-        $segment = 'Declined';
+        $transactions = Transaction::where('status', $status)->latest()->paginate(1000);
+        $segment = $status;
         return view('admin.transactions', compact(['transactions', 'segment']));
     }
 
@@ -290,9 +291,24 @@ class AdminController extends Controller
                 $t->acct_num = $t->user->accounts()->first()['account_number'];
             }
         }
-        /* $transactions = Transaction::where('agent_id', Auth::user()->id)->paginate(20); */
 
         return view('admin.assigned-transactions', compact(['transactions']));
+    }
+
+    public function assetTransac($id)
+    {
+        $transactions = Transaction::whereHas('asset', function($query) use($id) {
+            $query->where('is_crypto', $id);
+        })->paginate(1000);
+
+        $segment = 'Crypto';
+        if ($id == 1) {
+            $segment = 'Gift Card';
+        }
+
+
+        return view('admin.transactions', compact(['transactions', 'segment']));
+
     }
 
     public function assetTransactionsSortByDate(Request $request)
@@ -302,10 +318,10 @@ class AdminController extends Controller
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = NairaTransaction::where('created_at','>=', $data['start'])->where('created_at','<=', $data['end'])->get();
-        $segment = 'All Wallet';
+        $transactions = Transaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(200);
+        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - '. Carbon::parse($data['end'])->format('D d M Y') . ' Asset' ;
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions' ]));
+        return view('admin.transactions', compact(['segment', 'transactions']));
     }
 
     public function getTransac($id)
@@ -316,11 +332,13 @@ class AdminController extends Controller
 
     public function addTransaction(Request $r)
     {
+        $card_id = Card::where('name', $r->card)->first()->id;
 
         $t = new Transaction();
         $t->uid = uniqid();
         $t->user_email = $r->user_email;
         $t->card = $r->card;
+        $t->card_id = $card_id;
         $t->type = $r->trade_type;
         $t->country = $r->country;
         $t->amount = $r->amount;
@@ -401,15 +419,14 @@ class AdminController extends Controller
     public function walletTransactions($id = null)
     {
         if ($id == null) {
-            $transactions = NairaTransaction::latest()->get();
+            $transactions = NairaTransaction::latest()->paginate(1000);
             $segment = 'All Wallet';
-        }
-        else{
+        } else {
             $transactions = NairaTransaction::where('transaction_type_id', $id)->get();
             $segment = TransactionType::find($id)->name;
         }
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions' ]));
+        return view('admin.naira_transactions', compact(['segment', 'transactions']));
     }
     public function walletTransactionsSortByDate(Request $request)
     {
@@ -418,10 +435,10 @@ class AdminController extends Controller
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = NairaTransaction::where('created_at','>=', $data['start'])->where('created_at','<=', $data['end'])->get();
-        $segment = 'All Wallet';
+        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->get();
+        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - '. Carbon::parse($data['end'])->format('D d M Y') . ' Wallet' ;
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions' ]));
+        return view('admin.naira_transactions', compact(['segment', 'transactions']));
     }
 
     public function adminWallet()
@@ -430,10 +447,24 @@ class AdminController extends Controller
         if (!$n) {
             return redirect()->route('user.portfolio')->with(['error' => 'No Naira wallet associated to this account']);
         }
-        $credit_txns = NairaTransaction::whereIn('transaction_type_id', [5, 16, 17] )->latest()->paginate(1000);
-        $debit_txns = NairaTransaction::whereIn('transaction_type_id', [4, 6] )->latest()->paginate(1000);
+        $credit_txns = NairaTransaction::whereIn('transaction_type_id', [5, 16, 17])->latest()->paginate(1000);
+        $debit_txns = NairaTransaction::whereIn('transaction_type_id', [4, 6])->latest()->paginate(1000);
 
-        return view('admin.admin_wallet', compact(['n',  'credit_txns', 'debit_txns']) );
+        return view('admin.admin_wallet', compact(['n',  'credit_txns', 'debit_txns']));
+    }
+
+    public function transferCharges(Request $r)
+    {
+        if (!$r->start || !$r->end ) {
+            $transactions = NairaTransaction::latest()->paginate(1000);
+            $total = $transactions->sum('charge');
+        }else{
+            $transactions = NairaTransaction::where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->paginate(1000);
+            $total = $transactions->sum('charge');
+        }
+
+
+        return view('admin.charges', compact(['transactions', 'total']));
     }
 
 
@@ -457,7 +488,7 @@ class AdminController extends Controller
         $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->orderBy('id', 'desc')->paginate(20);
         $dr_total = 0;
         $cr_total = 0;
-        foreach ($wallet_txns as $t ) {
+        foreach ($wallet_txns as $t) {
             if ($t->cr_user_id == $user->id) {
                 $t->trans_type = 'Credit';
                 $cr_total += $t->amount;
@@ -465,15 +496,14 @@ class AdminController extends Controller
                 $t->trans_type = 'Debit';
                 $dr_total += $t->amount;
             }
-
         }
 
-        return view('admin.user', compact(['user', 'transactions', 'wallet_txns', 'dr_total', 'cr_total' ]));
+        return view('admin.user', compact(['user', 'transactions', 'wallet_txns', 'dr_total', 'cr_total']));
     }
 
     public function searchUser(Request $r)
     {
-        $users = User::where('email', 'like', '%'.$r->q.'%')->orWhere('first_name', 'like', '%'.$r->q.'%')->orWhere('last_name', 'like', '%'.$r->q.'%')->paginate(20);
+        $users = User::where('email', 'like', '%' . $r->q . '%')->orWhere('first_name', 'like', '%' . $r->q . '%')->orWhere('last_name', 'like', '%' . $r->q . '%')->paginate(20);
         /* dd($users); */
         return view('admin.users', compact(['users']));
     }
@@ -549,6 +579,4 @@ class AdminController extends Controller
         $not = Notification::find($id);
         return response()->json($not->delete());
     }
-
-
 }

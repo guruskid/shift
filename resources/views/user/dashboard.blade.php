@@ -156,19 +156,23 @@ $not = $notifications->last();
                     </a> --}}
                 </div>
                 <div class="col-md-5 col-lg-5 mb-3">
-                    <div class="px-4 py-4 text-center text-white bg-custom c-rounded-top">
-                        <strong>Wallet Balance</strong>
-                        <h4>₦{{number_format($naira_balance)}} </h4>
-                    </div>
+                    <a href="{{route('user.naira-wallet')}} ">
+                        <div class="px-4 py-4 text-center text-white bg-custom c-rounded-top">
+                            <strong>Wallet Balance</strong>
+                            <h4>₦{{number_format($naira_balance)}} </h4>
+                        </div>
+                    </a>
                     <div class="m-0 px-2 pt-1 dashboard-wallets">
                         <div class="card card-body mx-md-5 mt-4 mb-5">
                             <div class="d-flex justify-content-between">
                                 <div class="media">
                                     <img src="{{asset('svg/naira.svg')}}" style="height: 50px; margin-right: 5px"  alt="naira wallet">
-                                    <div class="media-body text-custom">
-                                        <h6 class="mb-0" >NGN</h6>
-                                        <strong>₦{{number_format($naira_balance)}}</strong>
-                                    </div>
+                                    <a href="{{route('user.naira-wallet')}} ">
+                                        <div class="media-body text-custom">
+                                            <h6 class="mb-0" >NGN</h6>
+                                            <strong>₦{{number_format($naira_balance)}}</strong>
+                                        </div>
+                                    </a>
                                 </div>
                                 <a href="#">
                                     <button class="btn opacity-7 c-btn-rounded bg-custom ">

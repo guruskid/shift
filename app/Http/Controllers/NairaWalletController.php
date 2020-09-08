@@ -352,12 +352,13 @@ class NairaWalletController extends Controller
         $nt->narration = 'Payment for transaction with id ' . $t->uid;
         $nt->trans_msg = 'This transaction was approved by ' . Auth::user()->email;
         $nt->cr_user_id = $t->user->id;
-        $nt->dr_user_id = Auth::user()->id;
+        $nt->dr_user_id = 1;
         $nt->status = 'success';
         $nt->save();
 
         /* Update Transaction satus */
         $t->status = 'success';
+        $t->accountant_id = Auth::user()->id;
         $t->save();
 
         $title = 'Dantown wallet Credit';

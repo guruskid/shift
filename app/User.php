@@ -39,7 +39,7 @@ class User extends Authenticatable
 
     public function transactions()
     {
-        return $this->hasMany('App\Transaction', 'user_email', 'email')->orderBy('created_at', 'desc' );
+        return $this->hasMany('App\Transaction', 'user_email', 'email')->latest();
     }
 
     public function messages()
@@ -54,12 +54,17 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->hasMany('App\Notification')->orderBy('created_at', 'desc' );
+        return $this->hasMany('App\Notification')->latest();
     }
 
     public function assignedTransactions()
     {
-        return $this->hasMany('App\Transaction', 'agent_id', 'id')->orderBy('created_at', 'desc' );
+        return $this->hasMany('App\Transaction', 'agent_id', 'id')->latest();
+    }
+
+    public function approvedTransactions()
+    {
+        return $this->hasMany('App\Transaction', 'accountant_id', 'id')->latest();
     }
 
     public function nairaWallet()

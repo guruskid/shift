@@ -32,7 +32,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-		if($user->role == 999){
+		if($user->role == 999 || $user->role == 889 || $user->role == 777){
     		return redirect()->route('admin.dashboard');
         }
         elseif ($user->role == 888) {
