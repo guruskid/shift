@@ -198,6 +198,7 @@ $not = $nots->last();
                                         @endauth
                                     </div>
                                     <div class="widget-subheading">
+                                        @auth
                                         @switch(Auth::user()->role)
                                         @case(999)
                                             Super Admin
@@ -215,6 +216,7 @@ $not = $nots->last();
                                         Hi! there
 
                                     @endswitch
+                                        @endauth
                                     </div>
                                 </div>
                             </div>
