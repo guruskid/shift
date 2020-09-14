@@ -17,7 +17,7 @@ class CheckName
     public function handle($request, Closure $next)
     {
         $user = Auth::user();
-        if ($user->first_name == ' ' || $user->first_name == ''  ) {
+        if (strlen(trim($user->first_name))  <= 0) {
             return redirect('/setup-bank-account');
         }
         return $next($request);

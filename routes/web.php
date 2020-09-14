@@ -28,7 +28,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
 Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.add-bank');
 
-Route::view('/test', 'user.test');
+Route::view('/disabled', 'disabled')->name('disabled');
 
 Route::get('/message/{id}', 'MessageController@index')->name('message');
 Route::get('/read-messages/{id}', 'MessageController@read')->name('message');
@@ -139,20 +139,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 });
 
 /* For Super Admins Only */
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'super']  ], function () {
-    Route::post('/edit-rate', 'AdminController@editRate' )->name('admin.edit_rate');
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ], function () {
     Route::post('/cards', 'AdminController@addCard' )->name('admin.add_card');
     Route::post('/edit-card', 'AdminController@editCard' )->name('admin.edit_card');
-    Route::post('/rates', 'AdminController@addRate' )->name('admin.add_rate');
-
-    Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
-    Route::post('/chat-agents', 'ChatAgentController@addChatAgent' )->name('admin.add_chat_agent');
-    Route::get('/change-agent/{id}/{action}', 'ChatAgentController@changeStatus');
-    Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
 
     Route::post('/transactions', 'AdminController@addTransaction' )->name('admin.add_transaction');
     Route::GET('/delete-transaction/{id}', 'AdminController@deleteTransac');
-    Route::GET('/delete-rate/{id}', 'AdminController@deleteRate');
+
     Route::GET('/delete-card/{id}', 'AdminController@deleteCard');
     Route::get('/cards', 'AdminController@cards')->name('admin.cards');
     Route::post('/wallet_id', 'AdminController@walletId' )->name('admin.wallet');
@@ -167,20 +160,31 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'super']  ], functio
     Route::post('/edit-notifications', 'AdminController@editNotification' )->name('admin.edit_notification');
     Route::GET('/delete-notification/{id}', 'AdminController@deleteNotification');
 
-
     Route::post('/search', 'AdminController@searchUser' )->name('admin.search');
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
+    Route::post('/edit-rate', 'AdminController@editRate' )->name('admin.edit_rate');
+    Route::post('/rates', 'AdminController@addRate' )->name('admin.add_rate');
+    Route::GET('/delete-rate/{id}', 'AdminController@deleteRate');
+
+    Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
+    Route::post('/chat-agents', 'ChatAgentController@addChatAgent' )->name('admin.add_chat_agent');
+    Route::get('/change-agent/{id}/{action}', 'ChatAgentController@changeStatus');
+    Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
 });
 
 
 /* for Senior accountant */
-Route::group(['prefix' => 'admin', 'middleware' => 'seniorAccountant' ], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'seniorAccountant'] ], function () {
     Route::get('/junior-accountants', 'AccountantController@juniorAccountants')->name('admin.accountants');
     Route::get('/accountant-action/{id}/{action}', 'AccountantController@action' )->name('accountant.action');
     Route::post('/add-junior-accountant', 'AccountantController@addJunior' )->name('accountant.add-junior');
+    Route::post('/admin-naira-refund', 'NairaWalletController@adminNairaRefund' )->name('admin.naira-refund');
 });
 
 /* for super admin and all accountants */
-Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'accountant'] ], function () {
+Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountant'] ], function () {
     Route::post('/admin-transfer', 'NairaWalletController@adminTransfer' )->name('admin.transfer');
     Route::post('/admin-refund', 'NairaWalletController@adminRefund' )->name('admin.refund');
     Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
@@ -192,6 +196,6 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'accountant'] ], fu
 
 
 Route::group(['prefix' => 'db'], function () {
-    Route::GET('/function', 'DatabaseController@txns');
+    Route::GET('/function', 'DatabaseController@accounts');
 });
 

@@ -167,8 +167,8 @@ class NairaWalletController extends Controller
                 'narration' => 'required',
             ]);
 
-            if ($r->amount > 50000 ) {
-                return back()->with(['error' => 'Limit on direct transfer is ₦50,000' ]);
+            if ($r->amount > 50000) {
+                return back()->with(['error' => 'Limit on direct transfer is ₦50,000']);
             }
 
             $bank_name = Bank::where('code', $r->bank_code)->first()->name;
@@ -176,7 +176,6 @@ class NairaWalletController extends Controller
             $acct_num = $r->acct_num;
             $bank_code = $r->bank_code;
             $tid = 2;
-
         } else if ($r->trans_type == 2) {   /* Withdraw transfer */
             $r->validate([
                 'account_id' => 'required',
@@ -184,7 +183,7 @@ class NairaWalletController extends Controller
                 'amount' => 'required',
                 'narration' => 'required',
             ]);
-/*
+            /*
             if ($r->amount > 300000 ) {
                 return back()->with(['error' => 'Limit on withdraw transaction is ₦300,000' ]);
             } */
@@ -195,7 +194,7 @@ class NairaWalletController extends Controller
             $acct_name = $bd->account_name;
             $bank_name = $bd->bank_name;
             $acct_num = $bd->account_number;
-            $bank_code = Bank::where('name', $bd->bank_name)->first()->code;
+            $bank_code = Bank::find($bd->bank_id)->code;
             $tid = 3;
         }
 
@@ -217,6 +216,32 @@ class NairaWalletController extends Controller
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
+        $prev_bal = $n->amount;
+        $n->amount -= $amount;
+        $n->save();
+
+        $msg = 'Transaction initiated';
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->amount = $amount;
+
+        $nt->previous_balance = $prev_bal;
+        $nt->current_balance = $n->amount;
+        $nt->charge = 61.38;
+        $nt->transaction_type_id = $tid;
+
+
+        $nt->user_id = Auth::user()->id;
+        $nt->type = 'naira wallet';
+        $nt->dr_user_id = Auth::user()->id;
+        $nt->dr_wallet_id = $n->id;
+        $nt->dr_acct_name = Auth::user()->first_name;
+        $nt->cr_acct_name = $acct_name . ' ' . $acct_num . " " . $bank_name;
+        $nt->narration = $r->narration;
+        $nt->trans_msg = $msg;
+        $nt->status = 'pending';
+        $nt->save();
+
         $client = new Client();
         $url = env('RUBBIES_API') . "/fundtransfer";
 
@@ -237,9 +262,6 @@ class NairaWalletController extends Controller
         ]);
         $body = json_decode($response->getBody()->getContents());
         if ($body->responsecode == 00) {
-            $prev_bal = $n->amount;
-            $n->amount -= $amount;
-            $n->save();
 
             $msg =  'Status: ' . $body->transactionstatus . " ,";
             $msg .=  'amount: ' . $body->amount . " ,";
@@ -258,26 +280,11 @@ class NairaWalletController extends Controller
             $msg .=  'bankcode: ' . $body->bankcode . " ,";
             $msg .=  'username: ' . $body->username . " ";
 
-            $nt = new NairaTransaction();
-            $nt->reference = $reference;
-            $nt->amount = $amount;
 
-            $nt->previous_balance = $prev_bal;
-            $nt->current_balance = $n->amount;
-            $nt->charge = 61.38;
-            $nt->transaction_type_id = $tid;
-
-
-            $nt->user_id = Auth::user()->id;
-            $nt->type = 'naira wallet';
-            $nt->dr_user_id = Auth::user()->id;
-            $nt->dr_wallet_id = $n->id;
-            $nt->dr_acct_name = Auth::user()->first_name;
-            $nt->cr_acct_name = $acct_name . ' ' . $acct_num . " " . $bank_name;
-            $nt->narration = $r->narration;
             $nt->trans_msg = $msg;
             $nt->status = 'success';
             $nt->save();
+
 
 
             $title = 'Dantown wallet Debit';
@@ -348,7 +355,7 @@ class NairaWalletController extends Controller
         $nt->dr_wallet_id = $n->id;
         $nt->cr_wallet_id = $user_wallet->id;
         $nt->dr_acct_name = 'Dantown';
-        $nt->cr_acct_name = $t->user->first_name ;
+        $nt->cr_acct_name = $t->user->first_name;
         $nt->narration = 'Payment for transaction with id ' . $t->uid;
         $nt->trans_msg = 'This transaction was approved by ' . Auth::user()->email;
         $nt->cr_user_id = $t->user->id;
@@ -403,19 +410,29 @@ class NairaWalletController extends Controller
         $amount = $t->amount_paid;
         $reference = \Str::random(2) . '-' . $t->id;
         $prev_bal = $user_wallet->amount;
-        $tid = 0;
+        /* $tid = 0;
         $tt = '';
+        $cr_wallet_id = 0;
+        $dr_wallet_id = 0; */
 
         if ($t->type == 'buy') {
             $user_wallet->amount += $amount;
             $user_wallet->save();
             $tid = 6;
             $tt = 'credited';
-        }else if($t->type == 'sell') {
+            $cr_wallet_id = $user_wallet->id;
+            $cr_acct_name = $t->user->first_name;
+            $dr_wallet_id = $n->id;
+            $dr_acct_name = 'Dantown';
+        } else if ($t->type == 'sell') {
             $user_wallet->amount -= $amount;
             $user_wallet->save();
             $tid = 16;
             $tt = 'debited';
+            $cr_wallet_id = $n->id;
+            $cr_acct_name = 'Dantown';
+            $dr_wallet_id = $user_wallet->id;
+            $dr_acct_name = $t->user->first_name;
         }
 
 
@@ -431,17 +448,19 @@ class NairaWalletController extends Controller
         $nt->transaction_type_id = $tid;
 
 
-        $nt->cr_wallet_id = $n->id;
-        $nt->dr_wallet_id = $user_wallet->id;
-        $nt->cr_acct_name = 'Dantown';
-        $nt->dr_acct_name = $t->user->first_name . ' ' . $t->user->last_name;
+        $nt->cr_wallet_id = $cr_wallet_id;
+        $nt->dr_wallet_id = $dr_wallet_id;
+        $nt->cr_acct_name = $cr_acct_name;
+        $nt->dr_acct_name = $dr_acct_name;
         $nt->narration = 'Refund for transaction with id ' . $t->uid;
         $nt->trans_msg = 'This transaction was approved by ' . Auth::user()->email;
 
         if ($t->type == 'buy') {
             $nt->cr_user_id = $t->user->id;
-        }else if($t->type == 'sell'){
+            $nt->dr_user_id = 1;
+        } else if ($t->type == 'sell') {
             $nt->dr_user_id = $t->user->id;
+            $nt->cr_user_id = 1;
         }
 
         $nt->status = 'success';
@@ -452,7 +471,7 @@ class NairaWalletController extends Controller
         $t->save();
 
         $title = 'Dantown wallet Debit';
-        $msg_body = 'Your Dantown wallet has been '.$tt.' with N' . $amount . ' for the refund of transaction with id ' . $t->uid;
+        $msg_body = 'Your Dantown wallet has been ' . $tt . ' with N' . $amount . ' for the refund of transaction with id ' . $t->uid;
         /* Send notification */
         $not = Notification::create([
             'user_id' => $t->user->id,
@@ -471,6 +490,83 @@ class NairaWalletController extends Controller
         return back()->with(['success' => 'Refund made successfully']);
     }
 
+
+    public function adminNairaRefund(Request $r)
+    {
+        $r->validate([
+            'id' => 'required',
+            'pin' => 'required',
+        ]);
+
+        $n = NairaWallet::find(1); /* Admin general Wallet */
+        $t = NairaTransaction::find($r->id);
+        $user_wallet = $t->user->nairaWallet;
+
+        if (Hash::check($r->pin, $n->password) == false) {
+            return back()->with(['error' => 'Wrong wallet pin']);
+        }
+
+        if (!$user_wallet) {
+            return back()->with(['error' => 'User wallet not found']);
+        }
+
+        $amount = $t->amount;
+        $reference = \Str::random(2) . '-' . $t->id;
+        $prev_bal = $user_wallet->amount;
+
+        $user_wallet->amount += $amount;
+        $user_wallet->save();
+        $tt = 'credited';
+
+
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->amount = $amount;
+        $nt->user_id = $t->user->id;
+        $nt->type = 'naira wallet';
+
+        $nt->previous_balance = $prev_bal;
+        $nt->current_balance = $user_wallet->amount;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 18;
+
+
+        $nt->cr_wallet_id = $user_wallet->id;
+        $nt->dr_wallet_id = $n->id;
+        $nt->dr_acct_name = 'Dantown';
+        $nt->cr_acct_name = $t->user->first_name;
+        $nt->narration = 'Refund for naira transaction with id ' . $t->uid;
+        $nt->trans_msg = 'This transaction was approved by ' . Auth::user()->email;
+
+        $nt->cr_user_id = $t->user->id;
+        $nt->dr_user_id = 1;
+
+        $nt->status = 'success';
+        $nt->save();
+
+        /* Update Transaction satus */
+        $t->status = 'refunded';
+        $t->save();
+
+        $title = 'Dantown wallet Debit';
+        $msg_body = 'Your Dantown wallet has been ' . $tt . ' with N' . $amount . ' for the refund of transaction with id ' . $t->reference;
+        /* Send notification */
+        $not = Notification::create([
+            'user_id' => $t->user->id,
+            'title' => $title,
+            'body' => $msg_body
+        ]);
+
+        Mail::to($t->user->email)->send(new DantownNotification($title, $msg_body));
+
+        $client = new Client();
+        $token = env('SMS_TOKEN');
+        $to = $t->user->phone;
+        $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
+        $snd_sms = $client->request('GET', $sms_url);
+
+        return back()->with(['success' => 'Refund made successfully']);
+    }
 
     public function callback(Request $r)
     {

@@ -64,7 +64,7 @@ function getAccountName() {
     $.post('/get-bank-details', details, function (data) {
         console.log(data);
         if (data['success']) {
-            $('.acct-name').val(data['acct']);  
+            $('.acct-name').val(data['acct']);
             $('.acct-name').text(data['acct']);
             document.getElementById("sign-up-btn").disabled = false;
         } else {

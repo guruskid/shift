@@ -47,7 +47,6 @@
                     <div class="sign-form">
                         <form action="{{route('signup.add-bank')}} " method="post">
                             @csrf
-                            @csrf
                             @foreach ($errors->all() as $error)
                             <p class="text-warning">{{ $error }}</p>
                             @endforeach
@@ -57,7 +56,7 @@
                                         <ion-icon name="briefcase"></ion-icon>
                                     </span>
                                 </div>
-                                <select name="bank_name" id="bank-name" class="form-control" style="background-color: transparent; color: #495057 !important">
+                                <select name="bank_code" id="bank-name" class="form-control" style="background-color: transparent; color: #495057 !important">
                                     <option value="">Select Bank Name</option>
                                     @foreach ($banks as $bank)
                                     <option value="{{$bank->code}}">{{$bank->name}}</option>

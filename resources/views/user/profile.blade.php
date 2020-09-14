@@ -383,27 +383,27 @@ if (Auth::user()->nairaWallet) {
                         <div class="col-md-12">
                             <div class="position-relative form-group">
                                 <label>Bank Name</label>
-                                <select name="bank_name" id="" class="form-control">
+                                <select name="bank_code" id="bank-name" class="form-control">
                                     @foreach ($banks as $b)
-                                    <option value="{{$b->name}}">{{$b->name}}</option>
+                                    <option value="{{$b->code}}">{{$b->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="position-relative form-group">
-                                <label>Account Name</label>
-                                <input type="text" class="form-control" name="account_name">
+                                <label>Account Number</label>
+                                <input type="text" required id="account-number" class="form-control" name="account_number">
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="position-relative form-group">
-                                <label>Account Number</label>
-                                <input type="text" class="form-control" name="account_number">
+                                <label>Account Name</label>
+                                <input type="text" readonly required class="form-control acct-name" name="account_name">
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="mt-2 btn btn-outline-primary">
+                    <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
                         <i class="spinner-border spinner-border-sm" id="s-b" style="display: none;"></i>
                         Save</button>
                 </form>

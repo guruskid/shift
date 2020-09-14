@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Nahid\Talk\Facades\Talk;
 use App\Account;
+use App\Bank;
 use Illuminate\Support\Facades\Auth;
 use App\Card;
 use App\Notification;
@@ -148,11 +149,12 @@ class UserController extends Controller
 
     public function updateBank(Request $request)
     {
-        $user = Auth::user();
         $a = new Account();
-        $a->user_id = $user->id;
+        $bank = Bank::where('code', $request->bank_code)->first();
+        $a->user_id = Auth::user()->id;
         $a->account_name = $request->account_name;
-        $a->bank_name = $request->bank_name;
+        $a->bank_name = $bank->name;
+        $a->bank_id = $bank->id;
         $a->account_number = $request->account_number;
 
         return response()->json($a->save());

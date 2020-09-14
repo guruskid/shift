@@ -32,7 +32,7 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-		if($user->role == 999 || $user->role == 889 || $user->role == 777){
+		if($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666  ){
     		return redirect()->route('admin.dashboard');
         }
         elseif ($user->role == 888) {
@@ -55,7 +55,7 @@ class HomeController extends Controller
 
     public function addUserBank(Request $request)
     {
-        $s = Bank::where('code', $request->bank_name)->first();
+        $s = Bank::where('code', $request->bank_code)->first();
         $err = 0;
 
         $accts = Auth::user()->accounts;

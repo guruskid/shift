@@ -237,7 +237,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="">Account name </label>
-                                    <input type="text" name="acct_name" id="" readonly class="form-control acct-name">
+                                    <input type="text" required name="acct_name" id="" readonly class="form-control acct-name">
                                 </div>
                             </div>
 
