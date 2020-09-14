@@ -94,7 +94,8 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <th>Debit Acct.</th>
                                         <th>Narration</th>
                                         <th>Date</th>
-                                        {{-- <th>Status</th> --}}
+                                        <th>Status</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -115,8 +116,18 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>{{$t->cr_acct_name}} </td>
                                         <td>{{$t->dr_acct_name}} </td>
                                         <td>{{$t->narration}} </td>
-                                        <td>{{$t->created_at->format('d M Y')}} </td>
-                                        {{-- <td>{{$t->status}} </td> --}}
+                                        <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
+                                        <td>{{$t->status}} </td>
+                                        @if (in_array(Auth::user()->role, [999, 889] ) && $t->status == 'pending' )
+                                        <td>
+                                            <button data-toggle="modal" data-target="#refund-modal"
+                                                    onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount)}}' )"
+                                                    class="btn btn-sm btn-outline-success">Refund</button>
+                                        </td>
+                                        @else
+                                        <td>..</td>
+                                        @endif
+
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -128,6 +139,41 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+
+{{-- Confirm refund modal --}}
+<div class="modal fade " id="refund-modal">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form action="{{route('admin.naira-refund')}} " method="post" class="txn-form">
+            @csrf
+            <div class="modal-content  c-rounded">
+                <!-- Modal Header -->
+                <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                    <h4 class="modal-title">Confirm Refund <i class="fa fa-paper-plane"></i></h4>
+                    <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+
+                <div class="modal-body p-4">
+                    <p class="text-success">Enter your pin to confirm the refund of ₦<span id="r-amount"></span> to
+                        <span id="r-acct-name"></span> </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Wallet pin </label>
+                                <input type="password" name="pin" required class="form-control">
+                                <input type="hidden" name="id" id="r-t-id" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 

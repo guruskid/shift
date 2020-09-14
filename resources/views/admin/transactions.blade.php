@@ -53,6 +53,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         </div>
                         <div class="text-capitalize"> {{$segment}} Transactions
                             <div class="page-title-subheading">
+                                <button class="btn btn-primary" onclick="location.reload()">Refresh Page</button>
                             </div>
                         </div>
                     </div>
@@ -269,18 +270,18 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                                 <span class="btn btn-sm btn-success">View</span>
                                             </a>
 
-                                            @if (Auth::user()->role == 999 || Auth::user()->role == 889 || Auth::user()->role == 777)
-                                                @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
+                                            @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
+
                                                 <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t->id}})"><span
                                                         class="btn btn-sm btn-info">Edit</span></a>
-                                                @endif
 
                                                 @if ($t->status == 'approved')
                                                 <button data-toggle="modal" data-target="#confirm-modal"
                                                     onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
                                                     class="btn btn-sm btn-outline-success">Pay</button>
-                                                @elseif($t->status == 'success')
+                                                @elseif($t->status == 'success' || ($t->type == 'buy' && $t->status ==
+                                                'declined' ) )
                                                 <button data-toggle="modal" data-target="#refund-modal"
                                                     onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
                                                     class="btn btn-sm btn-outline-success">Refund</button>
@@ -288,12 +289,48 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
 
                                             @endif
 
-                                            @if (Auth::user()->role == 888)
-                                                @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
-                                                <a href="#" data-toggle="modal" data-target="#edit-transac"
-                                                    onclick="editTransac({{$t->id}})"><span
-                                                        class="btn btn-sm btn-info">Edit</span></a>
-                                                @endif
+                                            @if (Auth::user()->role == 999) {{-- Super Admin --}}
+                                            <a href="#" data-toggle="modal" data-target="#edit-transac" onclick="editTransac({{$t->id}})">
+                                                <span class="btn btn-sm btn-info">Edit</span>
+                                            </a>
+
+                                            @if ($t->status == 'approved')
+                                            <button data-toggle="modal" data-target="#confirm-modal"
+                                                onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                class="btn btn-sm btn-outline-success">Pay</button>
+                                            @elseif($t->status == 'success')
+                                            <button data-toggle="modal" data-target="#refund-modal"
+                                                onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                class="btn btn-sm btn-outline-success">Refund</button>
+                                            @endif
+
+                                            @endif
+
+                                            @if (Auth::user()->role == 777) {{-- Junior Accountant --}}
+                                            @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
+                                            <a href="#" data-toggle="modal" data-target="#edit-transac"
+                                                onclick="editTransac({{$t->id}})"><span
+                                                    class="btn btn-sm btn-info">Edit</span></a>
+                                            @endif
+
+                                            @if ($t->status == 'approved')
+                                            <button data-toggle="modal" data-target="#confirm-modal"
+                                                onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                class="btn btn-sm btn-outline-success">Pay</button>
+                                            @elseif($t->status == 'success')
+                                            <button data-toggle="modal" data-target="#refund-modal"
+                                                onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                class="btn btn-sm btn-outline-success">Refund</button>
+                                            @endif
+
+                                            @endif
+
+                                            @if (Auth::user()->role == 888) {{-- Sales rep --}}
+                                            @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
+                                            <a href="#" data-toggle="modal" data-target="#edit-transac"
+                                                onclick="editTransac({{$t->id}})"><span
+                                                    class="btn btn-sm btn-info">Edit</span></a>
+                                            @endif
                                             @endif
                                         </td>
                                     </tr>

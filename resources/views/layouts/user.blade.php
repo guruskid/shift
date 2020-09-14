@@ -46,6 +46,7 @@ if (Auth::user()->nairaWallet) {
     <meta name="msapplication-tap-highlight" content="no">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
     <link href=" {{asset('custom.css')}} " rel="stylesheet">
+    <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     {{-- <link rel="stylesheet" href="{{asset('main/css/calculator.css')}} "> --}}
 

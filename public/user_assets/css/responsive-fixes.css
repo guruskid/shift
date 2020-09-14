@@ -1,0 +1,337 @@
+button.hamburger.bg-custom {
+  background-color: transparent !important;
+}
+
+button.hamburger.bg-custom .hamburger-inner, button.hamburger.bg-custom .hamburger-inner::before, button.hamburger.bg-custom .hamburger-inner::after {
+  background-color: #000070 !important;
+}
+
+.app-header-right .dropdown:first-child > a {
+  margin-top: 0.8rem !important;
+}
+
+.app-header-right .dropdown:first-child > a i {
+  margin-left: 0 !important;
+  font-size: 1.5em !important;
+  color: #c9ced6 !important;
+}
+
+.app-header-right .dropdown img {
+  margin: 0 1rem;
+}
+
+.app-header-right .widget-subheading {
+  text-align: right !important;
+}
+
+.scrollbar-sidebar {
+  overflow-y: auto !important;
+}
+
+.app-sidebar__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.app-sidebar__inner .vertical-nav-menu:last-child {
+  position: unset !important;
+  right: unset !important;
+  bottom: unset !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > .row {
+  margin-bottom: 1rem !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > .row > div:first-child {
+  padding-right: 0 !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > .row a {
+  display: block !important;
+  position: relative !important;
+  height: 100% !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > .row a img {
+  margin: 1rem 0 !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > .row a h5 {
+  font-size: 18px !important;
+  line-height: unset !important;
+  margin-bottom: 0 !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > .row .card {
+  height: 100% !important;
+  margin-bottom: 0 !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > a {
+  display: block !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > a .card {
+  margin-bottom: 1rem !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > a .card img {
+  margin: 1rem 0 !important;
+}
+
+.app-main__inner > .row:nth-of-type(3) > div:first-child > a .card h5 {
+  font-size: 18px !important;
+  line-height: unset !important;
+  margin-bottom: 0 !important;
+}
+
+.vertical-nav-menu li a {
+  min-width: 2.4rem !important;
+}
+
+.main-card > .row {
+  padding: 2rem !important;
+}
+
+.main-card .container-fluid > .row {
+  padding: 2rem 1.5rem !important;
+}
+
+.main-card .container-fluid > .row .card {
+  margin: 0 !important;
+}
+
+.calculator-box,
+.trade-details-box,
+.trade-details-box {
+  margin: 0 !important;
+}
+
+.user-balance-box .box-3 {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.main-card .card-body .nav.nav-tabs.nav-justified .nav-item {
+  flex-basis: unset !important;
+  flex-grow: unset !important;
+}
+
+.welcome-card {
+  display: flex;
+  background-image: url(https://i.ibb.co/q17Pprt/CARD-BG-2-X.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 0.5rem;
+  padding: 1.5rem 2.5rem;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.welcome-card--content, .welcome-card--actions {
+  flex: 1;
+}
+
+.welcome-card--heading {
+  color: white;
+  font-weight: normal;
+  font-size: 34px;
+  margin-bottom: 1.5rem;
+}
+
+.welcome-card--desc {
+  margin: 0 !important;
+  color: #eeeeee;
+  font-size: 1.2em;
+}
+
+.welcome-card--actions {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.welcome-card--close {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  height: 0.8rem;
+  width: 0.8rem;
+  cursor: pointer;
+}
+
+.welcome-card .btn {
+  height: 54px;
+  width: 280.54px;
+  font-size: 24px;
+}
+
+.welcome-card .btn-pill {
+  border-radius: 2rem;
+}
+
+.welcome-card .btn-yellow {
+  color: white;
+  margin-right: 1rem;
+  border-color: #ffb800;
+  background-color: #ffb800;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.welcome-card .btn-yellow:hover {
+  border-color: #d89b00;
+  background-color: #d89b00;
+}
+
+.welcome-card .btn-white {
+  color: #000070;
+  border-color: white;
+  background-color: white;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.welcome-card .btn-white:hover {
+  border-color: #eeeeee;
+  background-color: #eeeeee;
+}
+
+.calculator-box label {
+  font-size: 0.95em !important;
+  margin-bottom: 0.2rem !important;
+  margin-left: 1rem !important;
+}
+
+.calculator-box input {
+  border-radius: 0 !important;
+}
+
+.calculator-box input::placeholder {
+  color: #e0e0e0 !important;
+}
+
+.calculator-box #sell-trade,
+.calculator-box #buy-trade {
+  background-color: #4f4f9a !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  cursor: pointer !important;
+}
+
+.calculator-box #sell-trade.bg-custom-accent,
+.calculator-box #buy-trade.bg-custom-accent {
+  background-color: #00b9cd !important;
+}
+
+#rate-form .d-flex.p-0.my-2.bg-custom.rounded {
+  margin-bottom: 1rem !important;
+}
+
+.trade-details-box button {
+  background-color: #3f3f93 !important;
+}
+
+.modal-header {
+  align-items: unset !important;
+}
+
+.modal-header button.close {
+  height: 2rem !important;
+  width: 2rem !important;
+  min-width: 2rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: #aeaeae !important;
+  color: white !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  line-height: 1.5rem !important;
+  font-weight: 300 !important;
+}
+
+.modal-dialog {
+  box-shadow: none !important;
+}
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+@media screen and (max-width: 1366px) {
+  .welcome-card--heading {
+    font-size: 1.5em !important;
+  }
+  .welcome-card--desc {
+    font-size: 1em !important;
+  }
+}
+
+@media screen and (max-width: 1599px) {
+  .welcome-card .btn {
+    height: unset;
+    width: unset;
+    font-size: 0.95em;
+    padding: 0.5rem 3rem;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .welcome-card {
+    display: block;
+  }
+  .welcome-card--content {
+    margin-bottom: 2rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .calculator-box,
+  .trade-details-box,
+  .trade-details-box {
+    margin-bottom: 2rem !important;
+  }
+  .welcome-card--heading {
+    font-size: 1.2em !important;
+  }
+  .welcome-card--desc {
+    font-size: 0.95em !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .main-card > .row {
+    padding: 2rem !important;
+  }
+  .main-card .container-fluid > .row > div {
+    width: 100% !important;
+    flex: unset !important;
+    max-width: unset !important;
+  }
+  .welcome-card {
+    padding: 2rem;
+  }
+  .welcome-card .btn {
+    padding: 0.4rem 1.5rem;
+  }
+  .welcome-card .btn-yellow {
+    margin-right: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .welcome-card {
+    padding: 1rem !important;
+  }
+  .welcome-card .btn {
+    margin: 0.5rem 0;
+  }
+}
+
+body.modal-open .app-header,
+body.modal-open .app-main {
+  filter: blur(6px) !important;
+}

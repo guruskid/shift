@@ -10,7 +10,6 @@
             </div>
         </div>
         <div class="row layout-top-spacing">
-            @if (Auth::user()->role == 999 || Auth::user()->role == 889)
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-chart-one">
                     <div class="widget-heading">
@@ -37,6 +36,7 @@
                     </div>
                 </div>
             </div>
+            @if (Auth::user()->role == 999 || Auth::user()->role == 889)
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-chart-one">
                     <div class="widget-heading">
@@ -63,7 +63,8 @@
                     </div>
                 </div>
             </div>
-
+        </div>
+        <div class="row">
             <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-chart-one">
                     <div class="widget-heading">
@@ -125,9 +126,10 @@
                     </div>
                 </div>
             </div>
-            @endif
+        </div>
+        @endif
 
-
+        <div class="row">
             <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">

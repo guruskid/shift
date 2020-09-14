@@ -78,6 +78,7 @@
                 </ul>
             </li>
 
+            @if (in_array(Auth::user()->role, [999, 889, 777] ))
             <li class="my-3">
                 <a href="{{route('admin.wallet-transactions')}}"
                     class=" {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'mm-active' : '' }} ">
@@ -85,6 +86,7 @@
                     Naira Wallet Transactions
                 </a>
             </li>
+            @endif
 
             <li class="my-3">
                 <a href="{{route('admin.rates')}}"
@@ -94,7 +96,7 @@
                 </a>
             </li>
 
-            @if (!in_array(Auth::user()->role, [889, 777]))
+            @if (!in_array(Auth::user()->role, [889, 777, 666]))
             <li class="my-3">
                 <a href="{{route('admin.assigned-transactions')}}"
                     class=" {{ Route::currentRouteName() == 'admin.assigned-transactions' ? 'mm-active' : '' }} ">
@@ -103,18 +105,19 @@
                 </a>
             </li>
             @endif
-{{--
+
+            @if (in_array(Auth::user()->role, [999, 666] ))
             <li class="my-3">
-                <a href="{{route('admin.chat',1)}}"
-                    class=" {{ Route::currentRouteName() == 'admin.chat' ? 'mm-active' : '' }} ">
-                    <i class="metismenu-icon pe-7s-chat"></i>
-                    Chats
+                <a href="{{route('admin.chat_agents')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.chat_agents' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Chat Agents
                 </a>
-            </li> --}}
+            </li>
+            @endif
 
             {{-- for Super Admin Only --}}
             @if (Auth::user()->role == 999 )
-
 
             <li class="my-3">
                 <a href="{{route('admin.users')}}"
@@ -148,13 +151,7 @@
                 </a>
             </li>
 
-            <li class="my-3">
-                    <a href="{{route('admin.chat_agents')}}"
-                        class=" {{ Route::currentRouteName() == 'admin.chat_agents' ? 'mm-active' : '' }} ">
-                        <i class="metismenu-icon pe-7s-users"></i>
-                        Chat Agents
-                    </a>
-                </li>
+
 
                 <li class="my-3">
                     <a href="{{route('admin.accountants')}}"

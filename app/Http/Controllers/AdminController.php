@@ -148,6 +148,15 @@ class AdminController extends Controller
                 ])
             );
         }
+        else if (Auth::user()->role == 666) { //Manager
+            return view(
+                'admin.manager_dashboard',
+                compact([
+                    'transactions', 'users',
+                    'g_txns', 'c_txns', 'n_txns'
+                ])
+            );
+        }
     }
 
     public function cards()

@@ -203,6 +203,9 @@
                                     @case(888)
                                     Sales Rep.
                                     @break
+                                    @case(666)
+                                    Manager
+                                    @break
                                 @default
                                 Hi! there
 
@@ -226,6 +229,10 @@
             <nav id="sidebar">
                 @if (Auth::user()->role == 999)
                 @include('layouts.partials.super_admin_sidebar')
+                @endif
+
+                @if (Auth::user()->role == 666)
+                @include('layouts.partials.manager_sidebar')
                 @endif
 
                 @if (Auth::user()->role == 889 || Auth::user()->role == 777 )

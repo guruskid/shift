@@ -78,14 +78,6 @@ $not = $nots->last();
 </head>
 
 <body >
-
-
-
-    {{--  @auth
-        @if (Auth::user()->role != 999)
-        @include('layouts.partials.chat')
-        @endif
-        @endauth --}}
 <div id="app" >
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header closed-sidebar">
         <div class="app-header header-shadow header-text-light bg-night-sky " >
@@ -212,6 +204,9 @@ $not = $nots->last();
                                             @case(888)
                                             Sales Rep.
                                             @break
+                                            @case(666)
+                                            Manager
+                                            @break
                                         @default
                                         Hi! there
 
@@ -244,7 +239,7 @@ $not = $nots->last();
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
     @auth
-    @if (Auth::user()->role == 999 || Auth::user()->role == 888 || Auth::user()->role == 889 || Auth::user()->role == 777 )
+    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666] ))
     <script src="{{asset('js/sa.js')}}"></script>
     @endif
     @endauth

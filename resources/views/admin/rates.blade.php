@@ -53,7 +53,7 @@
             </div>
 
             {{-- For Super Admins --}}
-            @if (Auth::user()->role == 999 )
+            @if (in_array(Auth::user()->role, [999, 666] ))
             <div class="row">
                 <div class="col-md-12">
                         <div class="main-card p-3 mb-3 card">
@@ -162,7 +162,9 @@
                                                     <th class=" text-center">CAD</th>
                                                     <th class=" text-center">Min</th>
                                                     <th class=" text-center">Max</th>
+                                                    @if (in_array(Auth::user()->role, [999, 666] ))
                                                     <th class=" text-center">Actions</th>
+                                                    @endif
 
                                                 </tr>
                                             </thead>
@@ -177,6 +179,7 @@
                                                     <td class="text-center">{{$b->cad == '' ? '-': $b->cad }}</td>
                                                     <td class="text-center">{{$b->min == '' ? '-': $b->min }}</td>
                                                     <td class="text-center">{{$b->max == '' ? '-': $b->max }}</td>
+                                                    @if (in_array(Auth::user()->role, [999, 666] ))
                                                     <td class="text-center">
                                                         <a href="#" data-toggle="modal" data-target="#edit-rate-modal" onclick="editRate({{$b}})" >
                                                             <span class="badge badge-info">Edit</span>
@@ -185,6 +188,7 @@
                                                             <span class="badge badge-danger">Delete</span>
                                                         </a>
                                                     </td>
+                                                    @endif
                                                 </tr>
                                                 @endforeach
                                             </tbody>

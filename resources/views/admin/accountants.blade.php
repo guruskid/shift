@@ -96,6 +96,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                 </thead>
                                 <tbody>
                                     @foreach ($users as $u)
+                                    @if ($u->id != Auth::user()->id)
                                     <tr>
                                         <td class="text-center text-muted">{{$u->id}}</td>
                                         <td class="text-center">{{ucwords($u->first_name)}}</td>
@@ -135,6 +136,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                             @endif
                                         </td>
                                     </tr>
+                                    @endif
                                     @endforeach
                                 </tbody>
                             </table>
