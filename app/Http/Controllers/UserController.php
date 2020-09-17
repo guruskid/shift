@@ -54,9 +54,9 @@ class UserController extends Controller
             ->color($borderColors)
             ->backgroundcolor($fillColors);
 
-        $transactions = Auth::user()->transactions->take(5);
+        $transactions = Auth::user()->transactions->take(3);
         foreach ($transactions as $t) {
-            $t->created_ats = $t->created_at->format('d/m');
+            $t->created_ats = $t->created_at->format('d M h:ia');
             $t->amount_paids = number_format($t->amount_paid);
             if ($t->status == 'approved') {
                 $t->stats = 'success';
@@ -211,7 +211,7 @@ class UserController extends Controller
         $img = Image::make($thumbnailpath)->resize(300, null, function ($constraint) {
             $constraint->aspectRatio();
         });
-
+        $img->crop(300, 300, 0, 0);
         $img->save($thumbnailpath);
         $user->dp = $filenametostore;
         $user->save();

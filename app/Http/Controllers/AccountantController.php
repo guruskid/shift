@@ -25,7 +25,7 @@ class AccountantController extends Controller
 
     public function juniorAccountants()
     {
-        $users = User::whereIn('role', [777, 889])->with('approvedTransactions.count')->latest()->get();
+        $users = User::whereIn('role', [777, 889])->latest()->get();
 
         return view('admin.accountants', compact('users'));
     }

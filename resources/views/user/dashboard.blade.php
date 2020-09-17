@@ -47,25 +47,11 @@ $not = $notifications->last();
                 <div class="col-md-12">
                     <div class="alert alert-info alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <strong>{{$item->title}}</strong> {{$item->body}}
+                        <strong>{{$item->title}}</strong>
+                         <p>{{$item->body}}</p>
                     </div>
                 </div>
                 @endforeach
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="d-md-none text-center">
-                        <h5 class="mb-0" >₦{{number_format($naira_balance)}}</h5>
-                        <p>Balance</p>
-                    </div>
-                    <div class="main-card mb-3 c-rounded card bg-custom-accent">
-                        <div class="card-header c-rounded-top bg-custom-accent">Transactions </div>
-                        <div class="table-responsive px-3 py-2">
-                            <transactions-component :trans="{{$transactions}}" :val="{{-1}}" >
-                            </transactions-component>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="row">
@@ -74,10 +60,10 @@ $not = $notifications->last();
                         <div class="col-6">
                             <a href=" {{route('user.calcCrypto')}} " class="text-white">
                                 <div class="card mb-2 widget-content">
-                                    <div class="widget-content-wrapper py-0 text-white">
+                                    <div class="widget-content-wrapper text-white">
                                         <div class="widget-content- mx-auto">
                                             <center>
-                                                <img src=" {{asset('svg/tassets.svg')}}" class="img-fluid" alt="">
+                                                <img src="{{asset('user_assets/images/crypto.png')}}" style="height: 4.5em;" class="img-fluid" alt="">
                                                 <h5 class="text-custom">Trade Assets</h5>
                                             </center>
                                         </div>
@@ -91,7 +77,7 @@ $not = $notifications->last();
                                     <div class="widget-content-wrapper py-0 text-white">
                                         <div class="widget-content- mx-auto">
                                             <center>
-                                                <img src=" {{asset('svg/gift-cards.svg')}}" class="img-fluid" alt="">
+                                                <img src="{{asset('user_assets/images/gift-cards.png')}}" style="height: 4.5em;" class="img-fluid" alt="">
                                                 <h5 class="text-custom" style="font-size: 17px">Trade Gift Cards</h5>
                                             </center>
                                         </div>
@@ -119,7 +105,7 @@ $not = $notifications->last();
                                     <div class="widget-content-wrapper py-0 text-white">
                                         <div class="widget-content- mx-auto">
                                             <center>
-                                                <img src="{{asset('svg/recharge.svg')}}" class="img-fluid" alt="">
+                                                <img src="{{asset('user_assets/images/recharge.png')}}" style="height: 4.5em;" class="img-fluid" alt="">
                                                 <h5 class="text-custom">Recharge</h5>
                                             </center>
                                         </div>
@@ -133,7 +119,7 @@ $not = $notifications->last();
                                     <div class="widget-content-wrapper py-0 text-white">
                                         <div class="widget-content- mx-auto">
                                             <center>
-                                                <img src=" {{asset('svg/airtime-cash-dash.svg')}}" class="img-fluid" alt="">
+                                                <img src="{{asset('user_assets/images/airtime.png')}}" class="img-fluid" style="height: 4.5em;" alt="">
                                                 <h5 class="text-custom" style="font-size: 18px" >Airtime to Cash</h5>
                                             </center>
                                         </div>
@@ -142,18 +128,6 @@ $not = $notifications->last();
                             </a>
                         </div>
                     </div>
-                   {{--  <a href="#" class="text-white">
-                        <div class="card mb-2 widget-content">
-                            <div class="widget-content-wrapper py-0 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <center>
-                                        <img src=" {{asset('svg/sgifts.svg')}}" class="img-fluid" alt="">
-                                        <h5 class="text-custom">Send Gifts</h5>
-                                    </center>
-                                </div>
-                            </div>
-                        </div>
-                    </a> --}}
                 </div>
                 <div class="col-md-5 col-lg-5 mb-3">
                     <a href="{{route('user.naira-wallet')}} ">
@@ -231,6 +205,23 @@ $not = $notifications->last();
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{-- <div class="d-md-none text-center">
+                        <h5 class="mb-0" >₦{{number_format($naira_balance)}}</h5>
+                        <p>Balance</p>
+                    </div> --}}
+                    <div class="main-card mb-3 c-rounded card bg-custom-accent">
+                        <div class="card-header c-rounded-top bg-custom-accent">Transactions </div>
+                        <div class="table-responsive px-3 py-2">
+                            <transactions-component :trans="{{$transactions}}" :val="{{-1}}" >
+                            </transactions-component>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
             @include('layouts.partials.live-feeds')
 

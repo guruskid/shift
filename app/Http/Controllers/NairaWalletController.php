@@ -190,6 +190,9 @@ class NairaWalletController extends Controller
 
             /* get bank details */
             $bd = Account::where('id', $r->account_id)->first();
+            if (!$bd) {
+                return redirect()->back()->with(['error' => 'Error getting account details']);
+            }
 
             $acct_name = $bd->account_name;
             $bank_name = $bd->bank_name;
@@ -214,6 +217,10 @@ class NairaWalletController extends Controller
 
         if ($amount > $n->amount) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
+        }
+
+        if ($tid == 0 ) {
+            return redirect()->back()->with(['error' => 'Something went wrong, please try again']);
         }
 
         $prev_bal = $n->amount;

@@ -170,6 +170,135 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- In progress Transactions --}}
+                <div class="col-md-6">
+                    <div class="main-card mb-3 card">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>In Progress Transactions</span>
+                            <div class="page-title-subheading">
+                                <button class="btn btn-primary" onclick="location.reload()"> Refresh Page</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Asset type</th>
+                                        <th class="text-center">Tran. type</th>
+                                        <th class="text-center">Asset value</th>
+                                        <th class="text-center">Cash value</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Agent</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($in_progress_transactions as $t)
+                                    <tr>
+                                        <td class="text-center text-muted">{{$t->uid}}</td>
+                                        <td class="text-center">{{ucwords($t->card)}}</td>
+                                        <td class="text-center">{{$t->type}}</td>
+                                        <td class="text-center">{{$t->amount}}</td>
+                                        <td class="text-center">{{number_format($t->amount_paid)}}</td>
+                                        <td class="text-center"> {{$t->user->first_name}} </td>
+                                        <td class="text-center"> {{$t->agent->first_name}} </td>
+                                        <td class="text-center">
+                                            @switch($t->status)
+                                            @case('success')
+                                            <div class="badge badge-success">{{$t->status}}</div>
+                                            @break
+                                            @case("failed")
+                                            <div class="badge badge-danger">{{$t->status}}</div>
+                                            @break
+                                            @case('declined')
+                                            <div class="badge badge-warning">{{$t->status}}</div>
+                                            @break
+                                            @case('waiting')
+                                            <div class="badge badge-info">{{$t->status}}</div>
+                                            @break
+                                            @default
+                                            <div class="badge badge-success">{{$t->status}}</div>
+
+                                            @endswitch
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <tfoot>
+                                <a href=" {{route('admin.transactions-status', 'in progress')}} "><button
+                                        class="m-3 btn btn-outline-info">View all</button></a>
+                            </tfoot>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Waiting Transactions --}}
+                <div class="col-md-6">
+                    <div class="main-card mb-3 card">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Waiting Transactions</span>
+                            <div class="page-title-subheading">
+                                <button class="btn btn-primary" onclick="location.reload()"> Refresh Page</button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Asset type</th>
+                                        <th class="text-center">Tran. type</th>
+                                        <th class="text-center">Asset value</th>
+                                        <th class="text-center">Cash value</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Agent</th>
+                                        <th class="text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($waiting_transactions as $t)
+                                    <tr>
+                                        <td class="text-center text-muted">{{$t->uid}}</td>
+                                        <td class="text-center">{{ucwords($t->card)}}</td>
+                                        <td class="text-center">{{$t->type}}</td>
+                                        <td class="text-center">{{$t->amount}}</td>
+                                        <td class="text-center">{{number_format($t->amount_paid)}}</td>
+                                        <td class="text-center"> {{$t->user->first_name}} </td>
+                                        <td class="text-center"> {{$t->agent->first_name}} </td>
+                                        <td class="text-center">
+                                            @switch($t->status)
+                                            @case('success')
+                                            <div class="badge badge-success">{{$t->status}}</div>
+                                            @break
+                                            @case("failed")
+                                            <div class="badge badge-danger">{{$t->status}}</div>
+                                            @break
+                                            @case('declined')
+                                            <div class="badge badge-warning">{{$t->status}}</div>
+                                            @break
+                                            @case('waiting')
+                                            <div class="badge badge-info">{{$t->status}}</div>
+                                            @break
+                                            @default
+                                            <div class="badge badge-success">{{$t->status}}</div>
+
+                                            @endswitch
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <tfoot>
+                                <a href=" {{route('admin.transactions-status', 'waiting')}} "><button
+                                    class="m-3 btn btn-outline-info">View all</button></a>
+                            </tfoot>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             {{-- Transactions and Users Overview --}}

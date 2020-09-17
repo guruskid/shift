@@ -1,36 +1,38 @@
 <template>
     <div class="dropdown ml-2">
         <a href="#" data-toggle="dropdown">
-            <i class="fa fa-bell mx-2 fa-2x text-warning"></i>
+            <i class="fa fa-bell mx-2 fa-2x text-warning" style="font-size: 1.7em; margin-top: .5em;" ></i>
             <span v-if="unreadCount > 0"
-                class="notification-counter  rounded-circle bg-custom px-2 py-1">{{unreadCount}} </span>
+                class="notification-counter  rounded-circle bg-custom">{{unreadCount}} </span>
         </a>
         <div class="dropdown-menu notifications">
             <div class="d-flex justify-content-between">
-                <h5><span class="text-warning">{{unreadCount}}</span> unread notification(s) </h5>
+                <h5><span class="text-warning">{{unreadCount}}</span> Unread notification(s) </h5>
                 <a href="/user/notifications" class="text-white">
                     <h5>View All</h5>
                 </a>
             </div>
             <div class="notifications-list p-3">
                 <div v-for="n in nots" :key="n.id">
+                    <a :href="'/user/notifications#not-'+n.id" class="text-white">
                     <hr>
                     <div class="row">
                         <div class="col-8">
                             <div class="media align-items-start ">
-                                <i v-if="n.is_seen" class="fa fa-2x fa-envelope-open mr-3 text-white"></i>
-                                <i v-else class="fa fa-2x fa-envelope mr-3 text-warning"></i>
+                                <i v-if="n.is_seen" class="fa fa-2x fa-envelope-open mr-3 text-white"  style="font-size: 1.1rem" ></i>
+                                <i v-else class="fa fa-2x fa-envelope mr-3 text-warning" style="font-size: 1.1rem"></i>
                                 <div class="media-body">
-                                    <h6>{{n.title}}</h6>
+                                    <span>{{n.title}}</span>
                                     <p v-if="n.body.length < 50">{{ n.body }}</p>
                                     <p v-else>{{ n.body.substring(0,50)+". . . ." }}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-4">
-                            <span class="badge badge-block badge-warning text-white ">{{n.date}}</span>
+                            <span class="text-warning" >{{n.date}}</span>
                         </div>
                     </div>
+                    </a>
                 </div>
             </div>
         </div>

@@ -44,11 +44,13 @@ if (Auth::user()->nairaWallet) {
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="Dantown multi services">
     <meta name="msapplication-tap-highlight" content="no">
+    <link href=" {{asset('css/app.css')}} " rel="stylesheet">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
-    <link href=" {{asset('custom.css')}} " rel="stylesheet">
+    <link href=" {{asset('custom.css?v = 1.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     {{-- <link rel="stylesheet" href="{{asset('main/css/calculator.css')}} "> --}}
+
 
     <link rel="stylesheet" type="text/css"
         href="https://cdn.datatables.net/v/bs4/dt-1.10.21/fh-3.1.7/r-2.2.5/datatables.min.css" />
@@ -118,64 +120,72 @@ if (Auth::user()->nairaWallet) {
                     </div>
                 </div>
                 <div class="app-header__content">
+                    <div class="app-header-left">
+                        <div class="col  ml-3 ">
+                           <a href="{{route('user.naira-wallet')}}" title="View wallet">
+                            <div class="widget-heading text-custom">
+                                @auth
+                                ₦{{number_format($naira_balance)}}
+                                @endauth
+                            </div>
+                            <div class="widget-heading text-muted">
+                               Wallet Balance
+                            </div>
+                        </a>
+                        </div>
+                    </div>
                     <div class="app-header-right">
                         <div class="header-btn-lg pr-0">
                             <div class="widget-content p-0">
                                 <div class="widget-content-wrapper">
-                                    <div class="widget-content-left  ml-3 ">
-                                        <div class="widget-heading text-dark">
-                                            @auth
-                                            ₦{{number_format($naira_balance)}}
-                                            @endauth
-                                        </div>
-                                        <div class="widget-heading text-muted">
-                                            Balance
-                                        </div>
-                                    </div>
-                                    <div class="widget-content-left  ml-3 header-user-info">
-                                        <div class="widget-heading text-custom">
-                                            @auth
-                                            {{Auth::user()->first_name." ".Auth::user()->last_name}}
-                                            @endauth
-                                        </div>
-                                        <div class="widget-subheading text-dark">
-                                            Hi there
-                                        </div>
-                                    </div>
-                                    <div class="widget-content-left ml-2">
-                                        <div class="btn-group">
-                                            @auth
-                                            <div class="dropdown">
-                                                <a data-toggle="dropdown" class="p-0 btn">
-                                                    <img width="40" class="rounded-circle"
-                                                        src="{{asset('storage/avatar/'.Auth::user()->dp)}} " alt="">
-                                                    <i class="fa fa-angle-down ml-2 opacity-8"></i>
-                                                </a>
-                                                <div tabindex="-1" role="menu" aria-hidden="true"
-                                                    class="dropdown-menu dropdown-menu-left">
-                                                    <a href=" {{route('user.profile')}} "><button type="button"
-                                                            tabindex="0" class="dropdown-item">My Account</button></a>
-                                                    <a href=" {{route('user.transactions')}} "><button type="button"
-                                                            tabindex="0" class="dropdown-item">My
-                                                            transactions</button></a>
-                                                    <a href=" {{route('user.calculator')}} "><button type="button"
-                                                            tabindex="0" class="dropdown-item">Trade</button></a>
-                                                    <div tabindex="-1" class="dropdown-divider"></div>
-                                                    <a href="#"
-                                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                        <button type="button" tabindex="0"
-                                                            class="dropdown-item">Logout</button>
-                                                    </a>
-                                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                                        style="display: none;">
-                                                        @csrf
-                                                    </form>
+                                    <div class="row align-items-center">
+                                        <a href="{{route('user.profile')}} " class="text-right">
+                                        <div class="col  ml-3 header-user-info">
+                                                <div class="widget-heading text-custom">
+                                                    @auth
+                                                    {{Auth::user()->first_name}}
+                                                    @endauth
+                                                </div>
+                                                <div class="widget-subheading text-dark">
+                                                    Hi there,
                                                 </div>
                                             </div>
+                                        </a>
+                                        <div class="col ml-2">
+                                            <div class="btn-group">
+                                                @auth
+                                                <div class="dropdown">
+                                                    <a data-toggle="dropdown" class="p-0 btn">
+                                                        <img width="35" class="rounded-circle"
+                                                            src="{{asset('storage/avatar/'.Auth::user()->dp)}} " alt="">
+                                                        {{-- <i class="fa fa-angle-down ml-2 opacity-8"></i> --}}
+                                                    </a>
+                                                    <div tabindex="-1" role="menu" aria-hidden="true"
+                                                        class="dropdown-menu dropdown-menu-left">
+                                                        <a href=" {{route('user.profile')}} "><button type="button"
+                                                                tabindex="0" class="dropdown-item">My Account</button></a>
+                                                        <a href=" {{route('user.transactions')}} "><button type="button"
+                                                                tabindex="0" class="dropdown-item">My
+                                                                transactions</button></a>
+                                                        <a href=" {{route('user.calculator')}} "><button type="button"
+                                                                tabindex="0" class="dropdown-item">Trade</button></a>
+                                                        <div tabindex="-1" class="dropdown-divider"></div>
+                                                        <a href="#"
+                                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                            <button type="button" tabindex="0"
+                                                                class="dropdown-item">Logout</button>
+                                                        </a>
+                                                        <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                            style="display: none;">
+                                                            @csrf
+                                                        </form>
+                                                    </div>
+                                                </div>
 
-                                            <notifications-component :notifications = "{{$nots}}" :unread = "{{$unread}} " ></notifications-component>
+                                                <notifications-component :notifications = "{{$nots}}" :unread = "{{$unread}} " ></notifications-component>
 
-                                            @endauth
+                                                @endauth
+                                            </div>
                                         </div>
                                     </div>
 
@@ -258,7 +268,7 @@ if (Auth::user()->nairaWallet) {
         </div>
       </div>
 
-    <script src="/js/app.js"></script>
+    <script src="/js/app.js?v = 1.4"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>

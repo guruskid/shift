@@ -145,7 +145,7 @@
                                         <td class="text-center">{{ucwords($t->transactionType->name)}}</td>
                                         <td class="text-center">{{ucwords($t->trans_type)}}</td>
                                         <td class="text-center">{{ucwords($t->status)}} </td>
-                                        <td class="text-center">{{$t->created_at->format('d M y ')}}</td>
+                                        <td class="text-center">{{$t->created_at->format('d/m/y h:i a')}}</td>
                                     </tr>
                                     @endforeach
                                     <tr class="bg-custom-accent">
@@ -208,10 +208,12 @@
                         </div>
                         @endforeach
                         <div class="col-md-6">
-                            <button class="btn btn-outline-success p-3 btn-block" onclick="addAcct()" type="button">
-                                <i class="fa fa-plus"></i>
-                                Add new bank account
-                            </button>
+                            <a href="{{route('user.profile')}} ">
+                                <button class="btn btn-outline-success p-3 btn-block" type="button">
+                                    <i class="fa fa-plus"></i>
+                                    Add new bank account
+                                </button>
+                            </a>
                         </div>
                     </div>
                     <input type="hidden" name="trans_type" id="trns-type">
@@ -253,8 +255,14 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="">Narration</label>
-                                <input type="text" name="narration" required class="form-control"
-                                    placeholder="Description">
+                               <select name="narration" id="" class="form-control">
+                                   <option value="Personal">Personal</option>
+                                   <option value="Settle bills">Settle bills</option>
+                                   <option value="Shopping">Shopping</option>
+                                   <option value="Food">Food</option>
+                                   <option value="Loan">Loan</option>
+                                   <option value="Others">Others</option>
+                               </select>
                             </div>
                         </div>
                     </div>

@@ -5,34 +5,55 @@
         <table v-if="value != -1 " class="align-middle mb-0 table transactions-table bg-custom-accent table-hover">
             <thead>
                 <tr>
-                    <th class="text-center text-custom">ID</th>
-                    <th class="text-center text-custom">Asset type</th>
-                    <th class="text-center text-custom">Tran. type</th>
-                    <th class="text-center text-custom">Units</th>
-                    <th class="text-center text-custom">Cash value</th>
-                    <th class="text-center text-custom">Date</th>
-                    <th class="text-center text-custom">Status</th>
+                    <th class="text-center text-custom border-0">ID</th>
+                    <th class="text-center text-custom border-0">Asset type</th>
+                    <th class="text-center text-custom border-0">Tran. type</th>
+                    <th class="text-center text-custom border-0">Units</th>
+                    <th class="text-center text-custom border-0">Cash value</th>
+                    <th class="text-center text-custom border-0">Date</th>
+                    <th class="text-center text-custom border-0">Status</th>
 
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="t in transactions" :key="t.id">
-                    <td class="text-center text-dark">{{t.uid}}</td>
-                    <td class="text-center text-dark">{{t.card}}</td>
-                    <td class="text-center text-dark">{{t.type}}</td>
-                    <td class="text-center text-dark">{{t.amount}}</td>
-                    <td class="text-center text-dark">N{{t.amount_paids}}</td>
-                    <td class="text-center text-dark">{{t.created_ats}}</td>
-                    <td v-if="t.status == 'waiting' " class="text-center text-dark">
-                        {{t.stats}}
+                    <td class="text-center bg-custom-accent">{{t.uid}}</td>
+                    <td class="text-center bg-custom-accent">{{t.card}}</td>
+                    <td class="text-center bg-custom-accent">{{t.type}}</td>
+                    <td class="text-center bg-custom-accent">{{t.amount}}</td>
+                    <td class="text-center bg-custom-accent">₦{{t.amount_paids}}</td>
+                    <td class="text-center bg-custom-accent">{{t.created_ats}}</td>
+                    <td v-if="t.status == 'waiting' " class="text-center bg-custom-accent">
                         <a :href="'/user/view-transaction/' + t.id +'/' + t.uid ">
-                            <button class="btn btn-success">Upload </button>
+                            <button class="btn btn-info">Upload </button>
                         </a>
                     </td>
-                    <td v-else class="text-center text-dark">
-                        {{t.stats}}
+                    <td v-else-if="t.status == 'success'" class="text-center bg-custom-accent">
                         <a data-toggle="modal" data-target="#txn-detail-modal" @click="showTxnDetail(t)">
-                            <button class="btn btn-success">View</button>
+                        <button title="Click to view" class="btn btn-success text-capitalize ">
+                            {{t.stats}}
+                        </button>
+                        </a>
+                    </td>
+                    <td v-else-if="t.status == 'declined'" class="text-center bg-custom-accent">
+                        <a data-toggle="modal" data-target="#txn-detail-modal" @click="showTxnDetail(t)">
+                        <button title="Click to view" class="btn btn-danger text-capitalize ">
+                            {{t.stats}}
+                        </button>
+                        </a>
+                    </td>
+                    <td v-else-if="t.status == 'in progress'" class="text-center bg-custom-accent">
+                        <a data-toggle="modal" data-target="#txn-detail-modal" @click="showTxnDetail(t)">
+                        <button title="Click to view" class="btn btn-warning text-capitalize ">
+                            {{t.stats}}
+                        </button>
+                        </a>
+                    </td>
+                    <td v-else class="text-center bg-custom-accent">
+                        <a data-toggle="modal" data-target="#txn-detail-modal" @click="showTxnDetail(t)">
+                        <button title="Click to view" class="btn btn-secondary text-capitalize ">
+                            {{t.stats}}
+                        </button>
                         </a>
                     </td>
 
@@ -72,16 +93,37 @@
                     <td class="text-center">{{t.amount}}</td>
                     <td class="text-center">₦{{t.amount_paids}}</td>
                     <td class="text-center text-white">{{t.created_ats}}</td>
-                    <td v-if="t.status == 'waiting' " class="text-center text-white">
-                        {{t.stats}}
+                    <td v-if="t.status == 'waiting' " class="text-center text-dark">
                         <a :href="'/user/view-transaction/' + t.id +'/' + t.uid ">
-                            <button class="btn btn-success">Upload </button>
+                            <button class="btn btn-info">Upload </button>
                         </a>
                     </td>
-                    <td v-else class="text-center text-white">
-                        {{t.stats}}
+                    <td v-else-if="t.status == 'success'" class="text-center text-dark">
                         <a data-toggle="modal" data-target="#txn-detail-modal" @click="showTxnDetail(t)">
-                            <button class="btn btn-success">View</button>
+                        <button title="Click to view" class="btn btn-success text-capitalize ">
+                            {{t.stats}}
+                        </button>
+                        </a>
+                    </td>
+                    <td v-else-if="t.status == 'declined'" class="text-center text-dark">
+                        <a data-toggle="modal" data-target="#txn-detail-modal" @click="showTxnDetail(t)">
+                        <button title="Click to view" class="btn btn-danger text-capitalize ">
+                            {{t.stats}}
+                        </button>
+                        </a>
+                    </td>
+                    <td v-else-if="t.status == 'in progress'" class="text-center text-dark">
+                        <a data-toggle="modal" data-target="#txn-detail-modal" @click="showTxnDetail(t)">
+                        <button title="Click to view" class="btn btn-warning text-capitalize ">
+                            {{t.stats}}
+                        </button>
+                        </a>
+                    </td>
+                    <td v-else class="text-center text-dark">
+                        <a data-toggle="modal" data-target="#txn-detail-modal" @click="showTxnDetail(t)">
+                        <button title="Click to view" class="btn btn-secondary text-capitalize ">
+                            {{t.stats}}
+                        </button>
                         </a>
                     </td>
                 </tr>

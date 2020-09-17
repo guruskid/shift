@@ -49,7 +49,7 @@
                         <div class="card-body">
 
                             @foreach (Auth::user()->notifications as $n)
-                            <div class="row">
+                            <div class="row" id="not-{{$n->id}}">
                                 <div class="col-10">
                                     <div class="media align-items-start ">
                                     <i  class="fa fa-2x mr-3 {{$n->is_seen ? 'fa-envelope-open  text-custom' : 'fa-envelope  text-warning' }} " id="envelope-{{$n->id}}" ></i>

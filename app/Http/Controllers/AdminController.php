@@ -64,9 +64,13 @@ class AdminController extends Controller
             ->backgroundcolor($fillColors);
 
 
-        $transactions = Transaction::orderBy('created_at', 'desc')->get()->take(1);
+        $transactions = Transaction::latest()->get()->take(5);
+        $waiting_transactions = Transaction::where('status', 'waiting')->get()->take(5);
+        $in_progress_transactions = Transaction::where('status', 'in progress')->get()->take(5);
+        $approved_transactions = Transaction::where('status', 'approved')->get()->take(5);
+
         $users = User::latest()->get()->take(4);
-        $notifications = Notification::where('user_id', 0)->orderBy('created_at', 'desc')->get()->take(5);
+        $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
         $users_count = User::all()->count();
 
 
@@ -129,7 +133,8 @@ class AdminController extends Controller
             return view(
                 'admin.dashboard',
                 compact([
-                    'transactions', 'users', 'users_count', 'notifications', 'usersChart',
+                    'transactions', 'waiting_transactions', 'in_progress_transactions',
+                     'users', 'users_count', 'notifications', 'usersChart',
                     'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
@@ -139,7 +144,7 @@ class AdminController extends Controller
             return view(
                 'admin.accountant_dashboard',
                 compact([
-                    'transactions', 'users', 'users_count', 'notifications', 'usersChart',
+                    'transactions', 'approved_transactions', 'users', 'users_count', 'notifications', 'usersChart',
                     'withdraw_txns', 'airtime_txns', 'buy_txns_wallet',
                     'g_txns', 'c_txns', 'n_txns',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
