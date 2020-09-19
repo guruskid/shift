@@ -10,4 +10,16 @@ class Card extends Model
     {
         return $this->hasMany('App\Rate', 'card', 'name');
     }
+
+    public function activity()
+    {
+        return $this->hasMany(\App\CardActivity::class);
+    }
+
+    public function activityPaymentMedium()
+    {
+        return $this->hasManyThrough(\App\PaymentMedium::class);
+    }
+
+
 }
