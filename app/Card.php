@@ -18,7 +18,7 @@ class Card extends Model
 
     public function activityPaymentMedium()
     {
-        return $this->hasManyThrough(\App\PaymentMedium::class);
+        return $this->hasManyThrough(\App\PaymentMedium::class, 'payment_media_id');
     }
 
 
