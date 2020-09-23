@@ -109,7 +109,7 @@ class AdminController extends Controller
         $n_txns = NairaTransaction::latest()->get()->take(4);
 
         /* Get count of transactions from when an agent was last activated */
-        $au =Auth::user();
+        $au = Auth::user();
         $a_w_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'waiting')->count();
         $a_i_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'in progress')->count();
         $a_s_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'success')->count();
@@ -134,7 +134,7 @@ class AdminController extends Controller
                 'admin.dashboard',
                 compact([
                     'transactions', 'waiting_transactions', 'in_progress_transactions',
-                     'users', 'users_count', 'notifications', 'usersChart',
+                    'users', 'users_count', 'notifications', 'usersChart',
                     'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
@@ -152,8 +152,7 @@ class AdminController extends Controller
                     'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges'
                 ])
             );
-        }
-        else if (Auth::user()->role == 666) { //Manager
+        } else if (Auth::user()->role == 666) { //Manager
             return view(
                 'admin.manager_dashboard',
                 compact([
@@ -311,7 +310,7 @@ class AdminController extends Controller
 
     public function assetTransac($id)
     {
-        $transactions = Transaction::whereHas('asset', function($query) use($id) {
+        $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
         })->paginate(1000);
 
@@ -322,7 +321,6 @@ class AdminController extends Controller
 
 
         return view('admin.transactions', compact(['transactions', 'segment']));
-
     }
 
     public function assetTransactionsSortByDate(Request $request)
@@ -333,7 +331,7 @@ class AdminController extends Controller
             'end' => 'required|date|string',
         ]);
         $transactions = Transaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(200);
-        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - '. Carbon::parse($data['end'])->format('D d M Y') . ' Asset' ;
+        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Asset';
 
         return view('admin.transactions', compact(['segment', 'transactions']));
     }
@@ -351,6 +349,7 @@ class AdminController extends Controller
         $t = new Transaction();
         $t->uid = uniqid();
         $t->user_email = $r->user_email;
+        $t->user_id = User::where('email', $r->user_email)->first()->id;
         $t->card = $r->card;
         $t->card_id = $card_id;
         $t->type = $r->trade_type;
@@ -366,8 +365,10 @@ class AdminController extends Controller
     public function editTransaction(Request $r)
     {
 
+        $card_id = Card::where('name', $r->card)->first()->id;
         $t = Transaction::find($r->id);
         $t->card = $r->card;
+        $t->card_id = $card_id;
         $t->type = $r->trade_type;
         $t->country = $r->country;
         $t->amount = $r->amount;
@@ -382,7 +383,8 @@ class AdminController extends Controller
         } else {
             $t->stats = $t->status;
         }
-        $body = 'The status of your transaction with id ' . $t->uid . ', has been updated to ' . $t->stats;
+        $body = 'The status of your transaction to  ' . $t->type . ' ' . $t->card .
+         ' worth of ₦' . number_format($t->amount_paid) . ' has been updated to ' .$t->status;
         $title = 'Transaction update';
         $not = Notification::create([
             'user_id' => $user->id,
@@ -391,7 +393,10 @@ class AdminController extends Controller
         ]);
 
         broadcast(new TransactionUpdated($user));
-        Mail::to($user->email)->send(new DantownNotification($title, $body));
+        if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1 ) {
+            $title = 'Transaction Successful';
+            Mail::to($user->email)->send(new DantownNotification($title, $body, 'Go to Wallet', route('user.naira-wallet')));
+        }
 
         return redirect()->back()->with(['success' => 'Transaction updated']);
     }
@@ -409,7 +414,7 @@ class AdminController extends Controller
         return response()->json($rate->delete());
     }
 
-    public function updateTransaction($id, $status)
+    public function updateTransaction($id, $status) //for assigned transactions
     {
         $t = Transaction::find($id);
         $t->status = $status;
@@ -425,7 +430,7 @@ class AdminController extends Controller
         ]);
 
         broadcast(new TransactionUpdated($user));
-        Mail::to($user->email)->send(new DantownNotification($title, $body));
+        /* Mail::to($user->email)->send(new DantownNotification($title, $body)); */
         return response()->json(['success' => true]);
     }
 
@@ -450,7 +455,7 @@ class AdminController extends Controller
             'end' => 'required|date|string',
         ]);
         $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->get();
-        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - '. Carbon::parse($data['end'])->format('D d M Y') . ' Wallet' ;
+        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
 
         return view('admin.naira_transactions', compact(['segment', 'transactions']));
     }
@@ -469,10 +474,10 @@ class AdminController extends Controller
 
     public function transferCharges(Request $r)
     {
-        if (!$r->start || !$r->end ) {
+        if (!$r->start || !$r->end) {
             $transactions = NairaTransaction::latest()->paginate(1000);
             $total = $transactions->sum('charge');
-        }else{
+        } else {
             $transactions = NairaTransaction::where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->paginate(1000);
             $total = $transactions->sum('charge');
         }

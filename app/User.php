@@ -8,9 +8,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, Notifiable;
+
 
     /**
      * The attributes that are mass assignable.
@@ -39,7 +40,7 @@ class User extends Authenticatable
 
     public function transactions()
     {
-        return $this->hasMany('App\Transaction', 'user_email', 'email')->latest();
+        return $this->hasMany('App\Transaction')->latest();
     }
 
     public function messages()

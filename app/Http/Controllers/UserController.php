@@ -17,8 +17,10 @@ use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use App\Charts\UserChart;
 use App\Events\NewTransaction;
+use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\NairaWallet;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -329,6 +331,7 @@ class UserController extends Controller
             $t = new Transaction();
             $t->uid = uniqid();
             $t->user_email = Auth::user()->email;
+            $t->user_id = Auth::user()->id;
             $t->card = $r->card;
             $t->card_id = $card_id;
             $t->type = $r->rate_type;
@@ -375,11 +378,16 @@ class UserController extends Controller
                 $nt->save();
             }
 
+            $title = ucwords($t->type).' '.$t->card;
+            $body = 'Your order to ' . $t->type.' '.$t->card.' worth of ₦'.number_format($t->amount_paid).' has been initiated successfully';
             $not = Notification::create([
                 'user_id' => Auth::user()->id,
-                'title' => 'Transaction initiated',
-                'body' => 'A new transaction has been initiated with id of ' . $t->uid,
+                'title' => $title,
+                'body' => $body,
             ]);
+            if (Auth::user()->notificationSetting->trade_email == 1) {
+                Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+            }
 
             return response()->json(['success' => true, 'data' => $t]);
         }

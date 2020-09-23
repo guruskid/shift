@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Routing\RouteGroup;
+use App\Mail\UserRegistered;
+use App\NairaTransaction;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,11 +20,13 @@ Route::get('/', function () {
 });
 
 Route::get('mailable', function () {
-    return new App\Mail\DantownNotification('yeeah', 'testing' );
+    /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered('Winston Okatubo') ); */
+    $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
+    return new App\Mail\WalletAlert($txn, 'Debit');
 });
 
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 Route::get('/', 'HomeController@index')->name('welcome');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
@@ -127,7 +131,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
     Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
     Route::get('/transactions/sell', 'AdminController@sellTransac')->name('admin.sell_transac');
     Route::get('/transactions/{status}', 'AdminController@txnByStatus')->name('admin.transactions-status');
-    Route::get('/transactions/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
+    Route::get('/transactions/agent/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
     Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
 
     Route::post('/edit-transactions', 'AdminController@editTransaction' )->name('admin.edit_transaction');
@@ -196,6 +200,6 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
 
 
 Route::group(['prefix' => 'db'], function () {
-    Route::GET('/function', 'DatabaseController@accounts');
+    Route::GET('/function', 'DatabaseController@transactions');
 });
 

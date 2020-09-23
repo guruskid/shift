@@ -49,15 +49,6 @@
                             @foreach ($errors->all() as $error)
                             <p class="text-warning">{{ $error }}</p>
                             @endforeach
-                            <div class="input-group mb-15">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        <ion-icon name="person"></ion-icon>
-                                    </span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="Username"
-                                    aria-describedby="inputGroupPrepend3" required="" />
-                            </div>
 
                             <div class="input-group mb-15">
                                 <div class="input-group-prepend">

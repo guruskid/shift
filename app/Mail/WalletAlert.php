@@ -2,12 +2,13 @@
 
 namespace App\Mail;
 
+use App\NairaTransaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class DantownNotification extends Mailable
+class WalletAlert extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -16,13 +17,11 @@ class DantownNotification extends Mailable
      *
      * @return void
      */
-    public  $title, $body, $btn_text, $btn_url;
-    public function __construct(String $title, String $body, String $btn_text, String $btn_url)
+    public $transaction, $type ;
+    public function __construct(NairaTransaction $transaction, String $type)
     {
-        $this->title = $title;
-        $this->body = $body;
-        $this->btn_text = $btn_text;
-        $this->btn_url = $btn_url;
+        $this->transaction = $transaction;
+        $this->type = $type;
     }
 
     /**
@@ -32,6 +31,6 @@ class DantownNotification extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.DantownNotification');
+        return $this->markdown('emails.wallet_alert');
     }
 }
