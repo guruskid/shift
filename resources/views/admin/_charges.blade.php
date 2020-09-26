@@ -1,7 +1,3 @@
-@php
-$cards = App\Card::orderBy('name', 'asc')->get(['name']);
-$emails = App\User::orderBy('email', 'asc' )->pluck('email');
-@endphp
 @extends('layouts.app')
 @section('content')
 <div class="app-main">
@@ -51,8 +47,9 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                             <i class="pe-7s-timer icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div> {{$segment}} Transactions
+                        <div> Charges
                             <div class="page-title-subheading">
+                                ₦{{number_format($total)}}
                             </div>
                         </div>
                     </div>
@@ -63,8 +60,8 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between ">
-                            {{$segment}} Transactions
-                            <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2" method="POST">
+                            Charges
+                            <form action="{{route('admin.wallet-charges')}}" class="form-inline p-2" method="POST">
                                 @csrf
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
@@ -86,17 +83,10 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <th>Reff</th>
                                         <th>User Name</th>
                                         <th>Trans. Type</th>
-                                        <th>Amount Paid</th>
-                                        <th>Total Charge</th>
-                                        <th>Total</th>
-                                        <th>Prev. Bal  </th>
-                                        <th>Cur. Bal</th>
-                                        <th>Cr. Acct.</th>
-                                        <th>Debit Acct.</th>
+                                        <th>Amount</th>
+                                        <th>Charge</th>
                                         <th>Narration</th>
                                         <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -110,72 +100,20 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                             </a>
                                         </td>
                                         <td>{{$t->transactionType->name}} </td>
-                                        <td>₦{{number_format($t->amount_paid) }} </td>
-                                        <td>₦{{number_format($t->charge) }} </td>
                                         <td>₦{{number_format($t->amount) }} </td>
-                                        <td>₦{{number_format($t->previous_balance) }}</td>
-                                        <td>₦{{number_format($t->current_balance) }} </td>
-                                        <td>{{$t->cr_acct_name}} </td>
-                                        <td>{{$t->dr_acct_name}} </td>
+                                        <td>₦{{number_format($t->charge) }} </td>
                                         <td>{{$t->narration}} </td>
-                                        <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
-                                        <td>{{$t->status}} </td>
-                                        @if (in_array(Auth::user()->role, [999, 889] ) && $t->status == 'pending' )
-                                        <td>
-                                            <button data-toggle="modal" data-target="#refund-modal"
-                                                    onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount)}}' )"
-                                                    class="btn btn-sm btn-outline-success">Refund</button>
-                                        </td>
-                                        @else
-                                        <td>..</td>
-                                        @endif
-
+                                        <td>{{$t->created_at->format('d M Y')}} </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
 
                             </table>
-                            {{$transactions->links()}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-
-{{-- Confirm refund modal --}}
-<div class="modal fade " id="refund-modal">
-    <div class="modal-dialog modal-dialog-centered ">
-        <form action="{{route('admin.naira-refund')}} " method="post" class="txn-form">
-            @csrf
-            <div class="modal-content  c-rounded">
-                <!-- Modal Header -->
-                <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
-                    <h4 class="modal-title">Confirm Refund <i class="fa fa-paper-plane"></i></h4>
-                    <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
-                </div>
-                <!-- Modal body -->
-
-                <div class="modal-body p-4">
-                    <p class="text-success">Enter your pin to confirm the refund of ₦<span id="r-amount"></span> to
-                        <span id="r-acct-name"></span> </p>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="">Wallet pin </label>
-                                <input type="password" name="pin" required class="form-control">
-                                <input type="hidden" name="id" id="r-t-id" required class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
-                        Send
-                    </button>
-                </div>
-            </div>
-        </form>
     </div>
 </div>
 

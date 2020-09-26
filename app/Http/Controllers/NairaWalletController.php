@@ -214,6 +214,7 @@ class NairaWalletController extends Controller
         }
 
         $amount = $r->amount + $charge;
+        $amount_paid = $r->amount;
 
 
         if ($amount > $n->amount) {
@@ -235,7 +236,13 @@ class NairaWalletController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $n->amount;
-        $nt->charge = 61.38;
+        $nt->charge = $charge;
+        $nt->transfer_charge = 61.38;
+        $nt->sms_charge = 2.55;
+        if ($charge == 0) {
+            $nt->transfer_charge = 0; //overide the previous
+        }
+        $nt->amount_paid = $amount_paid;
         $nt->transaction_type_id = $tid;
 
 
@@ -249,6 +256,17 @@ class NairaWalletController extends Controller
         $nt->trans_msg = $msg;
         $nt->status = 'pending';
         $nt->save();
+
+        /* Credit SMS and Transfer Wallet */
+        $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        $transfer_charges_wallet->amount += $nt->transfer_charge;
+        $transfer_charges_wallet->save();
+
+        $sms_charges_wallet = NairaWallet::where('account_number', 0000000002)->first();
+        $sms_charges_wallet->amount += $nt->sms_charge;
+        $sms_charges_wallet->save();
+
+
 
         $client = new Client();
         $url = env('RUBBIES_API') . "/fundtransfer";
@@ -353,6 +371,7 @@ class NairaWalletController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
+        $nt->amount_paid = $amount;
         $nt->user_id = $t->user->id;
         $nt->type = 'naira wallet';
 
@@ -451,6 +470,7 @@ class NairaWalletController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
+        $nt->amount_paid = $amount;
         $nt->user_id = $t->user->id;
         $nt->type = 'naira wallet';
 
@@ -540,6 +560,7 @@ class NairaWalletController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
+        $nt->amount_paid = $amount;
         $nt->user_id = $t->user->id;
         $nt->type = 'naira wallet';
 
@@ -616,6 +637,7 @@ class NairaWalletController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $r->amount;
+        $nt->amount_paid = $r->amount;
         $nt->user_id = $nw->user->id;
         $nt->type = 'bank transfer';
 

@@ -238,6 +238,41 @@ class UserController extends Controller
         return redirect()->back()->with(['success' => 'Id card uploaded, please hold on while we verify your account']);
     }
 
+    public function password(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|string|confirmed|min:6|different:old_password'
+        ]);
+
+        if (Hash::check($request->old_password, Auth::user()->password) == false) {
+            return redirect()->back()->with(['error' => 'Your current password does not match with the password you provided. Please try again.']);
+        }
+
+        $user = Auth::user();
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->back()->with("success", "Password changed");
+    }
+
+    public function resetEmail(Request $r)
+    {
+        $r->validate([
+            'password' => 'required',
+            'new_email' => 'required|email|unique:users,email'
+        ]);
+
+        if (Hash::check($r->password, Auth::user()->password) == false) {
+            return redirect()->back()->with(['error' => 'Your current password does not match with the password you provided. Please try again.']);
+        }
+
+        Auth::user()->email = $r->new_email;
+        Auth::user()->email_verified_at = null;
+        Auth::user()->save();
+        return redirect()->back()->with("success", "Email changed");
+    }
+
     public function transactions()
     {
         $transactions = Auth::user()->transactions;
@@ -406,23 +441,7 @@ class UserController extends Controller
         return view('user.transaction', compact(['transaction']));
     }
 
-    public function password(Request $request)
-    {
-        $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|string|confirmed|min:6|different:old_password'
-        ]);
 
-        if (Hash::check($request->old_password, Auth::user()->password) == false) {
-            return redirect()->back()->with(['error' => 'Your current password does not match with the password you provided. Please try again.']);
-        }
-
-        $user = Auth::user();
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return redirect()->back()->with("success", "Password changed");
-    }
 
     public function updateBankDetails(Request $request)
     {
