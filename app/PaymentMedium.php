@@ -12,4 +12,5 @@ class PaymentMedium extends Model
     {
         return $this->belongsTo(\App\Currency::class);
     }
+    
 }

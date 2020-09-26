@@ -15,11 +15,17 @@ class Card extends Model
     {
         return $this->hasMany(\App\CardActivity::class);
     }
-
-    public function activityPaymentMedium()
-    {
-        return $this->hasManyThrough(\App\PaymentMedium::class, 'payment_media_id');
-    }
+    
+    // /**
+    //  * Returns hasmany relationship of activity payment mediums we can use to retrieve 
+    //  * The actual payment mediums
+    //  *
+    //  * @return void
+    //  */
+    // public function activityPaymentMedium()
+    // {
+    //     return $this->hasManyThrough(\App\CardActivityPaymentMedium::class);
+    // }
 
 
 }

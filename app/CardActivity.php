@@ -16,4 +16,14 @@ class CardActivity extends Model
     {
         return $this->belongsTo(\App\Card::class);
     }
+    
+    /**
+     * This will return the has many relationship through which we fetch each payment medium
+     *
+     * @return void
+     */
+    public function paymentMedia()
+    {
+        return $this->hasMany(\App\CardActivityPaymentMedium::class);
+    }
 }
