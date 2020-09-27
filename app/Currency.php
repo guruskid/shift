@@ -12,6 +12,17 @@ class Currency extends Model
 
     
     /**
+     * Route Binding Property
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'id';
+    }
+
+    
+    /**
      * Returns an hasmany relationship that we can use to retrieve the real payment medias
      *
      * @return void

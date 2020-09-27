@@ -10,22 +10,16 @@ class Card extends Model
     {
         return $this->hasMany('App\Rate', 'card', 'name');
     }
-
-    public function activity()
-    {
-        return $this->hasMany(\App\CardActivity::class);
-    }
     
-    // /**
-    //  * Returns hasmany relationship of activity payment mediums we can use to retrieve 
-    //  * The actual payment mediums
-    //  *
-    //  * @return void
-    //  */
-    // public function activityPaymentMedium()
-    // {
-    //     return $this->hasManyThrough(\App\CardActivityPaymentMedium::class);
-    // }
+    /**
+     * Get the currencies attached to this card
+     *
+     * @return void
+     */
+    public function currency()
+    {
+        return $this->belongsToMany(\App\Currency::class, 'card_currencies')->withPivot(['buy_sell', 'id']);
+    }
 
 
 }

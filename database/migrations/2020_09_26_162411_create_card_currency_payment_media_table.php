@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCardActivityPaymentMediaTable extends Migration
+class CreateCardCurrencyPaymentMediaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateCardActivityPaymentMediaTable extends Migration
      */
     public function up()
     {
-        Schema::create('card_activity_payment_media', function (Blueprint $table) {
+        Schema::create('card_currency_payment_media', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('card_activity_id');
-            $table->bigInteger('payment_media_id');
-            $table->longText('payment_range_settings');
+            $table->bigInteger('card_currency_id');
+            $table->bigInteger('payment_medium_id');
+            $table->longtext('payment_range_settings');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateCardActivityPaymentMediaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('card_activity_payment_media');
+        Schema::dropIfExists('card_currency_payment_media');
     }
 }

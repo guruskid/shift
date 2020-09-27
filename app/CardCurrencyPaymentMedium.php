@@ -4,8 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CardActivityCurrency extends Model
+class CardCurrencyPaymentMedium extends Model
 {
     //
+
     protected $guarded = [];
+
 }

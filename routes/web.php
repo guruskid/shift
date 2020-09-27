@@ -199,3 +199,7 @@ Route::group(['prefix' => 'db'], function () {
     Route::GET('/function', 'DatabaseController@accounts');
 });
 
+
+// Just a test route
+Route::get('/test/card/{card}', 'User\CardController@testData');
+
