@@ -446,12 +446,14 @@ class AdminController extends Controller
         if ($id == null) {
             $transactions = NairaTransaction::latest()->paginate(1000);
             $segment = 'All Wallet';
+            $total = $transactions->sum('amount');
         } else {
             $transactions = NairaTransaction::where('transaction_type_id', $id)->paginate(1000);
             $segment = TransactionType::find($id)->name;
+            $total = $transactions->sum('amount');
         }
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions']));
+        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
     }
     public function walletTransactionsSortByDate(Request $request)
     {
@@ -460,10 +462,11 @@ class AdminController extends Controller
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->get();
+        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(1000);
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
+        $total = $transactions->sum('amount');
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions']));
+        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
     }
 
     public function adminWallet()

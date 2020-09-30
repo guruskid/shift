@@ -166,6 +166,7 @@ class NairaWalletController extends Controller
                 'pin' => 'required',
                 'amount' => 'required',
                 'narration' => 'required',
+                'ref' => 'required|unique:naira_transactions,reference',
             ]);
 
             if ($r->amount > 50000) {
@@ -183,6 +184,7 @@ class NairaWalletController extends Controller
                 'pin' => 'required',
                 'amount' => 'required',
                 'narration' => 'required',
+                'ref' => 'required|unique:naira_transactions,reference',
             ]);
             /*
             if ($r->amount > 300000 ) {

@@ -44,6 +44,15 @@
             </div>
         </a>
     </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
+        <a href="{{route('admin.users')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>Users</span>
+            </div>
+        </a>
+    </li>
     @endif
 
     <li class="menu {{ Route::currentRouteName() == 'logout' ? 'active' : '' }}">

@@ -53,6 +53,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         </div>
                         <div> {{$segment}} Transactions
                             <div class="page-title-subheading">
+                                <h6>₦{{ number_format($total) }} </h6>
                             </div>
                         </div>
                     </div>
