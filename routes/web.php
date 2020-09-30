@@ -203,6 +203,7 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
     Route::get('/admin-wallet', 'AdminController@adminWallet')->name('admin.admin-wallet');
 
     Route::any('/transfer-charges', 'AdminController@transferCharges')->name('admin.wallet-charges');
+    Route::any('/old-transfer-charges', 'AdminController@oldTransferCharges')->name('admin.old-wallet-charges');
 });
 
 
