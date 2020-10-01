@@ -489,6 +489,7 @@ class AdminController extends Controller
             $transactions = NairaTransaction::latest()->get();
             $total = $transactions->sum('charge');
         }else{
+            
             $transactions = NairaTransaction::where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->get();
             $total = $transactions->sum('charge');
         }

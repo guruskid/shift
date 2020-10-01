@@ -18,15 +18,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::post('/login', 'Api\AuthController@login');
     Route::post('/register', 'Api\AuthController@register');
+    Route::post('/login', 'Api\AuthController@login');
+    Route::get('/banks', 'Api\AuthController@bankList' );
 
     Route::get('/assets', 'Api\AssetController@getAssets' );
     Route::post('/rate', 'Api\AssetController@getRate');
 
     Route::group(['middleware' => 'auth:api'], function () {
-        Route::GET('/messages/{id}', 'Api\ChatController@messages');
+        Route::post('/bank-details', 'Api\AuthController@bankDetails');
         Route::get('/logout', 'Api\AuthController@logout');
+        
         Route::GET('/accounts', 'Api\UserController@accounts');
         Route::GET('/notifications', 'Api\UserController@notifications');
         Route::GET('/transactions', 'Api\TransactionController@allTransactions');
