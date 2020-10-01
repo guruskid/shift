@@ -19,6 +19,7 @@ class CreateAccountsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('account_name');
             $table->string('bank_name');
+            $table->integer('bank_id');
             $table->string('account_number');
             $table->timestamps();
         });
