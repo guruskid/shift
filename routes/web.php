@@ -121,7 +121,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 
     /* ajax ends here */
     Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
-    Route::get('/rates', 'AdminController@rates')->name('admin.rates');
+
 
     Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
     Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
@@ -163,9 +163,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::post('/search', 'AdminController@searchUser' )->name('admin.search');
 });
 
+/* For manager and super admin */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
     Route::post('/edit-rate', 'AdminController@editRate' )->name('admin.edit_rate');
-    Route::post('/rates', 'AdminController@addRate' )->name('admin.add_rate');
+
+
+    
+
     Route::GET('/delete-rate/{id}', 'AdminController@deleteRate');
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
