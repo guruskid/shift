@@ -273,7 +273,7 @@ class UserController extends Controller
         return redirect()->back()->with("success", "Email changed");
     }
 
-    public `function tran`sactions()
+    public function transactions()
     {
         $transactions = Auth::user()->transactions;
         foreach ($transactions as $t) {

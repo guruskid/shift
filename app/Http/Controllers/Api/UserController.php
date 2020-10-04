@@ -9,20 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function accounts()
-    {
-         if ($accts = Auth::user()->accounts) {
-            return response()->json([
-                'success' => true,
-                'data' => $accts
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'No account linked to this account'
-            ]);
-        }
-    }
+
 
     public function notifications()
     {

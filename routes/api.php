@@ -26,12 +26,16 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/rate', 'Api\AssetController@getRate');
 
     Route::group(['middleware' => 'auth:api'], function () {
-        Route::post('/bank-details', 'Api\AuthController@bankDetails');
+        Route::post('/bank-details', 'Api\AuthController@addBankDetails');
+        Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
-        
-        Route::GET('/accounts', 'Api\UserController@accounts');
+
+        Route::GET('/accounts', 'Api\BankAccountController@accounts');
+
         Route::GET('/notifications', 'Api\UserController@notifications');
+
         Route::GET('/transactions', 'Api\TransactionController@allTransactions');
-        Route::GET('/inbox', 'Api\ChatController@inbox');
+
+        Route::GET('/naira-transactions', 'Api\NairaWalletController@allTransactions');
     });
 });

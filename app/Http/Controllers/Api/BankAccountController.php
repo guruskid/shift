@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class TransactionController extends Controller
+class BankAccountController extends Controller
 {
-    public function allTransactions()
+    public function accounts()
     {
-        $transactions = Auth::user()->transactions;
+        $accts = Auth::user()->accounts;
         return response()->json([
             'success' => true,
-            'data' => $transactions
+            'data' => $accts
         ]);
     }
 }
