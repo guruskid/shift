@@ -30,6 +30,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
 
+        Route::GET('/dashboard', 'Api\UserController@dashboard');
+
         Route::GET('/accounts', 'Api\BankAccountController@accounts');
 
         Route::GET('/notifications', 'Api\UserController@notifications');
