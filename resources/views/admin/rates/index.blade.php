@@ -61,12 +61,21 @@
                             Cards
                         </div>
                         <div class="card-body">
-                            <div class="media">
-                                <i class="fa fa-box-open  align-self-center mr-3" style="font-size: 14px" ></i>
+                            <div class="media mb-2">
+                                <img src="{{ asset('cards/walmart.png') }}" style="height: 30px;" alt="" srcset=""
+                                    class="align-self-center mr-3">
                                 <div class="media-body">
-                                  <h5>Walmart</h5>
+                                    <h5>Walmart</h5>
                                 </div>
-                              </div>
+                            </div>
+                            <div class="media mb-2">
+                                <img src="{{ asset('cards/walmart.png') }}" style="height: 30px;" alt="" srcset=""
+                                    class="align-self-center mr-3">
+                                <div class="media-body">
+                                    <h5>Walmart</h5>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -93,9 +102,10 @@
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <ul class="nav nav-tabs nav-justified">
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0"
-                                        class="active nav-link">Buy (from Dantown)</a></li>
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Sell (to Dantown)</a>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0" class="active nav-link">Buy
+                                        (from Dantown)</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Sell (to
+                                        Dantown)</a>
                                 </li>
                             </ul>
                             <div class="tab-content">
@@ -121,26 +131,27 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                              {{--   @foreach ($buy as $b)
+                                                {{--   @foreach ($buy as $b)
                                                 <tr>
                                                     <td class="text-center">{{ ucfirst($b->card) }}</td>
-                                                    <td class="text-center">{{$b->usd == '' ? '-': $b->usd }}</td>
-                                                    <td class="text-center">{{$b->eur == '' ? '-': $b->eur }}</td>
-                                                    <td class="text-center">{{$b->gbp == '' ? '-': $b->gbp }}</td>
-                                                    <td class="text-center">{{$b->aud == '' ? '-': $b->aud }}</td>
-                                                    <td class="text-center">{{$b->cad == '' ? '-': $b->cad }}</td>
-                                                    <td class="text-center">{{$b->min == '' ? '-': $b->min }}</td>
-                                                    <td class="text-center">{{$b->max == '' ? '-': $b->max }}</td>
-                                                    @if (in_array(Auth::user()->role, [999, 666] ))
-                                                    <td class="text-center">
-                                                        <a href="#" data-toggle="modal" data-target="#edit-rate-modal" onclick="editRate({{$b}})" >
-                                                            <span class="badge badge-info">Edit</span>
-                                                        </a>
-                                                        <a href="#" onclick="deleteRate({{$b->id}})" >
-                                                            <span class="badge badge-danger">Delete</span>
-                                                        </a>
-                                                    </td>
-                                                    @endif
+                                                <td class="text-center">{{$b->usd == '' ? '-': $b->usd }}</td>
+                                                <td class="text-center">{{$b->eur == '' ? '-': $b->eur }}</td>
+                                                <td class="text-center">{{$b->gbp == '' ? '-': $b->gbp }}</td>
+                                                <td class="text-center">{{$b->aud == '' ? '-': $b->aud }}</td>
+                                                <td class="text-center">{{$b->cad == '' ? '-': $b->cad }}</td>
+                                                <td class="text-center">{{$b->min == '' ? '-': $b->min }}</td>
+                                                <td class="text-center">{{$b->max == '' ? '-': $b->max }}</td>
+                                                @if (in_array(Auth::user()->role, [999, 666] ))
+                                                <td class="text-center">
+                                                    <a href="#" data-toggle="modal" data-target="#edit-rate-modal"
+                                                        onclick="editRate({{$b}})">
+                                                        <span class="badge badge-info">Edit</span>
+                                                    </a>
+                                                    <a href="#" onclick="deleteRate({{$b->id}})">
+                                                        <span class="badge badge-danger">Delete</span>
+                                                    </a>
+                                                </td>
+                                                @endif
                                                 </tr>
                                                 @endforeach --}}
                                             </tbody>
@@ -168,21 +179,22 @@
                                                 {{-- @foreach ($sell as $s)
                                                 <tr>
                                                     <td class="text-center">{{ ucfirst($s->card) }}</td>
-                                                    <td class="text-center">{{$s->usd == '' ? '-': $s->usd }}</td>
-                                                    <td class="text-center">{{$s->eur == '' ? '-': $s->eur }}</td>
-                                                    <td class="text-center">{{$s->gbp == '' ? '-': $s->gbp }}</td>
-                                                    <td class="text-center">{{$s->aud == '' ? '-': $s->aud }}</td>
-                                                    <td class="text-center">{{$s->cad == '' ? '-': $s->cad }}</td>
-                                                    <td class="text-center">{{$s->min == '' ? '-': $s->min }}</td>
-                                                    <td class="text-center">{{$s->max == '' ? '-': $s->max }}</td>
-                                                    <td class="text-center">
-                                                        <a href="#" data-toggle="modal" data-target="#edit-rate-modal" onclick="editRate({{$s}})" >
-                                                            <span class="badge badge-info">Edit</span>
-                                                        </a>
-                                                        <a href="#" onclick="deleteRate({{$s->id}})" >
-                                                            <span class="badge badge-danger">Delete</span>
-                                                        </a>
-                                                    </td>
+                                                <td class="text-center">{{$s->usd == '' ? '-': $s->usd }}</td>
+                                                <td class="text-center">{{$s->eur == '' ? '-': $s->eur }}</td>
+                                                <td class="text-center">{{$s->gbp == '' ? '-': $s->gbp }}</td>
+                                                <td class="text-center">{{$s->aud == '' ? '-': $s->aud }}</td>
+                                                <td class="text-center">{{$s->cad == '' ? '-': $s->cad }}</td>
+                                                <td class="text-center">{{$s->min == '' ? '-': $s->min }}</td>
+                                                <td class="text-center">{{$s->max == '' ? '-': $s->max }}</td>
+                                                <td class="text-center">
+                                                    <a href="#" data-toggle="modal" data-target="#edit-rate-modal"
+                                                        onclick="editRate({{$s}})">
+                                                        <span class="badge badge-info">Edit</span>
+                                                    </a>
+                                                    <a href="#" onclick="deleteRate({{$s->id}})">
+                                                        <span class="badge badge-danger">Delete</span>
+                                                    </a>
+                                                </td>
                                                 </tr>
                                                 @endforeach --}}
                                             </tbody>
@@ -212,7 +224,7 @@
                                 <label for="">Card</label>
                                 <select name="card" class="form-control">
                                     <option id="card"></option>
-                                   {{--  @foreach ($cards as $card)
+                                    {{--  @foreach ($cards as $card)
                                     <option value=" {{$card->name}} "> {{ ucfirst($card->name) }} </option>
                                     @endforeach --}}
                                 </select>
