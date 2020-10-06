@@ -611,6 +611,47 @@ class NairaWalletController extends Controller
         return back()->with(['success' => 'Refund made successfully']);
     }
 
+    public function query($id)
+    {
+        $reference = NairaTransaction::findOrFail($id)->reference;
+
+        $client = new Client();
+        $url = env('RUBBIES_API') . "/transactionquery";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                "reference" => $reference,
+            ],
+            'headers' => [
+                'authorization' => env('RUBBIES_SECRET_KEY'),
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+        $body->requestdate  = date('d M h:ia', $body->requestdate);
+        if ($body->responsecode != 13) {
+            return response()->json([
+                'success' =>true,
+                'data' => $body
+            ]);
+        } else {
+            return response()->json([
+                'success' =>false,
+                'data' => $body
+            ]);
+        }
+
+
+
+    }
+
+    public function updateStatus(Request $r)
+    {
+        $transaction = NairaTransaction::find($r->id);
+        $transaction->status = $r->status;
+        $transaction->save();
+        return back()->with(['success' => 'Transaction status updated to '.$r->status]);
+    }
+
     public function callback(Request $r)
     {
         $nw = NairaWallet::where('account_number', $r->craccount)->first();

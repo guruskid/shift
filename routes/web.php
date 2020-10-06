@@ -194,6 +194,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'seniorAccountant']
 
     Route::get('/users', 'AdminController@users')->name('admin.users');
     Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
+
+    Route::get('/query-transaction/{id}', 'NairaWalletController@query' )->name('admin.query-transaction');
+    Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus' )->name('admin.update-naira-transaction');
 });
 
 /* for super admin and all accountants */

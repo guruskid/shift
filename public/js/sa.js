@@ -22,7 +22,7 @@ $(function () {
         $('.txn-btn').prop('disabled', true);
         Notify('Transaction initiated, please wait', null, null, 'success');
         $('.modal').modal('hide');
-    } )
+    })
 
 
 });
@@ -223,13 +223,55 @@ function removeAgent(id) {
 /* Confirm transfer of funds */
 function confirmTransfer(id, user, amount) {
     $('.amount').text(amount)
-    $('.acct-name').text(user['first_name'] + " " +user['last_name'] )
+    $('.acct-name').text(user['first_name'] + " " + user['last_name'])
     $('#t-id').val(id)
 }
 
 /* Confirm refund funds */
 function confirmRefund(id, user, amount) {
     $('#r-amount').text(amount)
-    $('#r-acct-name').text(user['first_name'] + " " +user['last_name'] )
+    $('#r-acct-name').text(user['first_name'] + " " + user['last_name'])
     $('#r-t-id').val(id)
+}
+
+/* Query a transaction from rubies */
+function queryTransaction(id) {
+    $('#q-id').val(id);
+    $('.loader').show();
+    $.get('/admin/query-transaction/' + id)
+        .done(function (response) {
+            console.log(response);
+            $('.loader').hide();
+            if (response['success'] == true) {
+                res = response.data;
+                $('#q-ref').text(res.requestdata.reference);
+                $('#q-res-code').text(res.responsecode);
+                $('#q-status').text(res.transactionstatus);
+                $('#q-res-msg').text(res.responsemessage);
+                $('#q-amount').text('₦' + res.requestdata.amount.toLocaleString());
+                $('#q-cr').text(res.craccountname);
+                $('#q-dr').text(res.draccountname);
+                $('#q-req-date').text(res.requestdate);
+                $('#q-res-date').text(res.responsetime);
+
+
+            } else {
+                swal({
+                    title: "Ooops!",
+                    text: response.data.responsemessage,
+                    icon: "error",
+                    button: "OK",
+                });
+                console.log(response.data)
+            }
+        })
+        .fail(function (xhr, status, error) {
+            $('.loader').hide();
+            swal({
+                title: "Ooops!",
+                text: error,
+                icon: "error",
+                button: "OK",
+            });
+        })
 }

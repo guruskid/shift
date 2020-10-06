@@ -264,7 +264,8 @@
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
     <script src="{{asset('admin_assets/js/app.js')}} "></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
-    <script src="{{asset('js/sa.js')}}"></script>
+    <script src="{{asset('js/sa.js?v=2')}}"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     {{-- Datatables --}}
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
