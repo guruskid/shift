@@ -106,7 +106,7 @@
             </li>
             @endif
 
-            @if (in_array(Auth::user()->role, [999, 666] ))
+            @if (in_array(Auth::user()->role, [999, 666, 777, 889] ))
             <li class="my-3">
                 <a href="{{route('admin.chat_agents')}}"
                     class=" {{ Route::currentRouteName() == 'admin.chat_agents' ? 'mm-active' : '' }} ">
@@ -116,7 +116,7 @@
             </li>
             @endif
 
-            @if (in_array(Auth::user()->role, [999, 889] ))
+            @if (in_array(Auth::user()->role, [999, 889, 777] ))
             <li class="my-3">
                 <a href="{{route('admin.users')}}"
                     class=" {{ Route::currentRouteName() == 'admin.users' ? 'mm-active' : '' }} ">

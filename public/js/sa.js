@@ -80,34 +80,27 @@ function deleteRate(id) {
 }
 
 /* Edit Transaction */
-function editTransac(id) {
-    $.ajax({
-        type: "GET",
-        url: '/admin/get-transac/' + id,
-        success: function (data) {
+function editTransac(data) {
+    $('#e_email').html(data['user_email']);
+    $('#e_id').val(data['id']);
 
-            $('#e_email').html(data['user_email']);
-            $('#e_id').val(data['id']);
+    $('#e_card').html(data['card']);
+    $('#e_card').val(data['card_id']);
 
-            $('#e_card').html(data['card']);
-            $('#e_card').val(data['card']);
+    $('#e_country').html(data['country']);
+    $('#e_country').val(data['country']);
 
-            $('#e_country').html(data['country']);
-            $('#e_country').val(data['country']);
+    $('#e_amount').val(data['amount']);
+    $('#e_amount_paid').val(data['amount_paid']);
 
-            $('#e_amount').val(data['amount']);
-            $('#e_amount_paid').val(data['amount_paid']);
+    $('#e_status').html(data['status']);
+    $('#e_status').val(data['status']);
 
-            $('#e_status').html(data['status']);
-            $('#e_status').val(data['status']);
+    $('#e_trade_type').html(data['type']);
+    $('#e_trade_type').val(data['type']);
 
-            $('#e_trade_type').html(data['type']);
-            $('#e_trade_type').val(data['type']);
+    $('#e_date').val(data['created_at']);
 
-            $('#e_date').val(data['created_at']);
-
-        }
-    });
 }
 
 /* Delete Transaction */

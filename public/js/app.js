@@ -2610,6 +2610,10 @@ __webpack_require__.r(__webpack_exports__);
       _this.playSound();
 
       alert("Transaction updated");
+    }).listen("CustomNotification", function (e) {
+      _this.playSound();
+
+      alert(e.message);
     });
   },
   methods: {

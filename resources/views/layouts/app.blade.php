@@ -228,7 +228,7 @@ $not = $nots->last();
 
     </div>
 </div>
-    <script src="/js/app.js"></script>
+    <script src="/js/app.js?v=1"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
@@ -241,7 +241,7 @@ $not = $nots->last();
 
     @auth
     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666] ))
-    <script src="{{asset('js/sa.js?v=2')}}"></script>
+    <script src="{{asset('js/sa.js?v=3')}}"></script>
     @endif
     @endauth
 

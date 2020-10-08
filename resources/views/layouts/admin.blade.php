@@ -257,14 +257,14 @@
     <script src="{{asset('admin_assets/js/libs/jquery-3.1.1.min.js')}} "></script>
     <script src="{{asset('admin_assets/bootstrap/js/popper.min.js')}} "></script>
     {{-- Vue JS --}}
-    <script src="/js/app.js"></script>
+    <script src="/js/app.js?v=1"></script>
 
     <script src="{{asset('admin_assets/bootstrap/js/bootstrap.min.js')}} "></script>
     <script src="{{asset('admin_assets/plugins/perfect-scrollbar/perfect-scrollbar.min.js')}} "></script>
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
     <script src="{{asset('admin_assets/js/app.js')}} "></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
-    <script src="{{asset('js/sa.js?v=2')}}"></script>
+    <script src="{{asset('js/sa.js?v=3')}}"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     {{-- Datatables --}}
