@@ -16,7 +16,7 @@ class CreatePaymentMediaTable extends Migration
         Schema::create('payment_media', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->bigInteger('currency_id');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

@@ -22,7 +22,7 @@ $(function () {
         $('.txn-btn').prop('disabled', true);
         Notify('Transaction initiated, please wait', null, null, 'success');
         $('.modal').modal('hide');
-    } )
+    })
 
 
 });
@@ -129,21 +129,22 @@ function deleteTransac(id) {
 }
 
 /* Get card details for editing */
-function editCard(id) {
-    $.get("/admin/get-card/" + id, function (data, status) {
-        $('#e-card-name-2').html(data['name']);
-        $('#e-card-id').val(data['id']);
-        $('#e-card-name').val(data['name']);
-        $('#e-card-wallet').val(data['wallet_id']);
-        $('#e-card-min').val(data['min']);
-        $('#e-card-max').val(data['max']);
-        if (data['is_crypto'] == 1) {
-            $('#e-card-crypto').html("Yes");
-        } else {
-            $('#e-card-crypto').html("No");
-        }
-        $('#e-card-crypto').val(data['is_crypto']);
-    });
+function editCard(card) {
+    $('#e-card-image').attr('src', '/storage/assets/'+card.image);
+    $('#e-card-name').val(card['name']);
+    $('#e-card-id').val(card['id']);
+    $('#e-card-wallet').val(card['wallet_id']);
+    toggleCheckbox(card.is_crypto, '#e-card-crypto' );
+    toggleCheckbox(card.buyable, '#e-card-buyable' );
+    toggleCheckbox(card.sellable, '#e-card-sellable' );
+}
+
+function toggleCheckbox(value, ele) {
+    if (value == 1) {
+        $(ele).prop('checked', true);
+    } else {
+        $(ele).prop('checked', false);
+    }
 }
 
 /* Delete asset */
@@ -223,13 +224,13 @@ function removeAgent(id) {
 /* Confirm transfer of funds */
 function confirmTransfer(id, user, amount) {
     $('.amount').text(amount)
-    $('.acct-name').text(user['first_name'] + " " +user['last_name'] )
+    $('.acct-name').text(user['first_name'] + " " + user['last_name'])
     $('#t-id').val(id)
 }
 
 /* Confirm refund funds */
 function confirmRefund(id, user, amount) {
     $('#r-amount').text(amount)
-    $('#r-acct-name').text(user['first_name'] + " " +user['last_name'] )
+    $('#r-acct-name').text(user['first_name'] + " " + user['last_name'])
     $('#r-t-id').val(id)
 }

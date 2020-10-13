@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
 {
-    public function rates()
+
+    protected $guarded = [];
+    /* public function rates()
     {
         return $this->hasMany('App\Rate', 'card', 'name');
-    }
-    
+    } */
+
     /**
      * Get the currencies attached to this card
      *

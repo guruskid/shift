@@ -22,7 +22,7 @@ class CardResource extends JsonResource
         ];
     }
 
-    
+
     /**
      * Get needed data
      *
@@ -38,7 +38,7 @@ class CardResource extends JsonResource
         });
     }
 
-    
+
     /**
      * getPaymentMediums
      *
@@ -56,7 +56,7 @@ class CardResource extends JsonResource
     }
 
 
-    
+
     /**
      * Unset keys we dont need
      *
@@ -67,7 +67,7 @@ class CardResource extends JsonResource
     private function unsetHelper(&$entity, array $keys)
     {
         foreach($keys as $key){
-            
+
             unset($entity->$key);
         }
     }

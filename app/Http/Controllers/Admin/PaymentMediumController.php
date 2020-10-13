@@ -2,12 +2,32 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Currency;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\PaymentMedium;
 
-class CurrencyController extends Controller
+class PaymentMediumController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -16,12 +36,11 @@ class CurrencyController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $data = $request->only(['name']);
 
-        Currency::create($data);
+        PaymentMedium::create($data);
 
-        return redirect()->back()->with(['success' => 'Currency Added']);
+        return redirect()->back()->with(['success' => 'Card Type Added']);
     }
 
     /**

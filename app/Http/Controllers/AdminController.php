@@ -183,16 +183,7 @@ class AdminController extends Controller
         return redirect()->back()->with(['success' => 'Card added']);
     }
 
-    public function editCard(Request $r)
-    {
-
-        $card = Card::find($r->id);
-        $card->name = $r->name;
-        $card->wallet_id = $r->wallet_id;
-        $card->is_crypto = $r->is_crypto;
-        $card->save();
-        return redirect()->back()->with(['success' => 'Card updated']);
-    }
+    
 
     public function getCard($id)
     {

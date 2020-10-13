@@ -141,7 +141,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 /* For Super Admins Only */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ], function () {
     Route::post('/cards', 'AdminController@addCard' )->name('admin.add_card');
-    Route::post('/edit-card', 'AdminController@editCard' )->name('admin.edit_card');
+
 
     Route::post('/transactions', 'AdminController@addTransaction' )->name('admin.add_transaction');
     Route::GET('/delete-transaction/{id}', 'AdminController@deleteTransac');
@@ -166,9 +166,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
 /* For manager and super admin */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
     Route::post('/edit-rate', 'AdminController@editRate' )->name('admin.edit_rate');
-
-
-    
 
     Route::GET('/delete-rate/{id}', 'AdminController@deleteRate');
 
