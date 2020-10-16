@@ -19,6 +19,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/cardcalculator', function () {
+    return view('newpages.cardcalculator');
+});
+Route::get('/transaction', function () {
+    return view('newpages.Transactionscreen');
+});
+
 Route::get('mailable', function () {
     /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered('Winston Okatubo') ); */
     $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
