@@ -38,8 +38,9 @@
   <script src="/newpages/js/main.js"></script>
   <script>
     $(document).ready(function() {
-                            App.init();
-                        });
+        App.init();
+    })
+                            
   </script>
   <script src="/newpages/assets/js/custom.js"></script>
   <!-- END GLOBAL MANDATORY SCRIPTS -->

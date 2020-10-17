@@ -88,8 +88,8 @@
                                                 style="border: 1px solid #EFEFF8;width: 90%;">
                                             </div>
                                             <div
-                                                class="d-flex flex-row justify-content-around align-items-center flex-wrap">
-                                                <div class="card-image">
+                                                class="d-flex flex-row justify-content-between align-items-center flex-wrap flex-lg-nowrap">
+                                                <div class="card-image mr-2">
                                                     <svg width="160" height="100" viewBox="0 0 337 212" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -106,18 +106,13 @@
                                                         </defs>
                                                     </svg>
                                                 </div>
-                                                <div class="d-flex flex-column">
-                                                    <div>
+                                                <div class="d-flex flex-column mx-3 mx-lg-1">
+                                                    <div class="d-flex flex-column">
                                                         <label for="country" class="label-style">Country</label>
-                                                        
-                                                        <select id="select_country"
-                                                            class="custom-select select-country-custom-select">
-                                                            <option selected>Select country</option>
-                                                            <option value="us">USA</option>
-                                                            <option value="canada">CANADA</option>
+                                                        <select id="countries_list" class="form-control custom-select select-country-custom-select">
                                                         </select>
                                                     </div>
-                                                    <div class="mt-4">
+                                                    <div class="mt-4 d-flex flex-column">
                                                         <label for="country" class="label-style">Card
                                                             type</label>
                                                         <select
@@ -148,11 +143,32 @@
                                                 </div>
                                                 <div class="ml-lg-4 mt-4 mt-md-0 text-center">
                                                     <label for="country" class="label-style">Quantity</label>
-                                                    <select id="quantity"
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <div class="text-center" onclick="changeqty('subtract')"
+                                                            style="cursor:pointer;width:30px;height:24px;border-radius:40px;background: #000070;">
+                                                            <svg width="10" height="2" viewBox="0 0 12 2" fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M0 0H12V2H0V0Z" fill="white" />
+                                                            </svg>
+                                                        </div>
+                                                        {{-- <span class="px-2">1</span> --}}
+                                                        <input readonly style="width: 50px;padding:2px;border:0px;"
+                                                            type="text" class="mx-1 form-control text-center" name=""
+                                                            id="qty_input" value="1">
+                                                        <div class="text-center" onclick="changeqty('add')"
+                                                            style="cursor:pointer;width:30px;height:24px;border-radius:40px;background: #000070;">
+                                                            <svg width="10" height="10" viewBox="0 0 14 14" fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z"
+                                                                    fill="white" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    {{-- <select id="quantity"
                                                         class="custom-select select-country-custom-select px-3">
                                                         <option value="1" selected>1</option>
                                                         <option value="2">2</option>
-                                                    </select>
+                                                    </select> --}}
                                                 </div>
                                             </div>
                                             <div class="d-block text-center my-3">
