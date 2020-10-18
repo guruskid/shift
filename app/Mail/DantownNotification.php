@@ -16,11 +16,13 @@ class DantownNotification extends Mailable
      *
      * @return void
      */
-    public  $title, $body;
-    public function __construct(String $title, String $body)
+    public  $title, $body, $btn_text, $btn_url;
+    public function __construct(String $title, String $body, String $btn_text, String $btn_url)
     {
         $this->title = $title;
         $this->body = $body;
+        $this->btn_text = $btn_text;
+        $this->btn_url = $btn_url;
     }
 
     /**

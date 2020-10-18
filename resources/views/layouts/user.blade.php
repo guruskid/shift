@@ -44,12 +44,14 @@ if (Auth::user()->nairaWallet) {
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="Dantown multi services">
     <meta name="msapplication-tap-highlight" content="no">
+    <link href="{{asset('user_assets/OwlCarousel/assets/owl.carousel.css')}} " rel="stylesheet">
+    <link href="{{asset('user_assets/OwlCarousel/assets/owl.theme.default.min.css')}} " rel="stylesheet">
     <link href=" {{asset('css/app.css')}} " rel="stylesheet">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
     <link href=" {{asset('custom.css?v = 1.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    {{-- <link rel="stylesheet" href="{{asset('main/css/calculator.css')}} "> --}}
+
 
 
     <link rel="stylesheet" type="text/css"
@@ -276,11 +278,11 @@ if (Auth::user()->nairaWallet) {
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js">
-    </script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"> </script>
 
     <script>
         $(document).ready(function () {
+            /* Data tables */
             $('.transactions-table').DataTable({
                 paging: false,
                 order: [[0, 'desc'] ]

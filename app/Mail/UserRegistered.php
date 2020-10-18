@@ -16,9 +16,8 @@ class UserRegistered extends Mailable
      *
      * @return void
      */
-    public $name;
 
-    public function __construct(String $name)
+    public function __construct()
     {
         //
     }
