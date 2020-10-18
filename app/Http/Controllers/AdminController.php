@@ -19,6 +19,7 @@ use App\TransactionType;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
@@ -70,6 +71,7 @@ class AdminController extends Controller
         $approved_transactions = Transaction::where('status', 'approved')->get()->take(5);
 
         $users = User::latest()->get()->take(4);
+        $verified_users = User::where('email_verified_at', '!=', null )->count();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
         $users_count = User::all()->count();
 
@@ -92,7 +94,10 @@ class AdminController extends Controller
         $rubies_balance = $body->balance;
         $users_wallet_balance = NairaWallet::sum('amount');
         $company_balance = $rubies_balance - $users_wallet_balance;
-        $charges = NairaTransaction::sum('charge');
+
+        $transfer_charge = NairaWallet::where('account_number', 0000000001)->first()->amount;
+        $sms_charge = NairaWallet::where('account_number', 0000000002)->first()->amount;
+        $charges = $transfer_charge + $sms_charge;
 
         $withdraw_txns = NairaTransaction::where('transaction_type_id', 3)->sum('amount');
         $airtime_txns = NairaTransaction::where('transaction_type_id', 9)->sum('amount');
@@ -109,7 +114,7 @@ class AdminController extends Controller
         $n_txns = NairaTransaction::latest()->get()->take(4);
 
         /* Get count of transactions from when an agent was last activated */
-        $au =Auth::user();
+        $au = Auth::user();
         $a_w_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'waiting')->count();
         $a_i_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'in progress')->count();
         $a_s_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'success')->count();
@@ -121,7 +126,7 @@ class AdminController extends Controller
             return view(
                 'admin.super_dashboard',
                 compact([
-                    'transactions', 'users', 'users_count', 'notifications', 'usersChart',
+                    'transactions', 'users', 'verified_users', 'users_count', 'notifications', 'usersChart',
                     'withdraw_txns', 'airtime_txns', 'buy_txns_wallet',
                     'g_txns', 'c_txns', 'n_txns',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
@@ -134,7 +139,7 @@ class AdminController extends Controller
                 'admin.dashboard',
                 compact([
                     'transactions', 'waiting_transactions', 'in_progress_transactions',
-                     'users', 'users_count', 'notifications', 'usersChart',
+                    'users', 'users_count', 'notifications', 'usersChart',
                     'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
@@ -152,8 +157,7 @@ class AdminController extends Controller
                     'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges'
                 ])
             );
-        }
-        else if (Auth::user()->role == 666) { //Manager
+        } else if (Auth::user()->role == 666) { //Manager
             return view(
                 'admin.manager_dashboard',
                 compact([
@@ -311,7 +315,7 @@ class AdminController extends Controller
 
     public function assetTransac($id)
     {
-        $transactions = Transaction::whereHas('asset', function($query) use($id) {
+        $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
         })->paginate(1000);
 
@@ -322,7 +326,6 @@ class AdminController extends Controller
 
 
         return view('admin.transactions', compact(['transactions', 'segment']));
-
     }
 
     public function assetTransactionsSortByDate(Request $request)
@@ -333,7 +336,7 @@ class AdminController extends Controller
             'end' => 'required|date|string',
         ]);
         $transactions = Transaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(200);
-        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - '. Carbon::parse($data['end'])->format('D d M Y') . ' Asset' ;
+        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Asset';
 
         return view('admin.transactions', compact(['segment', 'transactions']));
     }
@@ -351,6 +354,7 @@ class AdminController extends Controller
         $t = new Transaction();
         $t->uid = uniqid();
         $t->user_email = $r->user_email;
+        $t->user_id = User::where('email', $r->user_email)->first()->id;
         $t->card = $r->card;
         $t->card_id = $card_id;
         $t->type = $r->trade_type;
@@ -366,8 +370,10 @@ class AdminController extends Controller
     public function editTransaction(Request $r)
     {
 
+        $card_id = Card::where('name', $r->card)->first()->id;
         $t = Transaction::find($r->id);
         $t->card = $r->card;
+        $t->card_id = $card_id;
         $t->type = $r->trade_type;
         $t->country = $r->country;
         $t->amount = $r->amount;
@@ -382,7 +388,8 @@ class AdminController extends Controller
         } else {
             $t->stats = $t->status;
         }
-        $body = 'The status of your transaction with id ' . $t->uid . ', has been updated to ' . $t->stats;
+        $body = 'The status of your transaction to  ' . $t->type . ' ' . $t->card .
+         ' worth of ₦' . number_format($t->amount_paid) . ' has been updated to ' .$t->status;
         $title = 'Transaction update';
         $not = Notification::create([
             'user_id' => $user->id,
@@ -391,7 +398,10 @@ class AdminController extends Controller
         ]);
 
         broadcast(new TransactionUpdated($user));
-        Mail::to($user->email)->send(new DantownNotification($title, $body));
+        if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1 ) {
+            $title = 'Transaction Successful';
+            Mail::to($user->email)->send(new DantownNotification($title, $body, 'Go to Wallet', route('user.naira-wallet')));
+        }
 
         return redirect()->back()->with(['success' => 'Transaction updated']);
     }
@@ -409,7 +419,7 @@ class AdminController extends Controller
         return response()->json($rate->delete());
     }
 
-    public function updateTransaction($id, $status)
+    public function updateTransaction($id, $status) //for assigned transactions
     {
         $t = Transaction::find($id);
         $t->status = $status;
@@ -425,7 +435,7 @@ class AdminController extends Controller
         ]);
 
         broadcast(new TransactionUpdated($user));
-        Mail::to($user->email)->send(new DantownNotification($title, $body));
+        /* Mail::to($user->email)->send(new DantownNotification($title, $body)); */
         return response()->json(['success' => true]);
     }
 
@@ -450,7 +460,7 @@ class AdminController extends Controller
             'end' => 'required|date|string',
         ]);
         $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->get();
-        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - '. Carbon::parse($data['end'])->format('D d M Y') . ' Wallet' ;
+        $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
 
         return view('admin.naira_transactions', compact(['segment', 'transactions']));
     }
@@ -469,16 +479,40 @@ class AdminController extends Controller
 
     public function transferCharges(Request $r)
     {
-        if (!$r->start || !$r->end ) {
-            $transactions = NairaTransaction::latest()->paginate(1000);
-            $total = $transactions->sum('charge');
-        }else{
-            $transactions = NairaTransaction::where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->paginate(1000);
-            $total = $transactions->sum('charge');
+        $transfer_charge = NairaWallet::where('account_number', 0000000001)->first();
+        $sms_charge = NairaWallet::where('account_number', 0000000002)->first();
+
+        $transfer_charges_txns = NairaTransaction::where('transfer_charge', '!=', 0)->latest()->paginate(1000);
+        $sms_charges_txns = NairaTransaction::where('sms_charge', '!=', 0)->latest()->paginate(1000);
+
+
+        return view('admin.charges', compact(['transfer_charge', 'sms_charge', 'transfer_charges_txns', 'sms_charges_txns']));
+    }
+
+    public function clearTransferCharges(Request $r)
+    {
+        if (Hash::check($r->password, Auth::user()->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong password entered']);
         }
 
+        $transfer_charge = NairaWallet::where('account_number', 0000000001)->first();
+        $transfer_charge->amount = 0;
+        $transfer_charge->save();
 
-        return view('admin.charges', compact(['transactions', 'total']));
+        return back()->with(['success' => 'Transfer charges cleared successfully']);
+    }
+
+    public function clearSmsCharges(Request $r)
+    {
+        if (Hash::check($r->password, Auth::user()->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong password entered']);
+        }
+
+        $sms_charge = NairaWallet::where('account_number', 0000000002)->first();
+        $sms_charge->amount = 0;
+        $sms_charge->save();
+
+        return back()->with(['success' => 'SMS charges cleared successfully']);
     }
 
 
@@ -491,6 +525,12 @@ class AdminController extends Controller
     public function users()
     {
         $users = User::orderBy('created_at', 'desc')->get();
+        return view('admin.users', compact(['users']));
+    }
+
+    public function verifiedUsers()
+    {
+        $users = User::where('email_verified_at', '!=', null)->get();
         return view('admin.users', compact(['users']));
     }
 

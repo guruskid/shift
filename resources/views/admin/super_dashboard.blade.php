@@ -70,11 +70,11 @@
                     <div class="widget widget-chart-one">
                         <div class="widget-heading">
                             <div>
-                                <h5 class="">Transfer Changes</h5>
+                                <h5 class="">Charges</h5>
                                 <a href="{{route('admin.wallet-charges')}} ">View all</a>
                             </div>
                             <div class="widget-n">
-                                <h5>₦{{number_format($charges)}}</h5>
+                                <h5>₦{{$charges}}</h5>
                             </div>
                         </div>
                     </div>
@@ -102,6 +102,18 @@
             <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="row">
                     <div class="col-12">
+                        <div class="widget widget-chart-two  mb-4">
+                            <div class="widget-heading">
+                                <div>
+                                    <h5 class="">Verified Users </h5>
+                                    <a href="{{route('admin.verified-users')}} ">View all</a>
+                                </div>
+                                <div class="widget-n">
+                                    <h5>{{number_format($verified_users)}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-100"></div>
                         <div class="widget widget-chart-two mb-4">
                             <div class="widget-heading">
                                 <div>
@@ -114,7 +126,7 @@
                             </div>
                         </div>
                         <div class="w-100"></div>
-                        <div class="widget widget-chart-two mb-4">
+                        <div class="widget widget-chart-two">
                             <div class="widget-heading">
                                 <div>
                                     <h5 class="">Withdraw Transaction </h5>
@@ -125,18 +137,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-100"></div>
-                        <div class="widget widget-chart-two">
-                            <div class="widget-heading">
-                                <div>
-                                    <h5 class="">Airtime Transaction </h5>
-                                    <a href="{{route('admin.wallet-transactions', 9)}} ">View all</a>
-                                </div>
-                                <div class="widget-n">
-                                    <h5>₦{{number_format($airtime_txns)}}</h5>
-                                </div>
-                            </div>
-                        </div>
+
+
 
                     </div>
                 </div>

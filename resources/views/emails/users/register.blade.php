@@ -1,14 +1,14 @@
 @component('mail::message')
 @component('mail::panel')
-Welcome on Board
+Welcome to Dantown
 @endcomponent
 
-Hi {{$name}},
-thank you for signing up on Dantown multi services. Please login into your account to make a trade today.
+Hi,
+Congratulations on Signing up on Dantown.
+We welcome you to a new world of endless possibilities where you can trade your btc and gift cards.
 
+@component('mail::button', ['url' => 'https://godantown.com'])
+Buy Now
+@endcomponent
 
-
-
-Thanks,<br>
-{{ config('app.name') }}
 @endcomponent

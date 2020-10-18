@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Bank;
 use App\Mail\DantownNotification;
+use App\Mail\WalletAlert;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
@@ -56,15 +57,15 @@ class NairaWalletController extends Controller
                 'amount_control' => $body->amountcontrol,
             ]);
 
-            $title = 'Dantown wallet created';
-            $msg_body = 'Your Dantown wallet has been created successfully, you can now send money, recieve money, pay bills and do more with your Dantown wallet. Your account number is ' . $body->virtualaccount;
+            $title = 'Wallet created';
+            $msg_body = 'Congratulations your Dantown Naira Wallet has been created successfully, you can now send, receive and store money in the wallet. Guess what that is not all, you can also pay bills and get airtime on our website';
             $not = Notification::create([
                 'user_id' => Auth::user()->id,
                 'title' => $title,
                 'body' => $msg_body,
             ]);
 
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.naira-wallet') ));
 
             return back()->with(['success' => 'Naira wallet account opened successfully']);
         } else {
@@ -213,6 +214,7 @@ class NairaWalletController extends Controller
         }
 
         $amount = $r->amount + $charge;
+        $amount_paid = $r->amount;
 
 
         if ($amount > $n->amount) {
@@ -234,7 +236,13 @@ class NairaWalletController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $n->amount;
-        $nt->charge = 61.38;
+        $nt->charge = $charge;
+        $nt->transfer_charge = 61.38;
+        $nt->sms_charge = 2.55;
+        if ($charge == 0) {
+            $nt->transfer_charge = 0; //overide the previous
+        }
+        $nt->amount_paid = $amount_paid;
         $nt->transaction_type_id = $tid;
 
 
@@ -248,6 +256,17 @@ class NairaWalletController extends Controller
         $nt->trans_msg = $msg;
         $nt->status = 'pending';
         $nt->save();
+
+        /* Credit SMS and Transfer Wallet */
+        $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        $transfer_charges_wallet->amount += $nt->transfer_charge;
+        $transfer_charges_wallet->save();
+
+        $sms_charges_wallet = NairaWallet::where('account_number', 0000000002)->first();
+        $sms_charges_wallet->amount += $nt->sms_charge;
+        $sms_charges_wallet->save();
+
+
 
         $client = new Client();
         $url = env('RUBBIES_API') . "/fundtransfer";
@@ -301,7 +320,9 @@ class NairaWalletController extends Controller
                 'title' => $title,
                 'body' => $msg_body,
             ]);
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+            if (Auth::user()->notificationSetting->wallet_email == 1) {
+                Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
+            }
 
 
             /* Send SMS */
@@ -350,6 +371,7 @@ class NairaWalletController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
+        $nt->amount_paid = $amount;
         $nt->user_id = $t->user->id;
         $nt->type = 'naira wallet';
 
@@ -384,7 +406,9 @@ class NairaWalletController extends Controller
             'body' => $msg_body
         ]);
 
-        Mail::to($t->user->email)->send(new DantownNotification($title, $msg_body));
+        if ($t->user->notificationSetting->wallet_email == 1) {
+            Mail::to($t->user->email)->send(new WalletAlert($nt, 'credit'));
+        }
 
         $client = new Client();
         $token = env('SMS_TOKEN');
@@ -446,6 +470,7 @@ class NairaWalletController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
+        $nt->amount_paid = $amount;
         $nt->user_id = $t->user->id;
         $nt->type = 'naira wallet';
 
@@ -486,7 +511,13 @@ class NairaWalletController extends Controller
             'body' => $msg_body
         ]);
 
-        Mail::to($t->user->email)->send(new DantownNotification($title, $msg_body));
+        if ($t->user->notificationSetting->wallet_email == 1) {
+            $ty =  'credit';
+            if ($tt == 'debited') {
+                $ty = 'debit';
+            }
+            Mail::to($t->user->email)->send(new WalletAlert($nt, $ty));
+        }
 
         $client = new Client();
         $token = env('SMS_TOKEN');
@@ -529,6 +560,7 @@ class NairaWalletController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
+        $nt->amount_paid = $amount;
         $nt->user_id = $t->user->id;
         $nt->type = 'naira wallet';
 
@@ -564,7 +596,9 @@ class NairaWalletController extends Controller
             'body' => $msg_body
         ]);
 
-        Mail::to($t->user->email)->send(new DantownNotification($title, $msg_body));
+        if ($t->user->notificationSetting->wallet_email == 1) {
+            Mail::to($t->user->email)->send(new WalletAlert($nt, 'credit'));
+        }
 
         $client = new Client();
         $token = env('SMS_TOKEN');
@@ -603,6 +637,7 @@ class NairaWalletController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $r->amount;
+        $nt->amount_paid = $r->amount;
         $nt->user_id = $nw->user->id;
         $nt->type = 'bank transfer';
 
@@ -630,7 +665,9 @@ class NairaWalletController extends Controller
             'body' => $msg_body,
         ]);
 
-        Mail::to($nw->user->email)->send(new DantownNotification($title, $msg_body));
+        if ($nw->user->notificationSetting->wallet_email == 1) {
+            Mail::to($nw->user->email)->send(new WalletAlert($nt, 'credit'));
+        }
 
         $client = new Client();
         $token = env('SMS_TOKEN');

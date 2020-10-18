@@ -44,8 +44,8 @@ $not = $notifications->last();
         <div class="app-main__inner">
             <div class="row">
                 @foreach ($notifications as $item)
-                <div class="col-md-12">
-                    <div class="alert alert-info alert-dismissible">
+                <div class="col-md-12 mb-3">
+                    <div class="alert text-white alert-dismissible" style="background: #000070 url('/user_assets/images/group.png') repeat center; background-size: full">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                         <strong>{{$item->title}}</strong>
                          <p>{{$item->body}}</p>
@@ -53,6 +53,7 @@ $not = $notifications->last();
                 </div>
                 @endforeach
             </div>
+
 
             <div class="row">
                 <div class="col-md-4 col-lg-4">
@@ -220,9 +221,6 @@ $not = $notifications->last();
                     </div>
                 </div>
             </div>
-
-
-
             @include('layouts.partials.live-feeds')
 
         </div>

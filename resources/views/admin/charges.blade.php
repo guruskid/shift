@@ -44,71 +44,143 @@
                 <div class="page-title-wrapper">
                     <div class="page-title-heading">
                         <div class="page-title-icon">
-                            <i class="pe-7s-timer icon-gradient bg-warm-flame">
+                            <i class="pe-7s-graph1 icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div> Charges
-                            <div class="page-title-subheading">
-                                ₦{{number_format($total)}}
-                            </div>
+                        <div>Charges
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3 widget-content bg-amy-crisp">
+                        <div class="widget-content-wrapper text-white">
+                            <div class="widget-content-left">
+                                <div class="widget-heading">
+                                    <h5>Transfer Charges</h5>
+                                    <button class="btn btn-danger" data-toggle="modal"
+                                        data-target="#confirm-transfer-modal">Clear Balance</button>
+
+                                </div>
+                            </div>
+                            <div class="widget-content-right">
+                                <div class="widget-numbers text-white">
+                                    <span>₦{{$transfer_charge->amount }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3 widget-content bg-custom-accent">
+                        <div class="widget-content-wrapper text-white">
+                            <div class="widget-content-left">
+                                <div class="widget-heading">
+                                    <h5>SMS Charges</h5>
+                                    <button class="btn btn-danger" data-toggle="modal"
+                                    data-target="#confirm-sms-modal">Clear Balance</button>
+                                </div>
+                            </div>
+                            <div class="widget-content-right">
+                                <div class="widget-numbers text-white">
+                                    <span>₦{{$sms_charge->amount}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
-                        <div class="card-header justify-content-between ">
-                            Charges
-                            <form action="{{route('admin.wallet-charges')}}" class="form-inline p-2" method="POST">
-                                @csrf
-                                <div class="form-group mr-2">
-                                    <label for="">Start date </label>
-                                    <input type="date" name="start" class="ml-2 form-control">
-                                </div>
-                                <div class="form-group mr-2">
-                                    <label for="">End date </label>
-                                    <input type="date" name="end" class="ml-2 form-control">
-                                </div>
-                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
-                            </form>
-                        </div>
-                        <div class="table-responsive p-3">
+                        <div class="card-body">
+                            @foreach ($errors->all() as $err)
+                            <p class="text-danger">{{$err}} </p>
+                            @endforeach
+                            <ul class="nav nav-tabs nav-justified">
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0"
+                                        class="active nav-link">Transfer Charges</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">SMS
+                                        Charges</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                {{-- Transfer Charges --}}
+                                <div class="tab-pane active" id="tab-eg11-0" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="mb-2 transactions-table table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">Id</th>
+                                                    <th class="text-center">Reference id</th>
+                                                    <th class="text-center">Cr. Account</th>
+                                                    <th class="text-center">Dr. Account</th>
+                                                    <th class="text-center">Charge</th>
+                                                    <th class="text-center">Narration</th>
+                                                    <th class="text-center">Trans. Type</th>
+                                                    <th class="text-center">Status</th>
+                                                    <th class="text-center">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($transfer_charges_txns as $t)
+                                                <tr>
+                                                    <td class="text-center">{{$t->id}}</td>
+                                                    <td class="text-center">{{$t->reference}}</td>
+                                                    <td class="text-center">{{$t->cr_acct_name}}</td>
+                                                    <td class="text-center">{{$t->dr_acct_name}}</td>
+                                                    <td class="text-center">₦{{$t->transfer_charge}}</td>
+                                                    <td class="text-center">{{$t->narration}}</td>
+                                                    <td class="text-center">{{ucwords($t->transactionType->name)}}</td>
+                                                    <td class="text-center">{{ucwords($t->status)}} </td>
+                                                    <td class="text-center">{{$t->created_at->format('d M y ')}}</td>
+                                                </tr>
+                                                @endforeach
 
-                            <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Reff</th>
-                                        <th>User Name</th>
-                                        <th>Trans. Type</th>
-                                        <th>Amount</th>
-                                        <th>Charge</th>
-                                        <th>Narration</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($transactions as $t)
-                                    <tr>
-                                        <td>{{$t->id}} </td>
-                                        <td>{{$t->reference}} </td>
-                                        <td>
-                                            <a href="{{route('admin.user', [$t->user->id, $t->user->email ] )}}">
-                                                {{$t->user->first_name}}
-                                            </a>
-                                        </td>
-                                        <td>{{$t->transactionType->name}} </td>
-                                        <td>₦{{number_format($t->amount) }} </td>
-                                        <td>₦{{number_format($t->charge) }} </td>
-                                        <td>{{$t->narration}} </td>
-                                        <td>{{$t->created_at->format('d M Y')}} </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
+                                            </tbody>
+                                            {{$transfer_charges_txns->links()}}
+                                        </table>
+                                    </div>
+                                </div>
+                                {{-- Debit --}}
+                                <div class="tab-pane" id="tab-eg11-1" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="mb-2 transactions-table table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">Id</th>
+                                                    <th class="text-center">Reference id</th>
+                                                    <th class="text-center">Cr. Account</th>
+                                                    <th class="text-center">Dr. Account</th>
+                                                    <th class="text-center">Charge</th>
+                                                    <th class="text-center">Narration</th>
+                                                    <th class="text-center">Trans. Type</th>
+                                                    <th class="text-center">Status</th>
+                                                    <th class="text-center">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($sms_charges_txns as $t)
+                                                <tr>
+                                                    <td class="text-center">{{$t->id}}</td>
+                                                    <td class="text-center">{{$t->reference}}</td>
+                                                    <td class="text-center">{{$t->cr_acct_name}}</td>
+                                                    <td class="text-center">{{$t->dr_acct_name}}</td>
+                                                    <td class="text-center">₦{{$t->sms_charge}}</td>
+                                                    <td class="text-center">{{$t->narration}}</td>
+                                                    <td class="text-center">{{ucwords($t->transactionType->name)}}</td>
+                                                    <td class="text-center">{{ucwords($t->status)}} </td>
+                                                    <td class="text-center">{{$t->created_at->format('d M y ')}}</td>
+                                                </tr>
+                                                @endforeach
 
-                            </table>
+                                            </tbody>
+                                            {{$sms_charges_txns->links()}}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -117,4 +189,68 @@
     </div>
 </div>
 
+{{-- Transfer charges modal --}}
+<div class="modal fade " id="confirm-transfer-modal">
+    <div class="modal-dialog ">
+        <div class="modal-content  c-rounded">
+            <!-- Modal Header -->
+            <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                <h4 class="modal-title">Confirm Clear of Transfer Charges </h4>
+                <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+
+            <div class="modal-body p-4">
+                <p class="text-success">Enter your account password to confirm action</p>
+                <form action="{{route('admin.clear-transfer-charges')}}" method="POST">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Account Password </label>
+                                <input type="password" name="password" required class="form-control wallet-pin"
+                                    placeholder="- - - - - - - - - -">
+                            </div>
+                        </div>
+                    </div>
+                    <button  class="btn btn-block c-rounded bg-custom-gradient">
+                        Clear
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Clear SMS Charge  --}}<div class="modal fade " id="confirm-sms-modal">
+    <div class="modal-dialog ">
+        <div class="modal-content  c-rounded">
+            <!-- Modal Header -->
+            <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                <h4 class="modal-title">Confirm Clear of SMS Charges </h4>
+                <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+
+            <div class="modal-body p-4">
+                <p class="text-success">Enter your account password to confirm action</p>
+                <form action="{{route('admin.clear-sms-charges')}}" method="POST">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Account Password </label>
+                                <input type="password" name="password" required class="form-control wallet-pin"
+                                    placeholder="- - - - - - - - - -">
+                            </div>
+                        </div>
+                    </div>
+                    <button  class="btn btn-block c-rounded bg-custom-gradient">
+                        Clear
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

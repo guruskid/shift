@@ -17,8 +17,10 @@ use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use App\Charts\UserChart;
 use App\Events\NewTransaction;
+use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\NairaWallet;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -236,6 +238,41 @@ class UserController extends Controller
         return redirect()->back()->with(['success' => 'Id card uploaded, please hold on while we verify your account']);
     }
 
+    public function password(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|string|confirmed|min:6|different:old_password'
+        ]);
+
+        if (Hash::check($request->old_password, Auth::user()->password) == false) {
+            return redirect()->back()->with(['error' => 'Your current password does not match with the password you provided. Please try again.']);
+        }
+
+        $user = Auth::user();
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return redirect()->back()->with("success", "Password changed");
+    }
+
+    public function resetEmail(Request $r)
+    {
+        $r->validate([
+            'password' => 'required',
+            'new_email' => 'required|email|unique:users,email'
+        ]);
+
+        if (Hash::check($r->password, Auth::user()->password) == false) {
+            return redirect()->back()->with(['error' => 'Your current password does not match with the password you provided. Please try again.']);
+        }
+
+        Auth::user()->email = $r->new_email;
+        Auth::user()->email_verified_at = null;
+        Auth::user()->save();
+        return redirect()->back()->with("success", "Email changed");
+    }
+
     public function transactions()
     {
         $transactions = Auth::user()->transactions;
@@ -329,6 +366,7 @@ class UserController extends Controller
             $t = new Transaction();
             $t->uid = uniqid();
             $t->user_email = Auth::user()->email;
+            $t->user_id = Auth::user()->id;
             $t->card = $r->card;
             $t->card_id = $card_id;
             $t->type = $r->rate_type;
@@ -375,11 +413,16 @@ class UserController extends Controller
                 $nt->save();
             }
 
+            $title = ucwords($t->type).' '.$t->card;
+            $body = 'Your order to ' . $t->type.' '.$t->card.' worth of ₦'.number_format($t->amount_paid).' has been initiated successfully';
             $not = Notification::create([
                 'user_id' => Auth::user()->id,
-                'title' => 'Transaction initiated',
-                'body' => 'A new transaction has been initiated with id of ' . $t->uid,
+                'title' => $title,
+                'body' => $body,
             ]);
+            if (Auth::user()->notificationSetting->trade_email == 1) {
+                Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+            }
 
             return response()->json(['success' => true, 'data' => $t]);
         }
@@ -398,23 +441,7 @@ class UserController extends Controller
         return view('user.transaction', compact(['transaction']));
     }
 
-    public function password(Request $request)
-    {
-        $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|string|confirmed|min:6|different:old_password'
-        ]);
 
-        if (Hash::check($request->old_password, Auth::user()->password) == false) {
-            return redirect()->back()->with(['error' => 'Your current password does not match with the password you provided. Please try again.']);
-        }
-
-        $user = Auth::user();
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return redirect()->back()->with("success", "Password changed");
-    }
 
     public function updateBankDetails(Request $request)
     {
