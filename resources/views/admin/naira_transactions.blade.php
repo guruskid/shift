@@ -53,7 +53,9 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         </div>
                         <div> {{$segment}} Transactions
                             <div class="page-title-subheading">
-                                <h6>₦{{ number_format($total) }} </h6>
+                                <h6 class="d-inline">₦{{ number_format($total) }} </h6>
+                                <a href="{{ route('admin.naira-transaction.create') }}"><button
+                                        class="btn btn-primary">Add new transaction</button></a>
                             </div>
                         </div>
                     </div>
@@ -173,7 +175,8 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
 
             <!-- Modal body -->
             <div class="modal-body p-4">
-                <img src="{{ asset('loader2.gif') }}" class="loader img-fluid" alt="loader" style="position: absolute; top: 30px">
+                <img src="{{ asset('loader2.gif') }}" class="loader img-fluid" alt="loader"
+                    style="position: absolute; top: 30px">
                 <table class="table table-borderless">
                     <tbody>
                         <tr>
@@ -213,10 +216,11 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                 <hr>
                 <form action="{{ route('admin.update-naira-transaction') }}" method="post">
                     @csrf
-                    <p>Click 'refund' to perfoem a refund for failed transactions, the transaction status will be changed automatically once refund is done. </p>
+                    <p>Click 'refund' to perfoem a refund for failed transactions, the transaction status will be
+                        changed automatically once refund is done. </p>
                     <p> For successful transactions, update status to successful and save</p>
                     <div class="form-group">
-                        <input type="hidden" name="id" id="q-id" >
+                        <input type="hidden" name="id" id="q-id">
                         <select name="status" id="" class="form-control">
                             <option value="success">Successful</option>
                         </select>

@@ -241,7 +241,7 @@ $not = $nots->last();
 
     @auth
     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666] ))
-    <script src="{{asset('js/sa.js?v=3')}}"></script>
+    <script src="{{asset('js/sa.js?v=4')}}"></script>
     @endif
     @endauth
 

@@ -20,9 +20,9 @@ Route::get('/', function () {
 });
 
 Route::get('mailable', function () {
-    /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered('Winston Okatubo') ); */
-    $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
-    return new App\Mail\WalletAlert($txn, 'Debit');
+    Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
+    /* $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
+    return new App\Mail\WalletAlert($txn, 'Debit'); */
 });
 
 
@@ -181,7 +181,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] 
 
 
 /* for Senior accountant */
-Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'seniorAccountant'] ], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant'] ], function () {
     Route::get('/junior-accountants', 'AccountantController@juniorAccountants')->name('admin.accountants');
     Route::get('/accountant-action/{id}/{action}', 'AccountantController@action' )->name('accountant.action');
     Route::post('/add-junior-accountant', 'AccountantController@addJunior' )->name('accountant.add-junior');
@@ -192,6 +192,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'seniorAccountant']
 
     Route::get('/query-transaction/{id}', 'NairaWalletController@query' )->name('admin.query-transaction');
     Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus' )->name('admin.update-naira-transaction');
+
+
 });
 
 /* for super admin and all accountants */

@@ -20,6 +20,7 @@ use App\Events\NewTransaction;
 use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\NairaWallet;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -28,6 +29,22 @@ class UserController extends Controller
 
     public function dashboard()
     {
+        /* $client = new Client();
+        $url = env('TERMII_SMS_URL') ;
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                "to" => '07067186987',
+                "from" => 'Dantown',
+                'sms' => 'We are the big boys',
+                'type' => 'plain',
+                'channel' => 'generic',
+                'api_key' => env('TERMII_API_KEY')
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+        dd($body); */
+
         if (!Auth::user()->notificationsetting) {
             Auth::user()->notificationSetting()->create();
         }
