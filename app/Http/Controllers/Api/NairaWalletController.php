@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Validator;
 
 class NairaWalletController extends Controller
 {
+    public function index(){
+        $wallet = Auth::user()->nairaWallet;
+        return response()->json([
+            'success' => true,
+            'data' => $wallet
+        ]);
+    }
     public function allTransactions()
     {
         $naira_transactions = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->latest()->with('transactionType')->get();
