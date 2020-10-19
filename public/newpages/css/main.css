@@ -33,8 +33,8 @@
 }
 .list-cards-search .search-icon {
     position: absolute;
-    right: 15.4em;
-    top: 3.2em;
+    right: 13.4em;
+    top: 2.8em;
 }
 .card-type__sell-card,
 .card-type__sell-card:hover {
@@ -157,14 +157,15 @@
     margin: 0;
     padding: 0;
 }
-
-
-.form-control:disabled, .form-control[readonly] {
+.form-control:disabled,
+.form-control[readonly] {
     background-color: #fff !important;
-    /* outline-style: none !important;
-    outline: none !important; */
     box-shadow: none !important;
 }
+::-webkit-scrollbar {
+    display: none;
+}
+
 
 
 @media (max-width: 500px) {

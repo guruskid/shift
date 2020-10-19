@@ -19,6 +19,13 @@
   <link href="/newpages/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
   <link href="/newpages/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" />
   <link href="/newpages/css/main.css" rel="stylesheet" type="text/css" />
+  <link href=" {{asset('user_main.css')}} " rel="stylesheet">
+  <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
+  <link href=" {{asset('css/app.css')}} " rel="stylesheet">
+  <link href=" {{asset('user_main.css')}} " rel="stylesheet">
+  <link href=" {{asset('custom.css?v = 1.0')}} " rel="stylesheet">
+  <link href="{{asset('user_assets/OwlCarousel/assets/owl.carousel.css')}} " rel="stylesheet">
+  <link href="{{asset('user_assets/OwlCarousel/assets/owl.theme.default.min.css')}} " rel="stylesheet">
   <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 
 </head>
@@ -34,6 +41,12 @@
   <script src="/newpages/bootstrap/js/bootstrap.min.js"></script>
   <script src="/newpages/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
   <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+
+
+  <script src="/js/app.js?v = 1.4"></script>
+  <script src="{{asset('assets/scripts/main.js')}}"></script>
+  <script src="{{asset('js/custom.js')}}"></script>
+
   <script src="/newpages/assets/js/app.js"></script>
   <script src="/newpages/js/main.js"></script>
   <script>

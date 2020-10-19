@@ -1510,7 +1510,6 @@ const countries_iso = [
   
 let basket = [];
 $("#addcard_button").on("click", function() {
-  // alert('dd')
     let cardprice = $("#cardprice")
         .val()
         .trim();
@@ -1525,7 +1524,7 @@ $("#addcard_button").on("click", function() {
                         <td>${price_per_card}</td>
                         <td>x${quantity}</td>
                         <td id="totalprice">${total}</td>
-                        <td id="removeitem" class="removeitem">Remove</td>
+                        <td id="removeitem" class="removeitem">-</td>
                     </tr>`;
 
     basket.push(total);
@@ -1543,7 +1542,8 @@ function addtotals(total, num) {
 
 //Preview image before upload
 $("#proceedtoupload").on("click", function() {
-    $("#uploadcardimage").trigger("click");
+    // $("#uploadcardimage").trigger("click");
+    $("#uploadCardImageModal").show()
 });
 
 function preview(input) {
@@ -1566,6 +1566,7 @@ function inputfile() {
     $("#uploadcardsform")
         .get(0)
         .reset();
+        $("#uploadCardImageModal").hide()
 }
 
 $("table").on("click", "td.removeitem", function() {

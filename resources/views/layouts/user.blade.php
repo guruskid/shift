@@ -48,6 +48,8 @@ if (Auth::user()->nairaWallet) {
     <link href="{{asset('user_assets/OwlCarousel/assets/owl.theme.default.min.css')}} " rel="stylesheet">
     <link href=" {{asset('css/app.css')}} " rel="stylesheet">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
+    <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet">
+    {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
     <link href=" {{asset('custom.css?v = 1.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
@@ -277,6 +279,7 @@ if (Auth::user()->nairaWallet) {
     <script src="{{asset('js/custom.js')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
+    <script src="{{asset('newpages/js/main.js')}} "></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"> </script>
 
