@@ -28,7 +28,7 @@ class RateController extends Controller
             return true;
         });
 
-        /* return new CardResource(Card::find(3)); */
+        
 
 
         /* dd($rates); */

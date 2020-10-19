@@ -251,7 +251,7 @@
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <form action="{{route('admin.edit_rate')}} " method="POST" class="mb-3">
+                <form action="{{-- {{route('admin.edit_rate')}} --}} " method="POST" class="mb-3">
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-3">
