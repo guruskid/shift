@@ -28,10 +28,6 @@ class RateController extends Controller
             return true;
         });
 
-        
-
-
-        /* dd($rates); */
         return view('admin.rates.index', compact(['cards', 'currencies', 'card_types', 'rates']));
     }
 
@@ -48,22 +44,7 @@ class RateController extends Controller
 
         $cardCurrency = CardCurrency::firstOrCreate($data);
 
-        $value = ['1', '2', '3'];
-        $rate = ['1000', '2000', '3000' ];
 
-        $rates = [];
-        foreach ($value as $key => $value ) {
-            $s = [
-                'value' => $value,
-                'rate' => $rate[$key]
-            ];
-            array_push($rates, $s);
-        }
-
-        $rate = CardCurrencyPaymentMedium::updateOrCreate(
-            [ 'card_currency_id' =>$cardCurrency->id, 'payment_medium_id' => $request->payment_medium_id ],
-            [ 'payment_range_settings' => json_encode($rates)]
-        );
 
         return back()->with(['success' => 'Rate added']);
 
@@ -98,9 +79,29 @@ class RateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $card_currency = CardCurrency::findOrFail($request->cc_id);
+        $value = $request->values;
+        $rate = $request->rates;
+
+        $rates = [];
+        foreach ($value as $key => $value ) {
+            if ($value != null && $rate[$key] != null ) {
+                $s = [
+                    'value' => $value,
+                    'rate' => $rate[$key]
+                ];
+                array_push($rates, $s);
+            }
+        }
+
+        $rate = CardCurrencyPaymentMedium::updateOrCreate(
+            [ 'card_currency_id' =>$card_currency->id, 'payment_medium_id' => $request->payment_medium_id ],
+            [ 'payment_range_settings' => json_encode($rates)]
+        );
+
+        return back()->with(['success' => 'Rates added']);
     }
 
     /**
