@@ -76,7 +76,7 @@
     <div class="modal-dialog">
         <div class="modal-content modal-content-custom" style="margin-top: 100px;">
 
-            <div class="container py-4">
+            <div id="modal_container_content" class="container py-4">
                 <div class="d-flex justify-content-between mb-4">
                     <span class="d-block" style="color: #000000;letter-spacing: 0.01em;font-size: 18px;">Upload
                         cards</span>
@@ -134,7 +134,7 @@
                     </form>
 
                 </div>
-                <button class="btn text-white mt-4 mt-lg-5 card-upload-btn">Upload</button>
+                <button id="upload_card_btn" type="submit" class="btn text-white mt-4 mt-lg-5 card-upload-btn">Upload</button>
             </div>
 
         </div>

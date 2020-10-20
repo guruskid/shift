@@ -25,6 +25,14 @@ Route::get('/cardcalculator', function () {
 Route::get('/transaction', function () {
     return view('newpages.Transactionscreen');
 });
+Route::get('/bitcoin', function () {
+    return view('newpages.Bitcoinscreen');
+});
+Route::get('/airtocash', function () {
+    return view('newpages.airtimetocash');
+});
+
+
 
 Route::get('mailable', function () {
     /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered('Winston Okatubo') ); */

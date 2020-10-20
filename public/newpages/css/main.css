@@ -165,8 +165,32 @@
 ::-webkit-scrollbar {
     display: none;
 }
-
-
+.buy-sell-title {
+    width: 300px;
+    height: 40px;
+    border: 1px solid rgba(0, 0, 112, 0.2);
+    border-radius: 30px;
+}
+.buy-sell-title .active-title-item {
+    background: #000070;
+    text-align: center;
+    box-shadow: -2px 0px 2px rgba(0, 0, 112, 0.3);
+    border-radius: 30px;
+}
+.bitcoin-input-radius {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.full-input-radius {
+    border-radius: 25px;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.label_text {
+    color: rgba(0, 0, 112, 0.75);
+}
 
 @media (max-width: 500px) {
     .zoom:hover {
