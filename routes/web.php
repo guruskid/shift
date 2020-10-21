@@ -19,6 +19,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+// Route::get('/showcards', function () {
+//     return view('newpages.cards');
+// });
+
 Route::get('/cardcalculator', function () {
     return view('newpages.cardcalculator');
 });

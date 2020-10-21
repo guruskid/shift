@@ -12,7 +12,8 @@ class TradeController extends Controller
     {
         $assets = Card::where('buyable', 1)->orWhere('sellable', 1)->get();
 
-        return response()->json($assets);
+        // return response()->json($assets);
+        return view('newpages.cards',compact('assets'));
     }
 
     public function assetRates($trade_type, $card_name)
