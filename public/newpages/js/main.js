@@ -1500,12 +1500,183 @@ const countries_iso = [
     }
 ];
 
+var card_type = {
+    name: "Steam",
+    image: "Steam.png",
+    currencies: [
+        {
+            id: 1,
+            name: "USD",
+            country: "US",
+            flag: null,
+            payment_mediums: [
+                {
+                    id: 1,
+                    name: "Physical Card",
+                    image: null,
+                    pricing: [
+                        { value: "$1", rate: "1000" },
+                        { value: "$2", rate: "2000" },
+                        { value: "$3", rate: "3000" }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "E-code",
+                    image: null,
+                    pricing: [
+                        { value: "1", rate: "1000" },
+                        { value: "2", rate: "2000" },
+                        { value: "3", rate: "3000" }
+                    ]
+                }
+            ],
+            buy_sell: 2
+        },
+        {
+            id: 1,
+            name: "USD",
+            flag: null,
+            payment_mediums: [
+                {
+                    id: 1,
+                    name: "Physical Card",
+                    image: null,
+                    pricing: [
+                        { value: "1", rate: "1000" },
+                        { value: "2", rate: "2000" },
+                        { value: "3", rate: "3000" }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "E-code",
+                    image: null,
+                    pricing: [
+                        { value: "1", rate: "1000" },
+                        { value: "2", rate: "2000" },
+                        { value: "3", rate: "3000" }
+                    ]
+                }
+            ],
+            buy_sell: 1
+        },
+        {
+            id: 5,
+            name: "AUD",
+            flag: null,
+            payment_mediums: [
+                {
+                    id: 1,
+                    name: "Physical Card",
+                    image: null,
+                    pricing: [
+                        { value: "1", rate: "1000" },
+                        { value: "2", rate: "2000" },
+                        { value: "3", rate: "3000" }
+                    ]
+                }
+            ],
+            buy_sell: 2
+        }
+    ]
+};
+
+//List countries and their flags
 for (let i = 0; i < countries_iso.length; i++) {
-    let option = `<option value=${countries_iso[i].name}>${
-        countries_iso[i].flag
-    } ${countries_iso[i].name.trim()}</option>`;
+    let option = `<option alt=${countries_iso[i].code} value=${
+        countries_iso[i].name
+    }>${countries_iso[i].flag} ${countries_iso[i].name.trim()}</option>`;
     $("#countries_list").append(option);
 }
+
+//Select country to display card types
+let country = "";
+$("#countries_list").on("change", function() {
+    const e = document.getElementById("countries_list");
+    // const result = e.options[e.selectedIndex].value.toLowerCase().trim();
+    const country_code = e.options[e.selectedIndex]
+        .getAttribute("alt")
+        .toLowerCase()
+        .trim();
+        country = country_code
+
+    card_type.currencies.forEach(cardtype => {
+        if (cardtype.country.toLowerCase().trim() == country_code) {
+            cardtype.payment_mediums.forEach(cardtypename => {
+                let cardtypenamecontent = `<option alt="${cardtypename.name.toLowerCase().trim()}" value="${cardtypename.name
+                    .toLowerCase()
+                    .trim()}">${cardtypename.name}</option>`;
+                $(".cardtypelist").append(
+                    cardtypenamecontent
+                );
+                $("#card_type").addClass("d-block");
+                $(".card-price-qty").addClass("d-flex")
+            });
+        }
+    });
+});
+
+
+
+//List out rates depending on the chosen card type
+$("#cardtype_list").on("change", function() {
+  const e = document.getElementById("cardtype_list");
+  const cardtypetext = e.options[e.selectedIndex]
+      .getAttribute("alt")
+      .toLowerCase()
+      .trim();
+
+      if(cardtypetext == "physical card") {
+        
+        card_type.currencies.forEach(cardtype => {
+          if(cardtype.country.toLowerCase().trim() == country) {
+            cardtype.payment_mediums.forEach(payment_medium => {
+              if(payment_medium.name.toLowerCase().trim() == cardtypetext) {
+                payment_medium.pricing.forEach(pricing => {
+                  let cardpricelist = `<option alt="${pricing.rate.trim()}" value="${pricing.value.trim()}">${pricing.value.trim()}</option>`;
+                  $("#cardprice").append(cardpricelist);
+                })
+
+              }
+            })
+          }
+        })
+      }
+})
+
+
+$("#cardprice").on("change", function() {
+  const e = document.getElementById("cardprice");
+  const rate = e.options[e.selectedIndex]
+      .getAttribute("alt")
+      .toLowerCase()
+      .trim();
+      $("#price_per_card").text("₦"+rate)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 let basket = [];
 $("#addcard_button").on("click", function() {
@@ -1525,16 +1696,19 @@ $("#addcard_button").on("click", function() {
                         <td>${price_per_card}</td>
                         <td>x${quantity}</td>
                         <td id="totalprice">${total}</td>
-                        <td id="removeitem" class="removeitem">-</td>
+                        <td id="removeitem" class="removeitem"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.47 2 2 6.47 2 12C2 17.53 6.47 22 12 22C17.53 22 22 17.53 22 12C22 6.47 17.53 2 12 2ZM17 15.59L15.59 17L12 13.41L8.41 17L7 15.59L10.59 12L7 8.41L8.41 7L12 10.59L15.59 7L17 8.41L13.41 12L17 15.59Z" fill="#CD0B0B"/>
+                        </svg>
+                        </span></td>
                     </tr>`;
 
     basket.push(total);
 
-    console.log("dd");
     $("#selectedcardslist").append(template);
     $("#total_price").addClass("d-flex");
     $("#nocardavailable").hide();
     $("#totalAmount").html("N " + basket.reduce(addtotals));
+    $("#list_added_cards").removeClass("d-none")
 });
 
 function addtotals(total, num) {
@@ -1609,6 +1783,7 @@ $("#myTab .nav-item").on("click", function() {
     $(this).addClass("active-title-item");
     $("#myTab .active-title-item .nav-link").addClass("text-white");
 });
+
 $("#copyWalletAddress").on("click", function() {
     const inputText = document.querySelector("#wallet_address");
     inputText.select();
@@ -1705,10 +1880,10 @@ $("#sell_submit_btn").on("click", function(e) {
     const uploadText = `
     <span class="d-block primary-color text-center" style="font-size:14px;">Please place your Image (proof of payment) here</span>
     <span class="d-block text-center" style="font-size:13px;color: rgba(0, 0, 112, 0.7);letter-spacing: 0.01em;">If you do not have a proof of payment click trade to continue</span>
-    `
+    `;
     if (getAlt == "sell") {
-      $("#upload_text_desc").empty()
-      $("#upload_text_desc").append(uploadText)
+        $("#upload_text_desc").empty();
+        $("#upload_text_desc").append(uploadText);
         $("#upload_card_btn").text("Trade");
         // $("#upload_text_desc")
 
@@ -1716,6 +1891,6 @@ $("#sell_submit_btn").on("click", function(e) {
     }
 });
 
-$("#upload_pop_success").on("click",function(){
-  $("#uploadPopModal").css("display","none")
-})
+$("#upload_pop_success").on("click", function() {
+    $("#uploadPopModal").css("display", "none");
+});

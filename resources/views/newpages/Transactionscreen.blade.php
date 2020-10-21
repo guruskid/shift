@@ -146,13 +146,13 @@
                                                                     class="form-control custom-select select-country-custom-select">
                                                                 </select>
                                                             </div>
-                                                            <div class="mt-4 d-flex flex-column">
+                                                            <div id="card_type" class="mt-4 d-none flex-column">
                                                                 <label for="country" class="label-style">Card
                                                                     type</label>
-                                                                <select
-                                                                    class="form-control custom-select select-country-custom-select">
-                                                                    <option selected>Physical</option>
-                                                                    <option value="physical">Physical</option>
+                                                                <select id="cardtype_list"
+                                                                    class="form-control custom-select select-country-custom-select cardtypelist">
+                                                                    <option selected>Select card type</option>
+                                                                    {{-- <option value="physical">Physical</option> --}}
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -164,16 +164,16 @@
                                                         proceed</span>
                                                 </div>
 
-                                                <div class="d-flex flex-column mt-4 p-2 align-items-center allcards-container card-price-qty"
+                                                <div class="d-none flex-column mt-4 p-2 align-items-center allcards-container card-price-qty"
                                                     style="height:285px;">
                                                     <div class="d-flex flex-row justify-content-around flex-wrap">
                                                         <div class="text-center">
                                                             <label for="country" class="label-style">Card
                                                                 price</label>
                                                             <select id="cardprice"
-                                                                class="custom-select select-country-custom-select">
-                                                                <option selected>$25</option>
-                                                                <option value="1">One</option>
+                                                                class="custom-select select-country-custom-select cardprice">
+                                                                <option selected>Select Price</option>
+                                                                {{-- <option value="1">One</option> --}}
                                                             </select>
                                                         </div>
                                                         <div class="ml-lg-4 mt-4 mt-md-0 text-center">
@@ -211,7 +211,7 @@
                                                     <div class="d-block text-center my-3">
                                                         <span
                                                             style="font-size: 16px;font-weight: 500;color: rgba(0, 0, 112, 0.75);">Price
-                                                            Per card:</span> <span id="price_per_card">₦1800</span>
+                                                            Per card:</span> <span id="price_per_card"></span>
                                                     </div>
                                                     <button class="select-card-add-button"
                                                         id="addcard_button">Add</button>
@@ -224,12 +224,12 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-12 col-md-6 col-lg-6 my-0">
+                                        <div id="list_added_cards" class="d-none col-12 col-md-6 col-lg-6 my-0">
                                             <div class="row">
                                                 <div id="addedCards" class="col-12 mt-3 mb-2 py-3 allcards-container"
-                                                    style="height: 285px;overflow-y: scroll;">
+                                                    style="height: 270px !important;width:100%;overflow-y: scroll;">
 
-                                                    <table class="table table-borderless">
+                                                    <table class="table table-borderless table-striped">
                                                         <thead>
                                                             <tr>
                                                                 <th scope="col">Card price</th>

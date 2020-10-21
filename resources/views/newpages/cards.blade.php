@@ -53,7 +53,11 @@
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price">₦56,758</span>
+                                        <span class="d-block price">
+                                            @auth
+                                            ₦{{Auth::user()->nairaWallet->amount}}
+                                            @endauth
+                                        </span>
                                     </div>
                                 </div>
                             </div>
