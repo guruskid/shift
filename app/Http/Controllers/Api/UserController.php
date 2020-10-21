@@ -27,6 +27,14 @@ class UserController extends Controller
         ]);
     }
 
+    public function details()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => Auth::user(),
+        ]);
+    }
+
     public function updatePassword(Request $r)
     {
         $validator = Validator::make($r->all(), [
@@ -87,13 +95,5 @@ class UserController extends Controller
     }
 
 
-    public function notifications()
-    {
-        $user_id = 1;
-        $nots = Notification::where('user_id', 0)->orWhere('user_id', $user_id)->orderBy('created_at', 'desc')->get();
-        return response()->json([
-            'success' => true,
-            'data' => $nots
-        ]);
-    }
+    
 }

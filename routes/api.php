@@ -35,10 +35,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/update-wallet-pin', 'Api\NairaWalletController@updateWalletPin');
 
         Route::GET('/dashboard', 'Api\UserController@dashboard');
+        Route::get('/user-details', 'Api\UserController@details');
 
         Route::GET('/accounts', 'Api\BankAccountController@accounts');
 
-        Route::GET('/notifications', 'Api\UserController@notifications');
+        Route::GET('/notifications', 'Api\NotificationController@index');
+        Route::GET('/notification/read/{id}', 'Api\NotificationController@read');
+        Route::GET('/notification/settings', 'Api\NotificationController@settings');
+        Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
 
         Route::GET('/transactions', 'Api\TransactionController@allTransactions');
 
