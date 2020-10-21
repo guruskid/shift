@@ -105,9 +105,6 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::get('/notifications', 'UserController@notifications')->name('user.notifications');
     Route::POST('/notification-switch', 'UserController@notificationSetting');
 
-   /*  Route::get('/chat', 'UserController@chat')->name('user.chat');
-    Route::get('/chat/{id}', 'UserController@chat'); */
-
     Route::get('/portfolio', 'PortfolioController@view')->name('user.portfolio');
     Route::get('/wallet', 'PortfolioController@nairaWallet')->name('user.naira-wallet')->middleware('verified');
     Route::POST('/naira-wallet/create', 'NairaWalletController@create')->name('user.create-naira');
@@ -126,7 +123,10 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');
 
-    /* Route::get('/banklist', 'NairaWalletController@banklist')->name('user.banklist'); */
+    /* Routes for the new calculator */
+    Route::get('/assets', 'TradeController@assets')->name('user.assets');
+    Route::get('/asset/{trade_type}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
+
 });
 
 
@@ -141,7 +141,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 
     /* ajax ends here */
     Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
-    Route::get('/rates', 'AdminController@rates')->name('admin.rates');
+
 
     Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
     Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
@@ -161,7 +161,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 /* For Super Admins Only */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ], function () {
     Route::post('/cards', 'AdminController@addCard' )->name('admin.add_card');
-    Route::post('/edit-card', 'AdminController@editCard' )->name('admin.edit_card');
+
 
     Route::post('/transactions', 'AdminController@addTransaction' )->name('admin.add_transaction');
     Route::GET('/delete-transaction/{id}', 'AdminController@deleteTransac');
@@ -185,11 +185,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::post('/search', 'AdminController@searchUser' )->name('admin.search');
 });
 
-/* Manager */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
-    Route::post('/edit-rate', 'AdminController@editRate' )->name('admin.edit_rate');
-    Route::post('/rates', 'AdminController@addRate' )->name('admin.add_rate');
-    Route::GET('/delete-rate/{id}', 'AdminController@deleteRate');
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
     Route::post('/chat-agents', 'ChatAgentController@addChatAgent' )->name('admin.add_chat_agent');
@@ -224,4 +220,8 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
 Route::group(['prefix' => 'db'], function () {
     Route::GET('/function', 'DatabaseController@transactions');
 });
+
+
+// Just a test route
+Route::get('/test/card/{card}', 'User\CardController@testData');
 
