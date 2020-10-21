@@ -70,11 +70,10 @@
                                     </div>
                                 </div>
 
-                                <div class="d-flex justify-content-between mt-4">
-                                    <div class="d-flex flex-wrap" style="width: 600px;">
-                                        <div class="m-2 text-center pt-4"
-                                            style="width: 150px;height:150px;border-radius:20px;box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);">
-                                            <svg width="100" height="100" viewBox="0 0 100 100" fill="none"
+                                <div class="d-flex justify-content-between flex-column flex-lg-row mt-4">
+                                    <div class="d-flex flex-wrap network_card_container justify-content-center justify-content-lg-start">
+                                        <div class="m-2 text-center p-1 pt-lg-4 network_cards">
+                                            <svg width="90" height="90" viewBox="0 0 100 100" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M61.7903 1.22559C65.1003 1.27159 68.2583 1.89959 71.2073 3.39959C73.8073 4.73059 75.9273 6.59159 77.3743 9.15659C78.3147 10.8499 78.9316 12.7035 79.1933 14.6226C79.7313 18.3066 79.1873 21.8706 77.9723 25.3556C77.2583 27.3996 76.2703 29.3166 75.2003 31.1996C73.0203 35.0326 70.2193 38.3546 66.9613 41.2996C62.7814 45.0816 58.1978 48.3919 53.2933 51.1706C51.3933 52.2436 49.4233 53.1446 47.3043 53.6956C46.0062 54.0462 44.6658 54.2158 43.3213 54.1996C41.5513 54.1636 40.1663 53.3576 39.0893 51.9996C38.0948 50.7808 37.5824 49.2392 37.6493 47.6676C37.661 47.2304 37.7241 46.7961 37.8373 46.3736C38.4783 44.0966 39.3493 41.9156 40.6513 39.9266C41.6463 38.4076 42.8323 37.0586 44.3833 36.0936C46.1083 35.0196 47.9833 34.5606 50.0113 35.0036C50.6453 35.1522 51.242 35.4296 51.7643 35.8186C53.0993 36.7726 53.0293 38.2696 52.3883 39.2256C51.8392 40.0564 51.2252 40.8425 50.5523 41.5766C49.4123 42.8046 48.2013 43.9656 47.0193 45.1536C45.9733 46.2046 44.9903 47.3076 44.1933 48.5646C43.7803 49.2166 43.3993 49.8816 43.2853 50.6646C43.1413 51.6466 43.6513 52.3156 44.6423 52.4076C45.155 52.4494 45.6711 52.3976 46.1653 52.2546C47.6883 51.8336 49.1023 51.1546 50.4913 50.4226C52.6333 49.2896 54.6103 47.9046 56.5373 46.4436C58.8733 44.6726 61.1443 42.8256 63.2373 40.7716C65.6213 38.4346 67.7463 35.8946 69.3723 32.9636C70.5603 30.8236 71.4353 28.5636 71.8243 26.1396C72.1683 24.0046 71.9763 21.9246 70.9873 19.9646C70.511 18.9958 69.7661 18.1845 68.8413 17.6276C68.4143 17.3705 67.9433 17.1949 67.4523 17.1096C65.6653 16.7926 63.9363 17.0526 62.2373 17.6196C60.4663 18.2116 58.8233 19.0756 57.2263 20.0196C53.7603 22.0756 50.2903 24.1306 46.9873 26.4456C45.3313 27.6056 43.7263 28.8396 42.1033 30.0456C40.6373 31.1356 39.1813 32.2386 37.5793 33.1296C36.2792 33.8699 34.8722 34.4039 33.4083 34.7126C31.5943 35.0806 29.9223 34.7386 28.3863 33.7526C26.7923 32.7296 25.6763 31.3256 25.1863 29.4676C24.8743 28.2946 24.9973 27.1316 25.2663 25.9736C25.6593 24.2736 26.4053 22.7336 27.3353 21.2736C29.6353 17.6676 32.5273 14.6086 35.8903 11.9936C40.8743 8.11859 46.3583 5.13459 52.2903 2.97559C55.3359 1.86156 58.5477 1.2699 61.7903 1.22559Z"
@@ -102,9 +101,8 @@
                                                     fill="#E20010" />
                                             </svg>
                                         </div>
-                                        <div class="m-2 text-center pt-4"
-                                            style="width: 150px;height:150px;border-radius:20px;box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);">
-                                            <svg width="100" height="100" viewBox="0 0 100 100" fill="none"
+                                        <div class="m-2 text-center p-1 pt-lg-4 network_cards">
+                                            <svg width="90" height="90" viewBox="0 0 100 100" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M2.49023 49.9998C2.49023 39.7648 23.7612 31.4668 50.0002 31.4668C76.2392 31.4668 97.5102 39.7668 97.5102 50.0008C97.5102 60.2348 76.2402 68.5308 50.0002 68.5308C23.7602 68.5308 2.49023 60.2338 2.49023 49.9998Z"
@@ -127,9 +125,8 @@
                                                     fill="white" />
                                             </svg>
                                         </div>
-                                        <div class="m-2 text-center pt-4"
-                                            style="width: 150px;height:150px;border-radius:20px;box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);">
-                                            <svg width="100" height="100" viewBox="0 0 100 100" fill="none"
+                                        <div class="m-2 text-center p-1 pt-lg-4 network_cards">
+                                            <svg width="90" height="90" viewBox="0 0 100 100" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 xmlns:xlink="http://www.w3.org/1999/xlink">
                                                 <rect width="100" height="100" fill="url(#pattern0)" />
@@ -144,9 +141,8 @@
                                                 </defs>
                                             </svg>
                                         </div>
-                                        <div class="m-2 text-center pt-4"
-                                            style="width: 150px;height:150px;border-radius:20px;box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);">
-                                            <svg width="110" height="110" viewBox="0 0 110 110" fill="none"
+                                        <div class="m-2 text-center p-1 pt-lg-0 network_cards">
+                                            <svg width="90" height="90" viewBox="0 0 110 110" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <rect width="110" height="110" />
                                             </svg>
@@ -158,8 +154,6 @@
                                         style="border: 1px solid #EFEFF8;border-radius: 20px;width:60%;">
                                         <div class="px-3"
                                             style="background-image: url('{{asset('newpages/assets/img/airtocash_bg.png')}}');width:90%;box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);border-radius: 20px;">
-                                            
-
                                             <div class="d-flex mb-0">
                                                 <div class="ml-3">
                                                     <svg width="130" height="130" viewBox="0 0 130 130" fill="none"
@@ -187,7 +181,8 @@
                                                 </div>
                                                 <div>
                                                     <div style="position: relative;left:80%;top:7%;">
-                                                        <span class="d-block" style="color: rgba(0, 0, 112, 0.75);">You'll
+                                                        <span class="d-block"
+                                                            style="color: rgba(0, 0, 112, 0.75);">You'll
                                                             receive <span style="font-size: 40px;">70%</span> </span>
                                                         <span class="d-block"
                                                             style="color: rgba(0, 0, 112, 0.75);position: relative;left:25%;">of
@@ -195,13 +190,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                                <div class="text-center mb-2"
-                                                    style="color: rgba(0, 0, 112, 0.75);">To Send Dial
-                                                    *123*Phonenumber*amount*100#</div>
+                                            <div class="text-center mb-2" style="color: rgba(0, 0, 112, 0.75);">To Send
+                                                Dial
+                                                *123*Phonenumber*amount*100#</div>
 
 
                                         </div>
-                                        <div class="mt-4 mb-2 text-center" style="font-size:13px;color: rgba(0, 0, 112, 0.75);opacity: 0.7;">Please enter your phone number and the amount you wish to send</div>
+                                        <div class="mt-4 mb-2 text-center"
+                                            style="font-size:13px;color: rgba(0, 0, 112, 0.75);opacity: 0.7;">Please
+                                            enter your phone number and the amount you wish to send</div>
                                         <form action="" method="post">
                                             @csrf
                                             <div class="row">
@@ -213,24 +210,32 @@
                                                                 style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
                                                                 +234</div>
                                                         </div>
-                                                        <input readonly type="number" class="form-control bitcoin-input-radius" value=""
+                                                        <input readonly type="number"
+                                                            class="form-control bitcoin-input-radius" value=""
                                                             id="phone_number">
                                                     </div>
                                                 </div>
                                                 <div class="col-5">
                                                     <label for="airtime_amount" class="label_text">Amount</label>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <input readonly type="number" class="form-control full-input-radius" value=""
+                                                        <input readonly type="number"
+                                                            class="form-control full-input-radius" value=""
                                                             id="airtime_amount">
                                                     </div>
                                                 </div>
-                                              </div>
-                                              <span class="d-block text-center my-3" style="color: rgba(0, 0, 112, 0.75);">You're getting: <span style="font-size: 24px;">N20,300</span> </span>
-                                              <span class="d-block my-4" style="font-size: 12px;color: rgba(0, 0, 112, 0.75);opacity: 0.7;">Click <b>Done</b> after you've sent the airtime to us then wait for the cash to reflect in your wallet</span>
-                                              <button type="submit" class="btn w-75 text-white mb-4" style="position:relative;left:13%;font-weight:600;letter-spacing:0.6px;background: #000070;border-radius: 30px;height: 40px;">Done</button>
+                                            </div>
+                                            <span class="d-block text-center my-3"
+                                                style="color: rgba(0, 0, 112, 0.75);">You're getting: <span
+                                                    style="font-size: 24px;">N20,300</span> </span>
+                                            <span class="d-block my-4"
+                                                style="font-size: 12px;color: rgba(0, 0, 112, 0.75);opacity: 0.7;">Click
+                                                <b>Done</b> after you've sent the airtime to us then wait for the cash
+                                                to reflect in your wallet</span>
+                                            <button type="submit" class="btn w-75 text-white mb-4"
+                                                style="position:relative;left:13%;font-weight:600;letter-spacing:0.6px;background: #000070;border-radius: 30px;height: 40px;">Done</button>
                                         </form>
                                     </div>
-                                    
+
                                 </div>
 
 

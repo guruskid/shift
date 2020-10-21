@@ -84,11 +84,10 @@
                                         </li>
                                     </ul>
                                     <div class="tab-content " id="myTabContent">
-                                        <div class="text-center text-muted mb-3" style="margin-top: -10px;">Buy or sell
+                                        <div class="text-center text-muted mb-3 mt-3 mt-lg-1" style="margin-top: -10px;">Buy or sell
                                             cryptocurrency in less than a minute</div>
 
-
-                                        <div class="tab-pane fade show active mx-auto p-3" style="width: 460px;"
+                                        <div class="tab-pane fade show active mx-auto p-3 calculator_form"
                                             id="home" role="tabpanel" aria-labelledby="home-tab">
                                             <form action="" method="post">
                                                 @csrf
@@ -172,7 +171,7 @@
                                         </div>
 
 
-                                        <div class="tab-pane fade mx-auto p-3" style="width: 460px;" id="profile"
+                                        <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
                                             <form action="" method="post">
                                                 @csrf
