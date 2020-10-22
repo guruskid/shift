@@ -1576,6 +1576,8 @@ for (let i = 0; i < currencies.length; i++) {
 //Select country to display card types
 let currency_code_value = "";
 $("#countries_list").on("change", function() {
+  $("#cardtype_list").empty()
+  $("#cardtype_list").append("<option selected>Select currency</option>")
     const e = document.getElementById("countries_list");
     const currency_code = e.options[e.selectedIndex]
         .getAttribute("alt")
@@ -1601,6 +1603,8 @@ $("#countries_list").on("change", function() {
 
 //List out rates depending on the chosen card type
 $("#cardtype_list").on("change", function() {
+  $("#cardprice").empty()
+  $("#cardprice").append("<option selected>Select Price</option>")
     const e = document.getElementById("cardtype_list");
     const cardtypetext = e.options[e.selectedIndex]
         .getAttribute("alt")
@@ -1634,6 +1638,17 @@ $("#cardprice").on("change", function() {
 
 let basket = [];
 $("#addcard_button").on("click", function() {
+  if($("#price_per_card").text().trim().length == 0) {
+    alert("Choose a price")
+    return
+  }
+
+  const e = document.getElementById("cardtype_list");
+  const cardtypetext = e.options[e.selectedIndex]
+      .getAttribute("alt")
+      .toLowerCase()
+      .trim();
+
     let cardprice = $("#cardprice")
         .val()
         .trim();
