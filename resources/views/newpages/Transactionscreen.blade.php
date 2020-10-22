@@ -121,7 +121,7 @@
                                                         style="border: 1px solid #EFEFF8;width: 90%;">
                                                     </div>
                                                     <div
-                                                        class="d-flex flex-row justify-content-between align-items-center flex-wrap flex-lg-nowrap p-2 p-lg-3 pl-lg-4">
+                                                        class="d-flex flex-row justify-content-around align-items-center flex-wrap flex-lg-nowrap p-2 p-lg-3 pl-lg-4">
                                                         <div class="card-image mr-2">
                                                             <svg width="160" height="100" viewBox="0 0 337 212"
                                                                 fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -139,11 +139,12 @@
                                                                 </defs>
                                                             </svg>
                                                         </div>
-                                                        <div class="d-flex flex-column mx-3 ml-lg-4">
-                                                            <div class="d-flex flex-column">
-                                                                <label for="country" class="label-style">Country</label>
+                                                        <div class="d-flex flex-column mx-1">
+                                                            <div class="d-flex flex-column align-items-around">
+                                                                <label for="country" class="label-style">Currency</label>
                                                                 <select id="countries_list"
                                                                     class="form-control custom-select select-country-custom-select">
+                                                                    <option selected>Select currency</option>
                                                                 </select>
                                                             </div>
                                                             <div id="card_type" class="mt-4 d-none flex-column">
@@ -152,7 +153,6 @@
                                                                 <select id="cardtype_list"
                                                                     class="form-control custom-select select-country-custom-select cardtypelist">
                                                                     <option selected>Select card type</option>
-                                                                    {{-- <option value="physical">Physical</option> --}}
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -173,7 +173,6 @@
                                                             <select id="cardprice"
                                                                 class="custom-select select-country-custom-select cardprice">
                                                                 <option selected>Select Price</option>
-                                                                {{-- <option value="1">One</option> --}}
                                                             </select>
                                                         </div>
                                                         <div class="ml-lg-4 mt-4 mt-md-0 text-center">

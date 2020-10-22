@@ -33,6 +33,9 @@ Route::get('/transaction', function () {
 Route::get('/bitcoin', function () {
     return view('newpages.Bitcoinscreen');
 });
+Route::get('/ethereum', function () {
+    return view('newpages.ethereumscreen');
+});
 Route::get('/airtocash', function () {
     return view('newpages.airtimetocash');
 });
