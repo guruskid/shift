@@ -100,7 +100,7 @@
                                                                 style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius" value=""
+                                                        <input type="number" step="any" min="0" class="form-control bitcoin-input-radius" value=""
                                                             id="sell_usd_field">
                                                     </div>
                                                 </div>
@@ -113,7 +113,7 @@
                                                                 style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
                                                                 BTC</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius" value=""
+                                                        <input type="number" step="any" min="0" class="form-control bitcoin-input-radius" value=""
                                                             id="sell_btc_field">
                                                     </div>
                                                 </div>
@@ -126,7 +126,7 @@
                                                                 style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
                                                                 NGN</div>
                                                         </div>
-                                                        <input readonly type="number" class="form-control bitcoin-input-radius" value=""
+                                                        <input readonly type="number" step="any" min="0" class="form-control bitcoin-input-radius" value=""
                                                             id="sell_ngn_field">
                                                     </div>
                                                 </div>
@@ -170,7 +170,6 @@
                                             </form>
                                         </div>
 
-
                                         <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
                                             <form action="" method="post">
@@ -184,7 +183,7 @@
                                                                 style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius"
+                                                        <input type="number" step="any" min="0" class="form-control bitcoin-input-radius"
                                                             id="buy_usd_field">
                                                     </div>
                                                 </div>
@@ -197,7 +196,7 @@
                                                                 style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
                                                                 BTC</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius"
+                                                        <input type="number" step="any" min="0" class="form-control bitcoin-input-radius"
                                                             id="buy_btc_field">
                                                     </div>
                                                 </div>
@@ -229,7 +228,6 @@
                                                     style="font-weight:600;letter-spacing:0.6px;background: #000070;border-radius: 30px;height: 40px;">Buy</button>
                                             </form>
                                         </div>
-
 
                                     </div>
                                 </div>
