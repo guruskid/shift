@@ -87,6 +87,7 @@
                                         <div class="text-center text-muted mb-3 mt-3 mt-lg-1" style="margin-top: -10px;">Buy or sell
                                             cryptocurrency in less than a minute</div>
 
+                                            {{-- Sell Ethereum form --}}
                                         <div class="tab-pane fade show active mx-auto p-3 calculator_form"
                                             id="home" role="tabpanel" aria-labelledby="home-tab">
                                             <form action="" method="post">
@@ -101,7 +102,7 @@
                                                                 USD</div>
                                                         </div>
                                                         <input type="number" class="form-control bitcoin-input-radius" value=""
-                                                            id="eth_sell_usd_field">
+                                                            id="sell_usd_field_eth">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
@@ -114,7 +115,7 @@
                                                                 ETH</div>
                                                         </div>
                                                         <input type="number" class="form-control bitcoin-input-radius" value=""
-                                                            id="sell_eth_field2">
+                                                            id="sell_eth_equiv_field">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
@@ -127,7 +128,7 @@
                                                                 NGN</div>
                                                         </div>
                                                         <input readonly type="number" class="form-control bitcoin-input-radius" value=""
-                                                            id="sell_ngn_field2">
+                                                            id="sell_ngn_eth_field">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
@@ -170,7 +171,7 @@
                                             </form>
                                         </div>
 
-
+                                        {{-- Buy Ethereum form --}}
                                         <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
                                             <form action="" method="post">
@@ -185,7 +186,7 @@
                                                                 USD</div>
                                                         </div>
                                                         <input type="number" class="form-control bitcoin-input-radius"
-                                                            id="buy_usd_field">
+                                                            id="buy_usd_field_eth">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
@@ -211,7 +212,7 @@
                                                                 NGN</div>
                                                         </div>
                                                         <input readonly type="text" class="form-control bitcoin-input-radius"
-                                                            id="buy_ngn_field">
+                                                            id="buy_ngn_field_eth">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">

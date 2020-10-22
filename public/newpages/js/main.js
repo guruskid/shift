@@ -1751,6 +1751,7 @@ $("#myTab .nav-item").on("click", function() {
     $("#myTab .nav-item .nav-link").removeClass("text-white");
     $(this).addClass("active-title-item");
     $("#myTab .active-title-item .nav-link").addClass("text-white");
+    $("input").val("")
 });
 
 $("#copyWalletAddress").on("click", function() {
@@ -1863,5 +1864,63 @@ $("#sell_submit_btn").on("click", function(e) {
 $("#upload_pop_success").on("click", function() {
     $("#uploadPopModal").css("display", "none");
 });
-
 /*===== END BUY BITCOIN =====*/
+
+
+const sell_usd_per_eth = 970;
+const sell_ngn_per_usd_eth = 381.5;
+
+//Convert USD to ETH, naira equivalent
+//Sell ETH
+$("#sell_usd_field_eth").on("keyup", function(){
+    let value = $(this).val();
+
+    //eth equivalent
+    let eth = value / sell_usd_per_eth;
+    $("#sell_eth_equiv_field").val(eth);
+
+    // //naira equivalent
+    let naira = value * sell_ngn_per_usd_eth;
+    $("#sell_ngn_eth_field").val(naira);
+})
+
+
+$("#sell_eth_equiv_field").on("keyup", function(e) {
+    let value = $(this).val();
+
+    //dollar equivalent
+    let dollars = value * sell_usd_per_eth;
+    $("#sell_usd_field_eth").val(dollars);
+
+    //naira equivalent
+    let naira = dollars * sell_ngn_per_usd_eth;
+    $("#sell_ngn_eth_field").val(naira);
+});
+
+//Buy ETH
+const buy_usd_per_eth = 5465;
+const buy_ngn_per_usd_eth = 280;
+
+$("#buy_usd_field_eth").on("keyup", function() {
+    let value = $(this).val();
+
+    //btc equivalent
+    let eth = value / buy_usd_per_eth;
+    $("#buy_eth_field").val(eth);
+
+    //naira equivalent
+    let naira = value * buy_ngn_per_usd_eth;
+    $("#buy_ngn_field_eth").val(naira);
+});
+
+$("#buy_eth_field").on("keyup", function() {
+    let value = $(this).val();
+
+    //dollar equivalent
+    let dollars = value * buy_usd_per_eth;
+    $("#buy_usd_field_eth").val(dollars);
+
+    //naira equivalent
+    let naira = dollars * buy_ngn_per_usd_eth;
+    $("#buy_ngn_field_eth").val(naira);
+});
