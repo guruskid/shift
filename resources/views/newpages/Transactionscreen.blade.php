@@ -44,21 +44,7 @@
             <div id="content" class="main-content">
                 <div class="layout-px-spacing">
                     <div class="row layout-top-spacing"></div>
-                    <div class="row layout-top-spacing">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-                            <div class="widget widget-chart-one">
-                                <div class="widget-heading">
-                                    <div>
-                                        <span class="h3 giftcard-text">Giftcards</span>
-                                    </div>
-                                    <div class="widget-n text-center" style="justify-content: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price">₦56,758</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
 
 
                     <div class="row">
