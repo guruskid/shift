@@ -195,12 +195,12 @@
                                 <div class="tab-pane active" id="tab-eg11-0" role="tabpanel">
                                     <div class="row">
                                         @foreach ($rates as $rate)
-                                        <div class="col-md-4 {{ $rate->cardCurrency->buy_sell == 2 ? 'd-none' : '' }}">
+                                        <div class="col-md-4 {{-- {{ $rate->cardCurrency->buy_sell == 2 ? 'd-none' : '' }} --}}">
                                             <div class="main-card card  mb-3">
                                                 <div class="card-header">
                                                     <h6>{{ $rate->card_name }} - - {{ $rate->currency_name }} - -
                                                         {{ $rate->paymentMedium->name }}</h6>
-                                                    {{-- {{ $rate->cardCurrency->buy_sell }} --}}
+                                                    {{ $rate->cardCurrency->buy_sell }}
                                                 </div>
                                                 <div class="card-body" style="height: 200px; overflow: auto;">
                                                     <form action="{{ route('admin.rate.update') }}" method="POST">@csrf

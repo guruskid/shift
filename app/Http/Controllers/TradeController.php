@@ -20,6 +20,7 @@ class TradeController extends Controller
         $card = Card::where('name', $card_name)->firstOrFail();
 
         $card_rates =  new CardResource($card);
+
         return response()->json($card_rates);
     }
 }

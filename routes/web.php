@@ -118,6 +118,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     /* Routes for the new calculator */
     Route::get('/assets', 'TradeController@assets')->name('user.assets');
     Route::get('/asset/{trade_type}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
+    Route::view('/gift-card-calculator', 'user.gift_card_calculator');
 
 });
 
