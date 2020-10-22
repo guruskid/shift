@@ -86,7 +86,7 @@
                                     <div class="list-cards-search primary-color mt-3 mt-lg-0">
                                         <form action="" method="post">
                                             <div class="form-group p-0 m-0">
-                                                <span class="search-icon">
+                                                <span class="giftcard search-icon">
                                                     <svg width="1em" height="1em" viewBox="0 0 16 16"
                                                         class="bi bi-search" fill="#000070"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -122,7 +122,7 @@
                                                     </div>
                                                     <div
                                                         class="d-flex flex-row justify-content-around align-items-center flex-wrap flex-lg-nowrap p-2 p-lg-3 pl-lg-4">
-                                                        <div class="card-image mr-2">
+                                                        <div class="card-image mr-lg-2">
                                                             <svg width="160" height="100" viewBox="0 0 337 212"
                                                                 fill="none" xmlns="http://www.w3.org/2000/svg"
                                                                 xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -139,7 +139,7 @@
                                                                 </defs>
                                                             </svg>
                                                         </div>
-                                                        <div class="d-flex flex-column mx-1">
+                                                        <div class="d-flex flex-column mx-1 mt-4 mt-lg-0 cctype_container">
                                                             <div class="d-flex flex-column align-items-around">
                                                                 <label for="country" class="label-style">Currency</label>
                                                                 <select id="countries_list"
