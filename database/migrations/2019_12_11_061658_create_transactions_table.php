@@ -26,11 +26,15 @@ class CreateTransactionsTable extends Migration
             $table->integer('amount');
             $table->integer('amount_paid')->nullable();
             $table->bigInteger('agent_id');
-            $table->bigInteger('accountant_id');
-            $table->enum('status', ['success', 'waiting', 'failed', 'declined'] )->default("waiting");
-            $table->string('wallet_id');
+            $table->bigInteger('accountant_id')->nullable();
+            $table->enum('status', ['success', 'waiting', 'failed', 'declined', 'in progress', 'approved'] )->default("waiting");
+            $table->string('wallet_id')->nullable();
             $table->string('pop')->nullable();
             $table->string('last_edited')->nullable();
+            $table->string('batch_id')->nullable();
+            $table->string('card_type')->nullable();
+            $table->integer('quantity')->default(1);
+            $table->integer('card_price')->default(1);
             $table->timestamps();
         });
     }

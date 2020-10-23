@@ -1,5 +1,4 @@
 @extends('layouts.user')
-@section('title', 'Assets Calculator | ' )
 @section('content')
 <div class="app-main">
     <div class="app-sidebar sidebar-shadow">
@@ -41,85 +40,60 @@
     {{-- Content Starts here --}}
     <div class="app-main__outer">
         <div class="app-main__inner">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="main-card mb-3 card">
-                        <div class="col-md-12  px-0">
-                            <div class="m-0 p-3 c-rounded-top  bg-custom text-white">
-                                <strong>Calculator</strong>
-                            </div>
-                            <div class="bg-custom-gradient p-4 ">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <gift-card-component ></gift-card-component>
-                            <div class="col-lg-4 col-md-4 col-sm-12 col-12">
-                                <div class="trade-details-box card">
-                                    <div class="card-header bg-custom-accent "> Trade Details </div>
-                                    <div class="card-body ">
-                                        <p class="mb-3  mt-3">
-                                            <span>Asset Type:</span>
-                                            <span class="float-right" id="asset-type">xxxx-xxxx</span>
-                                            <input type="hidden" id="amount-paid">
 
-                                        </p>
-                                        <p class="mb-3">
-                                            <span>Trade Type:</span>
-                                            <span id="trade-type" class="float-right"
-                                                style="text-transform:capitalize">Sell</span>
-                                        </p>
-                                        <p class="mb-3">
-                                            <span>Rate:</span>
-                                            <span class="float-right" id="conv-rate">xxxx</span>
-                                        </p>
-                                        <p class="mb-3">
-                                            <span>Amount payable:</span>
-                                            <span class="float-right" id="conv-val">xxxx</span>
-                                        </p>
-                                            <p class="mb-3">
-                                                <span>Crypto Equiv:</span>
-                                                <span class="float-right" id="equiv">xxxx</span>
-                                            </p>
-                                        <p class="mb-1 row pr-2">
-                                            <span id="wallet-id-text" class="col-4">Wallet Id:</span>
-                                            <input type="text" class="form-control  col-8" name="wallet_id"
-                                                id="wallet-id" disabled>
-                                        </p>
-                                        <a href="#" onclick="copy()"><i class="fa fa-copy float-right mb-3">Copy</i></a>
-                                        <button class="btn  btn-block bg-custom c-rounded  " onclick="x(1)">
-                                            TRADE
-                                            <img src="{{ asset('loader.gif') }}" height="20px"
-                                                id="t-loader" style="display: none;">
-                                        </button>
+            <div id="content" class="main-content">
+                <div class="layout-px-spacing">
+                    <div class="row layout-top-spacing"></div>
+                    <div class="row layout-top-spacing">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                            <div class="widget widget-chart-one">
+                                <div class="widget-heading">
+                                    <div>
+                                        <span class="h3 giftcard-text">Giftcards</span>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-12 col-12">
-                                <div class="trade-details-box card">
-                                    <div class="card-header bg-custom-accent "> Guide</div>
-                                    <div class="card-body">
-                                        <ol>
-                                            <li>Enter the transaction details on the calculator</li>
-                                            <li>Confirm your trade details</li>
-                                            <li>Click the rade button to instantiate a trade</li>
-                                            <li>You will be redireected to a page where you can add transaction images
-                                                for the
-                                                transaction</li>
-                                            <li>An agent will attend to your transaction and you will be updated when
-                                                changes
-                                                are made</li>
-                                        </ol>
+                                    <div class="widget-n text-center" style="justify-content: center;">
+                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
+                                        <span class="d-block price">₦{{ Auth::user()->nairawallet->amount }}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="widget widget-chart-one">
+                                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-4 mb-3"
+                                    style="border-bottom: 1px solid #C9CED6;">
+                                    <div class="list-cards-title primary-color">
+                                        <a href="#">
+                                            <span>
+                                                <svg width="31" height="31" viewBox="0 0 41 41" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="20.5" cy="20.5" r="20.5" fill="#000070"
+                                                        fill-opacity="0.25" />
+                                                    <path
+                                                        d="M24.41 15.41L23 14L17 20L23 26L24.41 24.59L19.83 20L24.41 15.41Z"
+                                                        fill="#000070" />
+                                                </svg>
+                                            </span>
+                                            <a href="{{ route('user.assets') }}"><span class="ml-1" style="color: rgba(0, 0, 112, 0.75);font-size:16px;">Back
+                                                to
+                                                cards</span></a>
+                                        </a>
+                                    </div>
+                                </div>
+                                <gift-card-component :card="{{ $card_rates }}" :buy_sell="{{ $buy_sell }}" ></gift-card-component>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            @include('layouts.partials.live-feeds')
+            <upload-modal-component></upload-modal-component>
         </div>
     </div>
 </div>
+
 @endsection

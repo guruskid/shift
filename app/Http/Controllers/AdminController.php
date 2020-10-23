@@ -187,7 +187,7 @@ class AdminController extends Controller
         return redirect()->back()->with(['success' => 'Card added']);
     }
 
-    
+
 
     public function getCard($id)
     {
@@ -338,25 +338,6 @@ class AdminController extends Controller
         return response()->json($transac);
     }
 
-    public function addTransaction(Request $r)
-    {
-        $card_id = Card::where('name', $r->card)->first()->id;
-
-        $t = new Transaction();
-        $t->uid = uniqid();
-        $t->user_email = $r->user_email;
-        $t->user_id = User::where('email', $r->user_email)->first()->id;
-        $t->card = $r->card;
-        $t->card_id = $card_id;
-        $t->type = $r->trade_type;
-        $t->country = $r->country;
-        $t->amount = $r->amount;
-        $t->amount_paid = $r->amount_paid;
-        $t->status = $r->status;
-        $t->save();
-
-        return redirect()->back()->with(['success' => 'Transaction added']);
-    }
 
     public function editTransaction(Request $r)
     {

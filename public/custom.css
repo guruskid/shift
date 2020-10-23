@@ -52,6 +52,18 @@ h1, h2, h3, h4, h5, h6, p, td, th, button {
     color: white;
 }
 
+.btn-c-rounded{
+    border-radius: 25px;
+    padding: 2px 15px;
+}
+
+@media(min-width: 767px) {
+    .btn-c-rounded{
+        border-radius: 25px;
+        padding: 2px 25px;
+    }
+}
+
 .c-rounded {
     border-radius: 10px !important;
 }

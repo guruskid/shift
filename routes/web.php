@@ -15,17 +15,6 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/cardcalculator', function () {
-    return view('newpages.cardcalculator');
-});
-Route::get('/transaction', function () {
-    return view('newpages.Transactionscreen');
-});
-
 Route::get('mailable', function () {
     /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered('Winston Okatubo') ); */
     $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
@@ -41,21 +30,10 @@ Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.a
 
 Route::view('/disabled', 'disabled')->name('disabled');
 
-Route::get('/message/{id}', 'MessageController@index')->name('message');
-Route::get('/read-messages/{id}', 'MessageController@read')->name('message');
-/* Route::post('/message', 'MessageController@store')->name('message.store'); */
-Route::post('/pop', 'MessageController@pop')->name('message.pop');
-Route::get('/conversation-details/{id}', 'MessageController@convDetails');
-
-Route::get('/inbox', 'ChatController@inbox')->name('admin.inbox');
-Route::get('/agents', 'ChatController@agents');
-
 /* Upload Transaction image */
 Route::post('/transacion-image', 'PopController@add')->name('transaction.add-image');
 
 /* Add Admin middleware */
-Route::get('/user-details/{id}', 'ChatController@userDetails');
-Route::get('/user-transactions/{id}', 'ChatController@userTransactions');
 Route::post('/get-bank-details', 'NairaWalletController@acctDetails');
 
 /* Callbacks */
@@ -65,11 +43,6 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
     /* ajax calls */
-    Route::get('/get-card/{card}', 'UserController@getCard');
-    Route::get('/get-country/{card}', 'UserController@getCountry');
-    Route::get('/get-type/{card}', 'UserController@getType');
-    Route::get('/get-wallet-id/{card}', 'UserController@getWalletId');
-    Route::POST('/get-rate', 'UserController@getRate')->name('rate');
     Route::POST('/add_transaction', 'UserController@addTransaction');
     /* Profile Ajax functions */
     Route::post('update-profile', "UserController@updateProfile");
@@ -80,9 +53,6 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     /* ajax ends here */
 
     Route::get('/', 'UserController@dashboard')->name('user.dashboard');
-    Route::get('/calculator', 'UserController@calculator')->name('user.calculator');
-    Route::get('/calculator/crypto', 'UserController@calcCrypto')->name('user.calcCrypto');
-    Route::get('/calculator/gift-card', 'UserController@calcCard')->name('user.calcCard');
     Route::get('/rates', 'UserController@rates')->name('user.rates');
     Route::view('account', 'user.profile')->name('user.profile');
     Route::POST('/account', 'UserController@updateProfile')->name('user.update_profile');
@@ -117,8 +87,9 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     /* Routes for the new calculator */
     Route::get('/assets', 'TradeController@assets')->name('user.assets');
-    Route::get('/asset/{trade_type}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
+    Route::get('/trade/{trade_type}/{card_id}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
     Route::view('/gift-card-calculator', 'user.gift_card_calculator');
+    Route::post('/trade', 'TradeController@trade');
 
 });
 
@@ -214,7 +185,4 @@ Route::group(['prefix' => 'db'], function () {
     Route::GET('/function', 'DatabaseController@transactions');
 });
 
-
-// Just a test route
-Route::get('/test/card/{card}', 'User\CardController@testData');
 

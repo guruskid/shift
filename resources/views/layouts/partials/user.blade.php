@@ -31,35 +31,11 @@
                 </a>
             </li>
 
-            {{-- <li>
-                <a href="#">
-                    <i class="metismenu-icon pe-7s-keypad"></i>
-                    Calculator
-                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('user.calcCrypto')}}"
-                            class=" {{ Route::currentRouteName() == 'user.calcCrypto' ? 'mm-active' : '' }} ">
-                            <i class="metismenu-icon">
-                            </i>Assets calculator
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{route('user.calcCard')}}"
-                            class=" {{ Route::currentRouteName() == 'user.calcCard' ? 'mm-active' : '' }} ">
-                            <i class="metismenu-icon">
-                            </i>Gift Card calculator
-                        </a>
-                    </li>
-                </ul>
-            </li> --}}
-
             <li class="my-3">
-                <a href="{{route('user.calculator')}}"
-                    class=" {{ Route::currentRouteName() == 'user.rates' ? 'mm-active' : '' }} ">
+                <a href="{{route('user.assets')}}"
+                    class=" {{ Route::currentRouteName() == 'user.assets' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-graph1"></i>
-                    Rates
+                    Assets
                 </a>
             </li>
 

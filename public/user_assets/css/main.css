@@ -31,10 +31,10 @@
     color: #fff;
     border-radius: 30px;
 }
-.list-cards-search .search-icon {
+.list-cards-search .search-icon, .list-cards-search .giftcard.search-icon {
     position: absolute;
-    right: 15.4em;
-    top: 3.2em;
+    right: 13.4em;
+    top: 2.8em;
 }
 .card-type__sell-card,
 .card-type__sell-card:hover {
@@ -157,17 +157,100 @@
     margin: 0;
     padding: 0;
 }
-
-
-.form-control:disabled, .form-control[readonly] {
+.form-control:disabled,
+.form-control[readonly] {
     background-color: #fff !important;
-    /* outline-style: none !important;
-    outline: none !important; */
     box-shadow: none !important;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+.buy-sell-title {
+    width: 300px;
+    height: 40px;
+    border: 1px solid rgba(0, 0, 112, 0.2);
+    border-radius: 30px;
+}
+.buy-sell-title .active-title-item {
+    background: #000070;
+    text-align: center;
+    box-shadow: -2px 0px 2px rgba(0, 0, 112, 0.3);
+    border-radius: 30px;
+}
+.bitcoin-input-radius {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.full-input-radius {
+    border-radius: 25px;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.label_text {
+    color: rgba(0, 0, 112, 0.75);
+}
+.calculator_form {
+    width: 460px;
+}
+.network_cards {
+    width: 150px;
+    height:150px;
+    border-radius:20px;
+    box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);
+}
+.network_card_container {
+    width: 600px;
+}
+.list_all_cards {
+    height: 150px;
+    width: 340px;
+    box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);
+    border-radius: 10px;
+}
+.list_all_cards .sell_button {
+    border:1px solid rgba(0, 0, 112, 0.8);
+    background: rgba(0, 0, 112, 0.8);
+    border-radius: 25px;
+}
+.list_all_cards .buy_button {
+    border: 1px solid #000070;
+    box-sizing: border-box;
+    border-radius: 25px;
 }
 
 
+
 @media (max-width: 500px) {
+    .cctype_container {
+        margin-top: 5em !important;
+    }
+    .list-cards-search .giftcard.search-icon {
+        position: absolute;
+        right: 14.4em;
+        top: 6.9em;
+    }
+    .list_all_cards {
+        height: 200px;
+        width: 700px;
+        box-sizing: border-box;
+        box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);
+        border-radius: 10px;
+    }
+    .network_card_container {
+        width: 100%;
+    }
+    .network_cards {
+        width: 100px;
+        height:100px;
+    }
+    .calculator_form {
+        width: 100%;
+    }
+    .buy-sell-title {
+        width: 100%;
+    }
     .zoom:hover {
         top: -150px;
         width: 95%;
@@ -199,11 +282,12 @@
     .card-image {
         height: 50px;
         width: 100%;
+        margin-left: 10%;
     }
     .list-cards-search .search-icon {
         position: absolute;
-        right: 16.2em;
-        top: 7.7em;
+        left: 2.7em;
+        top: 6.7em;
     }
     .giftcard-text {
         font-size: 22px;
