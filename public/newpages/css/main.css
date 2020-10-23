@@ -166,25 +166,25 @@
     display: none;
 }
 .buy-sell-title {
-    width: 300px;
+    width: 250px;
     height: 40px;
     border: 1px solid rgba(0, 0, 112, 0.2);
-    border-radius: 30px;
+    border-radius: 25px;
 }
 .buy-sell-title .active-title-item {
     background: #000070;
     text-align: center;
     box-shadow: -2px 0px 2px rgba(0, 0, 112, 0.3);
-    border-radius: 30px;
+    border-radius: 25px;
 }
 .bitcoin-input-radius {
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     outline: none !important;
     box-shadow: none !important;
 }
 .full-input-radius {
-    border-radius: 25px;
+    border-radius: 5px;
     outline: none !important;
     box-shadow: none !important;
 }
@@ -218,6 +218,18 @@
     border: 1px solid #000070;
     box-sizing: border-box;
     border-radius: 25px;
+}
+.input-group-text.input_label {
+    background-color: #fff;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.bitcoin_calculator_btn {
+    font-weight:600;
+    letter-spacing:0.6px;
+    background: #000070;
+    border-radius: 5px;
+    height: 40px;
 }
 
 

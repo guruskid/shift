@@ -1924,3 +1924,49 @@ $("#buy_eth_field").on("keyup", function() {
     let naira = dollars * buy_ngn_per_usd_eth;
     $("#buy_ngn_field_eth").val(naira);
 });
+
+//Disable submit button if fields are empty in sell btc tab
+$("#wallet_address").on("keyup", function(){
+    if($(this).val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
+        $("#sell_submit_btn").removeAttr('disabled')
+    } else {
+        $("#sell_submit_btn").attr('disabled',"true")
+    }
+})
+$("#sell_btc_field").on("keyup", function(){
+    if($("#wallet_address").val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
+        $("#sell_submit_btn").removeAttr('disabled')
+    } else {
+        $("#sell_submit_btn").attr('disabled',"true")
+    }
+})
+$("#sell_usd_field").on("keyup", function(){
+    if($("#wallet_address").val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
+        $("#sell_submit_btn").removeAttr('disabled')
+    } else {
+        $("#sell_submit_btn").attr('disabled',"true")
+    }
+})
+
+//Disable submit button if fields are empty in buy btc tab
+$("#buy_wallet_address").on("keyup", function(){
+    if($(this).val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
+        $("#buy_btc_btn").removeAttr('disabled')
+    } else {
+        $("#buy_btc_btn").attr('disabled',"true")
+    }
+})
+$("#buy_btc_field").on("keyup", function(){
+    if($("#wallet_address").val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
+        $("#buy_btc_btn").removeAttr('disabled')
+    } else {
+        $("#buy_btc_btn").attr('disabled',"true")
+    }
+})
+$("#buy_usd_field").on("keyup", function(){
+    if($("#wallet_address").val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
+        $("#buy_btc_btn").removeAttr('disabled')
+    } else {
+        $("#buy_btc_btn").attr('disabled',"true")
+    }
+})

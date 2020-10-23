@@ -96,8 +96,7 @@
                                                         style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text"
-                                                                style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
+                                                            <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
                                                         <input type="number" step="any" min="0" class="form-control bitcoin-input-radius" value=""
@@ -109,8 +108,7 @@
                                                         style="color: rgba(0, 0, 112, 0.75);">Bitcoin equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text"
-                                                                style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
+                                                            <div class="input-group-text input_label">
                                                                 BTC</div>
                                                         </div>
                                                         <input type="number" step="any" min="0" class="form-control bitcoin-input-radius" value=""
@@ -122,8 +120,7 @@
                                                         style="color: rgba(0, 0, 112, 0.75);">Naira equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text"
-                                                                style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
+                                                            <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
                                                         <input readonly type="number" step="any" min="0" class="form-control bitcoin-input-radius" value=""
@@ -138,10 +135,9 @@
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <input type="text" class="form-control bitcoin-input-radius"
                                                             id="wallet_address"
-                                                            style="border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
+                                                            style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                         <div class="input-group-append" style="border-radius: 30px;">
-                                                            <div class="input-group-text"
-                                                                style="background-color: #fff;border-top-right-radius: 25px;border-bottom-right-radius: 25px;">
+                                                            <div class="input-group-text input_label">
                                                                 <span id="copyWalletAddress" style="cursor: pointer;">
                                                                     <svg width="26" height="20" viewBox="0 0 32 32"
                                                                         fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -165,8 +161,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button type="submit" id="sell_submit_btn" alt="sell" class="btn w-100 text-white mt-2"
-                                                    style="font-weight:600;letter-spacing:0.6px;background: #000070;border-radius: 30px;height: 40px;">Sell</button>
+                                                <button type="submit" id="sell_submit_btn" alt="sell" disabled="true" class="btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
                                             </form>
                                         </div>
 
@@ -179,8 +174,7 @@
                                                         style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text"
-                                                                style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
+                                                            <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
                                                         <input type="number" step="any" min="0" class="form-control bitcoin-input-radius"
@@ -192,8 +186,7 @@
                                                         style="color: rgba(0, 0, 112, 0.75);">Bitcoin equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text"
-                                                                style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
+                                                            <div class="input-group-text input_label">
                                                                 BTC</div>
                                                         </div>
                                                         <input type="number" step="any" min="0" class="form-control bitcoin-input-radius"
@@ -205,8 +198,7 @@
                                                         style="color: rgba(0, 0, 112, 0.75);">Naira equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text"
-                                                                style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
+                                                            <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
                                                         <input readonly type="text" class="form-control bitcoin-input-radius"
@@ -220,12 +212,11 @@
                                                         style="display: none;">Wallet address copied</span>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <input type="text" class="form-control bitcoin-input-radius"
-                                                            id="wallet_address"
-                                                            style="border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
+                                                            id="buy_wallet_address"
+                                                            style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                     </div>
                                                 </div>
-                                                <button type="submit" class="btn w-100 text-white mt-3"
-                                                    style="font-weight:600;letter-spacing:0.6px;background: #000070;border-radius: 30px;height: 40px;">Buy</button>
+                                                <button type="submit" id="buy_btc_btn" disabled class="btn w-100 text-white mt-2 bitcoin_calculator_btn">Buy</button>
                                             </form>
                                         </div>
 
