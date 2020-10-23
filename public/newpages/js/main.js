@@ -1970,3 +1970,50 @@ $("#buy_usd_field").on("keyup", function(){
         $("#buy_btc_btn").attr('disabled',"true")
     }
 })
+
+
+//Disable submit button if fields are empty in sell eth tab
+$("#eth_wallet_address").on("keyup", function(){
+    if($(this).val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
+        $("#sell_eth_submit_btn").removeAttr('disabled')
+    } else {
+        $("#sell_eth_submit_btn").attr('disabled',"true")
+    }
+})
+$("#sell_usd_field_eth").on("keyup", function(){
+    if($("#eth_wallet_address").val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
+        $("#sell_eth_submit_btn").removeAttr('disabled')
+    } else {
+        $("#sell_eth_submit_btn").attr('disabled',"true")
+    }
+})
+$("#sell_eth_equiv_field").on("keyup", function(){
+    if($("#eth_wallet_address").val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
+        $("#sell_eth_submit_btn").removeAttr('disabled')
+    } else {
+        $("#sell_eth_submit_btn").attr('disabled',"true")
+    }
+})
+
+//Disable submit button if fields are empty in buy eth tab
+$("#buy_wallet_address").on("keyup", function(){
+    if($(this).val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
+        $("#buy_eth_submit_btn").removeAttr('disabled')
+    } else {
+        $("#buy_eth_submit_btn").attr('disabled',"true")
+    }
+})
+$("#buy_usd_field_eth").on("keyup", function(){
+    if($("#buy_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
+        $("#buy_eth_submit_btn").removeAttr('disabled')
+    } else {
+        $("#buy_eth_submit_btn").attr('disabled',"true")
+    }
+})
+$("#buy_eth_field").on("keyup", function(){
+    if($("#buy_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
+        $("#buy_eth_submit_btn").removeAttr('disabled')
+    } else {
+        $("#buy_eth_submit_btn").attr('disabled',"true")
+    }
+})
