@@ -92,7 +92,6 @@ class RateController extends Controller
     public function deleteRate($id)
     {
         $rate = CardCurrencyPaymentMedium::find($id)->delete();
-
         return response()->json(true);
     }
 }
