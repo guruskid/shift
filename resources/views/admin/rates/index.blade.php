@@ -111,14 +111,9 @@
                         <div class="card-body" style="height: 200px; overflow: auto;">
                             @foreach ($card_types as $cardtype)
                             <div class="media mb-2">
-                                {{-- <img src="{{ asset('storage/assets/'.$cardtype->image) }}" style="height: 30px;"
-                                alt="{{ $cardtype->name }}" class="align-self-center mr-3"> --}}
                                 <div class="media-body">
                                     <h5>{{ $cardtype->name }}</h5>
                                 </div>
-                                {{-- <a href="#" title="Edit card" onclick="editCurrency({{ $cardtype }})"
-                                class="text-warning" data-toggle="modal" data-target="edit-card-modal"><i
-                                    class="fa fa-pen"></i></a> --}}
                             </div>
                             @endforeach
                         </div>
@@ -184,9 +179,9 @@
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <ul class="nav nav-tabs nav-justified">
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0" class="active nav-link">Buy
-                                        (from Dantown)</a></li>
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Sell (to
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0" class="active nav-link">Sell
+                                        (to Dantown)</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Buy (from
                                         Dantown)</a>
                                 </li>
                             </ul>
@@ -195,36 +190,39 @@
                                 <div class="tab-pane active" id="tab-eg11-0" role="tabpanel">
                                     <div class="row">
                                         @foreach ($rates as $rate)
-                                        <div class="col-md-4 {{-- {{ $rate->cardCurrency->buy_sell == 2 ? 'd-none' : '' }} --}}">
+                                        <div class="col-md-4 {{ $rate->cardCurrency->buy_sell == 1 ? 'd-none' : '' }}">
                                             <div class="main-card card  mb-3">
-                                                <div class="card-header">
-                                                    <h6>{{ $rate->card_name }} - - {{ $rate->currency_name }} - -
-                                                        {{ $rate->paymentMedium->name }}</h6>
-                                                    {{ $rate->cardCurrency->buy_sell }}
+                                                <div class="card-header d-flex justify-content-between">
+                                                    <h6>{{ $rate->card_name }} - - {{ $rate->currency_name }} - - {{ $rate->paymentMedium->name }}</h6> 
+                                                    <a href="#" onclick="deleteRate({{ $rate->id }})"><i class="fa fa-trash text-danger"></i></a>
                                                 </div>
                                                 <div class="card-body" style="height: 200px; overflow: auto;">
                                                     <form action="{{ route('admin.rate.update') }}" method="POST">@csrf
                                                         <input type="hidden" value="{{ $rate->cardCurrency->id }}" name="cc_id">
                                                         <input type="hidden" value="{{ $rate->paymentMedium->id }}" name="payment_medium_id">
-                                                        @foreach ($rate->rates as $item)
-                                                        <div class="media mb-2">
-                                                            <div class="media-body d-flex justify-content-between">
-                                                                <input type="number" name="values[]" value="{{ $item->value }}"
-                                                                    class="form-control">
-                                                                <i class="fa fa-exchange-alt mx-2 align-self-center"></i>
-                                                                <div class="input-group ">
-                                                                    <div class="input-group-prepend">
-                                                                        <span class="input-group-text "
-                                                                            id="basic-addon1">₦</span>
+                                                        <div id="rates-list-{{ $rate->id }}">
+                                                            @foreach ($rate->rates as $item)
+                                                                <div class="media mb-2">
+                                                                    <div class="media-body d-flex justify-content-between">
+                                                                        <div class="input-group ">
+                                                                            <div class="input-group-prepend"> <span class="input-group-text " id="basic-addon1">$</span> </div>
+                                                                            <input type="number" name="values[]" class="form-control"
+                                                                                value="{{ $item->value }}">
+                                                                        </div>
+                                                                        <i class="fa fa-exchange-alt mx-2 align-self-center"></i>
+                                                                        <div class="input-group ">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text "
+                                                                                    id="basic-addon1">₦</span>
+                                                                            </div>
+                                                                            <input type="number" name="rates[]" class="form-control"
+                                                                                value="{{ $item->rate }}">
+                                                                        </div>
                                                                     </div>
-                                                                    <input type="number" name="rates[]" class="form-control"
-                                                                        value="{{ $item->rate }}">
                                                                 </div>
-                                                                {{-- <h5>₦</h5> --}}
-                                                            </div>
+                                                            @endforeach
                                                         </div>
-                                                        @endforeach
-                                                        <button type="button" class="btn btn-sm btn-info">Add new</button>
+                                                        <button onclick="addRateField({{ $rate->id }})" type="button" class="btn btn-sm btn-outline-primary">Add new</button>
                                                         <button type="submit" class="btn btn-sm btn-primary">Save</button>
                                                     </form>
                                                 </div>
@@ -237,22 +235,41 @@
                                 <div class="tab-pane" id="tab-eg11-1" role="tabpanel">
                                     <div class="row">
                                         @foreach ($rates as $rate)
-                                        <div class="col-md-4 {{ $rate->cardCurrency->buy_sell == 1 ? 'd-none' : '' }}">
+                                        <div class="col-md-4 {{ $rate->cardCurrency->buy_sell == 2 ? 'd-none' : '' }}">
                                             <div class="main-card card  mb-3">
-                                                <div class="card-header">
-                                                    <h6>{{ $rate->card_name }} - - {{ $rate->currency_name }} - -
-                                                        {{ $rate->paymentMedium->name }}</h6>
-                                                    {{-- {{ $rate->cardCurrency->buy_sell }} --}}
+                                                <div class="card-header d-flex justify-content-between">
+                                                    <h6>{{ $rate->card_name }} - - {{ $rate->currency_name }} - - {{ $rate->paymentMedium->name }}</h6> 
+                                                    <a href="#" onclick="deleteRate({{ $rate->id }})"><i class="fa fa-trash text-danger"></i></a>
                                                 </div>
                                                 <div class="card-body" style="height: 200px; overflow: auto;">
-                                                    @foreach ($rate->rates as $item)
-                                                    <div class="media mb-2">
-                                                        <div class="media-body d-flex justify-content-between">
-                                                            <h5>{{ $item->value }}</h5>
-                                                            <h5>₦{{ $item->rate }}</h5>
+                                                    <form action="{{ route('admin.rate.update') }}" method="POST">@csrf
+                                                        <input type="hidden" value="{{ $rate->cardCurrency->id }}" name="cc_id">
+                                                        <input type="hidden" value="{{ $rate->paymentMedium->id }}" name="payment_medium_id">
+                                                        <div id="rates-list-{{ $rate->id }}">
+                                                            @foreach ($rate->rates as $item)
+                                                                <div class="media mb-2">
+                                                                    <div class="media-body d-flex justify-content-between">
+                                                                        <div class="input-group ">
+                                                                            <div class="input-group-prepend"> <span class="input-group-text " id="basic-addon1">$</span> </div>
+                                                                            <input type="number" name="values[]" class="form-control"
+                                                                                value="{{ $item->value }}">
+                                                                        </div>
+                                                                        <i class="fa fa-exchange-alt mx-2 align-self-center"></i>
+                                                                        <div class="input-group ">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text "
+                                                                                    id="basic-addon1">₦</span>
+                                                                            </div>
+                                                                            <input type="number" name="rates[]" class="form-control"
+                                                                                value="{{ $item->rate }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
                                                         </div>
-                                                    </div>
-                                                    @endforeach
+                                                        <button onclick="addRateField({{ $rate->id }})" type="button" class="btn btn-sm btn-outline-primary">Add new</button>
+                                                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

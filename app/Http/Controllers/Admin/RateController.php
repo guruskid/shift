@@ -89,8 +89,10 @@ class RateController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function deleteRate($id)
     {
-        //
+        $rate = CardCurrencyPaymentMedium::find($id)->delete();
+
+        return response()->json(true);
     }
 }

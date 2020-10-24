@@ -95,9 +95,9 @@ class AdminController extends Controller
         $users_wallet_balance = NairaWallet::sum('amount');
         $company_balance = $rubies_balance - $users_wallet_balance;
 
-        $transfer_charge = NairaWallet::where('account_number', 0000000001)->first()->amount;
+        /* $transfer_charge = NairaWallet::where('account_number', 0000000001)->first()->amount;
         $sms_charge = NairaWallet::where('account_number', 0000000002)->first()->amount;
-        $charges = $transfer_charge + $sms_charge;
+        $charges = $transfer_charge + $sms_charge; */
 
         $withdraw_txns = NairaTransaction::where('transaction_type_id', 3)->sum('amount');
         $airtime_txns = NairaTransaction::where('transaction_type_id', 9)->sum('amount');
@@ -123,15 +123,14 @@ class AdminController extends Controller
 
 
         if (Auth::user()->role == 999) { //Super admin
-            return view(
-                'admin.super_dashboard',
+            return view( 'admin.super_dashboard',
                 compact([
                     'transactions', 'users', 'verified_users', 'users_count', 'notifications', 'usersChart',
                     'withdraw_txns', 'airtime_txns', 'buy_txns_wallet',
                     'g_txns', 'c_txns', 'n_txns',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount',
-                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges'
+                    'users_wallet_balance', 'rubies_balance', 'company_balance', /* 'charges' */
                 ])
             );
         } else if (Auth::user()->role == 888) { // sales rep
