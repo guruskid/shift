@@ -97,6 +97,7 @@ class AdminController extends Controller
 
         $transfer_charge = NairaWallet::where('account_number', 0000000001)->first()->amount;
         $sms_charge = NairaWallet::where('account_number', 0000000002)->first()->amount;
+
         $charges = $transfer_charge + $sms_charge;
         $old_charges = NairaTransaction::sum('charge');
 
@@ -124,8 +125,7 @@ class AdminController extends Controller
 
 
         if (Auth::user()->role == 999) { //Super admin
-            return view(
-                'admin.super_dashboard',
+            return view( 'admin.super_dashboard',
                 compact([
                     'transactions', 'users', 'verified_users', 'users_count', 'notifications', 'usersChart',
                     'withdraw_txns', 'airtime_txns', 'buy_txns_wallet',
@@ -188,16 +188,7 @@ class AdminController extends Controller
         return redirect()->back()->with(['success' => 'Card added']);
     }
 
-    public function editCard(Request $r)
-    {
 
-        $card = Card::find($r->id);
-        $card->name = $r->name;
-        $card->wallet_id = $r->wallet_id;
-        $card->is_crypto = $r->is_crypto;
-        $card->save();
-        return redirect()->back()->with(['success' => 'Card updated']);
-    }
 
     public function getCard($id)
     {
@@ -348,25 +339,6 @@ class AdminController extends Controller
         return response()->json($transac);
     }
 
-    public function addTransaction(Request $r)
-    {
-        $card_id = Card::where('name', $r->card)->first()->id;
-
-        $t = new Transaction();
-        $t->uid = uniqid();
-        $t->user_email = $r->user_email;
-        $t->user_id = User::where('email', $r->user_email)->first()->id;
-        $t->card = $r->card;
-        $t->card_id = $card_id;
-        $t->type = $r->trade_type;
-        $t->country = $r->country;
-        $t->amount = $r->amount;
-        $t->amount_paid = $r->amount_paid;
-        $t->status = $r->status;
-        $t->save();
-
-        return redirect()->back()->with(['success' => 'Transaction added']);
-    }
 
     public function editTransaction(Request $r)
     {

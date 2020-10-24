@@ -50,6 +50,7 @@ if (Auth::user()->nairaWallet) {
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
     <link href=" {{asset('custom.css?v = 2.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
+    <link href=" {{asset('user_assets/css/main.css')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
 
@@ -168,7 +169,7 @@ if (Auth::user()->nairaWallet) {
                                                         <a href=" {{route('user.transactions')}} "><button type="button"
                                                                 tabindex="0" class="dropdown-item">My
                                                                 transactions</button></a>
-                                                        <a href=" {{route('user.calculator')}} "><button type="button"
+                                                        <a href=" {{route('user.assets')}} "><button type="button"
                                                                 tabindex="0" class="dropdown-item">Trade</button></a>
                                                         <div tabindex="-1" class="dropdown-divider"></div>
                                                         <a href="#"
@@ -238,8 +239,12 @@ if (Auth::user()->nairaWallet) {
                         <td class="text-right" id="d-txn-asset-type" >XXXXX</td>
                     </tr>
                     <tr>
+                        <td class="text-left" ><strong>Card Type</strong></td>
+                        <td class="text-right" id="d-txn-card-type" >XXXXX</td>
+                    </tr>
+                    <tr>
                         <td class="text-left" ><strong>Transaction type</strong></td>
-                        <td class="text-right" id="d-txn-txn-type" >XXXXX</td>
+                        <td class="text-right text-capitalize" id="d-txn-txn-type" >XXXXX</td>
                     </tr>
                     <tr>
                         <td class="text-left" ><strong>Currency</strong></td>
@@ -250,12 +255,16 @@ if (Auth::user()->nairaWallet) {
                         <td class="text-right" id="d-txn-amount" >XXXXX</td>
                     </tr>
                     <tr>
+                        <td class="text-left" ><strong>Quantity</strong></td>
+                        <td class="text-right" id="d-txn-quantity" >XXXXX</td>
+                    </tr>
+                    <tr>
                         <td class="text-left" ><strong>Naira Equiv.</strong></td>
                         <td class="text-right" id="d-txn-amt-paid" >XXXXX</td>
                     </tr>
                     <tr>
                         <td class="text-left" ><strong>Status</strong></td>
-                        <td class="text-right" id="d-txn-status" >XXXXX</td>
+                        <td class="text-right text-capitalize" id="d-txn-status" >XXXXX</td>
                     </tr>
                     <tr>
                         <td class="text-left" ><strong>Date</strong></td>
@@ -342,6 +351,10 @@ if (Auth::user()->nairaWallet) {
     <script src="{{asset('js/custom.js?v=2')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
+
+    {{-- Calculator scripts --}}
+    <script src="{{asset('user_assets/js/calculator.js')}} "></script>
+
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"> </script>
 

@@ -295,11 +295,6 @@ class UserController extends Controller
     public function addTransaction(Request $r)
     {
 
-        /*  $rate = Rate::where('card', $r->card)->where('rate_type', $r->rate_type)
-            ->where('min', '<=', $r->amount)->where('max', '>=', $r->amount)
-            ->value($r->country);
-        $value = $rate * $r->amount; */
-
         if ($r->rate_type == 'buy') {
             if (!Auth::user()->nairaWallet || $r->pay_with != 'wallet') {
                 return response()->json([
@@ -455,66 +450,6 @@ class UserController extends Controller
         $a->save();
 
         return redirect()->back()->with(["success" => 'Details updated']);
-    }
-
-    public function calcCrypto()
-    {
-        $cards = Card::where('is_crypto', 1)->has('rates', '>=', 1)->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 1;
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
-    }
-
-    public function calcCard()
-    {
-        $cards = Card::where('is_crypto', 0)->has('rates', '>=', 1)->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 0;
-
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
-    }
-
-    public function calculator()
-    {
-        $cards = Card::orderBy('id', 'desc')->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 0;
-
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
-    }
-
-    public function chat()
-    {
-        $users = User::where('role', 888)->where('status', 'active')->get();
-        if ($users->count() == 0) {
-            $users = User::where('role', 999)->get();
-        }
-        $user = $users->last();
-        Talk::setAuthUserId(Auth::User()->id);
-        $inboxes = Talk::getInbox();
-        foreach ($inboxes as $inbox) {
-            $inbox->unread = Talk::getConversationsById($inbox->thread->conversation_id, 0, 100000000000000)
-                ->messages->where('is_seen', 0)->where('user_id', '!=', Auth::user()->id)->count();
-        }
-        return view('user.chat', compact(['user', 'inboxes']));
-    }
-
-    public function chatAgent($id)
-    {
-        $user = User::find($id);
-        if ($user->role != 999 || $user->role != 888) {
-            return redirect()->back()->with(['error' => 'Agent not available']);
-        }
-        return view('user.chat', compact(['user']));
     }
 
 
