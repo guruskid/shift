@@ -116,9 +116,7 @@
             </li>
             @endif
 
-            {{-- for Super Admin Only --}}
-            @if (Auth::user()->role == 999 )
-
+            @if (in_array(Auth::user()->role, [999, 889] ))
             <li class="my-3">
                 <a href="{{route('admin.users')}}"
                     class=" {{ Route::currentRouteName() == 'admin.users' ? 'mm-active' : '' }} ">
@@ -126,6 +124,11 @@
                     Users
                 </a>
             </li>
+            @endif
+
+            {{-- for Super Admin Only --}}
+            @if (Auth::user()->role == 999 )
+
 
             <li class="my-3">
                 <a href="{{route('admin.cards')}}"

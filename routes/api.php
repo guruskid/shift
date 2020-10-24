@@ -18,18 +18,36 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::post('/login', 'Api\AuthController@login');
     Route::post('/register', 'Api\AuthController@register');
+    Route::post('/login', 'Api\AuthController@login');
+    Route::get('/banks', 'Api\AuthController@bankList' );
 
     Route::get('/assets', 'Api\AssetController@getAssets' );
     Route::post('/rate', 'Api\AssetController@getRate');
 
     Route::group(['middleware' => 'auth:api'], function () {
-        Route::GET('/messages/{id}', 'Api\ChatController@messages');
+        Route::post('/bank-details', 'Api\AuthController@addBankDetails');
+        Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
-        Route::GET('/accounts', 'Api\UserController@accounts');
-        Route::GET('/notifications', 'Api\UserController@notifications');
+
+        Route::post('/update-password', 'Api\UserController@updatePassword');
+        Route::post('/update-email', 'Api\UserController@updateEmail');
+        Route::post('/update-wallet-pin', 'Api\NairaWalletController@updateWalletPin');
+
+        Route::GET('/dashboard', 'Api\UserController@dashboard');
+        Route::get('/user-details', 'Api\UserController@details');
+
+        Route::GET('/accounts', 'Api\BankAccountController@accounts');
+
+        Route::GET('/notifications', 'Api\NotificationController@index');
+        Route::GET('/notification/read/{id}', 'Api\NotificationController@read');
+        Route::GET('/notification/settings', 'Api\NotificationController@settings');
+        Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
+
         Route::GET('/transactions', 'Api\TransactionController@allTransactions');
-        Route::GET('/inbox', 'Api\ChatController@inbox');
+
+        Route::GET('/naira-wallet', 'Api\NairaWalletController@index' );
+        Route::GET('/naira-transactions', 'Api\NairaWalletController@allTransactions');
+
     });
 });

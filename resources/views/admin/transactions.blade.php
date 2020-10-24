@@ -95,7 +95,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <th class="text-center">User</th>
                                         <th class="text-center">Date</th>
                                         <th class="text-center">Status</th>
-                                        @if (Auth::user()->role == 999)
+                                        @if (in_array(Auth::user()->role, [999, 889] ))
                                         <th class="text-center">Last Edit</th>
                                         <th class="text-center">Agent</th>
                                         <th class="text-center">Accountant</th>
@@ -145,7 +145,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
 
                                             @endswitch
                                         </td>
-                                        @if (Auth::user()->role == 999)
+                                        @if (in_array(Auth::user()->role, [999, 889] ))
                                         <td class="text-center"> {{$t->last_edited}} </td>
                                         <td class="text-center"> {{$t->agent->first_name}} </td>
                                         <td class="text-center"> {{$t->accountant->first_name ?? 'None' }} </td>

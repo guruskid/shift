@@ -164,7 +164,7 @@ class BillsPaymentController extends Controller
                 'body' => $msg_body,
             ]);
 
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+            /* Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body)); */
 
             $token = env('SMS_TOKEN');
             $to = Auth::user()->phone;
@@ -274,7 +274,7 @@ class BillsPaymentController extends Controller
                 'body' => $msg_body,
             ]);
 
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+            /* Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body)); */
 
             $token = env('SMS_TOKEN');
             $to = Auth::user()->phone;
@@ -403,7 +403,7 @@ class BillsPaymentController extends Controller
                 'body' => $msg_body,
             ]);
 
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+            /* Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body)); */
 
             $token = env('SMS_TOKEN');
             $to = Auth::user()->phone;

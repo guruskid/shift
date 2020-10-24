@@ -1,9 +1,19 @@
-
 @media only screen and (max-width: 768px) {
-h1, h2, h3, h4, h5, h6, p, td, th, button {
-    font-size: 90% !important;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    td,
+    th,
+    button {
+        font-size: 90% !important;
     }
 }
+
 .text-custom {
     color: #000070 !important;
 }
@@ -72,7 +82,7 @@ h1, h2, h3, h4, h5, h6, p, td, th, button {
     border-radius: 10px 10px 0px 0px !important;
 }
 
-.border-custom{
+.border-custom {
     border-color: #000070;
 }
 
@@ -80,7 +90,7 @@ h1, h2, h3, h4, h5, h6, p, td, th, button {
     border-radius: 0px 0px 10px 10px !important;
 }
 
-.c-btn-rounded{
+.c-btn-rounded {
     border-radius: 50px;
 }
 
@@ -139,14 +149,14 @@ a:hover {
 }
 
 /* Crypto calculator */
-.crypto-input{
+.crypto-input {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 30px;
     color: white;
     border: none;
 }
 
-.crypto-input:disabled{
+.crypto-input:disabled {
     background: rgba(255, 255, 255, 0.1);
 
 }
@@ -164,7 +174,8 @@ a:hover {
     color: white;
 }
 
-.bills-box select, .bills-box input {
+.bills-box select,
+.bills-box input {
 
     border-radius: 30px;
     color: black;
@@ -306,16 +317,17 @@ a:hover {
 
 
 /* Wallet */
-.wallet .card-body{
+.wallet .card-body {
     position: relative;
     bottom: 40px;
     padding: 0px;
 }
 
-
-.wallet .wallet-balance {
-    padding-top: 50px;
-    padding-bottom: 100px;
+@media only screen and (min-width: 768px) {
+    .wallet .wallet-balance {
+        padding-top: 50px;
+        padding-bottom: 100px;
+    }
 }
 
 .wallet .wallet-actions {
@@ -329,7 +341,7 @@ a:hover {
 
 
 .wallet .wallet-actions .wallet-action-btn {
-    padding: .5rem ;
+    padding: .5rem;
     color: #000070;
     display: block;
     /* border: dashed #c4c4c4 1px; */
@@ -343,20 +355,20 @@ a:hover {
 }
 
 
-.wallet-buttons{
+.wallet-buttons {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
 }
 
-.wallet-pin{
+.wallet-pin {
     border: none;
     text-align: center;
     background: transparent;
     font-size: 36px;
 }
 
-.wallet-pin::placeholder{
+.wallet-pin::placeholder {
     color: black;
     text-align: center;
     font-size: 36px;
@@ -385,18 +397,18 @@ a:hover {
 .dropdown .notifications {
     min-width: 350px;
     background: #676B87;
-    border-radius: 0px 0px 20px 20px ;
+    border-radius: 0px 0px 20px 20px;
     color: white;
     padding: 5px;
 }
 
-.dropdown hr{
+.dropdown hr {
     border-color: #8287A0;
     margin: 5px 2px;
 }
 
 
-.notifications-list{
+.notifications-list {
     max-height: 400px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -413,7 +425,7 @@ a:hover {
     text-transform: unset;
 }
 
-.notification-counter{
+.notification-counter {
     text-align: center;
     position: absolute;
     left: 20px;
@@ -426,21 +438,21 @@ a:hover {
 /* Scroll bar */
 ::-webkit-scrollbar {
     width: 10px;
-  }
+}
 
-  /* Track */
-  ::-webkit-scrollbar-track {
+/* Track */
+::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px grey;
     border-radius: 10px;
-  }
+}
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
+/* Handle */
+::-webkit-scrollbar-thumb {
     background: #00B9CD;
     border-radius: 10px;
-  }
+}
 
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
     background: #00B9CD;
-  }
+}

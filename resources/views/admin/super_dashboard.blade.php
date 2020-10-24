@@ -52,13 +52,24 @@
                 </div>
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                     <div class="widget widget-chart-one">
-                        <div class="widget-heading">
-                            <div>
-                                <h5 class="">Charges</h5>
-                                <a href="{{route('admin.wallet-charges')}} ">View all</a>
-                            </div>
-                            <div class="widget-n">
-                                <h5>₦{{$charges ?? 0}}</h5>
+                        <div class="widget-headin">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div>
+                                        <a href="{{route('admin.wallet-charges')}}" ><h6 title="click to view" class="mb-0">Charges</h6> </a>
+                                    </div>
+                                    <div class="widget-n">
+                                        <h6 class="mb-0">₦{{$charges}}</h6>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                        <a href="{{route('admin.old-wallet-charges')}} "><h6 title="click to view" class="mb-0">Old Charges</h6> </a>
+                                    </div>
+                                    <div class="widget-n">
+                                        <h6 class="mb-0">₦{{$old_charges}}</h6>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -181,7 +192,7 @@
                                         </tbody>
                                     </table>
                                     <div class="View-all">
-                                        <a href="{{route('admin.transactions')}}">View all </a>
+                                        <a href="{{route('admin.asset-transactions', 0)}}">View all </a>
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +247,7 @@
                                         </tbody>
                                     </table>
                                     <div class="View-all">
-                                        <a href="{{route('admin.transactions')}}">View all </a>
+                                        <a href="{{route('admin.asset-transactions', 1)}}">View all </a>
                                     </div>
                                 </div>
                             </div>

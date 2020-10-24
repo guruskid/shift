@@ -10,7 +10,7 @@ class Transaction extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\User', 'user_email', 'email');
+        return $this->belongsTo('App\User');
     }
 
     public function agent()

@@ -48,7 +48,7 @@ if (Auth::user()->nairaWallet) {
     <link href="{{asset('user_assets/OwlCarousel/assets/owl.theme.default.min.css')}} " rel="stylesheet">
     <link href=" {{asset('css/app.css')}} " rel="stylesheet">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
-    <link href=" {{asset('custom.css?v = 1.0')}} " rel="stylesheet">
+    <link href=" {{asset('custom.css?v = 2.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/main.css')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
@@ -276,14 +276,79 @@ if (Auth::user()->nairaWallet) {
             </div>
           </div>
         </div>
-      </div>
+    </div>
+
+    {{-- Naira wallet Transaction detail --}}
+    <div class="modal fade" id="wallet-txn-modal">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content c-rounded">
+            <!-- Modal Header -->
+            <div class="modal-header bg-custom-gradient c-rounded-top p-4">
+              <h4 class="modal-title">
+                Transaction details
+                <i class="fa fa-rotate-180 fa-paper-plane"></i>
+              </h4>
+              <button type="button" class="close bg-light rounded-circle" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-4">
+              <table class="table table-borderless" >
+                <tbody>
+                    <tr>
+                        <td class="text-left" ><strong>Reference</strong></td>
+                        <td class="text-right" id="d-w-txn-ref" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Transaction type</strong></td>
+                        <td class="text-right" id="d-w-txn-type" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Transaction Category</strong></td>
+                        <td class="text-right" id="d-w-txn-cat" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Amount</strong></td>
+                        <td class="text-right" id="d-w-txn-amount" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Charge</strong></td>
+                        <td class="text-right" id="d-w-txn-charge" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Cr Account</strong></td>
+                        <td class="text-right" id="d-w-txn-cr" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Dr Account</strong></td>
+                        <td class="text-right" id="d-w-txn-dr" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Narration</strong></td>
+                        <td class="text-right" id="d-w-txn-narration" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Status</strong></td>
+                        <td class="text-right" id="d-w-txn-status" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Date</strong></td>
+                        <td class="text-right" id="d-w-txn-date" >XXXXX</td>
+                    </tr>
+                </tbody>
+              </table>
+              <button class="btn btn-block c-rounded bg-custom-gradient" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div>
 
     <script src="/js/app.js?v = 1.4"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
     <script src="{{asset('js/bootstrap.min.js')}} "></script>
-    <script src="{{asset('js/custom.js')}}"></script>
+    <script src="{{asset('js/custom.js?v=2')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
 

@@ -134,8 +134,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::get('/cards', 'AdminController@cards')->name('admin.cards');
     Route::post('/wallet_id', 'AdminController@walletId' )->name('admin.wallet');
 
-    Route::get('/users', 'AdminController@users')->name('admin.users');
-    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
+
     Route::get('/verify', 'AdminController@verify')->name('admin.verify');
     Route::post('/verify', 'AdminController@verifyUser' )->name('admin.verify_user');
 
@@ -167,6 +166,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'seniorAccountant']
 
     Route::post('/clear-transfer-charges', 'AdminController@clearTransferCharges' )->name('admin.clear-transfer-charges');
     Route::post('/clear-sms-charges', 'AdminController@clearSmsCharges' )->name('admin.clear-sms-charges');
+
+    Route::get('/users', 'AdminController@users')->name('admin.users');
+    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 });
 
 /* for super admin and all accountants */
@@ -178,6 +180,7 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
     Route::get('/admin-wallet', 'AdminController@adminWallet')->name('admin.admin-wallet');
 
     Route::any('/transfer-charges', 'AdminController@transferCharges')->name('admin.wallet-charges');
+    Route::any('/old-transfer-charges', 'AdminController@oldTransferCharges')->name('admin.old-wallet-charges');
 });
 
 
