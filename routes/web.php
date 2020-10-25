@@ -39,6 +39,9 @@ Route::get('/ethereum', function () {
 Route::get('/airtocash', function () {
     return view('newpages.airtimetocash');
 });
+Route::get('/newprofile', function () {
+    return view('newpages.profile');
+});
 
 
 
