@@ -95,21 +95,22 @@
                                 <div class="container">
                                     <div class="row">
                                         @foreach ($assets as $asset)
-                                        <div class="col-lg-4 col-md-6 col-6 mb-3">
-                                            <div class="wallcards-container py-5 px-lg-3 px-1 list_all_cards">
-                                                <div class="media d-flex justify-content-center align-items-center">
-                                                    <img src="{{ asset('cards/steam.png') }}" class="img-fluid d-md-inline d-none" style="height:90px;width: 130px" alt="">
-                                                    <div class="media-body ml-3">
-                                                        <h6 class="text-primary">{{ $asset->name }}</h6>
-                                                        @if ($asset->buyable)
-                                                        <a href="{{ route('user.asset.rate', ['buy', $asset->id, str_slug($asset->name)]) }}"><button class="btn btn-primary btn-c-rounded">Buy</button></a>
-                                                        @endif
-                                                        @if ($asset->sellable)
-                                                        <a href="{{ route('user.asset.rate', ['sell', $asset->id, str_slug($asset->name)]) }}"><button class="btn btn-outline-primary btn-c-rounded">Sell</button></a>
-                                                        @endif
-                                                    </div>
+                                        <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                            <div class="wallcards-container py-lg-5 px-lg-3 px-1 list_all_cards d-flex align-items-center">
+                                                <div style="width:40%;">
+                                                    <img src="{{ asset('cards/steam.png') }}" class="img-fluid d-md-inline" alt=""/>
                                                 </div>
-
+                                                <div class="d-flex flex-column flex-start ml-4" style="width:60%;">
+                                                    <span class="d-block text-primary mb-2 ml-2" style="font-weight: normal;font-style: normal;">{{ $asset->name }}</span>
+                                                        <div class="d-flex justify-content-around">
+                                                            <a href="{{ route('user.asset.rate', ['buy', $asset->id, str_slug($asset->name)]) }}">
+                                                                <button class="btn btn-primary btn-c-rounded" @if ($asset->buyable) disabled @endif>Buy</button>
+                                                            </a>
+                                                            <a href="{{ route('user.asset.rate', ['sell', $asset->id, str_slug($asset->name)]) }}">
+                                                                <button class="btn btn-outline-primary btn-c-rounded" @if ($asset->sellable) disabled @endif>Sell</button>
+                                                            </a>
+                                                        </div>
+                                                </div>
                                             </div>
                                         </div>
                                         @endforeach

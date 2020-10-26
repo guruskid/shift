@@ -37,7 +37,7 @@ body {
 .list-cards-search .search-icon,
 .list-cards-search .giftcard.search-icon {
     position: absolute;
-    right: 13.4em;
+    right: 14.4em;
     top: 2.8em;
 }
 .card-type__sell-card,
@@ -253,8 +253,8 @@ body {
     width: 600px;
 }
 .list_all_cards {
-    height: 170px;
-    width: 340px;
+    height: 110px;
+    width: 350px;
     box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);
     border-radius: 10px;
 }
@@ -398,6 +398,10 @@ height: 65px;
     color:#000070;
     width:160px;
 }
+/* .listcard_images {
+    height:90px;
+    width: 130px;
+} */
 
 /* New profile page css code ends here */
 
@@ -407,16 +411,22 @@ height: 65px;
     }
     .list-cards-search .giftcard.search-icon {
         position: absolute;
-        right: 14.4em;
-        top: 6.9em;
+        right: 0;
+        left: 2.3em;
+        top: 6.4em;
     }
     .list_all_cards {
-        height: 200px;
-        width: 700px;
+        height: 160px;
+        width: 100%;
         box-sizing: border-box;
         box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);
         border-radius: 10px;
+        margin: 10px 0;
     }
+    /* .listcard_images {
+        height:55px;
+        width: 90px;
+    } */
     .network_card_container {
         width: 100%;
     }
