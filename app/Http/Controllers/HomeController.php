@@ -122,7 +122,7 @@ class HomeController extends Controller
                 'body' => $msg_body,
             ]);
 
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to wallet', route('user.naira-wallet') ));
 
             return redirect()->route('user.dashboard');
         } else {

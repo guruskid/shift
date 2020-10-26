@@ -61,7 +61,7 @@
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between ">
                             Charges
-                            <form action="{{route('admin.wallet-charges')}}" class="form-inline p-2" method="POST">
+                            <form action="{{route('admin.old-wallet-charges')}}" class="form-inline p-2" method="POST">
                                 @csrf
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
@@ -103,7 +103,7 @@
                                         <td>₦{{number_format($t->amount) }} </td>
                                         <td>₦{{number_format($t->charge) }} </td>
                                         <td>{{$t->narration}} </td>
-                                        <td>{{$t->created_at->format('d M Y')}} </td>
+                                        <td>{{$t->created_at->format('d M Y h:i a')}} </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

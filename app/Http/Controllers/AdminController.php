@@ -97,7 +97,9 @@ class AdminController extends Controller
 
         $transfer_charge = NairaWallet::where('account_number', 0000000001)->first()->amount;
         $sms_charge = NairaWallet::where('account_number', 0000000002)->first()->amount;
+
         $charges = $transfer_charge + $sms_charge;
+        $old_charges = NairaTransaction::sum('charge');
 
         $withdraw_txns = NairaTransaction::where('transaction_type_id', 3)->sum('amount');
         $airtime_txns = NairaTransaction::where('transaction_type_id', 9)->sum('amount');
@@ -123,15 +125,14 @@ class AdminController extends Controller
 
 
         if (Auth::user()->role == 999) { //Super admin
-            return view(
-                'admin.super_dashboard',
+            return view( 'admin.super_dashboard',
                 compact([
                     'transactions', 'users', 'verified_users', 'users_count', 'notifications', 'usersChart',
                     'withdraw_txns', 'airtime_txns', 'buy_txns_wallet',
                     'g_txns', 'c_txns', 'n_txns',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount',
-                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges'
+                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges', 'old_charges'
                 ])
             );
         } else if (Auth::user()->role == 888) { // sales rep
@@ -154,7 +155,7 @@ class AdminController extends Controller
                     'g_txns', 'c_txns', 'n_txns',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount',
-                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges'
+                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges', 'old_charges'
                 ])
             );
         } else if (Auth::user()->role == 666) { //Manager
@@ -187,7 +188,7 @@ class AdminController extends Controller
         return redirect()->back()->with(['success' => 'Card added']);
     }
 
-    
+
 
     public function getCard($id)
     {
@@ -338,25 +339,6 @@ class AdminController extends Controller
         return response()->json($transac);
     }
 
-    public function addTransaction(Request $r)
-    {
-        $card_id = Card::where('name', $r->card)->first()->id;
-
-        $t = new Transaction();
-        $t->uid = uniqid();
-        $t->user_email = $r->user_email;
-        $t->user_id = User::where('email', $r->user_email)->first()->id;
-        $t->card = $r->card;
-        $t->card_id = $card_id;
-        $t->type = $r->trade_type;
-        $t->country = $r->country;
-        $t->amount = $r->amount;
-        $t->amount_paid = $r->amount_paid;
-        $t->status = $r->status;
-        $t->save();
-
-        return redirect()->back()->with(['success' => 'Transaction added']);
-    }
 
     public function editTransaction(Request $r)
     {
@@ -436,12 +418,14 @@ class AdminController extends Controller
         if ($id == null) {
             $transactions = NairaTransaction::latest()->paginate(1000);
             $segment = 'All Wallet';
+            $total = $transactions->sum('amount');
         } else {
-            $transactions = NairaTransaction::where('transaction_type_id', $id)->get();
+            $transactions = NairaTransaction::where('transaction_type_id', $id)->paginate(1000);
             $segment = TransactionType::find($id)->name;
+            $total = $transactions->sum('amount');
         }
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions']));
+        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
     }
     public function walletTransactionsSortByDate(Request $request)
     {
@@ -450,10 +434,11 @@ class AdminController extends Controller
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->get();
+        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(1000);
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
+        $total = $transactions->sum('amount');
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions']));
+        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
     }
 
     public function adminWallet()
@@ -468,6 +453,22 @@ class AdminController extends Controller
         return view('admin.admin_wallet', compact(['n',  'credit_txns', 'debit_txns']));
     }
 
+
+    /* Old transfer charges before the database was remodified to include seperate wallets for charges */
+    public function oldTransferCharges(Request $r)
+    {
+        if (!$r->start || !$r->end ) {
+            $transactions = NairaTransaction::latest()->get();
+            $total = $transactions->sum('charge');
+        }else{
+            
+            $transactions = NairaTransaction::where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->get();
+            $total = $transactions->sum('charge');
+        }
+
+
+        return view('admin._charges', compact(['transactions', 'total']));
+    }
     public function transferCharges(Request $r)
     {
         $transfer_charge = NairaWallet::where('account_number', 0000000001)->first();

@@ -101,7 +101,7 @@
                                     <div class="row m-2 px-0">
                                         @foreach ($assets as $asset)
                                         <div
-                                            class="mx-lg-1 my-2 border d-flex flex-row justify-content-around align-items-center p-2 flex-wrap list_all_cards">
+                                            class="mx-lg-1 my-2 d-flex flex-row justify-content-around align-items-center p-2 flex-wrap list_all_cards">
                                             <div id="card-image">
                                                 <img class="img-fluid" src="{{'/cards/'.$asset->image}}" width="120px" height="90px" />
                                             </div>

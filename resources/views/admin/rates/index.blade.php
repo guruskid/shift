@@ -111,14 +111,9 @@
                         <div class="card-body" style="height: 200px; overflow: auto;">
                             @foreach ($card_types as $cardtype)
                             <div class="media mb-2">
-                                {{-- <img src="{{ asset('storage/assets/'.$cardtype->image) }}" style="height: 30px;"
-                                alt="{{ $cardtype->name }}" class="align-self-center mr-3"> --}}
                                 <div class="media-body">
                                     <h5>{{ $cardtype->name }}</h5>
                                 </div>
-                                {{-- <a href="#" title="Edit card" onclick="editCurrency({{ $cardtype }})"
-                                class="text-warning" data-toggle="modal" data-target="edit-card-modal"><i
-                                    class="fa fa-pen"></i></a> --}}
                             </div>
                             @endforeach
                         </div>
@@ -132,50 +127,50 @@
                 <div class="col-md-12">
                     <div class="main-card card card-body mb-3">
                         @foreach ($errors->all() as $err)
-                            <p class="text-warning">{{ $err }}</p>
+                        <p class="text-warning">{{ $err }}</p>
                         @endforeach
-                       <h5>Add Card Combination</h5>
-                    <form action="{{ route('admin.rate.add') }}" method="POST"> @csrf
-                        <div class="row">
-                            <div class="col-md-3">
-                                <select name="card_id" id="" class="form-control  ">
-                                    <option value="card_id">Select Card</option>
-                                    @foreach ($cards as $card)
-                                    <option value="{{ $card->id }}">{{ $card->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <h5>Add Card Combination</h5>
+                        <form action="{{ route('admin.rate.add') }}" method="POST"> @csrf
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <select name="card_id" id="" class="form-control  ">
+                                        <option value="card_id">Select Card</option>
+                                        @foreach ($cards as $card)
+                                        <option value="{{ $card->id }}">{{ $card->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                            <div class="col-md-3">
-                                <select name="currency_id" id="" class="form-control  ">
-                                    <option value="currency_id">Select Currency</option>
-                                    @foreach ($currencies as $currency)
-                                    <option value="{{ $currency->id }}">{{ $currency->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                                <div class="col-md-3">
+                                    <select name="currency_id" id="" class="form-control  ">
+                                        <option value="currency_id">Select Currency</option>
+                                        @foreach ($currencies as $currency)
+                                        <option value="{{ $currency->id }}">{{ $currency->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                            <div class="col-md-3">
-                                <select name="payment_medium_id" id="" class="form-control  ">
-                                    <option value="">Select Card Type</option>
-                                    @foreach ($card_types as $card_type)
-                                    <option value="{{ $card_type->id }}">{{ $card_type->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                                <div class="col-md-3">
+                                    <select name="payment_medium_id" id="" class="form-control  ">
+                                        <option value="">Select Card Type</option>
+                                        @foreach ($card_types as $card_type)
+                                        <option value="{{ $card_type->id }}">{{ $card_type->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                            <div class="col-md-2">
-                                <select name="buy_sell" id="" class="form-control  ">
-                                    <option value="">Trade Type</option>
-                                    <option value="1">Buy</option>
-                                    <option value="2">Sel</option>
-                                </select>
-                            </div>
+                                <div class="col-md-2">
+                                    <select name="buy_sell" id="" class="form-control  ">
+                                        <option value="">Trade Type</option>
+                                        <option value="1">Buy from Dantown</option>
+                                        <option value="2">Sell to Dantown</option>
+                                    </select>
+                                </div>
 
-                            <button class="col-md-1 btn btn-primary">Add</button>
-                        </div>
-                    </form>
-                   </div>
+                                <button class="col-md-1 btn btn-primary">Add</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -184,9 +179,9 @@
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                             <ul class="nav nav-tabs nav-justified">
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0" class="active nav-link">Buy
-                                        (from Dantown)</a></li>
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Sell (to
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0" class="active nav-link">Sell
+                                        (to Dantown)</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Buy (from
                                         Dantown)</a>
                                 </li>
                             </ul>
@@ -195,35 +190,41 @@
                                 <div class="tab-pane active" id="tab-eg11-0" role="tabpanel">
                                     <div class="row">
                                         @foreach ($rates as $rate)
-                                        <div class="col-md-4">
-                                            <div class="main-card card shadow-lg border mb-3">
-                                                <div class="card-header d-block">
-                                                    {{ $rate->card_name }} > {{ $rate->currency_name }} > {{ $rate->paymentMedium->name }}
-                                                    <button data-toggle="modal" data-target="#add-card-type-modal"
-                                                        class="btn btn-sm btn-primary shadow"><i class="fa fa-plus"></i>
-                                                        Add Rate</button>
+                                        <div class="col-md-4 {{ $rate->cardCurrency->buy_sell == 1 ? 'd-none' : '' }}">
+                                            <div class="main-card card  mb-3">
+                                                <div class="card-header d-flex justify-content-between">
+                                                    <h6>{{ $rate->card_name }} - - {{ $rate->currency_name }} - - {{ $rate->paymentMedium->name }}</h6> 
+                                                    <a href="#" onclick="deleteRate({{ $rate->id }})"><i class="fa fa-trash text-danger"></i></a>
                                                 </div>
                                                 <div class="card-body" style="height: 200px; overflow: auto;">
-                                                    @foreach ($rate->rates as $item)
-                                                    <div class="media mb-2">
-                                                        <img src="{{ asset('storage/assets/steam.png') }}"
-                                                            style="height: 30px;" alt="" class="align-self-top mr-3">
-                                                        <div class="media-body d-flex justify-content-between">
-                                                                <h5>{{ $item->value }}</h5>
-                                                                <h5>₦{{ $item->rate }}</h5>
-                                                            <div>
-                                                                <a href="#" title="Edit card" class="text-warning mr-2"
-                                                                    data-toggle="modal"
-                                                                    data-target="#edit-card-modal"><i
-                                                                        class="fa fa-pen"></i></a>
-                                                                <a href="#" title="Edit card" class="text-danger"
-                                                                    data-toggle="modal"
-                                                                    data-target="#edit-card-modal"><i
-                                                                        class="fa fa-trash"></i></a>
-                                                            </div>
+                                                    <form action="{{ route('admin.rate.update') }}" method="POST">@csrf
+                                                        <input type="hidden" value="{{ $rate->cardCurrency->id }}" name="cc_id">
+                                                        <input type="hidden" value="{{ $rate->paymentMedium->id }}" name="payment_medium_id">
+                                                        <div id="rates-list-{{ $rate->id }}">
+                                                            @foreach ($rate->rates as $item)
+                                                                <div class="media mb-2">
+                                                                    <div class="media-body d-flex justify-content-between">
+                                                                        <div class="input-group ">
+                                                                            <div class="input-group-prepend"> <span class="input-group-text " id="basic-addon1">$</span> </div>
+                                                                            <input type="number" name="values[]" class="form-control"
+                                                                                value="{{ $item->value }}">
+                                                                        </div>
+                                                                        <i class="fa fa-exchange-alt mx-2 align-self-center"></i>
+                                                                        <div class="input-group ">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text "
+                                                                                    id="basic-addon1">₦</span>
+                                                                            </div>
+                                                                            <input type="number" name="rates[]" class="form-control"
+                                                                                value="{{ $item->rate }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
                                                         </div>
-                                                    </div>
-                                                    @endforeach
+                                                        <button onclick="addRateField({{ $rate->id }})" type="button" class="btn btn-sm btn-outline-primary">Add new</button>
+                                                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -233,7 +234,46 @@
                                 {{-- Buy --}}
                                 <div class="tab-pane" id="tab-eg11-1" role="tabpanel">
                                     <div class="row">
-
+                                        @foreach ($rates as $rate)
+                                        <div class="col-md-4 {{ $rate->cardCurrency->buy_sell == 2 ? 'd-none' : '' }}">
+                                            <div class="main-card card  mb-3">
+                                                <div class="card-header d-flex justify-content-between">
+                                                    <h6>{{ $rate->card_name }} - - {{ $rate->currency_name }} - - {{ $rate->paymentMedium->name }}</h6> 
+                                                    <a href="#" onclick="deleteRate({{ $rate->id }})"><i class="fa fa-trash text-danger"></i></a>
+                                                </div>
+                                                <div class="card-body" style="height: 200px; overflow: auto;">
+                                                    <form action="{{ route('admin.rate.update') }}" method="POST">@csrf
+                                                        <input type="hidden" value="{{ $rate->cardCurrency->id }}" name="cc_id">
+                                                        <input type="hidden" value="{{ $rate->paymentMedium->id }}" name="payment_medium_id">
+                                                        <div id="rates-list-{{ $rate->id }}">
+                                                            @foreach ($rate->rates as $item)
+                                                                <div class="media mb-2">
+                                                                    <div class="media-body d-flex justify-content-between">
+                                                                        <div class="input-group ">
+                                                                            <div class="input-group-prepend"> <span class="input-group-text " id="basic-addon1">$</span> </div>
+                                                                            <input type="number" name="values[]" class="form-control"
+                                                                                value="{{ $item->value }}">
+                                                                        </div>
+                                                                        <i class="fa fa-exchange-alt mx-2 align-self-center"></i>
+                                                                        <div class="input-group ">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text "
+                                                                                    id="basic-addon1">₦</span>
+                                                                            </div>
+                                                                            <input type="number" name="rates[]" class="form-control"
+                                                                                value="{{ $item->rate }}">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                        <button onclick="addRateField({{ $rate->id }})" type="button" class="btn btn-sm btn-outline-primary">Add new</button>
+                                                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>

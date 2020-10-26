@@ -10,7 +10,7 @@ class Transaction extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\User', 'user_email', 'email');
+        return $this->belongsTo('App\User');
     }
 
     public function agent()
@@ -25,7 +25,12 @@ class Transaction extends Model
 
     public function pops()
     {
-        return $this->hasMany('App\Pop')->orderBy('created_at', 'desc');
+        return $this->hasMany('App\Pop')->latest();
+    }
+
+    public function batchPops()
+    {
+        return $this->hasMany('App\Pop', 'transaction_id', 'batch_id')->latest();
     }
 
     public function asset()

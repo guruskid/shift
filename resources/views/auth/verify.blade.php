@@ -50,8 +50,9 @@
                         @endif
 
                         {{ __('Before proceeding, please check your email for a verification link.') }}
-                        {{ __('If you did not receive the email') }}, <a href="{{ route('verification.resend') }}">{{ __('click here to request another') }}</a>.
-                        <br><button class="btn btn-danger mt-2" onclick="document.getElementById('logout-form2').submit()" >Logout</button>
+                        {{ __('If you did not receive the email') }} <br> <a href="{{ route('verification.resend') }}"><button class="btn btn-success">{{ __('Click here to request another') }}</button> </a>
+                        <a href="{{ route('user.profile') }}"><button class="btn btn-info">Change email</button></a>
+                        <button class="btn btn-dark" onclick="document.getElementById('logout-form2').submit()" >Logout</button>
                     </div>
                 </div>
             </div>

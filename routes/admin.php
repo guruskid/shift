@@ -2,7 +2,7 @@
 
 Route::group(['middleware'=>'manager'], function(){
     Route::get('/rates', 'RateController@index')->name('admin.rates');
-    Route::post('/rate/create', 'RateController@store')->name('admin.rate.add');
+    Route::post('/card-combination/create', 'RateController@store')->name('admin.rate.add');
 
     Route::post('/card/create', 'CardController@store')->name('admin.card.create');
     Route::post('/edit-card', 'CardController@editCard' )->name('admin.card.edit');
@@ -11,7 +11,8 @@ Route::group(['middleware'=>'manager'], function(){
 
     Route::post('/card-type/store', 'PaymentMediumController@store')->name('admin.card-type.store');
 
-
+    Route::post('/rate/update', 'RateController@update')->name('admin.rate.update');
+    Route::get('/rate/delete/{id}', 'RateController@deleteRate');
 
 
 

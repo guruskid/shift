@@ -65,7 +65,7 @@
                             @if (Auth::user()->nairaWallet->password == null)
                             <p class="text-info">Please visit <a href="{{route('user.profile')}}">account settings </a>to reset your wallet password before initiating a wallet transaction </p>
                             @endif
-                            <div class="row my-3">
+                            <div class="row my-3" style="padding: unset !important">
                                 <div class="col-md-6 mb-3">
                                     <div class="card wallet">
                                         <div
@@ -76,9 +76,9 @@
                                                 <p>₦{{number_format($n->amount)}}</p>
                                             </div>
                                         </div>
-                                        <div class="card-body px-2 py-3" style="position: unset;">
+                                        <div class="card-body px-md-2 py-3" style="position: unset;">
 
-                                            <div class="d-flex justify-content-between wallet-buttons">
+                                            <div class="d-flex justify-content-around wallet-buttons">
                                                 <button class="btn bg-custom px-3" data-toggle="modal"
                                                     data-target="#send-modal" onclick="tnsType(1)">Transfer</button>
                                                 <button class="btn bg-custom px-3" data-toggle="modal"
@@ -88,15 +88,15 @@
 
                                             </div>
                                         </div>
-                                        <div class="card-footer bg-custom-accent p-4 c-rounded-bottom ">
-                                            <strong>Pending Transc.:</strong> <span>No pending transactions in your
-                                                wallet</span>
+                                        <div class="card-footer bg-custom-accent p-5 c-rounded-bottom ">
+                                            {{-- <strong>Pending Transc.:</strong> <span>No pending transactions in your
+                                                wallet</span> --}}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <div class="card card-body p-5 mb-3">
+                                    <div class="card card-body p-md-5 mb-3">
                                         <strong class="text-accent">Guide</strong>
                                         <p>Withdraw or make transfers to an account on Dantown or to other banks from
                                             your Dantown
@@ -123,29 +123,33 @@
                             <table class="mb-2 transactions-table table " id="nt-table">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">Reference id</th>
-                                        <th class="text-center">Cr. Account</th>
-                                        <th class="text-center">Dr. Account</th>
+                                        <th class="text-center">Id</th>
                                         <th class="text-center">Amount</th>
-                                        <th class="text-center">Narration</th>
-                                        <th class="text-center">Type</th>
-                                        <th class="text-center">Trans. Type</th>
+                                        <th class="text-center">Category</th>
+                                        <th class="text-center">Tnx. Type</th>
                                         <th class="text-center">Status</th>
-                                        <th class="text-center">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-custom-accent">
                                     @foreach ($nts as $t)
                                     <tr class="bg-custom-accent">
                                         <td class="text-center">{{$t->reference}}</td>
-                                        <td class="text-center">{{$t->cr_acct_name}}</td>
-                                        <td class="text-center">{{$t->dr_acct_name}}</td>
                                         <td class="text-center">₦{{number_format($t->amount)}}</td>
-                                        <td class="text-center">{{$t->narration}}</td>
-                                        <td class="text-center">{{ucwords($t->transactionType->name)}}</td>
+                                        <td class="text-center">{{ucwords(str_limit($t->transactionType->name, 10))}}</td>
                                         <td class="text-center">{{ucwords($t->trans_type)}}</td>
-                                        <td class="text-center">{{ucwords($t->status)}} </td>
-                                        <td class="text-center">{{$t->created_at->format('d/m/y h:i a')}}</td>
+                                        @switch($t->status)
+                                            @case('success')
+                                            <td class="text-center"><button data-toggle="modal" onclick="showWalletTxnDetail({{ $t }})" data-target="#wallet-txn-modal" title="Click to view details" class="btn btn-success shadow">{{ucwords($t->status)}} </button> </td>
+                                                @break
+                                            @case('refunded')
+                                            <td class="text-center"><button data-toggle="modal" onclick="showWalletTxnDetail({{ $t }})" data-target="#wallet-txn-modal" title="Click to view details" class="btn btn-secondary shadow">{{ucwords($t->status)}} </button> </td>
+                                                @break
+                                            @case('pending')
+                                            <td class="text-center"><button data-toggle="modal" onclick="showWalletTxnDetail({{ $t }})" data-target="#wallet-txn-modal" title="Click to view details" class="btn btn-info shadow">{{ucwords($t->status)}} </button> </td>
+                                                @break
+                                            @default
+
+                                        @endswitch
                                     </tr>
                                     @endforeach
                                     <tr class="bg-custom-accent">
@@ -257,10 +261,22 @@
                                 <label for="">Narration</label>
                                <select name="narration" id="" class="form-control">
                                    <option value="Personal">Personal</option>
-                                   <option value="Settle bills">Settle bills</option>
-                                   <option value="Shopping">Shopping</option>
+                                   <option value="Card Purchase">Card Purchase</option>
+                                   <option value="Bills">Bills</option>
+                                   <option value="Transport">Transport</option>
+                                   <option value="Transfers">Transfers</option>
                                    <option value="Food">Food</option>
-                                   <option value="Loan">Loan</option>
+                                   <option value="Family">Family</option>
+                                   <option value="Groceries">Groceries</option>
+                                   <option value="Shopping">Shopping</option>
+                                   <option value="Self Care">Self Care</option>
+                                   <option value="Holiday">Holiday</option>
+                                   <option value="Payroll">Payroll</option>
+                                   <option value="Enjoyment">Enjoyment</option>
+                                   <option value="Investments">Investments</option>
+                                   <option value="Charity">Charity</option>
+                                   <option value="Refund">Refund</option>
+                                   <option value="Household">Household</option>
                                    <option value="Others">Others</option>
                                </select>
                             </div>

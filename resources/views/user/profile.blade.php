@@ -256,7 +256,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                                                 {{-- Password --}}
                                                 <div class="tab-pane" id="tab-eg11-2" role="tabpanel">
                                                     <div class="row">
-                                                        <div class="col-md-4">
+                                                        <div class="col-md-4 mb-3">
                                                             <div class="card card-body">
                                                                 <h4>Reset Account Password</h4>
                                                                 <button class="btn btn-custom-accent"
@@ -265,7 +265,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                                                             </div>
                                                         </div>
                                                         @if (Auth::user()->nairaWallet)
-                                                        <div class="col-md-4">
+                                                        <div class="col-md-4 mb-3">
                                                             <div class="card card-body">
                                                                 <h4>Reset Wallet Password</h4>
                                                                 <button class="btn btn-custom-accent"
@@ -274,7 +274,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                                                             </div>
                                                         </div>
                                                         @endif
-                                                        <div class="col-md-4">
+                                                        <div class="col-md-4 mb-3">
                                                             <div class="card card-body">
                                                                 <h4>Change Email Address </h4>
                                                                 <button class="btn btn-custom-accent"

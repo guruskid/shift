@@ -166,7 +166,7 @@
                                                             <div
                                                                 class="d-flex justify-content-center align-items-center">
                                                                 <div class="text-center" onclick="changeqty('subtract')"
-                                                                    style="cursor:pointer;width:30px;height:24px;border-radius:40px;background: #000070;">
+                                                                    style="cursor:pointer;width:24px;height:24px;border-radius:12px;background: #000070;">
                                                                     <svg width="10" height="2" viewBox="0 0 12 2"
                                                                         fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <path d="M0 0H12V2H0V0Z" fill="white" />
@@ -178,7 +178,7 @@
                                                                     type="text" class="mx-1 form-control text-center"
                                                                     name="" id="qty_input" value="1">
                                                                 <div class="text-center" onclick="changeqty('add')"
-                                                                    style="cursor:pointer;width:30px;height:24px;border-radius:40px;background: #000070;">
+                                                                    style="cursor:pointer;width:24px;height:24px;border-radius:12px;background: #000070;">
                                                                     <svg width="10" height="10" viewBox="0 0 14 14"
                                                                         fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z"

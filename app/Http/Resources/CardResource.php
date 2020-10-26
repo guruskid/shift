@@ -32,8 +32,9 @@ class CardResource extends JsonResource
     {
         $card_id = $this->id;
         return $this->currency->each(function($cur) use ($card_id){
-            $cur->payment_mediums = $this->getPaymentMediums($cur->id, $card_id);
+            $cur->payment_mediums = $this->getPaymentMediums($cur->id, $card_id, $cur->pivot->buy_sell);
             $cur->buy_sell = $cur->pivot->buy_sell;
+            $this->buy_sell = $cur->buy_sell;
             $this->unsetHelper($cur, ['pivot', 'created_at', 'updated_at']);
         });
     }
@@ -46,10 +47,10 @@ class CardResource extends JsonResource
      * @param  mixed $card_id
      * @return void
      */
-    protected  function getPaymentMediums($currency_id, $card_id)
+    protected  function getPaymentMediums($currency_id, $card_id, $buy_sell)
     {
-        $cardCurrency = CardCurrency::where(['card_id'=> $card_id, 'currency_id'=> $currency_id])->first();
-        return $cardCurrency->paymentMediums->each(function($medium){
+        $cardCurrency = CardCurrency::where(['card_id'=> $card_id, 'currency_id'=> $currency_id, 'buy_sell' => $buy_sell ])->first();
+        return $cardCurrency->paymentMediums()->where('payment_range_settings', '!=', '[]' )->get()->each(function($medium){
             $medium->pricing = json_decode($medium->pivot->payment_range_settings);
             $this->unsetHelper($medium, ['pivot', 'created_at', 'updated_at', 'currency_id']);
         });

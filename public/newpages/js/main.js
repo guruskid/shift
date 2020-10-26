@@ -2017,3 +2017,4 @@ $("#buy_eth_field").on("keyup", function(){
         $("#buy_eth_submit_btn").attr('disabled',"true")
     }
 })
+
