@@ -49068,7 +49068,7 @@ var render = function() {
                                   _c("path", {
                                     attrs: {
                                       d: "M0 0H12V2H0V0Z",
-                                      fill: "white"
+                                      fill: "#ffffff"
                                     }
                                   })
                                 ]

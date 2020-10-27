@@ -62,7 +62,7 @@
                                     <div class="text-center decrement-icon" @click="updateQuantity('subtract')">
                                         <svg width="8" height="2" viewBox="0 0 12 2" fill="#ffffff"
                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0 0H12V2H0V0Z" fill="white" />
+                                            <path d="M0 0H12V2H0V0Z" fill="#ffffff" />
                                         </svg>
                                     </div>
                                     <input v-model="cardQuantity" min="1" readonly style="width: 50px;padding:2px 0 0 0;border:0px;" type="number"
