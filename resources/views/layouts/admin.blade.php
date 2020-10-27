@@ -18,6 +18,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard - Dantown Multi Services </title>
     <link rel="icon" type="image/x-icon" href="{{asset('admin_assets/img/fav2.png')}} "/>
     <link href="{{asset('admin_assets/css/loader.css')}} " rel="stylesheet" type="text/css" />
@@ -264,7 +265,7 @@
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
     <script src="{{asset('admin_assets/js/app.js')}} "></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
-    <script src="{{asset('js/sa.js?v=4')}}"></script>
+    <script src="{{asset('js/sa.js?v=43')}}"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     {{-- Datatables --}}
@@ -276,7 +277,8 @@
             App.init();
         });
     </script>
-    <script src="{{asset('admin_assets/js/custom.js')}} "></script>
+    <script src="{{asset('admin_assets/js/custom.js?v=45')}} "></script>
+    
     <!-- END GLOBAL MANDATORY SCRIPTS -->
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
@@ -300,6 +302,7 @@
     <script>
         $(document).ready(function () {
             Notify("{{session()->get('success')}} ", null, null, 'success');
+            alert('{{ session()->get("success") }}')
         });
 
     </script>
@@ -309,6 +312,7 @@
     <script>
         $(document).ready(function () {
             Notify("{{session()->get('error')}} ", null, null, 'danger');
+            alert('{{ session()->get("error") }}')
         });
 
     </script>

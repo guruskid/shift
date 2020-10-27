@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Bank;
 use App\NairaTransaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,18 +29,17 @@ class NairaTransactionController extends Controller
         if ($wallet) {
             $transactions = NairaTransaction::where('cr_user_id', $wallet->user->id)->orWhere('dr_user_id', $wallet->user->id)->latest()->with('transactionType')->get();
             return response()->json([
-                'success' =>true,
+                'success' => true,
                 'transactions' => $transactions,
                 'user' => $wallet->user,
                 'wallet' => $wallet
             ]);
         } else {
             return response()->json([
-                'success' =>false,
+                'success' => false,
                 'message' => 'Wallet details not found, please try again'
             ]);
         }
-
     }
 
     /**
@@ -62,6 +62,7 @@ class NairaTransactionController extends Controller
      */
     public function store(Request $r)
     {
+        return back()->with(['error' => 'Incorrect details']);
         $r->validate([
             'account_number' => 'required|integer|exists:naira_wallets,account_number',
             'reference' => 'required|string|unique:naira_transactions,reference',
@@ -86,7 +87,7 @@ class NairaTransactionController extends Controller
         $t->transaction_type_id = $r->transaction_type;
         $t->narration = $r->narration;
         $t->charge = 0;
-        $t->trans_msg = 'This transaction was authenticated by '.Auth::user()->id.' '.Auth::user()->first_name;
+        $t->trans_msg = 'This transaction was authenticated by ' . Auth::user()->id . ' ' . Auth::user()->first_name;
         $t->status = 'pending';
 
         if ($r->transaction_type == 7) {
@@ -105,7 +106,7 @@ class NairaTransactionController extends Controller
 
             $title = 'Dantown wallet Credit';
             $type = 'credit';
-        }elseif ($r->transaction_type == 8) {
+        } elseif ($r->transaction_type == 8) {
             //Deduction
             $wallet->amount -= $r->amount;
             $wallet->save();
@@ -122,10 +123,10 @@ class NairaTransactionController extends Controller
             $title = 'Dantown wallet Debit';
             $type = 'debit';
         }
-        
 
-        
-        $msg_body = 'Your Dantown wallet has been '.$type.'ed with N' . $r->amount . ' from ' . $r->originatorname . ' desc: ' . $r->narration;
+
+
+        $msg_body = 'Your Dantown wallet has been ' . $type . 'ed with N' . $r->amount . ' from ' . $r->originatorname . ' desc: ' . $r->narration;
 
         $not = Notification::create([
             'user_id' => $wallet->user->id,
@@ -145,6 +146,110 @@ class NairaTransactionController extends Controller
         dd($snd_sms->getBody()->getContents());
 
         return back()->with(['success' => 'Transaction completed']);
+    }
+
+    public function profits()
+    {
+        $transfer_charge = NairaWallet::where('account_number', 0000000001)->first()->amount;
+        $sms_charge = NairaWallet::where('account_number', 0000000002)->first()->amount;
+        $charges = $transfer_charge + $sms_charge;
+        $banks = Bank::orderBy('name', 'asc')->get();
+        $ref = \Str::random(2) . time();
+        $admin_accounts = NairaWallet::where('user_id', 1)->latest()->get();
+
+        return view('admin.profits', compact(['transfer_charge', 'sms_charge', 'charges', 'banks', 'ref', 'admin_accounts']));
+    }
+
+    public function sendCharges(Request $r)
+    {
+        $r->validate([
+            'bank_code' => 'required',
+            'acct_num' => 'required',
+            'acct_name' => 'required',
+            'pin' => 'required',
+            'admin_account' => 'required|integer',
+            'ref' => 'required|unique:naira_transactions,reference',
+        ]);
+        $admin_account = NairaWallet::where(['user_id' => 1, 'id' => $r->admin_account])->firstOrFail();
+        $n = Auth::user()->nairaWallet;
+
+        if (Hash::check($r->pin, $n->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong wallet pin entered']);
+        }
+
+        $reference = $r->ref;
+        $bank_name = Bank::where('code', $r->bank_code)->first()->name;
+        $acct_name = $r->acct_name;
+        $acct_num = $r->acct_num;
+        $bank_code = $r->bank_code;
+        $tid = 2;
+
+        $amount = $admin_account->amount;
+        $amount_paid = $admin_account->amount;
+
+        $prev_bal = $admin_account->amount;
+        $admin_account->amount -= $amount;
+        $admin_account->save();
+
+        $msg = 'Transaction initiated';
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->amount = $amount;
+
+        $nt->previous_balance = $prev_bal;
+        $nt->current_balance = $admin_account->amount;
+        $nt->charge = 0;
+        $nt->transfer_charge = 0;
+        $nt->sms_charge = 0;
+        $nt->amount_paid = $amount_paid;
+        $nt->transaction_type_id = $tid;
+
+        $nt->user_id = 1;
+        $nt->type = 'naira wallet';
+        $nt->dr_user_id = 1;
+        $nt->dr_wallet_id = $admin_account->id;
+        $nt->dr_acct_name =  $admin_account->name;
+        $nt->cr_acct_name = $acct_name . ' ' . $acct_num . " " . $bank_name;
+        $nt->narration = 'Charges withdrawal Authorised by '. Auth::user()->name;
+        $nt->trans_msg = $msg;
+        $nt->status = 'pending';
+        $nt->save();
+
+
+        $client = new Client();
+        $url = env('RUBBIES_API') . "/fundtransfer";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                "reference" => $reference,
+                "amount" => $amount,
+                "narration" => $nt->narration,
+                "craccountname" => $acct_name,
+                "bankname" => $bank_name,
+                "draccountname" => Auth::user()->first_name,
+                "craccount" => $acct_num,
+                "bankcode" => $bank_code
+            ],
+            'headers' => [
+                'authorization' => env('RUBBIES_SECRET_KEY'),
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+        if ($body->responsecode == 00) {
+            $nt->status = 'success';
+            $nt->save();
+
+            $title = 'Dantown wallet Debit';
+            $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for transfer to ' . $body->craccountname . ' desc: ' . $nt->narration;
+            $not = Notification::create([
+                'user_id' => 1,
+                'title' => $title,
+                'body' => $msg_body,
+            ]);
+            return back()->with(['success' => 'Transfer made successfully']);
+        } else {
+            return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
+        }
     }
 
     /**

@@ -73,7 +73,8 @@ function getAccountName() {
             alert(data['msg']);
         }
     });
-} /* Update the modal for withdraw txn */ /* type ; 1 = transfer; 2 = withdraw */
+}
+/* Update the modal for withdraw txn */ /* type ; 1 = transfer; 2 = withdraw */
 function tnsType(type) {
     $('#add-acct-details').hide();
     if (type == 1) {

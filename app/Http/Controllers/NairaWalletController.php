@@ -331,7 +331,7 @@ class NairaWalletController extends Controller
             $token = env('SMS_TOKEN');
             $to = Auth::user()->phone;
             $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-            $snd_sms = $client->request('GET', $sms_url);
+            /* $snd_sms = $client->request('GET', $sms_url); */
 
             return back()->with(['success' => 'Transfer made successfully']);
         } else {
@@ -416,7 +416,7 @@ class NairaWalletController extends Controller
         $token = env('SMS_TOKEN');
         $to = $t->user->phone;
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
+        /* $snd_sms = $client->request('GET', $sms_url); */
 
         return back()->with(['success' => 'Transfer made successfully']);
     }
@@ -525,7 +525,7 @@ class NairaWalletController extends Controller
         $token = env('SMS_TOKEN');
         $to = $t->user->phone;
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
+        /* $snd_sms = $client->request('GET', $sms_url); */
 
         return back()->with(['success' => 'Refund made successfully']);
     }
@@ -606,7 +606,7 @@ class NairaWalletController extends Controller
         $token = env('SMS_TOKEN');
         $to = $t->user->phone;
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
+        /* $snd_sms = $client->request('GET', $sms_url); */
 
         return back()->with(['success' => 'Refund made successfully']);
     }
@@ -716,7 +716,7 @@ class NairaWalletController extends Controller
         $token = env('SMS_TOKEN');
         $to = $nw->user->phone;
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
+        /* $snd_sms = $client->request('GET', $sms_url); */
 
         return true;
     }

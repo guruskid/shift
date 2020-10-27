@@ -24,10 +24,10 @@ $(function () {
         $('.modal').modal('hide');
     })
 
-/* get wallet details and transactions when the account number is changed */
-$('#account-number').change(function (e) {  
+/* get wallet details and transactions when the account number is changed *//*
+$('#account-number').change(function (e) {
     getUserWalletDetails($(this).val());
-})
+}) */
 
 });
 
@@ -275,7 +275,7 @@ function queryTransaction(id) {
 
 
 /* get transactions and user details for adding transaction, it is called from the top */
-function getUserWalletDetails(accountNumber) {
+/* function getUserWalletDetails(accountNumber) {
     console.log(accountNumber);
     if (accountNumber.length < 10) {
         return;
@@ -289,7 +289,7 @@ function getUserWalletDetails(accountNumber) {
     transactionsList.html('Loading');
 
     $.get('/admin/get-wallet-details/'+accountNumber)
-    .done(function (res) { 
+    .done(function (res) {
         if (res.success) {
             console.log(res)
             var user = res.user;
@@ -332,7 +332,7 @@ function getUserWalletDetails(accountNumber) {
             alert(res.message);
         }
 
-    
+
      })
     .fail(function (err) {  console.log(err) })
-}
+} */
