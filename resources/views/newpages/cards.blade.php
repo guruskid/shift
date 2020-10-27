@@ -53,13 +53,17 @@
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span
-                                            class="d-block price">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
+                                        <span class="d-block price">
+                                            @auth
+                                            ₦{{Auth::user()->nairaWallet->amount}}
+                                            @endauth
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
 
                     <div class="row">
                         <div class="col-12">
@@ -69,14 +73,14 @@
                                     <div class="list-cards-title primary-color">
                                         <a href="#">
                                             <span class="ml-1"
-                                                style="color: rgba(0, 0, 112, 0.75);font-size:16px;">Buy/Sell
-                                                card</span>
+                                                style="color: rgba(0, 0, 112, 0.75);font-size:25px;">Buy/Sell
+                                                Card</span>
                                         </a>
                                     </div>
                                     <div class="list-cards-search primary-color mt-3 mt-lg-0">
                                         <form action="" method="post">
                                             <div class="form-group p-0 m-0">
-                                                <span class="giftcard search-icon">
+                                                <span class="search-icon">
                                                     <svg width="1em" height="1em" viewBox="0 0 16 16"
                                                         class="bi bi-search" fill="#000070"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -92,29 +96,29 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="container">
-                                    <div class="row">
+
+                                <div class="container px-0 px-auto">
+                                    <div class="row m-2 px-0">
                                         @foreach ($assets as $asset)
-                                        <div class="col-lg-4 col-md-6 col-12 mb-3">
-                                            <div class="wallcards-container py-lg-5 px-lg-3 px-1 list_all_cards d-flex align-items-center">
-                                                <div style="width:40%;">
-                                                    <img src="{{ asset('cards/BITCOINS.png') }}" class="img-fluid d-md-inline" alt=""/>
-                                                </div>
-                                                <div class="d-flex flex-column flex-start ml-4" style="width:60%;">
-                                                    <span class="d-block text-primary mb-2 ml-2" style="font-weight: normal;font-style: normal;">{{ $asset->name }}</span>
-                                                        <div class="d-flex justify-content-around">
-                                                            <a href="{{ route('user.asset.rate', ['buy', $asset->id, str_slug($asset->name)]) }}">
-                                                                <button class="btn btn-primary btn-c-rounded" @if ($asset->buyable) disabled @endif>Buy</button>
-                                                            </a>
-                                                            <a href="{{ route('user.asset.rate', ['sell', $asset->id, str_slug($asset->name)]) }}">
-                                                                <button class="btn btn-outline-primary btn-c-rounded" @if ($asset->sellable) disabled @endif>Sell</button>
-                                                            </a>
-                                                        </div>
+                                        <div
+                                            class="mx-lg-1 my-2 d-flex flex-row justify-content-around align-items-center p-2 flex-wrap list_all_cards">
+                                            <div id="card-image">
+                                                <img class="img-fluid" src="{{'/cards/'.$asset->image}}" width="120px" height="90px" />
+                                            </div>
+                                            <div id="card_details" class="d-flex flex-column align-items-center">
+                                                <span class="d-block primary-color"
+                                                    style="font-size:20px;">{{Ucwords($asset->name)}}</span>
+                                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                                    @if ($asset->sellable)
+                                                <a href="/asset/{{'sell'}}/{{$asset->name}}" class="btn text-white px-4 sell_button">Sell</a>
+                                                    @endif
+                                                    @if ($asset->buyable)
+                                                    <a href="/asset/{{'buy'}}/{{$asset->name}}" class="btn ml-2 px-4 primary-color buy_button">Buy</a>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
                                         @endforeach
-
                                     </div>
                                 </div>
 
@@ -124,7 +128,7 @@
                 </div>
             </div>
 
-            {{-- @include('newpages.modals.uploadcardmodal') --}}
+            {{-- @include('layouts.partials.live-feeds') --}}
         </div>
     </div>
 </div>

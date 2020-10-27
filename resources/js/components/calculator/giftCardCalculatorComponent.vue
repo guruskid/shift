@@ -5,24 +5,23 @@
 
                 <div class="d-flex flex-column">
 
-                    <div class="p-lg-2 allcards-container">
+                    <div class="allcards-container py-2 pt-lg-3 pb-lg-3">
                         <div
-                            class="d-flex flex-column flex-lg-row align-items-center align-items-between-lg justify-content-between">
-                            <div class="ml-lg-3 transaction-title">
-                                Transaction</div>
-                            <div class="d-block mr-lg-3"
-                                style="font-size: 20px;color: rgba(0, 0, 112, 0.75); opacity: 0.7;">
+                            class="d-flex flex-column ml-4">
+                            <div class="transaction-title">Transaction</div>
+                            <div class="d-block"
+                                style="font-size: 12px;color: rgba(0, 0, 112, 0.75); opacity: 0.7;">
                                 {{ buy_sell == 1 ? 'Buy ' + card.name + ' from us' : 'Sell ' + card.name + ' to us' }}
                             </div>
                         </div>
-                        <div class="mx-auto mb-4 mt-3" style="border: 1px solid #EFEFF8;width: 90%;">
+                        <div class="mx-auto my-2" style="border:1px solid #EFEFF8;width: 98%;height:0px;">
                         </div>
                         <div
-                            class="d-flex flex-row justify-content-around align-items-center flex-wrap flex-lg-nowrap p-2 p-lg-3 pl-lg-4">
+                            class="d-flex flex-row justify-content-around align-items-center flex-wrap flex-lg-nowrap p-2 p-lg-3 pl-lg-4 mt-3">
                             <div class="card-image mr-lg-2">
-                                <img src="/cards/steam.png" alt="card" style="width: 170px">
+                                <img src="/cards/steam.png" class="img-fluid giftcard_image" alt="card">
                             </div>
-                            <div class="d-flex flex-column mx-1 mt-4 mt-lg-0 cctype_container">
+                            <div class="d-flex flex-column mx-1 mt-4 mt-lg-0 ml-lg-4 cctype_container" style="">
                                 <div class="d-flex flex-column align-items-around">
                                     <label class="label-style">Currency</label>
                                     <select id="countries_list" v-model="selectedCurrency" name="country"
@@ -34,7 +33,7 @@
                                             {{ currencies[i- 1].name }} </option>
                                     </select>
                                 </div>
-                                <div id="card_type" class="mt-4 flex-column">
+                                <div id="card_type" class="mt-2 flex-column">
                                     <label class="label-style">Card type</label>
                                     <select id="cardtype_list" v-model="selectedType" @change="onTypeChange($event)"
                                         class="form-control custom-select select-country-custom-select cardtypelist">
@@ -44,13 +43,12 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="d-block mt-3 text-center" style="color: #C4C4C4;line-height: 30px;">Select country and card type to proceed</span>
+                        <span class="d-block mt-3 text-center" style="color: #C4C4C4;line-height: 30px;position:relative;top:-11px;">Select country and card type to proceed</span>
                     </div>
 
-                    <div class="text-center flex-column mt-4 p-2 align-items-center allcards-container card-price-qty"
-                        style="height:285px;">
-                        <div class="d-flex flex-row justify-content-around flex-wrap">
-                            <div class="text-center">
+                    <div class="text-center d-flex flex-column mt-4 p-2 pt-3 justify-content-center align-items-center allcards-container card-price-qty" style="height:320px;">
+                        <div class="d-flex flex-row flex-wrap mt-2 mt-lg-4">
+                            <div class="card-price-input">
                                 <label for="country" class="label-style">Card
                                     price</label>
                                 <select id="cardprice" v-model="selectedQuantity" @change="onQuantityChange($event)" class="custom-select select-country-custom-select cardprice">
@@ -58,50 +56,48 @@
                                     <option v-for="i in quantities.length" :key="i" :value="i - 1">{{ quantities[i - 1].value }} </option>
                                 </select>
                             </div>
-                            <div class="ml-lg-4 mt-4 mt-md-0 text-center">
+                            <div class="ml-5 ml-lg-4 mt-4 mt-md-0 text-center card-qty-input">
                                 <label for="country" class="label-style">Quantity</label>
                                 <div class="d-flex justify-content-center align-items-center">
-                                    <div class="text-center" @click="updateQuantity('subtract')"
-                                        style="cursor:pointer;width:30px;height:24px;border-radius:40px;background: #000070;">
-                                        <svg width="10" height="2" viewBox="0 0 12 2" fill="none"
+                                    <div class="text-center decrement-icon" @click="updateQuantity('subtract')">
+                                        <svg width="8" height="2" viewBox="0 0 12 2" fill="#ffffff"
                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M0 0H12V2H0V0Z" fill="white" />
+                                            <path d="M0 0H12V2H0V0Z" fill="#ffffff" />
                                         </svg>
                                     </div>
-                                    <input v-model="cardQuantity" min="1" readonly style="width: 50px;padding:2px;border:0px;" type="number"
+                                    <input v-model="cardQuantity" min="1" readonly style="width: 50px;padding:2px 0 0 0;border:0px;" type="number"
                                         class="mx-1 form-control text-center">
-                                    <div class="text-center" @click="updateQuantity('add')"
-                                        style="cursor:pointer;width:30px;height:24px;border-radius:40px;background: #000070;">
-                                        <svg width="10" height="10" viewBox="0 0 14 14" fill="none"
+                                    <div class="text-center increment-icon increment-icon-sizing" @click="updateQuantity('add')">
+                                        <svg width="8" height="8" viewBox="0 0 14 14" fill="#ffffff"
                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="white" />
+                                            <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="#ffffff" />
                                         </svg>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="d-block text-center my-3">
-                            <span style="font-size: 16px;font-weight: 500;color: rgba(0, 0, 112, 0.75);">Price
+                        <div class="d-block text-center mt-3 mt-lg-5 mb-3">
+                            <span class="price-per-card-text">Price
                                 Per card:</span> <span>₦{{ price }} </span>
                         </div>
-                        <button class="select-card-add-button"  id="addcard_buon" @click="addTrade()" >Add</button>
-                        <span class="d-block my-2 my-lg-3 text-center"
+                        <button class="select-card-add-button py-2" id="addcard_buon" @click="addTrade()" >Add</button>
+                        <span class="d-block mt-3 mt-lg-5 mb-lg-3 text-center"
                             style="color: rgba(71, 71, 71, 0.5);font-size: 15px;">Scroll up
                             to see
                             the card you just added</span>
                     </div>
-
                 </div>
 
             </div>
             <div id="list_added_cards" class=" col-12 col-md-6 col-lg-6 my-0">
                 <div class="row">
                     <div id="addedCards" class="col-12 mt-3 mb-2 py-3 allcards-container"
-                        style="height: 270px !important;width:100%;overflow-y: scroll;">
+                        style="height: 320px !important;overflow-y: scroll;">
 
-                        <table class="table table-borderless table-striped">
+                        <div class="container">
+                            <table class="table table-borderless table-striped">
                             <thead>
-                                <tr>
+                                <tr class="table_card_title">
                                     <th scope="col">Card Value</th>
                                     <th scope="col">Price per card (₦)</th>
                                     <th scope="col">Qty</th>
@@ -129,16 +125,17 @@
                             card has
                             been added
                             yet &#x1F615;</div>
+                        </div>
 
                     </div>
                     <div id="total_price"
                         class="col-12 text-center my-3 allcards-container flex-column justify-content-center align-items-center"
-                        style="height: 285px;">
-                        <span class="d-block text-center gradient-text">
+                        style="height: 320px;">
+                        <span class="d-block text-center gradient-text" style="margin-top:60px;">
                             {{ buy_sell == 1 ? 'You are paying ' : 'You are getting' }}
                         </span>
 
-                        <span class="d-block text-center mt-3 gradient-text"
+                        <span class="d-block text-center mt-4 mb-3 gradient-text"
                             style="font-size: 38px;">₦{{ total.toLocaleString() }} </span>
 
                         <button @click="proceed()" :disabled="trades.length == 0 ? true : false" class="btn mt-3 mt-lg-4 proceed-button" id="proceedtoupload">Proceed</button>

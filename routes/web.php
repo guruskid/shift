@@ -15,6 +15,36 @@ use Illuminate\Support\Facades\Mail;
 |
 */
 
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
+// Route::get('/showcards', function () {
+//     return view('newpages.cards');
+// });
+
+Route::get('/cardcalculator', function () {
+    return view('newpages.cardcalculator');
+});
+Route::get('/transaction', function () {
+    return view('newpages.Transactionscreen');
+});
+Route::get('/bitcoin', function () {
+    return view('newpages.Bitcoinscreen');
+});
+Route::get('/ethereum', function () {
+    return view('newpages.ethereumscreen');
+});
+Route::get('/airtocash', function () {
+    return view('newpages.airtimetocash');
+});
+Route::get('/newprofile', function () {
+    return view('newpages.profile');
+});
+
+
+
 Route::get('mailable', function () {
     /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered('Winston Okatubo') ); */
     $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
