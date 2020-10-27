@@ -49130,7 +49130,7 @@ var render = function() {
                                   _c("path", {
                                     attrs: {
                                       d: "M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z",
-                                      fill: "white"
+                                      fill: "#ffffff"
                                     }
                                   })
                                 ]
@@ -49148,17 +49148,9 @@ var render = function() {
                 "div",
                 { staticClass: "d-block text-center mt-3 mt-lg-5 mb-3" },
                 [
-                  _c(
-                    "span",
-                    {
-                      staticStyle: {
-                        "font-size": "14px",
-                        "font-weight": "700",
-                        color: "rgba(0, 0, 112, 0.75)"
-                      }
-                    },
-                    [_vm._v("Price\n                            Per card:")]
-                  ),
+                  _c("span", { staticClass: "price-per-card-text" }, [
+                    _vm._v("Price\n                            Per card:")
+                  ]),
                   _vm._v(" "),
                   _c("span", [_vm._v("₦" + _vm._s(_vm.price) + " ")])
                 ]

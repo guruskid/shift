@@ -439,6 +439,11 @@ height: 65px;
     position: relative;
     left:-15px;
 }
+.price-per-card-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(0, 0, 112, 0.75);
+}
 /* New profile page css code ends here */
 
 

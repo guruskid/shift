@@ -70,14 +70,14 @@
                                     <div class="text-center increment-icon increment-icon-sizing" @click="updateQuantity('add')">
                                         <svg width="8" height="8" viewBox="0 0 14 14" fill="#ffffff"
                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="white" />
+                                            <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="#ffffff" />
                                         </svg>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="d-block text-center mt-3 mt-lg-5 mb-3">
-                            <span style="font-size: 14px;font-weight: 700;color: rgba(0, 0, 112, 0.75);">Price
+                            <span class="price-per-card-text">Price
                                 Per card:</span> <span>₦{{ price }} </span>
                         </div>
                         <button class="select-card-add-button py-2" id="addcard_buon" @click="addTrade()" >Add</button>
