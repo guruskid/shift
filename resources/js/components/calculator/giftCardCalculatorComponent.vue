@@ -19,7 +19,7 @@
                         <div
                             class="d-flex flex-row justify-content-around align-items-center flex-wrap flex-lg-nowrap p-2 p-lg-3 pl-lg-4 mt-3">
                             <div class="card-image mr-lg-2">
-                                <img src="/cards/steam.png" alt="card" style="width: 230px;height:150px;">
+                                <img src="/cards/steam.png" class="img-fluid giftcard_image" alt="card">
                             </div>
                             <div class="d-flex flex-column mx-1 mt-4 mt-lg-0 ml-lg-4 cctype_container" style="">
                                 <div class="d-flex flex-column align-items-around">
@@ -48,7 +48,7 @@
 
                     <div class="text-center d-flex flex-column mt-4 p-2 pt-3 justify-content-center align-items-center allcards-container card-price-qty" style="height:320px;">
                         <div class="d-flex flex-row flex-wrap mt-2 mt-lg-4">
-                            <div style="position:relative;left:-45px;">
+                            <div class="card-price-input">
                                 <label for="country" class="label-style">Card
                                     price</label>
                                 <select id="cardprice" v-model="selectedQuantity" @change="onQuantityChange($event)" class="custom-select select-country-custom-select cardprice">
@@ -56,7 +56,7 @@
                                     <option v-for="i in quantities.length" :key="i" :value="i - 1">{{ quantities[i - 1].value }} </option>
                                 </select>
                             </div>
-                            <div class="ml-lg-4 mt-4 mt-md-0 text-center" style="position:relative;right:-18px;">
+                            <div class="ml-5 ml-lg-4 mt-4 mt-md-0 text-center card-qty-input">
                                 <label for="country" class="label-style">Quantity</label>
                                 <div class="d-flex justify-content-center align-items-center">
                                     <div class="text-center decrement-icon" @click="updateQuantity('subtract')">
@@ -67,7 +67,7 @@
                                     </div>
                                     <input v-model="cardQuantity" min="1" readonly style="width: 50px;padding:2px 0 0 0;border:0px;" type="number"
                                         class="mx-1 form-control text-center">
-                                    <div class="text-center increment-icon" @click="updateQuantity('add')" style="position: relative;left:-15px;">
+                                    <div class="text-center increment-icon increment-icon-sizing" @click="updateQuantity('add')">
                                         <svg width="8" height="8" viewBox="0 0 14 14" fill="#ffffff"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="white" />
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-block text-center mt-5 mb-3">
+                        <div class="d-block text-center mt-3 mt-lg-5 mb-3">
                             <span style="font-size: 14px;font-weight: 700;color: rgba(0, 0, 112, 0.75);">Price
                                 Per card:</span> <span>₦{{ price }} </span>
                         </div>

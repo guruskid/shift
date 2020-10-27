@@ -98,7 +98,7 @@
                                         <div class="col-lg-4 col-md-6 col-12 mb-3">
                                             <div class="wallcards-container py-lg-5 px-lg-3 px-1 list_all_cards d-flex align-items-center">
                                                 <div style="width:40%;">
-                                                    <img src="{{ asset('cards/steam.png') }}" class="img-fluid d-md-inline" alt=""/>
+                                                    <img src="{{ asset('cards/BITCOINS.png') }}" class="img-fluid d-md-inline" alt=""/>
                                                 </div>
                                                 <div class="d-flex flex-column flex-start ml-4" style="width:60%;">
                                                     <span class="d-block text-primary mb-2 ml-2" style="font-weight: normal;font-style: normal;">{{ $asset->name }}</span>

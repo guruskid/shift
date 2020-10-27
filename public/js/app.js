@@ -48960,81 +48960,70 @@ var render = function() {
                 "div",
                 { staticClass: "d-flex flex-row flex-wrap mt-2 mt-lg-4" },
                 [
-                  _c(
-                    "div",
-                    { staticStyle: { position: "relative", left: "-45px" } },
-                    [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "label-style",
-                          attrs: { for: "country" }
-                        },
-                        [_vm._v("Card\n                                price")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "select",
-                        {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.selectedQuantity,
-                              expression: "selectedQuantity"
-                            }
-                          ],
-                          staticClass:
-                            "custom-select select-country-custom-select cardprice",
-                          attrs: { id: "cardprice" },
-                          on: {
-                            change: [
-                              function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.selectedQuantity = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              },
-                              function($event) {
-                                return _vm.onQuantityChange($event)
-                              }
-                            ]
+                  _c("div", { staticClass: "card-price-input" }, [
+                    _c(
+                      "label",
+                      { staticClass: "label-style", attrs: { for: "country" } },
+                      [_vm._v("Card\n                                price")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.selectedQuantity,
+                            expression: "selectedQuantity"
                           }
-                        },
-                        [
-                          _c("option", { attrs: { disabled: "", value: "" } }, [
-                            _vm._v("Select Quantity")
-                          ]),
-                          _vm._v(" "),
-                          _vm._l(_vm.quantities.length, function(i) {
-                            return _c(
-                              "option",
-                              { key: i, domProps: { value: i - 1 } },
-                              [
-                                _vm._v(
-                                  _vm._s(_vm.quantities[i - 1].value) + " "
-                                )
-                              ]
-                            )
-                          })
                         ],
-                        2
-                      )
-                    ]
-                  ),
+                        staticClass:
+                          "custom-select select-country-custom-select cardprice",
+                        attrs: { id: "cardprice" },
+                        on: {
+                          change: [
+                            function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.selectedQuantity = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            },
+                            function($event) {
+                              return _vm.onQuantityChange($event)
+                            }
+                          ]
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { disabled: "", value: "" } }, [
+                          _vm._v("Select Quantity")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.quantities.length, function(i) {
+                          return _c(
+                            "option",
+                            { key: i, domProps: { value: i - 1 } },
+                            [_vm._v(_vm._s(_vm.quantities[i - 1].value) + " ")]
+                          )
+                        })
+                      ],
+                      2
+                    )
+                  ]),
                   _vm._v(" "),
                   _c(
                     "div",
                     {
-                      staticClass: "ml-lg-4 mt-4 mt-md-0 text-center",
-                      staticStyle: { position: "relative", right: "-18px" }
+                      staticClass:
+                        "ml-5 ml-lg-4 mt-4 mt-md-0 text-center card-qty-input"
                     },
                     [
                       _c(
@@ -49117,11 +49106,8 @@ var render = function() {
                           _c(
                             "div",
                             {
-                              staticClass: "text-center increment-icon",
-                              staticStyle: {
-                                position: "relative",
-                                left: "-15px"
-                              },
+                              staticClass:
+                                "text-center increment-icon increment-icon-sizing",
                               on: {
                                 click: function($event) {
                                   return _vm.updateQuantity("add")
@@ -49158,21 +49144,25 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _c("div", { staticClass: "d-block text-center mt-5 mb-3" }, [
-                _c(
-                  "span",
-                  {
-                    staticStyle: {
-                      "font-size": "14px",
-                      "font-weight": "700",
-                      color: "rgba(0, 0, 112, 0.75)"
-                    }
-                  },
-                  [_vm._v("Price\n                            Per card:")]
-                ),
-                _vm._v(" "),
-                _c("span", [_vm._v("₦" + _vm._s(_vm.price) + " ")])
-              ]),
+              _c(
+                "div",
+                { staticClass: "d-block text-center mt-3 mt-lg-5 mb-3" },
+                [
+                  _c(
+                    "span",
+                    {
+                      staticStyle: {
+                        "font-size": "14px",
+                        "font-weight": "700",
+                        color: "rgba(0, 0, 112, 0.75)"
+                      }
+                    },
+                    [_vm._v("Price\n                            Per card:")]
+                  ),
+                  _vm._v(" "),
+                  _c("span", [_vm._v("₦" + _vm._s(_vm.price) + " ")])
+                ]
+              ),
               _vm._v(" "),
               _c(
                 "button",
@@ -49401,7 +49391,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-image mr-lg-2" }, [
       _c("img", {
-        staticStyle: { width: "230px", height: "150px" },
+        staticClass: "img-fluid giftcard_image",
         attrs: { src: "/cards/steam.png", alt: "card" }
       })
     ])

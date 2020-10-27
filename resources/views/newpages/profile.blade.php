@@ -59,55 +59,36 @@
                                     </svg>
                                 </div>
                             </div>
-                            <div class="d-flex flex-column align-items-center wallet_balance_section">
-                                <span class="d-block text-upper mt-4" style="font-size: 14px;">wallet balance</span>
-                                <span class="d-block text-upper" style="font-size: 24px;font-weight:bold;">NGN
-                                    800,300.00</span>
+                            <div class="d-flex flex-column justify-content-center align-items-center mb-4"
+                                style="z-index: 2;position:relative;top:-110px;">
+                                <span class="d-block text-upper"
+                                    style="font-size: 26px;font-weight:normal;color:#000070;">NGN 800,300.00</span>
+                                <span class="d-block"
+                                    style="font-size: 18px;letter-spacing: 0.01em;color: #676B87;text-transform:uppercase;">wallet
+                                    balance</span>
                             </div>
-                            <div class="btc_wallet_balance d-flex justify-content-center align-items-center"
-                                style="position: relative;top:-130px;">
-                                <div class="btc_logo mr-4">
-                                    <svg width="42" height="39" viewBox="0 0 42 39" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M19.5607 18.3131C21.0841 18.6829 24.3868 19.4847 24.9631 17.3759C25.5536 15.2105 22.3179 14.5622 20.7443 14.2468C20.571 14.2121 20.4178 14.1814 20.2921 14.1532L19.1848 18.2237C19.2922 18.2479 19.4187 18.2787 19.5607 18.3131ZM17.8368 24.8662C19.6619 25.3058 23.6396 26.2641 24.2697 23.9433C24.921 21.5765 21.0689 20.7823 19.1785 20.3926C18.9633 20.3482 18.7734 20.309 18.6186 20.2734L17.3967 24.762C17.5229 24.7906 17.671 24.8262 17.8368 24.8662ZM29.8363 17.0797C29.5389 18.9198 28.4271 19.8104 26.9403 20.123C28.9765 21.0902 30.0108 22.5765 29.0282 25.142C27.8 28.3386 24.8911 28.6099 21.0191 27.9375L20.0817 31.3759L17.8128 30.8569L18.7372 27.4716C18.1489 27.336 17.5478 27.1938 16.9337 27.0411L16.0028 30.4441L13.7339 29.931L14.6712 26.4867C14.1411 26.3628 13.6046 26.2331 13.0551 26.1092L10.101 25.4369L11.2258 23.0654C11.2258 23.0654 12.9 23.4729 12.8806 23.4434C13.5206 23.585 13.805 23.2016 13.9213 22.948L15.4016 17.5221C15.4857 17.5398 15.5633 17.5574 15.6408 17.5751C15.5503 17.5398 15.4728 17.5221 15.4081 17.5044L16.4682 13.6295C16.4941 13.1872 16.326 12.6328 15.4081 12.4264C15.4081 12.3969 13.7597 12.0489 13.7597 12.0489L14.3609 9.83726L17.4961 10.5509L17.4896 10.5627C17.9615 10.6688 18.4463 10.7691 18.9376 10.8753L19.8684 7.47225L22.1374 7.99125L21.2259 11.3235C21.8335 11.4532 22.4477 11.5771 23.0424 11.7127L23.9474 8.4041L26.2163 8.9172L25.2919 12.3202C28.1556 13.2226 30.25 14.5732 29.8363 17.0797ZM25.7186 1.46244C14.6389 -1.05591 3.41705 5.09547 0.656826 15.2043C-2.10986 25.319 4.63232 35.5575 15.712 38.0758C26.7981 40.6001 38.02 34.4487 40.7803 24.334C43.5469 14.2252 36.8048 3.9808 25.7186 1.46244Z"
-                                            fill="#347AF0" />
-                                    </svg>
-                                </div>
+                            <div class="d-flex flex-column align-items-center wallet_balance_section py-3 pb-4">
                                 <div class="d-flex flex-column">
-                                    <span class="d-block" style="color: #000070;font-size:14px;font-weight:500;">BTC
-                                        0.00</span>
-                                    <span class="d-block"
-                                        style="color: #000070;font-size:12px;margin-top:-5px;font-weight:500;">NGN
-                                        0.00</span>
+                                    <div class="my-2">
+                                        <span class="d-block text-center labelText">Last Name</span>
+                                        <div class="d-flex justify-content-center align-items-center details">Andrea
+                                        </div>
+                                    </div>
+                                    <div class="my-2">
+                                        <span class="d-block text-center labelText">First Name</span>
+                                        <div class="d-flex justify-content-center align-items-center details">Jolly
+                                        </div>
+                                    </div>
+                                    <div class="my-2">
+                                        <span class="d-block text-center labelText">Username</span>
+                                        <div class="d-flex justify-content-center align-items-center details">Jolly1029
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="btc_wallet_balance d-flex justify-content-center align-items-center mt-4"
-                                style="position: relative;top:-130px;">
-                                <div class="btc_logo mr-4">
-                                    <svg width="42" height="39" viewBox="0 0 42 39" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <ellipse cx="21.0974" cy="19.7644" rx="20.6824" ry="18.8718" fill="#FFB800" />
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M13.1963 20.0749L21.6038 24.6095L21.6039 24.6095L21.6039 24.6095V24.6096L21.6039 24.6095L30.0114 20.0749L30.0115 20.0748L21.6039 7.3458V7.34573L21.6039 7.34577L21.6039 7.3457L21.6038 7.34596L13.1963 20.0749ZM21.6039 32.3403L21.6038 32.3402L21.6038 32.3402L13.1963 21.5297L21.6038 26.062L30.0165 21.5297L21.6039 32.3401V32.3403Z"
-                                            fill="white" />
-                                        <mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="13" y="7"
-                                            width="18" height="26">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M13.3594 20.0749L21.7669 24.6095L21.7669 24.6095L21.767 24.6095V24.6096L21.767 24.6095L30.1745 20.0749L30.1746 20.0748L21.767 7.3458V7.34573L21.767 7.34577L21.7669 7.3457L21.7669 7.34596L13.3594 20.0749ZM21.767 32.3403L21.7669 32.3402L21.7669 32.3402L13.3594 21.5297L21.7669 26.062L30.1795 21.5297L21.767 32.3401V32.3403Z"
-                                                fill="white" />
-                                        </mask>
-                                        <g mask="url(#mask0)">
-                                        </g>
-                                    </svg>
-                                </div>
-                                <div class="d-flex flex-column">
-                                    <span class="d-block" style="color: #000070;font-size:14px;font-weight:500;">ETH
-                                        0.00</span>
-                                    <span class="d-block"
-                                        style="color: #000070;font-size:12px;margin-top:-5px;font-weight:500;">NGN
-                                        0.00</span>
-                                </div>
+                            <div style="position:relative;top:-65px;">
+                                <button class="btn btn-outline-danger"
+                                    style="font-size:16px;width: 190px;height:45px;">DELETE ACCOUNT</button>
                             </div>
                         </div>
                         <div class="profile_details ml-4 mt-3" style="width: 70%;">
@@ -141,7 +122,7 @@
                             <div class="tab-content" id="myTabContent">
 
                                 {{-- Profile Tab Content --}}
-                                <div class="tab-pane fade show active" id="profile" role="tabpanel"
+                                <div class="tab-pane fade shodw actdive" id="profile" role="tabpanel"
                                     aria-labelledby="profile-tab">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex align-items-center mt-0 profile_details_col">
@@ -181,7 +162,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="user_profile_text text-center ml-5" style="width: 30%;position:relative;left:12px;">
+                                            <div class="user_profile_text text-center ml-5"
+                                                style="width: 30%;position:relative;left:12px;">
                                                 <div class="profile_verification_status_text" style="color: #00B9CD;">
                                                     verified
                                                 </div>
@@ -196,7 +178,8 @@
                                                     XXX-XXX-XXX-XXXX
                                                 </div>
                                             </div>
-                                            <div class="user_profile_text text-center" style="width: 30%;position:relative;left:25px;">
+                                            <div class="user_profile_text text-center"
+                                                style="width: 30%;position:relative;left:25px;">
                                                 <div class="profile_verification_status_text" style="color: #00B9CD;">
                                                     verified
                                                 </div>
@@ -221,7 +204,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="upload_id_column d-flex align-items-center px-4 mt-3 mb-5">
+                                        <div class="upload_id_column d-flex align-items-center px-4 mt-4 mb-5">
                                             <div class="text-center upload_id_text py-1 mr-2" style="font-size:14px;">
                                                 UPLOAD I.D</div>
                                             <div style="width: 100%;">
@@ -246,14 +229,47 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
-                                    <div class="d-flex" style="color: rgba(0, 0, 112, 0.75);letter-spacing: 0.01em;font-size: 18px;">Change Password</div>
+                                {{-- SECURITY TAB CONTENT --}}
+                                <div class="tab-pane fade" id="security" role="tabpanel"
+                                    aria-labelledby="security-tab">
+                                    <div class="container px-4">
+                                        <div class="d-flex changepassword_text mt-4 pb-1">
+                                            Change Password</div>
+                                        <div style="border: 1px solid #CBCBCB;width:100%;"></div>
+                                        <div class="my-4 mb-4">
+                                            <form>
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label for="oldpassword" class="changePasswordLabelText">Old Password</label>
+                                                        <input type="text" name="oldpassword" style="border: 1.3px solid #D7D7D7;" class="form-control" id="oldpassword"/>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="oldpassword" class="changePasswordLabelText">New Password</label>
+                                                        <input type="text" name="newpassword" class="form-control"/>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label for="oldpassword" class="changePasswordLabelText">Confirm Password</label>
+                                                        <input type="text" name="confirm_newpassword" class="form-control"/>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div style="border: 1px solid #CBCBCB;width:100%;"></div>
+                                    </div>
+                                </div>
+
+                                {{-- NOTIFICATIONS --}}
+                                <div class="tab-pane active show fade" id="notification" role="tabpanel"
+                                    aria-labelledby="notification-tab">
+                                    <div class="container">
+                                        <div class="mx-auto" style="margin-top:60px;width:420px;box-shadow: 0px 4px 10px rgba(239, 239, 248, 0.5);border-radius: 10px;">
+                                            wsedrftgyh
+                                        </div>
+                                    </div>
                                 </div>
 
 
-
-                                <div class="tab-pane fade" id="notification" role="tabpanel"
-                                    aria-labelledby="notification-tab">.C</div>
                                 <div class="tab-pane fade" id="limits" role="tabpanel" aria-labelledby="v-tab">.D</div>
                             </div>
                         </div>

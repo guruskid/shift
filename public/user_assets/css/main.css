@@ -306,7 +306,7 @@ body {
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.07);
     border-radius: 7px;
     margin-left: 30px;
-    height:500px;
+    /* height:500px; */
 }
 .profile_image_root_container .profile_image {
     height: 140px;
@@ -335,8 +335,7 @@ body {
 .wallet_balance_section {
     position: relative;
     top: -100px;
-    background: rgba(0, 0, 112, 0.75);
-    height: 140px;
+    background: rgba(0, 0, 112, 0.75) !important;
     width: 220px;
     color: #fff;
     text-transform: uppercase;
@@ -398,14 +397,85 @@ height: 65px;
     color:#000070;
     width:160px;
 }
-/* .listcard_images {
-    height:90px;
-    width: 130px;
-} */
-
+.wallet_balance_section .labelText {
+    font-size: 15px;
+    font-weight:600;
+    text-transform: capitalize;
+}
+.wallet_balance_section .details {
+    background-color: #fff;
+    border-radius: 80px;
+    width:180px;
+    height:35px;
+    color: rgba(0, 0, 112, 0.75);
+    line-height: 24px;
+    letter-spacing: 0.01em;
+    font-weight:600;
+}
+.changepassword_text {
+    color: rgba(0, 0, 112, 0.75);
+    letter-spacing: 0.01em;
+    font-size: 16px;
+    font-weight:600;
+}
+.changePasswordLabelText {
+    letter-spacing: 0.01em;
+    color: rgba(0, 0, 112, 0.6);
+    margin-bottom:0px;padding:0px;
+}
+.form-control {
+    outline: none !important;
+    box-shadow: none !important;
+}
+.card-price-input {
+    position:relative;
+    left:-45px;
+}
+.card-qty-input {
+    position:relative;
+    right:-18px;
+}
+.increment-icon-sizing {
+    position: relative;
+    left:-15px;
+}
 /* New profile page css code ends here */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (max-width: 500px) {
+    .allcards-container {
+        height: 100%;
+    }
+    .increment-icon-sizing {
+        position: relative;
+        left: -4px;
+    }
+    .card-image .giftcard_image {
+        width: 90%;
+        height:110px;
+    }
     .cctype_container {
         margin-top: 5em !important;
     }
@@ -466,7 +536,16 @@ height: 65px;
         padding: 25px 10px;
     }
     .card-price-qty {
-        height: 160px !important;
+        height: 100% !important;
+    }
+    .card-price-input {
+        position:relative;
+        left: 0;
+        margin: auto;
+    }
+    .card-qty-input {
+        position:relative;
+        margin: auto;
     }
     .card-image {
         height: 50px;
