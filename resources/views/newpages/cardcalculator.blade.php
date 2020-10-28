@@ -40,7 +40,7 @@
     {{-- Content Starts here --}}
     <div class="app-main__outer">
         <div class="app-main__inner">
-            
+
             <div id="content" class="main-content">
                 <div class="layout-px-spacing">
                     <div class="row layout-top-spacing"></div>
@@ -59,8 +59,8 @@
                             </div>
                         </div>
                     </div>
-        
-        
+
+
                     <div class="row">
                         <div class="col-12">
                             <div class="widget widget-chart-one">
@@ -117,11 +117,10 @@
                                         </div>
                                     </div>
                                 </div>
-        
-        
-        
-        
-        
+
+
+
+
                             </div>
                         </div>
                     </div>

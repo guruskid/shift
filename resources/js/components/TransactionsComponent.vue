@@ -9,6 +9,7 @@
                     <th class="text-center text-custom border-0">Asset type</th>
                     <th class="text-center text-custom border-0">Tran. type</th>
                     <th class="text-center text-custom border-0">Units</th>
+                    <th class="text-center text-custom border-0">Quantity</th>
                     <th class="text-center text-custom border-0">Cash value</th>
                     <th class="text-center text-custom border-0">Date</th>
                     <th class="text-center text-custom border-0">Status</th>
@@ -21,6 +22,7 @@
                     <td class="text-center bg-custom-accent">{{t.card}}</td>
                     <td class="text-center bg-custom-accent">{{t.type}}</td>
                     <td class="text-center bg-custom-accent">{{t.amount}}</td>
+                    <td class="text-center bg-custom-accent">{{t.quantity}}</td>
                     <td class="text-center bg-custom-accent">₦{{t.amount_paids}}</td>
                     <td class="text-center bg-custom-accent">{{t.created_ats}}</td>
                     <td v-if="t.status == 'waiting' " class="text-center bg-custom-accent">
@@ -79,6 +81,7 @@
                     <th class="text-center">Asset type</th>
                     <th class="text-center">Tran. type</th>
                     <th class="text-center">Units</th>
+                    <th class="text-center">Quantity</th>
                     <th class="text-center">Cash value</th>
                     <th class="text-center">Date</th>
                     <th class="text-center">Status</th>
@@ -91,6 +94,7 @@
                     <td class="text-center">{{t.card}}</td>
                     <td class="text-center">{{t.type}}</td>
                     <td class="text-center">{{t.amount}}</td>
+                    <td class="text-center">{{t.quantity}}</td>
                     <td class="text-center">₦{{t.amount_paids}}</td>
                     <td class="text-center text-white">{{t.created_ats}}</td>
                     <td v-if="t.status == 'waiting' " class="text-center text-dark">
@@ -162,6 +166,7 @@
                 $('#d-txn-txn-type').text(txn.type)
                 $('#d-txn-country').text(txn.country)
                 $('#d-txn-amount').text(txn.amount)
+                $('#d-txn-rate').text(txn.card_price)
                 $('#d-txn-quantity').text(txn.quantity)
                 $('#d-txn-amt-paid').text('₦' + txn.amount_paids)
                 $('#d-txn-status').text(txn.status)

@@ -94,6 +94,6 @@
             <upload-modal-component></upload-modal-component>
         </div>
     </div>
-</div>
+</div>egif
 
 @endsection

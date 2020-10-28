@@ -19,7 +19,7 @@
                         <div
                             class="d-flex flex-row justify-content-around align-items-center flex-wrap flex-lg-nowrap p-2 p-lg-3 pl-lg-4 mt-3">
                             <div class="card-image mr-lg-2">
-                                <img src="/cards/steam.png" class="img-fluid giftcard_image" alt="card">
+                                <img :src="'/storage/assets/'+card.image" class="img-fluid giftcard_image" alt="card">
                             </div>
                             <div class="d-flex flex-column mx-1 mt-4 mt-lg-0 ml-lg-4 cctype_container" style="">
                                 <div class="d-flex flex-column align-items-around">

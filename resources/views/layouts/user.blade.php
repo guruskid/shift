@@ -47,7 +47,7 @@ if (Auth::user()->nairaWallet) {
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     <link href="{{asset('user_assets/OwlCarousel/assets/owl.carousel.css')}} " rel="stylesheet">
     <link href="{{asset('user_assets/OwlCarousel/assets/owl.theme.default.min.css')}} " rel="stylesheet">
-    <link href=" {{asset('css/app.css')}} " rel="stylesheet">
+    <link href=" {{asset('css/app.css?v=4.5')}} " rel="stylesheet">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
     <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet">
     {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
@@ -259,6 +259,10 @@ if (Auth::user()->nairaWallet) {
                         <td class="text-right" id="d-txn-amount" >XXXXX</td>
                     </tr>
                     <tr>
+                        <td class="text-left" ><strong>Rate</strong></td>
+                        <td class="text-right" id="d-txn-rate" >XXXXX</td>
+                    </tr>
+                    <tr>
                         <td class="text-left" ><strong>Quantity</strong></td>
                         <td class="text-right" id="d-txn-quantity" >XXXXX</td>
                     </tr>
@@ -347,7 +351,7 @@ if (Auth::user()->nairaWallet) {
         </div>
     </div>
 
-    <script src="/js/app.js?v = 1.4"></script>
+    <script src="/js/app.js?v = 1.43"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
@@ -368,7 +372,8 @@ if (Auth::user()->nairaWallet) {
             /* Data tables */
             $('.transactions-table').DataTable({
                 paging: false,
-                order: [[0, 'desc'] ]
+                order: [[0, 'desc'] ],
+                responsive: true
             });
         });
 
