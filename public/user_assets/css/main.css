@@ -298,6 +298,10 @@ body {
     height: 60px;
     width: 100%;
 }
+.profile_root_container {
+    height: 640px;
+    max-height: 650px;
+}
 .profile_image_root_container {
     display: flex;
     flex-direction: column;
@@ -307,6 +311,7 @@ body {
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.07);
     border-radius: 7px;
     margin-left: 30px;
+    height: 610px;
     /* height:500px; */
 }
 .profile_image_root_container .profile_image {
