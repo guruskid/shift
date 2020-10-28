@@ -70,7 +70,7 @@ body {
     border-radius: 5px;
 }
 .select-card-add-button {
-    background: #000070;;
+    background: #000070;
     border-radius: 5px;
     border: 0;
     color: #ffffff;
@@ -88,19 +88,20 @@ body {
     opacity: 0.7;
 }
 .transaction-title_bottomborder {
-    border:1px solid #EFEFF8;
+    border: 1px solid #efeff8;
     width: 98%;
-    height:0px;
+    height: 0px;
 }
 .table_card_title th {
     font-size: 14px !important;
     text-align: center !important;
 }
-.decrement-icon, .increment-icon {
-    cursor:pointer;
-    width:24px;
-    height:24px;
-    border-radius:12px;
+.decrement-icon,
+.increment-icon {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
     background: #000070;
 }
 .price-percard-text {
@@ -109,7 +110,7 @@ body {
     color: rgba(0, 0, 112, 0.75);
 }
 .price-percard_display {
-    font-size:18px;
+    font-size: 18px;
     color: #000070;
     opacity: 0.7;
 }
@@ -141,7 +142,7 @@ body {
     width: 120px;
     color: #fff;
     font-size: 16px;
-    background: linear-gradient(180deg, #000070 10%, #5C23BA 100%);
+    background: linear-gradient(180deg, #000070 10%, #5c23ba 100%);
     border-radius: 5px;
 }
 .card-upload-btn {
@@ -365,95 +366,213 @@ body {
     letter-spacing: 0.01em;
 }
 .profile_verification_status_text {
-    border:1px;
-    border-radius:80px;
+    border: 1px;
+    border-radius: 80px;
     font-size: 14px;
-    background-color:#fff;
-    color:#FF001F;
-    width:180px;
+    background-color: #fff;
+    color: #ff001f;
+    width: 180px;
 }
 .profile_details_col {
-    height:70px;
-    width:100%;
+    height: 70px;
+    width: 100%;
     color: rgba(0, 0, 112, 0.75);
 }
 .profile_select_bank {
     border-top: 0;
-    border-left:0;
-    border-right:0;
-    border-radius:0;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
     border-bottom: 1px solid rgba(0, 0, 112, 0.75);
 }
 .upload_id_column {
-    background: #00B9CD;
-border-radius: 10px;
-color: #fff;
-height: 65px;
+    background: #00b9cd;
+    border-radius: 10px;
+    color: #fff;
+    height: 65px;
 }
 .upload_id_column .upload_id_text {
     border: 1px solid #fff;
-    border-radius:30px;
-    background:#fff;
-    color:#000070;
-    width:160px;
+    border-radius: 30px;
+    background: #fff;
+    color: #000070;
+    width: 160px;
 }
 .wallet_balance_section .labelText {
     font-size: 15px;
-    font-weight:600;
+    font-weight: 600;
     text-transform: capitalize;
 }
 .wallet_balance_section .details {
     background-color: #fff;
     border-radius: 80px;
-    width:180px;
-    height:35px;
+    width: 180px;
+    height: 35px;
     color: rgba(0, 0, 112, 0.75);
     line-height: 24px;
     letter-spacing: 0.01em;
-    font-weight:600;
+    font-weight: 600;
 }
 .changepassword_text {
     color: rgba(0, 0, 112, 0.75);
     letter-spacing: 0.01em;
     font-size: 16px;
-    font-weight:600;
+    font-weight: 600;
 }
 .changePasswordLabelText {
     letter-spacing: 0.01em;
     color: rgba(0, 0, 112, 0.6);
-    margin-bottom:0px;padding:0px;
+    margin-bottom: 0px;
+    padding: 0px;
 }
 .form-control {
     outline: none !important;
     box-shadow: none !important;
 }
 .card-price-input {
-    position:relative;
-    left:-45px;
+    position: relative;
+    left: -45px;
 }
 .card-qty-input {
-    position:relative;
-    right:-18px;
+    position: relative;
+    right: -18px;
 }
 .increment-icon-sizing {
     position: relative;
-    left:-15px;
+    left: -15px;
 }
 .price-per-card-text {
     font-size: 14px;
     font-weight: 700;
     color: rgba(0, 0, 112, 0.75);
 }
+.custom-control-input:checked~.custom-control-label::before {
+    color: #fff;
+    border-color: #C9CED6;
+    background-color: #C9CED6;
+}
+.custom-switch .custom-control-input:checked~.custom-control-label::after {
+    background-color: #000070 !important;
+    transform: translateX(.75rem);
+}
+input {
+    box-shadow: none !important;
+    outline: none !important;
+}
+.custom-switch .custom-control-label::before {
+    width: 31px;
+    background-color: #C9CED6;
+}
+.custom-switch .custom-control-label::after {
+    top: 2px;
+    left: -35px;
+    width: 18px;
+    height: 18px;
+    background-color: #000070;
+    border-radius: 0.5rem;
+    transition: transform 0.15s ease-in-out,
+        border-color 0.15s ease-in-out,;
+}
+.notifications-container {
+    margin-top:60px;
+    width:520px;
+    box-shadow: 0px 4px 10px rgba(239, 239, 248, 0.5);
+    border-radius: 10px;
+}
+.transaction-sms-notification {
+    color: #000070;
+    font-size: 18px;
+    line-height: 25px;
+    position:relative;
+    right:100px;
+}
+.transaction-email-alert {
+    color: #000070;
+    font-size: 18px;
+    line-height: 25px;
+    position:relative;
+    right:122px;
+}
+.transaction-sms-notification2 {
+    color: #000070;
+    font-size: 18px;
+    line-height: 25px;
+    position:relative;
+    right:100px;
+}
+.transaction-email-alert2 {
+    color: #000070;
+    font-size: 18px;
+    line-height: 25px;
+    position:relative;
+    right:122px;
+}
+.accordion_cards {
+    cursor: pointer;
+    height: 70px;
+    width: 350px;
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+    border-radius: 8px;
+    color: #000070;
+    font-size: 16px;
+    line-height: 20px;
+}
+.accordion_arrow_rotate {
+    transform: rotate(-180deg);
+   -webkit-transform: rotate(-180deg);
+   -ms-transform: rotate(-180deg);
+   transition: transform 0.5s;
+}
+.accordion_arrow_return {
+    transform: rotate(0deg);
+   -webkit-transform: rotate(0deg);
+   -ms-transform: rotate(0deg);
+   transition: transform 0.5s;
+}
+.select_dial_code {
+    outline:none !important;
+    box-shadow: 0px !important;
+    border-radius: 5px;
+    height:40px;
+    /* width: 30px; */
+    border-right:0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.dial_code_input {
+    outline:none !important;
+    box-shadow: 0px !important;
+    border-radius: 5px;
+    height:40px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.otp_code_input {
+    outline:none !important;
+    box-shadow: 0px !important;
+    border-radius: 5px;
+    height:40px;
+    /* width:185px !important; */
+}
+.input-group-prepend, .custom-select {
+    outline: none !important;
+    box-shadow: none !important;
+    outline-style: none !important;
+}
+.address_verification_labelText {
+    color: #000070;
+    width:80%;
+    font-size:14px;
+}
+.upload_address_photo {
+    cursor: pointer;
+    border: 0.5px dashed #676B87;
+    border-radius: 5px;
+    width:175px;
+    height:70px;
+}
+
 /* New profile page css code ends here */
-
-
-
-
-
-
-
-
-
 
 
 
@@ -479,7 +598,7 @@ height: 65px;
     }
     .card-image .giftcard_image {
         width: 90%;
-        height:110px;
+        height: 110px;
     }
     .cctype_container {
         margin-top: 5em !important;
@@ -544,12 +663,12 @@ height: 65px;
         height: 100% !important;
     }
     .card-price-input {
-        position:relative;
+        position: relative;
         left: 0;
         margin: auto;
     }
     .card-qty-input {
-        position:relative;
+        position: relative;
         margin: auto;
     }
     .card-image {
