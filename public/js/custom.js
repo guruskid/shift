@@ -166,6 +166,8 @@ $(".accordion_cards").on("click", function(){
             $("#AddressVerification").css("display","none")
         } else if($(this).hasClass("bvnVerificationCard")) {
             $("#bvnVerification").css("display","none")
+        } else if($(this).hasClass("idVerificationCard")) {
+            $("#idVerification").css("display","none")
         }
     } else {
          $(this).find(".accordion_arrow").removeClass("accordion_arrow_return").addClass("accordion_arrow_rotate")
@@ -175,6 +177,8 @@ $(".accordion_cards").on("click", function(){
             $("#AddressVerification").css("display","block")
         } else if($(this).hasClass("bvnVerificationCard")) {
             $("#bvnVerification").css("display","block")
+        } else if($(this).hasClass("idVerificationCard")) {
+            $("#idVerification").css("display","block")
         }
     }
    
@@ -183,4 +187,14 @@ $(".accordion_cards").on("click", function(){
 $("#uploadPhotoInput").hide()
 $("#uploadAddressVerification").on("click", function(){
     document.getElementById("uploadPhotoInput").click()
+})
+// Hide Front photo card input
+$("#frontPhotoIdInput").hide()
+$("#frontPhotoID").on("click", function(){
+    document.getElementById("frontPhotoIdInput").click()
+})
+// Hide BAck photo card input
+$("#backPhotoIdInput").hide()
+$("#backPhotoID").on("click", function(){
+    document.getElementById("backPhotoIdInput").click()
 })

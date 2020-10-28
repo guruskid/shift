@@ -462,7 +462,9 @@
                                                     </form>
                                                 </div>
                                             </div>
+                                            
                                             <div class="col-12 col-lg-6">
+                                            {{-- BVN verification card --}}
                                                 <div
                                                     class="d-flex flex-row justify-content-center align-items-center accordion_cards bvnVerificationCard">
                                                     <span class="d-block">BVN verification</span>
@@ -478,7 +480,8 @@
                                                 </div>
 
                                                 {{-- BVN verification content --}}
-                                                <div class="accordion_content" id="bvnVerification" style="display: none;">
+                                                <div class="accordion_content" id="bvnVerification"
+                                                    style="display: none;">
                                                     <div class="mt-2">
                                                         <form>
                                                             @csrf
@@ -506,8 +509,10 @@
                                                         </form>
                                                     </div>
                                                 </div>
+
+                                                {{-- ID verification card --}}
                                                 <div
-                                                    class="d-flex flex-row justify-content-center align-items-center accordion_cards mt-4">
+                                                    class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-4">
                                                     <span class="d-block">ID verification</span>
                                                     <span class="d-block ml-5 accordion_arrow"
                                                         style="position: relative;left: 22px;">
@@ -518,6 +523,53 @@
                                                                 fill="#000070" />
                                                         </svg>
                                                     </span>
+                                                </div>
+                                                {{-- BVN verification content --}}
+                                                <div class="accordion_content" id="idVerification"
+                                                    style="display: none;">
+                                                    <div class="mt-2">
+                                                        <form>
+                                                            @csrf
+                                                                <div class="dropdown">
+                                                                    <a class="btn btn-secondary dropdown-toggle d-flex align-items-center justify-content-center select_id_type_dropdown" href="#"
+                                                                        role="button" id="dropdownMenuLink"
+                                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false">
+                                                                        Select card type
+                                                                    </a>
+    
+                                                                    <div class="dropdown-menu"
+                                                                        aria-labelledby="dropdownMenuLink">
+                                                                        <a class="dropdown-item" href="#">Action</a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="d-flex justify-content-start">
+                                                                    <div class="d-flex justify-content-start mt-3">
+                                                                        <div id="frontPhotoID" class="text-center p-3 front_photo_card_box mr-2">
+                                                                            <input type="file" id="frontPhotoIdInput" name="frontPhotoOfCard" />
+                                                                            <div>
+                                                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z" fill="#A6ACBE"/>
+                                                                                    </svg>                                                                                
+                                                                            </div>
+                                                                            <span class="d-block front_photo_card_text">Front photo of your card</span>
+                                                                        </div>
+                                                                        
+                                                                        <div id="backPhotoID" class="text-center p-3 front_photo_card_box mr-2">
+                                                                            <input type="file" id="backPhotoIdInput" name="backPhotoOfCard" />
+                                                                            <div>
+                                                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z" fill="#A6ACBE"/>
+                                                                                    </svg>                                                                                
+                                                                            </div>
+                                                                            <span class="d-block front_photo_card_text">Back photo of your card</span>
+                                                                        </div>
+                                                                        <button type="submit" class="btn btn-primary"
+                                                                        style="height:38px;width:82px;position: relative;top:54%;">Upload</button>
+                                                                    </div>
+                                                                </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
