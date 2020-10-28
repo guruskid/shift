@@ -154,6 +154,47 @@ function showWalletTxnDetail(txn) {
     $('#d-w-txn-narration').text(txn.narration)
     $('#d-w-txn-status').text(txn.status)
     $('#d-w-txn-date').text(txn.created_at)
-
-
 }
+
+$(".accordion_cards").on("click", function(){
+    $(this).find(".accordion_content").css("display","none")
+    if($(this).find(".accordion_arrow").hasClass("accordion_arrow_rotate")) {
+        $(this).find(".accordion_arrow").removeClass("accordion_arrow_rotate").addClass("accordion_arrow_return")
+        if($(this).hasClass("phoneVerificationCard")) {
+            $("#phoneVerification").css("display","none")
+        } else if($(this).hasClass("addressVerificationCard")) {
+            $("#AddressVerification").css("display","none")
+        } else if($(this).hasClass("bvnVerificationCard")) {
+            $("#bvnVerification").css("display","none")
+        } else if($(this).hasClass("idVerificationCard")) {
+            $("#idVerification").css("display","none")
+        }
+    } else {
+         $(this).find(".accordion_arrow").removeClass("accordion_arrow_return").addClass("accordion_arrow_rotate")
+         if($(this).hasClass("phoneVerificationCard")) {
+             $("#phoneVerification").css("display","block")
+         } else if($(this).hasClass("addressVerificationCard")) {
+            $("#AddressVerification").css("display","block")
+        } else if($(this).hasClass("bvnVerificationCard")) {
+            $("#bvnVerification").css("display","block")
+        } else if($(this).hasClass("idVerificationCard")) {
+            $("#idVerification").css("display","block")
+        }
+    }
+   
+})
+// Hide upload address input
+$("#uploadPhotoInput").hide()
+$("#uploadAddressVerification").on("click", function(){
+    document.getElementById("uploadPhotoInput").click()
+})
+// Hide Front photo card input
+$("#frontPhotoIdInput").hide()
+$("#frontPhotoID").on("click", function(){
+    document.getElementById("frontPhotoIdInput").click()
+})
+// Hide BAck photo card input
+$("#backPhotoIdInput").hide()
+$("#backPhotoID").on("click", function(){
+    document.getElementById("backPhotoIdInput").click()
+})
