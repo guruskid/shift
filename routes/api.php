@@ -22,9 +22,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/login', 'Api\AuthController@login');
     Route::get('/banks', 'Api\AuthController@bankList' );
 
-    Route::get('/assets', 'Api\AssetController@getAssets' );
-    Route::post('/rate', 'Api\AssetController@getRate');
-
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
@@ -43,6 +40,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::GET('/notification/read/{id}', 'Api\NotificationController@read');
         Route::GET('/notification/settings', 'Api\NotificationController@settings');
         Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
+
+        Route::get('/assets', 'Api\TradeController@assets');
+        Route::get('/asset/{buy_sell}/{card_id}/{card_name}', 'Api\TradeController@assetRates');
 
         Route::GET('/transactions', 'Api\TransactionController@allTransactions');
 

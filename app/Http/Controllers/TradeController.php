@@ -70,7 +70,6 @@ class TradeController extends Controller
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
         return view('newpages.ethereum', compact(['rates', 'card']));
-
     }
 
     /* Trade GiftCards */
@@ -79,6 +78,15 @@ class TradeController extends Controller
         if (count($r->cards) != count($r->totals)) {
             return back()->with(['error' => 'Invalid trade details']);
         }
+
+        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+            return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
+        }
+
+        if ($r->buy_sell == 1 && Auth::user()->nairaWallet->amount < $r->amount_paid) {
+            return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
+        }
+
         $card = Card::where('name', $r->cards[0])->first();
         $batch_id = uniqid();
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
