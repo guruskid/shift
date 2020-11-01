@@ -52,8 +52,9 @@
                                         <span class="h3 giftcard-text">Ethereum</span>
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">1 ETH = 16,758</span>
-                                        {{-- <span class="d-block price">₦56,758</span> --}}
+                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
+                                        <span
+                                            class="d-block price">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -69,6 +70,10 @@
                                         <span class="ml-1" style="color: rgba(0, 0, 112, 0.75);">Buy/Sell Ethereum</span>
                                     </div>
                                 </div>
+
+                                @foreach ($errors->all() as $err)
+                                    <p class="text-danger text-center">{{ $err }}</p>
+                                @endforeach
 
                                 <div>
                                     <ul class="nav buy-sell-title mx-auto my-2 my-lg-4" id="myTab" role="tablist">
@@ -90,8 +95,10 @@
                                             {{-- Sell Ethereum form --}}
                                         <div class="tab-pane fade show active mx-auto p-3 calculator_form"
                                             id="home" role="tabpanel" aria-labelledby="home-tab">
-                                            <form action="" method="post">
+                                            <form action="{{ route('user.trade-crypto') }}" method="post">
                                                 @csrf
+                                                <input type="hidden" name="card_id" value="{{ $card->id }}">
+                                                <input type="hidden" name="type" value="sell">
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"
                                                         style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
@@ -100,7 +107,7 @@
                                                             <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius " value=""
+                                                        <input type="number" name="amount" class="form-control bitcoin-input-radius "
                                                             id="sell_usd_field_eth">
                                                     </div>
                                                 </div>
@@ -112,7 +119,7 @@
                                                             <div class="input-group-text input_label">
                                                                 ETH</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius" value=""
+                                                        <input type="number" step="any" name="quantity" class="form-control bitcoin-input-radius"
                                                             id="sell_eth_equiv_field">
                                                     </div>
                                                 </div>
@@ -124,7 +131,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input readonly type="number" class="form-control bitcoin-input-radius" value=""
+                                                        <input readonly type="number" name="amount_paid" class="form-control bitcoin-input-radius"
                                                             id="sell_ngn_eth_field">
                                                     </div>
                                                 </div>
@@ -134,12 +141,12 @@
                                                     <span id="copied_text" class="text-success"
                                                         style="display: none;">Wallet address copied</span>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <input type="text" class="form-control bitcoin-input-radius"
+                                                        <input type="text" name="wallet_id" value="{{ $card->wallet_id }}" class="form-control bitcoin-input-radius"
                                                             id="eth_wallet_address"
                                                             style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                         <div class="input-group-append" style="border-radius: 30px;">
                                                             <div class="input-group-text input_label">
-                                                                <span id="copyWalletAddress" style="cursor: pointer;">
+                                                                <span id="copyEthWalletAddress" style="cursor: pointer;">
                                                                     <svg width="26" height="20" viewBox="0 0 32 32"
                                                                         fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <g clip-path="url(#clip0)">
@@ -169,8 +176,10 @@
                                         {{-- Buy Ethereum form --}}
                                         <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
-                                            <form action="" method="post">
+                                            <form action="{{ route('user.trade-crypto') }}" method="post">
                                                 @csrf
+                                                <input type="hidden" name="card_id" value="{{ $card->id }}">
+                                                <input type="hidden" name="type" value="buy">
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"
                                                         style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
@@ -179,7 +188,7 @@
                                                             <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius"
+                                                        <input type="number" name="amount" class="form-control bitcoin-input-radius"
                                                             id="buy_usd_field_eth">
                                                     </div>
                                                 </div>
@@ -187,11 +196,11 @@
                                                     <label for="inlineFormInputGroupUsername2"
                                                         style="color: rgba(0, 0, 112, 0.75);">Ethereum equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
+                                                        <div class="input-group-prepend" name="quantity" style="border-radius: 30px;">
                                                             <div class="input-group-text input_label">
                                                                 ETH</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius"
+                                                        <input type="number" name="quantity" class="form-control bitcoin-input-radius"
                                                             id="buy_eth_field">
                                                     </div>
                                                 </div>
@@ -199,11 +208,11 @@
                                                     <label for="inlineFormInputGroupUsername2"
                                                         style="color: rgba(0, 0, 112, 0.75);">Naira equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
+                                                        <div class="input-group-prepend" name="amount_paid" style="border-radius: 30px;">
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input readonly type="text" class="form-control bitcoin-input-radius"
+                                                        <input readonly type="text" name="amount_paid" class="form-control bitcoin-input-radius"
                                                             id="buy_ngn_field_eth">
                                                     </div>
                                                 </div>
@@ -213,8 +222,8 @@
                                                     <span id="copied_text" class="text-success"
                                                         style="display: none;">Wallet address copied</span>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <input type="text" class="form-control bitcoin-input-radius"
-                                                            id="buy_wallet_address">
+                                                        <input type="text" name="wallet_id" value="" class="form-control bitcoin-input-radius"
+                                                            id="eth_wallet_address">
                                                     </div>
                                                 </div>
                                                 <button type="submit" disabled id="buy_eth_submit_btn" class="btn w-100 text-white mt-3 bitcoin_calculator_btn">Buy</button>
@@ -234,9 +243,19 @@
 
             @include('newpages.modals.uploadcardmodal')
             @include('newpages.modals.popuploaded')
-            {{-- @include('layouts.partials.live-feeds') --}}
         </div>
     </div>
 </div>
 
+@endsection
+
+@section('scripts')
+    <script>
+         sell_eth = {!! json_encode($rates->sell, JSON_HEX_TAG) !!};
+         buy_eth = {!! json_encode($rates->buy, JSON_HEX_TAG) !!};
+
+         bit_sell = {!! json_encode($rates->sell, JSON_HEX_TAG) !!};
+         bit_buy = {!! json_encode($rates->buy, JSON_HEX_TAG) !!};
+    </script>
+    <script src="{{asset('newpages/js/main.js')}} "></script>
 @endsection

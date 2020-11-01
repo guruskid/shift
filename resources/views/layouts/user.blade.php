@@ -359,10 +359,9 @@ if (Auth::user()->nairaWallet) {
     <script src="{{asset('js/custom.js?v=2')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
-    <script src="{{asset('newpages/js/main.js')}} "></script>
 
-    {{-- Calculator scripts --}}
-    <script src="{{asset('user_assets/js/calculator.js')}} "></script>
+    @yield('scripts')
+
 
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"> </script>
@@ -405,6 +404,8 @@ if (Auth::user()->nairaWallet) {
 
     </script>
     @endif
+
+
 
 </body>
 

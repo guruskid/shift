@@ -94,6 +94,10 @@
             <upload-modal-component></upload-modal-component>
         </div>
     </div>
-</div>egif
+</div>
 
+@endsection
+@section('scripts')
+{{-- Calculator scripts --}}
+<script src="{{asset('user_assets/js/calculator.js')}} "></script>
 @endsection

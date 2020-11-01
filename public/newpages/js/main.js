@@ -32,7 +32,7 @@ $("#myTab .nav-item").on("click", function() {
     $("#myTab .nav-item .nav-link").removeClass("text-white");
     $(this).addClass("active-title-item");
     $("#myTab .active-title-item .nav-link").addClass("text-white");
-    $("input").val("")
+    /* $("input").val("") */
 });
 
 $("#copyWalletAddress").on("click", function() {
@@ -48,9 +48,22 @@ $("#copyWalletAddress").on("click", function() {
     }, 1700);
 });
 
+$("#copyEthWalletAddress").on("click", function() {
+    const inputText = document.querySelector("#eth_wallet_address");
+    inputText.select();
+    inputText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    $("#copied_text").css("display", "block");
+    $("#inputText").css("box-shadow", "none !important");
+    $("#inputText").css("outline", "none !important");
+    setTimeout(function() {
+        $("#copied_text").css("display", "none");
+    }, 1700);
+});
+
 // === Bitcoin calculator onchange logic ===
 const sell_usd_per_btc = 10500;
-const sell_ngn_per_usd = 400;
+const sell_ngn_per_usd = bit_sell[0].rate;
 
 const sellusdfield = $("#sell_usd_field");
 const sellbtcfield = $("#sell_btc_field");
@@ -82,7 +95,7 @@ sellbtcfield.on("keyup", function(e) {
 
 /*===== BUY BITCOIN =====*/
 const buy_usd_per_btc = 10465.6;
-const buy_ngn_per_usd = 381.5;
+const buy_ngn_per_usd = bit_buy[0].rate;
 
 const btcfield = $("#buy_btc_field");
 const usdfield = $("#buy_usd_field");
@@ -125,7 +138,7 @@ ngnfield.on("keyup", function(e) {
 });
 /*===== END BUY CRYPTO =====*/
 
-$("#sell_submit_btn").on("click", function(e) {
+$("#sell_submit_bt").on("click", function(e) {
     e.preventDefault();
     const getAlt = $(this).attr("alt");
     const uploadText = `
@@ -149,7 +162,7 @@ $("#upload_pop_success").on("click", function() {
 
 
 const sell_usd_per_eth = 970;
-const sell_ngn_per_usd_eth = 381.5;
+const sell_ngn_per_usd_eth = sell_eth[0].rate;
 
 //Convert USD to ETH, naira equivalent
 //Sell ETH
@@ -180,7 +193,7 @@ $("#sell_eth_equiv_field").on("keyup", function(e) {
 
 //Buy ETH
 const buy_usd_per_eth = 5465;
-const buy_ngn_per_usd_eth = 280;
+const buy_ngn_per_usd_eth = buy_eth[0].rate;
 
 $("#buy_usd_field_eth").on("keyup", function() {
     let value = $(this).val();
@@ -277,7 +290,7 @@ $("#sell_eth_equiv_field").on("keyup", function(){
 })
 
 //Disable submit button if fields are empty in buy eth tab
-$("#buy_wallet_address").on("keyup", function(){
+$("#eth_wallet_address").on("keyup", function(){
     if($(this).val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
         $("#buy_eth_submit_btn").removeAttr('disabled')
     } else {
@@ -285,14 +298,14 @@ $("#buy_wallet_address").on("keyup", function(){
     }
 })
 $("#buy_usd_field_eth").on("keyup", function(){
-    if($("#buy_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
+    if($("#eth_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
         $("#buy_eth_submit_btn").removeAttr('disabled')
     } else {
         $("#buy_eth_submit_btn").attr('disabled',"true")
     }
 })
 $("#buy_eth_field").on("keyup", function(){
-    if($("#buy_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
+    if($("#eth_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
         $("#buy_eth_submit_btn").removeAttr('disabled')
     } else {
         $("#buy_eth_submit_btn").attr('disabled',"true")

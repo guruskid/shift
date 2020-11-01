@@ -33,7 +33,7 @@ class CreateTransactionsTable extends Migration
             $table->string('last_edited')->nullable();
             $table->string('batch_id')->nullable();
             $table->string('card_type')->nullable();
-            $table->integer('quantity')->default(1);
+            $table->double('quantity')->default(1);
             $table->integer('card_price')->default(1);
             $table->timestamps();
         });
