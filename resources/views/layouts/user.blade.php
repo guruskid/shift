@@ -351,7 +351,7 @@ if (Auth::user()->nairaWallet) {
         </div>
     </div>
 
-    <script src="/js/app.js?v = 1.43"></script>
+    <script src="/js/app.js?v = 1.423"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>

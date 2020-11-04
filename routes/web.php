@@ -153,7 +153,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
-
 });
 
 /* For Super Admins Only */
@@ -201,8 +200,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant'] 
 
     Route::get('/query-transaction/{id}', 'NairaWalletController@query' )->name('admin.query-transaction');
     Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus' )->name('admin.update-naira-transaction');
-
-
 });
 
 /* for super admin and all accountants */

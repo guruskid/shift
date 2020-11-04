@@ -3,6 +3,19 @@ $("#proceedtoupload").on("click", function() {
     $("#uploadCardImageModal").show();
 });
 
+$('.sell_submit_btn').on("click", function (e) {
+   var calculatorForm = $(this).parent('form')
+   var uploadForm = $( '#uploadcardsform' );
+    $.each( calculatorForm.prop( 'elements' ), function( idx, elem ) {
+        uploadForm.append( $( '<input />' ).attr({
+            type : "hidden",
+            name : elem.name,
+            value : elem.value
+        }));
+    });
+    uploadForm.attr('action', calculatorForm.attr('action'));
+ })
+
 function preview(input) {
     $("#upload_text_desc").hide();
     if (input.files && input.files[0]) {

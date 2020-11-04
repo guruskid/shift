@@ -25,7 +25,7 @@
                     <td class="text-center bg-custom-accent">{{t.quantity}}</td>
                     <td class="text-center bg-custom-accent">₦{{t.amount_paids}}</td>
                     <td class="text-center bg-custom-accent">{{t.created_ats}}</td>
-                    <td v-if="t.status == 'waiting' " class="text-center bg-custom-accent">
+                    <td v-if="t.status == 'waiting' && t.type == 'sell' " class="text-center bg-custom-accent">
                         <a :href="'/user/view-transaction/' + t.id +'/' + t.uid ">
                             <button class="btn btn-info">Upload </button>
                         </a>
@@ -97,7 +97,7 @@
                     <td class="text-center">{{t.quantity}}</td>
                     <td class="text-center">₦{{t.amount_paids}}</td>
                     <td class="text-center text-white">{{t.created_ats}}</td>
-                    <td v-if="t.status == 'waiting' " class="text-center text-dark">
+                    <td v-if="t.status == 'waiting' && t.type == 'sell' " class="text-center text-dark">
                         <a :href="'/user/view-transaction/' + t.id +'/' + t.uid ">
                             <button class="btn btn-info">Upload </button>
                         </a>

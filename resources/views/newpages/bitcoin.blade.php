@@ -96,7 +96,6 @@
                                         <div class="tab-pane fade show active mx-auto p-3 calculator_form"
                                             id="home" role="tabpanel" aria-labelledby="home-tab">
                                             <form action="{{ route('user.trade-crypto') }}" method="post">
-                                                @csrf
                                                 <input type="hidden" name="card_id" value="{{ $card->id }}">
                                                 <input type="hidden" name="type" value="sell">
                                                 <div class="form-group mb-4">
@@ -169,15 +168,16 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button type="submit" id="sell_submit_btn" alt="sell" disabled="true" class="btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
+                                                <button type="button"
+                                                data-toggle="modal" data-target="#uploadCardImageModal"
+                                                id="sell_submit_btn" alt="sell" disabled="true" class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
                                             </form>
                                         </div>
                                         {{-- Buy --}}
                                         <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
-                                            <form action="{{ route('user.trade-crypto') }}" method="post">
+                                            <form action="{{ route('user.trade-crypto') }}" method="post">@csrf
 
-                                            <input type="hidden"  name="_token" value="{{ csrf_token() }}" >
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"
                                                         style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
@@ -241,12 +241,14 @@
                 </div>
             </div>
 
-            @include('newpages.modals.uploadcardmodal')
-            @include('newpages.modals.popuploaded')
         </div>
     </div>
 </div>
 
+
+
+@include('newpages.modals.uploadcardmodal')
+@include('newpages.modals.popuploaded')
 @endsection
 
 @section('scripts')
@@ -257,5 +259,5 @@
          sell_eth = {!! json_encode($rates->sell, JSON_HEX_TAG) !!};
          buy_eth = {!! json_encode($rates->buy, JSON_HEX_TAG) !!};
     </script>
-    <script src="{{asset('newpages/js/main.js')}} "></script>
+    <script src="{{asset('newpages/js/main.js?v=45')}} "></script>
 @endsection

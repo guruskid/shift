@@ -145,7 +145,6 @@ class TradeController extends Controller
     public function tradeCrypto(Request $r)
     {
 
-        /* dd($r->all()); */
         $data = $r->validate([
             'card_id' => 'required|integer',
             'type' => 'required|string',
@@ -154,6 +153,14 @@ class TradeController extends Controller
             'quantity' => 'required',
             'wallet_id' => 'nullable|string'
         ]);
+
+        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+            return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
+        }
+
+        if ($r->type == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
+            return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
+        }
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
         $data['status'] = 'waiting';
         $data['uid'] = uniqid();
@@ -162,9 +169,26 @@ class TradeController extends Controller
         $data['card'] = Card::find($r->card_id)->name;
         $data['agent_id'] = $online_agent->id;
 
-
         $t = Transaction::create($data);
-        broadcast(new NewTransaction($t))->toOthers();
+        if ($r->type == 'sell' && $r->has('card_images')) {
+            foreach ($r->card_images as $file) {
+                $extension = $file->getClientOriginalExtension();
+                $filenametostore = time() . uniqid() . '.' . $extension;
+                Storage::put('public/pop/' . $filenametostore, fopen($file, 'r+'));
+                $p = new Pop();
+                $p->user_id = Auth::user()->id;
+                $p->transaction_id = $t->id;
+                $p->path = $filenametostore;
+                $p->save();
+            }
+            $t->status = 'in progress';
+            $t->save();
+        }
+        try {
+            broadcast(new NewTransaction($t))->toOthers();
+        } catch (\Exception $e) {
+            report($e);
+        }
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
         Notification::create([

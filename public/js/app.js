@@ -51223,7 +51223,7 @@ var render = function() {
                     _vm._v(_vm._s(t.created_ats))
                   ]),
                   _vm._v(" "),
-                  t.status == "waiting"
+                  t.status == "waiting" && t.type == "sell"
                     ? _c(
                         "td",
                         { staticClass: "text-center bg-custom-accent" },
@@ -51460,7 +51460,7 @@ var render = function() {
                     _vm._v(_vm._s(t.created_ats))
                   ]),
                   _vm._v(" "),
-                  t.status == "waiting"
+                  t.status == "waiting" && t.type == "sell"
                     ? _c("td", { staticClass: "text-center text-dark" }, [
                         _c(
                           "a",
