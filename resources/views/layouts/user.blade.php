@@ -44,12 +44,17 @@ if (Auth::user()->nairaWallet) {
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="Dantown multi services">
     <meta name="msapplication-tap-highlight" content="no">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     <link href="{{asset('user_assets/OwlCarousel/assets/owl.carousel.css')}} " rel="stylesheet">
     <link href="{{asset('user_assets/OwlCarousel/assets/owl.theme.default.min.css')}} " rel="stylesheet">
-    <link href=" {{asset('css/app.css')}} " rel="stylesheet">
+    <link href=" {{asset('css/app.css?v=4.5')}} " rel="stylesheet">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
+    <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet">
+    {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
+    <link href=" {{asset('custom.css?v = 1.0')}} " rel="stylesheet">
     <link href=" {{asset('custom.css?v = 2.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
+    <link href=" {{asset('user_assets/css/main.css')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
 
@@ -168,7 +173,7 @@ if (Auth::user()->nairaWallet) {
                                                         <a href=" {{route('user.transactions')}} "><button type="button"
                                                                 tabindex="0" class="dropdown-item">My
                                                                 transactions</button></a>
-                                                        <a href=" {{route('user.calculator')}} "><button type="button"
+                                                        <a href=" {{route('user.assets')}} "><button type="button"
                                                                 tabindex="0" class="dropdown-item">Trade</button></a>
                                                         <div tabindex="-1" class="dropdown-divider"></div>
                                                         <a href="#"
@@ -238,8 +243,12 @@ if (Auth::user()->nairaWallet) {
                         <td class="text-right" id="d-txn-asset-type" >XXXXX</td>
                     </tr>
                     <tr>
+                        <td class="text-left" ><strong>Card Type</strong></td>
+                        <td class="text-right" id="d-txn-card-type" >XXXXX</td>
+                    </tr>
+                    <tr>
                         <td class="text-left" ><strong>Transaction type</strong></td>
-                        <td class="text-right" id="d-txn-txn-type" >XXXXX</td>
+                        <td class="text-right text-capitalize" id="d-txn-txn-type" >XXXXX</td>
                     </tr>
                     <tr>
                         <td class="text-left" ><strong>Currency</strong></td>
@@ -250,12 +259,20 @@ if (Auth::user()->nairaWallet) {
                         <td class="text-right" id="d-txn-amount" >XXXXX</td>
                     </tr>
                     <tr>
+                        <td class="text-left" ><strong>Rate</strong></td>
+                        <td class="text-right" id="d-txn-rate" >XXXXX</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" ><strong>Quantity</strong></td>
+                        <td class="text-right" id="d-txn-quantity" >XXXXX</td>
+                    </tr>
+                    <tr>
                         <td class="text-left" ><strong>Naira Equiv.</strong></td>
                         <td class="text-right" id="d-txn-amt-paid" >XXXXX</td>
                     </tr>
                     <tr>
                         <td class="text-left" ><strong>Status</strong></td>
-                        <td class="text-right" id="d-txn-status" >XXXXX</td>
+                        <td class="text-right text-capitalize" id="d-txn-status" >XXXXX</td>
                     </tr>
                     <tr>
                         <td class="text-left" ><strong>Date</strong></td>
@@ -334,7 +351,7 @@ if (Auth::user()->nairaWallet) {
         </div>
     </div>
 
-    <script src="/js/app.js?v = 1.4"></script>
+    <script src="/js/app.js?v = 1.43"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
@@ -342,6 +359,10 @@ if (Auth::user()->nairaWallet) {
     <script src="{{asset('js/custom.js?v=2')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
+
+    @yield('scripts')
+
+
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"> </script>
 
@@ -350,7 +371,8 @@ if (Auth::user()->nairaWallet) {
             /* Data tables */
             $('.transactions-table').DataTable({
                 paging: false,
-                order: [[0, 'desc'] ]
+                order: [[0, 'desc'] ],
+                responsive: true
             });
         });
 
@@ -382,6 +404,8 @@ if (Auth::user()->nairaWallet) {
 
     </script>
     @endif
+
+
 
 </body>
 

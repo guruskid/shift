@@ -19,6 +19,32 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+// Route::get('/showcards', function () {
+//     return view('newpages.cards');
+// });
+
+Route::get('/cardcalculator', function () {
+    return view('newpages.cardcalculator');
+});
+Route::get('/transaction', function () {
+    return view('newpages.Transactionscreen');
+});
+Route::get('/bitcoin', function () {
+    return view('newpages.bitcoin');
+});
+Route::get('/ethereum', function () {
+    return view('newpages.ethereumscreen');
+});
+Route::get('/airtocash', function () {
+    return view('newpages.airtimetocash');
+});
+Route::get('/newprofile', function () {
+    return view('newpages.profile');
+});
+
+
+
 Route::get('mailable', function () {
     Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
     /* $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
@@ -34,21 +60,10 @@ Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.a
 
 Route::view('/disabled', 'disabled')->name('disabled');
 
-Route::get('/message/{id}', 'MessageController@index')->name('message');
-Route::get('/read-messages/{id}', 'MessageController@read')->name('message');
-/* Route::post('/message', 'MessageController@store')->name('message.store'); */
-Route::post('/pop', 'MessageController@pop')->name('message.pop');
-Route::get('/conversation-details/{id}', 'MessageController@convDetails');
-
-Route::get('/inbox', 'ChatController@inbox')->name('admin.inbox');
-Route::get('/agents', 'ChatController@agents');
-
 /* Upload Transaction image */
 Route::post('/transacion-image', 'PopController@add')->name('transaction.add-image');
 
 /* Add Admin middleware */
-Route::get('/user-details/{id}', 'ChatController@userDetails');
-Route::get('/user-transactions/{id}', 'ChatController@userTransactions');
 Route::post('/get-bank-details', 'NairaWalletController@acctDetails');
 
 /* Callbacks */
@@ -58,11 +73,6 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
     /* ajax calls */
-    Route::get('/get-card/{card}', 'UserController@getCard');
-    Route::get('/get-country/{card}', 'UserController@getCountry');
-    Route::get('/get-type/{card}', 'UserController@getType');
-    Route::get('/get-wallet-id/{card}', 'UserController@getWalletId');
-    Route::POST('/get-rate', 'UserController@getRate')->name('rate');
     Route::POST('/add_transaction', 'UserController@addTransaction');
     /* Profile Ajax functions */
     Route::post('update-profile', "UserController@updateProfile");
@@ -73,9 +83,6 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     /* ajax ends here */
 
     Route::get('/', 'UserController@dashboard')->name('user.dashboard');
-    Route::get('/calculator', 'UserController@calculator')->name('user.calculator');
-    Route::get('/calculator/crypto', 'UserController@calcCrypto')->name('user.calcCrypto');
-    Route::get('/calculator/gift-card', 'UserController@calcCard')->name('user.calcCard');
     Route::get('/rates', 'UserController@rates')->name('user.rates');
     Route::view('account', 'user.profile')->name('user.profile');
     Route::POST('/account', 'UserController@updateProfile')->name('user.update_profile');
@@ -89,9 +96,6 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::get('/view-transaction/{id}/{uid}', 'UserController@viewTransac')->name('user.view-transaction');
     Route::get('/notifications', 'UserController@notifications')->name('user.notifications');
     Route::POST('/notification-switch', 'UserController@notificationSetting');
-
-   /*  Route::get('/chat', 'UserController@chat')->name('user.chat');
-    Route::get('/chat/{id}', 'UserController@chat'); */
 
     Route::get('/portfolio', 'PortfolioController@view')->name('user.portfolio');
     Route::get('/wallet', 'PortfolioController@nairaWallet')->name('user.naira-wallet')->middleware('verified');
@@ -111,6 +115,13 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');
 
+    /* Routes for the new calculator */
+    Route::get('/assets', 'TradeController@assets')->name('user.assets');
+    Route::get('/trade/{trade_type}/{card_id}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
+    Route::view('/gift-card-calculator', 'user.gift_card_calculator');
+    Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
+    Route::post('/trade-crypto', 'TradeController@tradeCrypto')->name('user.trade-crypto');
+
     /* Bitcooin Wallet */
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
 
@@ -128,7 +139,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 
     /* ajax ends here */
     Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
-    Route::get('/rates', 'AdminController@rates')->name('admin.rates');
+
 
     Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
     Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
@@ -148,7 +159,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 /* For Super Admins Only */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ], function () {
     Route::post('/cards', 'AdminController@addCard' )->name('admin.add_card');
-    Route::post('/edit-card', 'AdminController@editCard' )->name('admin.edit_card');
+
 
     Route::post('/transactions', 'AdminController@addTransaction' )->name('admin.add_transaction');
     Route::GET('/delete-transaction/{id}', 'AdminController@deleteTransac');
@@ -171,11 +182,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::post('/search', 'AdminController@searchUser' )->name('admin.search');
 });
 
-/* Manager */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
-    Route::post('/edit-rate', 'AdminController@editRate' )->name('admin.edit_rate');
-    Route::post('/rates', 'AdminController@addRate' )->name('admin.add_rate');
-    Route::GET('/delete-rate/{id}', 'AdminController@deleteRate');
 
 
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
@@ -221,4 +228,5 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
 Route::group(['prefix' => 'db'], function () {
     Route::GET('/function', 'DatabaseController@transactions');
 });
+
 

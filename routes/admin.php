@@ -1,4 +1,22 @@
 <?php
+
+
+Route::group(['middleware'=>'manager'], function(){
+    Route::get('/rates', 'RateController@index')->name('admin.rates');
+    Route::post('/card-combination/create', 'RateController@store')->name('admin.rate.add');
+
+    Route::post('/card/create', 'CardController@store')->name('admin.card.create');
+    Route::post('/edit-card', 'CardController@editCard' )->name('admin.card.edit');
+
+    Route::post('/currency/store', 'CurrencyController@store')->name('admin.currency.store');
+
+    Route::post('/card-type/store', 'PaymentMediumController@store')->name('admin.card-type.store');
+
+    Route::post('/rate/update', 'RateController@update')->name('admin.rate.update');
+    Route::get('/rate/delete/{id}', 'RateController@deleteRate');
+    Route::get('/index', 'CurrencyController@index')->name('admin.currency.index');
+});
+
 Route::group(['middleware' => 'seniorAccountant'], function () {
 
     Route::get('/get-wallet-details/{account_number}', 'NairaTransactionController@getWalletDetails');
@@ -11,4 +29,5 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
     Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets')->name('admin.wallets');
     Route::POST('/bitcoin-wallet', 'BitcoinWalletController@createHdWallet')->name('admin.bitcoin-wallet.create');
+
 });

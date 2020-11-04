@@ -95,65 +95,6 @@ class UserController extends Controller
     }
 
     /* ajax functions */
-    public function getCard($c)
-    {
-
-        $card = Card::where('name', $c)->first();
-        return response()->json($card);
-    }
-
-    public function getCountry($card)
-    {
-        $countries = Rate::where('card', $card)->distinct()->get(['country']);
-        return response()->json($countries);
-    }
-
-    public function getType($card)
-    {
-        $types = Rate::where('card', $card)->distinct()->get(['type']);
-        return response()->json($types);
-    }
-
-    public function getWalletId($card)
-    {
-        $id = Card::where('name', $card)->first();
-        return response()->json($id->wallet_id);
-    }
-
-    public function getRate(Request $request)
-    {
-        $country = '';
-        $tmp_amount = $request->value;
-        $equiv = 0;
-
-        if ($request->is_crypto == 1 && $request->country == 'ngn') {
-            /* return back if amount is less than 2 to avoid division error */
-            if ($tmp_amount <= 4600) {
-                return response()->json();
-            }
-            /* convert naira to dollar to get the range */
-            $tmp_amount = 10;
-            $country = 'USD';
-        } else {
-            $country = $request->country;
-        }
-
-        $rate = Rate::where('card', $request->card)->where('rate_type', $request->rate_type)
-            ->where('min', '<=', $tmp_amount)->where('max', '>=', $tmp_amount)->value($country);
-        $card_value = Rate::where('card', $request->card)->where('rate_type', $request->rate_type)
-            ->where('min', '<=', $tmp_amount)->where('max', '>=', $tmp_amount)->value('card_value');
-
-        /* if it is a crypto and ngn / to get the equivalent in btc or eth */
-        if ($request->is_crypto == 1 && $request->country == 'ngn') {
-            $value = $request->value;
-            $equiv = round(($card_value / $rate) * $request->value, 7);
-        } else {
-            $value = $rate * $request->value;
-            $equiv = $request->value * $card_value;
-        }
-
-        return response()->json(['rate' => $rate, 'equiv' => $equiv, 'value' => $value, 'card' => $request->card]);
-    }
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)
@@ -312,11 +253,6 @@ class UserController extends Controller
     public function addTransaction(Request $r)
     {
 
-        /*  $rate = Rate::where('card', $r->card)->where('rate_type', $r->rate_type)
-            ->where('min', '<=', $r->amount)->where('max', '>=', $r->amount)
-            ->value($r->country);
-        $value = $rate * $r->amount; */
-
         if ($r->rate_type == 'buy') {
             if (!Auth::user()->nairaWallet || $r->pay_with != 'wallet') {
                 return response()->json([
@@ -472,66 +408,6 @@ class UserController extends Controller
         $a->save();
 
         return redirect()->back()->with(["success" => 'Details updated']);
-    }
-
-    public function calcCrypto()
-    {
-        $cards = Card::where('is_crypto', 1)->has('rates', '>=', 1)->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 1;
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
-    }
-
-    public function calcCard()
-    {
-        $cards = Card::where('is_crypto', 0)->has('rates', '>=', 1)->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 0;
-
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
-    }
-
-    public function calculator()
-    {
-        $cards = Card::orderBy('id', 'desc')->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 0;
-
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
-    }
-
-    public function chat()
-    {
-        $users = User::where('role', 888)->where('status', 'active')->get();
-        if ($users->count() == 0) {
-            $users = User::where('role', 999)->get();
-        }
-        $user = $users->last();
-        Talk::setAuthUserId(Auth::User()->id);
-        $inboxes = Talk::getInbox();
-        foreach ($inboxes as $inbox) {
-            $inbox->unread = Talk::getConversationsById($inbox->thread->conversation_id, 0, 100000000000000)
-                ->messages->where('is_seen', 0)->where('user_id', '!=', Auth::user()->id)->count();
-        }
-        return view('user.chat', compact(['user', 'inboxes']));
-    }
-
-    public function chatAgent($id)
-    {
-        $user = User::find($id);
-        if ($user->role != 999 || $user->role != 888) {
-            return redirect()->back()->with(['error' => 'Agent not available']);
-        }
-        return view('user.chat', compact(['user']));
     }
 
 

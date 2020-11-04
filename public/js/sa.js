@@ -46,33 +46,15 @@ function update(email) {
     });
 }
 
-function editRate(rate) {
-
-    $('#rate-id').val(rate['id']);
-
-    $('#card').html(rate['card']);
-    $('#card').val(rate['card']);
-
-    $('#r-type').html(rate['rate_type']);
-    $('#r-type').val(rate['rate_type']);
-
-    $('#usd').val(rate['usd']);
-    $('#eur').val(rate['eur']);
-    $('#gbp').val(rate['gbp']);
-    $('#aud').val(rate['aud']);
-    $('#cad').val(rate['cad']);
-    $('#min').val(rate['min']);
-    $('#max').val(rate['max']);
-}
 
 /* Delete Rate */
 function deleteRate(id) {
     if (confirm("Are you sure you want to delete this rate?")) {
         $.ajax({
             type: 'GET',
-            url: '/admin/delete-rate/' + id,
+            url: '/admin/rate/delete/' + id,
             success: function (data) {
-                if (data == true) {
+                if (data) {
                     alert('Rate deleted');
                     location.reload();
                 } else {
@@ -126,21 +108,22 @@ function deleteTransac(id) {
 }
 
 /* Get card details for editing */
-function editCard(id) {
-    $.get("/admin/get-card/" + id, function (data, status) {
-        $('#e-card-name-2').html(data['name']);
-        $('#e-card-id').val(data['id']);
-        $('#e-card-name').val(data['name']);
-        $('#e-card-wallet').val(data['wallet_id']);
-        $('#e-card-min').val(data['min']);
-        $('#e-card-max').val(data['max']);
-        if (data['is_crypto'] == 1) {
-            $('#e-card-crypto').html("Yes");
-        } else {
-            $('#e-card-crypto').html("No");
-        }
-        $('#e-card-crypto').val(data['is_crypto']);
-    });
+function editCard(card) {
+    $('#e-card-image').attr('src', '/storage/assets/' + card.image);
+    $('#e-card-name').val(card['name']);
+    $('#e-card-id').val(card['id']);
+    $('#e-card-wallet').val(card['wallet_id']);
+    toggleCheckbox(card.is_crypto, '#e-card-crypto');
+    toggleCheckbox(card.buyable, '#e-card-buyable');
+    toggleCheckbox(card.sellable, '#e-card-sellable');
+}
+
+function toggleCheckbox(value, ele) {
+    if (value == 1) {
+        $(ele).prop('checked', true);
+    } else {
+        $(ele).prop('checked', false);
+    }
 }
 
 /* Delete asset */
@@ -229,6 +212,27 @@ function confirmRefund(id, user, amount) {
     $('#r-amount').text(amount)
     $('#r-acct-name').text(user['first_name'] + " " + user['last_name'])
     $('#r-t-id').val(id)
+}
+/* add new field for new rate */
+function addRateField(id) {
+    var list = $('#rates-list-' + id);
+    list.append(`
+        <div class="media mb-2">
+            <div class="media-body d-flex justify-content-between">
+                <div class="input-group ">
+                    <div class="input-group-prepend"> <span class="input-group-text " id="basic-addon1">$</span> </div>
+                    <input type="number" name="values[]" class="form-control" >
+                </div>
+                <i class="fa fa-exchange-alt mx-2 align-self-center"></i>
+                <div class="input-group ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">₦</span>
+                    </div>
+                    <input type="number" name="rates[]" class="form-control">
+                </div>
+            </div>
+        </div>
+    `);
 }
 
 /* Query a transaction from rubies */
@@ -336,3 +340,4 @@ function queryTransaction(id) {
      })
     .fail(function (err) {  console.log(err) })
 } */
+

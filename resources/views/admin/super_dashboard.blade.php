@@ -2,23 +2,7 @@
 @section('content')
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
-        {{-- <div class="row layout-top-spacing">
-            <div class="col-md-12">
-                <div class="alert alert-info alert-dismissible">
-                    <button type="button" data-dismiss="alert" class="close">×</button>
-                    <div class="row justify-content-center">
-                        <div class="left col-xl-5 col-lg-12 col-md-12 col-12">
-                            <strong>Hi Simeon,</strong>
-                            <p>Welcome to DANTOWN DASHBOARD. <br> Will you like us to show you around the dashboard?</p>
-                        </div>
-                         <div class="right col-xl-6 col-lg-12 col-md-12 col-12">
-                             <button class="btn btn-primary">YES! Please</button>
-                             <button class="btn btn-outline-primary">Maybe Later</button>
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
+
         <div class="dashboard-title d-flex">
             <ion-icon name="home-outline"></ion-icon>
             <div class="description">
