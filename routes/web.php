@@ -111,7 +111,9 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');
 
-    /* Route::get('/banklist', 'NairaWalletController@banklist')->name('user.banklist'); */
+    /* Bitcooin Wallet */
+    Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
+
 });
 
 

@@ -129,14 +129,30 @@
             {{-- for Super Admin Only --}}
             @if (Auth::user()->role == 999 )
 
-
-            <li class="my-3">
-                <a href="{{route('admin.cards')}}"
-                    class=" {{ Route::currentRouteName() == 'admin.cards' ? 'mm-active' : '' }} ">
-                    <i class="metismenu-icon pe-7s-cash"></i>
-                    All Crypto / Gift Card
+            <li>
+                <a href="#">
+                    <i class="metismenu-icon pe-7s-timer"></i>
+                    Bitcoin Wallet
+                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                 </a>
+                <ul>
+                    <li>
+                        <a href="{{route('admin.wallets')}}"
+                            class=" {{ Route::currentRouteName() == 'admin.wallets' ? 'mm-active' : '' }} ">
+                            <i class="metismenu-icon"></i>
+                            All Wallets
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('admin.buy_transac')}}"
+                            class=" {{ Route::currentRouteName() == 'admin.buy_transac' ? 'mm-active' : '' }} ">
+                            <i class="metismenu-icon">
+                            </i>All Wallet Transactions
+                        </a>
+                    </li>
+                </ul>
             </li>
+
 
             <li class="my-3">
                 <a href="{{route('admin.notification')}}"

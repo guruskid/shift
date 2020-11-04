@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "05f89275c2ae9b92b36b00c83a1641c1",
+    "content-hash": "ebadbeda226fc935d2aa4812f1b6bd1d",
     "packages": [
         {
             "name": "balping/json-raw-encoder",
@@ -94,6 +94,44 @@
             ],
             "description": "The laravel charting package",
             "time": "2019-09-03T16:50:50+00:00"
+        },
+        {
+            "name": "cryptoapis.io/php-sdk",
+            "version": "1.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Crypto-APIs/PHP-Library.git",
+                "reference": "2c2e0fe46156854ddc2f89f32d2c4d9e51e95660"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Crypto-APIs/PHP-Library/zipball/2c2e0fe46156854ddc2f89f32d2c4d9e51e95660",
+                "reference": "2c2e0fe46156854ddc2f89f32d2c4d9e51e95660",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "6.*",
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "RestApis\\": "src/RestApis",
+                    "Common\\": "src/Common"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CryptoAPIs PHP SDK",
+                    "email": "bizdev@cryptoapis.io"
+                }
+            ],
+            "description": "Crypto APIs is a trusted API provider for crypto & blockchain applications. We provide live and historical data for both Crypto market and Blockchain protocols.",
+            "time": "2020-03-23T12:52:21+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -2138,12 +2176,12 @@
             "version": "v1.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nrk/predis.git",
+                "url": "https://github.com/predis/predis.git",
                 "reference": "f0210e38881631afeafb56ab43405a92cafd9fd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nrk/predis/zipball/f0210e38881631afeafb56ab43405a92cafd9fd1",
+                "url": "https://api.github.com/repos/predis/predis/zipball/f0210e38881631afeafb56ab43405a92cafd9fd1",
                 "reference": "f0210e38881631afeafb56ab43405a92cafd9fd1",
                 "shasum": ""
             },
@@ -6182,5 +6220,6 @@
     "platform": {
         "php": "^7.1.3"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

@@ -8,4 +8,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
     Route::get('/profit-manager', 'NairaTransactionController@profits')->name('admin.profits');
     Route::POST('/send-charges', 'NairaTransactionController@sendCharges')->name('admin.send-charges');
+
+    Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets')->name('admin.wallets');
+    Route::POST('/bitcoin-wallet', 'BitcoinWalletController@createHdWallet')->name('admin.bitcoin-wallet.create');
 });
