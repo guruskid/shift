@@ -61,10 +61,15 @@
                 alert('New transaction initiated');
             });
 
-            Echo.private(`user.${this.user_id}`).listen("TransactionUpdated", e => {
+            Echo.private(`user.${this.user_id}`)
+            .listen("TransactionUpdated", e => {
                 this.playSound();
                 alert("Transaction updated");
-            });
+            })
+            .listen("CustomNotification", e => {
+                this.playSound();
+                alert(e.message);
+            })
 
         },
         methods: {

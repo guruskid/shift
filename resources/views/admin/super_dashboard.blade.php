@@ -56,7 +56,7 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <div>
-                                        <a href="{{route('admin.wallet-charges')}}" ><h6 title="click to view" class="mb-0">Charges</h6> </a>
+                                        <a href="{{route('admin.wallet-charges')}}" ><h5 title="click to view" class="mb-0">Charges</h5> </a>
                                     </div>
                                     <div class="widget-n">
                                         <h6 class="mb-0">₦{{$charges}}</h6>
@@ -64,10 +64,7 @@
                                 </div>
                                 <div>
                                     <div>
-                                        <a href="{{route('admin.old-wallet-charges')}} "><h6 title="click to view" class="mb-0">Old Charges</h6> </a>
-                                    </div>
-                                    <div class="widget-n">
-                                        <h6 class="mb-0">₦{{$old_charges}}</h6>
+                                        <a href="{{route('admin.profits')}} "><h6 title="click to view" class="mb-0">Profit manager</h6> </a>
                                     </div>
                                 </div>
                             </div>

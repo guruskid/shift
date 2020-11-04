@@ -106,7 +106,7 @@
             </li>
             @endif
 
-            @if (in_array(Auth::user()->role, [999, 666] ))
+            @if (in_array(Auth::user()->role, [999, 666, 777, 889] ))
             <li class="my-3">
                 <a href="{{route('admin.chat_agents')}}"
                     class=" {{ Route::currentRouteName() == 'admin.chat_agents' ? 'mm-active' : '' }} ">
@@ -116,7 +116,7 @@
             </li>
             @endif
 
-            @if (in_array(Auth::user()->role, [999, 889] ))
+            @if (in_array(Auth::user()->role, [999, 889, 777] ))
             <li class="my-3">
                 <a href="{{route('admin.users')}}"
                     class=" {{ Route::currentRouteName() == 'admin.users' ? 'mm-active' : '' }} ">
@@ -129,14 +129,30 @@
             {{-- for Super Admin Only --}}
             @if (Auth::user()->role == 999 )
 
-
-            <li class="my-3">
-                <a href="{{route('admin.cards')}}"
-                    class=" {{ Route::currentRouteName() == 'admin.cards' ? 'mm-active' : '' }} ">
-                    <i class="metismenu-icon pe-7s-cash"></i>
-                    All Crypto / Gift Card
+            <li>
+                <a href="#">
+                    <i class="metismenu-icon pe-7s-timer"></i>
+                    Bitcoin Wallet
+                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                 </a>
+                <ul>
+                    <li>
+                        <a href="{{route('admin.wallets')}}"
+                            class=" {{ Route::currentRouteName() == 'admin.wallets' ? 'mm-active' : '' }} ">
+                            <i class="metismenu-icon"></i>
+                            All Wallets
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('admin.buy_transac')}}"
+                            class=" {{ Route::currentRouteName() == 'admin.buy_transac' ? 'mm-active' : '' }} ">
+                            <i class="metismenu-icon">
+                            </i>All Wallet Transactions
+                        </a>
+                    </li>
+                </ul>
             </li>
+
 
             <li class="my-3">
                 <a href="{{route('admin.notification')}}"

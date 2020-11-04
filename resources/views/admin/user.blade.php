@@ -51,6 +51,7 @@
                             <span class="text-custom">
                                 @if ($user->nairaWallet)
                                 ₦{{number_format($user->nairaWallet->amount ) }}
+                                <p>{{ $user->nairaWallet->account_number }}</p>
                                 @else
                                 No wallet
                                 @endif

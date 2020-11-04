@@ -1,5 +1,5 @@
 @php
-$cards = App\Card::orderBy('name', 'asc')->get(['name']);
+$cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
 $emails = App\User::orderBy('email', 'asc' )->pluck('email');
 @endphp
 @extends('layouts.app')
@@ -159,7 +159,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
 
                                                 <a href="#" data-toggle="modal" data-target="#edit-transac"
-                                                    onclick="editTransac({{$t->id}})"><span
+                                                    onclick="editTransac({{$t}})"><span
                                                         class="btn btn-sm btn-info">Edit</span></a>
 
                                                 @if ($t->status == 'approved')
@@ -176,7 +176,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                             @endif
 
                                             @if (Auth::user()->role == 999) {{-- Super Admin --}}
-                                            <a href="#" data-toggle="modal" data-target="#edit-transac" onclick="editTransac({{$t->id}})">
+                                            <a href="#" data-toggle="modal" data-target="#edit-transac" onclick="editTransac({{$t}})">
                                                 <span class="btn btn-sm btn-info">Edit</span>
                                             </a>
 
@@ -195,7 +195,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                             @if (Auth::user()->role == 777) {{-- Junior Accountant --}}
                                             @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
                                             <a href="#" data-toggle="modal" data-target="#edit-transac"
-                                                onclick="editTransac({{$t->id}})"><span
+                                                onclick="editTransac({{$t}})"><span
                                                     class="btn btn-sm btn-info">Edit</span></a>
                                             @endif
 
@@ -214,7 +214,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                             @if (Auth::user()->role == 888) {{-- Sales rep --}}
                                             @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
                                             <a href="#" data-toggle="modal" data-target="#edit-transac"
-                                                onclick="editTransac({{$t->id}})"><span
+                                                onclick="editTransac({{$t}})"><span
                                                     class="btn btn-sm btn-info">Edit</span></a>
                                             @endif
                                             @endif
@@ -232,6 +232,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
     </div>
 </div>
 
+{{-- Edit transactions Modal --}}
 <div class="modal fade  item-badge-rightm" id="edit-transac" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -257,10 +258,10 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Card</label>
-                                <select name="card" class="form-control">
+                                <select name="card_id" class="form-control">
                                     <option value="" id="e_card"></option>
                                     @foreach ($cards as $card)
-                                    <option value=" {{$card->name}} "> {{ ucfirst($card->name) }} </option>
+                                    <option value="{{$card->id}}"> {{ ucfirst($card->name) }}</option>
                                     @endforeach
                                 </select>
                             </div>

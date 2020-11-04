@@ -35,6 +35,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.chat_agents' ? 'active' : '' }}">
+        <a href="{{route('admin.chat_agents')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Chat Agents</span>
+            </div>
+        </a>
+    </li>
+
     @if ( in_array(Auth::user()->role, [889, 999] ) )
     <li class="menu {{ Route::currentRouteName() == 'admin.accountants' ? 'active' : '' }}">
         <a href="{{route('admin.accountants')}}" aria-expanded="false" class="dropdown-toggle">

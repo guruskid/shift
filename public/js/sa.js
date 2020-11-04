@@ -24,6 +24,10 @@ $(function () {
         $('.modal').modal('hide');
     })
 
+/* get wallet details and transactions when the account number is changed *//*
+$('#account-number').change(function (e) {
+    getUserWalletDetails($(this).val());
+}) */
 
 });
 
@@ -62,34 +66,27 @@ function deleteRate(id) {
 }
 
 /* Edit Transaction */
-function editTransac(id) {
-    $.ajax({
-        type: "GET",
-        url: '/admin/get-transac/' + id,
-        success: function (data) {
+function editTransac(data) {
+    $('#e_email').html(data['user_email']);
+    $('#e_id').val(data['id']);
 
-            $('#e_email').html(data['user_email']);
-            $('#e_id').val(data['id']);
+    $('#e_card').html(data['card']);
+    $('#e_card').val(data['card_id']);
 
-            $('#e_card').html(data['card']);
-            $('#e_card').val(data['card']);
+    $('#e_country').html(data['country']);
+    $('#e_country').val(data['country']);
 
-            $('#e_country').html(data['country']);
-            $('#e_country').val(data['country']);
+    $('#e_amount').val(data['amount']);
+    $('#e_amount_paid').val(data['amount_paid']);
 
-            $('#e_amount').val(data['amount']);
-            $('#e_amount_paid').val(data['amount_paid']);
+    $('#e_status').html(data['status']);
+    $('#e_status').val(data['status']);
 
-            $('#e_status').html(data['status']);
-            $('#e_status').val(data['status']);
+    $('#e_trade_type').html(data['type']);
+    $('#e_trade_type').val(data['type']);
 
-            $('#e_trade_type').html(data['type']);
-            $('#e_trade_type').val(data['type']);
+    $('#e_date').val(data['created_at']);
 
-            $('#e_date').val(data['created_at']);
-
-        }
-    });
 }
 
 /* Delete Transaction */
@@ -216,7 +213,6 @@ function confirmRefund(id, user, amount) {
     $('#r-acct-name').text(user['first_name'] + " " + user['last_name'])
     $('#r-t-id').val(id)
 }
-
 /* add new field for new rate */
 function addRateField(id) {
     var list = $('#rates-list-' + id);
@@ -238,3 +234,110 @@ function addRateField(id) {
         </div>
     `);
 }
+
+/* Query a transaction from rubies */
+function queryTransaction(id) {
+    $('#q-id').val(id);
+    $('.loader').show();
+    $.get('/admin/query-transaction/' + id)
+        .done(function (response) {
+            console.log(response);
+            $('.loader').hide();
+            if (response['success'] == true) {
+                res = response.data;
+                $('#q-ref').text(res.requestdata.reference);
+                $('#q-res-code').text(res.responsecode);
+                $('#q-status').text(res.transactionstatus);
+                $('#q-res-msg').text(res.responsemessage);
+                $('#q-amount').text('₦' + res.requestdata.amount.toLocaleString());
+                $('#q-cr').text(res.craccountname);
+                $('#q-dr').text(res.draccountname);
+                $('#q-req-date').text(res.requestdate);
+                $('#q-res-date').text(res.responsetime);
+
+
+            } else {
+                swal({
+                    title: "Ooops!",
+                    text: response.data.responsemessage,
+                    icon: "error",
+                    button: "OK",
+                });
+                console.log(response.data)
+            }
+        })
+        .fail(function (xhr, status, error) {
+            $('.loader').hide();
+            swal({
+                title: "Ooops!",
+                text: error,
+                icon: "error",
+                button: "OK",
+            });
+        })
+}
+
+
+/* get transactions and user details for adding transaction, it is called from the top */
+/* function getUserWalletDetails(accountNumber) {
+    console.log(accountNumber);
+    if (accountNumber.length < 10) {
+        return;
+    }
+    var accountName = $('#account-name');
+    var email = $('#email');
+    var transactionsList = $('#transactions-list');
+
+    accountName.val('Loading');
+    email.val('Loading');
+    transactionsList.html('Loading');
+
+    $.get('/admin/get-wallet-details/'+accountNumber)
+    .done(function (res) {
+        if (res.success) {
+            console.log(res)
+            var user = res.user;
+            var transactions = res.transactions;
+            var wallet =  res.wallet;
+            transactionsList.html('')
+
+            accountName.val(wallet.account_name) ;
+            email.val(user.email)
+
+            $('#wallet-id').val(wallet.id);
+            $('#wallet-balance').text('₦'+wallet.amount.toLocaleString());
+
+
+            transactions.forEach(t => {
+                transactionsList.append(`
+                    <tr>
+                        <td>${t.id} </td>
+                        <td>${t.reference} </td>
+                        <td>${t.transaction_type.name}</td>
+                        <td>₦${t.amount_paid} </td>
+                        <td>₦${t.charge} </td>
+                        <td>₦${t.amount.toLocaleString()} </td>
+                        <td>₦${t.previous_balance}</td>
+                        <td>₦${t.current_balance} </td>
+                        <td>${t.cr_acct_name} </td>
+                        <td>${t.dr_acct_name} </td>
+                        <td>${t.narration} </td>
+                        <td>${t.created_at} </td>
+                        <td>${t.status} </td>
+                    </tr>
+                `)
+            });
+        } else {
+            accountName.val('');
+            email.val('');
+            $('#wallet-balance').text('')
+            transactionsList.html('');
+            $('#wallet-id').val('');
+            alert(res.message);
+        }
+
+
+     })
+    .fail(function (err) {  console.log(err) })
+} */
+
