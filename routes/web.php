@@ -42,6 +42,19 @@ Route::get('/airtocash', function () {
 Route::get('/newprofile', function () {
     return view('newpages.profile');
 });
+Route::get('/newdashboard', function () {
+    return view('newpages.dashboard');
+});
+Route::get('/creditsuccess', function () {
+    return view('newpages.creditsuccess');
+});
+Route::get('/creditfailure', function () {
+    return view('newpages.creditfailure');
+});
+
+Route::get('/smartbudget', function () {
+    return view('newpages.smartbudget');
+});
 
 
 

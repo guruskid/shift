@@ -155,7 +155,7 @@
                                                     <div class="d-flex flex-row justify-content-around flex-wrap">
                                                         <div class="text-center">
                                                             <label for="country" class="label-style">Card
-                                                                price</label>
+                                                                value</label>
                                                             <select id="cardprice"
                                                                 class="custom-select select-country-custom-select cardprice">
                                                                 <option selected>Select Price</option>

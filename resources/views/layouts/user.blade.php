@@ -56,6 +56,7 @@ if (Auth::user()->nairaWallet) {
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/main.css')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 
 
@@ -139,6 +140,22 @@ if (Auth::user()->nairaWallet) {
                             </div>
                         </a>
                         </div>
+                    </div>
+
+                    <div class="mx-auto">
+                        <ul class="nav">
+                            <li data-toggle="modal" id="quickTopUpLink" class="nav-item d-flex justify-content-center align-items-center mx-2" style="font-size:14px;font-weight: 500;background: #000070;border-radius: 30px;height:40px;width:150px;">
+                                <a class="nav-link text-white" href="#">Quick Top up</a>
+                            </li>
+                            @include('newpages.modals.quicktop-up')
+                            <li id="quickWithdrawalLink" class="nav-item d-flex justify-content-center align-items-center mx-2" style="font-size:14px;font-weight: 500;border: 1px solid #000070;border-radius: 30px;height:40px;width:150px;">
+                                <a class="nav-link" style="color: #000070;font-weight: 500;">Quick Withdrawal</a>
+                            </li>
+                            @include('newpages.modals.quickwithdrawalmodal')
+                            <li id="quickWithdrawalLink" class="nav-item d-flex justify-content-center align-items-center mx-2" style="font-size:14px;font-weight: 500;background: #00B9CD;border-radius: 30px;height:40px;width:150px;">
+                                <a class="nav-link text-white" href="#">Swap Bitcoins</a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="app-header-right">
                         <div class="header-btn-lg pr-0">
@@ -359,6 +376,7 @@ if (Auth::user()->nairaWallet) {
 
     {{-- Calculator scripts --}}
     <script src="{{asset('user_assets/js/calculator.js')}} "></script>
+    {{-- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> --}}
 
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"> </script>
