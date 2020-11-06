@@ -24,8 +24,7 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
-    //add the auth and admin middleware
-
+    //All new functionalities will follow the conventional method, new controllers for each model and stored in the admin folder
     public function dashboard()
     {
 
@@ -340,44 +339,7 @@ class AdminController extends Controller
     }
 
 
-    public function editTransaction(Request $r)
-    {
-
-        $card_id = Card::where('name', $r->card)->first()->id;
-        $t = Transaction::find($r->id);
-        $t->card = $r->card;
-        $t->card_id = $card_id;
-        $t->type = $r->trade_type;
-        $t->country = $r->country;
-        $t->amount = $r->amount;
-        $t->amount_paid = $r->amount_paid;
-        $t->status = $r->status;
-        $t->last_edited = Auth::user()->email;
-        $t->save();
-
-        $user = User::where('email', $t->user_email)->first();
-        if ($t->status == 'approved') {
-            $t->stats = 'success';
-        } else {
-            $t->stats = $t->status;
-        }
-        $body = 'The status of your transaction to  ' . $t->type . ' ' . $t->card .
-         ' worth of ₦' . number_format($t->amount_paid) . ' has been updated to ' .$t->status;
-        $title = 'Transaction update';
-        $not = Notification::create([
-            'user_id' => $user->id,
-            'title' => $title,
-            'body' => $body,
-        ]);
-
-        broadcast(new TransactionUpdated($user));
-        if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1 ) {
-            $title = 'Transaction Successful';
-            Mail::to($user->email)->send(new DantownNotification($title, $body, 'Go to Wallet', route('user.naira-wallet')));
-        }
-
-        return redirect()->back()->with(['success' => 'Transaction updated']);
-    }
+    
 
     public function viewTransac($id, $uid)
     {
@@ -392,7 +354,7 @@ class AdminController extends Controller
         return response()->json($rate->delete());
     }
 
-    public function updateTransaction($id, $status) //for assigned transactions
+    public function updateTransaction($id, $status) //to accept or decline a new transaction
     {
         $t = Transaction::find($id);
         $t->status = $status;
@@ -461,7 +423,7 @@ class AdminController extends Controller
             $transactions = NairaTransaction::latest()->get();
             $total = $transactions->sum('charge');
         }else{
-            
+
             $transactions = NairaTransaction::where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->get();
             $total = $transactions->sum('charge');
         }

@@ -1926,7 +1926,7 @@ $("#sell_ngn_eth_field").on("keyup", function(e) {
 
 //Buy ETH
 const buy_usd_per_eth = 5465;
-const buy_ngn_per_usd_eth = 280;
+const buy_ngn_per_usd_eth = 380;
 
 $("#buy_usd_field_eth").on("keyup", function() {
     let value = $(this).val();
@@ -1952,6 +1952,16 @@ $("#buy_eth_field").on("keyup", function() {
     $("#buy_ngn_field_eth").val(naira);
 });
 
+
+$("#buy_ngn_field_eth").on("keyup", function() {
+    let value = $(this).val();
+
+    //dollar equivalent
+    let dollars = value * buy_ngn_per_usd_eth;
+    let eth = dollars / buy_usd_per_eth;
+    $("#buy_usd_field_eth").val(dollars);
+    $("#buy_usd_field_eth").val(eth);
+});
 
 
 //Disable submit button if fields are empty in sell btc tab

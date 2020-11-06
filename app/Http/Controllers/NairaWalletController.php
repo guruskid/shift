@@ -331,7 +331,7 @@ class NairaWalletController extends Controller
             $token = env('SMS_TOKEN');
             $to = Auth::user()->phone;
             $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-            $snd_sms = $client->request('GET', $sms_url);
+            /* $snd_sms = $client->request('GET', $sms_url); */
 
             return back()->with(['success' => 'Transfer made successfully']);
         } else {
@@ -416,7 +416,7 @@ class NairaWalletController extends Controller
         $token = env('SMS_TOKEN');
         $to = $t->user->phone;
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
+        /* $snd_sms = $client->request('GET', $sms_url); */
 
         return back()->with(['success' => 'Transfer made successfully']);
     }
@@ -525,7 +525,7 @@ class NairaWalletController extends Controller
         $token = env('SMS_TOKEN');
         $to = $t->user->phone;
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
+        /* $snd_sms = $client->request('GET', $sms_url); */
 
         return back()->with(['success' => 'Refund made successfully']);
     }
@@ -606,9 +606,50 @@ class NairaWalletController extends Controller
         $token = env('SMS_TOKEN');
         $to = $t->user->phone;
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
+        /* $snd_sms = $client->request('GET', $sms_url); */
 
         return back()->with(['success' => 'Refund made successfully']);
+    }
+
+    public function query($id)
+    {
+        $reference = NairaTransaction::findOrFail($id)->reference;
+
+        $client = new Client();
+        $url = env('RUBBIES_API') . "/transactionquery";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                "reference" => $reference,
+            ],
+            'headers' => [
+                'authorization' => env('RUBBIES_SECRET_KEY'),
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+        $body->requestdate  = date('d M h:ia', $body->requestdate);
+        if ($body->responsecode != 13) {
+            return response()->json([
+                'success' =>true,
+                'data' => $body
+            ]);
+        } else {
+            return response()->json([
+                'success' =>false,
+                'data' => $body
+            ]);
+        }
+
+
+
+    }
+
+    public function updateStatus(Request $r)
+    {
+        $transaction = NairaTransaction::find($r->id);
+        $transaction->status = $r->status;
+        $transaction->save();
+        return back()->with(['success' => 'Transaction status updated to '.$r->status]);
     }
 
     public function callback(Request $r)
@@ -675,7 +716,7 @@ class NairaWalletController extends Controller
         $token = env('SMS_TOKEN');
         $to = $nw->user->phone;
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
+        /* $snd_sms = $client->request('GET', $sms_url); */
 
         return true;
     }

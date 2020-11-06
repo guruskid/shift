@@ -53,7 +53,9 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         </div>
                         <div> {{$segment}} Transactions
                             <div class="page-title-subheading">
-                                <h6>₦{{ number_format($total) }} </h6>
+                                <h6 class="d-inline">₦{{ number_format($total) }} </h6>
+                                <a href="{{ route('admin.naira-transaction.create') }}"><button
+                                        class="btn btn-primary">Add new transaction</button></a>
                             </div>
                         </div>
                     </div>
@@ -65,7 +67,8 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between ">
                             {{$segment}} Transactions
-                            <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2" method="POST">
+                            <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
+                                method="POST">
                                 @csrf
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
@@ -90,7 +93,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <th>Amount Paid</th>
                                         <th>Total Charge</th>
                                         <th>Total</th>
-                                        <th>Prev. Bal  </th>
+                                        <th>Prev. Bal </th>
                                         <th>Cur. Bal</th>
                                         <th>Cr. Acct.</th>
                                         <th>Debit Acct.</th>
@@ -106,7 +109,8 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>{{$t->id}} </td>
                                         <td>{{$t->reference}} </td>
                                         <td>
-                                            <a href="{{route('admin.user', [$t->user->id ?? ' ', $t->user->email ?? ' ' ] )}}">
+                                            <a
+                                                href="{{route('admin.user', [$t->user->id ?? ' ', $t->user->email ?? ' ' ] )}}">
                                                 {{$t->user->first_name ?? 'A MISSING USER'}}
                                             </a>
                                         </td>
@@ -124,8 +128,16 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         @if (in_array(Auth::user()->role, [999, 889] ) && $t->status == 'pending' )
                                         <td>
                                             <button data-toggle="modal" data-target="#refund-modal"
-                                                    onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount)}}' )"
-                                                    class="btn btn-sm btn-outline-success">Refund</button>
+                                                onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount)}}' )"
+                                                class="btn mb-1 btn-sm btn-outline-success">
+                                                Refund
+                                            </button>
+
+                                            <button data-toggle="modal" data-target="#query-modal"
+                                                onclick="queryTransaction({{$t->id}})"
+                                                class="btn mb-1 btn-sm btn-outline-success">
+                                                Query
+                                            </button>
                                         </td>
                                         @else
                                         <td>..</td>
@@ -145,6 +157,82 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
     </div>
 </div>
 
+
+
+
+{{-- Transaction query modal --}}
+<div class="modal fade" id="query-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content c-rounded">
+            <!-- Modal Header -->
+            <div class="modal-header bg-custom-gradient c-rounded-top p-4">
+                <h4 class="modal-title">
+                    Transaction query details
+                    <i class="fa fa-rotate-180 fa-paper-plane"></i>
+                </h4>
+                <button type="button" class="close bg-light rounded-circle" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-4">
+                <img src="{{ asset('loader2.gif') }}" class="loader img-fluid" alt="loader"
+                    style="position: absolute; top: 30px">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <td class="text-left"><strong>Reference code</strong></td>
+                            <td class="text-right" id="q-ref">XXXXX</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left"><strong>Response Code</strong></td>
+                            <td class="text-right" id="q-res-code">XXXXX</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left"><strong>Transaction status</strong></td>
+                            <td class="text-right" id="q-status">XXXXX</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left"><strong>Response message</strong></td>
+                            <td class="text-right" id="q-res-msg">XXXXX</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left"><strong>Amount</strong></td>
+                            <td class="text-right" id="q-amount">XXXXX</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left"><strong>Cr Account</strong></td>
+                            <td class="text-right" id="q-cr">XXXXX</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left"><strong>Dr Account</strong></td>
+                            <td class="text-right" id="q-dr">XXXXX</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left"><strong>Request date</strong></td>
+                            <td class="text-right" id="q-req-date">XXXXX</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr>
+                <form action="{{ route('admin.update-naira-transaction') }}" method="post">
+                    @csrf
+                    <p>Click 'refund' to perfoem a refund for failed transactions, the transaction status will be
+                        changed automatically once refund is done. </p>
+                    <p> For successful transactions, update status to successful and save</p>
+                    <div class="form-group">
+                        <input type="hidden" name="id" id="q-id">
+                        <select name="status" id="" class="form-control">
+                            <option value="success">Successful</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success">Save</button>
+                </form>
+                <hr>
+                <button class="btn btn-block c-rounded bg-custom-gradient" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {{-- Confirm refund modal --}}
 <div class="modal fade " id="refund-modal">

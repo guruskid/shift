@@ -203,7 +203,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input readonly type="text" class="form-control bitcoin-input-radius"
+                                                        <input type="text" class="form-control bitcoin-input-radius"
                                                             id="buy_ngn_field_eth">
                                                     </div>
                                                 </div>

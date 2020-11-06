@@ -844,8 +844,54 @@ tr:nth-child(even) {
 .budget_card {
     width: 22.5em;
 }
+input[type=file]::-webkit-file-upload-button {
+    background-image: url('../../customizeduploadbtn.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 0px;
+    transition: 1s;
+    width: 80px;
+    height: 100px;
+  }
+  
+  /* input[type=file]::file-selector-button {
+    border: 2px solid #0e054e;
+    padding: .2em .4em;
+    border-radius: .2em;
+    background-color: #130d6b;
+    transition: 1s;
+  }
+  
+  input[type=file]::-webkit-file-upload-button:hover {
+    background-color: #081d63;
+    border: 2px solid #071b72bb;
+  }
+   
+  input[type=file]::file-selector-button:hover {
+    background-color: #091070;
+    border: 2px solid #020d68;
+  } */
+
+.walletpage__menu-container {
+    width: 750px;
+}
+.walletpage_menu {
+    border: 1px solid #EFF4F7;
+    border-radius: 10px;
+    width: 100%;
+    left: 509px;
+    padding: 24px 30px;
+}
+.walletpage_menu-active {
+    background: #EFEFF8;
+}
+
+
 
 /*New Dashboard CSS Ends */
+
+
+
 
 
 

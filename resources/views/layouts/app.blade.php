@@ -228,7 +228,7 @@ $not = $nots->last();
 
     </div>
 </div>
-    <script src="/js/app.js"></script>
+    <script src="/js/app.js?v=1"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
@@ -237,6 +237,7 @@ $not = $nots->last();
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     @auth
     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666] ))
