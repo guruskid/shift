@@ -31,7 +31,7 @@ Route::get('/transaction', function () {
     return view('newpages.Transactionscreen');
 });
 Route::get('/bitcoin', function () {
-    return view('newpages.Bitcoinscreen');
+    return view('newpages.bitcoin');
 });
 Route::get('/ethereum', function () {
     return view('newpages.ethereumscreen');
@@ -134,7 +134,11 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::get('/assets', 'TradeController@assets')->name('user.assets');
     Route::get('/trade/{trade_type}/{card_id}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
     Route::view('/gift-card-calculator', 'user.gift_card_calculator');
-    Route::post('/trade', 'TradeController@trade');
+    Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
+    Route::post('/trade-crypto', 'TradeController@tradeCrypto')->name('user.trade-crypto');
+
+    /* Bitcooin Wallet */
+    Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
 
 });
 
@@ -164,7 +168,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
-
 });
 
 /* For Super Admins Only */
@@ -212,8 +215,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant'] 
 
     Route::get('/query-transaction/{id}', 'NairaWalletController@query' )->name('admin.query-transaction');
     Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus' )->name('admin.update-naira-transaction');
-
-
 });
 
 /* for super admin and all accountants */

@@ -95,65 +95,6 @@ class UserController extends Controller
     }
 
     /* ajax functions */
-    public function getCard($c)
-    {
-
-        $card = Card::where('name', $c)->first();
-        return response()->json($card);
-    }
-
-    public function getCountry($card)
-    {
-        $countries = Rate::where('card', $card)->distinct()->get(['country']);
-        return response()->json($countries);
-    }
-
-    public function getType($card)
-    {
-        $types = Rate::where('card', $card)->distinct()->get(['type']);
-        return response()->json($types);
-    }
-
-    public function getWalletId($card)
-    {
-        $id = Card::where('name', $card)->first();
-        return response()->json($id->wallet_id);
-    }
-
-    public function getRate(Request $request)
-    {
-        $country = '';
-        $tmp_amount = $request->value;
-        $equiv = 0;
-
-        if ($request->is_crypto == 1 && $request->country == 'ngn') {
-            /* return back if amount is less than 2 to avoid division error */
-            if ($tmp_amount <= 4600) {
-                return response()->json();
-            }
-            /* convert naira to dollar to get the range */
-            $tmp_amount = 10;
-            $country = 'USD';
-        } else {
-            $country = $request->country;
-        }
-
-        $rate = Rate::where('card', $request->card)->where('rate_type', $request->rate_type)
-            ->where('min', '<=', $tmp_amount)->where('max', '>=', $tmp_amount)->value($country);
-        $card_value = Rate::where('card', $request->card)->where('rate_type', $request->rate_type)
-            ->where('min', '<=', $tmp_amount)->where('max', '>=', $tmp_amount)->value('card_value');
-
-        /* if it is a crypto and ngn / to get the equivalent in btc or eth */
-        if ($request->is_crypto == 1 && $request->country == 'ngn') {
-            $value = $request->value;
-            $equiv = round(($card_value / $rate) * $request->value, 7);
-        } else {
-            $value = $rate * $request->value;
-            $equiv = $request->value * $card_value;
-        }
-
-        return response()->json(['rate' => $rate, 'equiv' => $equiv, 'value' => $value, 'card' => $request->card]);
-    }
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)

@@ -49,11 +49,12 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text">Ethereum</span>
+                                        <span class="h3 giftcard-text">Bitcoin</span>
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">1 ETH = 16,758</span>
-                                        {{-- <span class="d-block price">₦56,758</span> --}}
+                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
+                                        <span
+                                            class="d-block price">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -66,9 +67,13 @@
                                 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-2"
                                     style="border-bottom: 1px solid #C9CED6;">
                                     <div class="list-cards-title primary-color" style="line-height: 40px;">
-                                        <span class="ml-1" style="color: rgba(0, 0, 112, 0.75);">Buy/Sell Ethereum</span>
+                                        <span class="ml-1" style="color: rgba(0, 0, 112, 0.75);">Buy/Sell Bitcoin</span>
                                     </div>
                                 </div>
+                                @foreach ($errors->all() as $err)
+                                    <p class="text-danger text-center">{{ $err }}</p>
+                                @endforeach
+
 
                                 <div>
                                     <ul class="nav buy-sell-title mx-auto my-2 my-lg-4" id="myTab" role="tablist">
@@ -87,11 +92,12 @@
                                         <div class="text-center text-muted mb-3 mt-3 mt-lg-1" style="margin-top: -10px;">Buy or sell
                                             cryptocurrency in less than a minute</div>
 
-                                            {{-- Sell Ethereum form --}}
+                                            {{-- Sell Bitcoin --}}
                                         <div class="tab-pane fade show active mx-auto p-3 calculator_form"
                                             id="home" role="tabpanel" aria-labelledby="home-tab">
-                                            <form action="" method="post">
-                                                @csrf
+                                            <form action="{{ route('user.trade-crypto') }}" method="post">
+                                                <input type="hidden" name="card_id" value="{{ $card->id }}">
+                                                <input type="hidden" name="type" value="sell">
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"
                                                         style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
@@ -100,20 +106,20 @@
                                                             <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" step="any" class="form-control bitcoin-input-radius " value=""
-                                                            id="sell_usd_field_eth">
+                                                        <input type="number" step="any" min="0" name="amount" class="form-control bitcoin-input-radius" value=""
+                                                            id="sell_usd_field">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">Ethereum equivalent</label>
+                                                        style="color: rgba(0, 0, 112, 0.75);">Bitcoin equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <div class="input-group-prepend" style="border-radius: 30px;">
                                                             <div class="input-group-text input_label">
-                                                                ETH</div>
+                                                                BTC</div>
                                                         </div>
-                                                        <input type="number" step="any" class="form-control bitcoin-input-radius" value=""
-                                                            id="sell_eth_equiv_field">
+                                                        <input type="number" step="any" min="0" name="quantity" class="form-control bitcoin-input-radius" value=""
+                                                            id="sell_btc_field">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
@@ -124,8 +130,8 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius" value=""
-                                                            id="sell_ngn_eth_field">
+                                                        <input type="number" step="any" min="0" class="form-control bitcoin-input-radius" value=""
+                                                            id="sell_ngn_field">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
@@ -134,8 +140,8 @@
                                                     <span id="copied_text" class="text-success"
                                                         style="display: none;">Wallet address copied</span>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <input type="text" class="form-control bitcoin-input-radius"
-                                                            id="eth_wallet_address"
+                                                        <input type="text" min="34" minlength="34" maxlength="35" max="35" class="form-control bitcoin-input-radius"
+                                                            id="wallet_address"
                                                             style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                         <div class="input-group-append" style="border-radius: 30px;">
                                                             <div class="input-group-text input_label">
@@ -162,15 +168,16 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <button type="submit" id="sell_eth_submit_btn" disabled alt="sell" class="btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
+                                                <button type="button"
+                                                data-toggle="modal" data-target="#uploadCardImageModal"
+                                                id="sell_submit_btn" alt="sell" disabled="true" class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
                                             </form>
                                         </div>
-
-                                        {{-- Buy Ethereum form --}}
+                                        {{-- Buy --}}
                                         <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
-                                            <form action="" method="post">
-                                                @csrf
+                                            <form action="{{ route('user.trade-crypto') }}" method="post">@csrf
+
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"
                                                         style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
@@ -179,20 +186,22 @@
                                                             <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius"
-                                                            id="buy_usd_field_eth">
+                                                        <input type="number" step="any" name="amount" min="0" class="form-control bitcoin-input-radius"
+                                                            id="buy_usd_field">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">Ethereum equivalent</label>
+                                                        style="color: rgba(0, 0, 112, 0.75);">Bitcoin equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
                                                         <div class="input-group-prepend" style="border-radius: 30px;">
                                                             <div class="input-group-text input_label">
-                                                                ETH</div>
+                                                                BTC</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius"
-                                                            id="buy_eth_field">
+                                                        <input type="number" step="any" name="quantity" min="0" class="form-control bitcoin-input-radius"
+                                                            id="buy_btc_field">
+                                                            <input type="hidden" name="card_id" value="{{ $card->id }}">
+                                                <input type="hidden" name="type" value="buy">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
@@ -203,8 +212,8 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input type="text" class="form-control bitcoin-input-radius"
-                                                            id="buy_ngn_field_eth">
+                                                        <input type="number" class="form-control bitcoin-input-radius"
+                                                            id="buy_ngn_field">
                                                     </div>
                                                 </div>
                                                 <div class="form-group mb-4">
@@ -213,14 +222,14 @@
                                                     <span id="copied_text" class="text-success"
                                                         style="display: none;">Wallet address copied</span>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <input type="text" class="form-control bitcoin-input-radius"
-                                                            id="buy_wallet_address">
+                                                        <input type="text" min="34" minlength="34" maxlength="35" max="35" class="form-control bitcoin-input-radius"
+                                                            id="buy_wallet_address"
+                                                            style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                     </div>
                                                 </div>
-                                                <button type="submit" disabled id="buy_eth_submit_btn" class="btn w-100 text-white mt-3 bitcoin_calculator_btn">Buy</button>
+                                                <button type="submit" id="buy_btc_btn" disabled class="btn w-100 text-white mt-2 bitcoin_calculator_btn">Buy</button>
                                             </form>
                                         </div>
-
 
                                     </div>
                                 </div>
@@ -232,11 +241,23 @@
                 </div>
             </div>
 
-            @include('newpages.modals.uploadcardmodal')
-            @include('newpages.modals.popuploaded')
-            {{-- @include('layouts.partials.live-feeds') --}}
         </div>
     </div>
 </div>
 
+
+
+@include('newpages.modals.uploadcardmodal')
+@include('newpages.modals.popuploaded')
+@endsection
+
+@section('scripts')
+    <script>
+         bit_sell = {!! json_encode($rates->sell, JSON_HEX_TAG) !!};
+         bit_buy = {!! json_encode($rates->buy, JSON_HEX_TAG) !!};
+
+         sell_eth = {!! json_encode($rates->sell, JSON_HEX_TAG) !!};
+         buy_eth = {!! json_encode($rates->buy, JSON_HEX_TAG) !!};
+    </script>
+    <script src="{{asset('newpages/js/main.js?v=45')}} "></script>
 @endsection

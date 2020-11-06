@@ -213,8 +213,6 @@ function confirmRefund(id, user, amount) {
     $('#r-acct-name').text(user['first_name'] + " " + user['last_name'])
     $('#r-t-id').val(id)
 }
-
-<<<<<<< HEAD
 /* add new field for new rate */
 function addRateField(id) {
     var list = $('#rates-list-' + id);
@@ -236,7 +234,28 @@ function addRateField(id) {
         </div>
     `);
 }
-=======
+
+/* add new field for new rate */
+function addRateField(id) {
+    var list = $('#rates-list-' + id);
+    list.append(`
+        <div class="media mb-2">
+            <div class="media-body d-flex justify-content-between">
+                <div class="input-group ">
+                    <div class="input-group-prepend"> <span class="input-group-text " id="basic-addon1">$</span> </div>
+                    <input type="number" name="values[]" class="form-control" >
+                </div>
+                <i class="fa fa-exchange-alt mx-2 align-self-center"></i>
+                <div class="input-group ">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">₦</span>
+                    </div>
+                    <input type="number" name="rates[]" class="form-control">
+                </div>
+            </div>
+        </div>
+    `);
+}
 /* Query a transaction from rubies */
 function queryTransaction(id) {
     $('#q-id').val(id);
@@ -342,4 +361,3 @@ function queryTransaction(id) {
      })
     .fail(function (err) {  console.log(err) })
 } */
->>>>>>> d0ced7ab15fa22cfe5433ef5a85a11ff7a5caa16

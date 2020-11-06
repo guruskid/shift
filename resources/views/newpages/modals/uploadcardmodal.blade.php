@@ -90,27 +90,31 @@
                         </svg>
                     </span>
                 </div>
-                <div class="p-2 mx-auto dashed-border">
-                    <span class="d-block text-center">
-                    <img src="{{asset('/customizeduploadbtn.png')}}" alt="">           
-                    </span>
-                    <div id="upload_text_desc" class="mb-2">
-                        <span class="d-block primary-color text-center">Place your Images/card receipts here</span>
-                        <span class="d-block text-center"
-                            style="color: rgba(0, 0, 112, 0.7);letter-spacing: 0.01em;">Click to select
-                            image/images</span>
-                    </div>
+                <form action="" id="uploadcardsform" method="POST" enctype="multipart/form-data"> @csrf
+                    <div class="p-2 mx-auto dashed-border">
+                        <span class="d-block text-center">
+                            <img src="{{asset('/customizeduploadbtn.png')}}" alt="">     
+                        </span>
 
-                    <form action="" id="uploadcardsform">
-                        <input type='file' class="form-control" name="card_images" onchange="preview(this);"
-                            multiple="multiple" style="border:0px;outline:none !important;" />
+                        <div id="upload_text_desc" class="mb-2">
+                            <span class="d-block primary-color text-center">Place your Images/card receipts here</span>
+                            <span class="d-block text-center"
+                                style="color: rgba(0, 0, 112, 0.7);letter-spacing: 0.01em;">Click to select
+                                image/images</span>
+                        </div>
+
+
+                        <input type='file' class="form-control" name="card_images[]" onchange="preview(this);"
+                            multiple="multiple" style="border:0px;outline:none !important;" accept="image/*" />
                         <div id="previewImg"
                             class="my-3 previewImg d-flex d-lg-block justify-content-center flex-wrap align-items-around">
                         </div>
-                    </form>
 
-                </div>
-                <button id="upload_card_btn" type="submit" class="btn text-white mt-4 mt-lg-5 card-upload-btn">Upload</button>
+
+                    </div>
+                    <button id="upload_card_btn" type="submit"
+                        class="btn text-white mt-4 mt-lg-5 card-upload-btn">Upload</button>
+                </form>
             </div>
 
         </div>
