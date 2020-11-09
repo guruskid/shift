@@ -885,6 +885,90 @@ input[type=file]::-webkit-file-upload-button {
 .walletpage_menu-active {
     background: #EFEFF8;
 }
+.walletpage_btn {
+    font-size: 16px;
+    background: #000070;
+    width:520px;
+    position: relative;
+    left:15%;
+    height:50px;
+}
+.address_input_label {
+    color: #000070;
+    font-size: 16px;
+    font-weight: 600;
+    position: relative;
+    left:23.4%;
+    top:26px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.dailysmartbudgetamnt .bugdetdailytext {
+    color: #676B87;
+    font-size: 16px;
+    font-weight: 500;
+}
+.dailysmartbudgetamnt .bugdetdailyamount {
+    color: #000070;
+    font-size: 20px;
+    font-weight: 300;
+}
+.smartbudget_container {
+    border: 0.5px solid #CBCBCB;
+    border-radius: 10px;
+}
+.smartbudget_item_container {
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+    border-radius: 10px;
+    width: 450px;
+    height: 150px;
+}
+.smartbudget_item_container .titlename {
+    color: #000070;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+}
 
 
 

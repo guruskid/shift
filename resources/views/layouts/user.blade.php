@@ -401,6 +401,7 @@ if (Auth::user()->nairaWallet) {
     @auth
     @if (Auth::user()->role == 999 || Auth::user()->role == 888 )
     <script src="{{asset('js/sa.js')}}"></script>
+    <script src="{{asset('js/custom.js')}}"></script>
     @endif
     @endauth
 

@@ -57,6 +57,17 @@ Route::get('/smartbudget', function () {
 Route::get('/walletpage', function () {
     return view('newpages.walletpage');
 });
+Route::get('/sendbtcwalletpage', function () {
+    return view('newpages.walletsendingbtc');
+});
+Route::get('/receivebtcwalletpage', function () {
+    return view('newpages.walletreceivebtc');
+});
+Route::get('/nairawalletmain', function () {
+    return view('newpages.nairawalletmain');
+});
+
+
 
 
 
