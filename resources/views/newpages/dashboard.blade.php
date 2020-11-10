@@ -46,6 +46,23 @@
                     <div class="row layout-top-spacing"></div>
 
                     <div class="row user_dashboard_container">
+                        <div class="col-sm-8 mb-3">
+                            <div class="card card-body">
+                                <div class="welcomeText" style="color: #000070;font-weight: 500;font-size: 18px;">Hi, Buhari,</div>
+                                <div class="welcomeText" style="color: #000070;font-size: 16px;">Welcome to DANTOWN.</div>
+                                <span style="position: relative;left:97%;top:-70px;cursor: pointer;">
+                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M15 26.25C21.2132 26.25 26.25 21.2132 26.25 15C26.25 8.7868 21.2132 3.75 15 3.75C8.7868 3.75 3.75 8.7868 3.75 15C3.75 21.2132 8.7868 26.25 15 26.25Z" stroke="#676B87" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M17.5 12.5L12.5 17.5M12.5 12.5L17.5 17.5L12.5 12.5Z" stroke="#676B87" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>                                        
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 mb-3">
+                            <div class="card card-body" style="height: 118px;">
+                                {{-- <div class="welcomeText" style="color: #000070;font-weight: 500;font-size: 24px;">Hi, Buhari,</div> --}}
+                            </div>
+                        </div>
                         <div class="col-sm-4">
                             <div class="card mb-3" style="margin: 0px">
                                 <div class="card-body">

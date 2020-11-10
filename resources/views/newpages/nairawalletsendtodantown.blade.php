@@ -59,8 +59,8 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <div class="card card-body mb-4" style="height:550px;">
-                                {{-- <div class="container px-4 d-flex justify-content-between align-items-center">
+                            <div class="card card-body mb-4">
+                                <div class="container px-4 d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <div
                                             style="background: rgba(0, 0, 112, 0.25);width:24px;height:24px;border-radius:12px;">
@@ -74,7 +74,7 @@
                                         </div>
                                         <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                     </div>
-                                    <div class="d-flex">
+                                    {{-- <div class="d-flex">
                                         <div class="mr-3 mr-lg-4" style="color: #0D1F3C;font-size: 30px;">$ 8,452.98
                                         </div>
                                         <div>
@@ -93,14 +93,14 @@
                                             <span class="d-block mt-1"
                                                 style="margin-left:35%;color: #000070;font-size: 16px;">+5.24%</span>
                                         </div>
-                                    </div>
-                                </div> --}}
+                                    </div> --}}
+                                </div>
                                 {{-- border line --}}
-                                {{-- <div class="mt-4" style="width: 100%;border: 1px solid #C9CED6;"></div> --}}
+                                <div class="mt-4" style="width: 100%;border: 1px solid #C9CED6;"></div>
 
                                 {{-- Bitcoin  menu  --}}
                                 <div class="walletpage__menu-container mx-auto mt-4">
-                                    <div class="walletpage_menu d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center flex-wrap flex-lg-nowrap">
+                                    <div class="walletpage_menu d-flex justify-content-between align-items-center">
                                         <div>
                                             <span class="d-block" style="color: #565656;font-size: 16px;">Bitcoin wallet
                                                 Balance</span>
@@ -111,7 +111,7 @@
                                             <span class="d-block"
                                                 style="color: #565656;font-size: 16px;opacity: 0.5;">₦20,000</span>
                                         </div>
-                                        <div class="d-flex mt-3 mt-md-0">
+                                        <div class="d-flex">
                                             <a href="#" class="btn walletpage_menu-active">
                                                 <span class="d-block">
                                                     <svg width="40" height="40" viewBox="0 0 44 44" fill="none"
@@ -152,15 +152,28 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="d-flex flex-column justify-content-center align-items-center mt-5 mb-2 wallettransfertype">
-                                        <a href="#" class="d-block nairawallet_trx_type-card mx-auto py-1 py-lg-3 pl-2 px-lg-4 mt-4">
-                                            <span class="d-block nairawallet_trx_type_title">Dantown to Dantown</span>
-                                            <span class="d-block nairawallet_trx_type_desc">Send to a dantown account</span>
-                                        </a>
-                                        <a href="#" class="d-block nairawallet_trx_type-card mx-auto py-1 py-lg-3 pl-2 px-lg-4 mt-4">
-                                            <span class="d-block nairawallet_trx_type_title">Dantown to other account</span>
-                                            <span class="d-block nairawallet_trx_type_desc">Send from a dantown account to another account</span>
-                                        </a>
+                                    <div class="d-flex flex-column justify-content-center align-items-center mt-4 mb-2" style="max-width: 700px;">
+                                        <span class="d-block text-center primary_text_color mb-4" style="font-size: 20px;">Dantown to Dantown</span>
+                                        <form action="" method="post">
+                                            @csrf
+                                            <div class="form-group" style="width: 340px;">
+                                                <label for="account_number" style="color: #000070;font-size: 16px;">Account number</label>
+                                                <input type="text" class="form-control" name="account_number" id="account_number" />
+                                            </div>
+                                            <div class="form-group" style="width: 340px;">
+                                                <label for="account_number" style="color: #000070;font-size: 16px;">Account name</label>
+                                                <input type="text" class="form-control" readonly name="account_number" id="account_number" />
+                                            </div>
+                                            <div class="form-group" style="width: 340px;">
+                                                <label for="account_number" style="color: #000070;font-size: 16px;">Amount</label>
+                                                <input type="text" class="form-control" name="account_number" placeholder="0000000000" id="account_number" />
+                                            </div>
+                                            <div class="form-group" style="width: 340px;">
+                                                <label for="narration" style="color: #000070;font-size: 16px;">Narration</label>
+                                                <textarea name="description" class="form-control" id="narration" cols="10" rows="3" style=resize:none;></textarea>
+                                            </div>
+                                            <button type="submit" class="btn text-white w-100 py-2 mt-2" style="background-color: #000070">Confirm</button>
+                                        </form>
                                     </div>
 
                                 </div>

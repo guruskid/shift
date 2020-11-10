@@ -49,7 +49,7 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text" style="color: #000070;">Wallet portfolio</span>
+                                        <span class="h3 giftcard-text" style="color: #000070;">Naira Wallet (₦) </span>
                                     </div>
                                     <div class="widget-n" style="justify-content: center; text-align: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <div class="card card-body">
+                            <div class="card card-body mb-4">
                                 <div class="container px-4 d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <div
@@ -74,7 +74,7 @@
                                         </div>
                                         <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                     </div>
-                                    <div class="d-flex">
+                                    {{-- <div class="d-flex">
                                         <div class="mr-3 mr-lg-4" style="color: #0D1F3C;font-size: 30px;">$ 8,452.98
                                         </div>
                                         <div>
@@ -93,7 +93,7 @@
                                             <span class="d-block mt-1"
                                                 style="margin-left:35%;color: #000070;font-size: 16px;">+5.24%</span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 {{-- border line --}}
                                 <div class="mt-4" style="width: 100%;border: 1px solid #C9CED6;"></div>
@@ -128,33 +128,16 @@
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Send</span>
                                             </a>
-                                            <a href="#" class="btn">
+                                            <a href="#" class="btn ">
                                                 <span class="d-block">
-                                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M7.33301 12.833V10.9997C7.33301 10.0272 7.71932 9.09458 8.40695 8.40695C9.09458 7.71932 10.0272 7.33301 10.9997 7.33301H14.6663"
-                                                            stroke="#2C3E50" stroke-width="1.83333"
-                                                            stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path
-                                                            d="M7.33301 31.167V33.0003C7.33301 33.9728 7.71932 34.9054 8.40695 35.593C9.09458 36.2807 10.0272 36.667 10.9997 36.667H14.6663"
-                                                            stroke="#2C3E50" stroke-width="1.83333"
-                                                            stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path
-                                                            d="M29.333 7.33301H32.9997C33.9721 7.33301 34.9048 7.71932 35.5924 8.40695C36.28 9.09458 36.6663 10.0272 36.6663 10.9997V12.833"
-                                                            stroke="#2C3E50" stroke-width="1.83333"
-                                                            stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path
-                                                            d="M29.333 36.667H32.9997C33.9721 36.667 34.9048 36.2807 35.5924 35.593C36.28 34.9054 36.6663 33.9728 36.6663 33.0003V31.167"
-                                                            stroke="#2C3E50" stroke-width="1.83333"
-                                                            stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path d="M9.16699 22H34.8337" stroke="#2C3E50"
-                                                            stroke-width="1.83333" stroke-linecap="round"
-                                                            stroke-linejoin="round" />
-                                                    </svg>
+                                                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M28.0144 28.6527C27.7539 28.3922 27.3316 28.3922 27.0711 28.6527L20.6671 35.0573V16.6667C20.6671 16.2985 20.3686 16 20.0004 16C19.6322 16 19.3337 16.2985 19.3337 16.6667V35.0573L12.9297 28.6527C12.6692 28.3922 12.2469 28.3922 11.9864 28.6527C11.7259 28.9132 11.7259 29.3355 11.9864 29.596L19.5284 37.1373C19.7884 37.398 20.2106 37.3986 20.4712 37.1385C20.4716 37.1381 20.4721 37.1377 20.4724 37.1373L28.0144 29.596C28.2749 29.3355 28.2749 28.9132 28.0144 28.6527Z" fill="#2C3E50"/>
+                                                        <path d="M38 2.66699H2C0.895417 2.66699 0 3.56241 0 4.66699V28.667C0 29.7716 0.895417 30.667 2 30.667H8.66667C9.03483 30.667 9.33333 30.3685 9.33333 30.0003C9.33333 29.6322 9.03483 29.3337 8.66667 29.3337H2C1.63183 29.3337 1.33333 29.0352 1.33333 28.667V10.667H38.6667V28.667C38.6667 29.0352 38.3682 29.3337 38 29.3337H31.3333C30.9652 29.3337 30.6667 29.6322 30.6667 30.0003C30.6667 30.3685 30.9652 30.667 31.3333 30.667H38C39.1046 30.667 40 29.7716 40 28.667V4.66699C40 3.56241 39.1046 2.66699 38 2.66699ZM38.6667 8.00033H1.33333V4.66699C1.33333 4.29883 1.63183 4.00033 2 4.00033H38C38.3682 4.00033 38.6667 4.29883 38.6667 4.66699V8.00033Z" fill="#2C3E50"/>
+                                                        <path d="M19.3333 12H4.66667C4.2985 12 4 12.2985 4 12.6667C4 13.0348 4.2985 13.3333 4.66667 13.3333H19.3333C19.7015 13.3333 20 13.0348 20 12.6667C20 12.2985 19.7015 12 19.3333 12Z" fill="#2C3E50"/>
+                                                        </svg>                                                        
                                                 </span>
                                                 <span class="d-block"
-                                                    style="color: #000000;font-size: 14px;">Receive</span>
+                                                    style="color: #000000;font-size: 14px;">Withdraw</span>
                                             </a>
                                             <a href="#" class="btn">
                                                 <span class="d-block">
@@ -191,186 +174,30 @@
                                                 </span>
                                                 <span class="d-block" style="color: #000000;font-size: 14px;">Buy</span>
                                             </a>
-                                            <a href="#" class="btn">
-                                                <span class="d-block">
-                                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M5.5 38.5H38.5" stroke="#2C3E50" stroke-width="1.83333"
-                                                            stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path
-                                                            d="M27.5 14.6667C27.5 16.1254 28.0795 17.5243 29.1109 18.5558C30.1424 19.5872 31.5413 20.1667 33 20.1667C34.4587 20.1667 35.8576 19.5872 36.8891 18.5558C37.9205 17.5243 38.5 16.1254 38.5 14.6667V12.8333H5.5L9.16667 5.5H34.8333L38.5 12.8333M5.5 12.8333V14.6667C5.5 16.1254 6.07946 17.5243 7.11091 18.5558C8.14236 19.5872 9.54131 20.1667 11 20.1667C12.4587 20.1667 13.8576 19.5872 14.8891 18.5558C15.9205 17.5243 16.5 16.1254 16.5 14.6667V12.8333H5.5ZM16.5 14.6667C16.5 16.1254 17.0795 17.5243 18.1109 18.5558C19.1424 19.5872 20.5413 20.1667 22 20.1667C23.4587 20.1667 24.8576 19.5872 25.8891 18.5558C26.9205 17.5243 27.5 16.1254 27.5 14.6667V12.8333L16.5 14.6667Z"
-                                                            stroke="#2C3E50" stroke-width="1.83333"
-                                                            stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path d="M9.16699 38.4999V19.8916" stroke="#2C3E50"
-                                                            stroke-width="1.83333" stroke-linecap="round"
-                                                            stroke-linejoin="round" />
-                                                        <path d="M34.833 38.4999V19.8916" stroke="#2C3E50"
-                                                            stroke-width="1.83333" stroke-linecap="round"
-                                                            stroke-linejoin="round" />
-                                                        <path
-                                                            d="M16.5 38.5V31.1667C16.5 30.1942 16.8863 29.2616 17.5739 28.5739C18.2616 27.8863 19.1942 27.5 20.1667 27.5H23.8333C24.8058 27.5 25.7384 27.8863 26.4261 28.5739C27.1137 29.2616 27.5 30.1942 27.5 31.1667V38.5"
-                                                            stroke="#2C3E50" stroke-width="1.83333"
-                                                            stroke-linecap="round" stroke-linejoin="round" />
-                                                    </svg>
-                                                </span>
-                                                <span class="d-block"
-                                                    style="color: #000000;font-size: 14px;">Sell</span>
-                                            </a>
                                         </div>
                                     </div>
-                                    <div>
-                                        <div style="color: #000070;font-size: 18px;position: relative;top:45.8px;left:15.5%;">Amount</div>
-                                        <form action="">
-                                            <div class="d-flex mt-3 mt-lg-5 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.12);height:42px;width:520px;">
-                                                <div class="input-group mb-3" style="border:0px;">
-                                                    <input type="text" class="form-control" aria-label="Recipient's username"
-                                                        aria-describedby="basic-addon2" value="0" style="border:0px;">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text" style="border-radius:0px;background:white;border:0px;color: #000070;font-weight: 500;" id="basic-addon2">USD</span>
-                                                    </div>
-                                                </div>
-                                                <div style="height: 40px;width:50px;">
-                                                    <span style="position:relative;top:5px;">
-                                                        <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M20.667 3.875L25.8337 9.04167L20.667 14.2083" stroke="#000070" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
-                                                            <path d="M12.917 9.04199H25.8337" stroke="#000070" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
-                                                            <path d="M10.3337 16.792L5.16699 21.9587L10.3337 27.1253" stroke="#000070" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
-                                                            <path d="M5.16699 21.958H16.792" stroke="#000070" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
-                                                        </svg>    
-                                                    </span>                                               
-                                                </div>
-                                                <div class="input-group mb-3" style="border:0px;">
-                                                    <input type="text" class="form-control" value="0" aria-label="Recipient's username"
-                                                        aria-describedby="basic-addon2" style="border:0px;">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text" style="background:white;border:0px;color: #000070;font-weight: 500;" id="basic-addon2">BTC</span>
-                                                    </div>
-                                                </div>
+                                    
+                                    <div class="d-flex flex-column justify-content-center align-items-center mt-4 mb-2" style="max-width: 700px;">
+                                        <span class="d-block text-center primary_text_color mb-4" style="font-size: 20px;">Dantown to Dantown</span>
+                                        <form action="" method="post">
+                                            @csrf
+                                            <div class="my-2">
+                                                <span class="primary_text_color" style="font-weight: 600;">Amount:</span>
+                                                <span class="primary_text_color">N12,000</span> 
                                             </div>
-                                            <div class="d-flex justify-content-between align-items-center mx-auto mt-3" style="width:520px;">
-                                                <div class="form-group col-6" style="position: relative;left:-15px;">
-                                                    <label for="" style="color: #000070;font-size: 18px;">Network fee</label>
-                                                    <select class="custom-select" style="height: 42px;border-radius:0px;">
-                                                        <option selected>Network fee</option>
-                                                        <option value="1">Regular</option>
-                                                    </select>
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-between">
-                                                    <span class="d-block align-self-start" style="color: #696969;font-size: 20px;letter-spacing: 0.01em;">0 BTC ($0.00)</span>
-                                                    <span class="d-block align-self-end" style="color: #000070;font-size: 16px;font-weight: 600;letter-spacing: 0.01em;">Customize Fee</span>
-                                                </div>
+                                            <div class="my-2">
+                                                <span class="primary_text_color" style="font-weight: 600;">Recepient:</span>
+                                                <span class="primary_text_color">Emekus Emekus .C. 09091234555</span> 
                                             </div>
-                                            <button type="submit" class="btn text-white mt-5 walletpage_btn">Continue</button>
+                                            <div class="form-group mt-4" style="width: 340px;">
+                                                <label for="pin" style="color: #000070;font-size: 16px;">Pin</label>
+                                                <input type="password" class="form-control" name="pin" id="pin" />
+                                            </div>
+                                            <button type="submit" class="btn text-white w-100 py-2 mt-3" style="background-color: #000070">Confirm</button>
                                         </form>
                                     </div>
+
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-12 mt-3">
-                            <div class="card card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span style="color: #000070;font-size: 24px;font-weight: 500;">Recent Transactions</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-1" style="color: #000070;font-size: 14px;">Start Date</span>
-                                            <input type="text" class="col-7 form-control" name="" id="" value="14-05-2020">
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-1" style="color: #000070;font-size: 14px;">End Date</span>
-                                            <input type="text" class="col-7 form-control" name="" id="" value="14-05-2020">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="table-responsive mt-3">
-                                    <table class="table table-striped">
-                                        <thead>
-                                          <tr style="background-color: rgba(0, 0, 112, 0.05) !important;color:#000070;font-size:16px;">
-                                            <th scope="col">ID</th>
-                                            <th scope="col">TRANSACTION TYPE</th>
-                                            <th scope="col">AMOUNT</th>
-                                            <th scope="col">DATE</th>
-                                            <th scope="col">TIME</th>
-                                            <th scope="col">STATUS</th>
-                                            <th scope="col"></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <tr>
-                                            <th scope="row">1</th>
-                                            <td style="color: #FF001F;font-weight:600;">Sell</td>
-                                            <td>
-                                                <span class="d-block" style="font-size: 14px;color: #000000;font-weight: 500;">$200</span>
-                                                <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span>
-                                            </td>
-                                            <td style="color: #000000;font-size: 14px;">Aug. 10, 2019</td>
-                                            <td style="font-weight: 500;">2 mins ago</td>
-                                            <td>
-                                                <span class="status_inprogress">in progress</span>
-                                            </td>
-                                            <td>
-                                                <a href="#" style="color: #000070;font-size: 15px;font-weight: 600;">view</a>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">1</th>
-                                            <td style="color: #023501;font-weight:600;">Sell</td>
-                                            <td>
-                                                <span class="d-block" style="font-size: 14px;color: #000000;font-weight: 500;">$200</span>
-                                                <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span>
-                                            </td>
-                                            <td style="color: #000000;font-size: 14px;">Aug. 10, 2019</td>
-                                            <td style="font-weight: 500;">2 mins ago</td>
-                                            <td>
-                                                <span class="status_success">Successful</span>
-                                            </td>
-                                            <td>
-                                                <a href="#" style="color: #000070;font-size: 15px;font-weight: 600;">view</a>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">1</th>
-                                            <td style="color: #FF001F;font-weight:600;">Sell</td>
-                                            <td>
-                                                <span class="d-block" style="font-size: 14px;color: #000000;font-weight: 500;">$200</span>
-                                                <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span>
-                                            </td>
-                                            <td style="color: #000000;font-size: 14px;">Aug. 10, 2019</td>
-                                            <td style="font-weight: 500;">2 mins ago</td>
-                                            <td>
-                                                <span class="status_declined">Declined</span>
-                                            </td>
-                                            <td>
-                                                <a href="#" style="color: #000070;font-size: 15px;font-weight: 600;">view</a>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">1</th>
-                                            <td style="color: #FF001F;font-weight:600;">Sell</td>
-                                            <td>
-                                                <span class="d-block" style="font-size: 14px;color: #000000;font-weight: 500;">$200</span>
-                                                <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span>
-                                            </td>
-                                            <td style="color: #000000;font-size: 14px;">Aug. 10, 2019</td>
-                                            <td style="font-weight: 500;">2 mins ago</td>
-                                            <td>
-                                                <span class="status_waiting">Waiting</span>
-                                            </td>
-                                            <td>
-                                                <a href="#" style="color: #000070;font-size: 15px;font-weight: 600;">view</a>
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                </div>
-                                <a href="#" class="btn mx-auto text-white mt-3" style="background: #000070;border-radius: 25px;width: 140px;" class="btn">View more <span><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 17.5C14.1421 17.5 17.5 14.1421 17.5 10C17.5 5.85786 14.1421 2.5 10 2.5C5.85786 2.5 2.5 5.85786 2.5 10C2.5 14.1421 5.85786 17.5 10 17.5Z" stroke="white" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M6.66699 10L10.0003 13.3333" stroke="white" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M10 6.66699V13.3337" stroke="white" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M13.3333 10L10 13.3333" stroke="white" stroke-width="0.916667" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    </span></a>
                             </div>
                         </div>
                     </div>
