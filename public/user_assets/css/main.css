@@ -969,7 +969,14 @@ input[type=file]::-webkit-file-upload-button {
 height: 110px;
 margin: 10px;
 }
-
+.txn_history_title {
+    font-size: 20px;
+    color: #000000;
+    letter-spacing: 0.01em;
+}
+.wallet_trxs tr:nth-child(even) {
+    background: #fff !important;
+}
 
 /*New Dashboard CSS Ends */
 
