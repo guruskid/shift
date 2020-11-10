@@ -378,3 +378,16 @@ $("#buy_eth_field").on("keyup", function(){
     }
 })
 
+
+
+function copyAcctNumber(acct_number_text) {
+    var copyText = document.getElementById(acct_number_text).text;
+    alert('ddddddddddddddddddddddd')
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+    /* Alert the copied text */
+    alert("Copied the text: " + copyText.value);
+}
