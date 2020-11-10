@@ -42,6 +42,32 @@ Route::get('/airtocash', function () {
 Route::get('/newprofile', function () {
     return view('newpages.profile');
 });
+Route::get('/newdashboard', function () {
+    return view('newpages.dashboard');
+});
+Route::get('/creditsuccess', function () {
+    return view('newpages.creditsuccess');
+});
+Route::get('/creditfailure', function () {
+    return view('newpages.creditfailure');
+});
+Route::get('/smartbudget', function () {
+    return view('newpages.smartbudget');
+});
+Route::get('/walletpage', function () {
+    return view('newpages.walletpage');
+});
+Route::get('/sendbtcwalletpage', function () {
+    return view('newpages.walletsendingbtc');
+});
+Route::get('/receivebtcwalletpage', function () {
+    return view('newpages.walletreceivebtc');
+});
+Route::get('/nairawalletmain', function () {
+    return view('newpages.nairawalletmain');
+});
+
+
 
 
 

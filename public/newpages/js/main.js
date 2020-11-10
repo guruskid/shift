@@ -75,6 +75,8 @@ $("#copyEthWalletAddress").on("click", function() {
 });
 
 // === Bitcoin calculator onchange logic ===
+const sell_usd_per_btc = 15637.88;
+// const sell_ngn_per_usd = 382;
 const sell_usd_per_btc = 10500;
 const sell_ngn_per_usd = bit_sell[0].rate;
 
@@ -106,7 +108,23 @@ sellbtcfield.on("keyup", function(e) {
     sellngnfield.val(naira);
 });
 
+sellngnfield.on("keyup", function(e) {
+    let value = $(this).val();
+
+    //dollar equivalent
+    let dollars = value / sell_ngn_per_usd;
+    let btc = dollars / sell_usd_per_btc;
+    sellusdfield.val(dollars);
+    sellbtcfield.val(btc)
+
+    //naira equivalent
+    // let naira = dollars * sell_ngn_per_usd;
+    // sellngnfield.val(naira);
+});
+
 /*===== BUY BITCOIN =====*/
+// const buy_usd_per_btc = 10500;
+// const buy_ngn_per_usd = 300;
 const buy_usd_per_btc = 10465.6;
 const buy_ngn_per_usd = bit_buy[0].rate;
 
@@ -175,6 +193,7 @@ $("#upload_pop_success").on("click", function() {
 
 
 const sell_usd_per_eth = 970;
+// const sell_ngn_per_usd_eth = 382;
 const sell_ngn_per_usd_eth = sell_eth[0].rate;
 
 //Convert USD to ETH, naira equivalent
@@ -191,7 +210,6 @@ $("#sell_usd_field_eth").on("keyup", function(){
     $("#sell_ngn_eth_field").val(naira);
 })
 
-
 $("#sell_eth_equiv_field").on("keyup", function(e) {
     let value = $(this).val();
 
@@ -204,8 +222,23 @@ $("#sell_eth_equiv_field").on("keyup", function(e) {
     $("#sell_ngn_eth_field").val(naira);
 });
 
+$("#sell_ngn_eth_field").on("keyup", function(e) {
+    let value = $(this).val();
+
+    //dollar equivalent
+    let dollars = value / sell_ngn_per_usd_eth;
+    let eth = dollars / sell_usd_per_eth;
+    $("#sell_usd_field_eth").val(dollars);
+    $("#sell_eth_equiv_field").val(eth);
+
+});
+
+
+
+
 //Buy ETH
 const buy_usd_per_eth = 5465;
+// const buy_ngn_per_usd_eth = 380;
 const buy_ngn_per_usd_eth = buy_eth[0].rate;
 
 $("#buy_usd_field_eth").on("keyup", function() {
@@ -232,6 +265,18 @@ $("#buy_eth_field").on("keyup", function() {
     $("#buy_ngn_field_eth").val(naira);
 });
 
+
+$("#buy_ngn_field_eth").on("keyup", function() {
+    let value = $(this).val();
+
+    //dollar equivalent
+    let dollars = value * buy_ngn_per_usd_eth;
+    let eth = dollars / buy_usd_per_eth;
+    $("#buy_usd_field_eth").val(dollars);
+    $("#buy_usd_field_eth").val(eth);
+});
+
+
 //Disable submit button if fields are empty in sell btc tab
 $("#wallet_address").on("keyup", function(){
     if($(this).val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
@@ -254,6 +299,14 @@ $("#sell_usd_field").on("keyup", function(){
         $("#sell_submit_btn").attr('disabled',"true")
     }
 })
+
+// $("#sell_ngn_field").on("keyup", function(){
+//     if($("#wallet_address").val().trim().length > 10 && $(this).val().trim().length > 1) {
+//         $("#sell_submit_btn").removeAttr('disabled')
+//     } else {
+//         $("#sell_submit_btn").attr('disabled',"true")
+//     }
+// })
 
 //Disable submit button if fields are empty in buy btc tab
 $("#buy_wallet_address").on("keyup", function(){
