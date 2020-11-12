@@ -94,7 +94,7 @@
                                             class="align-self-center">
                                         <h4 class="mb-0 mt-3"><strong>{{ Auth::user()->bitcoinWallet->name }}</strong></h4>
                                         <p>BTC {{Auth::user()->bitcoinWallet->balance}} </p>
-                                        <a href=" {{route('user.naira-wallet')}}"><button class="btn portfolio-btn">Go
+                                        <a href=" {{route('user.bitcoin-wallet')}}"><button class="btn portfolio-btn">Go
                                                 to wallet</button></a>
                                     </div>
                                 </div>

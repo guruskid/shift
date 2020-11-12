@@ -207,7 +207,7 @@ $("#backPhotoID").on("click", function() {
 });
 
 
-var chart = new CanvasJS.Chart("chartContainer", {
+/* var chart = new CanvasJS.Chart("chartContainer", {
     animationEnabled: true,
     title: {
         text: "Email Categories",
@@ -232,7 +232,7 @@ var chart = new CanvasJS.Chart("chartContainer", {
         }
     ]
 });
-chart.render();
+chart.render(); */
 
 $("#quickTopUpLink").on("click", function(){
     if($("#quickTopUpModal").css("display") == "none") {

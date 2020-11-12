@@ -15,6 +15,11 @@ class BitcoinWalletController extends Controller
         $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
     }
 
+    public function wallet()
+    {
+        return view('newpages.bitcoin-wallet');
+    }
+
 
     public function create(Request $r)
     {
