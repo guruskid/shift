@@ -43,6 +43,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::get('/assets', 'Api\TradeController@assets');
         Route::get('/asset/{buy_sell}/{card_id}/{card_name}', 'Api\TradeController@assetRates');
+        Route::post('/trade-gift-card', 'Api\TradeController@tradeGiftCard');
 
         Route::GET('/transactions', 'Api\TransactionController@allTransactions');
 
