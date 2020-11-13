@@ -50,7 +50,7 @@
                         <div class="d-flex flex-row flex-wrap mt-2 mt-lg-4">
                             <div class="card-price-input">
                                 <label for="country" class="label-style">Card
-                                    price</label>
+                                    value</label>
                                 <select id="cardprice" v-model="selectedQuantity" @change="onQuantityChange($event)" class="custom-select select-country-custom-select cardprice">
                                     <option disabled value="">Select Quantity</option>
                                     <option v-for="i in quantities.length" :key="i" :value="i - 1">{{ quantities[i - 1].value }} </option>

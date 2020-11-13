@@ -300,7 +300,7 @@ body {
 }
 .profile_root_container {
     height: 640px;
-    max-height: 650px;
+    /* max-height: 650px; */
 }
 .profile_image_root_container {
     display: flex;
@@ -311,7 +311,7 @@ body {
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.07);
     border-radius: 7px;
     margin-left: 30px;
-    height: 610px;
+    height: 490px;
     /* height:500px; */
 }
 .profile_image_root_container .profile_image {
@@ -963,7 +963,7 @@ input[type=file]::-webkit-file-upload-button {
     font-size: 20px;
 }
 .airtime_network_card {
-    border: 3px solid #000070;
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
     border-radius: 5px;
     width: 110px;
 height: 110px;
@@ -981,6 +981,84 @@ margin: 10px;
 /*New Dashboard CSS Ends */
 
 
+/* Login page css */
+.login_page_container {
+    background-color: #ffffff !important;
+    height: 100vh;
+    width: 100vw;
+    padding: 0px;
+    margin: 0px;
+}
+.chevron_arrow_bg {
+    width: 26px;
+    height: 26px;
+    background: #CCCCE2;
+    border-radius: 13px;
+}
+.profile_tab_title {
+    width: 25%;
+}
+.profile_details {
+    width: 70%;
+}
+.bvn_verification_arrow, .id_verification_arrow {
+    position: relative;
+    left: 22px;
+}
+.phoneNumberVerifyBtn {
+    position: relative;
+    top:11px;
+}
+.confirmVerificationBtn {
+    position: relative;
+    top:19px;
+}
+.confirmVerificationBtnSize {
+    height:40px;
+    width:78px;
+}
+.addressVerificationForm {
+    width: 350px;
+}
+.bvnConfidenceText {
+color: #000070;
+font-size:13px;
+width:93%;
+}
+.needBvnTrx {
+    color: #000070;
+    font-size:13px;
+    width:75%;
+    margin-top:5px;
+}
+.accordion_full_container {
+    margin-bottom: 20px;
+    border: 0.5px solid #B1B1B1;
+    border-radius: 7px;
+    height:520px;
+}
+.verifyIdSubmitBtn {
+    height:38px;
+    width:82px;
+    position: relative;
+    top:54%;
+}
+
+
+
+
+/* End Login page css */
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -988,6 +1066,77 @@ margin: 10px;
 
 
 @media (max-width: 500px) {
+    .verifyIdSubmitBtn {
+        height:42px;
+        width:145px;
+        position: relative;
+        top:21%;
+        margin: auto;
+    }
+    #idVerification .select_id_type_dropdown {
+        width: 87%;
+        left: 16px;
+    }
+    .needBvnTrx {
+        font-size:11px;
+    }
+    .bvnConfidenceText {
+        font-size:11px;
+        }
+    .upload_address_photo {
+        width: 165px;
+    }
+    .addressVerificationForm {
+        width: 253px;
+    }
+    .confirmVerificationBtnSize {
+        height:40px;
+        width:82px;
+    }
+    .confirmVerificationBtn {
+        position: relative;
+        top:-6px;
+    }
+    .phoneNumberVerifyBtn {
+        position: relative;
+        top:-1px;
+    }
+    .id_verification_arrow {
+        position: relative;
+        left: 43px;
+    }
+    .idVerificationCard span {
+        font-size: 14px;
+    }
+    .bvn_verification_arrow {
+        position: relative;
+        left: 34px;
+    }
+    .phoneVerificationCard > span {
+        font-size: 14px;
+        margin-left: 10px;
+    }
+    .addressVerificationCard > span {
+        font-size: 14px;
+    }
+    .bvnVerificationCard > span {
+        font-size: 14px;
+    }
+    .accordion_cards {
+        width: 249px;
+        position: relative;
+        left: 5px;
+    }
+    .profile_details {
+        width: 100%;
+    }
+    .profile_root_container {
+        height: 92vh;
+    }
+    .profile_tab_title {
+        width: 100%;
+        border-bottom: 0.3px solid rgb(150, 156, 186);
+    }
     .nairawallet_trx_type_desc {
         font-size: 12px;
     }
