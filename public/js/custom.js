@@ -296,6 +296,10 @@ function copyAcctNumber(acct_number_text) {
 $("#togglepinvisibility").on("click",function(){
     if($("#pinfortrx").attr('type') == "password") {
         $("#pinfortrx").attr('type','text')
+    } else {
+        $("#togglepinvisibility").css("display","none")
+        $("#togglepinvisibility").css("display","none")
+        $("#pinfortrx").attr('type','password')
     }
 })
 $("#removeobscure_pwd").on("click",function(){
@@ -384,4 +388,27 @@ $("#naira_deposit").on("click", function(){
     $(this).addClass("walletpage_menu-active")
     // $("#nairaWithdrawTab").css('display','block')
     // $("#content_bg").css('height','800px')
+})
+
+$(".airtime_network_card").on("click", function(){
+    $(".airtime_network_card").removeClass('active_airtime_choice')
+    $(this).addClass('active_airtime_choice')
+    $("#airtimechoice").val($(this).attr('alt'))
+})
+
+$("#swapcountrycode").on("change", function(){
+    let dialcodeval = $(this).children("option:selected").val().trim()
+    $("#dcode").val(dialcodeval)
+})
+$("#rechargebtn").on("click", function(){
+    let code = $("#dcode").val()
+    let phone = $("#phonenumber").val()
+    let fullNo = code+phone.substring(1)
+    $("#fullphonenumber").val(fullNo)
+})
+$("#buydata").on("change", function(){
+    $("#otherphonenumber").css("display","none")
+})
+$("#buyother").on("change", function(){
+    $("#otherphonenumber").css("display","block")
 })

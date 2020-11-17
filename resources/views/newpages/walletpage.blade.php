@@ -60,7 +60,7 @@
                         </div>
                         <div class="col-12">
                             <div class="card card-body">
-                                <div class="container px-4 d-flex justify-content-between align-items-center">
+                                <div class="container px-1 px-lg-4 d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <div
                                             style="background: rgba(0, 0, 112, 0.25);width:24px;height:24px;border-radius:12px;">
@@ -75,7 +75,7 @@
                                         <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                     </div>
                                     <div class="d-flex">
-                                        <div class="mr-1 mr-lg-2" style="color: #0D1F3C;font-size: 30px;">$ 8,452.98
+                                        <div class="mr-1 mr-lg-2" style="">$ 8,452.98
                                         </div>
                                     </div>
                                 </div>
@@ -84,8 +84,8 @@
 
                                 {{-- Bitcoin  menu  --}}
                                 <div class="walletpage__menu-container mx-auto mt-4">
-                                    <div class="walletpage_menu d-flex justify-content-between align-items-center">
-                                        <div>
+                                    <div class="walletpage_menu d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center">
+                                        <div class="mb-4 mb-lg-0">
                                             <span class="d-block" style="color: #565656;font-size: 16px;">Bitcoin wallet
                                                 Balance</span>
                                             <span class="d-block">
@@ -98,27 +98,27 @@
                                         <div class="d-flex">
                                             <a id="bitcoin_send" class="btn walletpage_menu-active">
                                                 <span class="d-block">
-                                                <img src="{{asset('svg/bitcoin-send-icon.svg')}}" />
+                                                <img class="img-fluid" src="{{asset('svg/bitcoin-send-icon.svg')}}" />
                                                 </span>
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Send</span>
                                             </a>
                                             <a id="bitcoin_receive" class="btn">
                                                 <span class="d-block">
-                                                <img src="{{asset('svg/bitcoin-receive-icon.svg')}}" alt="">
+                                                <img class="img-fluid" src="{{asset('svg/bitcoin-receive-icon.svg')}}" alt="">
                                                 </span>
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Receive</span>
                                             </a>
                                             <a href="/user/assets" class="btn">
                                                 <span class="d-block">
-                                                <img src="{{asset('svg/bitcoin-buy-icon.svg')}}" />
+                                                <img class="img-fluid" src="{{asset('svg/bitcoin-buy-icon.svg')}}" />
                                                 </span>
                                                 <span class="d-block" style="color: #000000;font-size: 14px;">Buy</span>
                                             </a>
                                             <a href="/user/assets" class="btn">
                                                 <span class="d-block">
-                                                    <img src="{{asset('svg/bitcoin-sell-icon.svg')}}" alt="">
+                                                    <img class="img-fluid" src="{{asset('svg/bitcoin-sell-icon.svg')}}" alt="">
                                                 </span>
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Sell</span>

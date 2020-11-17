@@ -1,12 +1,12 @@
 <div id="bitcoin_wallet_send_tab" class="wallet_trx_tabs" style="display: block;">
     <div style="color: #000070;font-size: 18px;position: relative;top:45.8px;left:15.5%;">Amount</div>
     <form action="">
-        <div class="d-flex mt-3 mt-lg-5 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.12);height:42px;width:520px;">
+        <div class="d-flex mt-3 mt-lg-5 mx-auto walletpage_forminterchange">
             <div class="input-group mb-3" style="border:0px;">
                 <input type="text" class="form-control" aria-label="Recipient's username"
                     aria-describedby="basic-addon2" value="0" style="border:0px;">
                 <div class="input-group-append">
-                    <span class="input-group-text" style="border-radius:0px;background:white;border:0px;color: #000070;font-weight: 500;" id="basic-addon2">USD</span>
+                    <span class="input-group-text" style="" id="basic-addon2">USD</span>
                 </div>
             </div>
             <div style="height: 40px;width:50px;">

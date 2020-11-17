@@ -56,39 +56,34 @@ Route::get('/smartbudget', function () {
 });
 
 
+Route::get('/choosewallet', function () {
+    return view('newpages.choosewallet');
+});
 Route::get('/walletpage', function () {
     return view('newpages.walletpage');
 });
-// Route::get('/sendbtcwalletpage', function () {
-//     return view('newpages.walletsendingbtc');
-// });
-// Route::get('/receivebtcwalletpage', function () {
-//     return view('newpages.walletreceivebtc');
-// });
 Route::get('/nairawalletmain', function () {
     return view('newpages.nairawalletmain');
 });
-// Route::get('/nairawalletsendtodantown', function () {
-//     return view('newpages.nairawalletsendtodantown');
-// });
 Route::get('/nairawalletdtodconfirm', function () {
     return view('newpages.nairawalletdtodconfirm');
 });
-// Route::get('/nairawalletsendtoanother', function () {
-//     return view('newpages.nairawalletsendtoanother');
-// });
-// Route::get('/nairawalletwithdraw', function () {
-//     return view('newpages.nairawalletwithdraw');
-// });
-// Route::get('/nairawalletdeposit', function () {
-//     return view('newpages.nairawalletdeposit');
-// });
+
+//Mobile and tab screen done
+Route::get('/recharge', function () {
+    return view('newpages.rechargemenu');
+});
+
+//Mobile and Tab done
 Route::get('/buyairtime', function () {
     return view('newpages.buyairtime');
 });
-Route::get('/airtimedata', function () {
-    return view('newpages.airtimedata');
+
+//Mobile and tab done
+Route::get('/buydata', function () {
+    return view('newpages.buydata');
 });
+
 Route::get('/newlogin', function () {
     return view('newpages.newlogin');
 });
