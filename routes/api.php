@@ -49,6 +49,9 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::GET('/naira-wallet', 'Api\NairaWalletController@index' );
         Route::GET('/naira-transactions', 'Api\NairaWalletController@allTransactions');
+        Route::POST('/transfer-cash', 'Api\NairaWalletController@transfer');
+        Route::POST('/withdraw-cash', 'Api\NairaWalletController@transfer');
+
 
     });
 });
