@@ -890,7 +890,7 @@ input[type=file]::-webkit-file-upload-button {
     background: #000070;
     width:520px;
     position: relative;
-    left:15%;
+    left:25%;
     height:50px;
 }
 .address_input_label {
@@ -1084,7 +1084,48 @@ width:93%;
     height:42px;
     width:520px;
 }
-
+/* .networkfee_container {
+    width:520px;
+} */
+.networkfee_container .btctext {
+    color: #696969;
+    font-size: 20px;
+    letter-spacing: 0.01em;
+}
+.networkfee_container .customfee {
+    color: #000070;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+.walletpage_amountText {
+    color: #000070;
+    font-size: 18px;
+    position: relative;
+    top:45.8px;
+    left:15.5%;
+}
+.recent_trx_text {
+    color: #000070;
+    font-size: 24px;
+    font-weight: 500;
+}
+.usd_bg_text {
+    background-color: #fff;
+    border: 0px;
+    margin: 0;
+    padding: 0;
+}
+.networkfee_text {
+    color: #000070;
+    font-size: 18px;
+}
+.show_receiving_btc_address {
+    font-size: 16px;
+    color: #000070;
+    border: 1px solid rgba(0, 0, 112, 0.25);
+    border-radius: 5px;
+}
 
 
 /* End Login page css */
@@ -1094,15 +1135,71 @@ width:93%;
 
 
 
-
+/* @media (min-width: 330px) and (max-width: 500px) {
+    .wallet_trx_tabs {
+        position: relative;
+        right: 10px;
+    }
+} */
 
 
 
 @media (max-width: 639px) {
+    .modal-content-custom.quickrecharge_modal {
+        width: 100px;
+        /* margin-left: -90px; */
+    }
+    .show_receiving_btc_address {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+    .networkfee_text {
+        font-size: 14px;
+        margin-bottom: -11px;
+    }
+    /* .wallet_trx_tabs {
+        position: relative;
+        right: 14.5em;
+    } */
+    .status_inprogress {
+        padding: 5px 7px;
+        font-size: 11px;
+    }
+    .recent_trx_text {
+        font-size: 22px;
+        font-weight: 500;
+    }
+    .walletpage_amountText {
+        color: #000070;
+        font-size: 16px;
+        top:14px;
+        left:15.5%;
+    }
+    .form_calc_container {
+        position: relative;
+        left: -223px;
+    }
+    .walletpage_btn {
+        font-size: 16px;
+        /* width:260px; */
+        left:0;
+        height:40px;
+    }
+    .networkfee_container .customfee {
+        font-size: 12px;
+    }
+    .networkfee_container .btctext {
+        font-size: 13px;
+    }
+    .networkfee_container {
+        margin-top: 25px;
+    }
     .walletpage_forminterchange {
         border: 1px solid rgba(0, 0, 112, 0.12);
         height:42px;
-        width:38%;
+        width:260px;
+        position: relative;
+        left: 4%;
     }
     .recharge-submitbutton-container {
         width:70%;
@@ -1254,7 +1351,9 @@ width:93%;
         left: -18px;
     }
     .wallettransfertype {
-        max-width: 290px;
+        position: relative;
+        left: 7.5%;
+        /* max-width: 290px; */
     }
     .walletpage_menu {
         width: 80vw;
@@ -1390,7 +1489,17 @@ width:93%;
 
 
 @media (min-width: 640px) and (max-width: 991px) {
-    
+    .walletpage_btn {
+        /* width:520px; */
+        position: relative;
+        left:11%;
+        height:50px;
+    }
+    .walletpage_menu {
+        width: 80vw;
+        padding: 8px 10px;
+        margin-left: 25px;
+    }
     .recharge-submitbutton-container {
         width:50%;
         margin: auto;

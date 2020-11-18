@@ -59,9 +59,12 @@ Route::get('/smartbudget', function () {
 Route::get('/choosewallet', function () {
     return view('newpages.choosewallet');
 });
+
+//Mobile and tab screen done
 Route::get('/walletpage', function () {
     return view('newpages.walletpage');
 });
+
 Route::get('/nairawalletmain', function () {
     return view('newpages.nairawalletmain');
 });

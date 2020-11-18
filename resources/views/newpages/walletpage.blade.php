@@ -84,7 +84,7 @@
 
                                 {{-- Bitcoin  menu  --}}
                                 <div class="walletpage__menu-container mx-auto mt-4">
-                                    <div class="walletpage_menu d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center">
+                                    <div class="walletpage_menu d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
                                         <div class="mb-4 mb-lg-0">
                                             <span class="d-block" style="color: #565656;font-size: 16px;">Bitcoin wallet
                                                 Balance</span>
@@ -125,31 +125,31 @@
                                             </a>
                                         </div>
                                     </div>
+                                </div>
 
                                     @include('newpages.tabs.bitcoin-wallet-send')
                                     @include('newpages.tabs.bitcoin-wallet-receive')
 
-                                </div>
                             </div>
                         </div>
                         <div class="col-12 mt-3">
                             <div class="card card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span style="color: #000070;font-size: 24px;font-weight: 500;">Recent Transactions</span>
+                                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center">
+                                    <div class="mb-3 mb-lg-0">
+                                        <span class="recent_trx_text">Recent Transactions</span>
                                     </div>
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center justify-content-lg-between">
                                         <div class="d-flex align-items-center">
                                             <span class="mr-1" style="color: #000070;font-size: 14px;">Start Date</span>
                                             <input type="text" class="col-7 form-control" name="" id="" value="14-05-2020">
                                         </div>
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center mt-3 mt-md-0">
                                             <span class="mr-1" style="color: #000070;font-size: 14px;">End Date</span>
                                             <input type="text" class="col-7 form-control" name="" id="" value="14-05-2020">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-responsive mt-3">
+                                <div class="table-responsive mt-4 mt-lg-3">
                                     <table class="table table-striped">
                                         <thead>
                                           <tr style="background-color: rgba(0, 0, 112, 0.05) !important;color:#000070;font-size:16px;">
