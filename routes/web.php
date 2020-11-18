@@ -42,7 +42,7 @@ Route::get('/airtocash', function () {
 Route::get('/newprofile', function () {
     return view('newpages.profile');
 });
-Route::get('/newdashboard', function () {
+/* Route::get('/newdashboard', function () {
     return view('newpages.dashboard');
 });
 Route::get('/creditsuccess', function () {
@@ -50,7 +50,7 @@ Route::get('/creditsuccess', function () {
 });
 Route::get('/creditfailure', function () {
     return view('newpages.creditfailure');
-});
+}); */
 Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
@@ -176,7 +176,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');
 
     /* Routes for the new calculator */
-    Route::get('/assets', 'TradeController@assets')->name('user.assets');
+    Route::get('/assets/{asset_type?}', 'TradeController@assets')->name('user.assets');
     Route::get('/trade/{trade_type}/{card_id}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
     Route::view('/gift-card-calculator', 'user.gift_card_calculator');
     Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
@@ -184,6 +184,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     /* Bitcooin Wallet */
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
+    Route::get('/bitcoin-wallet', 'BitcoinWalletController@wallet')->name('user.bitcoin-wallet');
 
 });
 

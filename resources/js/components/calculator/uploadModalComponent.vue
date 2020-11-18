@@ -93,6 +93,7 @@
         mounted() {
             Event.$on("process_trades", data => {
                 this.trades = [];
+                console.log(data);
                 this.trades = data[0];
                 this.buy_sell = data[1];
             });

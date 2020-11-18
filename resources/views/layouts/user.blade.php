@@ -373,7 +373,7 @@ if (Auth::user()->nairaWallet) {
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
     <script src="{{asset('js/bootstrap.min.js')}} "></script>
-    <script src="{{asset('js/custom.js?v=2')}}"></script>
+    <script src="{{asset('js/custom.js?v=24')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
     <script src="{{asset('newpages/main.js')}} "></script>
@@ -398,15 +398,6 @@ if (Auth::user()->nairaWallet) {
         });
 
     </script>
-
-    @auth
-    @if (Auth::user()->role == 999 || Auth::user()->role == 888 )
-    <script src="{{asset('js/sa.js')}}"></script>
-    <script src="{{asset('js/custom.js')}}"></script>
-    @endif
-    @endauth
-
-
 
 
     @if(session()->has('success'))

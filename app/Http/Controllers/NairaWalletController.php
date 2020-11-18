@@ -183,7 +183,7 @@ class NairaWalletController extends Controller
                 'account_id' => 'required',
                 'pin' => 'required',
                 'amount' => 'required',
-                'narration' => 'required',
+                'narration' => 'nullable',
                 'ref' => 'required|unique:naira_transactions,reference',
             ]);
             /*

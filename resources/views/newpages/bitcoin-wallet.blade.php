@@ -49,31 +49,33 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text" style="color: #000070;">Wallet portfolio</span>
+                                        <span class="h3 giftcard-text" style="color: #000070;">Bitcoin Wallet</span>
                                     </div>
                                     <div class="widget-n" style="justify-content: center; text-align: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price">₦20,000</span>
+                                        {{-- <span class="d-block" style="h6 walletbalance-text">Naira Wallet Balance</span>
+                                        <span class="d-block price">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span> --}}
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="card card-body">
-                                <div class="container px-1 px-lg-4 d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <div
-                                            style="background: rgba(0, 0, 112, 0.25);width:24px;height:24px;border-radius:12px;">
-                                            <span style="position: relative;left:33%;top:0;">
-                                                <svg width="8" height="12" viewBox="0 0 8 12" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M7.41 1.41L6 0L0 6L6 12L7.41 10.59L2.83 6L7.41 1.41Z"
-                                                        fill="#000070" />
-                                                </svg>
-                                            </span>
+                                <div class="container px-4 d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('user.portfolio') }}">
+                                        <div class="d-flex align-items-center">
+                                            <div
+                                                style="background: rgba(0, 0, 112, 0.25);width:24px;height:24px;border-radius:12px;">
+                                                <span style="position: relative;left:33%;top:0;">
+                                                    <svg width="8" height="12" viewBox="0 0 8 12" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M7.41 1.41L6 0L0 6L6 12L7.41 10.59L2.83 6L7.41 1.41Z"
+                                                            fill="#000070" />
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                         </div>
-                                        <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
-                                    </div>
+                                    </a>
                                     <div class="d-flex">
                                         <div class="mr-1 mr-lg-2" style="">$ 8,452.98
                                         </div>
@@ -89,7 +91,7 @@
                                             <span class="d-block" style="color: #565656;font-size: 16px;">Bitcoin wallet
                                                 Balance</span>
                                             <span class="d-block">
-                                                <span style="color: #000070;font-size: 30px;">0.8934</span>
+                                                <span style="color: #000070;font-size: 30px;">{{ Auth::user()->bitcoinWallet->balance }}</span>
                                                 <span style="color: #000070;font-size: 30px;">BTC</span>
                                             </span>
                                             <span class="d-block"

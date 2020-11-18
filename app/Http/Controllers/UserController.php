@@ -50,17 +50,15 @@ class UserController extends Controller
         }
         $s = Auth::user()->transactions->where('status', 'success')->count();
         $w = Auth::user()->transactions->where('status', 'waiting')->count();
+        $p = Auth::user()->transactions->where('status', 'in progress')->count();
         $d = Auth::user()->transactions->where('status', 'declined')->count();
-        $f = Auth::user()->transactions->where('status', 'failed')->count();
 
         $borderColors = [
-            "rgba(255, 99, 132, 1.0)",
             "rgba(22,160,133, 1.0)",
             "rgba(255, 205, 86, 1.0)",
             "rgba(51,105,232, 1.0)"
         ];
         $fillColors = [
-            "rgba(255, 99, 132, 1.0)",
             "rgba(22,160,133, 1.0)",
             "rgba(255, 205, 86, 1.0)",
             "rgba(51,105,232, 1.0)"
@@ -68,8 +66,8 @@ class UserController extends Controller
         ];
         $usersChart = new UserChart;
         $usersChart->minimalist(true);
-        $usersChart->labels(['Failed', 'Successful', 'Declined', 'Waiting']);
-        $usersChart->dataset('Users by trimester', 'doughnut', [$f, $s, $d, $w])
+        $usersChart->labels(['Successful', 'Declined', 'Waiting']);
+        $usersChart->dataset('Users by trimester', 'doughnut', [ $s, $d, $w])
             ->color($borderColors)
             ->backgroundcolor($fillColors);
 
@@ -90,8 +88,8 @@ class UserController extends Controller
         if (Auth::user()->nairaWallet) {
             $naira_balance = Auth::user()->nairaWallet->amount;
         }
-
-        return view('user.dashboard', compact(['transactions', 's', 'w', 'd', 'f', 'notifications', 'usersChart', 'naira_balance']));
+        return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
+        return view('user.dashboard', compact(['transactions', 's', 'w', 'd',  'notifications', 'usersChart', 'naira_balance']));
     }
 
     /* ajax functions */
