@@ -49,20 +49,17 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text">Recharge</span>
+                                        <span class="h3 giftcard-text" style="color: #000070;">Naira Wallet (₦) </span>
                                     </div>
-                                    <div class="widget-n text-center" style="justify-content: center;">
+                                    <div class="widget-n" style="justify-content: center; text-align: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price">₦56,758</span>
+                                        <span class="d-block price">₦20,000</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-12">
-                            <div class="card card-body mb-4">
+                            <div id="content_bg" class="card card-body mb-4" style="height:550px;">
                                 <div class="container px-4 d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         <div
@@ -82,30 +79,13 @@
                                 <div class="mt-4" style="width: 100%;border: 1px solid #C9CED6;"></div>
 
                                 {{-- Bitcoin  menu  --}}
-                                <div class="container">
-                                    <div class="row" style="border: 2px solid;">
-                                        <div class="col-12 col-lg-6">
-                                            <span class="d-block" style="color: #000070;font-size: 22px;">Airtime & Data Subscription</span>
-                                            <div class="d-flex flex-column flex-lg-row">
-                                                <div class="airtime_network_card d-flex justify-content-center align-items-center">
-                                                    <img class="img-fluid" src="/isp/airtel.png" style="height:80px;" />
-                                                </div>
-                                                <div class="airtime_network_card d-flex justify-content-center align-items-center">
-                                                    <img class="img-fluid" src="/isp/mtn.png" />
-                                                </div>
-                                                <div class="airtime_network_card d-flex justify-content-center align-items-center">
-                                                    <img class="img-fluid" src="/isp/9mobile.png" />
-                                                </div>
-                                                <div class="airtime_network_card d-flex justify-content-center align-items-center">
-                                                    <img class="img-fluid" src="/isp/glo.png" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-lg-6">
-                                            <div style="border: 1px solid #EFEFF8;">
-                                                <div class="d-flex flex-column flex-lg-row">
-                                                    
-                                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-lg-5" style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
+                                        <div class="d-flex">
+                                            <div></div>
+                                            <div>
+                                                <span class="d-block" style="color: #000070;font-size: 18px;">Naira</span>
+                                                <span class="" style="color: #000070;font-size: 24px;">500,560 </span><span style="color: #000070;">NGN</span>
                                             </div>
                                         </div>
                                     </div>
@@ -115,10 +95,10 @@
                     </div>
 
 
+
                 </div>
             </div>
 
-            {{-- @include('layouts.partials.live-feeds') --}}
         </div>
     </div>
 </div>

@@ -85,7 +85,7 @@
                                 <div class="container mt-4 mt-lg-5">
                                     <div class="row m-0 p-0" style="">
                                         <div class="col-12 col-lg-6">
-                                            <span class="d-block mb-2" style="color: #000070;font-size: 22px;">Buy Airtime</span>
+                                            <span class="d-block mb-2" style="color: #000070;font-size: 22px;">Data Subscription</span>
                                             <div class="d-flex flex-row flex-wrap justify-content-around justify-content-lg-between airtimechoice_container mx-0">
                                                 <input type="hidden" id="airtimechoice" value="airtel" />
                                                 <div
@@ -115,13 +115,13 @@
                                                         <div
                                                             class="custom-control custom-radio custom-control-inline my-2 px-1 px-lg-5 py-2 buyairtime_choice_layer">
                                                             <input type="radio" id="buydata" name="rechargetype" class="custom-control-input" checked>
-                                                            <label class="custom-control-label rechargemyself_labeltext" for="buydata">Recharging for myself</label>
+                                                            <label class="custom-control-label rechargemyself_labeltext" for="buydata">Subscribing for myself</label>
                                                         </div>
                                                         <div
                                                             class="custom-control custom-radio custom-control-inline my-2 px-5 py-2 buyairtime_choice_layer">
                                                             <input type="radio" id="buyother" name="rechargetype"
                                                                 class="custom-control-input">
-                                                            <label class="custom-control-label rechargemyself_labeltext" for="buyother">Other</label>
+                                                            <label class="custom-control-label rechargemyself_labeltext" for="buyother">Others</label>
                                                         </div>
                                                     </div>
                                                     <div class="mt-4 d-md-none" style="width: 240px;height:0px;border:1px solid #DBDBEE;"></div>

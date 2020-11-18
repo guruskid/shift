@@ -376,6 +376,7 @@ if (Auth::user()->nairaWallet) {
     <script src="{{asset('js/custom.js?v=24')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
+    <script src="{{asset('newpages/main.js')}} "></script>
 
     {{-- Calculator scripts --}}
     <script src="{{asset('user_assets/js/calculator.js')}} "></script>

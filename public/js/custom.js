@@ -207,6 +207,34 @@ $("#backPhotoID").on("click", function() {
 });
 
 
+<<<<<<< HEAD
+// var chart = new CanvasJS.Chart("chartContainer", {
+//     animationEnabled: true,
+//     title: {
+//         text: "Email Categories",
+//         horizontalAlign: "left"
+//     },
+//     data: [
+//         {
+//             type: "doughnut",
+//             startAngle: 60,
+//             //innerRadius: 60,
+//             indexLabelFontSize: 17,
+//             indexLabel: "{label} - #percent%",
+//             toolTipContent: "<b>{label}:</b> {y} (#percent%)",
+//             dataPoints: [
+//                 { y: 67, label: "Inbox" },
+//                 { y: 28, label: "Archives" },
+//                 { y: 10, label: "Labels" },
+//                 { y: 7, label: "Drafts" },
+//                 { y: 15, label: "Trash" },
+//                 { y: 6, label: "Spam" }
+//             ]
+//         }
+//     ]
+// });
+// chart.render();
+=======
 /* var chart = new CanvasJS.Chart("chartContainer", {
     animationEnabled: true,
     title: {
@@ -233,6 +261,7 @@ $("#backPhotoID").on("click", function() {
     ]
 });
 chart.render(); */
+>>>>>>> 9fe255e65c8efab426f9be905ee73f7dc0d329dd
 
 $("#quickTopUpLink").on("click", function(){
     if($("#quickTopUpModal").css("display") == "none") {
@@ -279,3 +308,136 @@ function copywalletaddress(receipientAddress) {
   /* Alert the copied text */
   alert("Copied the text: " + copyText.value);
 }
+
+
+function copyAcctNumber(acct_number_text) {
+    var copyText = document.getElementById(acct_number_text).text;
+    alert('ddddddddddddddddddddddd')
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+    /* Alert the copied text */
+    alert("Copied the text: " + copyText.value);
+}
+
+$("#togglepinvisibility").on("click",function(){
+    if($("#pinfortrx").attr('type') == "password") {
+        $("#pinfortrx").attr('type','text')
+    } else {
+        $("#togglepinvisibility").css("display","none")
+        $("#togglepinvisibility").css("display","none")
+        $("#pinfortrx").attr('type','password')
+    }
+})
+$("#removeobscure_pwd").on("click",function(){
+   if($("#password_field").attr('type') == "password") {
+    $("#password_field").attr('type','text')
+    $("#toggleshowpassword").attr("src","svg/showpassword.svg")
+   } else {
+    $("#password_field").attr('type','password')
+    $("#toggleshowpassword").attr("src","svg/obscure-password.svg")
+   }
+})
+$(".bvnVerificationCard").on("click", function(){
+    if($("#bvnVerification").css("display") != "none") {
+        $(".accordion_full_container").css("height","603px")
+    } else {
+        $(".accordion_full_container").css("height","520px")
+    }
+})
+$(".idVerificationCard").on("click", function(){
+    if($("#idVerification").css("display") != "none") {
+        $(".accordion_full_container").css("height","730px")
+    } else {
+        $(".accordion_full_container").css("height","520px")
+    }
+})
+
+//==============|| Bitcoin Wallet page tabs =======\\
+
+$("#bitcoin_send").on("click", function(){
+    $(".wallet_trx_tabs").css("display","none")
+    $("#bitcoin_receive").removeClass("walletpage_menu-active")
+    $(this).addClass("walletpage_menu-active")
+    if($("#bitcoin_wallet_send_tab").css('display') == "none") {
+        $("#bitcoin_wallet_send_tab").css('display','block')
+    }
+})
+$("#bitcoin_receive").on("click", function(){
+    $(".wallet_trx_tabs").css("display","none")
+    $("#bitcoin_send").removeClass("walletpage_menu-active")
+    $(this).addClass("walletpage_menu-active")
+    if($("#bitcoin_wallet_receive_tab").css('display') == "none") {
+        $("#bitcoin_wallet_receive_tab").css('display','block')
+    }
+})
+
+//Dantown to dantown modal
+$("#naira_d_to_d").on("click", function(){
+    $("#dantownTodantownModal").css("display","block")
+})
+$("#closedantownTodantownModal").on("click", function(){
+    $("#dantownTodantownModal").css("display","none")
+})
+
+// Dantown to other account
+$("#naira_d_to_o").on("click", function(){
+    $("#dantownToOtherModal").css("display","block")
+})
+$("#closedantownToOtherModal").on("click", function(){
+    $("#dantownToOtherModal").css("display","none")
+})
+
+//Naira transfer
+$("#naira_transfer").on("click", function(){
+    $("#nairaWithdrawTab").css('display','none')
+    $("#nairaDepositTab").css("display","none")
+    $("#nairawallet_trx_type_list").addClass("d-flex")
+    $(".naira_menu").removeClass("walletpage_menu-active")
+    $(this).addClass("walletpage_menu-active")
+})
+
+//Naira withdraw
+$("#naira_withdraw").on("click", function(){
+    $(".naira_menu").removeClass("walletpage_menu-active")
+    $("#nairawallet_trx_type_list").removeClass("d-flex")
+    $("#nairaDepositTab").css("display","none")
+    $(this).addClass("walletpage_menu-active")
+    $("#nairaWithdrawTab").css('display','block')
+    $("#content_bg").css('height','800px')
+})
+
+//Naira deposit
+$("#naira_deposit").on("click", function(){
+    $(".naira_menu").removeClass("walletpage_menu-active")
+    $("#nairawallet_trx_type_list").removeClass("d-flex")
+    $("#nairaDepositTab").css("display","block")
+    $(this).addClass("walletpage_menu-active")
+    // $("#nairaWithdrawTab").css('display','block')
+    // $("#content_bg").css('height','800px')
+})
+
+$(".airtime_network_card").on("click", function(){
+    $(".airtime_network_card").removeClass('active_airtime_choice')
+    $(this).addClass('active_airtime_choice')
+    $("#airtimechoice").val($(this).attr('alt'))
+})
+
+$("#swapcountrycode").on("change", function(){
+    let dialcodeval = $(this).children("option:selected").val().trim()
+    $("#dcode").val(dialcodeval)
+})
+$("#rechargebtn").on("click", function(){
+    let code = $("#dcode").val()
+    let phone = $("#phonenumber").val()
+    let fullNo = code+phone.substring(1)
+    $("#fullphonenumber").val(fullNo)
+})
+$("#buydata").on("change", function(){
+    $("#otherphonenumber").css("display","none")
+})
+$("#buyother").on("change", function(){
+    $("#otherphonenumber").css("display","block")
+})

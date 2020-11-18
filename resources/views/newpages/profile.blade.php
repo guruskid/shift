@@ -45,7 +45,7 @@
                 <div class="container card card-body profile_card_content">
                     <div class="shadow_bg"></div>
 
-                    <div class="d-flex profile_root_container">
+                    <div class="d-flex flex-column flex-lg-row profile_root_container">
                         <div class="profile_image_root_container pb-5">
                             <div class="profile_image_container">
                                 <img src="data:image/jpeg;base64,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"
@@ -91,29 +91,29 @@
                                     style="font-size:16px;width: 190px;height:45px;">DELETE ACCOUNT</button>
                             </div>
                         </div>
-                        <div class="profile_details ml-4 mt-3" style="width: 70%;">
-                            <ul class="nav nav-tabs mb-0" id="myTab" role="tablist"
+                        <div class="profile_details ml-lg-4 mt-3">
+                            <ul class="nav nav-tabs mb-0 d-flex flex-column flex-lg-row" id="myTab" role="tablist"
                                 style="border-radius: 10px 10px 0px 0px;background: linear-gradient(180deg, #EFF4F7 -92.86%, #FBFBFF 100%);">
-                                <li class="nav-item" role="presentation" style="width: 25%;">
+                                <li class="nav-item profile_tab_title" role="presentation">
                                     <a class="nav-link active d-flex justify-content-center" id="profile-tab"
                                         style="height: 52px;padding:0;margin:0 !important;" data-toggle="tab"
                                         href="#profile" role="tab" aria-controls="home" aria-selected="true">USER
                                         PROFILE</a>
                                 </li>
-                                <li class="nav-item" role="presentation"
-                                    style="width: 25%;border-left: 0.3px solid #969CBA;">
+                                <li class="nav-item profile_tab_title" role="presentation"
+                                    style="border-left: 0.3px solid #969CBA;">
                                     <a class="nav-link d-flex justify-content-center" id="security-tab"
                                         data-toggle="tab" style="height: 52px;" href="#security" role="tab"
-                                        aria-controls="profile" aria-selected="false">SECURITY</a>
+                                        aria-controls="security" aria-selected="false">SECURITY</a>
                                 </li>
-                                <li class="nav-item" role="presentation"
-                                    style="width: 25%;border-left: 0.3px solid #969CBA;">
+                                <li class="nav-item profile_tab_title" role="presentation"
+                                    style="border-left: 0.3px solid #969CBA;">
                                     <a class="nav-link d-flex justify-content-center" id="notification-tab"
                                         data-toggle="tab" style="height: 52px;" href="#notification" role="tab"
                                         aria-controls="contact" aria-selected="false">NOTIFICATIONS</a>
                                 </li>
-                                <li class="nav-item" role="presentation"
-                                    style="width: 25%;border-left: 0.3px solid #969CBA;">
+                                <li class="nav-item profile_tab_title" role="presentation"
+                                    style="border-left: 0.3px solid #969CBA;">
                                     <a class="nav-link d-flex justify-content-center" id="limits-tab" data-toggle="tab"
                                         style="height: 52px;" href="#limits" role="tab" aria-controls="limits"
                                         aria-selected="false">LIMITS</a>
@@ -122,7 +122,7 @@
                             <div class="tab-content" id="myTabContent">
 
                                 {{-- Profile Tab Content --}}
-                                <div class="tab-pane fade shodw actdive" id="profile" role="tabpanel"
+                                <div class="tab-pane fade show active" id="profile" role="tabpanel"
                                     aria-labelledby="profile-tab">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex align-items-center mt-0 profile_details_col">
@@ -239,19 +239,19 @@
                                             <form>
                                                 @csrf
                                                 <div class="row">
-                                                    <div class="col">
+                                                    <div class="col-12 col-md-6 my-2 my-lg-0">
                                                         <label for="oldpassword" class="changePasswordLabelText">Old
                                                             Password</label>
                                                         <input type="text" name="oldpassword"
                                                             style="border: 1.3px solid #D7D7D7;" class="form-control"
                                                             id="oldpassword" />
                                                     </div>
-                                                    <div class="col">
+                                                    <div class="col-12 col-md-6 my-2 my-lg-0">
                                                         <label for="oldpassword" class="changePasswordLabelText">New
                                                             Password</label>
                                                         <input type="text" name="newpassword" class="form-control" />
                                                     </div>
-                                                    <div class="col">
+                                                    <div class="col-12 my-2 my-lg-0">
                                                         <label for="oldpassword" class="changePasswordLabelText">Confirm
                                                             Password</label>
                                                         <input type="text" name="confirm_newpassword"
@@ -323,25 +323,26 @@
                                 </div>
 
                                 {{-- LIMITS --}}
-                                <div class="tab-pane active show fade" id="limits" role="tabpanel"
+                                <div class="tab-pane fade" id="limits" role="tabpanel"
                                     aria-labelledby="v-tab">
-                                        <div class="d-flex mt-4" style="border: 0.5px solid #B1B1B1;border-radius: 7px;height:520px;">
-                                    <div class="mt-4 pt-2 d-flex flex-column justify-content-start align-items-center">
-                                        <span class="my-1" style="color: #000070;font-size:15px;">Maximum monthly limit:
-                                            <span style="font-weight: bold;">N300,000</span></span>
-                                        <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily limit:
-                                            <span style="font-weight: bold;">N100,000</span></span>
-                                        <span class="my-1" style="color: #000070;font-size:14px;">Remaining daily limit:
-                                            <span>N300,000</span></span>
+                                        <div class="d-flex mt-4 accordion_full_container">
+                                    <div class="mt-4 pt-2 d-flex flex-column justify-content-start align-items-start align-items-lg-center">
+                                        <div class="d-flex flex-column align-items-center ml-4 ml-lg-0">
+                                            <span class="my-1" style="color: #000070;font-size:15px;">Maximum monthly limit:
+                                                <span style="font-weight: bold;">N300,000</span></span>
+                                            <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily limit:
+                                                <span style="font-weight: bold;">N100,000</span></span>
+                                            <span class="my-1" style="color: #000070;font-size:14px;">Remaining daily limit:
+                                                <span>N300,000</span></span>
+                                        </div>
 
                                         <div class="container-fluid mt-3">
-                                            <div class="row px-3">
+                                            <div class="row px-lg-3">
                                                 <div class="col-12 col-lg-6">
                                                     {{-- Phone verification card --}}
-                                                    <div
-                                                        class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                    <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
                                                         <span class="d-block">Phone number verification</span>
-                                                        <span class="d-block ml-5 accordion_arrow"
+                                                        <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
                                                             style="position: relative;left: 22px;">
                                                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                                                 xmlns="http://www.w3.org/2000/svg">
@@ -376,8 +377,7 @@
                                                                                 aria-label="Text input with dropdown button" />
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-auto"
-                                                                        style="position: relative;top:11px;">
+                                                                    <div class="col-auto phoneNumberVerifyBtn">
                                                                         <button type="submit"
                                                                             class="btn btn-primary mb-2 px-3"
                                                                             style="height:40px;width:80px;">Verify</button>
@@ -402,10 +402,8 @@
                                                                                 placeholder="000000" />
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-auto"
-                                                                        style="position: relative;top:19px;">
-                                                                        <button type="submit" class="btn btn-primary mb-2"
-                                                                            style="height:40px;width:78px;">Confirm</button>
+                                                                    <div class="col-auto confirmVerificationBtn">
+                                                                        <button type="submit" class="btn btn-primary mb-2 confirmVerificationBtnSize">Confirm</button>
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -426,11 +424,11 @@
                                                         </span>
                                                     </div>
                                                     {{-- Address verification content --}}
-                                                    <div class="accordion_content mt-3" id="AddressVerification"
+                                                    <div class="accordion_content mt-3 pb-3" id="AddressVerification"
                                                         style="display: none;">
                                                         <form action="" method="post">
                                                             @csrf
-                                                            <div class="form-group" style="width: 350px;">
+                                                            <div class="form-group addressVerificationForm">
                                                                 <label for="youraddress"
                                                                     class="address_verification_labelText">Enter your
                                                                     address as shown in your document</label>
@@ -462,13 +460,12 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-12 col-lg-6">
+                                                <div class="col-12 col-lg-6 mt-3">
                                                     {{-- BVN verification card --}}
                                                     <div
                                                         class="d-flex flex-row justify-content-center align-items-center accordion_cards bvnVerificationCard">
                                                         <span class="d-block">BVN verification</span>
-                                                        <span class="d-block ml-5 accordion_arrow"
-                                                            style="position: relative;left: 22px;">
+                                                        <span class="d-block ml-5 accordion_arrow bvn_verification_arrow">
                                                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                                                 xmlns="http://www.w3.org/2000/svg">
                                                                 <path
@@ -486,12 +483,10 @@
                                                                 @csrf
                                                                 <div class="form-row">
                                                                     <div class="col-12 mt-1">
-                                                                        <label for="inlineFormInput"
-                                                                            style="color: #000070;font-size:13px;width:93%;">You
+                                                                        <label for="inlineFormInput" class="bvnConfidenceText">Your
                                                                             BVN cannot be used to carry out any other
                                                                             transaction from your Bank acount.</label>
-                                                                        <label for="inlineFormInput"
-                                                                            style="color: #000070;font-size:13px;width:75%;margin-top:5px;">Dantown
+                                                                        <label for="inlineFormInput" class="needBvnTrx">Dantown
                                                                             need your BVN to carry out naira transactions as
                                                                             required by the CBN</label>
                                                                     </div>
@@ -500,7 +495,7 @@
                                                                             class="form-control otp_code_input"
                                                                             placeholder="000000" style="width: 256px;">
                                                                     </div>
-                                                                    <div class="col">
+                                                                    <div class="col mt-2 mt-lg-0">
                                                                         <button type="submit" class="btn btn-primary mb-2"
                                                                             style="height:40px;width:78px;">Verify</button>
                                                                     </div>
@@ -513,8 +508,7 @@
                                                     <div
                                                         class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-4">
                                                         <span class="d-block">ID verification</span>
-                                                        <span class="d-block ml-5 accordion_arrow"
-                                                            style="position: relative;left: 22px;">
+                                                        <span class="d-block ml-5 accordion_arrow id_verification_arrow">
                                                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                                                 xmlns="http://www.w3.org/2000/svg">
                                                                 <path
@@ -543,7 +537,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="d-flex justify-content-start">
-                                                                    <div class="d-flex justify-content-start mt-3">
+                                                                    <div class="d-flex flex-row flex-wrap flex-lg-nowrap justify-content-center justify-content-lg-start mt-3">
                                                                         <div id="frontPhotoID"
                                                                             class="text-center p-3 front_photo_card_box mr-2">
                                                                             <input type="file" id="frontPhotoIdInput"
@@ -578,8 +572,7 @@
                                                                             <span class="d-block front_photo_card_text">Back
                                                                                 photo of your card</span>
                                                                         </div>
-                                                                        <button type="submit" class="btn btn-primary"
-                                                                            style="height:38px;width:82px;position: relative;top:54%;">Upload</button>
+                                                                        <button type="submit" class="btn btn-primary verifyIdSubmitBtn">Upload</button>
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -707,10 +700,9 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <div class="card card-body d-flex flex-row justify-content-between mt-5 px-5"
+                {{-- <div class="card card-body d-flex flex-row justify-content-between mt-5 px-5"
                     style="border-radius: 10px;">
                     <div class="d-flex flex-column justify-content-center align-items-start">
                         <div style="line-height: 32px;">LTC/NGN</div>
@@ -732,7 +724,8 @@
                         <div style="line-height: 32px;">BTC/NGN</div>
                         <div style="color: #000070;">150,688,903.91NGN</div>
                     </div>
-                </div>
+                </div> --}}
+
             </div>
 
             {{-- @include('layouts.partials.live-feeds') --}}

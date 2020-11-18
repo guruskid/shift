@@ -220,6 +220,7 @@
                                     </div>
                                     <div class="mt-5">
                                         <form action="">
+                                            @csrf
                                             <span class="d-block text-center mb-3" style="color: #000000;font-size: 18px;line-height: 22px;">Sending 0.001 BTC to</span>
                                             <div class="text-center">
                                                 <svg width="247" height="247" viewBox="0 0 247 247" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
