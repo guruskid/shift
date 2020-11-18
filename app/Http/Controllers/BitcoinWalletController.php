@@ -19,9 +19,9 @@ class BitcoinWalletController extends Controller
     public function create(Request $r)
     {
         $data = $r->validate([
-            'wallet_password' => 'required|min:10|confirmed',
+            'wallet_password' => 'required|min:4|confirmed',
         ]);
-        
+
 
        $password = Hash::make($data['wallet_password']);
 

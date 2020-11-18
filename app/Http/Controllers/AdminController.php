@@ -168,7 +168,7 @@ class AdminController extends Controller
         }
     }
 
-    public function cards()
+    /* public function cards()
     {
         $cards = Card::orderBy('id', 'desc')->get();
         return view('admin.cards', compact(['cards']));
@@ -199,9 +199,9 @@ class AdminController extends Controller
     {
         $card = Card::find($id);
         return response()->json($card->delete());
-    }
+    } */
 
-    public function rates()
+    /* public function rates()
     {
         $buy = Rate::where('rate_type', 'buy')->orderBy('created_at', 'desc')->get();
         $sell = Rate::where('rate_type', 'sell')->orderBy('created_at', 'desc')->get();
@@ -258,7 +258,7 @@ class AdminController extends Controller
     {
         $rate = Rate::find($id);
         return response()->json($rate->delete());
-    }
+    } */
 
     /* TRANSACTIONS */
 
@@ -339,7 +339,7 @@ class AdminController extends Controller
     }
 
 
-    
+
 
     public function viewTransac($id, $uid)
     {

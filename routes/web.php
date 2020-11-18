@@ -204,7 +204,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant'] 
 
 /* for super admin and all accountants */
 Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountant'] ], function () {
-    Route::post('/admin-transfer', 'NairaWalletController@adminTransfer' )->name('admin.transfer');
+
     Route::post('/admin-refund', 'NairaWalletController@adminRefund' )->name('admin.refund');
     Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
     Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');

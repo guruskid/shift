@@ -31,3 +31,10 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::POST('/bitcoin-wallet', 'BitcoinWalletController@createHdWallet')->name('admin.bitcoin-wallet.create');
 
 });
+
+
+Route::group(['prefix' => 'admin' , 'middleware' => ['accountant'] ], function () {
+    Route::post('/admin-transfer', 'AssetTransactionController@payTransaction' )->name('admin.transfer');
+    Route::post('/admin-btc-transfer', 'AssetTransactionController@payBtcTransaction' )->name('admin.btc-transfer');
+
+});
