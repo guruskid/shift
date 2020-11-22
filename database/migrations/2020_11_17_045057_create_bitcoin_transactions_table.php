@@ -19,7 +19,8 @@ class CreateBitcoinTransactionsTable extends Migration
             $table->bigInteger('primary_wallet_id')->nullable();
             $table->string('wallet_id');
             $table->string('hash');
-            $table->double('amount');
+            $table->double('credit')->nullable();
+            $table->double('debit')->nullable();
             $table->double('fee');
             $table->double('charge');
             $table->double('previous_balance');

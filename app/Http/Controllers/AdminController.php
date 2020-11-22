@@ -308,7 +308,7 @@ class AdminController extends Controller
     {
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
-        })->paginate(1000);
+        })->latest()->paginate(10);
 
         $segment = 'Crypto';
         if ($id == 1) {

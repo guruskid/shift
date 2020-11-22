@@ -210,7 +210,7 @@ function confirmTransfer(id, user, amount) {
 function confirmBtcTransfer(id, user, amount) {
     $('.amount').text(amount)
     $('.acct-name').text(user['first_name'] + " " + user['last_name'])
-    $('#t-id').val(id)
+    $('#tx-id').val(id)
 }
 
 /* Confirm refund funds */

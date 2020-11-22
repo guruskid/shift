@@ -21,7 +21,8 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/naira/recieve-funds-dhfhshd',
         '/naira/recharge/dhfhd-q23-nfnd-dnf',
-        '/naira/electricity/dddsfhd-q23-nfnd-dnf'
+        '/naira/electricity/dddsfhd-q23-nfnd-dnf',
+        '/admin-hd-wallet-recieve-hghdhfh-ehe7sjdhsjaqwe'
         
     ];
 }

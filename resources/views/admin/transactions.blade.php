@@ -80,6 +80,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             </form>
                         </div>
                         <div class="table-responsive p-3">
+                            @foreach ($errors->all() as $err)
+                            <span class="text-danger">{{ $err }}</span>
+                            @endforeach
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>
                                     <tr>
@@ -119,7 +122,12 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center">{{$t->country}}</td>
                                         <td class="text-center">{{$t->card_type}}</td>
                                         <td class="text-center">{{$t->amount}}</td>
-                                        <td class="text-center">{{$t->quantity}}</td>
+
+                                        @if ($t->asset->is_crypto)
+                                        <td class="text-center">{{ sprintf('%.8f', floatval($t->quantity))}}</td>
+                                        @else
+                                        <td class="text-center">{{ $t->quantity}}</td>
+                                        @endif
                                         <td class="text-center">{{$t->card_price}}</td>
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
                                         <td class="text-center">{{$t->wallet_id}}</td>
@@ -400,8 +408,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="">Select Primary Wallet</label>
-                            <select name="primary_wallet_id" id="" class="form-control">
-                                <option >Select Wallet</option>
+                            <select name="primary_wallet_id" required id="" class="form-control">
+                                <option value="" >Select Wallet</option>
                                 @foreach ($primary_wallets as $wallet)
                                     <option value="{{ $wallet->id }}">{{ $wallet->name }} - {{ $wallet->balance }}</option>
                                 @endforeach
@@ -417,8 +425,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="">Your Wallet pin </label>
-                                <input type="password" name="pin" required class="form-control">
-                                <input type="hidden" name="id" id="t-id" required class="form-control">
+                                <input type="password" name="wallet_pin" required class="form-control">
+                                <input type="hidden" name="transaction_id" id="tx-id" required class="form-control">
                             </div>
                         </div>
                     </div>

@@ -57,6 +57,10 @@ class BitcoinWalletController extends Controller
             $wallet->primary_wallet_id = 0;
             $wallet->save();
 
+            $callback = route('admin.hdwallet-recieve');
+
+            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
+
         } catch (\Throwable  $e) {
             report($e);
             return back()->with(['error' => 'An error occured, please try again' ]);
