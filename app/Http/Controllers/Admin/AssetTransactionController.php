@@ -208,7 +208,7 @@ class AssetTransactionController extends Controller
         }
 
         /* Update User Balance */
-        
+
         if ($transaction->type == 'buy') {
             $btc_txn_type = 19;
             /* Deduct cost from user naira wallet and create new naira wallet transaction */
@@ -234,7 +234,7 @@ class AssetTransactionController extends Controller
             $nt->cr_acct_name = 'Dantown';
             $nt->dr_acct_name = $user->first_name . ' ' . $user->last_name;
             $nt->narration = 'Debit for buy transaction with id ' . $transaction->uid;
-            $nt->trans_msg = 'This transaction was handled by '. Auth::user()->first_name ;
+            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
             $nt->dr_user_id = $user->id;
             $nt->cr_user_id = 1;
             $nt->status = 'success';
@@ -277,7 +277,7 @@ class AssetTransactionController extends Controller
         $btc_transaction->hash = $result->payload->txid;
         if ($transaction->type == 'buy') {
             $btc_transaction->debit = $transaction->quantity;
-        }elseif($transaction->type == 'sell'){
+        } elseif ($transaction->type == 'sell') {
             $btc_transaction->credit = $transaction->quantity;
         }
         $btc_transaction->fee = 0.00001; //Change to actual fee
@@ -298,26 +298,5 @@ class AssetTransactionController extends Controller
     }
 
 
-    public function recieve(Request $request)
-    {
-        try {
-            $txn = BitcoinTransaction::firstOrCreate([
-                'user_id' => 19,
-                'primary_wallet_id' => 1,
-                'wallet_id' => $request->address,
-                'hash' => $request->txid,
-                'credit' => 0,
-                'fee' => 0,
-                'charge' => 0,
-                'previous_balance' => 0,
-                'current_balance' => 0,
-                'transaction_type_id' => 19,
-                'counterparty' => 'Shean Winston',
-                'narration' => 'Testing the codes',
-                'confirmations' => $request->confirmations
-            ]);
-        } catch (\Exception $e) {
-            report($e);
-        }
-    }
+    
 }

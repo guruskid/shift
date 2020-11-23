@@ -22,7 +22,8 @@ class VerifyCsrfToken extends Middleware
         '/naira/recieve-funds-dhfhshd',
         '/naira/recharge/dhfhd-q23-nfnd-dnf',
         '/naira/electricity/dddsfhd-q23-nfnd-dnf',
-        '/admin-hd-wallet-recieve-hghdhfh-ehe7sjdhsjaqwe'
-        
+        '/admin/admin-hd-wallet-recieve-hghdhfh-ehe7sjdhsjaqwe',
+        '/user/wallet-webhook-hghddsdhfh-ehe7sjdhsjaqwe'
+
     ];
 }

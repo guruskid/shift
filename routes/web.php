@@ -124,6 +124,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     /* Bitcooin Wallet */
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
+    Route::post('/wallet-webhook-hghddsdhfh-ehe7sjdhsjaqwe', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
 
 });
 
