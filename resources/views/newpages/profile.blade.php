@@ -42,7 +42,7 @@
         <div class="app-main__inner">
 
             <div id="content" class="main-content">
-                <div class="container card card-body profile_card_content">
+                <div class="container card card-body profile_card_content d-none">
                     <div class="shadow_bg"></div>
 
                     <div class="d-flex flex-column flex-lg-row profile_root_container">
@@ -323,265 +323,289 @@
                                 </div>
 
                                 {{-- LIMITS --}}
-                                <div class="tab-pane fade" id="limits" role="tabpanel"
-                                    aria-labelledby="v-tab">
-                                        <div class="d-flex mt-4 accordion_full_container">
-                                    <div class="mt-4 pt-2 d-flex flex-column justify-content-start align-items-start align-items-lg-center">
-                                        <div class="d-flex flex-column align-items-center ml-4 ml-lg-0">
-                                            <span class="my-1" style="color: #000070;font-size:15px;">Maximum monthly limit:
-                                                <span style="font-weight: bold;">N300,000</span></span>
-                                            <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily limit:
-                                                <span style="font-weight: bold;">N100,000</span></span>
-                                            <span class="my-1" style="color: #000070;font-size:14px;">Remaining daily limit:
-                                                <span>N300,000</span></span>
-                                        </div>
+                                <div class="tab-pane fade" id="limits" role="tabpanel" aria-labelledby="v-tab">
+                                    <div class="d-flex mt-4 accordion_full_container">
+                                        <div
+                                            class="mt-4 pt-2 d-flex flex-column justify-content-start align-items-start align-items-lg-center">
+                                            <div class="d-flex flex-column align-items-center ml-4 ml-lg-0">
+                                                <span class="my-1" style="color: #000070;font-size:15px;">Maximum
+                                                    monthly limit:
+                                                    <span style="font-weight: bold;">N300,000</span></span>
+                                                <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily
+                                                    limit:
+                                                    <span style="font-weight: bold;">N100,000</span></span>
+                                                <span class="my-1" style="color: #000070;font-size:14px;">Remaining
+                                                    daily limit:
+                                                    <span>N300,000</span></span>
+                                            </div>
 
-                                        <div class="container-fluid mt-3">
-                                            <div class="row px-lg-3">
-                                                <div class="col-12 col-lg-6">
-                                                    {{-- Phone verification card --}}
-                                                    <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
-                                                        <span class="d-block">Phone number verification</span>
-                                                        <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
-                                                            style="position: relative;left: 22px;">
-                                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path
-                                                                    d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
-                                                                    fill="#000070" />
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-                                                    {{-- Phone number verification content --}}
-                                                    <div class="accordion_content" id="phoneVerification"
-                                                        style="display: none;">
-                                                        <div class="mt-3">
-                                                            <form>
-                                                                @csrf
-                                                                <div
-                                                                    class="form-row align-items-center d-flex justify-content-start align-items-center">
-                                                                    <div class="col-auto">
-                                                                        <label for="inlineFormInput"
-                                                                            style="color: #000070;">Phone
-                                                                            number</label>
-                                                                        <div class="input-group mb-3">
-                                                                            <div class="input-group-prepend">
-                                                                                <select name="" id=""
-                                                                                    class="custom-select select_dial_code">
-                                                                                    <option value="">+234</option>
-                                                                                    <option value="">+234</option>
-                                                                                </select>
+                                            <div class="container-fluid mt-3">
+                                                <div class="row px-lg-3">
+                                                    <div class="col-12 col-lg-6">
+                                                        {{-- Phone verification card --}}
+                                                        <div
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                            <span class="d-block">Phone number verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
+                                                                style="position: relative;left: 22px;">
+                                                                <svg width="20" height="20" viewBox="0 0 20 20"
+                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path
+                                                                        d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
+                                                                        fill="#000070" />
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                        {{-- Phone number verification content --}}
+                                                        <div class="accordion_content" id="phoneVerification"
+                                                            style="display: none;">
+                                                            <div class="mt-3">
+                                                                <form>
+                                                                    @csrf
+                                                                    <div
+                                                                        class="form-row align-items-center d-flex justify-content-start align-items-center">
+                                                                        <div class="col-auto">
+                                                                            <label for="inlineFormInput"
+                                                                                style="color: #000070;">Phone
+                                                                                number</label>
+                                                                            <div class="input-group mb-3">
+                                                                                <div class="input-group-prepend">
+                                                                                    <select name="" id=""
+                                                                                        class="custom-select select_dial_code">
+                                                                                        <option value="">+234</option>
+                                                                                        <option value="">+234</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <input type="text" style="width: 185px;"
+                                                                                    class="form-control dial_code_input"
+                                                                                    aria-label="Text input with dropdown button" />
                                                                             </div>
-                                                                            <input type="text" style="width: 185px;"
-                                                                                class="form-control dial_code_input"
-                                                                                aria-label="Text input with dropdown button" />
+                                                                        </div>
+                                                                        <div class="col-auto phoneNumberVerifyBtn">
+                                                                            <button type="submit"
+                                                                                class="btn btn-primary mb-2 px-3"
+                                                                                style="height:40px;width:80px;">Verify</button>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-auto phoneNumberVerifyBtn">
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary mb-2 px-3"
-                                                                            style="height:40px;width:80px;">Verify</button>
+                                                                </form>
+                                                            </div>
+                                                            <div class="mt-2" id="phoneVerification">
+                                                                <form>
+                                                                    @csrf
+                                                                    <div
+                                                                        class="form-row align-items-center d-flex justify-content-start align-items-center">
+                                                                        <div class="col-auto">
+                                                                            <label for="inlineFormInput"
+                                                                                style="color: #000070;font-size:13px;width:260px;">Enter
+                                                                                the OTP sent to the Phone number your
+                                                                                entered</label>
+                                                                            <div class="input-group mb-3"
+                                                                                style="width: 256px;">
+                                                                                <input type="text"
+                                                                                    class="form-control otp_code_input"
+                                                                                    aria-label="Text input with dropdown button"
+                                                                                    placeholder="000000" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-auto confirmVerificationBtn">
+                                                                            <button type="submit"
+                                                                                class="btn btn-primary mb-2 confirmVerificationBtnSize">Confirm</button>
+                                                                        </div>
                                                                     </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        {{-- Address verification tab --}}
+                                                        <div
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards addressVerificationCard mt-4">
+                                                            <span class="d-block">Address verification</span>
+                                                            <span class="d-block ml-5 accordion_arrow"
+                                                                style="position: relative;left: 22px;">
+                                                                <svg width="20" height="20" viewBox="0 0 20 20"
+                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path
+                                                                        d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
+                                                                        fill="#000070" />
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                        {{-- Address verification content --}}
+                                                        <div class="accordion_content mt-3 pb-3"
+                                                            id="AddressVerification" style="display: none;">
+                                                            <form action="" method="post">
+                                                                @csrf
+                                                                <div class="form-group addressVerificationForm">
+                                                                    <label for="youraddress"
+                                                                        class="address_verification_labelText">Enter
+                                                                        your
+                                                                        address as shown in your document</label>
+                                                                    <textarea placeholder="Your address"
+                                                                        id="youraddress" class="form-control"
+                                                                        style="resize: none;" name=""
+                                                                        rows="2"></textarea>
+                                                                </div>
+                                                                <div
+                                                                    class="d-flex justify-content-start align-items-end">
+                                                                    <div class="d-flex justify-content-center align-items-center px-2 upload_address_photo"
+                                                                        id="uploadAddressVerification">
+                                                                        <input type="file" id="uploadPhotoInput"
+                                                                            style="display: none;" />
+                                                                        <span>
+                                                                            <svg width="28" height="26"
+                                                                                viewBox="0 0 20 20" fill="none"
+                                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                                <path
+                                                                                    d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
+                                                                                    fill="#A6ACBE" />
+                                                                            </svg>
+                                                                        </span>
+                                                                        <span class="ml-3"
+                                                                            style="font-size: 10px;color: #000070;letter-spacing: 0.01em;line-height: 10px;">Upload
+                                                                            your Bank <br> Statement of Account</span>
+                                                                    </div>
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary mb-2 ml-2"
+                                                                        style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
                                                                 </div>
                                                             </form>
                                                         </div>
-                                                        <div class="mt-2" id="phoneVerification">
-                                                            <form>
-                                                                @csrf
-                                                                <div
-                                                                    class="form-row align-items-center d-flex justify-content-start align-items-center">
-                                                                    <div class="col-auto">
-                                                                        <label for="inlineFormInput"
-                                                                            style="color: #000070;font-size:13px;width:260px;">Enter
-                                                                            the OTP sent to the Phone number your
-                                                                            entered</label>
-                                                                        <div class="input-group mb-3" style="width: 256px;">
+                                                    </div>
+
+                                                    <div class="col-12 col-lg-6 mt-3">
+                                                        {{-- BVN verification card --}}
+                                                        <div
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards bvnVerificationCard">
+                                                            <span class="d-block">BVN verification</span>
+                                                            <span
+                                                                class="d-block ml-5 accordion_arrow bvn_verification_arrow">
+                                                                <svg width="20" height="20" viewBox="0 0 20 20"
+                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path
+                                                                        d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
+                                                                        fill="#000070" />
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+
+                                                        {{-- BVN verification content --}}
+                                                        <div class="accordion_content" id="bvnVerification"
+                                                            style="display: none;">
+                                                            <div class="mt-2">
+                                                                <form>
+                                                                    @csrf
+                                                                    <div class="form-row">
+                                                                        <div class="col-12 mt-1">
+                                                                            <label for="inlineFormInput"
+                                                                                class="bvnConfidenceText">Your
+                                                                                BVN cannot be used to carry out any
+                                                                                other
+                                                                                transaction from your Bank
+                                                                                acount.</label>
+                                                                            <label for="inlineFormInput"
+                                                                                class="needBvnTrx">Dantown
+                                                                                need your BVN to carry out naira
+                                                                                transactions as
+                                                                                required by the CBN</label>
+                                                                        </div>
+                                                                        <div class="col">
                                                                             <input type="text"
                                                                                 class="form-control otp_code_input"
-                                                                                aria-label="Text input with dropdown button"
-                                                                                placeholder="000000" />
+                                                                                placeholder="000000"
+                                                                                style="width: 256px;">
+                                                                        </div>
+                                                                        <div class="col mt-2 mt-lg-0">
+                                                                            <button type="submit"
+                                                                                class="btn btn-primary mb-2"
+                                                                                style="height:40px;width:78px;">Verify</button>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-auto confirmVerificationBtn">
-                                                                        <button type="submit" class="btn btn-primary mb-2 confirmVerificationBtnSize">Confirm</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                    {{-- Address verification tab --}}
-                                                    <div
-                                                        class="d-flex flex-row justify-content-center align-items-center accordion_cards addressVerificationCard mt-4">
-                                                        <span class="d-block">Address verification</span>
-                                                        <span class="d-block ml-5 accordion_arrow"
-                                                            style="position: relative;left: 22px;">
-                                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path
-                                                                    d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
-                                                                    fill="#000070" />
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-                                                    {{-- Address verification content --}}
-                                                    <div class="accordion_content mt-3 pb-3" id="AddressVerification"
-                                                        style="display: none;">
-                                                        <form action="" method="post">
-                                                            @csrf
-                                                            <div class="form-group addressVerificationForm">
-                                                                <label for="youraddress"
-                                                                    class="address_verification_labelText">Enter your
-                                                                    address as shown in your document</label>
-                                                                <textarea placeholder="Your address" id="youraddress"
-                                                                    class="form-control" style="resize: none;" name=""
-                                                                    rows="2"></textarea>
+                                                                </form>
                                                             </div>
-                                                            <div class="d-flex justify-content-start align-items-end">
-                                                                <div class="d-flex justify-content-center align-items-center px-2 upload_address_photo"
-                                                                    id="uploadAddressVerification">
-                                                                    <input type="file" id="uploadPhotoInput"
-                                                                        style="display: none;" />
-                                                                    <span>
-                                                                        <svg width="28" height="26" viewBox="0 0 20 20"
-                                                                            fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                            <path
-                                                                                d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
-                                                                                fill="#A6ACBE" />
-                                                                        </svg>
-                                                                    </span>
-                                                                    <span class="ml-3"
-                                                                        style="font-size: 10px;color: #000070;letter-spacing: 0.01em;line-height: 10px;">Upload
-                                                                        your Bank <br> Statement of Account</span>
-                                                                </div>
-                                                                <button type="submit" class="btn btn-primary mb-2 ml-2"
-                                                                    style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-12 col-lg-6 mt-3">
-                                                    {{-- BVN verification card --}}
-                                                    <div
-                                                        class="d-flex flex-row justify-content-center align-items-center accordion_cards bvnVerificationCard">
-                                                        <span class="d-block">BVN verification</span>
-                                                        <span class="d-block ml-5 accordion_arrow bvn_verification_arrow">
-                                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path
-                                                                    d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
-                                                                    fill="#000070" />
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-
-                                                    {{-- BVN verification content --}}
-                                                    <div class="accordion_content" id="bvnVerification"
-                                                        style="display: none;">
-                                                        <div class="mt-2">
-                                                            <form>
-                                                                @csrf
-                                                                <div class="form-row">
-                                                                    <div class="col-12 mt-1">
-                                                                        <label for="inlineFormInput" class="bvnConfidenceText">Your
-                                                                            BVN cannot be used to carry out any other
-                                                                            transaction from your Bank acount.</label>
-                                                                        <label for="inlineFormInput" class="needBvnTrx">Dantown
-                                                                            need your BVN to carry out naira transactions as
-                                                                            required by the CBN</label>
-                                                                    </div>
-                                                                    <div class="col">
-                                                                        <input type="text"
-                                                                            class="form-control otp_code_input"
-                                                                            placeholder="000000" style="width: 256px;">
-                                                                    </div>
-                                                                    <div class="col mt-2 mt-lg-0">
-                                                                        <button type="submit" class="btn btn-primary mb-2"
-                                                                            style="height:40px;width:78px;">Verify</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
                                                         </div>
-                                                    </div>
 
-                                                    {{-- ID verification card --}}
-                                                    <div
-                                                        class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-4">
-                                                        <span class="d-block">ID verification</span>
-                                                        <span class="d-block ml-5 accordion_arrow id_verification_arrow">
-                                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path
-                                                                    d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
-                                                                    fill="#000070" />
-                                                            </svg>
-                                                        </span>
-                                                    </div>
-                                                    {{-- BVN verification content --}}
-                                                    <div class="accordion_content" id="idVerification"
-                                                        style="display: none;">
-                                                        <div class="mt-2">
-                                                            <form>
-                                                                @csrf
-                                                                <div class="dropdown">
-                                                                    <a class="btn btn-secondary dropdown-toggle d-flex align-items-center justify-content-center select_id_type_dropdown"
-                                                                        href="#" role="button" id="dropdownMenuLink"
-                                                                        data-toggle="dropdown" aria-haspopup="true"
-                                                                        aria-expanded="false">
-                                                                        Select card type
-                                                                    </a>
+                                                        {{-- ID verification card --}}
+                                                        <div
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-4">
+                                                            <span class="d-block">ID verification</span>
+                                                            <span
+                                                                class="d-block ml-5 accordion_arrow id_verification_arrow">
+                                                                <svg width="20" height="20" viewBox="0 0 20 20"
+                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path
+                                                                        d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
+                                                                        fill="#000070" />
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                        {{-- BVN verification content --}}
+                                                        <div class="accordion_content" id="idVerification"
+                                                            style="display: none;">
+                                                            <div class="mt-2">
+                                                                <form>
+                                                                    @csrf
+                                                                    <div class="dropdown">
+                                                                        <a class="btn btn-secondary dropdown-toggle d-flex align-items-center justify-content-center select_id_type_dropdown"
+                                                                            href="#" role="button" id="dropdownMenuLink"
+                                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                                            aria-expanded="false">
+                                                                            Select card type
+                                                                        </a>
 
-                                                                    <div class="dropdown-menu"
-                                                                        aria-labelledby="dropdownMenuLink">
-                                                                        <a class="dropdown-item" href="#">Action</a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="d-flex justify-content-start">
-                                                                    <div class="d-flex flex-row flex-wrap flex-lg-nowrap justify-content-center justify-content-lg-start mt-3">
-                                                                        <div id="frontPhotoID"
-                                                                            class="text-center p-3 front_photo_card_box mr-2">
-                                                                            <input type="file" id="frontPhotoIdInput"
-                                                                                name="frontPhotoOfCard" />
-                                                                            <div>
-                                                                                <svg width="20" height="20"
-                                                                                    viewBox="0 0 20 20" fill="none"
-                                                                                    xmlns="http://www.w3.org/2000/svg">
-                                                                                    <path
-                                                                                        d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
-                                                                                        fill="#A6ACBE" />
-                                                                                </svg>
-                                                                            </div>
-                                                                            <span
-                                                                                class="d-block front_photo_card_text">Front
-                                                                                photo of your card</span>
+                                                                        <div class="dropdown-menu"
+                                                                            aria-labelledby="dropdownMenuLink">
+                                                                            <a class="dropdown-item" href="#">Action</a>
                                                                         </div>
-
-                                                                        <div id="backPhotoID"
-                                                                            class="text-center p-3 front_photo_card_box mr-2">
-                                                                            <input type="file" id="backPhotoIdInput"
-                                                                                name="backPhotoOfCard" />
-                                                                            <div>
-                                                                                <svg width="20" height="20"
-                                                                                    viewBox="0 0 20 20" fill="none"
-                                                                                    xmlns="http://www.w3.org/2000/svg">
-                                                                                    <path
-                                                                                        d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
-                                                                                        fill="#A6ACBE" />
-                                                                                </svg>
-                                                                            </div>
-                                                                            <span class="d-block front_photo_card_text">Back
-                                                                                photo of your card</span>
-                                                                        </div>
-                                                                        <button type="submit" class="btn btn-primary verifyIdSubmitBtn">Upload</button>
                                                                     </div>
-                                                                </div>
-                                                            </form>
+                                                                    <div class="d-flex justify-content-start">
+                                                                        <div
+                                                                            class="d-flex flex-row flex-wrap flex-lg-nowrap justify-content-center justify-content-lg-start mt-3">
+                                                                            <div id="frontPhotoID"
+                                                                                class="text-center p-3 front_photo_card_box mr-2">
+                                                                                <input type="file"
+                                                                                    id="frontPhotoIdInput"
+                                                                                    name="frontPhotoOfCard" />
+                                                                                <div>
+                                                                                    <svg width="20" height="20"
+                                                                                        viewBox="0 0 20 20" fill="none"
+                                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                                        <path
+                                                                                            d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
+                                                                                            fill="#A6ACBE" />
+                                                                                    </svg>
+                                                                                </div>
+                                                                                <span
+                                                                                    class="d-block front_photo_card_text">Front
+                                                                                    photo of your card</span>
+                                                                            </div>
+
+                                                                            <div id="backPhotoID"
+                                                                                class="text-center p-3 front_photo_card_box mr-2">
+                                                                                <input type="file" id="backPhotoIdInput"
+                                                                                    name="backPhotoOfCard" />
+                                                                                <div>
+                                                                                    <svg width="20" height="20"
+                                                                                        viewBox="0 0 20 20" fill="none"
+                                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                                        <path
+                                                                                            d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
+                                                                                            fill="#A6ACBE" />
+                                                                                    </svg>
+                                                                                </div>
+                                                                                <span
+                                                                                    class="d-block front_photo_card_text">Back
+                                                                                    photo of your card</span>
+                                                                            </div>
+                                                                            <button type="submit"
+                                                                                class="btn btn-primary verifyIdSubmitBtn">Upload</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                     </div>
 
 
@@ -699,6 +723,62 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="profilepicture_mobile">
+                            <span>jijfjfjfjftyrrtypiruotutyi</span>
+                            <span class="d-block text-center my-3" style="color: #000070;font-size:16px;">Makada
+                                Makada</span>
+                        </div>
+                        <div>
+                            <span class="d-block text-center" style="color: #676B87;">Wallet Balance</span>
+                            <span class="d-block text-center"
+                                style="color: #000070;font-size: 16px;font-weight: 600;">NGN800,000,333.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mx-2" style="flex:1;">
+                            <div
+                                class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center tab_active_mobile">
+                                Profile</div>
+                            <div
+                                class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center">
+                                Security</div>
+                            <div
+                                class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center">
+                                Notification</div>
+                            <div
+                                class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center">
+                                Limits</div>
+                        </div>
+                        <div id="mobile_profile_contents" class="container p-0">
+                            <div class="row">
+                                <div class="col-12 card mx-0 p-0 p-2" style="border-radius: 0px;border-radius: 5px;">
+                                    <div class="row py-1 my-1">
+                                        <div style="font-size: 14px;" class="col-3 col_name">Name</div>
+                                        <div class="col-9">Andrea Jolly</div>
+                                    </div>
+                                    <div class="row py-1 my-1">
+                                        <div style="font-size: 14px;" class="col-3 col_name">Email</div>
+                                        <div class="col-9">Andreajolly@gmail.com</div>
+                                    </div>
+                                    <div class="row py-1 my-1">
+                                        <div style="font-size: 14px;" class="col-3 col_name">Bank</div>
+                                        <div class="col-9">0724565537, Andrea Jolly, Access Bank</div>
+                                    </div>
+                                    <div class="row py-1 my-1">
+                                        <div style="font-size: 14px;" class="col-3 col_name">Mobile No</div>
+                                        <div class="col-9">08141894420</div>
+                                    </div>
+                                    <div class="row py-1 my-1">
+                                        <div style="font-size: 14px;" class="col-3 col_name">Status</div>
+                                        <div class="col-9">Active</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 

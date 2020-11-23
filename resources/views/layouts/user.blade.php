@@ -127,6 +127,7 @@ if (Auth::user()->nairaWallet) {
                     </div>
                 </div>
                 <div class="app-header__content">
+
                     <div class="app-header-left">
                         <div class="col  ml-3 ">
                            <a href="{{route('user.naira-wallet')}}" title="View wallet">
@@ -142,8 +143,8 @@ if (Auth::user()->nairaWallet) {
                         </div>
                     </div>
 
-                    <div class="mx-auto">
-                        <ul class="nav">
+                    <div class="quick_menu_btns">
+                        <ul class="nav d-flex">
                             <li data-toggle="modal" id="quickTopUpLink" class="nav-item d-flex justify-content-center align-items-center mx-2" style="font-size:14px;font-weight: 500;background: #000070;border-radius: 30px;height:40px;width:150px;">
                                 <a class="nav-link text-white" href="#">Quick Top up</a>
                             </li>
@@ -157,6 +158,7 @@ if (Auth::user()->nairaWallet) {
                             </li>
                         </ul>
                     </div>
+
                     <div class="app-header-right">
                         <div class="header-btn-lg pr-0">
                             <div class="widget-content p-0">
@@ -216,6 +218,7 @@ if (Auth::user()->nairaWallet) {
                             </div>
                         </div>
                     </div>
+                    
                 </div>
                 <div class="app-header__menu">
                     <div class="btn-group">

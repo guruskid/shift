@@ -1,9 +1,9 @@
 
-<div class="modal" id="dantownTodantownModal" tabindex="-1" style="background-color: #a9a9a994;display:none;">
+<div class="modal dtdModal" id="dantownTodantownModal" tabindex="-1" style="display:none;overflow-y:scroll;">
     <div class="modal-dialog">
-        <div class="modal-content modal-content-custom quickrecharge_modal" style="margin-top:90px;">
+        <div class="modal-content modal-content-custom quickrecharge_modal" style="margin-top:80px;">
 
-            <div id="modal_container_content" class="container py-4">
+            <div id="modal_container_content" class="container modal_container_content py-4">
                 <div class="d-flex justify-content-center mb-4">
                     <span class="d-block text-center" style="color: #000070;font-size: 20px;font-weight: 500;">Dantown to Dantown</span>
                     <span class="d-block" id="closedantownTodantownModal" data-dismiss="modal" style="cursor: pointer;position:relative;left:160px;">
@@ -16,26 +16,30 @@
                         </svg>
                     </span>
                 </div>
-                <div style="position: relative;left:20%;">
+                <div class="dtdform_container">
                     <form action="" method="post">
                         @csrf
-                        <div class="form-group" style="width: 340px;">
+                        <div class="form-group">
                             <label for="account_number" style="color: #000070;font-size: 16px;">Account number</label>
                             <input type="text" class="form-control" name="account_number" id="account_number" />
                         </div>
-                        <div class="form-group" style="width: 340px;">
+                        <div class="form-group">
                             <label for="account_number" style="color: #000070;font-size: 16px;">Account name</label>
                             <input type="text" class="form-control" readonly name="account_number" id="account_number" />
                         </div>
-                        <div class="form-group" style="width: 340px;">
+                        <div class="form-group">
                             <label for="account_number" style="color: #000070;font-size: 16px;">Amount</label>
                             <input type="text" class="form-control" name="account_number" placeholder="0000000000" id="account_number" />
                         </div>
-                        <div class="form-group" style="width: 340px;">
+                        <div class="form-group">
                             <label for="narration" style="color: #000070;font-size: 16px;">Narration</label>
                             <textarea name="description" class="form-control" id="narration" cols="10" rows="3" style=resize:none;></textarea>
                         </div>
-                        <button type="submit" class="btn text-white py-2 mt-2" style="background-color: #000070;width:340px;">Confirm</button>
+                        <div class="form-group">
+                            <label for="pin" style="color: #000070;font-size: 16px;">Pin</label>
+                            <input type="text" class="form-control" name="pin" id="pin" />
+                        </div>
+                        <button type="submit" class="btn text-white py-2 mt-2 dtd_confirm_btn">Confirm</button>
                     </form>
                 </div>
             </div>
