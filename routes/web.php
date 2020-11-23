@@ -4,6 +4,7 @@ use App\Mail\UserRegistered;
 use App\NairaTransaction;
 use Illuminate\Support\Facades\Mail;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,15 +28,19 @@ Route::get('/', function () {
 Route::get('/cardcalculator', function () {
     return view('newpages.cardcalculator');
 });
+
 Route::get('/transaction', function () {
     return view('newpages.Transactionscreen');
 });
+
 Route::get('/bitcoin', function () {
     return view('newpages.bitcoin');
 });
+
 Route::get('/ethereum', function () {
     return view('newpages.ethereumscreen');
 });
+
 Route::get('/airtocash', function () {
     return view('newpages.airtimetocash');
 });
@@ -55,7 +60,7 @@ Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
 
-
+//Mobile and tab done
 Route::get('/choosewallet', function () {
     return view('newpages.choosewallet');
 });
@@ -65,12 +70,14 @@ Route::get('/walletpage', function () {
     return view('newpages.walletpage');
 });
 
+//Mobile and tab done
 Route::get('/nairawalletmain', function () {
     return view('newpages.nairawalletmain');
 });
-Route::get('/nairawalletdtodconfirm', function () {
-    return view('newpages.nairawalletdtodconfirm');
-});
+
+// Route::get('/nairawalletdtodconfirm', function () {
+//     return view('newpages.nairawalletdtodconfirm');
+// });
 
 //Mobile and tab screen done
 Route::get('/recharge', function () {

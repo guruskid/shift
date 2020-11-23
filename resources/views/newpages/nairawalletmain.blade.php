@@ -120,7 +120,6 @@
                                                 @include('newpages.tabs.naira-transfer-tab')
                                                 @include('newpages.tabs.naira-withdraw-tab')
                                                 @include('newpages.tabs.naira-deposit-tab')
-
                                                 
 
                                                 {{-- Naira transfer modal --}}
@@ -129,7 +128,7 @@
         
                                         </div>
                                     </div>
-                                    <div class="col-12 col-lg-6 mt-4" style="border: 1px solid #EFF4F6;border-radius:10px;">
+                                    <div class="col-12 col-lg-6 pt-2 nairawalletmain__transactionhistory-container">
                                         <span class="d-block txn_history_title mt-3">Transaction history</span>
                                         <div class="mt-3" style="width: 100%;border: 1px solid #EFEFF8;"></div>
                                         <div class="table-responsive">

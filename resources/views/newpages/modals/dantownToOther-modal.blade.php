@@ -1,13 +1,12 @@
-<div class="modal" id="dantownToOtherModal" tabindex="-1" style="background-color: #a9a9a994;display:none;">
+<div class="modal dantownToOtherModal" id="dantownToOtherModal" tabindex="-1" style="display:none;">
     <div class="modal-dialog">
         <div class="modal-content modal-content-custom quickrecharge_modal" style="margin-top:90px;">
 
             <div id="modal_container_content" class="container py-4">
-                <div class="d-flex justify-content-center mb-4">
-                    <span class="d-block text-center" style="color: #000070;font-size: 20px;font-weight: 500;">Dantown to other
+                <div class="d-flex justify-content-between justify-content-lg-center mb-4">
+                    <span class="d-block text-center">Dantown to other
                         Banks</span>
-                    <span class="d-block" id="closedantownToOtherModal" data-dismiss="modal"
-                        style="cursor: pointer;position:relative;left:160px;">
+                    <span class="d-block closeBtn" id="closedantownToOtherModal" data-dismiss="modal">
                         <svg width="18" height="18" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g opacity="0.4">
                                 <path
@@ -21,11 +20,11 @@
                     <form action="" method="post">
                         @csrf
                         <div class="form-row mb-3">
-                            <div class="col">
+                            <div class="col-12 col-md">
                                 <label for="bankname" style="color: #000070;font-size: 16px;">Bank name</label>
                                 <input type="text" class="form-control" id="bankname">
                             </div>
-                            <div class="col">
+                            <div class="col-12 col-md mt-2 md-md-0">
                                 <label for="account_number" style="color: #000070;font-size: 16px;">Account
                                     number</label>
                                 <input type="text" class="form-control" name="account_number" id="account_number" />
