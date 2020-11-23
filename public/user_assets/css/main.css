@@ -1225,6 +1225,25 @@ width:93%;
 
 
 @media (max-width: 639px) {
+    .col_name {
+        color: rgba(0, 0, 112, 0.75);
+    }
+    .profile_tab_title_mobile {
+        border-radius: 5px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+        width: 75px;
+        height: 36px;
+        background-color: #fff;
+        font-size: 13px;
+        /* margin-right: auto 10px; */
+    }
+    .tab_active_mobile {
+        background: #000070;
+        color: #fff;
+    }
+    
+
     
     .logos_assets{
         width: 70px;
