@@ -66,7 +66,7 @@
                                     </div>
                                 </div>
                                 @else
-                                
+
                                 <div class="col-md-4 col-lg-3 col-6 col-sm-6 my-3">
                                     <div class="card card-body text-center text-custom">
                                         <img src="{{asset('svg/naira.svg')}}" style="height: 40px; width: 40px"

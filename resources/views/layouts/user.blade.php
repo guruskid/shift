@@ -218,7 +218,7 @@ if (Auth::user()->nairaWallet) {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="app-header__menu">
                     <div class="btn-group">

@@ -192,7 +192,7 @@ class NairaWalletController extends Controller
             } */
 
             /* get bank details */
-            $bd = Account::where('id', $r->account_id)->first();
+            $bd = Account::find($r->account_id);
             if (!$bd) {
                 return redirect()->back()->with(['error' => 'Error getting account details']);
             }

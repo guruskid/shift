@@ -15,7 +15,7 @@ class PortfolioController extends Controller
     {
         $naira = Auth::user()->nairaWallet()->count();
         $nw = Auth::user()->nairaWallet;
-        return view('user.portfolio', compact(['naira', 'nw' ]) );
+        return view('newpages.choosewallet', compact(['naira', 'nw' ]) );
     }
 
 
@@ -41,6 +41,6 @@ class PortfolioController extends Controller
 
         }
         $ref = \Str::random(2) . time();
-        return view('user.naira_wallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref' ]) );
+        return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref' ]) );
     }
 }

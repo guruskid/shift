@@ -61,18 +61,18 @@ Route::get('/smartbudget', function () {
 });
 
 //Mobile and tab done
-Route::get('/choosewallet', function () {
+/* Route::get('/choosewallet', function () {
     return view('newpages.choosewallet');
-});
+}); */
 
 //Mobile and tab screen done
 Route::get('/walletpage', function () {
-    return view('newpages.walletpage');
+    return view('newpages.bitcoin-wallet');
 });
 
 //Mobile and tab done
 Route::get('/nairawalletmain', function () {
-    return view('newpages.nairawalletmain');
+    return view('newpages.nairawallet');
 });
 
 // Route::get('/nairawalletdtodconfirm', function () {
