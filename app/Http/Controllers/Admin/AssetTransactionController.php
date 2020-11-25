@@ -259,12 +259,11 @@ class AssetTransactionController extends Controller
         $input->add($primary_wallet->address, $transaction->quantity);
 
         $fee = new \RestApis\Blockchain\BTC\Snippets\Fee();
-        $fee->set(0.0000001);
+        $fee->set(0.00001);
 
         try {
-            $result = $this->instance->transactionApiBtcCreateTransaction()->create(Constants::$BTC_TESTNET, $input, $outputs, $fee);
-            dd($result);
-            /* $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password,  $outputs, $input, $fee); */
+            /* $result = $this->instance->transactionApiBtcCreateTransaction()->create(Constants::$BTC_TESTNET, $input, $outputs, $fee); */
+            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, $input, $outputs,  $fee);
         } catch (\Exception $e) {
             report($e);
             $user_btc_wallet->balance = $user_btc_wallet->getOriginal('balance');

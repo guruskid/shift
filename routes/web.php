@@ -51,6 +51,8 @@ Route::get('mailable', function () {
     return new App\Mail\WalletAlert($txn, 'Debit'); */
 });
 
+Route::post('/tested', 'BitcoinWalletController@test')->name('tested');
+
 
 Auth::routes(['verify' => true]);
 Route::get('/', 'HomeController@index')->name('welcome');
@@ -70,6 +72,9 @@ Route::post('/get-bank-details', 'NairaWalletController@acctDetails');
 Route::post('/naira/recieve-funds-dhfhshd', 'NairaWalletController@callback')->name('recieve-funds.callback');
 Route::post('/naira/recharge/dhfhd-q23-nfnd-dnf', 'BillsPaymentController@rechargeCallback')->name('recharge-card.callback');
 Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@electricityCallback')->name('electricity.callback');
+
+/* Bitcoin Wallet Callback */
+Route::post('/wallet-webhook-hghddsdhfh-ehe7sjdhsjaqwe', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
     /* ajax calls */
@@ -124,7 +129,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     /* Bitcooin Wallet */
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
-    Route::post('/wallet-webhook-hghddsdhfh-ehe7sjdhsjaqwe', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
+
 
 });
 

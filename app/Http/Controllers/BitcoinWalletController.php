@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BitcoinTransaction;
 use App\BitcoinWallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,11 @@ class BitcoinWalletController extends Controller
     public function __construct()
     {
         $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
+    }
+
+    public function test(Request $request)
+    {
+        \Log::info('app.requests', ['request' => $request->all()]);
     }
 
 
@@ -53,27 +59,12 @@ class BitcoinWalletController extends Controller
     public function webhook(Request $request)
     {
         try {
-           /*  $txn = BitcoinTransaction::create([
-                'user_id' => 19,
-                'primary_wallet_id' => 1,
-                'wallet_id' => $request->address,
-                'hash' => $request->txid,
-                'credit' => 0,
-                'fee' => 0,
-                'charge' => 0,
-                'previous_balance' => 0,
-                'current_balance' => 0,
-                'transaction_type_id' => 19,
-                'counterparty' => 'Shean Winston',
-                'narration' => 'Testing the codes',
-                'confirmations' => $request->confirmations
-            ]); */
-
-            $btc_transaction = new BitcoinTransactio();
+            \Log::info('app.requests', ['request' => $request]);
+            /* $btc_transaction = new BitcoinTransaction();
             $btc_transaction->user_id = 19;
             $btc_transaction->primary_wallet_id = 1;
-            $btc_transaction->wallet_id = $request->address; //The wallet of the owner user
-            $btc_transaction->hash = $request->txid;
+            $btc_transaction->wallet_id = 'so '; //The wallet of the owner user
+            $btc_transaction->hash = 'here ';
             $btc_transaction->credit = 2;
             $btc_transaction->fee = 0.00001; //Change to actual fee
             $btc_transaction->charge = 0.0001; //Change to feee from admin
@@ -81,11 +72,20 @@ class BitcoinWalletController extends Controller
             $btc_transaction->current_balance = 0;
             $btc_transaction->transaction_type_id = 19;
             $btc_transaction->counterparty = 'Dantown Assets';
-            $btc_transaction->narration = 'Approved by';
-            $btc_transaction->confirmations = $request->confirmations;
-            $btc_transaction->save();
+            $btc_transaction->narration = 'Approved by '.$request['confirmations'];
+            $btc_transaction->confirmations = 99;
+            $btc_transaction->save(); */
         } catch (\Exception $e) {
             report($e);
         }
+
+        $btc_txn = BitcoinTransaction::where('hash', $request->txid)->first();
+        if ($btc_txn == null) { //New Transaction e.g recieve
+            # code...
+        } else { //Old transaction like Trade payment and recieve transaction waiting for confirmation
+            $btc_txn->confirmations = $request->confirmations;
+            /* if confirmations are up to 6 and status is pending, Update users balance and set to success */
+        }
+
     }
 }
