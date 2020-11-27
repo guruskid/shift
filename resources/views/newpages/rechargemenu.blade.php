@@ -53,7 +53,8 @@
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price">₦56,758</span>
+                                        <span
+                                            class="d-block price">₦{{ number_format(Auth::user()->nairaWallet->amount) }}8</span>
                                     </div>
                                 </div>
                             </div>
@@ -66,46 +67,73 @@
                                 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-2"
                                     style="">
                                     <div class="list-cards-title primary-color" style="line-height: 40px;">
-                                        <span class="ml-1 rechargemenu_subtitle" style="color: rgba(0, 0, 112, 0.75);">Recharge and pay your utility bills</span>
+                                        <span class="ml-1 rechargemenu_subtitle"
+                                            style="color: rgba(0, 0, 112, 0.75);">Recharge and pay your utility
+                                            bills</span>
                                     </div>
                                 </div>
-                                <div class="d-flex flex-row flex-wrap justify-content-between justify-content-lg-start py-4 px-2">
-                                    <div class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
-                                        <div>
-                                        <img class="img-fluid rechargemenu_icons" src="{{asset('svg/airtime-icon.svg')}}" alt="" />                                                                                          
+                                <div
+                                    class="d-flex flex-row flex-wrap justify-content-between justify-content-lg-start py-4 px-2">
+                                    <a href="{{ route('user.recharge') }}">
+                                        <div
+                                            class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
+                                            <div>
+                                                <img class="img-fluid rechargemenu_icons"
+                                                    src="{{asset('svg/airtime-icon.svg')}}" alt="" />
+                                            </div>
+                                            <span class="d-block bills_type_text">Buy Airtime</span>
                                         </div>
-                                        <span class="d-block bills_type_text">Buy Airtime</span>
-                                    </div>
-                                    <div class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
-                                        <div>
-                                            <img class="img-fluid rechargemenu_icons" src="{{asset('svg/airtimedata-icon.svg')}}" alt="" />                                              
+                                    </a>
+                                    <a href="{{ route('user.data') }}">
+                                        <div
+                                            class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
+                                            <div>
+                                                <img class="img-fluid rechargemenu_icons"
+                                                    src="{{asset('svg/airtimedata-icon.svg')}}" alt="" />
+                                            </div>
+                                            <span class="d-block bills_type_text">Data Subscription</span>
                                         </div>
-                                        <span class="d-block bills_type_text">Data Subscription</span>
-                                    </div>
-                                    <div class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
+                                    </a>
+                                    <a href="{{ route('user.airtime-to-cash') }}">
+                                        <div
+                                        class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
                                         <div>
-                                            <img class="img-fluid rechargemenu_icons" src="{{asset('svg/airtimetocash-icon.svg')}}" alt="" />                                                                                  
+                                            <img class="img-fluid rechargemenu_icons"
+                                                src="{{asset('svg/airtimetocash-icon.svg')}}" alt="" />
                                         </div>
                                         <span class="d-block bills_type_text">Airtime to cash</span>
                                     </div>
-                                    <div class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
-                                        <div>
-                                            <img class="img-fluid rechargemenu_icons" src="{{asset('svg/discounted-icon.svg')}}" alt="" />                                                                                                                                        
+                                    </a>
+                                    <a href="{{ route('user.discount-airtime') }}">
+                                        <div
+                                            class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
+                                            <div>
+                                                <img class="img-fluid rechargemenu_icons"
+                                                    src="{{asset('svg/discounted-icon.svg')}}" alt="" />
+                                            </div>
+                                            <span class="d-block bills_type_text">Buy Discounted Airtime</span>
                                         </div>
-                                        <span class="d-block bills_type_text">Buy Discounted Airtime</span>
-                                    </div>
-                                    <div class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
-                                        <div>
-                                            <img class="img-fluid rechargemenu_icons" src="{{asset('svg/cablesub-icon.svg')}}" alt="" />                                                                                                                                                                                       
+                                    </a>
+                                    <a href="{{ route('user.paytv') }}">
+                                        <div
+                                            class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
+                                            <div>
+                                                <img class="img-fluid rechargemenu_icons"
+                                                    src="{{asset('svg/cablesub-icon.svg')}}" alt="" />
+                                            </div>
+                                            <span class="d-block bills_type_text">Cable Subscription and TV</span>
                                         </div>
-                                        <span class="d-block bills_type_text">Cable Subscription and TV</span>
-                                    </div>
-                                    <div class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
-                                        <div>
-                                            <img class="img-fluid rechargemenu_icons" src="{{asset('svg/electricitybills-icon.svg')}}" alt="" />                                                                                                                                                                                                                                 
+                                    </a>
+                                    <a href="{{ route('user.electricity') }}">
+                                        <div
+                                            class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
+                                            <div>
+                                                <img class="img-fluid rechargemenu_icons"
+                                                    src="{{asset('svg/electricitybills-icon.svg')}}" alt="" />
+                                            </div>
+                                            <span class="d-block bills_type_text">Electricity Bills</span>
                                         </div>
-                                        <span class="d-block bills_type_text">Electricity Bills</span>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>

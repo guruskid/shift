@@ -50,7 +50,7 @@ class BillsPaymentController extends Controller
         $providers = $body->servicecategory;
 
         $ref = \Str::random(2) . time();
-        return view('user.bills', compact(['billers', 'providers', 'ref' ]) );
+        return view('newpages.rechargemenu', compact(['billers', 'providers', 'ref' ]) );
     }
 
 
@@ -180,12 +180,20 @@ class BillsPaymentController extends Controller
 
     public function airtime(Request $r)
     {
+        /* dd($r->all()); */
         $r->validate([
             'network' => 'required',
-            'phone' => 'required',
             'amount' => 'required',
             'password' => 'required',
+            'reference' => 'required|unique:naira_transactions,reference',
+            /* 'phone' => 'exclude_if:rechargetype,self|required', */
         ]);
+
+        if ($r->rechargetype == 'self') {
+            $phone = Auth::user()->phone;
+        }else{
+            $phone = $r->phone;
+        }
 
         $callback = route('recharge-card.callback');
         $n = Auth::user()->nairaWallet;
@@ -195,7 +203,7 @@ class BillsPaymentController extends Controller
         }
 
         $amount = $r->amount;
-        $reference = $r->ref;
+        $reference = $r->reference;
         if ($amount > $n->amount) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
@@ -204,9 +212,9 @@ class BillsPaymentController extends Controller
         $url = env('RUBBIES_API') . "/airtimepurchase";
         $response = $client->request('POST', $url, [
             'json' => [
-                "mobilenumber" => $r->phone,
-                "product" => $r->network,
-                "amount" => $r->amount,
+                "mobilenumber" => '07067186987',
+                "product" => 'mtn',
+                "amount" => '10',
                 "reference" => $reference,
                 "callbackurl" => $callback
             ],
