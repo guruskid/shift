@@ -206,7 +206,6 @@ $("#backPhotoID").on("click", function() {
     document.getElementById("backPhotoIdInput").click();
 });
 
-
 // var chart = new CanvasJS.Chart("chartContainer", {
 //     animationEnabled: true,
 //     title: {
@@ -234,181 +233,274 @@ $("#backPhotoID").on("click", function() {
 // });
 // chart.render();
 
-$("#quickTopUpLink").on("click", function(){
-    if($("#quickTopUpModal").css("display") == "none") {
-        $("#quickTopUpModal").css("display","block")
+$("#quickTopUpLink").on("click", function() {
+    if ($("#quickTopUpModal").css("display") == "none") {
+        $("#quickTopUpModal").css("display", "block");
     } else {
-        $("#quickTopUpModal").css("display","none")
+        $("#quickTopUpModal").css("display", "none");
     }
-})
-$("#closeQuickTopUp").on("click", function(){
-    $("#quickTopUpModal").css("display","none")
-})
-$("#quickWithdrawalLink").on("click", function(){
-    $("#quickwithdrawalModal").css("display","block")
-})
-$("#closeQuickWithdrawal").on("click", function(){
-    $("#quickwithdrawalModal").css("display","none")
-})
-$("#closeQuickTopUp").on("click", function(){
-    $("#quickwithdrawalModal").css("display","none")
-})
+});
+$("#closeQuickTopUp").on("click", function() {
+    $("#quickTopUpModal").css("display", "none");
+});
+$("#quickWithdrawalLink").on("click", function() {
+    $("#quickwithdrawalModal").css("display", "block");
+});
+$("#closeQuickWithdrawal").on("click", function() {
+    $("#quickwithdrawalModal").css("display", "none");
+});
+$("#closeQuickTopUp").on("click", function() {
+    $("#quickwithdrawalModal").css("display", "none");
+});
 
-$(".quickcard_networks").on("click", function(){
-    $(".quickcard_networks").css("border","0px")
-    $(this).css("border","3px solid #000070")
-    $("#airtime_network").val($(this).attr('id'))
-})
+$(".quickcard_networks").on("click", function() {
+    $(".quickcard_networks").css("border", "0px");
+    $(this).css("border", "3px solid #000070");
+    $("#airtime_network").val($(this).attr("id"));
+});
 
-$("#showwdpin").on("click", function(){
-    if($("#wdpin").attr('type') != 'text') {
-    $("#wdpin").attr('type', 'text')
+$("#showwdpin").on("click", function() {
+    if ($("#wdpin").attr("type") != "text") {
+        $("#wdpin").attr("type", "text");
     } else {
-        $("#wdpin").attr('type', 'password')
+        $("#wdpin").attr("type", "password");
     }
-})
-
+});
 
 function copywalletaddress(receipientAddress) {
     var copyText = document.getElementById(receipientAddress);
-  /* Select the text field */
-  copyText.select();
-  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
-  /* Copy the text inside the text field */
-  document.execCommand("copy");
-  /* Alert the copied text */
-  alert("Copied the text: " + copyText.value);
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+    /* Alert the copied text */
+    alert("Copied the text: " + copyText.value);
 }
-
 
 function copyAcctNumber(acct_number_input) {
     var copyText = document.getElementById(acct_number_input);
-  /* Select the text field */
-  copyText.select();
-  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
-  /* Copy the text inside the text field */
-  document.execCommand("copy");
-  /* Alert the copied text */
-  alert("Copied the text: " + copyText.value);
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+    /* Alert the copied text */
+    alert("Copied the text: " + copyText.value);
 }
 
-$("#togglepinvisibility").on("click",function(){
-    if($("#pinfortrx").attr('type') == "password") {
-        $("#pinfortrx").attr('type','text')
+$("#togglepinvisibility").on("click", function() {
+    if ($("#pinfortrx").attr("type") == "password") {
+        $("#pinfortrx").attr("type", "text");
     } else {
-        $("#togglepinvisibility").css("display","none")
-        $("#togglepinvisibility").css("display","none")
-        $("#pinfortrx").attr('type','password')
+        $("#togglepinvisibility").css("display", "none");
+        $("#togglepinvisibility").css("display", "none");
+        $("#pinfortrx").attr("type", "password");
     }
-})
-$("#removeobscure_pwd").on("click",function(){
-   if($("#password_field").attr('type') == "password") {
-    $("#password_field").attr('type','text')
-    $("#toggleshowpassword").attr("src","svg/showpassword.svg")
-   } else {
-    $("#password_field").attr('type','password')
-    $("#toggleshowpassword").attr("src","svg/obscure-password.svg")
-   }
-})
-$(".bvnVerificationCard").on("click", function(){
-    if($("#bvnVerification").css("display") != "none") {
-        $(".accordion_full_container").css("height","603px")
+});
+$("#removeobscure_pwd").on("click", function() {
+    if ($("#password_field").attr("type") == "password") {
+        $("#password_field").attr("type", "text");
+        $("#toggleshowpassword").attr("src", "svg/showpassword.svg");
     } else {
-        $(".accordion_full_container").css("height","520px")
+        $("#password_field").attr("type", "password");
+        $("#toggleshowpassword").attr("src", "svg/obscure-password.svg");
     }
-})
-$(".idVerificationCard").on("click", function(){
-    if($("#idVerification").css("display") != "none") {
-        $(".accordion_full_container").css("height","730px")
+});
+$(".bvnVerificationCard").on("click", function() {
+    if ($("#bvnVerification").css("display") != "none") {
+        $(".accordion_full_container").css("height", "603px");
     } else {
-        $(".accordion_full_container").css("height","520px")
+        $(".accordion_full_container").css("height", "520px");
     }
-})
+});
+$(".idVerificationCard").on("click", function() {
+    if ($("#idVerification").css("display") != "none") {
+        $(".accordion_full_container").css("height", "730px");
+    } else {
+        $(".accordion_full_container").css("height", "520px");
+    }
+});
 
 //==============|| Bitcoin Wallet page tabs =======\\
 
-$("#bitcoin_send").on("click", function(){
-    $(".wallet_trx_tabs").css("display","none")
-    $("#bitcoin_receive").removeClass("walletpage_menu-active")
-    $(this).addClass("walletpage_menu-active")
-    if($("#bitcoin_wallet_send_tab").css('display') == "none") {
-        $("#bitcoin_wallet_send_tab").css('display','block')
+$("#bitcoin_send").on("click", function() {
+    $(".wallet_trx_tabs").css("display", "none");
+    $("#bitcoin_receive").removeClass("walletpage_menu-active");
+    $(this).addClass("walletpage_menu-active");
+    if ($("#bitcoin_wallet_send_tab").css("display") == "none") {
+        $("#bitcoin_wallet_send_tab").css("display", "block");
     }
-})
-$("#bitcoin_receive").on("click", function(){
-    $(".wallet_trx_tabs").css("display","none")
-    $("#bitcoin_send").removeClass("walletpage_menu-active")
-    $(this).addClass("walletpage_menu-active")
-    if($("#bitcoin_wallet_receive_tab").css('display') == "none") {
-        $("#bitcoin_wallet_receive_tab").css('display','block')
+});
+$("#bitcoin_receive").on("click", function() {
+    $(".wallet_trx_tabs").css("display", "none");
+    $("#bitcoin_send").removeClass("walletpage_menu-active");
+    $(this).addClass("walletpage_menu-active");
+    if ($("#bitcoin_wallet_receive_tab").css("display") == "none") {
+        $("#bitcoin_wallet_receive_tab").css("display", "block");
     }
-})
+});
 
 //Dantown to dantown modal
-$("#naira_d_to_d").on("click", function(){
-    $("#dantownTodantownModal").css("display","block")
-})
-$("#closedantownTodantownModal").on("click", function(){
-    $("#dantownTodantownModal").css("display","none")
-})
+$("#naira_d_to_d").on("click", function() {
+    $("#dantownTodantownModal").css("display", "block");
+});
+$("#closedantownTodantownModal").on("click", function() {
+    $("#dantownTodantownModal").css("display", "none");
+});
 
 // Dantown to other account
-$("#naira_d_to_o").on("click", function(){
-    $("#dantownToOtherModal").css("display","block")
-})
-$("#closedantownToOtherModal").on("click", function(){
-    $("#dantownToOtherModal").css("display","none")
-})
+$("#naira_d_to_o").on("click", function() {
+    $("#dantownToOtherModal").css("display", "block");
+});
+$("#closedantownToOtherModal").on("click", function() {
+    $("#dantownToOtherModal").css("display", "none");
+});
 
 //Naira transfer
-$("#naira_transfer").on("click", function(){
-    $("#nairaWithdrawTab").css('display','none')
-    $("#nairaDepositTab").css("display","none")
-    $("#nairawallet_trx_type_list").addClass("d-flex")
-    $(".naira_menu").removeClass("walletpage_menu-active")
-    $(this).addClass("walletpage_menu-active")
-})
+$("#naira_transfer").on("click", function() {
+    $("#nairaWithdrawTab").css("display", "none");
+    $("#nairaDepositTab").css("display", "none");
+    $("#nairawallet_trx_type_list").addClass("d-flex");
+    $(".naira_menu").removeClass("walletpage_menu-active");
+    $(this).addClass("walletpage_menu-active");
+});
 
 //Naira withdraw
-$("#naira_withdraw").on("click", function(){
-    $(".naira_menu").removeClass("walletpage_menu-active")
-    $("#nairawallet_trx_type_list").removeClass("d-flex")
-    $("#nairaDepositTab").css("display","none")
-    $(this).addClass("walletpage_menu-active")
-    $("#nairaWithdrawTab").css('display','block')
-    $("#content_bg").css('height','800px')
-})
+$("#naira_withdraw").on("click", function() {
+    $(".naira_menu").removeClass("walletpage_menu-active");
+    $("#nairawallet_trx_type_list").removeClass("d-flex");
+    $("#nairaDepositTab").css("display", "none");
+    $(this).addClass("walletpage_menu-active");
+    $("#nairaWithdrawTab").css("display", "block");
+    $("#content_bg").css("height", "800px");
+});
 
 //Naira deposit
-$("#naira_deposit").on("click", function(){
-    $(".naira_menu").removeClass("walletpage_menu-active")
-    $("#nairawallet_trx_type_list").removeClass("d-flex")
-    $("#nairaDepositTab").css("display","block")
-    $(this).addClass("walletpage_menu-active")
+$("#naira_deposit").on("click", function() {
+    $(".naira_menu").removeClass("walletpage_menu-active");
+    $("#nairawallet_trx_type_list").removeClass("d-flex");
+    $("#nairaDepositTab").css("display", "block");
+    $(this).addClass("walletpage_menu-active");
     // $("#nairaWithdrawTab").css('display','block')
     // $("#content_bg").css('height','800px')
+});
+
+$(".airtime_network_card").on("click", function() {
+    $(".airtime_network_card").removeClass("active_airtime_choice");
+    $(this).addClass("active_airtime_choice");
+    $("#airtimechoice").val($(this).attr("alt"));
+});
+
+$("#swapcountrycode").on("change", function() {
+    let dialcodeval = $(this)
+        .children("option:selected")
+        .val()
+        .trim();
+    $("#dcode").val(dialcodeval);
+});
+$("#rechargebtn").on("click", function() {
+    let code = $("#dcode").val();
+    let phone = $("#phonenumber").val();
+    let fullNo = code + phone.substring(1);
+    $("#fullphonenumber").val(fullNo);
+});
+$("#buydata").on("change", function() {
+    $("#otherphonenumber").css("display", "none");
+});
+$("#buyother").on("change", function() {
+    $("#otherphonenumber").css("display", "block");
+});
+
+$("#mobile_phone_verification_card").on("click", function() {
+    if ($("#mobile_phone_verification_card_content").hasClass("d-none")) {
+        $("#mobile_phone_verification_card_content").removeClass("d-none");
+        $("#mobile_phone_verification_card_content").addClass("d-flex");
+    } else {
+        $("#mobile_phone_verification_card_content").addClass("d-none");
+        $("#mobile_phone_verification_card_content").removeClass("d-flex");
+    }
+});
+
+$("#mobile_address_verification_card").on("click", function() {
+    if ($("#mobile_address_verification_card_content").hasClass("d-none")) {
+        $("#mobile_address_verification_card_content").removeClass("d-none");
+        $("#mobile_address_verification_card_content").addClass("d-flex");
+        $(".accordion_full_container").css("height","540px")
+    } else {
+        $("#mobile_address_verification_card_content").addClass("d-none");
+        $("#mobile_address_verification_card_content").removeClass("d-flex");
+        $(".accordion_full_container").css("height","520px")
+    }
 })
 
-$(".airtime_network_card").on("click", function(){
-    $(".airtime_network_card").removeClass('active_airtime_choice')
-    $(this).addClass('active_airtime_choice')
-    $("#airtimechoice").val($(this).attr('alt'))
+
+$("#mobile_bvn_verification_card").on("click", function() {
+    if ($("#bvn_verification_card_content").hasClass("d-none")) {
+        $("#bvn_verification_card_content").removeClass("d-none")
+        $("#bvn_verification_card_content").addClass("d-flex")
+        $(".accordion_full_container").css("height","550px")
+    } else {
+        $("#bvn_verification_card_content").addClass("d-none")
+        $("#bvn_verification_card_content").removeClass("d-flex")
+        // $(".accordion_full_container").css("height","120px")
+    }
 })
 
-$("#swapcountrycode").on("change", function(){
-    let dialcodeval = $(this).children("option:selected").val().trim()
-    $("#dcode").val(dialcodeval)
+
+$("#mobile_id_verification_card").on("click", function() {
+    if ($("#id_verification_card_content").hasClass("d-none")) {
+        $("#id_verification_card_content").removeClass("d-none")
+        $("#id_verification_card_content").addClass("d-flex")
+        $(".accordion_full_container").css("height","550px")
+    } else {
+        $("#id_verification_card_content").addClass("d-none")
+        $("#id_verification_card_content").removeClass("d-flex")
+        // $(".accordion_full_container").css("height","120px")
+    }
+})  
+
+$("#mobile_front_photo_click").on("click", function(){
+    document.getElementById("uploadFrontPhotoInputMobile").click()
+})  
+
+$("#mobile_back_photo_click").on("click", function(){
+    document.getElementById("uploadBackPhotoInputMobile").click()
 })
-$("#rechargebtn").on("click", function(){
-    let code = $("#dcode").val()
-    let phone = $("#phonenumber").val()
-    let fullNo = code+phone.substring(1)
-    $("#fullphonenumber").val(fullNo)
-})
-$("#buydata").on("change", function(){
-    $("#otherphonenumber").css("display","none")
-})
-$("#buyother").on("change", function(){
-    $("#otherphonenumber").css("display","block")
-})
+
+
+function switchTab(f) {
+    switch (f) {
+        case 'mobile_profile_tab':
+            $(".mobile_tab_contents").css("display","none")
+            $(".profile_tab_title_mobile").removeClass('tab_active_mobile')
+            $(`#${f}`).addClass('tab_active_mobile')
+            $("#mobile_profile_contents").css("display","block")
+            break;
+    
+        case 'mobile_security_tab':
+            $(".mobile_tab_contents").css("display","none")
+            $(".profile_tab_title_mobile").removeClass('tab_active_mobile')
+            $(`#${f}`).addClass('tab_active_mobile')
+            $("#mobile_security_contents").css("display","block")
+            break;
+
+        case 'mobile_notifications_tab':
+            $(".mobile_tab_contents").css("display","none")
+            $(".profile_tab_title_mobile").removeClass('tab_active_mobile')
+            $(`#${f}`).addClass('tab_active_mobile')
+            $("#mobile_notification_contents").css("display","block")
+            break;
+
+        case 'mobile_limits_tab':
+            $(".mobile_tab_contents").css("display","none")
+            $(".profile_tab_title_mobile").removeClass('tab_active_mobile')
+            $(`#${f}`).addClass('tab_active_mobile')
+            $("#mobile_limits_contents").css("display","block")
+            break;
+
+        default:
+            break;
+    }
+}
 

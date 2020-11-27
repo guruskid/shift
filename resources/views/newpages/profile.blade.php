@@ -42,7 +42,7 @@
         <div class="app-main__inner">
 
             <div id="content" class="main-content">
-                <div class="container card card-body profile_card_content d-none">
+                <div class="container card card-body profile_card_content d-none d-md-block">
                     <div class="shadow_bg"></div>
 
                     <div class="d-flex flex-column flex-lg-row profile_root_container">
@@ -726,35 +726,44 @@
                     </div>
                 </div>
 
-                <div class="container-fluid">
+
+
+
+                <div class="container-fluid d-md-none mb-4">
                     <div class="d-flex flex-column align-items-center">
                         <div class="profilepicture_mobile">
-                            <span>jijfjfjfjftyrrtypiruotutyi</span>
+                            <div style="height: 140px;width:140px;border:1px solid;border-radius:70px;">
+                                {{-- <span>jijfjfjfjftyrrtypiruotutyi</span> --}}
+                            </div>
+                            
                             <span class="d-block text-center my-3" style="color: #000070;font-size:16px;">Makada
                                 Makada</span>
                         </div>
-                        <div>
+                        <div class="mb-4">
                             <span class="d-block text-center" style="color: #676B87;">Wallet Balance</span>
                             <span class="d-block text-center"
                                 style="color: #000070;font-size: 16px;font-weight: 600;">NGN800,000,333.00</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mx-2" style="flex:1;">
-                            <div
+                            <div onclick="switchTab('mobile_profile_tab')" id="mobile_profile_tab"
                                 class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center tab_active_mobile">
                                 Profile</div>
-                            <div
+                            <div onclick="switchTab('mobile_security_tab')" id="mobile_security_tab"
                                 class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center">
                                 Security</div>
-                            <div
+                            <div onclick="switchTab('mobile_notifications_tab')" id="mobile_notifications_tab"
                                 class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center">
                                 Notification</div>
-                            <div
+                            <div onclick="switchTab('mobile_limits_tab')" id="mobile_limits_tab"
                                 class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center">
                                 Limits</div>
                         </div>
-                        <div id="mobile_profile_contents" class="container p-0">
+
+
+                        <!-- Profile Tab -->
+                        <div id="mobile_profile_contents" class="container p-0 mobile_tab_contents" style="margin-top: 0px;">
                             <div class="row">
-                                <div class="col-12 card mx-0 p-0 p-2" style="border-radius: 0px;border-radius: 5px;">
+                                <div class="col-12 card mx-0 p-0 p-2" style="border-radius: 5px;">
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Name</div>
                                         <div class="col-9">Andrea Jolly</div>
@@ -777,6 +786,394 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Security Tab -->
+                        <div id="mobile_security_contents" class="container p-0 mobile_tab_contents" style="margin-top: 0px;display:none;">
+                            <div class="row">
+                                <div class="col-12 card p-0 px-2" style="border-radius:5px;">
+                                    <span class="d-block h6 mt-3" style="color: rgba(0, 0, 112, 0.75);">Change
+                                        password</span>
+                                    <div style="height: 0;width:100%;border: 1px solid rgba(0, 0, 112, 0.75);"></div>
+                                    <div class="row my-3">
+                                        <div class="col-12">
+                                            <form action="" method="post">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="password">Old password</label>
+                                                    <input type="password" id="password" class="form-control"
+                                                        name="old_password" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="new_password">New password</label>
+                                                    <input type="password" id="new_password" class="form-control"
+                                                        name="password" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="cnew_password">New password</label>
+                                                    <input type="password" id="cnew_password" class="form-control"
+                                                        name="password_confirmation" />
+                                                </div>
+                                                <button type="submit" class="btn text-white"
+                                                    style="background-color: #000070;">Update password</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notifications tab -->
+                        <div id="mobile_notification_contents" class="container p-0 mobile_tab_contents"
+                            style="margin-top: 0px;display:none;">
+                            <div class="row">
+                                <div class="col-12 card p-0 px-2 py-3">
+                                    <div class="row px-2 my-2">
+                                        <div class="col-9">
+                                            <span style="font-size: 12px;color: #000070;">Wallet transaction SMS
+                                                notification</span>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row px-2 my-2">
+                                        <div class="col-9">
+                                            <span style="font-size: 12px;color: #000070;">Wallet transaction email
+                                                alert</span>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row px-2 my-2">
+                                        <div class="col-9">
+                                            <span style="font-size: 12px;color: #000070;">Trade transaction SMS
+                                                notification</span>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row px-2 my-2">
+                                        <div class="col-9">
+                                            <span style="font-size: 12px;color: #000070;">Trade transaction email
+                                                alert</span>
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Limits tab -->
+                        <div id="mobile_limits_contents" class="container p-0 mobile_tab_contents" style="margin-top: 0px;display:none;">
+                            <div class="row">
+                                <div class="col-12 card p-0 px-2 py-3">
+                                    <div class="d-flex mt-4 accordion_full_container">
+                                        <div
+                                            class="mt-4 pt-2 d-flex flex-column justify-content-start align-items-start align-items-lg-center">
+                                            <div class="d-flex flex-column align-items-center ml-4 ml-lg-0">
+                                                <span class="my-1" style="color: #000070;font-size:15px;">Maximum
+                                                    monthly limit:
+                                                    <span style="font-weight: bold;">N300,000</span></span>
+                                                <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily
+                                                    limit:
+                                                    <span style="font-weight: bold;">N100,000</span></span>
+                                                <span class="my-1" style="color: #000070;font-size:14px;">Remaining
+                                                    daily limit:
+                                                    <span>N300,000</span></span>
+                                            </div>
+
+                                            <div class="container-fluid mt-3">
+                                                <div class="row px-lg-3">
+
+
+                                                    <!-- Phone verification card mobile -->
+                                                    <div class="col-12 my-2">
+                                                        <div id="mobile_phone_verification_card"
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                            <span class="d-block">Phone number verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
+                                                                style="position: relative;left: 21px;">
+                                                                <img src="/svg/accordion_arrow.svg" class="img-fluid" />
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- Mobile phone verification content -->
+                                                    <div id="mobile_phone_verification_card_content"
+                                                        class="d-none flex-column justify-content-center mx-auto mt-3">
+                                                        <div class="col-12">
+                                                            <form action="" method="post">
+                                                                @csrf
+                                                                <div class="form-group mb-0 mb-1">
+                                                                    <label for="phoneNum">Phone number</label>
+                                                                    <input type="tel" name="" id="phoneNum"
+                                                                        class="form-control" />
+                                                                </div>
+                                                                <button type="submit" class="btn text-white"
+                                                                    style="background: #000070;">Verify</button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="col-12 mt-3">
+                                                            <form action="" method="post">
+                                                                @csrf
+                                                                <div class="form-group mb-0 mb-1">
+                                                                    <label for="phoneNum" class="mb-0 pb-0"
+                                                                        style="font-size: 12px;">Enter the OTP sent to
+                                                                        the Phone number your entered</label>
+                                                                    <input type="tel" name="" id="phoneNum"
+                                                                        class="form-control" />
+                                                                </div>
+                                                                <button type="submit" class="btn text-white"
+                                                                    style="background: #000070;">Confirm</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- Address verification card mobile -->
+                                                    <div class="col-12 mx-auto my-2">
+                                                        <div id="mobile_address_verification_card"
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                            <span class="d-block">Address verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
+                                                                style="position: relative;left: 41px;">
+                                                                <img src="/svg/accordion_arrow.svg" class="img-fluid" />
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Address verification content -->
+                                                    <div id="mobile_address_verification_card_content"
+                                                        class="d-none flex-column justify-content-center mx-auto mt-3">
+                                                        <div class="col-12">
+                                                            <form action="" method="post">
+                                                                @csrf
+                                                                <div class="form-group">
+                                                                    <label class="mb-0 pb-0" for="address">Enter your
+                                                                        address as shown on your document.</label>
+                                                                    <textarea name="" class="form-control"
+                                                                        style="resize: none;" id="address" cols="4"
+                                                                        rows="3"></textarea>
+                                                                </div>
+
+                                                                <div
+                                                                    class="d-flex justify-content-start align-items-end">
+                                                                    <div class="d-flex justify-content-center align-items-center px-2 py-2"
+                                                                        style="border: 0.5px dashed #676b87;"
+                                                                        id="uploadAddressVerification">
+                                                                        <input type="file" id="uploadPhotoInputMobile"
+                                                                            style="display: none;" />
+                                                                        <span>
+                                                                            <svg width="28" height="26"
+                                                                                viewBox="0 0 20 20" fill="none"
+                                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                                <path
+                                                                                    d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
+                                                                                    fill="#A6ACBE" />
+                                                                            </svg>
+                                                                        </span>
+                                                                        <span class="ml-3"
+                                                                            style="font-size: 10px;color: #000070;letter-spacing: 0.01em;line-height: 10px;">Upload
+                                                                            your Bank <br> Statement of Account</span>
+                                                                    </div>
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary mb-2 ml-2"
+                                                                        style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- BVN verification card mobile -->
+                                                    <div class="col-12 mx-auto my-2">
+                                                        <div id="mobile_bvn_verification_card"
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                            <span class="d-block">BVN verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
+                                                                style="position: relative;left: 52px;">
+                                                                <img src="/svg/accordion_arrow.svg" class="img-fluid" />
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- BVN verification content -->
+                                                    <div id="bvn_verification_card_content"
+                                                        class="d-none flex-column justify-content-center mx-auto mt-3">
+                                                        <div class="col-12 mx-auto" style="position: relative;left: 26px;">
+                                                            <span class="d-block"
+                                                                style="font-size: 9px;width: 92%;color: #000070;">
+                                                                You BVN cannot be used to carry out any other
+                                                                transaction from your Bank account <br><br> Dantown need
+                                                                your BVN to carry out naira transactions as required by
+                                                                the CBN
+                                                            </span>
+                                                            <div class="mt-3">
+                                                                <form action="" method="post">
+                                                                    @csrf
+                                                                    <div class="form-row align-items-center">
+                                                                        <div class="col">
+                                                                          <input type="text" class="form-control" placeholder="00000000" />
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <button type="submit" class="btn text-white" style="background-color: #000070;">verify</button>
+                                                                        </div>
+                                                                      </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <!-- ID verification card mobile -->
+                                                    <div class="col-12 mx-auto my-2">
+                                                        <div id="mobile_id_verification_card"
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                            <span class="d-block">ID verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
+                                                                style="position: relative;left: 59px;">
+                                                                <img src="/svg/accordion_arrow.svg" class="img-fluid" />
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- ID verification content -->
+                                                    <div id="id_verification_card_content"
+                                                        class="d-none flex-column justify-content-center mx-auto mt-3">
+                                                        <form action="" method="post">
+                                                            @csrf
+                                                            <div class="container">
+                                                                <div class="row">
+                                                                    <div class="col-6">
+                                                                        <div id="mobile_front_photo_click" class="d-flex flex-column align-items-center px-2 py-2" style="border: 0.5px dashed #676B87;">
+                                                                            <input type="file" name="mobile_frontOfCard" id="uploadFrontPhotoInputMobile"
+                                                                                style="display: none;" />
+                                                                            <div>
+                                                                                <svg width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <g clip-path="url(#clip0)">
+                                                                                    <path d="M17.9697 5.33311H15.0782V5.03605C15.0782 3.70892 14.0011 2.63182 12.674 2.63182H8.07549C6.74782 2.63182 5.67126 3.70892 5.67126 5.03605V5.33311H2.77923C1.45156 5.33311 0.375 6.40967 0.375 7.73734V16.4642C0.375 17.7913 1.45156 18.8684 2.77923 18.8684H17.9708C19.2984 18.8684 20.375 17.7913 20.375 16.4642V7.73734C20.3739 6.40914 19.2974 5.33311 17.9697 5.33311ZM10.3739 16.3744C7.86926 16.3744 5.83261 14.3378 5.83261 11.8331C5.83261 9.32894 7.86926 7.29176 10.3739 7.29176C12.8786 7.29176 14.9153 9.32841 14.9153 11.8331C14.9153 14.3378 12.8781 16.3744 10.3739 16.3744ZM12.7782 11.8331C12.7782 13.1575 11.6989 14.2373 10.3739 14.2373C9.04893 14.2373 7.9697 13.1575 7.9697 11.8331C7.9697 10.5081 9.04893 9.42885 10.3739 9.42885C11.6989 9.42885 12.7782 10.5081 12.7782 11.8331Z" fill="#A6ACBE"/>
+                                                                                    </g>
+                                                                                    <defs>
+                                                                                    <clipPath id="clip0">
+                                                                                    <rect width="20" height="20" fill="white" transform="translate(0.375 0.75)"/>
+                                                                                    </clipPath>
+                                                                                    </defs>
+                                                                                    </svg>                                                                                
+                                                                            </div>
+                                                                            <span class="d-block text-center" style="color: #000070;font-size:9px;">Front photo of your card</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <div id="mobile_back_photo_click" class="d-flex flex-column align-items-center px-2 py-2" style="border: 0.5px dashed #676B87;">
+                                                                            <input type="file" name="mobile_backOfCard" id="uploadBackPhotoInputMobile"
+                                                                                style="display: none;" />
+                                                                            <div>
+                                                                                <svg width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <g clip-path="url(#clip0)">
+                                                                                    <path d="M17.9697 5.33311H15.0782V5.03605C15.0782 3.70892 14.0011 2.63182 12.674 2.63182H8.07549C6.74782 2.63182 5.67126 3.70892 5.67126 5.03605V5.33311H2.77923C1.45156 5.33311 0.375 6.40967 0.375 7.73734V16.4642C0.375 17.7913 1.45156 18.8684 2.77923 18.8684H17.9708C19.2984 18.8684 20.375 17.7913 20.375 16.4642V7.73734C20.3739 6.40914 19.2974 5.33311 17.9697 5.33311ZM10.3739 16.3744C7.86926 16.3744 5.83261 14.3378 5.83261 11.8331C5.83261 9.32894 7.86926 7.29176 10.3739 7.29176C12.8786 7.29176 14.9153 9.32841 14.9153 11.8331C14.9153 14.3378 12.8781 16.3744 10.3739 16.3744ZM12.7782 11.8331C12.7782 13.1575 11.6989 14.2373 10.3739 14.2373C9.04893 14.2373 7.9697 13.1575 7.9697 11.8331C7.9697 10.5081 9.04893 9.42885 10.3739 9.42885C11.6989 9.42885 12.7782 10.5081 12.7782 11.8331Z" fill="#A6ACBE"/>
+                                                                                    </g>
+                                                                                    <defs>
+                                                                                    <clipPath id="clip0">
+                                                                                    <rect width="20" height="20" fill="white" transform="translate(0.375 0.75)"/>
+                                                                                    </clipPath>
+                                                                                    </defs>
+                                                                                    </svg>                                                                                
+                                                                            </div>
+                                                                            <span class="d-block text-center" style="color: #000070;font-size:9px;">Back photo of your card</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <button type="submit" class="btn text-white w-50 mt-3" style="background: #000070;margin-left:24%;">Upload</button>
+                                                        </form>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <!-- Upload ID card -->
+                        <div class="card card-body mt-3 m-0 p-0"
+                            style="border-radius: 5px;width:90vw;overflow-x:hidden;">
+                            <div class="d-flex justify-content-between">
+                                <div class="ml-1">
+                                    <span>
+                                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M3.29199 12.0815V13.4149C3.29199 13.7685 3.43247 14.1076 3.68252 14.3577C3.93256 14.6077 4.2717 14.7482 4.62533 14.7482H12.6253C12.9789 14.7482 13.3181 14.6077 13.5681 14.3577C13.8182 14.1076 13.9587 13.7685 13.9587 13.4149V12.0815"
+                                                stroke="#2C3E50" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M5.29199 6.74788L8.62533 3.41455L11.9587 6.74788" stroke="#2C3E50"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M8.625 3.41455V11.4145" stroke="#2C3E50" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                    <span style="font-size: 12px;">Upload I.D</span>
+                                </div>
+                                <div class="mr-2">
+                                    <span>verified</span>
+                                    <span>
+                                        <svg width="8" height="8" viewBox="0 0 8 8" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M3.625 0.498047C1.693 0.498047 0.125 2.06605 0.125 3.99805C0.125 5.93005 1.693 7.49805 3.625 7.49805C5.557 7.49805 7.125 5.93005 7.125 3.99805C7.125 2.06605 5.557 0.498047 3.625 0.498047ZM2.925 5.74805L1.175 3.99805L1.6685 3.50455L2.925 4.75755L5.5815 2.10105L6.075 2.59805L2.925 5.74805Z"
+                                                fill="#219653" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="progress mx-2 my-2" style="height: 8px;">
+                                <div class="progress-bar" role="progressbar"
+                                    style="border-radius: 50px;background:#000070;width: 100%" aria-valuenow="100"
+                                    aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="mb-2" style="position: relative;left:60%;font-size:14px;">..100% complete</div>
                         </div>
 
                     </div>
