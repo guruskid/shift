@@ -29,6 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('/update-password', 'Api\UserController@updatePassword');
         Route::post('/update-email', 'Api\UserController@updateEmail');
+        Route::post('/update-dp', 'Api\UserController@updateDp');
         Route::post('/update-wallet-pin', 'Api\NairaWalletController@updateWalletPin');
 
         Route::GET('/dashboard', 'Api\UserController@dashboard');
