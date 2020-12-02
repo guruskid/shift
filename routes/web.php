@@ -33,13 +33,13 @@ Route::get('/transaction', function () {
     return view('newpages.Transactionscreen');
 });
 
-Route::get('/bitcoin', function () {
+/* Route::get('/bitcoin', function () {
     return view('newpages.bitcoin');
 });
 
 Route::get('/ethereum', function () {
     return view('newpages.ethereumscreen');
-});
+}); */
 
 Route::get('/airtocash', function () {
     return view('newpages.airtimetocash');
@@ -81,19 +81,19 @@ Route::get('/smartbudget', function () {
 });
 
 //Mobile and tab done
-Route::get('/choosewallet', function () {
+/* Route::get('/choosewallet', function () {
     return view('newpages.choosewallet');
-});
+}); */
 
 //Mobile and tab screen done
-Route::get('/walletpage', function () {
-    return view('newpages.walletpage');
-});
+/* Route::get('/walletpage', function () {
+    return view('newpages.bitcoin-wallet');
+}); */
 
 //Mobile and tab done
-Route::get('/nairawalletmain', function () {
-    return view('newpages.nairawalletmain');
-});
+/* Route::get('/nairawalletmain', function () {
+    return view('newpages.nairawallet');
+}); */
 
 // Route::get('/nairawalletdtodconfirm', function () {
 //     return view('newpages.nairawalletdtodconfirm');
@@ -204,11 +204,13 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::get('/pay-bills', 'BillsPaymentController@view')->name('user.bills');
     Route::post('/get-dec-user', 'BillsPaymentController@getUser');
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
-    Route::get('/paytv', 'BillsPaymentController@paytvView')->name('user.paytv');
+    Route::view('/paytv', 'newpages.')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@paytv')->name('user.paytv');
-    Route::view('/recharge', 'user.recharge')->name('user.recharge');
+    Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge');
     Route::post('/airtime', 'BillsPaymentController@airtime')->name('user.airtime');
+    Route::view('/data', 'newpages.buydata')->name('user.data');
     Route::view('/discounted-airtime', 'user.discount_airtime')->name('user.discount-airtime');
+    Route::view('/airtime-to-cash', 'newpages.airtimetocash')->name('user.airtime-to-cash');
     Route::get('/electricity', 'BillsPaymentController@electricityView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');

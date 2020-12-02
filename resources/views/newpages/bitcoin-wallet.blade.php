@@ -91,11 +91,11 @@
                                             <span class="d-block" style="color: #565656;font-size: 16px;">Bitcoin wallet
                                                 Balance</span>
                                             <span class="d-block">
-                                                <span style="color: #000070;font-size: 30px;">{{ Auth::user()->bitcoinWallet->balance }}</span>
+                                                <span style="color: #000070;font-size: 30px;">{{ number_format((float) Auth::user()->bitcoinWallet->balance, 8) }}</span>
                                                 <span style="color: #000070;font-size: 30px;">BTC</span>
-                                            </span>
+                                            </span>{{--
                                             <span class="d-block"
-                                                style="color: #565656;font-size: 16px;opacity: 0.5;">₦20,000</span>
+                                                style="color: #565656;font-size: 16px;opacity: 0.5;">₦20,000</span> --}}
                                         </div>
                                         <div class="d-flex">
                                             <a id="bitcoin_send" class="btn walletpage_menu-active">
@@ -176,54 +176,6 @@
                                             <td style="font-weight: 500;">2 mins ago</td>
                                             <td>
                                                 <span class="status_inprogress">in progress</span>
-                                            </td>
-                                            <td>
-                                                <a href="#" style="color: #000070;font-size: 15px;font-weight: 600;">view</a>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">1</th>
-                                            <td style="color: #023501;font-weight:600;">Sell</td>
-                                            <td>
-                                                <span class="d-block" style="font-size: 14px;color: #000000;font-weight: 500;">$200</span>
-                                                <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span>
-                                            </td>
-                                            <td style="color: #000000;font-size: 14px;">Aug. 10, 2019</td>
-                                            <td style="font-weight: 500;">2 mins ago</td>
-                                            <td>
-                                                <span class="status_success">Successful</span>
-                                            </td>
-                                            <td>
-                                                <a href="#" style="color: #000070;font-size: 15px;font-weight: 600;">view</a>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">1</th>
-                                            <td style="color: #FF001F;font-weight:600;">Sell</td>
-                                            <td>
-                                                <span class="d-block" style="font-size: 14px;color: #000000;font-weight: 500;">$200</span>
-                                                <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span>
-                                            </td>
-                                            <td style="color: #000000;font-size: 14px;">Aug. 10, 2019</td>
-                                            <td style="font-weight: 500;">2 mins ago</td>
-                                            <td>
-                                                <span class="status_declined">Declined</span>
-                                            </td>
-                                            <td>
-                                                <a href="#" style="color: #000070;font-size: 15px;font-weight: 600;">view</a>
-                                            </td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">1</th>
-                                            <td style="color: #FF001F;font-weight:600;">Sell</td>
-                                            <td>
-                                                <span class="d-block" style="font-size: 14px;color: #000000;font-weight: 500;">$200</span>
-                                                <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span>
-                                            </td>
-                                            <td style="color: #000000;font-size: 14px;">Aug. 10, 2019</td>
-                                            <td style="font-weight: 500;">2 mins ago</td>
-                                            <td>
-                                                <span class="status_waiting">Waiting</span>
                                             </td>
                                             <td>
                                                 <a href="#" style="color: #000070;font-size: 15px;font-weight: 600;">view</a>

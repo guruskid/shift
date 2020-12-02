@@ -17,35 +17,61 @@
                     </span>
                 </div>
                 <div class="mx-3">
-                    <form action="" method="post">
-                        @csrf
+                    <form action="{{ route('user.transfer') }}" method="post">@csrf
+                        <input type="hidden" name="ref" value="{{ $ref }}" >
+                        <input type="hidden" name="trans_type" value="1" >
                         <div class="form-row mb-3">
                             <div class="col-12 col-md">
                                 <label for="bankname" style="color: #000070;font-size: 16px;">Bank name</label>
-                                <input type="text" class="form-control" id="bankname">
+                                <select class="custom-select" required id="bank-name" name="bank_code">
+                                    <option >Select Bank</option>
+                                    @foreach ($banks as $bank)
+                                    <option class="text-capitalize" value="{{ $bank->code }}">{{ $bank->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="col-12 col-md mt-2 md-md-0">
+                            <div class="col-12 col-md  md-md-0">
                                 <label for="account_number" style="color: #000070;font-size: 16px;">Account
                                     number</label>
-                                <input type="text" class="form-control" name="account_number" id="account_number" />
+                                <input type="text" required id="account-number" class="form-control" name="acct_num"  />
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="account_number" style="color: #000070;font-size: 16px;">Account name</label>
-                            <input type="text" class="form-control" readonly name="account_number"
-                                id="account_number" />
+                            <input type="text" required class="form-control acct-name" readonly name="acct_name" />
                         </div>
                         <div class="form-group">
                             <label for="account_number" style="color: #000070;font-size: 16px;">Amount</label>
-                            <input type="text" class="form-control" name="account_number" placeholder="0000000000"
-                                id="account_number" />
+                            <input type="text" required class="form-control" name="amount" placeholder="0000000000" />
                         </div>
                         <div class="form-group">
                             <label for="narration" style="color: #000070;font-size: 16px;">Narration</label>
-                            <textarea name="description" class="form-control" id="narration" cols="10" rows="3"
-                                style=resize:none;></textarea>
+                            <select class="custom-select" required name="narration">
+                                <option value="Personal">Personal</option>
+                                <option value="Card Purchase">Card Purchase</option>
+                                <option value="Bills">Bills</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Transfers">Transfers</option>
+                                <option value="Food">Food</option>
+                                <option value="Family">Family</option>
+                                <option value="Groceries">Groceries</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Self Care">Self Care</option>
+                                <option value="Holiday">Holiday</option>
+                                <option value="Payroll">Payroll</option>
+                                <option value="Enjoyment">Enjoyment</option>
+                                <option value="Investments">Investments</option>
+                                <option value="Charity">Charity</option>
+                                <option value="Refund">Refund</option>
+                                <option value="Household">Household</option>
+                                <option value="Others">Others</option>
+                            </select>
                         </div>
-                        <button type="submit" class="btn text-white w-100 py-2 mt-2"
+                        <div class="form-group mt-2">
+                            <label for="amount" style="color: #000070;">Pin</label>
+                            <input type="password" required max="4" placeholder="- - - -" class="form-control" name="pin" >
+                        </div>
+                        <button type="submit" id="sign-up-btn" class="btn text-white w-100 py-2 mt-2"
                             style="background-color: #000070">Confirm</button>
                     </form>
                 </div>

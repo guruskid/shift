@@ -5,15 +5,15 @@
         <div class="d-flex flex-column">
             <div class="my-1 my-lg-2">
                 <span class="deposit_tab_bankdetailsText">Bank name:</span>
-                <span style="color:#000070;font-size:16px;">Rubies MFB | </span>
+                <span style="color:#000070;font-size:16px;">{{ $n->bank_name }}</span>
             </div>
             <div class="my-1 my-lg-2">
                 <span class="deposit_tab_bankdetailsText">Account name:</span>
-                <span style="color:#000070;font-size:16px;">Cashout developer</span>
+                <span style="color:#000070;font-size:16px;">{{ $n->account_name }}</span>
             </div>
             <div class="my-1 my-lg-2">
                 <span class="deposit_tab_bankdetailsText">Account number:</span>
-                <input id="acct_number_input" class="deposit_tab_bankdetailsText" readonly style="border: none;width:80px;outline:none;" type="text" value="1245678928" />
+                <input id="acct_number_input" class="deposit_tab_bankdetailsText" readonly style="border: none;width:80px;outline:none;" type="text" value="{{ $n->account_number }}" />
                 {{-- <span id="dep_acct_number_text" class="deposit_tab_bankdetailsText">1245678928</span> --}}
                 <span class=" ml-1 ml-lg-4" style="cursor: pointer;" onclick="copyAcctNumber('acct_number_input')">
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="#000070" xmlns="http://www.w3.org/2000/svg">

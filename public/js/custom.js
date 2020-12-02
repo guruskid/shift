@@ -233,9 +233,9 @@ $("#backPhotoID").on("click", function() {
 // });
 // chart.render();
 
-$("#quickTopUpLink").on("click", function() {
-    if ($("#quickTopUpModal").css("display") == "none") {
-        $("#quickTopUpModal").css("display", "block");
+$("#quickTopUpLink").on("click", function(){
+    if($("#quickTopUpModal").css("display") == "none") {
+        $("#quickTopUpModal").css("display","block")
     } else {
         $("#quickTopUpModal").css("display", "none");
     }
@@ -340,6 +340,7 @@ $("#bitcoin_receive").on("click", function() {
         $("#bitcoin_wallet_receive_tab").css("display", "block");
     }
 });
+/* Naira Wallet Starts here */
 
 //Dantown to dantown modal
 $("#naira_d_to_d").on("click", function() {
