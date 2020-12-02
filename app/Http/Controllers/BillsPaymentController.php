@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use mysql_xdevapi\Exception;
 
 class BillsPaymentController extends Controller
 {
@@ -341,8 +342,9 @@ class BillsPaymentController extends Controller
             'account' => 'required',
             'amount' => 'required',
             'password' => 'required',
+            'productcode' => 'required',
+            "billercode"  => 'required'
         ]);
-
         $callback = route('recharge-card.callback');
         $n = Auth::user()->nairaWallet;
 
@@ -351,41 +353,28 @@ class BillsPaymentController extends Controller
 //        }
 
         $amount = $r->amount;
-        $reference = $r->scid .Str::random(16);
-
+        //check if he has enough money
         if ($amount > $n->amount) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
-        dd(explode("-",$r->provider));
-
+        dd('working app');
+        //what I remove here is below this page
+        $reference = $r->scid .Str::random(16);
         $client = new Client();
-        $url = env('RUBBIES_API') . "/electricitypurchase";
-        $response = $client->request('POST', $url, [
-            'json' => [
-//                "reference" => $reference,
-//                "meternumber" => $r->account,
-//                "service_category_id" => $r->scid,
-//                /* "product" => $r->provider, */
-//                "amount"=> $amount,
-//                "mobilenumber"=> Auth::user()->phone,
-//                "name" => Auth::user()->first_name,
-//                "servicename" => "electricity",
-//                "callbackurl" => $callback,
-
-                "reference" => $reference,
-                "billercustomerid"  => $r->account,
-                "productcode"=> "PREPAID",
-                "amount" => $amount,
-                "mobilenumber" =>Auth::user()->phone,
-                "name" => Auth::user()->first_name,
-                "billercode" => '',
-            ],
-            'headers' => [
-                'authorization' => env('RUBBIES_SECRET_KEY'),
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents());
-        if ($body->responsecode == 00) {
+        $url = env('RUBBIES_API')."/billerpurchase";
+        $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
+        $params['json'] = [
+            "reference" => $reference,
+            "billercustomerid"  => $r->account,
+            "productcode"=> $r->productcode,
+            "amount" => $amount,
+           // "mobilenumber" =>Auth::user()->phone,
+            "mobilenumber" => "08142381323",
+            "name" => Auth::user()->first_name,
+            "billercode" => $r->billercode,
+        ];
+        $response = $client->post($url,$params);
+        $body =  json_decode($response->getBody()->getContents());
 
             $prev_bal = $n->amount;
             $n->amount -= $amount;
@@ -395,7 +384,9 @@ class BillsPaymentController extends Controller
             $nt->reference = $reference;
             $nt->amount = $amount;
             $nt->user_id = Auth::user()->id;
-            $nt->type = 'electricity bills';
+            //this is not a typo below,that was how the initial developer created it,unless you
+            //have access to change the db column name please dont change
+            $nt->type = 'elecriciy bills';
 
             $nt->previous_balance = $prev_bal;
             $nt->current_balance = $n->amount;
@@ -427,9 +418,10 @@ class BillsPaymentController extends Controller
             $to = Auth::user()->phone;
             $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
             $snd_sms = $client->request('GET', $sms_url);
-
+        if ($body->responsecode == 00 || $body->responsecode == -1) {
             return back()->with(['success' => 'Purchase made successfully']);
         } else {
+
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
     }
@@ -447,4 +439,48 @@ class BillsPaymentController extends Controller
         $t->status = 'refunded';
         $t->save();
     }
+
+    private  function checkPayment($reference)
+    {
+        try{
+            $client = new Client();
+            $url = env('RUBBIES_API')."/billerquery";
+            $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
+            $params['json'] = [
+                "reference" => $reference,
+            ];
+            $response = $client->post($url,$params);
+            $body =  json_decode($response->getBody()->getContents());
+//            dd($body,$reference,1);
+        }
+        catch (Exception $exception){
+            return back()->with(['error' => 'Oops! ']);
+        }
+    }
 }
+//        $client = new Client();
+//        $url = env('RUBBIES_API') . "/electricitypurchase";
+//        $response = $client->request('POST', $url, [
+// 'json' => [
+//                "reference" => $reference,
+//                "meternumber" => $r->account,
+//                "service_category_id" => $r->scid,
+//                /* "product" => $r->provider, */
+//                "amount"=> $amount,
+//                "mobilenumber"=> Auth::user()->phone,
+//                "name" => Auth::user()->first_name,
+//                "servicename" => "electricity",
+//                "callbackurl" => $callback,
+
+//                "reference" => $reference."0A7B9ReB88S",
+//                "billercustomerid"  => "0101150353999".$r->account,
+//                "productcode"=> "PREPAID",
+//                "amount" => $amount,
+//                "mobilenumber" =>Auth::user()->phone,
+//                "name" => Auth::user()->first_name,
+//                "billercode" => "EKO_ELECT_PREPAID",
+//            ],
+//            'headers' => [
+//                'authorization' => env('RUBBIES_SECRET_KEY'),
+//            ],
+//        ]);

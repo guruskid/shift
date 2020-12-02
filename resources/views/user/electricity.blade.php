@@ -97,6 +97,8 @@
                                                         class="form-control form-control-sm">
                                                 </div>
                                                 <input type="hidden" id="scid" name="scid" >
+                                                <input type="hidden" id="productcode" name="productcode" value="{{$p->productcode}}" >
+                                                <input type="hidden" id="billercode" name="billercode" value="{{$p->billercode}}" >
                                                 <button type="submit" class="btn bg-custom c-rounded btn-block" style="font-size: unset;">
                                                     Recharge</button>
                                             </form>

@@ -189,11 +189,12 @@ function getElectUser() {
             account: account,
             service_category_id: providerId
         };
-        console.log('34')
+        console.log('1')
         $('#d-provider').text($('#provider').find(':selected').text());
         $('#d-meter-no').text(account);
         $('#scid').val(providerId);
-        console.log('9')
+
+        console.log('2')
 
         // $.ajax({
         //     type: "POST",
@@ -208,7 +209,7 @@ function getElectUser() {
         // })
         $.post("https://openapi.rubiesbank.io/v1/billerverification", formData, function (data) {
             console.log(data)
-            console.log('2332')
+            console.log('3')
             if (data['data'] == undefined) {
                 console.log('3')
                 acctName.val('No account found');
