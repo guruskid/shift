@@ -75,7 +75,7 @@ Route::get('/creditfailure', function () {
     return view('newpages.creditfailure');
 }); */
 
-
+// mobile and tab screen done
 Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
