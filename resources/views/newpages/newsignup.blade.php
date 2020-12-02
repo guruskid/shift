@@ -19,7 +19,7 @@
                 </div> --}}
                 <span class="d-block mt-5 mb-0 ml-2 ml-md-3" style="color: #676B87;font-size: 18px;">Hello!</span>
                 <div class="d-block mb-3 ml-2 ml-md-3 login_welcomeText">Welcome to Dantown</div>
-                <form method="POST" action="{{route('login')}}">
+                <form id="signup_form" method="POST" action="{{route('login')}}">
                     @csrf
                     @foreach ($errors->all() as $error)
                     <p class="text-warning">{{ $error }}</p>
@@ -38,16 +38,14 @@
                                 style="border: 1px solid rgba(0, 0, 112, 0.25);border-right:0px;border-top-left-radius:5px;border-bottom-left-radius:5px;">
                                 <button class="btn btn-outline-secondary signup_custom dropdown-toggle" type="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">+234</button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>a>
-                                    <div role="separator" class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Something else here</ <a class="dropdown-item"
-                                            href="#">Separated link</a>
+                                <div class="dropdown-menu" id="dialcode_select">
+                                    <a class="dropdown-item" href="#">+234</a>
+                                    <a class="dropdown-item" href="#">+81</a>
                                 </div>
                             </div>
-                            <input type="text" class="form-control col-12" style="border-left: 0px;"
+                            <input type="tel" id="signup_phonenumber" placeholder="8141894420" class="form-control col-12" style="border-left: 0px;"
                                 aria-label="Text input with dropdown button">
+                                <input type="hidden" id="phone" />
                         </div>
                         <div class="form-group mb-0">
                             <span id="removeobscure_pwd" class="removeobscure_pwd"><img id="toggleshowpassword"

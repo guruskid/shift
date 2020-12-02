@@ -510,3 +510,38 @@ $("#step_one_btn").on("click", function(){
     $("#step_two").css("display","block")
 })
 
+// $("#dialcode_select .dropdown-item").on("click", function(e){
+//     e.preventDefault()
+//     let dialcode = $(this).text().trim()
+//     let phone = $("#signup_phonenumber").val().trim()
+//     const phoneNumber = dialcode+phone
+//     alert(phoneNumber)
+// })
+
+$("#signup_form").on("submit", function(){
+    let dialcode = $(this).text().trim()
+    let phone = $("#signup_phonenumber").val().trim()
+    const phoneNumber = dialcode+phone
+
+    $("#phone").val(phoneNumber)
+});
+
+function toggleTab(param) {
+    $(".smartbudget_cardmenu").css("display","none")
+    $(`#${param}`).css("display","block")
+}
+
+function closeTab(param){
+    $(`#${param}`).css("display","none")
+    $(".smartbudget_cardmenu").css("display","block")
+}
+
+$("#removeobscure_pwd2").on("click", function() {
+    if ($("#password_field2").attr("type") == "password") {
+        $("#password_field2").attr("type", "text");
+        $("#toggleshowpassword2").attr("src", "svg/showpassword.svg");
+    } else {
+        $("#password_field2").attr("type", "password");
+        $("#toggleshowpassword2").attr("src", "svg/obscure-password.svg");
+    }
+});

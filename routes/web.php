@@ -75,6 +75,7 @@ Route::get('/creditfailure', function () {
     return view('newpages.creditfailure');
 }); */
 
+
 Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
@@ -113,17 +114,19 @@ Route::get('/buydata', function () {
     return view('newpages.buydata');
 });
 
+//mobile and tab done
 Route::get('/newlogin', function () {
     return view('newpages.newlogin');
 });
 
+//mobile and tab done
 Route::get('/newsignup', function () {
     return view('newpages.newsignup');
 });
 
-Route::get('/newregister', function () {
-    return view('newpages.newregister');
-});
+// Route::get('/newregister', function () {
+//     return view('newpages.newregister');
+// });
 
 //Mobile and desktop done
 Route::get('/all-transactions', function(){
