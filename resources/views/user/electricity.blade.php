@@ -74,7 +74,7 @@
                                                     <select class="form-control form-control-sm" name="provider" id="provider" onchange="getElectUser()" >
                                                         <option value=""><--Select provider--></option>
                                                         @foreach ($providers as $p)
-                                                        <option value="{{$p->billername}}" data-scid="{{$p->service_category_id}}">{{$p->billername}}</option>
+                                                        <option value="{{$p->servicename}}" data-scid="{{$p->transactiontype}}">{{$p->servicename}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

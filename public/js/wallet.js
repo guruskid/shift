@@ -181,27 +181,46 @@ function showDetails(txnType, netwkPrvdr, phone, amount) {
 } /* Get the details for electricitypurchase */
 function getElectUser() {
     var providerId = $('#provider').find(':selected').data('scid');
-    var account = $('#dec-acct-num').val();
-    var acctName = $('#dec-acct-name');
-    if (!isNaN(providerId) && account != '') {
+    var account = $('#acct-num').val();
+    var acctName = $('#acct-name');
+    if (providerId != '' && account != '') {
         acctName.val('Loading, please wait..');
         var formData = {
             account: account,
             service_category_id: providerId
         };
+        console.log('34')
         $('#d-provider').text($('#provider').find(':selected').text());
         $('#d-meter-no').text(account);
         $('#scid').val(providerId);
-        $.post("/user/get-elect-user", formData, function (data) {
+        console.log('9')
+
+        // $.ajax({
+        //     type: "POST",
+        //     url: "https://openapi.rubiesbank.io/v1/billerverification",
+        //     dataType: 'json',
+        //     headers: {
+        //         "Authorization": "SK-000073260-PROD-2711C34842884E05921971E29D72378FDFF47B3490A2414D89318E85A359B9F8"
+        //     },
+        //     success: function (result) {
+        //         console.log(result)
+        //     }
+        // })
+        $.post("https://openapi.rubiesbank.io/v1/billerverification", formData, function (data) {
+            console.log(data)
+            console.log('2332')
             if (data['data'] == undefined) {
+                console.log('3')
                 acctName.val('No account found');
                 $('#d-acct-name').text('No account found');
             } else {
                 acctName.val(data['data']['name']);
+                console.log('4')
                 $('#d-acct-name').text(data['data']['name']);
             }
         });
     }
+    console.log('hiy')
 }
 
 function getElectPrice() {

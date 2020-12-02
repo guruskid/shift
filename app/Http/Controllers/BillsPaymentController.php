@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class BillsPaymentController extends Controller
 {
@@ -301,15 +302,13 @@ class BillsPaymentController extends Controller
     {
 
         $client = new Client();
-        $url = env('RUBBIES_API') . "/billspaymentcategories";
-        $response = $client->request('POST', $url, [
-            'json' => [
-                "categoryid" => 2,
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents());
+        $url = env('RUBBIES_API') . "/billers";
+        $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
+        $params['json'] = ["biller"=>"electricity",];
+        $response = $client->post($url,$params);
+        $body =  json_decode($response->getBody()->getContents());
+        $providers = $body->billers;
 
-        $providers = $body->servicecategory;
         return view('user.electricity', compact(['providers']));
     }
 
@@ -335,6 +334,7 @@ class BillsPaymentController extends Controller
 
     public function payElectricity(Request $r)
     {
+
         $r->validate([
             'scid' => 'required',
             'provider' => 'required',
@@ -346,29 +346,39 @@ class BillsPaymentController extends Controller
         $callback = route('recharge-card.callback');
         $n = Auth::user()->nairaWallet;
 
-        if (Hash::check($r->password, $n->password) == false) {
-            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
-        }
+//        if (Hash::check($r->password, $n->password) == false) {
+//            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+//        }
 
         $amount = $r->amount;
-        $reference = $r->ref;
+        $reference = $r->scid .Str::random(16);
+
         if ($amount > $n->amount) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
+        dd(explode("-",$r->provider));
 
         $client = new Client();
         $url = env('RUBBIES_API') . "/electricitypurchase";
         $response = $client->request('POST', $url, [
             'json' => [
+//                "reference" => $reference,
+//                "meternumber" => $r->account,
+//                "service_category_id" => $r->scid,
+//                /* "product" => $r->provider, */
+//                "amount"=> $amount,
+//                "mobilenumber"=> Auth::user()->phone,
+//                "name" => Auth::user()->first_name,
+//                "servicename" => "electricity",
+//                "callbackurl" => $callback,
+
                 "reference" => $reference,
-                "meternumber" => $r->account,
-                "service_category_id" => $r->scid,
-                /* "product" => $r->provider, */
-                "amount"=> $amount,
-                "mobilenumber"=> Auth::user()->phone,
+                "billercustomerid"  => $r->account,
+                "productcode"=> "PREPAID",
+                "amount" => $amount,
+                "mobilenumber" =>Auth::user()->phone,
                 "name" => Auth::user()->first_name,
-                "servicename" => "electricity",
-                "callbackurl" => $callback
+                "billercode" => '',
             ],
             'headers' => [
                 'authorization' => env('RUBBIES_SECRET_KEY'),
