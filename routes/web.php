@@ -44,9 +44,27 @@ Route::get('/ethereum', function () {
 Route::get('/airtocash', function () {
     return view('newpages.airtimetocash');
 });
+
+
+//Mobile done
 Route::get('/newprofile', function () {
     return view('newpages.profile');
 });
+
+//mobile and web done
+Route::get('/btc-transaction', function(){
+    return view('newpages.btc_payment_transaction');
+});
+
+//mobile and web done
+Route::get('/btc-transaction-hash', function(){
+    return view('newpages.btc_payment_transaction2');
+});
+
+// Route::get('/transactions', function(){
+//     return view('newpages.btc_payment_transaction2');
+// });
+
 /* Route::get('/newdashboard', function () {
     return view('newpages.dashboard');
 });
@@ -56,6 +74,8 @@ Route::get('/creditsuccess', function () {
 Route::get('/creditfailure', function () {
     return view('newpages.creditfailure');
 }); */
+
+// mobile and tab screen done
 Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
@@ -94,13 +114,24 @@ Route::get('/buydata', function () {
     return view('newpages.buydata');
 });
 
+//mobile and tab done
 Route::get('/newlogin', function () {
     return view('newpages.newlogin');
 });
-Route::get('/newregister', function () {
-    return view('newpages.newregister');
+
+//mobile and tab done
+Route::get('/newsignup', function () {
+    return view('newpages.newsignup');
 });
 
+// Route::get('/newregister', function () {
+//     return view('newpages.newregister');
+// });
+
+//Mobile and desktop done
+Route::get('/all-transactions', function(){
+    return view('newpages.all-transactions');
+});
 
 
 
