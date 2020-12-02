@@ -504,3 +504,9 @@ function switchTab(f) {
     }
 }
 
+
+$("#step_one_btn").on("click", function(){
+    $("#step_one").css("display","none")
+    $("#step_two").css("display","block")
+})
+

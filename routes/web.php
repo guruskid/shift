@@ -46,12 +46,24 @@ Route::get('/airtocash', function () {
 });
 
 
+//Mobile done
 Route::get('/newprofile', function () {
     return view('newpages.profile');
 });
 
+//mobile and web done
+Route::get('/btc-transaction', function(){
+    return view('newpages.btc_payment_transaction');
+});
 
+//mobile and web done
+Route::get('/btc-transaction-hash', function(){
+    return view('newpages.btc_payment_transaction2');
+});
 
+// Route::get('/transactions', function(){
+//     return view('newpages.btc_payment_transaction2');
+// });
 
 /* Route::get('/newdashboard', function () {
     return view('newpages.dashboard');
@@ -62,6 +74,7 @@ Route::get('/creditsuccess', function () {
 Route::get('/creditfailure', function () {
     return view('newpages.creditfailure');
 }); */
+
 Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
@@ -103,10 +116,19 @@ Route::get('/buydata', function () {
 Route::get('/newlogin', function () {
     return view('newpages.newlogin');
 });
+
+Route::get('/newsignup', function () {
+    return view('newpages.newsignup');
+});
+
 Route::get('/newregister', function () {
     return view('newpages.newregister');
 });
 
+//Mobile and desktop done
+Route::get('/all-transactions', function(){
+    return view('newpages.all-transactions');
+});
 
 
 
