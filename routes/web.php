@@ -211,6 +211,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::view('/data', 'newpages.buydata')->name('user.data');
     Route::view('/discounted-airtime', 'user.discount_airtime')->name('user.discount-airtime');
     Route::view('/airtime-to-cash', 'newpages.airtimetocash')->name('user.airtime-to-cash');
+    Route::post('/airtime-to-cash', 'BillsPaymentController@airtimeToCash')->name('user.airtime-to-cash');
     Route::get('/electricity', 'BillsPaymentController@electricityView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');

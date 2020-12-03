@@ -227,3 +227,8 @@ function getElectUser() {
 function getElectPrice() {
     $('#d-amount').text('₦' + $('#amount').val());
 }
+function getAirtimeAmount() {
+    var amount = $('#airtime_amount').val();
+    $('#new-amount').text('₦' +(0.7 * amount));
+
+}

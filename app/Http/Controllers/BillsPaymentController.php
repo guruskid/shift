@@ -92,7 +92,25 @@ class BillsPaymentController extends Controller
         $body = json_decode($response->getBody()->getContents());
         return response()->json($body);
     }
+    public function CableView()
+    {
 
+        $client = new Client();
+        $url = env('RUBBIES_API') . "/billers";
+        $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
+        $params['json'] = ["biller" => "cabletv",];
+        $response = $client->post($url, $params);
+        $body = json_decode($response->getBody()->getContents());
+        if ($body->responsecode == "00"){
+            $providers = $body->billers;
+            //endpoint not provider yet
+            dd($providers);
+            return view('user.electricity', compact(['providers']));
+        }
+        else{
+            return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
+        }
+    }
     public function paytv(Request $r)
     {
         $r->validate([
@@ -104,9 +122,9 @@ class BillsPaymentController extends Controller
 
         $n = Auth::user()->nairaWallet;
 
-        if (Hash::check($r->password, $n->password) == false) {
-            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
-        }
+//        if (Hash::check($r->password, $n->password) == false) {
+//            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+//        }
 
         $amount = $r->amount;
         $reference = $r->ref;
@@ -305,12 +323,16 @@ class BillsPaymentController extends Controller
         $client = new Client();
         $url = env('RUBBIES_API') . "/billers";
         $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
-        $params['json'] = ["biller"=>"electricity",];
-        $response = $client->post($url,$params);
-        $body =  json_decode($response->getBody()->getContents());
-        $providers = $body->billers;
-
+        $params['json'] = ["biller" => "electricity",];
+        $response = $client->post($url, $params);
+        $body = json_decode($response->getBody()->getContents());
+        if ($body->responsecode == "00"){
+            $providers = $body->billers;
         return view('user.electricity', compact(['providers']));
+        }
+        else{
+            return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
+        }
     }
 
 
@@ -348,16 +370,15 @@ class BillsPaymentController extends Controller
         $callback = route('recharge-card.callback');
         $n = Auth::user()->nairaWallet;
 
-//        if (Hash::check($r->password, $n->password) == false) {
-//            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
-//        }
+        if (Hash::check($r->password, $n->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+        }
 
         $amount = $r->amount;
         //check if he has enough money
         if ($amount > $n->amount) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
-        dd('working app');
         //what I remove here is below this page
         $reference = $r->scid .Str::random(16);
         $client = new Client();
@@ -368,8 +389,8 @@ class BillsPaymentController extends Controller
             "billercustomerid"  => $r->account,
             "productcode"=> $r->productcode,
             "amount" => $amount,
-           // "mobilenumber" =>Auth::user()->phone,
-            "mobilenumber" => "08142381323",
+            "mobilenumber" =>Auth::user()->phone,
+//            "mobilenumber" => "08142381323",
             "name" => Auth::user()->first_name,
             "billercode" => $r->billercode,
         ];
@@ -418,12 +439,17 @@ class BillsPaymentController extends Controller
             $to = Auth::user()->phone;
             $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
             $snd_sms = $client->request('GET', $sms_url);
-        if ($body->responsecode == 00 || $body->responsecode == -1) {
+        if ($body->responsecode == 00 || $body->responsecode == "-1") {
             return back()->with(['success' => 'Purchase made successfully']);
         } else {
 
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
+    }
+
+    public function airtimeToCash(Request $request)
+    {
+        return back()->with(['success' => 'Proceed to transfer the airtime']);
     }
 
     /* Callback for all */
@@ -440,7 +466,7 @@ class BillsPaymentController extends Controller
         $t->save();
     }
 
-    private  function checkPayment($reference)
+    private function checkPayment($reference)
     {
         try{
             $client = new Client();
@@ -458,29 +484,4 @@ class BillsPaymentController extends Controller
         }
     }
 }
-//        $client = new Client();
-//        $url = env('RUBBIES_API') . "/electricitypurchase";
-//        $response = $client->request('POST', $url, [
-// 'json' => [
-//                "reference" => $reference,
-//                "meternumber" => $r->account,
-//                "service_category_id" => $r->scid,
-//                /* "product" => $r->provider, */
-//                "amount"=> $amount,
-//                "mobilenumber"=> Auth::user()->phone,
-//                "name" => Auth::user()->first_name,
-//                "servicename" => "electricity",
-//                "callbackurl" => $callback,
 
-//                "reference" => $reference."0A7B9ReB88S",
-//                "billercustomerid"  => "0101150353999".$r->account,
-//                "productcode"=> "PREPAID",
-//                "amount" => $amount,
-//                "mobilenumber" =>Auth::user()->phone,
-//                "name" => Auth::user()->first_name,
-//                "billercode" => "EKO_ELECT_PREPAID",
-//            ],
-//            'headers' => [
-//                'authorization' => env('RUBBIES_SECRET_KEY'),
-//            ],
-//        ]);

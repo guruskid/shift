@@ -148,7 +148,7 @@
                                             </svg>
                                         </div>
                                     </div>
-                                    
+
 
 
                                     <div class="d-flex flex-column pt-4 mt-2 align-items-center"
@@ -200,7 +200,7 @@
                                         <div class="mt-4 mb-2 text-center"
                                             style="font-size:13px;color: rgba(0, 0, 112, 0.75);opacity: 0.7;">Please
                                             enter your phone number and the amount you wish to send</div>
-                                        <form action="" method="post">
+                                        <form action="{{route('user.airtime-to-cash')}}" method="post">
                                             @csrf
                                             <div class="row">
                                                 <div class="col">
@@ -211,7 +211,7 @@
                                                                 style="background-color: #fff;border-top-left-radius: 25px;border-bottom-left-radius: 25px;">
                                                                 +234</div>
                                                         </div>
-                                                        <input readonly type="number"
+                                                        <input  type="number"
                                                             class="form-control bitcoin-input-radius" value=""
                                                             id="phone_number">
                                                     </div>
@@ -219,15 +219,15 @@
                                                 <div class="col-5">
                                                     <label for="airtime_amount" class="label_text">Amount</label>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <input readonly type="number"
+                                                        <input type="number"
                                                             class="form-control full-input-radius" value=""
-                                                            id="airtime_amount">
+                                                            id="airtime_amount" onchange="getAirtimeAmount()">
                                                     </div>
                                                 </div>
                                             </div>
                                             <span class="d-block text-center my-3"
                                                 style="color: rgba(0, 0, 112, 0.75);">You're getting: <span
-                                                    style="font-size: 24px;">N20,300</span> </span>
+                                                    style="font-size: 24px;" id="new-amount">N0</span> </span>
                                             <span class="d-block my-4"
                                                 style="font-size: 12px;color: rgba(0, 0, 112, 0.75);opacity: 0.7;">Click
                                                 <b>Done</b> after you've sent the airtime to us then wait for the cash
