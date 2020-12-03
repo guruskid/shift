@@ -182,29 +182,38 @@ function showDetails(txnType, netwkPrvdr, phone, amount) {
 function getElectUser() {
     var providerId = $('#provider').find(':selected').data('scid');
     var account = $('#acct-num').val();
+    var productcode = $('#billercode').val();
     var acctName = $('#acct-name');
-    if (providerId != '' && account != '') {
+    if (productcode != '' && account != '') {
         acctName.val('Loading, please wait..');
         var formData = {
             account: account,
-            service_category_id: providerId
+            service_category_id: 2
         };
-        console.log('1')
         $('#d-provider').text($('#provider').find(':selected').text());
         $('#d-meter-no').text(account);
         $('#scid').val(providerId);
-
-        console.log('2')
-
-        $.post("/user/get-elect-user", formData, function (data) {
-            if (data['data'] == undefined) {
-                acctName.val('No account found');
-                $('#d-acct-name').text('No account found');
-            } else {
-                acctName.val(data['data']['name']);
-                $('#d-acct-name').text(data['data']['name']);
+        $.ajax({
+            type: "post",
+            url: "/user/get-elect-user",
+            dataType: 'json',
+            data: {
+                "billercode": productcode,
+                "billercustomerid":account
+            },
+            success: function (result){
+                console.log(result)
+                if (result == undefined) {
+                    acctName.val('No account found');
+                    $('#d-acct-name').text('No account found');
+                } else {
+                    acctName.val(result);
+                    $('#d-acct-name').text(result);
+                }
             }
         });
+
+
     }
 
 }

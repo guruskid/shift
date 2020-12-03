@@ -336,27 +336,26 @@ class BillsPaymentController extends Controller
     }
 
 
-    public function getElectUser(Request $r)
+    public function getElectUser(Request $request)
     {
         $client = new Client();
-        $url = env('RUBBIES_API') . "/billspaymentverifycustomer";
-        $response = $client->request('POST', $url, [
-            'json' => [
-                "account" => $r->account,
-                'service_category_id' => $r->service_category_id
-            ],
-        ]);
+        $url = env('RUBBIES_API')."/billerverification";
+        $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
+        $params['json'] = [
+            "billercode"=>$request->billercode,
+            "billercustomerid"=>$request->billercustomerid
+        ];
+        $response = $client->post($url,$params);
         $body = json_decode($response->getBody()->getContents());
-        return response()->json($body);
         if ($body != null ) {
-            return response()->json($body->data->name);
+            return response()->json($body->name);
         }
-
         return response()->json('No account found');
     }
 
     public function payElectricity(Request $r)
     {
+        dd('hi,this app works,');
 
         $r->validate([
             'scid' => 'required',
