@@ -20,6 +20,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Done
+Route::get('/etherwallet', function () {
+    return view('newpages.ethereumwallet');
+});
+
+
+Route::get('/tetherwallet', function () {
+    return view('newpages.tetherwallet');
+});
+
+
 
 // Route::get('/showcards', function () {
 //     return view('newpages.cards');
@@ -124,9 +135,6 @@ Route::get('/newsignup', function () {
     return view('newpages.newsignup');
 });
 
-// Route::get('/newregister', function () {
-//     return view('newpages.newregister');
-// });
 
 //Mobile and desktop done
 Route::get('/all-transactions', function(){
