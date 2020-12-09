@@ -98,8 +98,6 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-        /*  $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name; */
         $user->phone = $request->phone;
 
         return response()->json($user->save());
@@ -436,6 +434,19 @@ class UserController extends Controller
                 Auth::user()->notificationSetting->trade_sms = $v;
                 break;
             case 't-e':
+                Auth::user()->notificationSetting->trade_email = $v;
+                break;
+            //Mobile
+            case 'w-s2':
+                Auth::user()->notificationSetting->wallet_sms = $v;
+                break;
+            case 'w-e2':
+                Auth::user()->notificationSetting->wallet_email = $v;
+                break;
+            case 't-s2':
+                Auth::user()->notificationSetting->trade_sms = $v;
+                break;
+            case 't-e2':
                 Auth::user()->notificationSetting->trade_email = $v;
                 break;
 
