@@ -546,3 +546,11 @@ $("#removeobscure_pwd2").on("click", function() {
         $("#toggleshowpassword2").attr("src", "svg/obscure-password.svg");
     }
 });
+
+
+$(".network_cards").on("click", function(){
+    $(".network_cards").css("border", "0")
+    $(this).css("border", "3px solid #000070")
+    const isp = $(this).attr("id")
+    $("#isp_input").val(isp)
+})

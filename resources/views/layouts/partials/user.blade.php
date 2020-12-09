@@ -33,7 +33,8 @@
                         <img src="{{ Route::currentRouteName() == "user.bills" ? asset('svg/bills_icon_inactive.svg'):asset('svg/bills_icon_active.svg')}}" alt="">
                         {{-- <img src="{{asset('svg/recharge-sm.svg')}} " alt=""> --}}
                     </i>
-                    Recharge
+                    {{-- Recharge --}}
+                    Pay Bills
                 </a>
             </li>
 
@@ -44,7 +45,8 @@
                     <i class="metismenu-icon">
                         <img src="{{ Route::currentRouteName() == "user.assets" ? asset('svg/assets_icon_inactive.svg'):asset('svg/assets_icon_active.svg')}}" alt="">
                     </i>
-                    Assets
+                    {{-- Assets --}}
+                    Trade Assets
                 </a>
             </li>
 
