@@ -8,4 +8,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
     Route::get('/profit-manager', 'NairaTransactionController@profits')->name('admin.profits');
     Route::POST('/send-charges', 'NairaTransactionController@sendCharges')->name('admin.send-charges');
+
+    Route::post('/freeze-account', 'UserController@freezeAccount')->name('admin.freeze-account');
+    Route::post('/activate-account', 'UserController@activateAccount')->name('admin.activate-account');
 });

@@ -59,74 +59,122 @@
                             <div class="">
                                 Recent users
                             </div>
-                           {{--  <div class="">
+                            {{--  <div class="">
                                 <form action="{{route('admin.search')}}" method="post" class="form-inline" >
-                                    @csrf
-                                    <div class="form-group">
-                                        <input type="text" type="email" class="form-control" name="q" placeholder="Enter user name or email">
-                                    </div>
-                                    <button class="ml-3 btn btn-outline-secondary"> <i class="fa fa-search"></i></button>
-                                </form>
-                            </div> --}}
-                        </div>
-                        <div class="table-responsive p-3">
-                            <table class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
-                                <thead>
-                                    <tr>
-                                        <th >#</th>
-                                        <th >Name</th>
-                                        {{-- <th >Last name</th> --}}
-                                        <th >Email</th>
-                                        <th >Phone</th>
-                                        <th >Wallet balance</th>
-                                        <th >Date added</th>
-                                        <th >Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($users as $u)
-                                    <tr>
-                                        <td class="text-muted">{{$u->id}}</td>
-                                        <td >{{ucwords($u->first_name)}}</td>
-                                        {{-- <td >{{$u->last_name}}</td> --}}
-                                        <td >{{$u->email}}</td>
-                                        <td >{{$u->phone}}</td>
-                                        <td >
-                                            {{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }}
-                                        </td>
-                                        <td >{{$u->created_at->format('d M y')}}</td>
-                                        <td >
-                                            @switch($u->status)
-                                            @case('verified')
-                                            <div class="badge badge-success">{{$u->status}}</div>
-                                            @break
-                                            @case("declined")
-                                            <div class="badge badge-danger">{{$u->status}}</div>
-                                            @break
-                                            @case('not verified')
-                                            <div class="badge badge-warning">{{$u->status}}</div>
-                                            @break
-                                            @case('waiting')
-                                            <div class="badge badge-info">{{$u->status}}</div>
-                                            @break
-                                            @default
-                                            <div class="badge badge-primary">{{$u->status}}</div>
+                            @csrf
+                            <div class="form-group">
+                                <input type="text" type="email" class="form-control" name="q"
+                                    placeholder="Enter user name or email">
+                            </div>
+                            <button class="ml-3 btn btn-outline-secondary"> <i class="fa fa-search"></i></button>
+                            </form>
+                        </div> --}}
+                    </div>
+                    <div class="table-responsive p-3">
+                        <table
+                            class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    {{-- <th >Last name</th> --}}
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Wallet balance</th>
+                                    <th>Date added</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($users as $u)
+                                <tr>
+                                    <td class="text-muted">{{$u->id}}</td>
+                                    <td>{{ucwords($u->first_name)}}</td>
+                                    {{-- <td >{{$u->last_name}}</td> --}}
+                                    <td>{{$u->email}}</td>
+                                    <td>{{$u->phone}}</td>
+                                    <td>
+                                        {{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }}
+                                    </td>
+                                    <td>{{$u->created_at->format('d M y')}}</td>
+                                    <td>
+                                        @switch($u->status)
+                                        @case('verified')
+                                        <div class="badge badge-success">{{$u->status}}</div>
+                                        @break
+                                        @case("declined")
+                                        <div class="badge badge-danger">{{$u->status}}</div>
+                                        @break
+                                        @case('not verified')
+                                        <div class="badge badge-warning">{{$u->status}}</div>
+                                        @break
+                                        @case('waiting')
+                                        <div class="badge badge-info">{{$u->status}}</div>
+                                        @break
+                                        @default
+                                        <div class="badge badge-primary">{{$u->status}}</div>
 
-                                            @endswitch
-                                        </td>
+                                        @endswitch
+                                    </td>
 
-                                        <td><a class="btn btn-alternate"
-                                                href=" {{route('admin.user', [$u->id, $u->email ] )}} ">View</a></td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-alternate"
+                                                href=" {{route('admin.user', [$u->id, $u->email ] )}} ">View</a>
+                                            @if ($u->nairaWallet)
+                                            @if ($u->nairaWallet->status == 'active')
+                                            <a class="btn btn-outline-danger" onclick="freezeAccount({{ $u }}, '/admin/freeze-account')"
+                                            data-toggle="modal" data-target="#freeze-modal" href="#">Freeze</a>
+                                            @else
+                                            <a class="btn btn-outline-success" onclick="freezeAccount({{ $u }}, '/admin/activate-account')"
+                                            data-toggle="modal" data-target="#freeze-modal" href="#">Activate</a>
+                                            @endif
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+</div>
+
+{{-- Confirm freezze account --}}
+<div class="modal fade " id="freeze-modal">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form action="{{route('admin.freeze-account')}}" id="freeze-form" method="post" >
+            @csrf
+            <div class="modal-content  c-rounded">
+                <!-- Modal Header -->
+                <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                    <h4 class="modal-title">Confirm Refund <i class="fa fa-paper-plane"></i></h4>
+                    <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+
+                <div class="modal-body p-4">
+                    <p class="text-success">Enter your pin to confirm action</p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Wallet pin </label>
+                                <input type="password" name="pin" required class="form-control">
+                                <input type="hidden" name="user_id" id="user-id" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

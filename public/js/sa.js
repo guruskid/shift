@@ -274,65 +274,9 @@ function queryTransaction(id) {
 }
 
 
-/* get transactions and user details for adding transaction, it is called from the top */
-/* function getUserWalletDetails(accountNumber) {
-    console.log(accountNumber);
-    if (accountNumber.length < 10) {
-        return;
-    }
-    var accountName = $('#account-name');
-    var email = $('#email');
-    var transactionsList = $('#transactions-list');
-
-    accountName.val('Loading');
-    email.val('Loading');
-    transactionsList.html('Loading');
-
-    $.get('/admin/get-wallet-details/'+accountNumber)
-    .done(function (res) {
-        if (res.success) {
-            console.log(res)
-            var user = res.user;
-            var transactions = res.transactions;
-            var wallet =  res.wallet;
-            transactionsList.html('')
-
-            accountName.val(wallet.account_name) ;
-            email.val(user.email)
-
-            $('#wallet-id').val(wallet.id);
-            $('#wallet-balance').text('₦'+wallet.amount.toLocaleString());
-
-
-            transactions.forEach(t => {
-                transactionsList.append(`
-                    <tr>
-                        <td>${t.id} </td>
-                        <td>${t.reference} </td>
-                        <td>${t.transaction_type.name}</td>
-                        <td>₦${t.amount_paid} </td>
-                        <td>₦${t.charge} </td>
-                        <td>₦${t.amount.toLocaleString()} </td>
-                        <td>₦${t.previous_balance}</td>
-                        <td>₦${t.current_balance} </td>
-                        <td>${t.cr_acct_name} </td>
-                        <td>${t.dr_acct_name} </td>
-                        <td>${t.narration} </td>
-                        <td>${t.created_at} </td>
-                        <td>${t.status} </td>
-                    </tr>
-                `)
-            });
-        } else {
-            accountName.val('');
-            email.val('');
-            $('#wallet-balance').text('')
-            transactionsList.html('');
-            $('#wallet-id').val('');
-            alert(res.message);
-        }
-
-
-     })
-    .fail(function (err) {  console.log(err) })
-} */
+function freezeAccount(user, url) {
+    console.log(url)
+    $('#user-name').text(user.first_name);
+    $('#user-id').val(user.id);
+    $('#freeze-form').attr('action', url);
+}

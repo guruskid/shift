@@ -26,6 +26,11 @@ class PortfolioController extends Controller
         if (!$n) {
             return redirect()->route('user.portfolio')->with(['error' => 'No Naira wallet associated to this account']);
         }
+
+        if($n->status == 'paused'){
+            return redirect()->route('user.dashboard')->with(['error' => 'Naia wallet currently froozen, please contact support for more info']);
+        }
+
         $banks = Bank::all();
         $nts = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->orderBy('id', 'desc')->with('transactionType')->paginate(20);
         $dr_total = 0;
