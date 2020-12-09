@@ -51,10 +51,9 @@ if (Auth::user()->nairaWallet) {
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
     <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet">
     {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
-    <link href=" {{asset('custom.css?v = 1.0')}} " rel="stylesheet">
-    <link href=" {{asset('custom.css?v = 2.0')}} " rel="stylesheet">
+    <link href=" {{asset('custom.css?v = 3.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
-    <link href=" {{asset('user_assets/css/main.css')}} " rel="stylesheet">
+    <link href=" {{asset('user_assets/css/main.css?v=8')}} " rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
@@ -376,10 +375,10 @@ if (Auth::user()->nairaWallet) {
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
     <script src="{{asset('js/bootstrap.min.js')}} "></script>
-    <script src="{{asset('js/custom.js?v=24')}}"></script>
+    <script src="{{asset('js/custom.js?v=25')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
-    <script src="{{asset('newpages/main.js')}} "></script>
+    <script src="{{asset('newpages/main.js?v=9')}} "></script>
 
     {{-- Calculator scripts --}}
     <script src="{{asset('user_assets/js/calculator.js')}} "></script>
