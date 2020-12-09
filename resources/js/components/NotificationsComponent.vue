@@ -3,7 +3,7 @@
         <a href="#" data-toggle="dropdown">
             <i class="fa fa-bell mx-2 fa-2x text-warning" style="font-size: 1.7em; margin-top: .5em;" ></i>
             <span v-if="unreadCount > 0"
-                class="notification-counter  rounded-circle bg-custom">{{unreadCount}} </span>
+                class="notification-counter  rounded-circle bg-custom" style="height:26px;width:26px;">{{unreadCount}} </span>
         </a>
         <div class="dropdown-menu notifications">
             <div class="d-flex justify-content-between">

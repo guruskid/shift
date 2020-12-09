@@ -165,7 +165,7 @@ $not = $nots->last();
                                                 <a href=" {{route('user.transactions')}} "><button type="button"
                                                         tabindex="0" class="dropdown-item">My
                                                         transactions</button></a>
-                                                <a href=" {{route('user.calculator')}} "><button type="button"
+                                                <a href=" "><button type="button"
                                                         tabindex="0" class="dropdown-item">Trade</button></a>
                                                 <div tabindex="-1" class="dropdown-divider"></div>
                                                 <a href="#"

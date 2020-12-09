@@ -49,7 +49,7 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text">Recharge</span>
+                                        <span class="h3 giftcard-text">Pay Bills</span>
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
@@ -73,8 +73,8 @@
                                     </div>
                                 </div>
                                 <div
-                                    class="d-flex flex-row flex-wrap justify-content-between justify-content-lg-start py-4 px-2">
-                                    <a href="{{ route('user.recharge') }}">
+                                    class="d-flex flex-row flex-wrap justify-content-between justify-content-lg-center py-3 px-2">
+                                    <a class="mx-1 my-2" href="{{ route('user.recharge') }}">
                                         <div
                                             class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
                                             <div>
@@ -84,7 +84,7 @@
                                             <span class="d-block bills_type_text">Buy Airtime</span>
                                         </div>
                                     </a>
-                                    <a href="{{ route('user.data') }}">
+                                    <a class="mx-1 my-2" href="{{ route('user.data') }}">
                                         <div
                                             class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
                                             <div>
@@ -94,7 +94,7 @@
                                             <span class="d-block bills_type_text">Data Subscription</span>
                                         </div>
                                     </a>
-                                    <a href="{{ route('user.airtime-to-cash') }}">
+                                    <a class="mx-1 my-2" href="{{ route('user.airtime-to-cash') }}">
                                         <div
                                         class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
                                         <div>
@@ -104,7 +104,7 @@
                                         <span class="d-block bills_type_text">Airtime to cash</span>
                                     </div>
                                     </a>
-                                    <a href="{{ route('user.discount-airtime') }}">
+                                    <a class="mx-1 my-2" href="{{ route('user.discount-airtime') }}">
                                         <div
                                             class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
                                             <div>
@@ -114,7 +114,7 @@
                                             <span class="d-block bills_type_text">Buy Discounted Airtime</span>
                                         </div>
                                     </a>
-                                    <a href="{{ route('user.paytv') }}">
+                                    <a class="mx-1 my-2" href="{{ route('user.paytv') }}">
                                         <div
                                             class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
                                             <div>
@@ -124,7 +124,7 @@
                                             <span class="d-block bills_type_text">Cable Subscription and TV</span>
                                         </div>
                                     </a>
-                                    <a href="{{ route('user.electricity') }}">
+                                    <a class="mx-1 my-2" href="{{ route('user.electricity') }}">
                                         <div
                                             class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
                                             <div>

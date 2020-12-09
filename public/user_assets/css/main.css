@@ -942,12 +942,12 @@ input[type="file"]::-webkit-file-upload-button {
     font-weight: 500;
 }
 .smartbudget_item_container .phoneNumber {
-    color: #676B87;
+    color: #676b87;
     font-size: 14px;
     line-height: 15px;
 }
 .smartbudget_item_container .duration {
-    color: #676B87;
+    color: #676b87;
     font-size: 14px;
     line-height: 15px;
 }
@@ -965,9 +965,9 @@ input[type="file"]::-webkit-file-upload-button {
 .airtimepage_card {
     border: 0.5px solid #b2b2b2;
     border-radius: 10px;
-    width: 320px;
-    height: 250px;
-    margin: 10px 20px;
+    width: 290px;
+    height: 220px;
+    margin: 10px 15px;
 }
 .bills_type_text {
     color: #000070;
@@ -1284,7 +1284,28 @@ input[type="file"]::-webkit-file-upload-button {
 /* .smartbudget_cardmenu {
     display: none;
 } */
-
+.bg_custom_blue {
+    background-color: #000070;
+}
+.app-sidebar .app-sidebar__inner {
+    padding: 2px 1.5rem 1.5rem;
+    padding-right: 0px !important;
+}
+.vertical-nav-menu li a.mm-active {
+    color: #000070;
+    background: white;
+    font-weight: bold;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.custom_progress {
+    width: 320px;
+    height: 5px;
+}
+.coin_chart_price {
+    font-size: 22px;
+    color: #676b87;
+}
 
 /* End Login page css */
 
@@ -1293,13 +1314,15 @@ input[type="file"]::-webkit-file-upload-button {
 
 
 
-
-
-
-
-
-
 @media (max-width: 639px) {
+    .coin_chart_price {
+        font-size: 16px;
+        position: relative;
+        left: 24px;
+    }
+    .custom_progress {
+        width: 250px;
+    }
     .removeobscure_pwd.smartbudget {
         left: 78%;
     }
@@ -1538,18 +1561,21 @@ input[type="file"]::-webkit-file-upload-button {
         font-size: 16px;
     }
     .rechargemenu_icons {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
     }
     .bills_type_text {
         font-size: 13px;
         text-align: center;
     }
     .airtimepage_card {
-        width: 48%;
-        height: 150px;
+        /* width: 48%; */
+        width: 37vw;
+        /* height: 150px; */
+        height: 135px;
         margin: 10px 0px;
         padding: 5px;
+        margin: 5px auto !important;
     }
     .verifyIdSubmitBtn {
         height: 42px;
@@ -1773,8 +1799,6 @@ input[type="file"]::-webkit-file-upload-button {
     }
 }
 
-
-
 @media (min-width: 640px) and (max-width: 992px) {
     .removeobscure_pwd.smartbudget {
         left: 85%;
@@ -1842,16 +1866,16 @@ input[type="file"]::-webkit-file-upload-button {
         font-size: 30px;
     }
     .rechargemenu_icons {
-        width: 120px;
-        height: 120px;
+        width: 90px;
+        height: 90px;
     }
     .bills_type_text {
         font-size: 20px;
         text-align: center;
     }
     .airtimepage_card {
-        width: 45%;
-        height: 200px;
+        width: 25vw;
+        height: 185px;
         margin: 20px 0px;
         padding: 5px;
     }
