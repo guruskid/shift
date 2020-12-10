@@ -38,7 +38,8 @@ body {
 .list-cards-search .giftcard.search-icon {
     position: absolute;
     right: 14.4em;
-    top: 2.8em;
+    /* top: 2.8em; */
+    top: 2.4em;
 }
 .card-type__sell-card,
 .card-type__sell-card:hover {
@@ -1297,7 +1298,7 @@ input[type="file"]::-webkit-file-upload-button {
 }
 .vertical-nav-menu li a.mm-active {
     color: #000070;
-    background: white;
+    background: #EFEFF8;
     font-weight: bold;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
