@@ -48,8 +48,7 @@
                     <div class="d-flex flex-column flex-md-row profile_root_container">
                         <div class="profile_image_root_container pb-5">
                             <div class="profile_image_container">
-                                <img src="data:image/jpeg;base64,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"
-                                    class="img-fluid profile_image" />
+                                <img src="/storage/avatar/{{ Auth::user()->dp }}" class="img-fluid profile_image" />
                                 <div class="camera_button">
                                     <svg width="20" height="20" viewBox="0 0 40 37" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +61,7 @@
                             <div class="d-flex flex-column justify-content-center align-items-center mb-4"
                                 style="z-index: 2;position:relative;top:-110px;">
                                 <span class="d-block text-upper"
-                                    style="font-size: 26px;font-weight:normal;color:#000070;">NGN 800,300.00</span>
+                                    style="font-size: 26px;font-weight:normal;color:#000070;">₦{{number_format(Auth::user()->nairaWallet->amount)}}</span>
                                 <span class="d-block"
                                     style="font-size: 18px;letter-spacing: 0.01em;color: #676B87;text-transform:uppercase;">wallet
                                     balance</span>
@@ -70,19 +69,20 @@
                             <div class="d-flex flex-column align-items-center wallet_balance_section py-3 pb-4">
                                 <div class="d-flex flex-column">
                                     <div class="my-2">
-                                        <span class="d-block text-center labelText">Last Name</span>
-                                        <div class="d-flex justify-content-center align-items-center details">Andrea
-                                        </div>
+                                        <span class="d-block text-center labelText">Name</span>
+                                        <div class="d-flex justify-content-center align-items-center details">
+                                            {{ Auth::user()->first_name }} </div>
                                     </div>
                                     <div class="my-2">
-                                        <span class="d-block text-center labelText">First Name</span>
-                                        <div class="d-flex justify-content-center align-items-center details">Jolly
-                                        </div>
+                                        <span class="d-block text-center labelText">Email</span>
+                                        <div style="font-size: 14px"
+                                            class="d-flex justify-content-center text-lowercase  align-items-center details">
+                                            {{ Auth::user()->email }} </div>
                                     </div>
                                     <div class="my-2">
-                                        <span class="d-block text-center labelText">Username</span>
-                                        <div class="d-flex justify-content-center align-items-center details">Jolly1029
-                                        </div>
+                                        <span class="d-block text-center labelText">Phone</span>
+                                        <div class="d-flex justify-content-center align-items-center details">
+                                            {{ Auth::user()->phone }} </div>
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +97,7 @@
                                 <li class="nav-item profile_tab_title" role="presentation">
                                     <a class="nav-link active d-flex justify-content-center" id="profile-tab"
                                         style="height: 52px;padding:0;margin:0 !important;" data-toggle="tab"
-                                        href="#profile" role="tab" aria-controls="home" aria-selected="true">USER
+                                        href="#profile" role="tab" aria-controls="home" aria-selected="true">
                                         PROFILE</a>
                                 </li>
                                 <li class="nav-item profile_tab_title" role="presentation"
@@ -128,7 +128,7 @@
                                         <div class="d-flex align-items-center mt-0 profile_details_col">
                                             <div class="user_profile_text text-center" style="width: 14%;">Name</div>
                                             <div class="user_profile_text ml-5" style="font-size: 18px;width: 56%;">
-                                                Andrea Jolly</div>
+                                                {{ Auth::user()->first_name }}</div>
                                             <div class="user_profile_text text-center ml-5" style="width: 30%;">
                                                 <div class="profile_verification_status_text">
                                                     {{-- Pending verification --}}
@@ -139,26 +139,22 @@
                                             style="background: #F7F7F7;">
                                             <div class="user_profile_text text-center" style="width: 14%;">Email</div>
                                             <div class="user_profile_text ml-5" style="font-size: 18px;width: 56%;">
-                                                andrea_jolly@domain.com</div>
+                                                {{ Auth::user()->email }}</div>
                                             <div class="user_profile_text text-center ml-5" style="width: 30%;">
-                                                <div class="profile_verification_status_text">
-                                                    Pending verification
+                                                <div class="profile_verification_status_text text-accent">
+                                                    Verified
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center mt-0 profile_details_col">
                                             <div class="user_profile_text"
-                                                style="position:relative;left:1.7em;width: 14%;">Bank Name</div>
+                                                style="position:relative;left:1.7em;width: 14%;">Bank</div>
                                             <div class="" style="width:56%;">
                                                 <div class="d-flex" style="position: relative;left:35px;">
-                                                    <div class="user_profile_text" style="font-size: 18px;">
-                                                        <select class="custom-select profile_select_bank m-0 p-0"
-                                                            id="inputGroupSelect01" style="width: 180px;">
-                                                            <option selected>Choose...</option>
-                                                        </select>
-                                                    </div>
+                                                    {{ Auth::user()->accounts->first()->bank_name }}
                                                     <div class="user_profile_text ml-4" style="font-size: 18px;">
-                                                        <div style="font-size:16px;">Acc. No. XXXXXXXXXX</div>
+                                                        <div style="font-size:16px;">Acc. No.
+                                                            {{ Auth::user()->accounts->first()->account_number }}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -175,13 +171,13 @@
                                                 style="position:relative;left:1.7em;width: 14%;">Mobile No.</div>
                                             <div class="" style="width:56%;">
                                                 <div style="position: relative;left:35px;">
-                                                    XXX-XXX-XXX-XXXX
+                                                    {{ Auth::user()->phone }}
                                                 </div>
                                             </div>
                                             <div class="user_profile_text text-center"
                                                 style="width: 30%;position:relative;left:25px;">
-                                                <div class="profile_verification_status_text" style="color: #00B9CD;">
-                                                    verified
+                                                <div class="profile_verification_status_text">
+                                                    Pending verification
                                                 </div>
                                             </div>
                                         </div>
@@ -190,8 +186,9 @@
                                                 style="position:relative;left:1.7em;width: 14%;">Status</div>
                                             <div class="" style="width:56%;">
                                                 <div class="d-flex" style="position: relative;left:35px;">
-                                                    <div class="user_profile_text" style="font-size: 18px;">
-                                                        <span>Active</span>
+                                                    <div class="user_profile_text text-capitalize"
+                                                        style="font-size: 18px;">
+                                                        <span>{{ Auth::user()->status }}</span>
                                                     </div>
                                                     {{-- <div class="user_profile_text ml-4" style="font-size: 18px;">
                                                         <div style="font-size:16px;">Acc. No. XXXXXXXXXX</div>
@@ -233,34 +230,68 @@
                                 <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
                                     <div class="container px-4">
                                         <div class="d-flex changepassword_text mt-4 pb-1">
-                                            Change Password</div>
+                                            Change Account Password</div>
                                         <div style="border: 1px solid #CBCBCB;width:100%;"></div>
                                         <div class="my-4 mb-4">
-                                            <form>
-                                                @csrf
+                                            <form method="POST" action="{{ route('user.change_password') }}"> @csrf
                                                 <div class="row">
                                                     <div class="col-12 col-md-6 my-2 my-lg-0">
                                                         <label for="oldpassword" class="changePasswordLabelText">Old
                                                             Password</label>
-                                                        <input type="text" name="oldpassword"
+                                                        <input type="password" name="old_password"
                                                             style="border: 1.3px solid #D7D7D7;" class="form-control"
                                                             id="oldpassword" />
                                                     </div>
                                                     <div class="col-12 col-md-6 my-2 my-lg-0">
                                                         <label for="oldpassword" class="changePasswordLabelText">New
                                                             Password</label>
-                                                        <input type="text" name="newpassword" class="form-control" />
+                                                        <input type="password" name="new_password"
+                                                            class="form-control" />
                                                     </div>
                                                     <div class="col-12 my-2 my-lg-0">
                                                         <label for="oldpassword" class="changePasswordLabelText">Confirm
                                                             Password</label>
-                                                        <input type="text" name="confirm_newpassword"
+                                                        <input type="password" name="new_password_confirmation"
                                                             class="form-control" />
                                                     </div>
+                                                    <div class="col-md-3 mt-3"><button
+                                                            class="btn btn-primary">Update</button></div>
                                                 </div>
                                             </form>
                                         </div>
+                                        <div class="d-flex changepassword_text mt-4 pb-1">
+                                            Change Wallet Pin</div>
                                         <div style="border: 1px solid #CBCBCB;width:100%;"></div>
+                                        <div class="my-4 mb-4">
+                                            <form method="POST" action="{{ route('user.update-naira-password') }}">
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col-12 col-md-6 my-2 my-lg-0">
+                                                        <label for="oldpassword" class="changePasswordLabelText">Account
+                                                            Password</label>
+                                                        <input type="password" name="old_password"
+                                                            style="border: 1.3px solid #D7D7D7;" class="form-control"
+                                                            id="oldpassword" />
+                                                    </div>
+                                                    <div class="col-12 col-md-6 my-2 my-lg-0">
+                                                        <label for="oldpassword" class="changePasswordLabelText">New
+                                                            Wallet Pin</label>
+                                                        <input type="password" name="new_password" placeholder="- - - -"
+                                                            minlength="4" maxlength="4" class="form-control" />
+                                                    </div>
+                                                    <div class="col-12 my-2 my-lg-0">
+                                                        <label for="oldpassword" class="changePasswordLabelText">Confirm
+                                                            Wallet Pin</label>
+                                                        <input type="password" placeholder="- - - -" minlength="4"
+                                                            maxlength="4" name="new_password_confirmation"
+                                                            class="form-control" />
+                                                    </div>
+                                                    <div class="col-md-3 mt-3"><button
+                                                            class="btn btn-primary">Update</button></div>
+                                                </div>
+                                            </form>
+                                        </div>
+
                                     </div>
                                 </div>
 
@@ -276,9 +307,10 @@
                                                     Wallet transaction SMS notification</div>
                                                 <div>
                                                     <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            id="customSwitch1" checked>
-                                                        <label class="custom-control-label" for="customSwitch1"></label>
+                                                        <input type="checkbox" class="custom-control-input" id="w-s"
+                                                            {{Auth::user()->notificationSetting->wallet_sms ? 'checked' : '' }}
+                                                            onclick="notSw('w-s')">
+                                                        <label class="custom-control-label" for="w-s"></label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -288,9 +320,10 @@
                                                     Wallet transaction email alert</div>
                                                 <div style="position: relative;left:23px;">
                                                     <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            id="email-alert1" checked>
-                                                        <label class="custom-control-label" for="email-alert1"></label>
+                                                        <input type="checkbox" class="custom-control-input" id="w-e"
+                                                            {{Auth::user()->notificationSetting->wallet_email ? 'checked' : '' }}
+                                                            onclick="notSw('w-e')">
+                                                        <label class="custom-control-label" for="w-e"></label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -300,9 +333,10 @@
                                                     Trade transaction SMS notification</div>
                                                 <div style="position: relative;left:3px;">
                                                     <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            id="sms-note1" checked>
-                                                        <label class="custom-control-label" for="sms-note1"></label>
+                                                        <input type="checkbox" class="custom-control-input" id="t-s"
+                                                            {{Auth::user()->notificationSetting->trade_sms ? 'checked' : '' }}
+                                                            onclick="notSw('t-s')">
+                                                        <label class="custom-control-label" for="t-s"></label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -312,9 +346,10 @@
                                                     Trade transaction email alert</div>
                                                 <div style="position: relative;left:25px;">
                                                     <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            id="email-alert2" checked>
-                                                        <label class="custom-control-label" for="email-alert2"></label>
+                                                        <input type="checkbox" class="custom-control-input" id="t-e"
+                                                            {{Auth::user()->notificationSetting->trade_email ? 'checked' : '' }}
+                                                            onclick="notSw('t-e')">
+                                                        <label class="custom-control-label" for="t-e"></label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -612,7 +647,7 @@
                                     {{-- <div class="d-flex flex-row justify-content-center align-items-center">
                                         <div class="d-flex flex-column mt-5">
                                             <div class="d-flex flex-row justify-content-center align-items-center">
-                                                
+
                                                 <div class="mr-3" id="phone-verification-container">
                                                     <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
                                                         <span class="d-block">Phone number verification</span>
@@ -727,26 +762,26 @@
                 </div>
 
 
-
+                {{-- Mobile --}}
 
                 <div class="container-fluid d-lg-none mb-4">
                     <div class="d-flex flex-column align-items-center">
                         <div class="profilepicture_mobile">
                             <div style="height: 140px;width:140px;border:1px solid;border-radius:70px;">
-                                {{-- <span>jijfjfjfjftyrrtypiruotutyi</span> --}}
+                                {{-- <img src="/storage/avatar/{{ Auth::user()->dp }}" alt=""> --}}
                             </div>
-                            
-                            <span class="d-block text-center my-3" style="color: #000070;font-size:16px;">Makada
-                                Makada</span>
+                            <span class="d-block text-center my-3"
+                                style="color: #000070;font-size:16px;">{{ Auth::user()->first_name }}</span>
                         </div>
                         <div class="mb-4">
                             <span class="d-block text-center" style="color: #676B87;">Wallet Balance</span>
                             <span class="d-block text-center"
-                                style="color: #000070;font-size: 16px;font-weight: 600;">NGN800,000,333.00</span>
+                                style="color: #000070;font-size: 16px;font-weight: 600;">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center" style="width:92vw;">
                             <div onclick="switchTab('mobile_profile_tab')" id="mobile_profile_tab"
-                                class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center tab_active_mobile" style="border-left: 0px;">
+                                class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center tab_active_mobile"
+                                style="border-left: 0px;">
                                 Profile</div>
                             <div onclick="switchTab('mobile_security_tab')" id="mobile_security_tab"
                                 class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center">
@@ -755,67 +790,100 @@
                                 class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center">
                                 Notification</div>
                             <div onclick="switchTab('mobile_limits_tab')" id="mobile_limits_tab"
-                                class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center" style="border-right: 0px;">
+                                class="d-flex justify-content-center align-items-center profile_tab_title_mobile text-center"
+                                style="border-right: 0px;">
                                 Limits</div>
                         </div>
 
 
                         <!-- Profile Tab -->
-                        <div id="mobile_profile_contents" class="container p-0 mobile_tab_contents" style="margin-top: 0px;">
+                        <div id="mobile_profile_contents" class="container p-0 mobile_tab_contents"
+                            style="margin-top: 0px;">
                             <div class="row">
                                 <div class="col-12 card mx-0 p-0 p-2" style="border-radius: 5px;">
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Name</div>
-                                        <div class="col-9">Andrea Jolly</div>
+                                        <div class="col-9">{{ Auth::user()->first_name }}</div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Email</div>
-                                        <div class="col-9">Andreajolly@gmail.com</div>
+                                        <div class="col-9">{{ Auth::user()->email }}</div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Bank</div>
-                                        <div class="col-9">0724565537, Andrea Jolly, Access Bank</div>
+                                        <div class="col-9">{{ Auth::user()->accounts->first()->account_number }},
+                                            {{ Auth::user()->accounts->first()->bank_name }}</div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Mobile No</div>
-                                        <div class="col-9">08141894420</div>
+                                        <div class="col-9">{{ Auth::user()->phone }}</div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Status</div>
-                                        <div class="col-9">Active</div>
+                                        <div class="col-9 text-capitalize">{{ Auth::user()->status }}</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Security Tab -->
-                        <div id="mobile_security_contents" class="container p-0 mobile_tab_contents" style="margin-top: 0px;display:none;">
+                        <div id="mobile_security_contents" class="container p-0 mobile_tab_contents"
+                            style="margin-top: 0px;display:none;">
                             <div class="row">
                                 <div class="col-12 card p-0 px-2" style="border-radius:5px;">
-                                    <span class="d-block h6 mt-3" style="color: rgba(0, 0, 112, 0.75);">Change
+                                    <span class="d-block h6 mt-3" style="color: rgba(0, 0, 112, 0.75);">Change Account
                                         password</span>
                                     <div style="height: 0;width:100%;border: 1px solid rgba(0, 0, 112, 0.75);"></div>
                                     <div class="row my-3">
                                         <div class="col-12">
-                                            <form action="" method="post">
-                                                @csrf
-                                                <div class="form-group col-8 mx-auto">
-                                                    <label for="password" style="position: relative;left: 72px;">Old password</label>
-                                                    <input type="password" id="password" class="form-control col-8 mx-auto"
+                                            <form action="{{ route('user.change_password') }}" method="post"> @csrf
+                                                <div class="form-group  mx-auto">
+                                                    <label for="password">Old password</label>
+                                                    <input type="password" id="password" class="form-control  mx-auto"
                                                         name="old_password" />
                                                 </div>
-                                                <div class="form-group col-8 mx-auto">
-                                                    <label for="new_password" style="position: relative;left: 72px;">New password</label>
-                                                    <input type="password" id="new_password" class="form-control col-8 mx-auto"
-                                                        name="password" />
+                                                <div class="form-group  mx-auto">
+                                                    <label for="new_password">New password</label>
+                                                    <input type="password" id="new_password"
+                                                        class="form-control  mx-auto" name="new_password" />
                                                 </div>
-                                                <div class="form-group col-8 mx-auto">
-                                                    <label for="cnew_password" style="position: relative;left: 72px;">New password</label>
-                                                    <input type="password" id="cnew_password" class="form-control col-8 mx-auto"
-                                                        name="password_confirmation" />
+                                                <div class="form-group  mx-auto">
+                                                    <label for="cnew_password">New password</label>
+                                                    <input type="password" id="cnew_password"
+                                                        class="form-control  mx-auto"
+                                                        name="new_password_confirmation" />
                                                 </div>
                                                 <button type="submit" class="btn text-white"
                                                     style="background-color: #000070;">Update password</button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <span class="d-block h6 mt-3" style="color: rgba(0, 0, 112, 0.75);">Change Wallet
+                                        Pin</span>
+                                    <div style="height: 0;width:100%;border: 1px solid rgba(0, 0, 112, 0.75);"></div>
+                                    <div class="row my-3">
+                                        <div class="col-12">
+                                            <form action="{{ route('user.update-naira-password') }}" method="post">
+                                                @csrf
+                                                <div class="form-group  mx-auto">
+                                                    <label for="password">Account password</label>
+                                                    <input type="password" id="password" class="form-control  mx-auto"
+                                                        name="old_password" />
+                                                </div>
+                                                <div class="form-group  mx-auto">
+                                                    <label for="new_password">New password</label>
+                                                    <input type="password" placeholder="- - - -" id="new_password"
+                                                        class="form-control  mx-auto" name="new_password" />
+                                                </div>
+                                                <div class="form-group  mx-auto">
+                                                    <label for="cnew_password">New password</label>
+                                                    <input type="password" placeholder="- - - -" id="cnew_password"
+                                                        class="form-control  mx-auto"
+                                                        name="new_password_confirmation" />
+                                                </div>
+                                                <button type="submit" class="btn text-white"
+                                                    style="background-color: #000070;">Update pin</button>
                                             </form>
                                         </div>
                                     </div>
@@ -835,8 +903,10 @@
                                         </div>
                                         <div class="col-2">
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                                <input type="checkbox" class="custom-control-input" id="w-s2"
+                                                    {{Auth::user()->notificationSetting->wallet_sms ? 'checked' : '' }}
+                                                    onclick="notSw('w-s2')">
+                                                <label class="custom-control-label" for="w-s2"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -847,8 +917,11 @@
                                         </div>
                                         <div class="col-2">
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                                <input
+                                                    {{Auth::user()->notificationSetting->wallet_email ? 'checked' : '' }}
+                                                    onclick="notSw('w-e2')" type="checkbox" class="custom-control-input"
+                                                    id="w-e2">
+                                                <label class="custom-control-label" for="w-e2"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -859,8 +932,11 @@
                                         </div>
                                         <div class="col-2">
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                                <input
+                                                    {{Auth::user()->notificationSetting->trade_sms ? 'checked' : '' }}
+                                                    onclick="notSw('t-s2')" type="checkbox" class="custom-control-input"
+                                                    id="t-s2">
+                                                <label class="custom-control-label" for="t-s2"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -871,8 +947,11 @@
                                         </div>
                                         <div class="col-2">
                                             <div class="custom-control custom-switch">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                                <label class="custom-control-label" for="customSwitch1"></label>
+                                                <input
+                                                    {{Auth::user()->notificationSetting->trade_email ? 'checked' : '' }}
+                                                    onclick="notSw('t-e2')" type="checkbox" class="custom-control-input"
+                                                    id="t-e2">
+                                                <label class="custom-control-label" for="t-e2"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -881,7 +960,8 @@
                         </div>
 
                         <!-- Limits tab -->
-                        <div id="mobile_limits_contents" class="container p-0 mobile_tab_contents" style="margin-top: 0px;display:none;">
+                        <div id="mobile_limits_contents" class="container p-0 mobile_tab_contents"
+                            style="margin-top: 0px;display:none;">
                             <div class="row">
                                 <div class="col-12 card p-0 px-2 py-3">
                                     <div class="d-flex mt-4 accordion_full_container">
@@ -1019,7 +1099,8 @@
                                                     <!-- BVN verification content -->
                                                     <div id="bvn_verification_card_content"
                                                         class="d-none flex-column justify-content-center mx-auto mt-3">
-                                                        <div class="col-12 mx-auto" style="position: relative;left: 26px;">
+                                                        <div class="col-12 mx-auto"
+                                                            style="position: relative;left: 26px;">
                                                             <span class="d-block"
                                                                 style="font-size: 9px;width: 92%;color: #000070;">
                                                                 You BVN cannot be used to carry out any other
@@ -1032,12 +1113,14 @@
                                                                     @csrf
                                                                     <div class="form-row align-items-center">
                                                                         <div class="col">
-                                                                          <input type="text" class="form-control" placeholder="00000000" />
+                                                                            <input type="text" class="form-control"
+                                                                                placeholder="00000000" />
                                                                         </div>
                                                                         <div class="col">
-                                                                            <button type="submit" class="btn text-white" style="background-color: #000070;">verify</button>
+                                                                            <button type="submit" class="btn text-white"
+                                                                                style="background-color: #000070;">verify</button>
                                                                         </div>
-                                                                      </div>
+                                                                    </div>
                                                                 </form>
                                                             </div>
                                                         </div>
@@ -1066,46 +1149,69 @@
                                                             <div class="container">
                                                                 <div class="row">
                                                                     <div class="col-6">
-                                                                        <div id="mobile_front_photo_click" class="d-flex flex-column align-items-center px-2 py-2" style="border: 0.5px dashed #676B87;">
-                                                                            <input type="file" name="mobile_frontOfCard" id="uploadFrontPhotoInputMobile"
+                                                                        <div id="mobile_front_photo_click"
+                                                                            class="d-flex flex-column align-items-center px-2 py-2"
+                                                                            style="border: 0.5px dashed #676B87;">
+                                                                            <input type="file" name="mobile_frontOfCard"
+                                                                                id="uploadFrontPhotoInputMobile"
                                                                                 style="display: none;" />
                                                                             <div>
-                                                                                <svg width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                <svg width="20" height="20"
+                                                                                    viewBox="0 0 21 21" fill="none"
+                                                                                    xmlns="http://www.w3.org/2000/svg">
                                                                                     <g clip-path="url(#clip0)">
-                                                                                    <path d="M17.9697 5.33311H15.0782V5.03605C15.0782 3.70892 14.0011 2.63182 12.674 2.63182H8.07549C6.74782 2.63182 5.67126 3.70892 5.67126 5.03605V5.33311H2.77923C1.45156 5.33311 0.375 6.40967 0.375 7.73734V16.4642C0.375 17.7913 1.45156 18.8684 2.77923 18.8684H17.9708C19.2984 18.8684 20.375 17.7913 20.375 16.4642V7.73734C20.3739 6.40914 19.2974 5.33311 17.9697 5.33311ZM10.3739 16.3744C7.86926 16.3744 5.83261 14.3378 5.83261 11.8331C5.83261 9.32894 7.86926 7.29176 10.3739 7.29176C12.8786 7.29176 14.9153 9.32841 14.9153 11.8331C14.9153 14.3378 12.8781 16.3744 10.3739 16.3744ZM12.7782 11.8331C12.7782 13.1575 11.6989 14.2373 10.3739 14.2373C9.04893 14.2373 7.9697 13.1575 7.9697 11.8331C7.9697 10.5081 9.04893 9.42885 10.3739 9.42885C11.6989 9.42885 12.7782 10.5081 12.7782 11.8331Z" fill="#A6ACBE"/>
+                                                                                        <path
+                                                                                            d="M17.9697 5.33311H15.0782V5.03605C15.0782 3.70892 14.0011 2.63182 12.674 2.63182H8.07549C6.74782 2.63182 5.67126 3.70892 5.67126 5.03605V5.33311H2.77923C1.45156 5.33311 0.375 6.40967 0.375 7.73734V16.4642C0.375 17.7913 1.45156 18.8684 2.77923 18.8684H17.9708C19.2984 18.8684 20.375 17.7913 20.375 16.4642V7.73734C20.3739 6.40914 19.2974 5.33311 17.9697 5.33311ZM10.3739 16.3744C7.86926 16.3744 5.83261 14.3378 5.83261 11.8331C5.83261 9.32894 7.86926 7.29176 10.3739 7.29176C12.8786 7.29176 14.9153 9.32841 14.9153 11.8331C14.9153 14.3378 12.8781 16.3744 10.3739 16.3744ZM12.7782 11.8331C12.7782 13.1575 11.6989 14.2373 10.3739 14.2373C9.04893 14.2373 7.9697 13.1575 7.9697 11.8331C7.9697 10.5081 9.04893 9.42885 10.3739 9.42885C11.6989 9.42885 12.7782 10.5081 12.7782 11.8331Z"
+                                                                                            fill="#A6ACBE" />
                                                                                     </g>
                                                                                     <defs>
-                                                                                    <clipPath id="clip0">
-                                                                                    <rect width="20" height="20" fill="white" transform="translate(0.375 0.75)"/>
-                                                                                    </clipPath>
+                                                                                        <clipPath id="clip0">
+                                                                                            <rect width="20" height="20"
+                                                                                                fill="white"
+                                                                                                transform="translate(0.375 0.75)" />
+                                                                                        </clipPath>
                                                                                     </defs>
-                                                                                    </svg>                                                                                
+                                                                                </svg>
                                                                             </div>
-                                                                            <span class="d-block text-center" style="color: #000070;font-size:9px;">Front photo of your card</span>
+                                                                            <span class="d-block text-center"
+                                                                                style="color: #000070;font-size:9px;">Front
+                                                                                photo of your card</span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-6">
-                                                                        <div id="mobile_back_photo_click" class="d-flex flex-column align-items-center px-2 py-2" style="border: 0.5px dashed #676B87;">
-                                                                            <input type="file" name="mobile_backOfCard" id="uploadBackPhotoInputMobile"
+                                                                        <div id="mobile_back_photo_click"
+                                                                            class="d-flex flex-column align-items-center px-2 py-2"
+                                                                            style="border: 0.5px dashed #676B87;">
+                                                                            <input type="file" name="mobile_backOfCard"
+                                                                                id="uploadBackPhotoInputMobile"
                                                                                 style="display: none;" />
                                                                             <div>
-                                                                                <svg width="20" height="20" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                <svg width="20" height="20"
+                                                                                    viewBox="0 0 21 21" fill="none"
+                                                                                    xmlns="http://www.w3.org/2000/svg">
                                                                                     <g clip-path="url(#clip0)">
-                                                                                    <path d="M17.9697 5.33311H15.0782V5.03605C15.0782 3.70892 14.0011 2.63182 12.674 2.63182H8.07549C6.74782 2.63182 5.67126 3.70892 5.67126 5.03605V5.33311H2.77923C1.45156 5.33311 0.375 6.40967 0.375 7.73734V16.4642C0.375 17.7913 1.45156 18.8684 2.77923 18.8684H17.9708C19.2984 18.8684 20.375 17.7913 20.375 16.4642V7.73734C20.3739 6.40914 19.2974 5.33311 17.9697 5.33311ZM10.3739 16.3744C7.86926 16.3744 5.83261 14.3378 5.83261 11.8331C5.83261 9.32894 7.86926 7.29176 10.3739 7.29176C12.8786 7.29176 14.9153 9.32841 14.9153 11.8331C14.9153 14.3378 12.8781 16.3744 10.3739 16.3744ZM12.7782 11.8331C12.7782 13.1575 11.6989 14.2373 10.3739 14.2373C9.04893 14.2373 7.9697 13.1575 7.9697 11.8331C7.9697 10.5081 9.04893 9.42885 10.3739 9.42885C11.6989 9.42885 12.7782 10.5081 12.7782 11.8331Z" fill="#A6ACBE"/>
+                                                                                        <path
+                                                                                            d="M17.9697 5.33311H15.0782V5.03605C15.0782 3.70892 14.0011 2.63182 12.674 2.63182H8.07549C6.74782 2.63182 5.67126 3.70892 5.67126 5.03605V5.33311H2.77923C1.45156 5.33311 0.375 6.40967 0.375 7.73734V16.4642C0.375 17.7913 1.45156 18.8684 2.77923 18.8684H17.9708C19.2984 18.8684 20.375 17.7913 20.375 16.4642V7.73734C20.3739 6.40914 19.2974 5.33311 17.9697 5.33311ZM10.3739 16.3744C7.86926 16.3744 5.83261 14.3378 5.83261 11.8331C5.83261 9.32894 7.86926 7.29176 10.3739 7.29176C12.8786 7.29176 14.9153 9.32841 14.9153 11.8331C14.9153 14.3378 12.8781 16.3744 10.3739 16.3744ZM12.7782 11.8331C12.7782 13.1575 11.6989 14.2373 10.3739 14.2373C9.04893 14.2373 7.9697 13.1575 7.9697 11.8331C7.9697 10.5081 9.04893 9.42885 10.3739 9.42885C11.6989 9.42885 12.7782 10.5081 12.7782 11.8331Z"
+                                                                                            fill="#A6ACBE" />
                                                                                     </g>
                                                                                     <defs>
-                                                                                    <clipPath id="clip0">
-                                                                                    <rect width="20" height="20" fill="white" transform="translate(0.375 0.75)"/>
-                                                                                    </clipPath>
+                                                                                        <clipPath id="clip0">
+                                                                                            <rect width="20" height="20"
+                                                                                                fill="white"
+                                                                                                transform="translate(0.375 0.75)" />
+                                                                                        </clipPath>
                                                                                     </defs>
-                                                                                    </svg>                                                                                
+                                                                                </svg>
                                                                             </div>
-                                                                            <span class="d-block text-center" style="color: #000070;font-size:9px;">Back photo of your card</span>
+                                                                            <span class="d-block text-center"
+                                                                                style="color: #000070;font-size:9px;">Back
+                                                                                photo of your card</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button type="submit" class="btn text-white w-50 mt-3" style="background: #000070;margin-left:24%;">Upload</button>
+                                                            <button type="submit" class="btn text-white w-50 mt-3"
+                                                                style="background: #000070;margin-left:24%;">Upload</button>
                                                         </form>
                                                     </div>
 
