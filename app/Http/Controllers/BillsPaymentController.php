@@ -104,8 +104,6 @@ class BillsPaymentController extends Controller
 
         if ($body->responsecode == "00"){
             $providers = $body->billers;
-            //endpoint not provider yet
-            // dd($providers);
             return view('newpages.smartbudget', compact(['providers']));
         }
         else{
@@ -115,22 +113,20 @@ class BillsPaymentController extends Controller
     }
     public function paytv(Request $r)
     {
+        //uncommeting this line will make real transaction
+        dd('hi,this app works,uncomment this line in the controller');
         $r->validate([
             'decoder' => 'required',
             'amount' => 'required',
             'password' => 'required',
-//            'productcode' => 'required',
-//            "billercode"  => 'required'
-
         ]);
 
         $callback = route('recharge-card.callback');
         $n = Auth::user()->nairaWallet;
 
-//        if (Hash::check($r->password, $n->password) == false) {
-//            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
-//        }
-        dd('hi');
+        if (Hash::check($r->password, $n->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+        }
         $amount = $r->amount;
         //check if he has enough money
         if ($amount > $n->amount) {
@@ -362,7 +358,8 @@ class BillsPaymentController extends Controller
 
     public function payElectricity(Request $r)
     {
-        // dd('hi,this app works,');
+        //uncommeting this line will make real transaction
+         dd('hi,this app works,uncomment this line in the controller');
 
         $r->validate([
             // 'scid' => 'required',
@@ -376,9 +373,9 @@ class BillsPaymentController extends Controller
         $callback = route('recharge-card.callback');
         $n = Auth::user()->nairaWallet;
 
-//        if (Hash::check($r->password, $n->password) == false) {
-//            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
-//        }
+        if (Hash::check($r->password, $n->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+        }
 
         $amount = $r->amount;
         //check if he has enough money
@@ -395,8 +392,7 @@ class BillsPaymentController extends Controller
             "billercustomerid"  => $r->account,
             "productcode"=> $r->productcode,
             "amount" => $amount,
-            // "mobilenumber" =>Auth::user()->phone,
-            "mobilenumber" => "08142381323",
+            "mobilenumber" =>Auth::user()->phone,
             "name" => Auth::user()->first_name,
             "billercode" => $r->billercode,
         ];

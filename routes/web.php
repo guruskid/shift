@@ -20,6 +20,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Done
+Route::get('/etherwallet', function () {
+    return view('newpages.ethereumwallet');
+});
+
+
+Route::get('/tetherwallet', function () {
+    return view('newpages.tetherwallet');
+});
+
+
 
 // Route::get('/showcards', function () {
 //     return view('newpages.cards');
@@ -124,9 +135,6 @@ Route::get('/newsignup', function () {
     return view('newpages.newsignup');
 });
 
-// Route::get('/newregister', function () {
-//     return view('newpages.newregister');
-// });
 
 //Mobile and desktop done
 Route::get('/all-transactions', function(){
@@ -204,7 +212,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::get('/pay-bills', 'BillsPaymentController@view')->name('user.bills');
     Route::post('/get-dec-user', 'BillsPaymentController@getUser');
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
-    Route::view('/paytv', 'newpages.')->name('user.paytv');
+    // Route::view('/paytv', 'newpages.smartbudget')->name('user.paytv');
+    Route::get('/paytv', 'BillsPaymentController@CableView')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@paytv')->name('user.paytv');
     Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge');
     Route::post('/airtime', 'BillsPaymentController@airtime')->name('user.airtime');
@@ -231,13 +240,13 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function () {
-     /* ajax calls */
-     Route::GET('/get-user/{email}', 'AdminController@getUser');
-     Route::GET('/get-rate/{id}', 'AdminController@getRate');
-     Route::GET('/get-transac/{id}', 'AdminController@getTransac');
-     Route::GET('/get-card/{id}', 'AdminController@getCard');
-     Route::GET('/get-notification/{id}', 'AdminController@getNotification');
-     Route::GET('/update-transaction/{id}/{status}', 'AdminController@updateTransaction');  //to accept or decline a new transaction
+    /* ajax calls */
+    Route::GET('/get-user/{email}', 'AdminController@getUser');
+    Route::GET('/get-rate/{id}', 'AdminController@getRate');
+    Route::GET('/get-transac/{id}', 'AdminController@getTransac');
+    Route::GET('/get-card/{id}', 'AdminController@getCard');
+    Route::GET('/get-notification/{id}', 'AdminController@getNotification');
+    Route::GET('/update-transaction/{id}/{status}', 'AdminController@updateTransaction');  //to accept or decline a new transaction
 
     /* ajax ends here */
     Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
