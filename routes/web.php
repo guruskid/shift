@@ -35,14 +35,14 @@ Route::get('/tetherwallet', function () {
 // Route::get('/showcards', function () {
 //     return view('newpages.cards');
 // });
-
+/*
 Route::get('/cardcalculator', function () {
     return view('newpages.cardcalculator');
-});
-
+}); */
+/*
 Route::get('/transaction', function () {
     return view('newpages.Transactionscreen');
-});
+}); */
 
 /* Route::get('/bitcoin', function () {
     return view('newpages.bitcoin');
@@ -63,9 +63,9 @@ Route::get('/newprofile', function () {
 });
 
 //mobile and web done
-Route::get('/btc-transaction', function(){
+/* Route::get('/btc-transaction', function(){
     return view('newpages.btc_payment_transaction');
-});
+}); */
 
 //mobile and web done
 Route::get('/btc-transaction-hash', function(){
@@ -135,11 +135,11 @@ Route::get('/newsignup', function () {
     return view('newpages.newsignup');
 });
 
-
+/*
 //Mobile and desktop done
 Route::get('/all-transactions', function(){
     return view('newpages.all-transactions');
-});
+}); */
 
 
 
