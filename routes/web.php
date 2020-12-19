@@ -20,6 +20,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::get('/newlandingpage', function () {
+    return view('newpages.newlandingpage');
+});
+
+
 //Done
 Route::get('/etherwallet', function () {
     return view('newpages.ethereumwallet');
@@ -72,6 +78,8 @@ Route::get('/btc-transaction-hash', function(){
     return view('newpages.btc_payment_transaction2');
 });
 
+
+
 // Route::get('/transactions', function(){
 //     return view('newpages.btc_payment_transaction2');
 // });
@@ -102,9 +110,9 @@ Route::get('/smartbudget', function () {
 }); */
 
 //Mobile and tab done
-/* Route::get('/nairawalletmain', function () {
-    return view('newpages.nairawallet');
-}); */
+//  Route::get('/nairawalletmain', function () {
+//     return view('newpages.nairawallet');
+// }); 
 
 // Route::get('/nairawalletdtodconfirm', function () {
 //     return view('newpages.nairawalletdtodconfirm');
