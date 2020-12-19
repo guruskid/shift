@@ -4,6 +4,7 @@ use App\Mail\UserRegistered;
 use App\NairaTransaction;
 use Illuminate\Support\Facades\Mail;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,28 +21,141 @@ Route::get('/', function () {
 });
 
 
+Route::get('/newlandingpage', function () {
+    return view('newpages.newlandingpage');
+});
+
+
+//Done
+Route::get('/etherwallet', function () {
+    return view('newpages.ethereumwallet');
+});
+
+
+Route::get('/tetherwallet', function () {
+    return view('newpages.tetherwallet');
+});
+
+
+
 // Route::get('/showcards', function () {
 //     return view('newpages.cards');
 // });
-
+/*
 Route::get('/cardcalculator', function () {
     return view('newpages.cardcalculator');
-});
+}); */
+/*
 Route::get('/transaction', function () {
     return view('newpages.Transactionscreen');
-});
-Route::get('/bitcoin', function () {
+}); */
+
+/* Route::get('/bitcoin', function () {
     return view('newpages.bitcoin');
 });
+
 Route::get('/ethereum', function () {
     return view('newpages.ethereumscreen');
-});
+}); */
+
 Route::get('/airtocash', function () {
     return view('newpages.airtimetocash');
 });
+
+
+//Mobile done
 Route::get('/newprofile', function () {
     return view('newpages.profile');
 });
+
+//mobile and web done
+/* Route::get('/btc-transaction', function(){
+    return view('newpages.btc_payment_transaction');
+}); */
+
+//mobile and web done
+Route::get('/btc-transaction-hash', function(){
+    return view('newpages.btc_payment_transaction2');
+});
+
+
+
+// Route::get('/transactions', function(){
+//     return view('newpages.btc_payment_transaction2');
+// });
+
+/* Route::get('/newdashboard', function () {
+    return view('newpages.dashboard');
+});
+Route::get('/creditsuccess', function () {
+    return view('newpages.creditsuccess');
+});
+Route::get('/creditfailure', function () {
+    return view('newpages.creditfailure');
+}); */
+
+// mobile and tab screen done
+Route::get('/smartbudget', function () {
+    return view('newpages.smartbudget');
+});
+
+//Mobile and tab done
+/* Route::get('/choosewallet', function () {
+    return view('newpages.choosewallet');
+}); */
+
+//Mobile and tab screen done
+/* Route::get('/walletpage', function () {
+    return view('newpages.bitcoin-wallet');
+}); */
+
+//Mobile and tab done
+//  Route::get('/nairawalletmain', function () {
+//     return view('newpages.nairawallet');
+// }); 
+
+// Route::get('/nairawalletdtodconfirm', function () {
+//     return view('newpages.nairawalletdtodconfirm');
+// });
+
+//Mobile and tab screen done
+Route::get('/recharge', function () {
+    return view('newpages.rechargemenu');
+});
+
+//Mobile and Tab done
+Route::get('/buyairtime', function () {
+    return view('newpages.buyairtime');
+});
+
+//Mobile and tab done
+Route::get('/buydata', function () {
+    return view('newpages.buydata');
+});
+
+//mobile and tab done
+Route::get('/newlogin', function () {
+    return view('newpages.newlogin');
+});
+
+//mobile and tab done
+Route::get('/newsignup', function () {
+    return view('newpages.newsignup');
+});
+
+/*
+//Mobile and desktop done
+Route::get('/all-transactions', function(){
+    return view('newpages.all-transactions');
+}); */
+
+
+
+
+
+
+
+
 
 
 
@@ -89,7 +203,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     Route::get('/', 'UserController@dashboard')->name('user.dashboard');
     Route::get('/rates', 'UserController@rates')->name('user.rates');
-    Route::view('account', 'user.profile')->name('user.profile');
+    Route::view('account', 'newpages.profile')->name('user.profile');
     Route::POST('/account', 'UserController@updateProfile')->name('user.update_profile');
     Route::POST('/id_card', 'UserController@idcard')->name('user.idcard');
     Route::get('/transactions', 'UserController@transactions')->name('user.transactions');
@@ -111,17 +225,19 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::get('/pay-bills', 'BillsPaymentController@view')->name('user.bills');
     Route::post('/get-dec-user', 'BillsPaymentController@getUser');
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
-    Route::get('/paytv', 'BillsPaymentController@paytvView')->name('user.paytv');
+    Route::view('/paytv', 'newpages.')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@paytv')->name('user.paytv');
-    Route::view('/recharge', 'user.recharge')->name('user.recharge');
+    Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge');
     Route::post('/airtime', 'BillsPaymentController@airtime')->name('user.airtime');
+    Route::view('/data', 'newpages.buydata')->name('user.data');
     Route::view('/discounted-airtime', 'user.discount_airtime')->name('user.discount-airtime');
+    Route::view('/airtime-to-cash', 'newpages.airtimetocash')->name('user.airtime-to-cash');
     Route::get('/electricity', 'BillsPaymentController@electricityView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');
 
     /* Routes for the new calculator */
-    Route::get('/assets', 'TradeController@assets')->name('user.assets');
+    Route::get('/assets/{asset_type?}', 'TradeController@assets')->name('user.assets');
     Route::get('/trade/{trade_type}/{card_id}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
     Route::view('/gift-card-calculator', 'user.gift_card_calculator');
     Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
@@ -129,6 +245,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     /* Bitcooin Wallet */
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
+    Route::get('/bitcoin-wallet', 'BitcoinWalletController@wallet')->name('user.bitcoin-wallet');
 
 
 });

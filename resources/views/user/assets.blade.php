@@ -49,7 +49,7 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text">Giftcards</span>
+                                        <span class="h3 giftcard-text text-capitalize">{{ $asset_type }}</span>
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
@@ -64,16 +64,15 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="widget widget-chart-one">
-                                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-4 mb-3"
+                                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-lg-4 mb-lg-3"
                                     style="border-bottom: 1px solid #C9CED6;">
                                     <div class="list-cards-title primary-color">
                                         <a href="#">
                                             <span class="ml-1"
-                                                style="color: rgba(0, 0, 112, 0.75);font-size:16px;">Buy/Sell
-                                                card</span>
+                                                style="color: rgba(0, 0, 112, 0.75);font-size:16px;">Trade Assets</span>
                                         </a>
                                     </div>
-                                    <div class="list-cards-search primary-color mt-3 mt-lg-0">
+                                    <div class="list-cards-search primary-color mt-3 mb-3 mt-lg-0">
                                         <form action="" method="post">
                                             <div class="form-group p-0 m-0">
                                                 <span class="giftcard search-icon">
@@ -93,7 +92,7 @@
                                     </div>
                                 </div>
                                 <div class="container">
-                                    <div class="row">
+                                    <div class="row pt-3">
                                         @foreach ($assets as $asset)
                                         <div class="col-lg-4 col-md-6 col-12 mb-3">
                                             <div class="wallcards-container py-lg-5 px-lg-3 px-1 list_all_cards d-flex align-items-center">

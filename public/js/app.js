@@ -3718,6 +3718,7 @@ __webpack_require__.r(__webpack_exports__);
 
     _event_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on("process_trades", function (data) {
       _this.trades = [];
+      console.log(data);
       _this.trades = data[0];
       _this.buy_sell = data[1];
     });

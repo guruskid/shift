@@ -130,7 +130,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input readonly type="number" step="any" name="amount_paid" min="0" class="form-control bitcoin-input-radius" value=""
+                                                        <input type="number" step="any" min="0" class="form-control bitcoin-input-radius" value=""
                                                             id="sell_ngn_field">
                                                     </div>
                                                 </div>
@@ -140,8 +140,8 @@
                                                     <span id="copied_text" class="text-success"
                                                         style="display: none;">Wallet address copied</span>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <input type="text" class="form-control bitcoin-input-radius"
-                                                            id="wallet_address" value="{{ $card->wallet_id }}" readonly
+                                                        <input type="text" min="34" minlength="34" maxlength="35" max="35" class="form-control bitcoin-input-radius"
+                                                            id="wallet_address"
                                                             style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                         <div class="input-group-append" style="border-radius: 30px;">
                                                             <div class="input-group-text input_label">
@@ -212,7 +212,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input readonly type="text" name="amount_paid" class="form-control bitcoin-input-radius"
+                                                        <input type="number" class="form-control bitcoin-input-radius"
                                                             id="buy_ngn_field">
                                                     </div>
                                                 </div>
@@ -222,7 +222,7 @@
                                                     <span id="copied_text" class="text-success"
                                                         style="display: none;">Wallet address copied</span>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <input type="text" name="wallet_id" class="form-control bitcoin-input-radius"
+                                                        <input type="text" min="34" minlength="34" maxlength="35" max="35" class="form-control bitcoin-input-radius"
                                                             id="buy_wallet_address"
                                                             style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                     </div>

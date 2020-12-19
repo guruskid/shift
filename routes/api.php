@@ -29,6 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('/update-password', 'Api\UserController@updatePassword');
         Route::post('/update-email', 'Api\UserController@updateEmail');
+        Route::post('/update-dp', 'Api\UserController@updateDp');
         Route::post('/update-wallet-pin', 'Api\NairaWalletController@updateWalletPin');
 
         Route::GET('/dashboard', 'Api\UserController@dashboard');
@@ -43,11 +44,15 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::get('/assets', 'Api\TradeController@assets');
         Route::get('/asset/{buy_sell}/{card_id}/{card_name}', 'Api\TradeController@assetRates');
+        Route::post('/trade-gift-card', 'Api\TradeController@tradeGiftCard');
 
         Route::GET('/transactions', 'Api\TransactionController@allTransactions');
 
         Route::GET('/naira-wallet', 'Api\NairaWalletController@index' );
         Route::GET('/naira-transactions', 'Api\NairaWalletController@allTransactions');
+        Route::POST('/transfer-cash', 'Api\NairaWalletController@transfer');
+        Route::POST('/withdraw-cash', 'Api\NairaWalletController@transfer');
+
 
     });
 });

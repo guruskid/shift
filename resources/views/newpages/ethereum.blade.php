@@ -106,7 +106,7 @@
                                                             <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" name="amount" class="form-control bitcoin-input-radius "
+                                                        <input type="number" name="amount" class="form-control bitcoin-input-radius"
                                                             id="sell_usd_field_eth">
                                                     </div>
                                                 </div>
@@ -118,7 +118,7 @@
                                                             <div class="input-group-text input_label">
                                                                 ETH</div>
                                                         </div>
-                                                        <input type="number" step="any" name="quantity" class="form-control bitcoin-input-radius"
+                                                        <input type="number" step="any" class="form-control bitcoin-input-radius" value=""
                                                             id="sell_eth_equiv_field">
                                                     </div>
                                                 </div>
@@ -130,7 +130,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input readonly type="number" name="amount_paid" class="form-control bitcoin-input-radius"
+                                                        <input type="number" class="form-control bitcoin-input-radius" value=""
                                                             id="sell_ngn_eth_field">
                                                     </div>
                                                 </div>
@@ -213,7 +213,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input readonly type="text" name="amount_paid" class="form-control bitcoin-input-radius"
+                                                        <input type="text" class="form-control bitcoin-input-radius"
                                                             id="buy_ngn_field_eth">
                                                     </div>
                                                 </div>

@@ -94,6 +94,40 @@ class UserController extends Controller
         ]);
     }
 
+    public function updateDp(Request $r)
+    {
+        /* $validator = Validator::make($r->all(), [
+            'image' => 'required|mimes:png,jpg,jpeg|max:3048',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        } */
 
-    
+        if ($r->has('image')) {
+            $file = $r->image;
+            $folderPath = public_path('storage/avatar/');
+            $image_base64 = base64_decode($file);
+
+            $imageName = time() . uniqid() . '.png';
+            $imageFullPath = $folderPath . $imageName;
+
+            file_put_contents($imageFullPath, $image_base64);
+
+            Auth::user()->dp = $imageName;
+            Auth::user()->save();
+
+            return response()->json([
+                'success' => true,
+                'data' => Auth::user(),
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Image file not present'
+            ]);
+        }
+    }
 }

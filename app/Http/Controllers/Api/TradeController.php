@@ -4,9 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Card;
 use App\CardCurrency;
+use App\Events\NewTransaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CardResource;
+use App\Mail\DantownNotification;
+use App\Notification;
+use App\Pop;
+use App\Transaction;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class TradeController extends Controller
 {
@@ -36,9 +45,9 @@ class TradeController extends Controller
     }
 
 
-    public function trade(Request $r)
+    public function tradeGiftCard(Request $r)
     {
-        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+        /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return response()->json([
                 'success' => false,
                 'msg' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions',
@@ -50,42 +59,50 @@ class TradeController extends Controller
                 'success' => false,
                 'msg' => 'Insufficient wallet balance to complete this transaction, please topup and try again ',
             ]);
-        }
+        } */
 
-        $card = Card::where('name', $r->cards[0])->first();
+        /* $image = base64_encode(Storage::get('public/assets/AMAZON.png'));
+        return response()->json($image); */
+
         $batch_id = uniqid();
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
-        $r->buy_sell == 1 ? $buy_sell = 'buy' : $buy_sell = 'sell';
 
-        foreach ($r->cards as $i => $total) {
+         foreach ($r->trades as $i) {
+            $card = Card::where('name', $i['cardName'])->first();
             $t = new Transaction();
             $t->uid = uniqid();
             $t->user_email = Auth::user()->email;
             $t->user_id = Auth::user()->id;
-            $t->card = $card->name;
+            $t->card = $i['cardName'];
             $t->card_id = $card->id;
-            $t->country = $r->currencies[$i];
-            $t->type = $buy_sell;
-            $t->amount = $r->values[$i];
-            $t->amount_paid = $r->totals[$i];
+            $t->country = $i['currency'];
+            $t->type = $r->buy_sell;
+            $t->amount = $i['cardValue'];
+            $t->amount_paid = $i['cardTotal'];
             $t->agent_id = $online_agent->id;
             $t->status = 'waiting';
             $t->batch_id = $batch_id;
-            $t->card_type = $r->card_types[$i];
-            $t->quantity = $r->quantities[$i];
-            $t->card_price = $r->prices[$i];
+            $t->card_type = $i['cardType'];
+            $t->quantity = $i['cardQuantity'];
+            $t->card_price = $i['cardPrice'];
             $t->save();
         }
 
-        if ($r->has('card_images')) {
-            foreach ($r->card_images as $file) {
-                $extension = $file->getClientOriginalExtension();
-                $filenametostore = time() . uniqid() . '.' . $extension;
-                Storage::put('public/pop/' . $filenametostore, fopen($file, 'r+'));
+        if ($r->has('images')) {
+            foreach ($r->images as $file) {
+                $file = $file['image'];
+                $folderPath = public_path('storage/pop/');
+                $image_base64 = base64_decode($file);
+
+                $imageName = time() . uniqid() . '.png';
+                $imageFullPath = $folderPath . $imageName;
+
+                file_put_contents($imageFullPath, $image_base64);
+
                 $p = new Pop();
                 $p->user_id = Auth::user()->id;
                 $p->transaction_id = $batch_id;
-                $p->path = $filenametostore;
+                $p->path = $imageName;
                 $p->save();
             }
         }
@@ -103,6 +120,6 @@ class TradeController extends Controller
             Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
         }
 
-        return redirect()->route('user.transactions')->with(['success' => 'Transaction initiated']);
+        return response()->json(['success'=> true]);
     }
 }

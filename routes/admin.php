@@ -1,6 +1,5 @@
 <?php
 
-
 Route::group(['middleware'=>'manager'], function(){
     Route::get('/rates', 'RateController@index')->name('admin.rates');
     Route::post('/card-combination/create', 'RateController@store')->name('admin.rate.add');

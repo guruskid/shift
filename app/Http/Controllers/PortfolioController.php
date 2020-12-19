@@ -15,7 +15,7 @@ class PortfolioController extends Controller
     {
         $naira = Auth::user()->nairaWallet()->count();
         $nw = Auth::user()->nairaWallet;
-        return view('user.portfolio', compact(['naira', 'nw' ]) );
+        return view('newpages.choosewallet', compact(['naira', 'nw' ]) );
     }
 
 
@@ -27,7 +27,7 @@ class PortfolioController extends Controller
             return redirect()->route('user.portfolio')->with(['error' => 'No Naira wallet associated to this account']);
         }
         $banks = Bank::all();
-        $nts = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->orderBy('id', 'desc')->with('transactionType')->paginate(20);
+        $nts = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->orderBy('id', 'desc')->with('transactionType')->paginate(5);
         $dr_total = 0;
         $cr_total = 0;
         foreach ($nts as $t ) {
@@ -41,6 +41,6 @@ class PortfolioController extends Controller
 
         }
         $ref = \Str::random(2) . time();
-        return view('user.naira_wallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref' ]) );
+        return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref' ]) );
     }
 }

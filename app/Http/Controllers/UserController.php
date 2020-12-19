@@ -50,17 +50,15 @@ class UserController extends Controller
         }
         $s = Auth::user()->transactions->where('status', 'success')->count();
         $w = Auth::user()->transactions->where('status', 'waiting')->count();
+        $p = Auth::user()->transactions->where('status', 'in progress')->count();
         $d = Auth::user()->transactions->where('status', 'declined')->count();
-        $f = Auth::user()->transactions->where('status', 'failed')->count();
 
         $borderColors = [
-            "rgba(255, 99, 132, 1.0)",
             "rgba(22,160,133, 1.0)",
             "rgba(255, 205, 86, 1.0)",
             "rgba(51,105,232, 1.0)"
         ];
         $fillColors = [
-            "rgba(255, 99, 132, 1.0)",
             "rgba(22,160,133, 1.0)",
             "rgba(255, 205, 86, 1.0)",
             "rgba(51,105,232, 1.0)"
@@ -68,8 +66,8 @@ class UserController extends Controller
         ];
         $usersChart = new UserChart;
         $usersChart->minimalist(true);
-        $usersChart->labels(['Failed', 'Successful', 'Declined', 'Waiting']);
-        $usersChart->dataset('Users by trimester', 'doughnut', [$f, $s, $d, $w])
+        $usersChart->labels(['Successful', 'Declined', 'Waiting']);
+        $usersChart->dataset('Users by trimester', 'doughnut', [ $s, $d, $w])
             ->color($borderColors)
             ->backgroundcolor($fillColors);
 
@@ -90,8 +88,8 @@ class UserController extends Controller
         if (Auth::user()->nairaWallet) {
             $naira_balance = Auth::user()->nairaWallet->amount;
         }
-
-        return view('user.dashboard', compact(['transactions', 's', 'w', 'd', 'f', 'notifications', 'usersChart', 'naira_balance']));
+        return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
+        return view('user.dashboard', compact(['transactions', 's', 'w', 'd',  'notifications', 'usersChart', 'naira_balance']));
     }
 
     /* ajax functions */
@@ -100,8 +98,6 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-        /*  $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name; */
         $user->phone = $request->phone;
 
         return response()->json($user->save());
@@ -231,14 +227,19 @@ class UserController extends Controller
         return redirect()->back()->with("success", "Email changed");
     }
 
-    public function transactions()
+    public function transactions(Request $r)
     {
-        $transactions = Auth::user()->transactions;
+        if ($r->has('start_date') || $r->has('end_date') ) {
+            $transactions = Auth::user()->transactions()->where('created_at', '>=', $r->start_date)
+            ->where('created_at', '<=', $r->end_date)->latest()->get();
+        }else{
+            $transactions = Auth::user()->transactions()->paginate(10);
+        }
         foreach ($transactions as $t) {
             $t->created_ats = $t->created_at->format('d M Y h:i a');
             $t->amount_paids = number_format($t->amount_paid);
             if ($t->status == 'approved') {
-                $t->stats = 'success';
+                $t->status = 'success';
             } else {
                 $t->stats = $t->status;
             }
@@ -247,7 +248,7 @@ class UserController extends Controller
         $value = Auth::user()->transactions->sum('amount');
         $amount = Auth::user()->transactions->sum('amount_paid');
 
-        return view('user.transactions', compact(['transactions', 'segment', 'value', 'amount']));
+        return view('newpages.all-transactions', compact(['transactions', 'segment', 'value', 'amount']));
     }
 
     public function addTransaction(Request $r)
@@ -438,6 +439,19 @@ class UserController extends Controller
                 Auth::user()->notificationSetting->trade_sms = $v;
                 break;
             case 't-e':
+                Auth::user()->notificationSetting->trade_email = $v;
+                break;
+            //Mobile
+            case 'w-s2':
+                Auth::user()->notificationSetting->wallet_sms = $v;
+                break;
+            case 'w-e2':
+                Auth::user()->notificationSetting->wallet_email = $v;
+                break;
+            case 't-s2':
+                Auth::user()->notificationSetting->trade_sms = $v;
+                break;
+            case 't-e2':
                 Auth::user()->notificationSetting->trade_email = $v;
                 break;
 

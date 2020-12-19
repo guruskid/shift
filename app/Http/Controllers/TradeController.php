@@ -18,12 +18,21 @@ use Illuminate\Support\Facades\Storage;
 
 class TradeController extends Controller
 {
-    public function assets()
+    public function assets($asset_type = 'all')
     {
-        $assets = Card::where('buyable', 1)->orWhere('sellable', 1)->get();
+        if ($asset_type == 'gift cards') {
+            $assets = Card::where('is_crypto', 0)->where(function($query){
+                $query->where('buyable', 1)->orWhere('sellable', 1);
+            })->get();
+        } elseif ($asset_type == 'digital assets') {
+            $assets = Card::where('is_crypto', 1)->where(function($query){
+                $query->where('buyable', 1)->orWhere('sellable', 1);
+            })->get();
+        } else {
+            $assets = Card::where('buyable', 1)->orWhere('sellable', 1)->get();
+        }
 
-
-        return view('user.assets', compact(['assets']));
+        return view('user.assets', compact(['assets', 'asset_type']));
         /* return response()->json($assets); */
     }
 
