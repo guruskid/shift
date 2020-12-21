@@ -110,6 +110,18 @@ Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
 
+Route::get('/paytv', function(){
+    return view('newpages.paytv');
+});
+
+Route::get('/paybills', function(){
+    return view('newpages.paybills');
+});
+
+Route::get('/notifications', function(){
+    return view('newpages.notifications');
+});
+
 //Mobile and tab done
 /* Route::get('/choosewallet', function () {
     return view('newpages.choosewallet');

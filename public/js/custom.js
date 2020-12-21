@@ -563,3 +563,20 @@ $(".faq_topic").on("click", function() {
         $("#transaction_content").css("display", "block");
     }
 });
+
+$("#pwd_visibility_toggle").on("click", function() {
+    if ($("#walletpin").attr("type") == "password") {
+        $("#walletpin").attr("type", "text");
+        $("#pwd_visibility_toggle2").attr("src", "svg/showpassword.svg");
+    } else {
+        $("#walletpin").attr("type", "password");
+        $("#pwd_visibility_toggle2").attr("src", "svg/obscure-password.svg");
+    }
+});
+
+$("#dialcode_select").on("click", function(){
+    const dialcode = $(this).val().trim()
+    const phoneNumber = dialcode+$("#phoneNumber4Power").val().trim()
+    $("#phoneNumber").val(phoneNumber)
+})
+

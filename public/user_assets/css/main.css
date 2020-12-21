@@ -1337,8 +1337,14 @@ input[type="file"]::-webkit-file-upload-button {
     border: 0;
     background-color:#fff;
 }
-/* End Login page css */
 
+.pwd_visibility_toggle {
+    cursor: pointer;
+    position: relative;
+    left: 78%;
+    top: 28px;
+    z-index: 2;
+}
 
 
 
@@ -1365,6 +1371,14 @@ input[type="file"]::-webkit-file-upload-button {
 
 
 @media (max-width: 639px) {
+    .card-xs {
+        background-color: #fff;
+        padding: 5px 10px;
+    }
+    .pwd_visibility_toggle {
+        left: 71%;
+    }
+    
     .airtime_info_text {
         font-size: 14px;
     }
