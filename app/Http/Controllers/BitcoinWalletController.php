@@ -60,7 +60,7 @@ class BitcoinWalletController extends Controller
     public function webhook(Request $request)
     {
         try {
-            \Log::info('app.requests', ['request' => $request]);
+            \Log::info('app.requests', ['request' => $request->all()]);
             /* $btc_transaction = new BitcoinTransaction();
             $btc_transaction->user_id = 19;
             $btc_transaction->primary_wallet_id = 1;
