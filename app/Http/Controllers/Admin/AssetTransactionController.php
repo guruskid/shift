@@ -260,6 +260,8 @@ class AssetTransactionController extends Controller
 
         $fee = new \RestApis\Blockchain\BTC\Snippets\Fee();
         $fee->set(0.00001);
+        $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, $input, $outputs,  $fee);
+        dd($result);
 
         try {
             /* $result = $this->instance->transactionApiBtcCreateTransaction()->create(Constants::$BTC_TESTNET, $input, $outputs, $fee); */
