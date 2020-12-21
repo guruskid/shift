@@ -1,0 +1,444 @@
+body {
+    font-family: quicksand;
+    background-image: url("img/Vector.svg");
+    overflow-x: hidden;
+}
+
+.navbar_style {
+    margin:30px;
+    border-radius: 10px;
+    box-shadow: 1px 3px 5px #888888;
+}
+.dark-mode {
+
+    background-color: #121212;
+    color: white;
+}
+
+nav {
+    background-color: white;
+}
+.dark-mode .card {
+    background-color: #000070;
+    color: white;
+}
+.dark-mode .navbar-expand-md {
+    background-color: #000070;
+    color: white;
+}
+.dark-mode .nav-link {
+    color: white;
+}
+
+
+.nav-link {
+    color: #000070;
+}
+
+navbar {
+    border: 1px solid;
+    padding: 10px;
+    box-shadow:  #888888;
+}
+
+h1 {
+    color: #000070;
+
+}
+
+h2 {
+    font-size: 54px;
+    font-style: normal;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 40px;
+    font-weight: bolder;
+}
+
+.btn {
+    background-color: #000070;
+    color: white;
+    font-size: medium;
+    font-weight: 400;
+    font-family: Quicksand;
+    border-radius: 5px;
+    border: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+a {
+    font-size: medium;
+}
+.onboarding_text {
+    color: #000;
+    font-size:53.7px;
+}
+
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+
+}
+  
+.dropdown:hover .dropdown-menu {display: block;}
+  
+.navbar-light .navbar-toggler {
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+}
+.mobile_app_icon {
+    position: absolute;
+    right:9%;
+    top:25%;
+}
+.currency_calculator_container {
+    margin-top: 17%; 
+    margin-bottom: 10%;
+}
+.form-control-style, .form-control-style2, .form-control-style3 {
+    border: 0px;
+    box-shadow:none;
+    text-align:center;
+}
+.icon5_block {
+    position: absolute;
+    right:7%;
+    top:780px;
+}
+.mobile_2 {
+    position: absolute;
+    left: 70%;
+    margin-top: 28%;
+}
+.icon6_block {
+    position: relative;
+    left:270px;
+}
+.active_faq {
+    box-shadow: 0px 3px 20px rgba(0, 0, 112, 0.3);
+    border: 0px !important;
+}
+.faq_topic { 
+    height: 120px;
+    width: 240px;
+    border: 0.5px solid #9F9F9F;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.icon1-bg {
+    background: linear-gradient(180deg, #FE61CA 0%, rgba(254, 97, 202, 0) 100%);
+    height:50px;
+    width:50px;
+    border-radius:25px;
+    position: absolute;
+    top: 900px;
+    left: 80%;
+}
+.contact_us_info {
+    width: 400px;
+height: 200px;
+border: 1px solid #ECECEC;
+}
+.ask_question {
+    font-size: 32px;
+}
+.footer_bg_img {
+    position: relative;
+    top:350px;
+    left:-100px;
+}
+.ask_assistance {
+    font-size: 40px;
+}
+.faq_search_icon {
+    position: relative;
+    left:5.8%;
+    top:5.5px;
+    z-index:2;
+}
+.faq_search_box {
+    box-shadow: none;
+    outline:none;
+    border-top-left-radius:5px;
+}
+.about_us_container .title_header {
+    width: 45%;
+}
+.about_us_container .description {
+    width: 55%;
+}
+.about_desc_icon {
+    background: linear-gradient(180deg, #FE61CA 0%, rgba(254, 97, 202, 0) 100%);
+    height:50px;
+    width:50px;
+    border-radius:25px;
+    position: relative;
+    left: 72%;
+    top: 25px;
+}
+.about_title_icon {
+    background: linear-gradient(180deg, #6BA8FF 0%, rgba(0, 140, 255, 0.13) 100%);
+    width: 46px;
+height: 46px;
+border-radius:23px;
+position: relative;
+left: 15%;
+top: 100px;
+}
+.reason_1 {
+    position: relative;
+    left: 10%;
+    top: 35px;
+    color: #2C3E50;
+    font-size: 50px;
+}
+.why_choose_us .title_header {
+    width: 35%;
+}
+.why_choose_us .why_us_desc_1 {
+    width: 55%;
+}
+.why_choose_us .why_us_desc_3 {
+    width: 90%;
+    position: relative;
+    left: 40%;
+}
+.our_services.cryptocurrencywallet {
+    width: 90%;
+    position: relative;
+    left: 50%;
+}
+.width_45 {
+    width: 45%;
+}
+.nwallet_text_80 {
+    width:80%;
+}
+.footer {
+    margin-top: -20%;
+}
+.team_names {
+    box-shadow: 0px 1px 7px rgba(200, 200, 200, 0.25);
+    border-radius: 25px;
+    width:160px;
+}
+.team_img_height {
+    height: 280px;
+}
+
+/* Dark Mode Css */
+
+.dark-mode .dropdown-item a:link, .dark-mode .nav-link {
+    color: #fff;
+}
+.dark-mode footer a:link {
+    color: #007bff;
+}
+.nav_primary {
+    color: #000070;
+}
+.dark-mode .nav_primary, .dark-mode .nav-link {
+    color: #fff !important;
+    font-size: 15px;
+}
+
+
+
+
+/* End Dark Mode Css */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 800px) {
+.team_position {
+    font-size: 13px;
+}
+.team_img_height {
+    height: 80%;
+}
+    .get_started_btn_text {
+        font-size: 14px;
+    }
+    .footer {
+        margin-top: -250px;
+    }
+    
+    .our_services.cryptocurrencywallet {
+        left: 0;
+    }
+    .nwallet_text_80 {
+        width:98%;
+    }
+    .why_choose_us .why_us_desc_3 {
+        width: 98%;
+        left: 0;
+    }
+    .svg_icon_left {
+        position: relative;
+        left: -31%;
+    }
+    .reason_1 {
+        left: 10%;
+        top: 35px;
+        color: #2C3E50;
+        font-size: 50px;
+    }
+    .width_45 {
+        width: 98%;
+    }    
+    .why_choose_us .title_header {
+        width: 98%;
+    }
+    .why_choose_us .why_us_desc_1 {
+        width: 98%;
+    }
+    .about_us_container .title_header {
+        width: 100%;
+    }
+    .about_us_container .description {
+        position: relative;
+        top: -90px;
+        width: 100%;
+    }
+    .faq_topic { 
+        height: 90px;
+        width: 80px;
+        font-size: 12px;
+    }
+    .faq_search_box {
+        border-radius: 5px !important;
+        padding-left: 28px;
+    }
+    .faq_search_icon {
+        left:11.9%;
+        top:6.5px;
+    }
+    .border_sm {
+        border-top-left-radius: 5px !important;
+        border-bottom-left-radius: 5px !important;
+    }
+    .ask_assistance {
+        font-size: 28px;
+    }
+    .footer_bg_img {
+        top:350px;
+        left: -100%;
+    }
+    .icon1-bg {
+        height:24px;
+        width:24px;
+        border-radius:12px;
+        left: 70%;
+    }
+    .ask_question {
+        font-size: 26px;
+    }
+    .contact_us_info {
+        width: 230px;
+    height: 152px;
+    }
+    .move_col_down {
+        position: relative;
+        top: 215px;
+    }
+    .move_col_up {
+        position: relative;
+        top: -220px;
+    }
+    .mobile_3 {
+        position: absolute;
+        left: 43%;
+        margin-top: 12%;
+        width: 150px;
+    }
+    .mobile_text2 {
+        font-size: 22px;
+    }
+    .mobile_text {
+        font-size: 25px;
+    }
+    .bank_on_terms_text {
+        font-size: 28px;
+    }
+    .bank_on_terms {
+        position: relative;
+        top: 160px;
+    }
+    .mobile_go_up {
+        position: relative;
+        bottom: 310px;
+    }
+    .mobile_2 {
+        width: 150px;
+        left: 44%;
+        margin-top: 12%;
+    }
+    .mobile_1 {
+        position: relative;
+        right: 10%;
+    }
+    .icon5_block {
+        z-index: 2;
+        top: 744px;
+        right: 25%;
+    }
+    .form-control-style {
+        border: 0.5px solid #004F1B;
+    }
+    .form-control-style2 {
+        border: 0.5px solid #E7B548;
+    }
+    .form-control-style3 {
+        border: 0.5px solid #FF6240;
+    }
+    .currency_calculator_container {
+        margin-top: 52%; 
+        margin-bottom: 10%;
+    }
+    .mobile_app_icon {
+        right: 22%;
+        top: -10px;
+        /* z-index: 2; */
+    }
+    .navbar_style {
+        margin: 0px;
+        border-radius: 0px;
+        box-shadow: 0px 2px 4px rgba(210, 210, 210, 0.25);
+    }
+    .onboarding_text {
+        font-size: 34px;
+    }
+    #first_icon {
+        display: none;
+    }
+    #second_icon {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 700px) and (max-width: 1000px) {
+    .svg_icon_left, .svg_icon_left_md {
+        position: relative;
+        left: -42%;
+    }
+    .contact_us_info {
+        width: 240px;
+        height: 180px;
+    }
+}
