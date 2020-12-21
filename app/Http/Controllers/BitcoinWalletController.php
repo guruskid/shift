@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use App\BitcoinTransaction;
 use App\BitcoinWallet;
+use App\Card;
+use App\Events\NewTransaction;
+use App\Mail\DantownNotification;
+use App\Notification;
+use App\Transaction;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use RestApis\Blockchain\Constants;
 
 class BitcoinWalletController extends Controller
@@ -55,6 +62,54 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'An error occured, please try again' ]);
         }
         return back()->with(['success' => 'Wallet created successfully']);
+    }
+
+    //sell Bitcoin
+    public function sell(Request $r)
+    {
+        $data = $r->validate([
+            'card_id' => 'required|integer',
+            'type' => 'required|string',
+            'amount' => 'required',
+            'amount_paid' => 'required',
+            'quantity' => 'required',
+        ]);
+
+        /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+            return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
+        } */
+
+        if (Auth::user()->bitcoinWallet->balance < $data['quantity']) {
+            return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
+        }
+
+        $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
+        $data['status'] = 'waiting';
+        $data['uid'] = uniqid();
+        $data['user_email'] = Auth::user()->email;
+        $data['user_id'] = Auth::user()->id;
+        $data['card'] = Card::find($r->card_id)->name;
+        $data['agent_id'] = $online_agent->id;
+
+        $t = Transaction::create($data);
+
+        try {
+            broadcast(new NewTransaction($t))->toOthers();
+        } catch (\Exception $e) {
+            report($e);
+        }
+        $title = ucwords($t->type) . ' ' . $t->card;
+        $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
+        Notification::create([
+            'user_id' => Auth::user()->id,
+            'title' => $title,
+            'body' => $body,
+        ]);
+        if (Auth::user()->notificationSetting->trade_email == 1) {
+            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+        }
+
+        return redirect()->route('user.transactions');
     }
 
     public function webhook(Request $request)

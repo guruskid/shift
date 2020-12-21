@@ -110,7 +110,7 @@
                                             </div>
                                             <div>
                                                 <span class="d-block pb-0 mb-0 choosewallet_selection">Bitcoin</span>
-                                                <a href="">Create Bitcoin Wallet</a>
+                                                <a data-toggle="modal" data-target="#new-bitcoin-wallet" href="#">Create Bitcoin Wallet</a>
                                             </div>
                                         </div>
                                     </div>
@@ -146,6 +146,44 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+
+
+
+{{-- Bitcoin Wallet --}}
+<div class="modal fade " id="new-bitcoin-wallet">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content  c-rounded">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                <h4 class="modal-title">New Naira Wallet </h4>
+                <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+            </div>
+
+            <form action="{{route('user.bitcoin-wallet.create')}}" method="POST">@csrf
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Wallet Password (4) </label>
+                                <input type="password" class="form-control" required name="wallet_password" minlength="4" maxlength="4"  >
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Confirm password</label>
+                                <input type="password" class="form-control" required name="wallet_password_confirmation" >
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient">
+                        Create wallet
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

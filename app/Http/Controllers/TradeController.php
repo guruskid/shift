@@ -160,7 +160,6 @@ class TradeController extends Controller
             'amount' => 'required',
             'amount_paid' => 'required',
             'quantity' => 'required',
-            'wallet_id' => 'nullable|string'
         ]);
 
         /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {

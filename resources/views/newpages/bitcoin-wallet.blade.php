@@ -91,7 +91,7 @@
                                         </a>
                                     </div>
                                     <div class="d-flex">
-                                        <div class="mr-1 mr-lg-2" style="">$ 8,452.98
+                                        <div class="mr-1 mr-lg-2" style="">₦{{ number_format(Auth::user()->nairaWallet->amount) }}
                                         </div>
                                     </div>
                                 </div>
@@ -126,13 +126,13 @@
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Receive</span>
                                             </a>
-                                            <a href="/user/assets" class="btn">
+                                            <a href="{{ route('user.asset.rate', ['buy', 102, 'bitcoins']) }}" class="btn">
                                                 <span class="d-block">
                                                 <img class="img-fluid" src="{{asset('svg/bitcoin-buy-icon.svg')}}" />
                                                 </span>
                                                 <span class="d-block" style="color: #000000;font-size: 14px;">Buy</span>
                                             </a>
-                                            <a href="/user/assets" class="btn">
+                                            <a href="{{ route('user.asset.rate', ['sell', 102, 'bitcoins']) }}" class="btn">
                                                 <span class="d-block">
                                                     <img class="img-fluid" src="{{asset('svg/bitcoin-sell-icon.svg')}}" alt="">
                                                 </span>

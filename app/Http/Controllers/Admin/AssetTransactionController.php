@@ -199,7 +199,7 @@ class AssetTransactionController extends Controller
 
         /* Cross Check Balance */
         if ($primary_wallet->balance < $transaction->quantity) {
-            return redirect()->back()->with(['error' => 'Insufficient primary wallet fund']);
+            return redirect()->back()->with(['error' => 'Insufficient primary wallet balance']);
         }
 
         /* Confirm User has wallet */
@@ -244,12 +244,22 @@ class AssetTransactionController extends Controller
         } elseif ($transaction->type == 'sell') {
             $btc_txn_type = 20;
             if ($user_btc_wallet < $transaction->quantity) {
-                return redirect()->back()->with(['error' => 'Insufficient user wallet fund']);
+                return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance']);
             }
             $user_btc_wallet->balance -= $transaction->quantity;
+            $user_btc_wallet->save();
+
+            $primary_wallet->balance += $transaction->quantity;
+            $primary_wallet->save();
+
+            //Create bitcoin transaction
+
+            //Push to blockchain for processing
+        }else{
+            return back()->with(['error' => 'Invalid transaction']);
         }
 
-        $user_btc_wallet->save();
+
 
 
         /* Send Transaction to Blockchain */
@@ -270,6 +280,8 @@ class AssetTransactionController extends Controller
             report($e);
             $user_btc_wallet->balance = $user_btc_wallet->getOriginal('balance');
             $user_btc_wallet->save();
+
+            //set the transaction status to failed
 
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
