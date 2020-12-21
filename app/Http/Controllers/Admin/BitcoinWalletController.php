@@ -17,6 +17,14 @@ class BitcoinWalletController extends Controller
         $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
     }
 
+    public function webhooks()
+    {
+        $callback = route('user.wallet-webhook');
+        $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, 'mggWuRKhgwwGmdoDizJyxEJEhLt84Rv2jh', 3);
+        $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, 'mntuQZQ6ErrBtRjHf26nWfHepPx2g8p63W', 3);
+        dd($result);
+    }
+
     public function wallets()
     {
         $wallets = BitcoinWallet::latest()->get();
@@ -56,6 +64,10 @@ class BitcoinWalletController extends Controller
             $wallet->balance = 0;
             $wallet->primary_wallet_id = 0;
             $wallet->save();
+
+            $callback = route('user.wallet-webhook');
+
+            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
 
         } catch (\Throwable  $e) {
             report($e);

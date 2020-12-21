@@ -163,9 +163,9 @@ class TradeController extends Controller
             'wallet_id' => 'nullable|string'
         ]);
 
-        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+        /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
-        }
+        } */
 
         if ($r->type == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
             return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
