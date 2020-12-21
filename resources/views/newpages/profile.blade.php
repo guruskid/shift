@@ -61,7 +61,7 @@
                             <div class="d-flex flex-column justify-content-center align-items-center mb-4"
                                 style="z-index: 2;position:relative;top:-110px;">
                                 <span class="d-block text-upper"
-                                    style="font-size: 26px;font-weight:normal;color:#000070;">₦{{number_format(Auth::user()->nairaWallet->amount)}}</span>
+                                    style="font-size: 26px;font-weight:normal;color:#000070;">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span>
                                 <span class="d-block"
                                     style="font-size: 18px;letter-spacing: 0.01em;color: #676B87;text-transform:uppercase;">wallet
                                     balance</span>
@@ -776,7 +776,7 @@
                         <div class="mb-4">
                             <span class="d-block text-center" style="color: #676B87;">Wallet Balance</span>
                             <span class="d-block text-center"
-                                style="color: #000070;font-size: 16px;font-weight: 600;">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
+                                style="color: #000070;font-size: 16px;font-weight: 600;">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center" style="width:92vw;">
                             <div onclick="switchTab('mobile_profile_tab')" id="mobile_profile_tab"

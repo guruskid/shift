@@ -53,7 +53,7 @@
                                     </div>
                                     <div class="widget-n" style="justify-content: center; text-align: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
+                                        <span class="d-block price">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                                 </div>
                                                 <div>
                                                     <span class="d-block pb-0 mb-0 choosewallet_selection">Naira</span>
-                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ number_format(Auth::user()->nairaWallet->amount) }}</span><span style="color: #000070;"> NGN</span>
+                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span><span style="color: #000070;"> NGN</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -128,7 +128,7 @@
                                                 <div>
                                                     <span class="d-block pb-0 mb-0 choosewallet_selection">Bitcoin</span>
                                                     <div>
-                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) }}</span><span style="color: #000070;">BTC</span>
+                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : '' }}</span><span style="color: #000070;">BTC</span>
                                                     </div>
                                                 </div>
                                             </div>
