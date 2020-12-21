@@ -123,7 +123,7 @@ Route::get('/smartbudget', function () {
 //Mobile and tab done
 //  Route::get('/nairawalletmain', function () {
 //     return view('newpages.nairawallet');
-// }); 
+// });
 
 // Route::get('/nairawalletdtodconfirm', function () {
 //     return view('newpages.nairawalletdtodconfirm');
@@ -199,7 +199,7 @@ Route::post('/naira/recharge/dhfhd-q23-nfnd-dnf', 'BillsPaymentController@rechar
 Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@electricityCallback')->name('electricity.callback');
 
 /* Bitcoin Wallet Callback */
-Route::post('/wallet-webhook-hghddsdhfh-ehe7sjdhsjaqwe', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
+Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
     /* ajax calls */
