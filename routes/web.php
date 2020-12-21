@@ -21,10 +21,21 @@ Route::get('/', function () {
 });
 
 
-Route::get('/newlandingpage', function () {
-    return view('newpages.newlandingpage');
-});
+// Route::get('/newlandingpage', function () {
+//     return view('newpages.newlandingpage');
+// });
 
+// Route::get('/faq', function () {
+//     return view('newpages.faq');
+// });
+
+// Route::get('/about-us', function () {
+//     return view('newpages.about');
+// });
+
+// Route::get('/terms-conditions', function () {
+//     return view('newpages.terms-conditions');
+// });
 
 //Done
 Route::get('/etherwallet', function () {

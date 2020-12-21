@@ -36,16 +36,15 @@
                         <div class="input-group mb-0 number_inputgroup mx-auto mx-md-0" style="">
                             <div class="input-group-prepend"
                                 style="border: 1px solid rgba(0, 0, 112, 0.25);border-right:0px;border-top-left-radius:5px;border-bottom-left-radius:5px;">
-                                <button class="btn btn-outline-secondary signup_custom dropdown-toggle" type="button"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">+234</button>
-                                <div class="dropdown-menu" id="dialcode_select">
-                                    <a class="dropdown-item" href="#">+234</a>
-                                    <a class="dropdown-item" href="#">+81</a>
-                                </div>
+                                <select id="dialcode_select" name="phone" class="signup_custom country_code_form">
+                                    <option value="+234">+234</option>
+                                    <option value="+91">+91</option>
+                                    <option value="+14">+14</option>
+                                </select>
                             </div>
-                            <input type="tel" id="signup_phonenumber" placeholder="8141894420" class="form-control col-12" style="border-left: 0px;"
+                            <input type="tel" id="phoneNumber" placeholder="8141894420" class="form-control col-12" style="border-left: 0px;"
                                 aria-label="Text input with dropdown button">
-                                <input type="hidden" id="phone" />
+                                <input type="hidden" name="phone" id="signup_phone" />
                         </div>
                         <div class="form-group mb-0">
                             <span id="removeobscure_pwd" class="removeobscure_pwd"><img id="toggleshowpassword"
