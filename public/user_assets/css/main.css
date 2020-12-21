@@ -1074,7 +1074,7 @@ input[type="file"]::-webkit-file-upload-button {
 .togglevisibility {
     cursor: pointer;
     position: relative;
-    left: 78%;
+    left: 70%;
     top: 36px;
 }
 .buyairtime_border {
@@ -1330,6 +1330,12 @@ input[type="file"]::-webkit-file-upload-button {
 }
 .custom-select {
     color: #000000;
+}
+.country_code_form {
+    outline: none;
+    box-shadow: none;
+    border: 0;
+    background-color:#fff;
 }
 /* End Login page css */
 
@@ -1591,7 +1597,7 @@ input[type="file"]::-webkit-file-upload-button {
         border-radius: 0px;
     }
     .togglevisibility {
-        left: 72%;
+        left: 80%;
     }
     .card-body_buyairtime {
         background: inherit;
