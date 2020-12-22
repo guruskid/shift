@@ -54,7 +54,7 @@
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Bitcoin Wallet Balance</span>
                                         <span
-                                            class="d-block price">{{ sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) }}</span>
+                                            class="d-block price">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : 'No bitcoin wallet' }}</span>
                                     </div>
                                 </div>
                             </div>
