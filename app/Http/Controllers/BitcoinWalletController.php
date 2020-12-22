@@ -29,7 +29,6 @@ class BitcoinWalletController extends Controller
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
         return view('newpages.bitcoin-wallet');
-
     }
 
 
@@ -40,11 +39,11 @@ class BitcoinWalletController extends Controller
         ]);
 
 
-       $password = Hash::make($data['wallet_password']);
+        $password = Hash::make($data['wallet_password']);
 
         try {
             $primary_wallet = BitcoinWallet::where(['user_id' => 1, 'primary_wallet_id' => 0])->first();
-            $result = $this->instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password,1);
+            $result = $this->instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, 1);
             $wallet = new BitcoinWallet();
             $address = $result->payload->addresses[0];
             $wallet->user_id = Auth::user()->id;
@@ -59,10 +58,9 @@ class BitcoinWalletController extends Controller
 
             $callback = route('user.wallet-webhook');
             $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
-
         } catch (\Throwable  $e) {
             report($e);
-            return back()->with(['error' => 'An error occured, please try again' ]);
+            return back()->with(['error' => 'An error occured, please try again']);
         }
         return back()->with(['success' => 'Wallet created successfully']);
     }
@@ -123,7 +121,90 @@ class BitcoinWalletController extends Controller
         return redirect()->route('user.transactions');
     }
 
+    public function send(Request $r)
+    {
+        $data = $r->validate([
+            'amount' => 'required|numeric',
+            'address' => 'required|string',
+            'pin' => 'required',
+        ]);
+        if (!Auth::user()->bitcoinWallet) {
+            return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
+        }
 
+        $user_wallet = Auth::user()->bitcoinWallet;
+        $primary_wallet = $user_wallet->primaryWallet;
+        $fees = 0.00001; //get from API
+        $charge = 0.0000001; // Get from Admin
+        $total = $data['amount'] + $fees + $charge;
+
+        //Check password
+        if (!Hash::check($data['pin'], $user_wallet->password)) {
+            return back()->with(['error' => 'Incorrect bitcoin wallet pin']);
+        }
+
+        //Add fees and Check balance
+        if ($total > $user_wallet->balance) {
+            return back()->with(['error' => 'Insufficient balance']);
+        }
+
+        //Debit User
+        $user_wallet->balance -= $total;
+        $user_wallet->save();
+
+        //Create transaction and set to pending
+        $btc_transaction = new BitcoinTransaction();
+        $btc_transaction->user_id = Auth::user()->id;
+        $btc_transaction->primary_wallet_id = $user_wallet->primaryWallet->id;
+        $btc_transaction->wallet_id = $user_wallet->address; //The wallet of the owner user
+        $btc_transaction->hash = 'none';
+        $btc_transaction->debit = $total;
+        $btc_transaction->fee = $fees;
+        $btc_transaction->charge = $charge;
+        $btc_transaction->previous_balance = $user_wallet->getOriginal('balance');
+        $btc_transaction->current_balance = $user_wallet->balance;
+        $btc_transaction->transaction_type_id = 21;
+        $btc_transaction->counterparty = $data['address'];
+        $btc_transaction->narration = 'Sending bitcoin to '.$data['address'];
+        $btc_transaction->confirmations = 0;
+        $btc_transaction->status = 'pending';
+        $btc_transaction->save();
+
+        //Push transaction using try
+
+
+
+        //else revert users balance
+        $outputs = new \RestApis\Blockchain\BTC\Snippets\Output();
+        $input = new \RestApis\Blockchain\BTC\Snippets\Input();
+        $outputs->add($data['address'], $total - $charge);
+        $input->add($primary_wallet->address, $total - $charge);
+
+        $fee = new \RestApis\Blockchain\BTC\Snippets\Fee();
+        $fee->set($fees);
+
+        try {
+             //update status and hash if it goes through
+            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, $input,  $outputs,  $fee);
+            $btc_transaction->hash = $result->payload->txid;
+            $btc_transaction->status = 'success';
+            $btc_transaction->save();
+
+            //send mail
+            return back()->with(['success' => 'Bitcoin sent successfully']);
+        } catch (\Exception $e) {
+            report($e);
+            $user_wallet->balance = $user_wallet->getOriginal('balance');
+            $user_wallet->save();
+
+            $btc_transaction->status = 'failed';
+            $btc_transaction->save();
+            //set the transaction status to failed
+
+            return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
+        }
+
+    }
 
     public function webhook(Request $request)
     {
@@ -155,6 +236,5 @@ class BitcoinWalletController extends Controller
             $btc_txn->confirmations = $request->confirmations;
             /* if confirmations are up to 6 and status is pending, Update users balance and set to success */
         }
-
     }
 }

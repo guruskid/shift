@@ -267,17 +267,17 @@
 @section('scripts')
 <script>
     bit_sell = {
-        !!json_encode($rates - > sell, JSON_HEX_TAG) !!
+        !!json_encode($rates->sell, JSON_HEX_TAG) !!
     };
     bit_buy = {
-        !!json_encode($rates - > buy, JSON_HEX_TAG) !!
+        !!json_encode($rates->buy, JSON_HEX_TAG) !!
     };
 
     sell_eth = {
-        !!json_encode($rates - > sell, JSON_HEX_TAG) !!
+        !!json_encode($rates->sell, JSON_HEX_TAG) !!
     };
     buy_eth = {
-        !!json_encode($rates - > buy, JSON_HEX_TAG) !!
+        !!json_encode($rates->buy, JSON_HEX_TAG) !!
     };
 
 </script>
