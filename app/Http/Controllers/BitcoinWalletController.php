@@ -25,6 +25,9 @@ class BitcoinWalletController extends Controller
 
     public function wallet()
     {
+        if (!Auth::user()->bitcoinWallet) {
+            return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
+        }
         return view('newpages.bitcoin-wallet');
 
     }
@@ -74,6 +77,10 @@ class BitcoinWalletController extends Controller
             'amount_paid' => 'required',
             'quantity' => 'required',
         ]);
+
+        if (!Auth::user()->bitcoinWallet) {
+            return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
+        }
 
         /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
