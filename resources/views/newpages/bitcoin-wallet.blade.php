@@ -91,7 +91,7 @@
                                         </a>
                                     </div>
                                     <div class="d-flex">
-                                        <div class="mr-1 mr-lg-2" style="">₦{{ number_format(Auth::user()->nairaWallet->amount) }}
+                                        <div class="mr-1 mr-lg-2" style="">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}
                                         </div>
                                     </div>
                                 </div>

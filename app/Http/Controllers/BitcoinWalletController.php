@@ -65,7 +65,7 @@ class BitcoinWalletController extends Controller
     }
 
     //sell Bitcoin
-    public function sell(Request $r)
+    public function trade(Request $r)
     {
         $data = $r->validate([
             'card_id' => 'required|integer',
@@ -81,6 +81,10 @@ class BitcoinWalletController extends Controller
 
         if (Auth::user()->bitcoinWallet->balance < $data['quantity']) {
             return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
+        }
+
+        if (!Auth::user()->nairaWallet) {
+            return back()->with(['error' => 'Please create a Naira wallet to continue']);
         }
 
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
@@ -111,6 +115,8 @@ class BitcoinWalletController extends Controller
 
         return redirect()->route('user.transactions');
     }
+
+
 
     public function webhook(Request $request)
     {

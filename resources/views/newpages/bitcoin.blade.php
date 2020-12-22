@@ -99,7 +99,7 @@
                                         {{-- Sell Bitcoin --}}
                                         <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home"
                                             role="tabpanel" aria-labelledby="home-tab">
-                                            <form action="{{ route('user.sell-bitcoin') }}" method="post"> @csrf
+                                            <form action="{{ route('user.trade-bitcoin') }}" method="post"> @csrf
                                                 <input type="hidden" name="card_id" value="{{ $card->id }}">
                                                 <input type="hidden" name="type" value="sell">
                                                 <div class="form-group mb-4">
@@ -110,7 +110,7 @@
                                                             <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" step="any" min="0" name="amount"
+                                                        <input type="number" required step="any" min="0" name="amount"
                                                             class="form-control bitcoin-input-radius" value=""
                                                             id="sell_usd_field">
                                                     </div>
@@ -123,7 +123,7 @@
                                                             <div class="input-group-text input_label">
                                                                 BTC</div>
                                                         </div>
-                                                        <input type="number" step="any" min="0" name="quantity"
+                                                        <input type="number" required step="any" min="0" name="quantity"
                                                             class="form-control bitcoin-input-radius" value=""
                                                             id="sell_btc_field">
                                                     </div>
@@ -136,7 +136,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input type="number" name="amount_paid" step="any" min="0"
+                                                        <input type="number" required name="amount_paid" step="any" min="0"
                                                             class="form-control bitcoin-input-radius" value=""
                                                             id="sell_ngn_field">
                                                     </div>
@@ -185,7 +185,7 @@
                                         {{-- Buy --}}
                                         <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
-                                            <form action="{{ route('user.trade-crypto') }}" method="post">@csrf
+                                            <form action="{{ route('user.trade-bitcoin') }}" method="post">@csrf
 
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"
@@ -195,7 +195,7 @@
                                                             <div class="input-group-text input_label">
                                                                 USD</div>
                                                         </div>
-                                                        <input type="number" step="any" name="amount" min="0"
+                                                        <input type="number" required step="any" name="amount" min="0"
                                                             class="form-control bitcoin-input-radius"
                                                             id="buy_usd_field">
                                                     </div>
@@ -208,7 +208,7 @@
                                                             <div class="input-group-text input_label">
                                                                 BTC</div>
                                                         </div>
-                                                        <input type="number" step="any" name="quantity" min="0"
+                                                        <input type="number" required step="any" name="quantity" min="0"
                                                             class="form-control bitcoin-input-radius"
                                                             id="buy_btc_field">
                                                         <input type="hidden" name="card_id" value="{{ $card->id }}">
@@ -223,7 +223,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius"
+                                                        <input type="number" required name="amount_paid" class="form-control bitcoin-input-radius"
                                                             id="buy_ngn_field">
                                                     </div>
                                                 </div>
@@ -239,7 +239,7 @@
                                                             style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
                                                     </div>
                                                 </div> --}}
-                                                <button type="submit" id="buy_btc_btn" disabled
+                                                <button type="submit" id="buy_btc_btn"
                                                     class="btn w-100 text-white mt-2 bitcoin_calculator_btn">Buy</button>
                                             </form>
                                         </div>

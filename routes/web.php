@@ -253,8 +253,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::view('/gift-card-calculator', 'user.gift_card_calculator');
     Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
     Route::post('/trade-crypto', 'TradeController@tradeCrypto')->name('user.trade-crypto');
-    
-    Route::post('/sell-bitcoin', 'BitcoinWalletController@sell')->name('user.sell-bitcoin');
+
+    Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
 
     /* Bitcooin Wallet */
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');

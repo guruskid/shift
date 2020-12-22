@@ -210,6 +210,9 @@ class AssetTransactionController extends Controller
         /* Update User Balance */
 
         if ($transaction->type == 'buy') {
+            if ($user_naira_wallet->amount < $transaction->amount_paid ) {
+                return redirect()->back()->with(['error' => 'Insufficient user naira wallet balance']);
+            }
             $btc_txn_type = 19;
             /* Deduct cost from user naira wallet and create new naira wallet transaction */
             $user_naira_wallet->amount -= $transaction->amount_paid;
@@ -217,18 +220,15 @@ class AssetTransactionController extends Controller
 
             $reference = \Str::random(2) . '-' . $transaction->id;
             $n = NairaWallet::find(1);
-
             $nt = new NairaTransaction();
             $nt->reference = $reference;
             $nt->amount = $transaction->amount_paid;
             $nt->user_id = $user->id;
             $nt->type = 'naira wallet';
-
             $nt->previous_balance = $user_naira_wallet->getOriginal('amount');
             $nt->current_balance = $user_naira_wallet->amount;
             $nt->charge = 0;
             $nt->transaction_type_id = 5;
-
             $nt->cr_wallet_id = $n->id;
             $nt->dr_wallet_id = $user_naira_wallet->id;
             $nt->cr_acct_name = 'Dantown';
@@ -241,9 +241,13 @@ class AssetTransactionController extends Controller
             $nt->save();
 
             $user_btc_wallet->balance += $transaction->quantity;
+            $user_btc_wallet->save();
+
+            $primary_wallet->balance -= $transaction->quantity;
+            $primary_wallet->save();
         } elseif ($transaction->type == 'sell') {
             $btc_txn_type = 20;
-            if ($user_btc_wallet < $transaction->quantity) {
+            if ($user_btc_wallet->balance < $transaction->quantity) {
                 return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance']);
             }
             $user_btc_wallet->balance -= $transaction->quantity;
@@ -252,29 +256,23 @@ class AssetTransactionController extends Controller
             $primary_wallet->balance += $transaction->quantity;
             $primary_wallet->save();
 
-            //Create bitcoin transaction
+            $user_naira_wallet->amount += $transaction->amount_paid;
+            $user_naira_wallet->save();
 
-            //Push to blockchain for processing
         }else{
             return back()->with(['error' => 'Invalid transaction']);
         }
 
-
-
-
         /* Send Transaction to Blockchain */
-        $outputs = new \RestApis\Blockchain\BTC\Snippets\Output();
+        /* $outputs = new \RestApis\Blockchain\BTC\Snippets\Output();
         $input = new \RestApis\Blockchain\BTC\Snippets\Input();
         $outputs->add($user_btc_wallet->address, $transaction->quantity);
         $input->add($primary_wallet->address, $transaction->quantity);
 
         $fee = new \RestApis\Blockchain\BTC\Snippets\Fee();
         $fee->set(0.00001);
-        $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password,  $outputs,  $fee);
-        dd($result);
 
         try {
-            /* $result = $this->instance->transactionApiBtcCreateTransaction()->create(Constants::$BTC_TESTNET, $input, $outputs, $fee); */
             $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password,  $outputs,  $fee);
         } catch (\Exception $e) {
             report($e);
@@ -284,33 +282,33 @@ class AssetTransactionController extends Controller
             //set the transaction status to failed
 
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
-        }
+        } */
 
 
         $btc_transaction = new BitcoinTransaction();
         $btc_transaction->user_id = $transaction->user->id;
         $btc_transaction->primary_wallet_id = $primary_wallet->id;
         $btc_transaction->wallet_id = $user_btc_wallet->address; //The wallet of the owner user
-        $btc_transaction->hash = $result->payload->txid;
+        $btc_transaction->hash = 'none';
         if ($transaction->type == 'buy') {
             $btc_transaction->debit = $transaction->quantity;
         } elseif ($transaction->type == 'sell') {
             $btc_transaction->credit = $transaction->quantity;
         }
-        $btc_transaction->fee = 0.00001; //Change to actual fee
-        $btc_transaction->charge = 0.0001; //Change to feee from admin
+        $btc_transaction->fee = 0;
+        $btc_transaction->charge = 0;
         $btc_transaction->previous_balance = $user_btc_wallet->getOriginal('balance');
         $btc_transaction->current_balance = $user_btc_wallet->balance;
         $btc_transaction->transaction_type_id = $btc_txn_type;
         $btc_transaction->counterparty = 'Dantown Assets';
         $btc_transaction->narration = 'Approved by' . Auth::user()->id;
-        $btc_transaction->confirmations = 0;
+        $btc_transaction->confirmations = 3;
         $btc_transaction->save();
 
         $transaction->status = 'success';
         $transaction->save();
 
-        return back()->with(['success' => 'Bitcoin sent successfully ']);
+        return back()->with(['success' => 'Transaction completed successfully ']);
         /* Redirect User Back to where he came from */
     }
 
