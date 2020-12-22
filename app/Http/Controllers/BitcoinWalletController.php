@@ -165,7 +165,7 @@ class BitcoinWalletController extends Controller
         $btc_transaction->current_balance = $user_wallet->balance;
         $btc_transaction->transaction_type_id = 21;
         $btc_transaction->counterparty = $data['address'];
-        $btc_transaction->narration = 'Sending bitcoin to '.$data['address'];
+        $btc_transaction->narration = 'Sending bitcoin to ' . $data['address'];
         $btc_transaction->confirmations = 0;
         $btc_transaction->status = 'pending';
         $btc_transaction->save();
@@ -184,7 +184,7 @@ class BitcoinWalletController extends Controller
         $fee->set($fees);
 
         try {
-             //update status and hash if it goes through
+            //update status and hash if it goes through
             $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, $input,  $outputs,  $fee);
             $btc_transaction->hash = $result->payload->txid;
             $btc_transaction->status = 'success';
@@ -203,13 +203,13 @@ class BitcoinWalletController extends Controller
 
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
-
     }
 
     public function webhook(Request $request)
     {
+        $confirmed = 6;
         try {
-            \Log::info('app.requests', ['request' => $request->all()]);
+            /* \Log::info('app.requests', ['request' => $request->all()]); */
             /* $btc_transaction = new BitcoinTransaction();
             $btc_transaction->user_id = 19;
             $btc_transaction->primary_wallet_id = 1;
@@ -229,12 +229,40 @@ class BitcoinWalletController extends Controller
             report($e);
         }
 
+        if (!$request->unconfirmed) {
+            \Log::info('testing confirmed transactions', ['request' => $request->all()]);
+            return true;
+            /* $btc_txn->confirmations = $request->confirmations; */
+            /* if confirmations are up to 6 and status is pending, Update users balance and set to success */
+            if ($request->confirmations == $confirmed) {
+
+                //Update user bitcoin if it exists in output
+
+                //if in input set rransaction to confirmed
+            }
+        }
+        \Log::info('Didnt', ['request' => $request->all()]);
+        return true;
         $btc_txn = BitcoinTransaction::where('hash', $request->txid)->first();
         if ($btc_txn == null) { //New Transaction e.g recieve
-            # code...
-        } else { //Old transaction like Trade payment and recieve transaction waiting for confirmation
-            $btc_txn->confirmations = $request->confirmations;
-            /* if confirmations are up to 6 and status is pending, Update users balance and set to success */
+            //Get transaction details
+
+            //Create bitcoin transaction and set status to pending if no confirmations and unconfirmed == true
+
+
+
+        } else { //Old transaction recieve transaction waiting for confirmation
+            if (!$request->unconfirmed) {
+                \Log::info('testing confirmed transactions', ['request' => $request->all()]);
+                $btc_txn->confirmations = $request->confirmations;
+                /* if confirmations are up to 6 and status is pending, Update users balance and set to success */
+                if ($request->confirmations == $confirmed) {
+
+                    //Update user bitcoin if it exists in output
+
+                    //if in input set rransaction to confirmed
+                }
+            }
         }
     }
 }
