@@ -233,9 +233,9 @@ $("#backPhotoID").on("click", function() {
 // });
 // chart.render();
 
-$("#quickTopUpLink").on("click", function(){
-    if($("#quickTopUpModal").css("display") == "none") {
-        $("#quickTopUpModal").css("display","block")
+$("#quickTopUpLink").on("click", function() {
+    if ($("#quickTopUpModal").css("display") == "none") {
+        $("#quickTopUpModal").css("display", "block");
     } else {
         $("#quickTopUpModal").css("display", "none");
     }
@@ -427,77 +427,74 @@ $("#mobile_address_verification_card").on("click", function() {
     if ($("#mobile_address_verification_card_content").hasClass("d-none")) {
         $("#mobile_address_verification_card_content").removeClass("d-none");
         $("#mobile_address_verification_card_content").addClass("d-flex");
-        $(".accordion_full_container").css("height","540px")
+        $(".accordion_full_container").css("height", "540px");
     } else {
         $("#mobile_address_verification_card_content").addClass("d-none");
         $("#mobile_address_verification_card_content").removeClass("d-flex");
-        $(".accordion_full_container").css("height","520px")
+        $(".accordion_full_container").css("height", "520px");
     }
-})
-
+});
 
 $("#mobile_bvn_verification_card").on("click", function() {
     if ($("#bvn_verification_card_content").hasClass("d-none")) {
-        $("#bvn_verification_card_content").removeClass("d-none")
-        $("#bvn_verification_card_content").addClass("d-flex")
-        $(".accordion_full_container").css("height","550px")
+        $("#bvn_verification_card_content").removeClass("d-none");
+        $("#bvn_verification_card_content").addClass("d-flex");
+        $(".accordion_full_container").css("height", "550px");
     } else {
-        $("#bvn_verification_card_content").addClass("d-none")
-        $("#bvn_verification_card_content").removeClass("d-flex")
+        $("#bvn_verification_card_content").addClass("d-none");
+        $("#bvn_verification_card_content").removeClass("d-flex");
         // $(".accordion_full_container").css("height","120px")
     }
-})
-
+});
 
 $("#mobile_id_verification_card").on("click", function() {
     if ($("#id_verification_card_content").hasClass("d-none")) {
-        $("#id_verification_card_content").removeClass("d-none")
-        $("#id_verification_card_content").addClass("d-flex")
-        $(".accordion_full_container").css("height","550px")
+        $("#id_verification_card_content").removeClass("d-none");
+        $("#id_verification_card_content").addClass("d-flex");
+        $(".accordion_full_container").css("height", "550px");
     } else {
-        $("#id_verification_card_content").addClass("d-none")
-        $("#id_verification_card_content").removeClass("d-flex")
+        $("#id_verification_card_content").addClass("d-none");
+        $("#id_verification_card_content").removeClass("d-flex");
         // $(".accordion_full_container").css("height","120px")
     }
-})  
+});
 
-$("#mobile_front_photo_click").on("click", function(){
-    document.getElementById("uploadFrontPhotoInputMobile").click()
-})  
+$("#mobile_front_photo_click").on("click", function() {
+    document.getElementById("uploadFrontPhotoInputMobile").click();
+});
 
-$("#mobile_back_photo_click").on("click", function(){
-    document.getElementById("uploadBackPhotoInputMobile").click()
-})
-
+$("#mobile_back_photo_click").on("click", function() {
+    document.getElementById("uploadBackPhotoInputMobile").click();
+});
 
 function switchTab(f) {
     switch (f) {
-        case 'mobile_profile_tab':
-            $(".mobile_tab_contents").css("display","none")
-            $(".profile_tab_title_mobile").removeClass('tab_active_mobile')
-            $(`#${f}`).addClass('tab_active_mobile')
-            $("#mobile_profile_contents").css("display","block")
-            break;
-    
-        case 'mobile_security_tab':
-            $(".mobile_tab_contents").css("display","none")
-            $(".profile_tab_title_mobile").removeClass('tab_active_mobile')
-            $(`#${f}`).addClass('tab_active_mobile')
-            $("#mobile_security_contents").css("display","block")
+        case "mobile_profile_tab":
+            $(".mobile_tab_contents").css("display", "none");
+            $(".profile_tab_title_mobile").removeClass("tab_active_mobile");
+            $(`#${f}`).addClass("tab_active_mobile");
+            $("#mobile_profile_contents").css("display", "block");
             break;
 
-        case 'mobile_notifications_tab':
-            $(".mobile_tab_contents").css("display","none")
-            $(".profile_tab_title_mobile").removeClass('tab_active_mobile')
-            $(`#${f}`).addClass('tab_active_mobile')
-            $("#mobile_notification_contents").css("display","block")
+        case "mobile_security_tab":
+            $(".mobile_tab_contents").css("display", "none");
+            $(".profile_tab_title_mobile").removeClass("tab_active_mobile");
+            $(`#${f}`).addClass("tab_active_mobile");
+            $("#mobile_security_contents").css("display", "block");
             break;
 
-        case 'mobile_limits_tab':
-            $(".mobile_tab_contents").css("display","none")
-            $(".profile_tab_title_mobile").removeClass('tab_active_mobile')
-            $(`#${f}`).addClass('tab_active_mobile')
-            $("#mobile_limits_contents").css("display","block")
+        case "mobile_notifications_tab":
+            $(".mobile_tab_contents").css("display", "none");
+            $(".profile_tab_title_mobile").removeClass("tab_active_mobile");
+            $(`#${f}`).addClass("tab_active_mobile");
+            $("#mobile_notification_contents").css("display", "block");
+            break;
+
+        case "mobile_limits_tab":
+            $(".mobile_tab_contents").css("display", "none");
+            $(".profile_tab_title_mobile").removeClass("tab_active_mobile");
+            $(`#${f}`).addClass("tab_active_mobile");
+            $("#mobile_limits_contents").css("display", "block");
             break;
 
         default:
@@ -505,36 +502,22 @@ function switchTab(f) {
     }
 }
 
-
-$("#step_one_btn").on("click", function(){
-    $("#step_one").css("display","none")
-    $("#step_two").css("display","block")
-})
-
-// $("#dialcode_select .dropdown-item").on("click", function(e){
-//     e.preventDefault()
-//     let dialcode = $(this).text().trim()
-//     let phone = $("#signup_phonenumber").val().trim()
-//     const phoneNumber = dialcode+phone
-//     alert(phoneNumber)
-// })
-
-$("#signup_form").on("submit", function(){
-    let dialcode = $(this).text().trim()
-    let phone = $("#signup_phonenumber").val().trim()
-    const phoneNumber = dialcode+phone
-
-    $("#phone").val(phoneNumber)
+$("#step_one_btn").on("click", function() {
+    const dialcode = $("#dialcode_select").val().trim()
+    const phoneNumber = dialcode + $('#phoneNumber').val().trim()
+    $("#signup_phone").val(phoneNumber);
+    $("#step_one").css("display", "none");
+    $("#step_two").css("display", "block");
 });
 
 function toggleTab(param) {
-    $(".smartbudget_cardmenu").css("display","none")
-    $(`#${param}`).css("display","block")
+    $(".smartbudget_cardmenu").css("display", "none");
+    $(`#${param}`).css("display", "block");
 }
 
-function closeTab(param){
-    $(`#${param}`).css("display","none")
-    $(".smartbudget_cardmenu").css("display","block")
+function closeTab(param) {
+    $(`#${param}`).css("display", "none");
+    $(".smartbudget_cardmenu").css("display", "block");
 }
 
 $("#removeobscure_pwd2").on("click", function() {
@@ -544,5 +527,39 @@ $("#removeobscure_pwd2").on("click", function() {
     } else {
         $("#password_field2").attr("type", "password");
         $("#toggleshowpassword2").attr("src", "svg/obscure-password.svg");
+    }
+});
+
+$(".network_cards").on("click", function() {
+    $(".network_cards").css("border", "0");
+    $(this).css("border", "3px solid #000070");
+    const isp = $(this).attr("id");
+    $("#isp_input").val(isp);
+});
+
+function accordion(param) {
+    const num = param.split("-")[1];
+    const id = $(`#${param}`);
+    if (id.css("display") == "none") {
+        id.css("display", "block");
+        $(`#plus-${num}`).css("display", "none");
+        $(`#minus-${num}`).css("display", "block");
+    } else {
+        id.css("display", "none");
+        $(`#plus-${num}`).css("display", "block");
+        $(`#minus-${num}`).css("display", "none");
+    }
+}
+
+$(".faq_topic").on("click", function() {
+    $(".faq_topic").removeClass("active_faq");
+    $(this).addClass("active_faq");
+        $(".faq_tab_contents").css("display", "none");
+    if ($(this).attr("id") == "finance") {
+        $("#finance_content").css("display", "block");
+    } else if ($(this).attr("id") == "tech") {
+        $("#tech_content").css("display", "block");
+    } else if ($(this).attr("id") == "transaction") {
+        $("#transaction_content").css("display", "block");
     }
 });

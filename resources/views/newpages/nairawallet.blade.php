@@ -74,8 +74,27 @@
                                                 </span>
                                             </div>
                                             <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
+                                            
                                         </div>
                                     </a>
+                                    <div class="d-flex justify-content-center align-items-center" style="height:60px;box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);">
+                                        <a class="mx-1 mx-lg-2 px-1" href="#">
+                                            <img src="{{asset('svg/nairawallet_logo.svg')}}" class="img-fluid" alt="">
+                                        </a>
+                                        <a class="mx-1 mx-lg-2 px-1" href="#">
+                                            <img src="{{asset('svg/bitcoinwallet_logo.svg')}}" class="img-fluid" alt="">
+                                        </a>
+                                        <a class="mx-1 mx-lg-2 px-1" href="#">
+                                            <img src="{{asset('svg/ethereumwallet_logo.svg')}}" class="img-fluid" alt="">
+                                        </a>
+                                        <a class="mx-1 mx-lg-2 px-1" href="#">
+                                            <img src="{{asset('svg/tetherwallet_logo.svg')}}" class="img-fluid" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="d-flex" style="visibility: hidden !important;">
+                                        <div class="mr-1 mr-lg-2" style="">$ 8,452.98
+                                        </div>
+                                    </div>
                                 </div>
                                 {{-- border line --}}
                                 <div class="mt-4" style="width: 100%;border: 1px solid #C9CED6;"></div>

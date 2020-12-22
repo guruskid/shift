@@ -98,8 +98,6 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-        /*  $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name; */
         $user->phone = $request->phone;
 
         return response()->json($user->save());
@@ -229,14 +227,19 @@ class UserController extends Controller
         return redirect()->back()->with("success", "Email changed");
     }
 
-    public function transactions()
+    public function transactions(Request $r)
     {
-        $transactions = Auth::user()->transactions;
+        if ($r->has('start_date') || $r->has('end_date') ) {
+            $transactions = Auth::user()->transactions()->where('created_at', '>=', $r->start_date)
+            ->where('created_at', '<=', $r->end_date)->latest()->get();
+        }else{
+            $transactions = Auth::user()->transactions()->paginate(10);
+        }
         foreach ($transactions as $t) {
             $t->created_ats = $t->created_at->format('d M Y h:i a');
             $t->amount_paids = number_format($t->amount_paid);
             if ($t->status == 'approved') {
-                $t->stats = 'success';
+                $t->status = 'success';
             } else {
                 $t->stats = $t->status;
             }
@@ -245,7 +248,7 @@ class UserController extends Controller
         $value = Auth::user()->transactions->sum('amount');
         $amount = Auth::user()->transactions->sum('amount_paid');
 
-        return view('user.transactions', compact(['transactions', 'segment', 'value', 'amount']));
+        return view('newpages.all-transactions', compact(['transactions', 'segment', 'value', 'amount']));
     }
 
     public function addTransaction(Request $r)
@@ -436,6 +439,19 @@ class UserController extends Controller
                 Auth::user()->notificationSetting->trade_sms = $v;
                 break;
             case 't-e':
+                Auth::user()->notificationSetting->trade_email = $v;
+                break;
+            //Mobile
+            case 'w-s2':
+                Auth::user()->notificationSetting->wallet_sms = $v;
+                break;
+            case 'w-e2':
+                Auth::user()->notificationSetting->wallet_email = $v;
+                break;
+            case 't-s2':
+                Auth::user()->notificationSetting->trade_sms = $v;
+                break;
+            case 't-e2':
                 Auth::user()->notificationSetting->trade_email = $v;
                 break;
 

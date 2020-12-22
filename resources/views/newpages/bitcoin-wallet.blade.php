@@ -76,8 +76,22 @@
                                             <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                         </div>
                                     </a>
+                                    <div class="d-flex justify-content-center align-items-center" style="height:60px;box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);">
+                                        <a class="mx-1 mx-lg-2 px-1" href="#">
+                                            <img src="{{asset('svg/nairawallet_logo.svg')}}" class="img-fluid" alt="">
+                                        </a>
+                                        <a class="mx-1 mx-lg-2 px-1" href="#">
+                                            <img src="{{asset('svg/bitcoinwallet_logo.svg')}}" class="img-fluid" alt="">
+                                        </a>
+                                        <a class="mx-1 mx-lg-2 px-1" href="#">
+                                            <img src="{{asset('svg/ethereumwallet_logo.svg')}}" class="img-fluid" alt="">
+                                        </a>
+                                        <a class="mx-1 mx-lg-2 px-1" href="#">
+                                            <img src="{{asset('svg/tetherwallet_logo.svg')}}" class="img-fluid" alt="">
+                                        </a>
+                                    </div>
                                     <div class="d-flex">
-                                        <div class="mr-1 mr-lg-2" style="">$ 8,452.98
+                                        <div class="mr-1 mr-lg-2" style="">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}
                                         </div>
                                     </div>
                                 </div>
@@ -112,13 +126,13 @@
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Receive</span>
                                             </a>
-                                            <a href="/user/assets" class="btn">
+                                            <a href="{{ route('user.asset.rate', ['buy', 102, 'bitcoins']) }}" class="btn">
                                                 <span class="d-block">
                                                 <img class="img-fluid" src="{{asset('svg/bitcoin-buy-icon.svg')}}" />
                                                 </span>
                                                 <span class="d-block" style="color: #000000;font-size: 14px;">Buy</span>
                                             </a>
-                                            <a href="/user/assets" class="btn">
+                                            <a href="{{ route('user.asset.rate', ['sell', 102, 'bitcoins']) }}" class="btn">
                                                 <span class="d-block">
                                                     <img class="img-fluid" src="{{asset('svg/bitcoin-sell-icon.svg')}}" alt="">
                                                 </span>

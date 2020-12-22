@@ -207,6 +207,12 @@ function confirmTransfer(id, user, amount) {
     $('#t-id').val(id)
 }
 
+function confirmBtcTransfer(id, user, amount) {
+    $('.amount').text(amount)
+    $('.acct-name').text(user['first_name'] + " " + user['last_name'])
+    $('#tx-id').val(id)
+}
+
 /* Confirm refund funds */
 function confirmRefund(id, user, amount) {
     $('#r-amount').text(amount)

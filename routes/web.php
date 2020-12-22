@@ -32,17 +32,45 @@ Route::get('/tetherwallet', function () {
 
 
 
+// Route::get('/newlandingpage', function () {
+//     return view('newpages.newlandingpage');
+// });
+
+// Route::get('/faq', function () {
+//     return view('newpages.faq');
+// });
+
+// Route::get('/about-us', function () {
+//     return view('newpages.about');
+// });
+
+// Route::get('/terms-conditions', function () {
+//     return view('newpages.terms-conditions');
+// });
+
+//Done
+Route::get('/etherwallet', function () {
+    return view('newpages.ethereumwallet');
+});
+
+
+Route::get('/tetherwallet', function () {
+    return view('newpages.tetherwallet');
+});
+
+
+
 // Route::get('/showcards', function () {
 //     return view('newpages.cards');
 // });
-
+/*
 Route::get('/cardcalculator', function () {
     return view('newpages.cardcalculator');
-});
-
+}); */
+/*
 Route::get('/transaction', function () {
     return view('newpages.Transactionscreen');
-});
+}); */
 
 /* Route::get('/bitcoin', function () {
     return view('newpages.bitcoin');
@@ -63,14 +91,16 @@ Route::get('/newprofile', function () {
 });
 
 //mobile and web done
-Route::get('/btc-transaction', function(){
+/* Route::get('/btc-transaction', function(){
     return view('newpages.btc_payment_transaction');
-});
+}); */
 
 //mobile and web done
 Route::get('/btc-transaction-hash', function(){
     return view('newpages.btc_payment_transaction2');
 });
+
+
 
 // Route::get('/transactions', function(){
 //     return view('newpages.btc_payment_transaction2');
@@ -102,9 +132,9 @@ Route::get('/smartbudget', function () {
 }); */
 
 //Mobile and tab done
-/* Route::get('/nairawalletmain', function () {
-    return view('newpages.nairawallet');
-}); */
+//  Route::get('/nairawalletmain', function () {
+//     return view('newpages.nairawallet');
+// });
 
 // Route::get('/nairawalletdtodconfirm', function () {
 //     return view('newpages.nairawalletdtodconfirm');
@@ -135,11 +165,15 @@ Route::get('/newsignup', function () {
     return view('newpages.newsignup');
 });
 
+<<<<<<< HEAD
 
+=======
+/*
+>>>>>>> 086b3efb610a3564af1d662aacb50750170c8871
 //Mobile and desktop done
 Route::get('/all-transactions', function(){
     return view('newpages.all-transactions');
-});
+}); */
 
 
 
@@ -156,6 +190,8 @@ Route::get('mailable', function () {
     /* $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
     return new App\Mail\WalletAlert($txn, 'Debit'); */
 });
+
+Route::post('/tested', 'BitcoinWalletController@test')->name('tested');
 
 
 Auth::routes(['verify' => true]);
@@ -177,6 +213,9 @@ Route::post('/naira/recieve-funds-dhfhshd', 'NairaWalletController@callback')->n
 Route::post('/naira/recharge/dhfhd-q23-nfnd-dnf', 'BillsPaymentController@rechargeCallback')->name('recharge-card.callback');
 Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@electricityCallback')->name('electricity.callback');
 
+/* Bitcoin Wallet Callback */
+Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
+
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
     /* ajax calls */
     Route::POST('/add_transaction', 'UserController@addTransaction');
@@ -190,7 +229,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     Route::get('/', 'UserController@dashboard')->name('user.dashboard');
     Route::get('/rates', 'UserController@rates')->name('user.rates');
-    Route::view('account', 'user.profile')->name('user.profile');
+    Route::view('account', 'newpages.profile')->name('user.profile');
     Route::POST('/account', 'UserController@updateProfile')->name('user.update_profile');
     Route::POST('/id_card', 'UserController@idcard')->name('user.idcard');
     Route::get('/transactions', 'UserController@transactions')->name('user.transactions');
@@ -232,9 +271,12 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
     Route::post('/trade-crypto', 'TradeController@tradeCrypto')->name('user.trade-crypto');
 
+    Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
+
     /* Bitcooin Wallet */
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
     Route::get('/bitcoin-wallet', 'BitcoinWalletController@wallet')->name('user.bitcoin-wallet');
+
 
 });
 
@@ -315,7 +357,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant'] 
 
 /* for super admin and all accountants */
 Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountant'] ], function () {
-    Route::post('/admin-transfer', 'NairaWalletController@adminTransfer' )->name('admin.transfer');
+
     Route::post('/admin-refund', 'NairaWalletController@adminRefund' )->name('admin.refund');
     Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
     Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');

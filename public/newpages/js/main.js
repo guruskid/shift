@@ -378,3 +378,5 @@ $("#buy_eth_field").on("keyup", function(){
     }
 })
 
+
+alert('hello')

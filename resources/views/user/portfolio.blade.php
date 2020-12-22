@@ -79,7 +79,7 @@
                                 </div>
                                 @endif
 
-                                @if (Auth::user()->bitcoinWallet->count() == 0)
+                                @if (!Auth::user()->bitcoinWallet)
                                 <div class="col-md-4 col-lg-3 col-6 col-sm-6 my-3">
                                     <div class="card card-body text-center text-custom py-5 ">
                                         <p>You dont have a Bitcoin wallet yet.</p>
@@ -164,8 +164,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="">Wallet Password (10) </label>
-                                <input type="password" class="form-control" required name="wallet_password" minlength="10"  >
+                                <label for="">Wallet Password (4) </label>
+                                <input type="password" class="form-control" required name="wallet_password" minlength="4" maxlength="4"  >
                             </div>
                         </div>
                         <div class="col-12">

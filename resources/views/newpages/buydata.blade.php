@@ -126,10 +126,17 @@
                                                     </div>
                                                     <div class="mt-4 d-md-none" style="width: 240px;height:0px;border:1px solid #DBDBEE;"></div>
                                                     <div class="d-flex flex-column flex-md-row justify-content-center">
-                                                        <div class="form-group mt-4 mx-2">
-                                                            <label for="amount" style="color: #000070;">Amount</label>
+                                                        {{-- <div class="form-group mt-4 mx-2">
+                                                            <label for="amount" style="color: #000070;">Package</label>
                                                             <input type="text" class="form-control recharge_amount" id="amount" />
-                                                        </div>
+                                                        </div> --}}
+                                                        <div class="form-group mt-4 mx-2 col-12 col-md-6">
+                                                            <label for="amount" style="color: #000070;">Package</label>
+                                                            <select class="form-control recharge_amount col-12" id="exampleFormControlSelect1">
+                                                              <option>Daily</option>
+                                                              <option>Monthly</option>
+                                                            </select>
+                                                          </div>
                                                         <div class="form-group mt-2 mt-md-4 mx-2">
                                                             <label for="pin" style="color: #000070;">Pin</label>
                                                             <span id="togglepinvisibility" class="togglevisibility">

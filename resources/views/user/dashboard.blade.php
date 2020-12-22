@@ -223,6 +223,13 @@ $not = $notifications->last();
             </div>
             @include('layouts.partials.live-feeds')
 
+            <form action="{{ route('tested') }}" method="POST">@csrf
+                <input type="text" name="name" value="value">
+                <input type="text" name="named" value="valued">
+
+                <button class="btn">Submit</button>
+            </form>
+
         </div>
     </div>
 </div>
