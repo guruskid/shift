@@ -252,7 +252,7 @@ class BitcoinWalletController extends Controller
                         $btc_transaction->wallet_id = $user_wallet->address; //The wallet of the owner user
                         $btc_transaction->hash = $txn_details->txid;
                         $btc_transaction->credit = $output->amount;
-                        $btc_transaction->fee = $txn_details->fee;
+                        $btc_transaction->fee = 0;
                         $btc_transaction->charge = 0;
                         $btc_transaction->previous_balance = $user_wallet->getOriginal('balance');
                         $btc_transaction->current_balance = $user_wallet->balance;
