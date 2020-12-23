@@ -233,7 +233,7 @@ class BitcoinWalletController extends Controller
                 //get txins and the amount
                 $txins = '';
                 foreach ($txn_details->txins as $input) {
-                    $txins .= $input->addresses[0] . ' ->'. $input->amount;
+                    $txins .= $input->addresses[0] . ' ->' . $input->amount;
                 }
 
                 foreach ($txn_details->txouts as $output) {
@@ -258,7 +258,7 @@ class BitcoinWalletController extends Controller
                         $btc_transaction->current_balance = $user_wallet->balance;
                         $btc_transaction->transaction_type_id = 22;
                         $btc_transaction->counterparty = $txins;
-                        $btc_transaction->narration = 'Received bitcoin from '. $txins;
+                        $btc_transaction->narration = 'Received bitcoin from ' . $txins;
                         $btc_transaction->confirmations = 0;
                         $btc_transaction->status = 'unconfirmed';
                         $btc_transaction->save();
@@ -284,7 +284,12 @@ class BitcoinWalletController extends Controller
 
                     //Update user bitcoin if the transaction is unconfirmed
 
-                    //set transaction to success
+
+                    //if status is pending and confirmed, set status to success
+                } elseif ($request->confirmations == $confirmed && $btc_txn->status == 'pending') {
+                    $btc_txn->confirmations = $request->confirmations;
+                    $btc_txn->status = 'success';
+                    $btc_txn->save();
                 }
             }
         }
