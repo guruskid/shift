@@ -29,7 +29,7 @@ class CreateBitcoinTransactionsTable extends Migration
             $table->string('counterparty');
             $table->string('narration');
             $table->bigInteger('confirmations');
-            $table->enum('status', ['success', 'pending', 'failed'])->nullable();
+            $table->enum('status', ['success', 'unconfirmed', 'pending', 'failed'])->nullable();
             $table->timestamps();
         });
     }

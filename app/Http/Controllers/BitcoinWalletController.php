@@ -25,6 +25,12 @@ class BitcoinWalletController extends Controller
 
     public function wallet()
     {
+        $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_TESTNET, 'e9ec71e8c695e900942cafb98647862abca10275057f71ea76b464aa6a05c720');
+        $txouts = $result->payload->txouts;
+        foreach ($txouts as $output) {
+            echo $output->addresses[0] . ' ' . $output->amount . '<br>';
+        }
+        dd($result);
         if (!Auth::user()->bitcoinWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
@@ -207,60 +213,78 @@ class BitcoinWalletController extends Controller
 
     public function webhook(Request $request)
     {
-        $confirmed = 6;
-        try {
-            /* \Log::info('app.requests', ['request' => $request->all()]); */
-            /* $btc_transaction = new BitcoinTransaction();
-            $btc_transaction->user_id = 19;
-            $btc_transaction->primary_wallet_id = 1;
-            $btc_transaction->wallet_id = 'so '; //The wallet of the owner user
-            $btc_transaction->hash = 'here ';
-            $btc_transaction->credit = 2;
-            $btc_transaction->fee = 0.00001; //Change to actual fee
-            $btc_transaction->charge = 0.0001; //Change to feee from admin
-            $btc_transaction->previous_balance = 0;
-            $btc_transaction->current_balance = 0;
-            $btc_transaction->transaction_type_id = 19;
-            $btc_transaction->counterparty = 'Dantown Assets';
-            $btc_transaction->narration = 'Approved by '.$request['confirmations'];
-            $btc_transaction->confirmations = 99;
-            $btc_transaction->save(); */
-        } catch (\Exception $e) {
-            report($e);
-        }
-
-        if (!$request->unconfirmed) {
-            \Log::info('testing confirmed transactions', ['request' => $request->all()]);
-            return true;
-            /* $btc_txn->confirmations = $request->confirmations; */
-            /* if confirmations are up to 6 and status is pending, Update users balance and set to success */
-            if ($request->confirmations == $confirmed) {
-
-                //Update user bitcoin if it exists in output
-
-                //if in input set rransaction to confirmed
-            }
-        }
-        \Log::info('Didnt', ['request' => $request->all()]);
-        return true;
+        $confirmed = 3;  //set to 6 during live
+        //Get the address
+        $address = $request->address;
+        //Get the transaction id
+        $txn_id = $request->txid;
+        //Check if the trnsaction already exists
         $btc_txn = BitcoinTransaction::where('hash', $request->txid)->first();
+
         if ($btc_txn == null) { //New Transaction e.g recieve
             //Get transaction details
+            $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_TESTNET, $txn_id);
+            $txn_details = $result->payload;
 
-            //Create bitcoin transaction and set status to pending if no confirmations and unconfirmed == true
+            //if no confirmations and unconfirmed == true
+            //loop through the outputs and cross check with the address from the webhook, then create transactions on that address
+            //and set the status to unconfirmed
+            if ($request->unconfirmed == true) {
+                //get txins and the amount
+                $txins = '';
+                foreach ($txn_details->txins as $input) {
+                    $txins .= $input->addresses[0] . ' ->'. $input->amount;
+                }
 
+                foreach ($txn_details->txouts as $output) {
+                    //echo $output->addresses[0] . ' '. $output->amount . '<br>';
+                    $addr = $output->addresses[0]; //since address is an array
 
+                    if ($addr == $address) {
+                        //Get user wallet
+                        $user_wallet = BitcoinWallet::where('address', $addr)->firstOrFail();
+                        //Get the user
+                        $user = $user_wallet->user;
+                        //Create txn
+                        $btc_transaction = new BitcoinTransaction();
+                        $btc_transaction->user_id = $user->id;
+                        $btc_transaction->primary_wallet_id = $user_wallet->primaryWallet->id;
+                        $btc_transaction->wallet_id = $user_wallet->address; //The wallet of the owner user
+                        $btc_transaction->hash = $txn_details->txid;
+                        $btc_transaction->credit = $output->amount;
+                        $btc_transaction->fee = $txn_details->fee;
+                        $btc_transaction->charge = 0;
+                        $btc_transaction->previous_balance = $user_wallet->getOriginal('balance');
+                        $btc_transaction->current_balance = $user_wallet->balance;
+                        $btc_transaction->transaction_type_id = 22;
+                        $btc_transaction->counterparty = $txins;
+                        $btc_transaction->narration = 'Received bitcoin from '. $txins;
+                        $btc_transaction->confirmations = 0;
+                        $btc_transaction->status = 'unconfirmed';
+                        $btc_transaction->save();
+                    }
+                }
+            }
 
-        } else { //Old transaction recieve transaction waiting for confirmation
+            //if it is confirmed, update user balance and set the transaction status to sucecss and current balance on the txn
+
+        } else { //Old transaction send / recieve transaction waiting for confirmation
             if (!$request->unconfirmed) {
-                \Log::info('testing confirmed transactions', ['request' => $request->all()]);
-                $btc_txn->confirmations = $request->confirmations;
-                /* if confirmations are up to 6 and status is pending, Update users balance and set to success */
+
+                /* if confirmed and status is unconfirmed, Update users balance and set to success  and also current balance on the txn*/
                 if ($request->confirmations == $confirmed) {
+                    $user_wallet = $btc_txn->user->bitcoinWallet;
+                    $user_wallet->balance += $btc_txn->credit;
+                    $user_wallet->save();
 
-                    //Update user bitcoin if it exists in output
+                    $btc_txn->confirmations = $request->confirmations;
+                    $btc_txn->status = 'success';
+                    $btc_txn->current_balance = $user_wallet->balance;
+                    $btc_txn->save();
 
-                    //if in input set rransaction to confirmed
+                    //Update user bitcoin if the transaction is unconfirmed
+
+                    //set transaction to success
                 }
             }
         }
