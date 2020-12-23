@@ -272,7 +272,7 @@ class BitcoinWalletController extends Controller
             if (!$request->unconfirmed) {
 
                 /* if confirmed and status is unconfirmed, Update users balance and set to success  and also current balance on the txn*/
-                if ($request->confirmations == $confirmed) {
+                if ($request->confirmations == $confirmed && $btc_txn->status == 'unconfirmed') {
                     $user_wallet = $btc_txn->user->bitcoinWallet;
                     $user_wallet->balance += $btc_txn->credit;
                     $user_wallet->save();
