@@ -1,5 +1,6 @@
 body {
     font-family: "Quicksand" !important;
+    overflow-x: hidden !important;
 }
 .notification {
     background-color: #000070;

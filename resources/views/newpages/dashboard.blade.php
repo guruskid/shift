@@ -221,6 +221,21 @@
                                                 </div>
                                             </a>
                                         </div>
+                                        <div class="col-6 col-md-4 my-1 my-md-3">
+                                            <a href="#">
+                                                <div
+                                                    class="mx-2 asset_card_container py-3 py-0 d-flex flex-column justify-content-center align-items-center">
+                                                    <span class="d-block text-center mb-4">
+                                                        <img class="img-fluid logos_assets"
+                                                            src="{{asset('svg/tetherwallet_logo.svg')}}">
+                                                    </span>
+                                                    <span class="d-block text-center asset_card_title">Stable coin</span>
+                                                    <span class="d-block text-center asset_card_description px-1">DSTV,
+                                                        GoTV, PHCN
+                                                        and more</span>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

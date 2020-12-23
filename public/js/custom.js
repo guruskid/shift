@@ -381,6 +381,7 @@ $("#naira_withdraw").on("click", function() {
 $("#naira_deposit").on("click", function() {
     $(".naira_menu").removeClass("walletpage_menu-active");
     $("#nairawallet_trx_type_list").removeClass("d-flex");
+    $("#nairaWithdrawTab").css("display", "none");
     $("#nairaDepositTab").css("display", "block");
     $(this).addClass("walletpage_menu-active");
     // $("#nairaWithdrawTab").css('display','block')
@@ -580,3 +581,10 @@ $("#dialcode_select").on("click", function(){
     $("#phoneNumber").val(phoneNumber)
 })
 
+$("#rechargeother").on("click", function(){
+    $("#quickRechargeOtherPhone").css('display','block')
+})
+
+$("#rechargeme").on("click", function(){
+    $("#quickRechargeOtherPhone").css('display','none')
+})
