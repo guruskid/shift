@@ -74,7 +74,7 @@
                                                     <select class="form-control form-control-sm" name="provider" id="provider" onchange="getElectUser()" >
                                                         <option value=""><--Select provider--></option>
                                                         @foreach ($providers as $p)
-                                                        <option value="{{$p->billername}}" data-scid="{{$p->service_category_id}}">{{$p->billername}}</option>
+                                                        <option value="{{$p->servicename}}" >{{$p->servicename}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -97,6 +97,8 @@
                                                         class="form-control form-control-sm">
                                                 </div>
                                                 <input type="hidden" id="scid" name="scid" >
+                                                <input type="hidden" id="productcode" name="productcode" value="{{$p->productcode}}" data-scid="{{$p->productcode}}">
+                                                <input type="hidden" id="billercode" name="billercode" value="{{$p->billercode}}" >
                                                 <button type="submit" class="btn bg-custom c-rounded btn-block" style="font-size: unset;">
                                                     Recharge</button>
                                             </form>
