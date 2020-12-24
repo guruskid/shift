@@ -1,19 +1,18 @@
 <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="bitcoin_wallet_send_tab">
-    <form action="" method="post">
-        @csrf
+    <form action="{{ route('user.send-bitcoin') }}" method="post"> @csrf
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">
-                    <input type="text" aria-label="First name" class="form-control" placeholder="$0.00"
+                    <input type="text" name="amount" required class="form-control" placeholder="0.00"
                         style="border: 0px;">
-                    <div class="input-group-append">
+                   {{--  <div class="input-group-append">
                         <span class="input-group-text usd_bg_text pr-1">USD</span>
                         <span class="input-group-text usd_bg_text">
                             <img src="/svg/conversion-arrow.svg" alt="">
                         </span>
-                    </div>
-                    <input type="text" aria-label="Last name" placeholder="0" class="form-control"
-                        style="border: 0px;border-right:0px;">
+                    </div> --}}
+                    {{-- <input type="text" aria-label="Last name" placeholder="0" class="form-control"
+                        style="border: 0px;border-right:0px;"> --}}
                     <div class="input-group-prepend">
                         <span class="input-group-text usd_bg_text">BTC</span>
                     </div>
@@ -32,7 +31,7 @@
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end btctext">0 BTC ($0.00)</span>
+                            <span class="d-block align-self-end btctext">0.0000001 BTC</span>
                             <span class="d-block align-self-end customfee">Customize Fee</span>
                         </div>
                     </div>
@@ -51,6 +50,13 @@
                                     </svg>
                                 </span>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="col-10 mx-auto">
+                        <span class="address_input_label">Pin</span>
+                        <div class="input-group col-7 mx-auto mb-3 mt-4">
+                            <input type="password" name="pin" required class="form-control" id="receipientAddress" >
                         </div>
                     </div>
                     <button type="submit" class="btn walletpage_btn text-white mt-3 mt-lg-5">Continue</button>

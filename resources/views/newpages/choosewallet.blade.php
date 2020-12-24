@@ -53,7 +53,7 @@
                                     </div>
                                     <div class="widget-n" style="justify-content: center; text-align: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
+                                        <span class="d-block price">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                                 </div>
                                                 <div>
                                                     <span class="d-block pb-0 mb-0 choosewallet_selection">Naira</span>
-                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ number_format(Auth::user()->nairaWallet->amount) }}</span><span style="color: #000070;"> NGN</span>
+                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span><span style="color: #000070;"> NGN</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -110,7 +110,7 @@
                                             </div>
                                             <div>
                                                 <span class="d-block pb-0 mb-0 choosewallet_selection">Bitcoin</span>
-                                                <a href="">Create Bitcoin Wallet</a>
+                                                <a data-toggle="modal" data-target="#new-bitcoin-wallet" href="#">Create Bitcoin Wallet</a>
                                             </div>
                                         </div>
                                     </div>
@@ -128,7 +128,7 @@
                                                 <div>
                                                     <span class="d-block pb-0 mb-0 choosewallet_selection">Bitcoin</span>
                                                     <div>
-                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) }}</span><span style="color: #000070;">BTC</span>
+                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : '' }}</span><span style="color: #000070;">BTC</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,6 +146,44 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+
+
+
+{{-- Bitcoin Wallet --}}
+<div class="modal fade " id="new-bitcoin-wallet">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content  c-rounded">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                <h4 class="modal-title">New Naira Wallet </h4>
+                <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+            </div>
+
+            <form action="{{route('user.bitcoin-wallet.create')}}" method="POST">@csrf
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Wallet Password (4) </label>
+                                <input type="password" class="form-control" required name="wallet_password" minlength="4" maxlength="4"  >
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Confirm password</label>
+                                <input type="password" class="form-control" required name="wallet_password_confirmation" >
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient">
+                        Create wallet
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
