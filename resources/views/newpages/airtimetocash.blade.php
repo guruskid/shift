@@ -85,10 +85,7 @@
                                             <img class="img-fluid isp_image" src="{{asset('isp/glo.png')}}" />
                                         </div>
                                     </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> 086b3efb610a3564af1d662aacb50750170c8871
 
 
                                     <div class="d-flex flex-column pt-4 mt-2 mt-md-5 mt-lg-0 align-items-center recharge_form_container">
@@ -143,13 +140,9 @@
                                             </div>
                                             <span class="d-block text-center my-3"
                                                 style="color: rgba(0, 0, 112, 0.75);">You're getting: <span
-<<<<<<< HEAD
+
                                                     style="font-size: 24px;" id="new-amount">N0</span> </span>
-                                            <span class="d-block my-4"
-=======
-                                                    style="font-size: 24px;">N20,300</span> </span>
                                             <span class="d-block my-4 ml-2 ml-lg-0"
->>>>>>> 086b3efb610a3564af1d662aacb50750170c8871
                                                 style="font-size: 12px;color: rgba(0, 0, 112, 0.75);opacity: 0.7;">Click
                                                 <b>Done</b> after you've sent the airtime to us then wait for the cash
                                                 to reflect in your wallet</span>

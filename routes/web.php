@@ -165,11 +165,8 @@ Route::get('/newsignup', function () {
     return view('newpages.newsignup');
 });
 
-<<<<<<< HEAD
 
-=======
 /*
->>>>>>> 086b3efb610a3564af1d662aacb50750170c8871
 //Mobile and desktop done
 Route::get('/all-transactions', function(){
     return view('newpages.all-transactions');

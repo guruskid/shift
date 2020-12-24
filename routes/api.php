@@ -53,8 +53,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::POST('/transfer-cash', 'Api\NairaWalletController@transfer');
         Route::POST('/withdraw-cash', 'Api\NairaWalletController@transfer');
 
-
-
+            //Pay electricity
+        Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
+        Route::post('/electricity', 'BillsPaymentController@payElectricity');
+            //Pay Cable
+        Route::post('/get-dec-user', 'BillsPaymentController@getUser');
+        Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
 
 
     });

@@ -75,23 +75,22 @@ class BillsPaymentController extends Controller
     }
 
 
-//    public function getPackages(Request $r)
-//    {
-//        $client = new Client();
-//        $url = env('RUBBIES_API') . "/billspaymentcustomerproducts";
-//
-//        $response = $client->request('POST', $url, [
-//            'json' => [
-//                "account" => $r->dec_num,
-//                "servicename" => $r->biller,
-//            ],
-//            'headers' => [
-//                'authorization' => env('RUBBIES_SECRET_KEY'),
-//            ],
-//        ]);
-//        $body = json_decode($response->getBody()->getContents());
-//        return response()->json($body);
-//    }
+    public function getPackages(Request $r)
+    {
+        $client = new Client();
+        $url = env('RUBBIES_API') . "/billers";
+        $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
+        $params['json'] = ["biller" => "cabletv",];
+        $response = $client->post($url, $params);
+        $body = json_decode($response->getBody()->getContents());
+
+        if ($body->responsecode == "00"){
+            $providers = $body->billers;
+            return response()->json($providers);
+        }
+        return response()->json("Error occur");
+
+    }
     public function CableView()
     {
 
