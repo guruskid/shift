@@ -18,8 +18,8 @@ class BitcoinWallet extends Model
         return $this->belongsTo('App\BitcoinWallet', 'primary_wallet_id');
     }
 
-    public function transactins()
+    public function transactions()
     {
-        return $this->hasMany('App\BitcoinTransaction');
+        return $this->hasMany('App\BitcoinTransaction', 'wallet_id', 'address')->latest();
     }
 }

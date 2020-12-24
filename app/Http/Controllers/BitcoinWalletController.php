@@ -23,12 +23,18 @@ class BitcoinWalletController extends Controller
         $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
     }
 
-    public function wallet()
+    public function wallet(Request $r)
     {
         if (!Auth::user()->bitcoinWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
-        return view('newpages.bitcoin-wallet');
+
+        if ($r->has('start')) {
+            $transactions = Auth::user()->bitcoinWallet->transactions()->where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->paginate(20);
+        }else{
+            $transactions = Auth::user()->bitcoinWallet->transactions()->paginate(5);
+        }
+        return view('newpages.bitcoin-wallet', compact('transactions'));
     }
 
 
