@@ -25,12 +25,6 @@ class BitcoinWalletController extends Controller
 
     public function wallet()
     {
-        $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_TESTNET, 'e9ec71e8c695e900942cafb98647862abca10275057f71ea76b464aa6a05c720');
-        $txouts = $result->payload->txouts;
-        foreach ($txouts as $output) {
-            echo $output->addresses[0] . ' ' . $output->amount . '<br>';
-        }
-        dd($result);
         if (!Auth::user()->bitcoinWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
