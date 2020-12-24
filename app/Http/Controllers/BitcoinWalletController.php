@@ -57,7 +57,7 @@ class BitcoinWalletController extends Controller
             $wallet->save();
 
             $callback = route('user.wallet-webhook');
-            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
+            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 3);
         } catch (\Throwable  $e) {
             report($e);
             return back()->with(['error' => 'An error occured, please try again']);
