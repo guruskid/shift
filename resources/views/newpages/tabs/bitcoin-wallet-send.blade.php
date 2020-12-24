@@ -36,9 +36,9 @@
                             <span class="d-block align-self-end customfee">Customize Fee</span>
                         </div>
                     </div>
-                    <div class="col-10 mx-auto">
+                    <div class="col-12 col-md-10 mx-auto">
                         <span class="address_input_label">Address</span>
-                        <div class="input-group col-7 mx-auto mb-3 mt-4">
+                        <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
                             <input type="text" class="form-control" id="receipientAddress"
                                 aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <div class="input-group-append">

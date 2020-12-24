@@ -21,6 +21,7 @@ use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\NairaWallet;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -412,10 +413,24 @@ class UserController extends Controller
     }
 
 
-    public function notifications()
+    public function notifications(Request $request)
     {
-        return view('user.notifications');
+        $month =  $request->input('month');
+        $notifications = DB::table('notifications')->when($month, function ($query,  $month) {
+            return $query->whereMonth('created_at','=',$month);
+        })->paginate(10);
+
+
+
+        // if($request->input('month')) {
+        //     $notifications = Notification::whereMonth('created_at', $request->input('month'))->paginate(5);
+        // } else {
+        // $notifications = Notification::orderBy('updated_at', 'desc')->paginate(5);
+        // }
+        return view('newpages.notifications', compact('notifications'));
+        // return view('user.notifications', compact('notifications'));
     }
+
 
     public function readNot($id)
     {

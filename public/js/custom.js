@@ -588,3 +588,8 @@ $("#rechargeother").on("click", function(){
 $("#rechargeme").on("click", function(){
     $("#quickRechargeOtherPhone").css('display','none')
 })
+
+$("#filter_month").on("change", function(){
+    const selectedvalue = $(this).children("option:selected").val();
+    $("#filtermonthForm").trigger('submit')
+})
