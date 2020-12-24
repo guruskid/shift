@@ -82,8 +82,8 @@
                                 </label>
                             </div>
                             <div class="form-check my-1">
-                                <input class="form-check-input" type="radio" name="rechargemyself" id="other" value="other" />
-                                <label class="form-check-label" style="color: #000070;font-size: 16px;" for="other">
+                                <input class="form-check-input" type="radio" name="rechargemyself" id="rechargeother" value="other" />
+                                <label class="form-check-label" style="color: #000070;font-size: 16px;" for="rechargeother">
                                   Other
                                 </label>
                             </div>
@@ -100,13 +100,11 @@
                         <div class="col-6 amount_to_recharge">
                             <div class="form-group mt-3">
                                 <label for="amount" style="color: #000070;font-size: 16px;">Amount</label>
-                                <div class="dropdown">
-                                    <button class="btn dropdown-toggle" style="border: 0.5px solid #676B87;width: 100%;height:42px;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                      <a class="dropdown-item" href="#">Action</a>
-                                      <a class="dropdown-item" href="#">Another action</a>
-                                    </div>
-                                  </div>
+                            <input type="number" placeholder="" class="form-control" />
+                            </div>
+                            <div class="form-group mt-3" id="quickRechargeOtherPhone" style="display: none;">
+                                <label for="phone" style="color: #000070;font-size: 16px;">Phone number</label>
+                            <input type="number" placeholder="" id="phone" class="form-control" />
                             </div>
                         </div>
                         <button id="upload_card_btn" type="submit" class="btn text-white mt-4 mt-lg-5 mx-auto" style="width: 150px;height:50px;background: #000070;border-radius: 5px;position:relative;left:16px;">Recharge</button>
