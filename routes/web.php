@@ -226,6 +226,7 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
+
     /* ajax calls */
     Route::POST('/add_transaction', 'UserController@addTransaction');
     /* Profile Ajax functions */
@@ -248,7 +249,10 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::POST('/profile-picture', 'UserController@profilePicture')->name('user.dp');
     Route::POST('/user-bank-details', 'UserController@updateBankDetails')->name('user.update_bank_details');
     Route::get('/view-transaction/{id}/{uid}', 'UserController@viewTransac')->name('user.view-transaction');
+
     Route::get('/notifications', 'UserController@notifications')->name('user.notifications');
+    // Route::post('/notifications', 'UserController@filtermonth')->name('filtermonth');
+    
     Route::POST('/notification-switch', 'UserController@notificationSetting');
 
     Route::get('/portfolio', 'PortfolioController@view')->name('user.portfolio');
