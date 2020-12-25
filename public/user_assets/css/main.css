@@ -1268,8 +1268,8 @@ input[type="file"]::-webkit-file-upload-button {
 .position_form {
     position: absolute;
     width: 100%;
-    top: 5%;
-    left: 10%;
+    top: 10%;
+    left: 16%;
 }
 .number_inputgroup {
     border: 0px;

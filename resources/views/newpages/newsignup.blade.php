@@ -7,7 +7,7 @@
         <div class="col-12 col-md-6 p-0 d-none d-md-block" style="height:100vh;">
             <img src="{{asset('images/login_img_right.png')}}" class="img-fluid" style="height: 100%;width:100%;" />
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 mx-auto">
             <div class="position_form">
                 {{-- <div class="chevron_arrow_bg d-flex align-items-center mt-3 mb-4    ">
                     <span style="position: relative;top:2.8px;left:1px;">
@@ -19,7 +19,7 @@
                 </div> --}}
                 <span class="d-block mt-5 mb-0 ml-2 ml-md-3" style="color: #676B87;font-size: 18px;">Hello!</span>
                 <div class="d-block mb-3 ml-2 ml-md-3 login_welcomeText">Welcome to Dantown</div>
-                <form id="signup_form" method="POST" action="{{route('login')}}">
+                <form id="signup_form" method="POST" action="{{route('register')}}">
                     @csrf
                     @foreach ($errors->all() as $error)
                     <p class="text-warning">{{ $error }}</p>

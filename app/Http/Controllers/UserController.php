@@ -419,14 +419,7 @@ class UserController extends Controller
         $notifications = DB::table('notifications')->when($month, function ($query,  $month) {
             return $query->whereMonth('created_at','=',$month);
         })->paginate(10);
-
-
-
-        // if($request->input('month')) {
-        //     $notifications = Notification::whereMonth('created_at', $request->input('month'))->paginate(5);
-        // } else {
-        // $notifications = Notification::orderBy('updated_at', 'desc')->paginate(5);
-        // }
+        
         return view('newpages.notifications', compact('notifications'));
         // return view('user.notifications', compact('notifications'));
     }
