@@ -58,7 +58,7 @@ class BitcoinWalletController extends Controller
             $wallet->type = 'secondary';
             $wallet->name = Auth::user()->first_name;
             $wallet->password = $password;
-            $wallet->balance = 0;
+            $wallet->balance = 0.00000000;
             $wallet->primary_wallet_id = $primary_wallet->id;
             $wallet->save();
 
