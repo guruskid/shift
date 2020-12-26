@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -18,7 +18,7 @@ $(document).ready(function() {
     }); */
 
     /* Submiting the user profile form */
-    $("#user-profile-form").submit(function(event) {
+    $("#user-profile-form").submit(function (event) {
         event.preventDefault();
         $("#s-p").show();
         var formData = $(this).serialize();
@@ -26,7 +26,7 @@ $(document).ready(function() {
             type: "POST",
             url: "/user/update-profile",
             data: formData,
-            success: function(data) {
+            success: function (data) {
                 $("#s-p").hide();
                 if (data == true) {
                     Notify("Profile updated", null, null, "success");
@@ -38,7 +38,7 @@ $(document).ready(function() {
     });
 
     /* Bank Details Update */
-    $("#user-bank-details").submit(function(event) {
+    $("#user-bank-details").submit(function (event) {
         event.preventDefault();
         $("#s-b").show();
         var formData = $(this).serialize();
@@ -46,7 +46,7 @@ $(document).ready(function() {
             type: "POST",
             url: "/user/update-bank",
             data: formData,
-            success: function(data) {
+            success: function (data) {
                 $("#s-b").hide();
                 if (data == true) {
                     Notify("Bank details added", null, null, "success");
@@ -58,7 +58,7 @@ $(document).ready(function() {
         });
     });
 
-    $(".custom-file-input").on("change", function() {
+    $(".custom-file-input").on("change", function () {
         alert("selected");
         var fileName = $(this)
             .val()
@@ -70,8 +70,8 @@ $(document).ready(function() {
             .html(fileName);
     });
 
-    
-    
+
+
 });
 
 /* Copy Wallet Id */
@@ -85,32 +85,59 @@ function copy() {
     $("#wallet-id").attr("disabled", "true");
 }
 
+//Send OTP for old users
+function sendOtp() {
+    var otpText = $('#otp-text');
+    var phone = $('#signup_phonenumber').val();
+    var country_id = $('#country-id').val();
+    if (!phone) {
+        alert('Please enter a valid phone number');
+    }
+    otpText.text('sending . . .');
+    $.get('send-otp/' + phone + '/' + country_id)
+        .done(function (res) {
+            console.log(res);
+            if (res['success']) {
+                otpText.text('Sent');
+                setTimeout(() => {
+                    otpText.text('Resend');
+                }, 4000);
+                swal('A new OTP has been sent to your provided number');
+            } else {
+                swal(res['msg']);
+            }
+        })
+
+        .fail(function (res) {
+            swal('An error occured, please try again');
+        })
+}
+
 //Resend OTP
 function resendOtp() {
     var otpText = $('#otp-text');
-otpText.text('Sending . . .');
-$.get('/resend-otp', function (res) { 
-    console.log(res);
-    if (res['success']) {
-        otpText.text('Sent');
-        setTimeout(() => {
-            otpText.text('Resend');
-        }, 4000);
-    }
-    else{
-        otpText.text(res['msg']);
-        setTimeout(() => {
-            otpText.text('Resend');
-        }, 4000);
-    }
- })
+    otpText.text('Sending . . .');
+    $.get('/resend-otp', function (res) {
+        console.log(res);
+        if (res['success']) {
+            otpText.text('Sent');
+            setTimeout(() => {
+                otpText.text('Resend');
+            }, 4000);
+        } else {
+            otpText.text(res['msg']);
+            setTimeout(() => {
+                otpText.text('Resend');
+            }, 4000);
+        }
+    })
 }
 
 
 
 /* Edit Bank details */
 function editBank(id) {
-    $.get("/user/get-bank/" + id, function(data, status) {
+    $.get("/user/get-bank/" + id, function (data, status) {
         $("#e-account-id").val(data["id"]);
         $("#e-account-name").val(data["account_name"]);
         $("#e-account-number").val(data["account_number"]);
@@ -122,7 +149,7 @@ function editBank(id) {
 /* Delete Bank Details */
 function deleteBank(id) {
     if (confirm("Are you sure you want to delete these details?")) {
-        $.get("/user/delete-bank/" + id, function(data, status) {
+        $.get("/user/delete-bank/" + id, function (data, status) {
             Notify(data, null, null, "info");
             location.reload();
         });
@@ -131,15 +158,14 @@ function deleteBank(id) {
 
 /* Read notifications */
 function readNot(id) {
-    $.get("/user/read-not/" + id, function(res) {
+    $.get("/user/read-not/" + id, function (res) {
         if (res["success"]) {
             $("#action-" + id).hide();
             $("#envelope-" + id).attr(
                 "class",
                 "fa fa-2x mr-3 fa-envelope-open  text-custom"
             );
-        } else {
-        }
+        } else {}
     });
 }
 
@@ -157,7 +183,7 @@ function notSw(id) {
         name: id
     };
 
-    $.post("/user/notification-switch", formData, function(data) {
+    $.post("/user/notification-switch", formData, function (data) {
         if (!data["success"]) {
             Notify("Oops! An error occured", null, null, "warning");
         }
@@ -178,14 +204,14 @@ function showWalletTxnDetail(txn) {
     $("#d-w-txn-date").text(txn.created_at);
 }
 
-$(".accordion_cards").on("click", function() {
+$(".accordion_cards").on("click", function () {
     $(this)
         .find(".accordion_content")
         .css("display", "none");
     if (
         $(this)
-            .find(".accordion_arrow")
-            .hasClass("accordion_arrow_rotate")
+        .find(".accordion_arrow")
+        .hasClass("accordion_arrow_rotate")
     ) {
         $(this)
             .find(".accordion_arrow")
@@ -218,48 +244,48 @@ $(".accordion_cards").on("click", function() {
 });
 // Hide upload address input
 $("#uploadPhotoInput").hide();
-$("#uploadAddressVerification").on("click", function() {
+$("#uploadAddressVerification").on("click", function () {
     document.getElementById("uploadPhotoInput").click();
 });
 // Hide Front photo card input
 $("#frontPhotoIdInput").hide();
-$("#frontPhotoID").on("click", function() {
+$("#frontPhotoID").on("click", function () {
     document.getElementById("frontPhotoIdInput").click();
 });
 // Hide BAck photo card input
 $("#backPhotoIdInput").hide();
-$("#backPhotoID").on("click", function() {
+$("#backPhotoID").on("click", function () {
     document.getElementById("backPhotoIdInput").click();
 });
 
 
-$("#quickTopUpLink").on("click", function() {
+$("#quickTopUpLink").on("click", function () {
     if ($("#quickTopUpModal").css("display") == "none") {
         $("#quickTopUpModal").css("display", "block");
     } else {
         $("#quickTopUpModal").css("display", "none");
     }
 });
-$("#closeQuickTopUp").on("click", function() {
+$("#closeQuickTopUp").on("click", function () {
     $("#quickTopUpModal").css("display", "none");
 });
-$("#quickWithdrawalLink").on("click", function() {
+$("#quickWithdrawalLink").on("click", function () {
     $("#quickwithdrawalModal").css("display", "block");
 });
-$("#closeQuickWithdrawal").on("click", function() {
+$("#closeQuickWithdrawal").on("click", function () {
     $("#quickwithdrawalModal").css("display", "none");
 });
-$("#closeQuickTopUp").on("click", function() {
+$("#closeQuickTopUp").on("click", function () {
     $("#quickwithdrawalModal").css("display", "none");
 });
 
-$(".quickcard_networks").on("click", function() {
+$(".quickcard_networks").on("click", function () {
     $(".quickcard_networks").css("border", "0px");
     $(this).css("border", "3px solid #000070");
     $("#airtime_network").val($(this).attr("id"));
 });
 
-$("#showwdpin").on("click", function() {
+$("#showwdpin").on("click", function () {
     if ($("#wdpin").attr("type") != "text") {
         $("#wdpin").attr("type", "text");
     } else {
@@ -289,7 +315,7 @@ function copyAcctNumber(acct_number_input) {
     alert("Copied the text: " + copyText.value);
 }
 
-$("#togglepinvisibility").on("click", function() {
+$("#togglepinvisibility").on("click", function () {
     if ($("#pinfortrx").attr("type") == "password") {
         $("#pinfortrx").attr("type", "text");
     } else {
@@ -298,7 +324,7 @@ $("#togglepinvisibility").on("click", function() {
         $("#pinfortrx").attr("type", "password");
     }
 });
-$("#removeobscure_pwd").on("click", function() {
+$("#removeobscure_pwd").on("click", function () {
     if ($("#password_field").attr("type") == "password") {
         $("#password_field").attr("type", "text");
         $("#toggleshowpassword").attr("src", "svg/showpassword.svg");
@@ -307,14 +333,14 @@ $("#removeobscure_pwd").on("click", function() {
         $("#toggleshowpassword").attr("src", "svg/obscure-password.svg");
     }
 });
-$(".bvnVerificationCard").on("click", function() {
+$(".bvnVerificationCard").on("click", function () {
     if ($("#bvnVerification").css("display") != "none") {
         $(".accordion_full_container").css("height", "603px");
     } else {
         $(".accordion_full_container").css("height", "520px");
     }
 });
-$(".idVerificationCard").on("click", function() {
+$(".idVerificationCard").on("click", function () {
     if ($("#idVerification").css("display") != "none") {
         $(".accordion_full_container").css("height", "730px");
     } else {
@@ -324,7 +350,7 @@ $(".idVerificationCard").on("click", function() {
 
 //==============|| Bitcoin Wallet page tabs =======\\
 
-$("#bitcoin_send").on("click", function() {
+$("#bitcoin_send").on("click", function () {
     $(".wallet_trx_tabs").css("display", "none");
     $("#bitcoin_receive").removeClass("walletpage_menu-active");
     $(this).addClass("walletpage_menu-active");
@@ -332,7 +358,7 @@ $("#bitcoin_send").on("click", function() {
         $("#bitcoin_wallet_send_tab").css("display", "block");
     }
 });
-$("#bitcoin_receive").on("click", function() {
+$("#bitcoin_receive").on("click", function () {
     $(".wallet_trx_tabs").css("display", "none");
     $("#bitcoin_send").removeClass("walletpage_menu-active");
     $(this).addClass("walletpage_menu-active");
@@ -343,23 +369,23 @@ $("#bitcoin_receive").on("click", function() {
 /* Naira Wallet Starts here */
 
 //Dantown to dantown modal
-$("#naira_d_to_d").on("click", function() {
+$("#naira_d_to_d").on("click", function () {
     $("#dantownTodantownModal").css("display", "block");
 });
-$("#closedantownTodantownModal").on("click", function() {
+$("#closedantownTodantownModal").on("click", function () {
     $("#dantownTodantownModal").css("display", "none");
 });
 
 // Dantown to other account
-$("#naira_d_to_o").on("click", function() {
+$("#naira_d_to_o").on("click", function () {
     $("#dantownToOtherModal").css("display", "block");
 });
-$("#closedantownToOtherModal").on("click", function() {
+$("#closedantownToOtherModal").on("click", function () {
     $("#dantownToOtherModal").css("display", "none");
 });
 
 //Naira transfer
-$("#naira_transfer").on("click", function() {
+$("#naira_transfer").on("click", function () {
     $("#nairaWithdrawTab").css("display", "none");
     $("#nairaDepositTab").css("display", "none");
     $("#nairawallet_trx_type_list").addClass("d-flex");
@@ -368,7 +394,7 @@ $("#naira_transfer").on("click", function() {
 });
 
 //Naira withdraw
-$("#naira_withdraw").on("click", function() {
+$("#naira_withdraw").on("click", function () {
     $(".naira_menu").removeClass("walletpage_menu-active");
     $("#nairawallet_trx_type_list").removeClass("d-flex");
     $("#nairaDepositTab").css("display", "none");
@@ -378,7 +404,7 @@ $("#naira_withdraw").on("click", function() {
 });
 
 //Naira deposit
-$("#naira_deposit").on("click", function() {
+$("#naira_deposit").on("click", function () {
     $(".naira_menu").removeClass("walletpage_menu-active");
     $("#nairawallet_trx_type_list").removeClass("d-flex");
     $("#nairaWithdrawTab").css("display", "none");
@@ -388,33 +414,33 @@ $("#naira_deposit").on("click", function() {
     // $("#content_bg").css('height','800px')
 });
 
-$(".airtime_network_card").on("click", function() {
+$(".airtime_network_card").on("click", function () {
     $(".airtime_network_card").removeClass("active_airtime_choice");
     $(this).addClass("active_airtime_choice");
     $("#airtimechoice").val($(this).attr("alt"));
 });
 
-$("#swapcountrycode").on("change", function() {
+$("#swapcountrycode").on("change", function () {
     let dialcodeval = $(this)
         .children("option:selected")
         .val()
         .trim();
     $("#dcode").val(dialcodeval);
 });
-$("#rechargebtn").on("click", function() {
+$("#rechargebtn").on("click", function () {
     let code = $("#dcode").val();
     let phone = $("#phonenumber").val();
     let fullNo = code + phone.substring(1);
     $("#fullphonenumber").val(fullNo);
 });
-$("#buydata").on("change", function() {
+$("#buydata").on("change", function () {
     $("#otherphonenumber").css("display", "none");
 });
-$("#buyother").on("change", function() {
+$("#buyother").on("change", function () {
     $("#otherphonenumber").css("display", "block");
 });
 
-$("#mobile_phone_verification_card").on("click", function() {
+$("#mobile_phone_verification_card").on("click", function () {
     if ($("#mobile_phone_verification_card_content").hasClass("d-none")) {
         $("#mobile_phone_verification_card_content").removeClass("d-none");
         $("#mobile_phone_verification_card_content").addClass("d-flex");
@@ -424,7 +450,7 @@ $("#mobile_phone_verification_card").on("click", function() {
     }
 });
 
-$("#mobile_address_verification_card").on("click", function() {
+$("#mobile_address_verification_card").on("click", function () {
     if ($("#mobile_address_verification_card_content").hasClass("d-none")) {
         $("#mobile_address_verification_card_content").removeClass("d-none");
         $("#mobile_address_verification_card_content").addClass("d-flex");
@@ -436,7 +462,7 @@ $("#mobile_address_verification_card").on("click", function() {
     }
 });
 
-$("#mobile_bvn_verification_card").on("click", function() {
+$("#mobile_bvn_verification_card").on("click", function () {
     if ($("#bvn_verification_card_content").hasClass("d-none")) {
         $("#bvn_verification_card_content").removeClass("d-none");
         $("#bvn_verification_card_content").addClass("d-flex");
@@ -448,7 +474,7 @@ $("#mobile_bvn_verification_card").on("click", function() {
     }
 });
 
-$("#mobile_id_verification_card").on("click", function() {
+$("#mobile_id_verification_card").on("click", function () {
     if ($("#id_verification_card_content").hasClass("d-none")) {
         $("#id_verification_card_content").removeClass("d-none");
         $("#id_verification_card_content").addClass("d-flex");
@@ -460,11 +486,11 @@ $("#mobile_id_verification_card").on("click", function() {
     }
 });
 
-$("#mobile_front_photo_click").on("click", function() {
+$("#mobile_front_photo_click").on("click", function () {
     document.getElementById("uploadFrontPhotoInputMobile").click();
 });
 
-$("#mobile_back_photo_click").on("click", function() {
+$("#mobile_back_photo_click").on("click", function () {
     document.getElementById("uploadBackPhotoInputMobile").click();
 });
 
@@ -503,7 +529,7 @@ function switchTab(f) {
     }
 }
 
-$("#step_one_btn").on("click", function() {
+$("#step_one_btn").on("click", function () {
     const dialcode = $("#dialcode_select").val().trim()
     const phoneNumber = dialcode + $('#phoneNumber').val().trim()
     $("#signup_phone").val(phoneNumber);
@@ -521,7 +547,7 @@ function closeTab(param) {
     $(".smartbudget_cardmenu").css("display", "block");
 }
 
-$("#removeobscure_pwd2").on("click", function() {
+$("#removeobscure_pwd2").on("click", function () {
     if ($("#password_field2").attr("type") == "password") {
         $("#password_field2").attr("type", "text");
         $("#toggleshowpassword2").attr("src", "svg/showpassword.svg");
@@ -531,7 +557,7 @@ $("#removeobscure_pwd2").on("click", function() {
     }
 });
 
-$(".network_cards").on("click", function() {
+$(".network_cards").on("click", function () {
     $(".network_cards").css("border", "0");
     $(this).css("border", "3px solid #000070");
     const isp = $(this).attr("id");
@@ -552,10 +578,10 @@ function accordion(param) {
     }
 }
 
-$(".faq_topic").on("click", function() {
+$(".faq_topic").on("click", function () {
     $(".faq_topic").removeClass("active_faq");
     $(this).addClass("active_faq");
-        $(".faq_tab_contents").css("display", "none");
+    $(".faq_tab_contents").css("display", "none");
     if ($(this).attr("id") == "finance") {
         $("#finance_content").css("display", "block");
     } else if ($(this).attr("id") == "tech") {
@@ -565,7 +591,7 @@ $(".faq_topic").on("click", function() {
     }
 });
 
-$("#pwd_visibility_toggle").on("click", function() {
+$("#pwd_visibility_toggle").on("click", function () {
     if ($("#walletpin").attr("type") == "password") {
         $("#walletpin").attr("type", "text");
         $("#pwd_visibility_toggle2").attr("src", "svg/showpassword.svg");
@@ -575,21 +601,21 @@ $("#pwd_visibility_toggle").on("click", function() {
     }
 });
 
-$("#dialcode_select").on("click", function(){
+$("#dialcode_select").on("click", function () {
     const dialcode = $(this).val().trim()
-    const phoneNumber = dialcode+$("#phoneNumber4Power").val().trim()
+    const phoneNumber = dialcode + $("#phoneNumber4Power").val().trim()
     $("#phoneNumber").val(phoneNumber)
 })
 
-$("#rechargeother").on("click", function(){
-    $("#quickRechargeOtherPhone").css('display','block')
+$("#rechargeother").on("click", function () {
+    $("#quickRechargeOtherPhone").css('display', 'block')
 })
 
-$("#rechargeme").on("click", function(){
-    $("#quickRechargeOtherPhone").css('display','none')
+$("#rechargeme").on("click", function () {
+    $("#quickRechargeOtherPhone").css('display', 'none')
 })
 
-$("#filter_month").on("change", function(){
+$("#filter_month").on("change", function () {
     const selectedvalue = $(this).children("option:selected").val();
     $("#filtermonthForm").trigger('submit')
 })

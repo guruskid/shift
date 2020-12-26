@@ -195,6 +195,8 @@ Route::get('/all-transactions', function(){
 
 
 
+
+
 Route::get('test', function () {
     /* $emailJob = (); */
         dispatch(new RegistrationEmailJob('shean@gmail.com'));
@@ -215,7 +217,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
     Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.add-bank');
+    Route::get('/verify-phone-number', 'HomeController@phoneVerification')->name('user.verify-phone');
     Route::get('/resend-otp', 'HomeController@resendOtp');
+
+    //old users
+    Route::get('/send-otp/{phone}/{country_id}', 'HomeController@sendOtp');
+    Route::post('/verify-phone', 'HomeController@verifyPhone')->name('user.verify-phone-number');
 });
 
 Route::view('/disabled', 'disabled')->name('disabled');

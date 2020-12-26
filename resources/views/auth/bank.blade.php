@@ -35,10 +35,12 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                         <div class="form-group">
                             <input type="text" name="account_name" class="acct-name form-control col-11 mx-auto mx-md-0 col-lg-8" readonly />
                         </div>
+                        @if (Auth::user()->phone_verified_at == null)
                         <div class="form-group">
                             <input type="text" name="otp" placeholder="Phone OTP Code" class="form-control col-11 mx-auto mx-md-0 col-lg-8"  />
                             <small>Didn't get the OTP? <a href="#" id="otp-text" onclick="resendOtp()">Resend</a></small>
                         </div>
+                        @endif
                         <div class="form-check ml-3 ml-md-0">
                             <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
                             <label class="form-check-label form-check-label-sm" for="defaultCheck1">
