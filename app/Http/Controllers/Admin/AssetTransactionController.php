@@ -197,10 +197,7 @@ class AssetTransactionController extends Controller
             return redirect()->back()->with(['error' => 'Incorrect primary wallet password']);
         }
 
-        /* Cross Check Balance */
-        if ($primary_wallet->balance < $transaction->quantity) {
-            return redirect()->back()->with(['error' => 'Insufficient primary wallet balance']);
-        }
+
 
         /* Confirm User has wallet */
         if (!$transaction->user->bitcoinWallet) {
@@ -210,7 +207,12 @@ class AssetTransactionController extends Controller
         /* Update User Balance */
 
         if ($transaction->type == 'buy') {
-            if ($user_naira_wallet->amount < $transaction->amount_paid ) {
+            /* Cross Check Balance */
+            if ($primary_wallet->balance < $transaction->quantity) {
+                return redirect()->back()->with(['error' => 'Insufficient primary wallet balance']);
+            }
+
+            if ($user_naira_wallet->amount < $transaction->amount_paid) {
                 return redirect()->back()->with(['error' => 'Insufficient user naira wallet balance']);
             }
             $btc_txn_type = 19;
@@ -258,8 +260,7 @@ class AssetTransactionController extends Controller
 
             $user_naira_wallet->amount += $transaction->amount_paid;
             $user_naira_wallet->save();
-
-        }else{
+        } else {
             return back()->with(['error' => 'Invalid transaction']);
         }
 
@@ -311,7 +312,4 @@ class AssetTransactionController extends Controller
         return back()->with(['success' => 'Transaction completed successfully ']);
         /* Redirect User Back to where he came from */
     }
-
-
-
 }
