@@ -131,7 +131,7 @@ class HomeController extends Controller
             $response = $client->request('POST', $url, [
                 'json' => [
                     'api_key' => env('TERMII_API_KEY'),
-                    "pin_id" => Auth::user()->phone_pin_id . 'er',
+                    "pin_id" => Auth::user()->phone_pin_id,
                     "pin" => $request->otp
                 ],
             ]);
