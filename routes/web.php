@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\RegistrationEmailJob;
 use App\Mail\UserRegistered;
 use App\NairaTransaction;
 use Illuminate\Support\Facades\Mail;
@@ -194,20 +195,28 @@ Route::get('/all-transactions', function(){
 
 
 
-Route::get('mailable', function () {
-    Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
+Route::get('test', function () {
+    /* $emailJob = (); */
+        dispatch(new RegistrationEmailJob('shean@gmail.com'));
+    /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() ); */
     /* $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
     return new App\Mail\WalletAlert($txn, 'Debit'); */
 });
 
-Route::post('/tested', 'BitcoinWalletController@test')->name('tested');
+Route::get('/tested', 'HomeController@test')->name('tested');
 
 
 Auth::routes(['verify' => true]);
 Route::get('/', 'HomeController@index')->name('welcome');
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
-Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.add-bank');
+
+
+//Registration and verification routes
+Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
+    Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.add-bank');
+    Route::get('/resend-otp', 'HomeController@resendOtp');
+});
 
 Route::view('/disabled', 'disabled')->name('disabled');
 
@@ -252,7 +261,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     Route::get('/notifications', 'UserController@notifications')->name('user.notifications');
     // Route::post('/notifications', 'UserController@filtermonth')->name('filtermonth');
-    
+
     Route::POST('/notification-switch', 'UserController@notificationSetting');
 
     Route::get('/portfolio', 'PortfolioController@view')->name('user.portfolio');

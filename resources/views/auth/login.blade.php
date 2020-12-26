@@ -1,4 +1,5 @@
 @extends('layouts.guest')
+@section('title', 'Login')
 @section('guestviewcontent')
 
 
@@ -32,7 +33,8 @@
                         </label>
                     </div>
                     <button type="submit" class="btn text-white col-12 col-md-8 mt-4" style="background: #000070;border-radius: 5px;">Sign in</button>
-                        <span class="d-block my-2 forgotpwd_text mb-md-0 py-2"> <a href="{{ route('password.request') }}" style="color: #000070;font-size: 14px;">Forgot Password?</a> </span>
+                    <p>New here? <a href="{{ route('register') }}">Register</a></p>
+                    <span class="d-block my-2 forgotpwd_text mb-md-0"> <a href="{{ route('password.request') }}" style="color: #000070;font-size: 14px;">Forgot Password?</a> </span>
                 </form>
             </div>
         </div>

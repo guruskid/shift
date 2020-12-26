@@ -1,64 +1,32 @@
-@extends('layouts.app')
+@extends('layouts.guest')
+@section('title', 'Verify Email')
+@section('guestviewcontent')
 
-@section('content')
 
-<div class="app-main">
-    <div class="app-sidebar sidebar-shadow">
-        <div class="app-header__logo">
-            <div class="logo-src"></div>
-            <div class="header__pane ml-auto">
-                <div>
-                    <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
-                        data-class="closed-sidebar">
-                        <span class="hamburger-box">
-                            <span class="hamburger-inner"></span>
-                        </span>
-                    </button>
-                </div>
+<div class="container-fluid p-0 m-0 login_container_flow">
+    <div class="row  m-0 p-0">
+        <div class="col-12 col-md-6 p-0 d-none d-md-block" style="height:100vh;">
+            <img src="{{asset('images/login_img_right.png')}}" class="img-fluid" style="height: 100%;width:100%;" />
+        </div>
+        <div class="col-md-6 p-5 my-auto">
+            <div class="d-block mb-3 login_welcomeText">Verify Email </div>
+
+            @if (session('resent'))
+            <div class="alert alert-success" role="alert">
+                {{ __('A fresh verification link has been sent to your email address.') }}
             </div>
-        </div>
-        <div class="app-header__mobile-menu">
-            <div>
-                <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
-                    <span class="hamburger-box">
-                        <span class="hamburger-inner"></span>
-                    </span>
-                </button>
-            </div>
-        </div>
-        <div class="app-header__menu">
-            <span>
-                <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
-                    <span class="btn-icon-wrapper">
-                        <i class="fa fa-ellipsis-v fa-w-6"></i>
-                    </span>
-                </button>
-            </span>
-        </div>
-    </div>
-    <div class="app-main__outer">
-        <div class="row justify-content-center mt-4">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">{{ __('Verify Your Email Address') }}</div>
+            @endif
 
-                    <div class="card-body text-center">
-                        @if (session('resent'))
-                            <div class="alert alert-success" role="alert">
-                                {{ __('A fresh verification link has been sent to your email address.') }}
-                            </div>
-                        @endif
+            <p>{{ __('Before proceeding, please check your email for a verification link.') }} Click 'Resend' if you did
+                not receive the email</p>
 
-                        {{ __('Before proceeding, please check your email for a verification link.') }}
-                        {{ __('If you did not receive the email') }} <br> <a href="{{ route('verification.resend') }}"><button class="btn btn-success">{{ __('Click here to request another') }}</button> </a>
-                        <a href="{{ route('user.profile') }}"><button class="btn btn-info">Change email</button></a>
-                        <button class="btn btn-dark" onclick="document.getElementById('logout-form2').submit()" >Logout</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <a href="{{ route('verification.resend') }}">
+                <button class="btn btn-block text-white"
+                    style="background: #000070;border-radius: 5px; ">{{ __('Resend') }}</button>
+            </a>
 
 
+        </div>
     </div>
 </div>
 @endsection

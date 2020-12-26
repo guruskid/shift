@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Country;
 use App\User;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\RegistrationEmailJob;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 /* Mails */
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistered;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 
 class RegisterController extends Controller
 {
@@ -53,10 +57,11 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            /* 'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'], */
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'country_id' => 'required|integer',
+            'phone' => 'required|integer',
+            'username' => 'string|required'
         ]);
     }
 
@@ -68,12 +73,40 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        Mail::to($data['email'])->send(new UserRegistered() );
+        $country = Country::find($data['country_id']);
+        $phone = $country->phonecode . (int)$data['phone'];
+
+        $emailJob = (new RegistrationEmailJob($data['email']));
+        dispatch($emailJob);
+
+        $client = new Client();
+        $url = env('TERMII_SMS_URL') . "/otp/send";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                'api_key' => env('TERMII_API_KEY'),
+                "message_type" => "NUMERIC",
+                "to" => $phone,
+                "from" => "Dantown",
+                "channel" => "generic",
+                "pin_attempts" => 4,
+                "pin_time_to_live" =>  10,
+                "pin_length" => 6,
+                "pin_placeholder" => "< 1234 >",
+                "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "pin_type" => "NUMERIC"
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
 
         return User::create([
             'first_name' => ' ',
             'last_name' => ' ',
+            'username' => $data['username'],
+            'country_id' => $data['country_id'],
             'email' => $data['email'],
+            'phone' => $phone,
+            'phone_pin_id' => $body->pinId,
             'password' => Hash::make($data['password']),
         ]);
     }

@@ -1,124 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
+@php
+$countries = App\Country::orderBy('phonecode', 'asc')->get();
+@endphp
+@extends('layouts.guest')
+@section('title', 'Register')
+@section('guestviewcontent')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{asset('fav.png')}}">
-    <link rel="shortcut icon" href="{{asset('fav.png')}}">
-    <!-- ========================================= Css files -->
-    <link rel="stylesheet" href="{{asset('css/bootstrap/css/bootstrap.min.css')}} ">
-    <link rel="stylesheet" href="{{asset('css/fa.min.css')}} ">
-    <link rel="stylesheet" href="{{asset('user_assets/css/style.css')}} ">
-    <title>Signup | Dantown Multi Services</title>
-</head>
-
-<body class="account_page">
-    <div class="has_cover">
-        <div class="row">
-            <div class="col-lg-5 p-0 lg-hidden">
-                <div class="left_part">
-                    <div class="left_part_wrap">
-                        <img src="{{asset('images/city.png')}}" alt="">
-                    </div>
-                </div>
+<div class="container-fluid p-0 m-0 login_container_flow">
+    <div class="row login_page_container m-0 p-0">
+        <div class="col-12 col-lg-6 p-0 d-none d-lg-block" style="height:100vh;">
+            <img src="{{asset('images/login_img_right.png')}}" class="img-fluid" style="height: 100%;width:100%;" />
+        </div>
+        <div class="col-12 col-md-6 mx-md-auto">
+            <div class="col-7 d-lg-none mx-auto mt-4 mb-md-5 mt-lg-0">
+                <img class="img-fluid" src="{{asset('logo_bg.png')}}" />
             </div>
-            <div class="col-lg-7 col-md-12 bg-blue">
-                <h1 class="welcome">Welcome!</h1>
-                <div class="right_part">
-                    <div class="site-branding">
-                        <div class="site-title">
-                            <a href="../index.html">
-                                <div class="logo_sign">
-                                    <img src="{{asset('images/logo.svg')}} " class="svg-logo" alt="ootancy">
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="head">
-                        <h4 class="sign_title">
-                            Just a few more seconds and you’re done!
-                        </h4>
-                    </div>
-
-                    <div class="sign-form">
-                        <form action="{{route('signup.add-bank')}} " method="post">
-                            @csrf
-                            @foreach ($errors->all() as $error)
-                            <p class="text-warning">{{ $error }}</p>
+            <div class="position_form mt-md-5 mt-lg-0">
+                <span class="d-block mt-5 mb-0 ml-2 ml-md-3" style="color: #676B87;font-size: 18px;">Hello!</span>
+                <div class="d-block mb-3 ml-2 ml-md-3 login_welcomeText">Bank Details</div>
+                <form id="signup_form" method="POST" action="{{route('signup.add-bank')}}"> @csrf
+                    @foreach ($errors->all() as $error)
+                    <p class="text-warning">{{ $error }}</p>
+                    @endforeach
+                    <div class="mt-2 ">
+                        <select name="bank_code" class="form-control col-11 mx-auto mx-md-0 col-lg-8" id="bank-name">
+                            <option selected>Bank name</option>
+                            @foreach ($banks as $bank)
+                            <option value="{{$bank->code}}">{{$bank->name}}</option>
                             @endforeach
-                            <div class="input-group mb-15">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        <ion-icon name="briefcase"></ion-icon>
-                                    </span>
-                                </div>
-                                <select name="bank_code" id="bank-name" class="form-control" style="background-color: transparent; color: #495057 !important">
-                                    <option value="">Select Bank Name</option>
-                                    @foreach ($banks as $bank)
-                                    <option value="{{$bank->code}}">{{$bank->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="input-group mb-15">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        <ion-icon name="card"></ion-icon>
-                                    </span>
-                                </div>
-                                <input type="text" id="account-number" name="account_number" class="form-control" placeholder="Account Number"
-                                     required="" />
-                            </div>
-
-                            <div class="input-group mb-15">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        <ion-icon name="person"></ion-icon>
-                                    </span>
-                                </div>
-                                <input type="text" class="acct-name form-control" readonly name="account_name" placeholder="Account Name"
-                                     required="" style="outline: none; background-color: transparent" />
-                            </div>
-
-                            <div class="input-group mb-50 mb-sm-30">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">
-                                        <ion-icon name="call"></ion-icon>
-                                    </span>
-                                </div>
-                                <input type="tel" name="phone" class="form-control" placeholder="Phone number"
-                                    aria-describedby="inputGroupPrepend3" required="" />
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-30 mb-sm-15">
-                                <div class="custom-control mr-4">
-                                    <input type="checkbox" class="form-check-input" />
-                                    <label class="form-check-label" for="check-1">Agree to <a href="#">terms &amp;
-                                            conditions</a>
-                                    </label>
-                                </div>
-                            </div>
+                        </select>
+                        <div class="form-group mt-3">
+                            <input type="text" id="account-number" name="account_number" class="form-control col-11 mx-auto mx-md-0 col-lg-8"
+                                placeholder="Account number" />
                         </div>
-                        <div class="flex around">
-                            <button id="sign-up-btn" disabled class="btn btn-primary">FINISH</button>
+                        <div class="form-group">
+                            <input type="text" name="account_name" class="acct-name form-control col-11 mx-auto mx-md-0 col-lg-8" readonly />
                         </div>
-                    </form>
-                </div>
+                        <div class="form-group">
+                            <input type="text" name="otp" placeholder="Phone OTP Code" class="form-control col-11 mx-auto mx-md-0 col-lg-8"  />
+                            <small>Didn't get the OTP? <a href="#" id="otp-text" onclick="resendOtp()">Resend</a></small>
+                        </div>
+                        <div class="form-check ml-3 ml-md-0">
+                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                            <label class="form-check-label form-check-label-sm" for="defaultCheck1">
+                                I agree to to the <a href="#" target="_blank" rel="noopener noreferrer">terms &
+                                    conditions</a>
+                            </label>
+                        </div>
+                        <button id="sign-up-btn" disabled class="btn text-white col-11 signup_first_step col-lg-8 mt-4"
+                            style="background: #000070;border-radius: 5px;">Finish</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- ====================================== js files  -->
-    <script src="{{asset('js/bootstrap.min.js')}} "></script>
-    <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
-    <script src="{{asset('js/popper.min.js')}} "></script>
-    <script src="{{asset('user_assets/js/main.js')}}"></script>
-    <script src="{{asset('js/bootstrap-notify.js')}}"></script>
-    <script src="{{asset('js/wallet.js')}} "></script>
-</body>
 
-</html>
+@endsection
