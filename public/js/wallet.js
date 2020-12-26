@@ -229,7 +229,9 @@ function getAirtimeAmount() {
 }
 function getCableUser() {
     var productcode = $('#dec-billercode').val();
+    console.log(productcode)
     var decoder = $('#decoder').val();
+    console.log(decoder)
     var acctName = $('#owner-name');
     if (productcode != '' && decoder != '') {
         acctName.val('Loading, please wait..');

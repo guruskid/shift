@@ -121,9 +121,9 @@ Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
 
-Route::get('/paytv', function(){
-    return view('newpages.paytv');
-});
+Route::get('/paytv','BillsPaymentController@CableView')->name('user.paytv');
+//    return view('newpages.paytv');
+//});
 
 Route::get('/paybills','BillsPaymentController@electricityView')->name('newpages.paybills');
    // return view('newpages.paybills');

@@ -130,15 +130,19 @@
                                                 </div>
                                             </div>
                                             <div class="p-2">
-                                                <form action="" method="post">
+                                                <form action="{{route('user.paytv')}}" method="post">
                                                     @csrf
                                                     <div class="row mt-lg-3">
                                                         <div class="col-12 col-md my-2 my-lg-0">
                                                             <label for="bouquet" class="mb-0 pb-0">Bouquet</label>
-                                                            <select name="" id="bouquet" class="custom-select">
-                                                                <option value="">Starter</option>
-                                                                <option value="">Family</option>
-                                                                <option value="">Generation</option>
+                                                            <select name="provider" id="bouquet" class="custom-select">
+{{--                                                                <option value="">Starter</option>--}}
+{{--                                                                <option value="">Family</option>--}}
+{{--                                                                <option value="">Generation</option>--}}
+                                                                <option selected onselect="getCableUser()">select one- monthly</option>
+                                                                @foreach ($providers as $p)
+                                                                    <option value="{{$p->servicename}}" >{{$p->servicename}} - {{$p->price}}</option>
+                                                                @endforeach
                                                             </select>
                                                         </div>
                                                         <div class="col-12 col-md my-2 my-lg-0">
@@ -150,12 +154,12 @@
                                                                     <select id="dialcode_select" name="phone"
                                                                         class="signup_custom country_code_form">
                                                                         <option value="+234">+234</option>
-                                                                        <option value="+91">+91</option>
-                                                                        <option value="+14">+14</option>
+{{--                                                                        <option value="+91">+91</option>--}}
+{{--                                                                        <option value="+14">+14</option>--}}
                                                                     </select>
                                                                 </div>
                                                                 <input type="tel" id="phoneNumber"
-                                                                    placeholder="8141894420" class="form-control"
+                                                                    placeholder="08141894420" class="form-control"
                                                                     style="border-left: 0px;"
                                                                     aria-label="Text input with dropdown button">
                                                                 <input type="hidden" name="phone" id="signup_phone" />
@@ -166,22 +170,22 @@
                                                         <div class="col-12 col-md my-2 my-lg-0">
                                                             <label for="scn" class="mb-0 pb-0">Dstv Smartcard
                                                                 Number</label>
-                                                            <input type="number" name=""
-                                                                placeholder="Enter smartcard number" id="scn"
+                                                            <input type="number" name="decoder" id="decoder" onchange="getCableUser()"
+                                                                placeholder="Enter smartcard number"
                                                                 class="form-control" />
                                                         </div>
                                                         <div class="col-12 col-md my-2 my-lg-0">
-                                                            <label for="email" class="mb-0 pb-0">Email Address</label>
-                                                            <input type="email" name="" id="email" class="form-control"
-                                                                placeholder="Email Address" />
+                                                            <label for="email" class="mb-0 pb-0">Owner's name</label>
+                                                            <input type="text" name="" readonly id="owner-name" class="form-control"
+                                                                placeholder="" />
                                                         </div>
                                                     </div>
 
                                                     <div class="row mt-lg-3">
                                                         <div class="col-12 col-md my-2 my-lg-0">
-                                                            <label for="amount" class="mb-0 pb-0">Amount</label>
-                                                            <input type="number" name="" placeholder="Enter amount"
-                                                                id="amount" class="form-control" />
+                                                            <label for="amount" class="mb-0 pb-0">Email</label>
+                                                            <input type="email" name="" placeholder="example@gmail.com"
+                                                                id="email" class="form-control" />
                                                         </div>
                                                         <div class="col-12 col-md my-2 my-lg-0">
                                                             <label for="pin" class="mb-0 pb-0">Pin</label>
@@ -192,6 +196,11 @@
                                                                 placeholder="Pin" />
                                                         </div>
                                                     </div>
+
+                                                    <input type="hidden" id="dec-productcode" name="productcode" value="{{$p->productcode}}" data-scid="{{$p->productcode}}">
+                                                    <input type="hidden" id="dec-billercode" name="billercode" value="{{$p->billercode}}" >
+                                                    <input type="hidden" id="dec-amount" name="amount" value="{{$p->price}}" >
+
                                                     <div class="d-flex justify-content-center mt-4 ">
                                                         <button type="submit" class="btn text-white px-lg-3" style="background: #000070;">Continue</button>
                                                     </div>

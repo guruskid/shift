@@ -14,9 +14,7 @@
                 <label for="amount" class="mb-0 pb-0" style="color: #000070;">Package</label>
                 <select class="custom-select" id="servicename" name="provider" onselect="getCableUser()">
                     <option selected onselect="getCableUser()">select one- monthly</option>
-                    @foreach ($providers as $p)
-                        <option value="{{$p->servicename}}" >{{$p->servicename}} - {{$p->price}}</option>
-                    @endforeach
+
                 </select>
             </div>
             <div class="col-12 col-md-8 mx-md-auto px-0 mx-0 px-lg-0 ml-lg-5 col-lg-5 mt-3">
@@ -35,9 +33,6 @@
 
             </div>
 
-            <input type="hidden" id="dec-productcode" name="productcode" value="{{$p->productcode}}" data-scid="{{$p->productcode}}">
-            <input type="hidden" id="dec-billercode" name="billercode" value="{{$p->billercode}}" >
-            <input type="hidden" id="dec-amount" name="amount" value="{{$p->price}}" >
 
             <div class="col-12 d-flex flex-wrap flex-md-nowrap justify-content-center align-items-center mt-3 mt-md-5 mb-md-5">
                 <button type="button" onclick="closeTab('cablesubscription_tab')" class="btn mb-3 mb-md-0 mr-md-2"

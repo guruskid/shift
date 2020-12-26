@@ -103,7 +103,7 @@ class BillsPaymentController extends Controller
 
         if ($body->responsecode == "00"){
             $providers = $body->billers;
-            return view('newpages.smartbudget', compact(['providers']));
+            return view('newpages.paytv', compact(['providers']));
         }
         else{
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
@@ -358,7 +358,7 @@ class BillsPaymentController extends Controller
     public function payElectricity(Request $r)
     {
         //uncommeting this line will make real transaction
-       // dd('hi,this app works,uncomment this line in the BillsPaymentcontroller');
+        dd('hi,this app works,uncomment this line in the BillsPaymentcontroller');
 
         $r->validate([
            // 'provider' => 'required',
