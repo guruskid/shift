@@ -125,9 +125,9 @@ Route::get('/paytv', function(){
     return view('newpages.paytv');
 });
 
-Route::get('/paybills', function(){
-    return view('newpages.paybills');
-});
+Route::get('/paybills','BillsPaymentController@electricityView')->name('newpages.paybills');
+   // return view('newpages.paybills');
+
 
 Route::get('/notifications', function(){
     return view('newpages.notifications');
@@ -252,7 +252,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     Route::get('/notifications', 'UserController@notifications')->name('user.notifications');
     // Route::post('/notifications', 'UserController@filtermonth')->name('filtermonth');
-    
+
     Route::POST('/notification-switch', 'UserController@notificationSetting');
 
     Route::get('/portfolio', 'PortfolioController@view')->name('user.portfolio');
@@ -275,7 +275,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/airtime-to-cash', 'BillsPaymentController@airtimeToCash')->name('user.airtime-to-cash');
     Route::get('/electricity', 'BillsPaymentController@electricityView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
-    Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');
+    Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.pay-electricity');
 
     /* Routes for the new calculator */
     Route::get('/assets/{asset_type?}', 'TradeController@assets')->name('user.assets');
