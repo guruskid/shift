@@ -8,6 +8,7 @@ use App\Card;
 use App\Events\NewTransaction;
 use App\Mail\DantownNotification;
 use App\Notification;
+use App\Setting;
 use App\Transaction;
 use App\User;
 use Illuminate\Http\Request;
@@ -36,10 +37,12 @@ class BitcoinWalletController extends Controller
         }
         $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_TESTNET);
         $fees = $fees_req->payload->recommended;
-        $charge = 0.000001;
+        $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
         $total_fees = $fees + $charge;
         return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'charge', 'total_fees'));
     }
+
+
 
 
     public function create(Request $r)
@@ -145,8 +148,8 @@ class BitcoinWalletController extends Controller
 
         $user_wallet = Auth::user()->bitcoinWallet;
         $primary_wallet = $user_wallet->primaryWallet;
-        $fees = $data['fees']; //get from API
-        $charge = 0.0000001; // Get from Admin
+        $fees = $data['fees']; 
+        $charge = Setting::where('name', 'bitcoin_charge')->first()->value;; // Get from Admin
         $total = $data['amount'] + $fees + $charge;
 
         //Check password

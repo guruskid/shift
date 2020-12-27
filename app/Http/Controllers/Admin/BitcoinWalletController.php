@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\BitcoinWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use RestApis\Blockchain\Constants;
@@ -28,12 +29,31 @@ class BitcoinWalletController extends Controller
     public function wallets()
     {
         $wallets = BitcoinWallet::latest()->get();
-        /* $result = $this->instance->walletApiBtcListWallets()->getHd(Constants::$BTC_TESTNET); */
-        /* $result = $this->instance->walletApiBtcDeleteWallet()->deleteHd(Constants::$BTC_TESTNET,'Dantown HD Wallet 1'); */
+        $bitcoin_charge = Setting::where('name', 'bitcoin_charge')->first();
 
-        /* dd($result);  */
+        return view('admin.bitcoin_wallet.wallets', compact(['wallets', 'bitcoin_charge']));
+    }
 
-        return view('admin.bitcoin_wallet.wallets', compact(['wallets']));
+
+    public function setCharge(Request $r)
+    {
+        $data = $r->validate([
+            'bitcoin_charge' => 'required',
+        ]);
+        $id = Setting::latest()->first()->id;
+        $id += 1;
+        $charge = Setting::updateorCreate(
+            [
+
+                'name' => 'bitcoin_charge',
+            ],
+            [
+                'id' => $id,
+                'value' => $data['bitcoin_charge']
+            ]
+        );
+
+        return back()->with(['success' => 'Bitcoin charge set successfully']);
     }
 
     public function createHdWallet(Request $r)
@@ -47,12 +67,12 @@ class BitcoinWalletController extends Controller
         if (!Hash::check($data['account_password'], Auth::user()->password)) {
             return back()->with(['error' => 'Wrong Account password']);
         }
-       $password = Hash::make($data['wallet_password']);
-       /*   $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_TESTNET, $data['name'], $password,1);
+        $password = Hash::make($data['wallet_password']);
+        /*   $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_TESTNET, $data['name'], $password,1);
         dd($result->payload->addresses[0]->path); */
 
         try {
-            $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_TESTNET, $data['name'], $password,1);
+            $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_TESTNET, $data['name'], $password, 1);
             $wallet = new BitcoinWallet();
             $address = $result->payload->addresses[0];
             $wallet->user_id = 1;
@@ -68,10 +88,9 @@ class BitcoinWalletController extends Controller
             $callback = route('user.wallet-webhook');
 
             $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
-
         } catch (\Throwable  $e) {
             report($e);
-            return back()->with(['error' => 'An error occured, please try again' ]);
+            return back()->with(['error' => 'An error occured, please try again']);
         }
         return back()->with(['success' => 'HD wallet created successfully']);
     }

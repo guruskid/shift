@@ -49,13 +49,27 @@
                         </div>
                         <div class="widget-subheading">
                             All Wallets <br>
+                            @if (in_array(Auth::user()->role, [999, 889]))
                             <button data-toggle="modal" data-target="#new-wallet-modal" class="btn btn-primary">Create HD Wallet</button>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="row">
+                <div class="col-md-5 mx-auto mb-3">
+                    <div class="card card-body">
+                        <h5>Bitcoin Settings</h5>
+                        <form action="{{ route('admin.set-bitcoin-charge') }}" method="POST" >@csrf
+                            <div class="form-group">
+                                <label for="">Send transaction fees</label>
+                                <input type="number" step="any" name="bitcoin_charge" value="{{ $bitcoin_charge->value ?? '' }}" class="form-control">
+                            </div>
+                            <button class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
                 <div class="col-md-12">
                     @foreach ($errors->all() as $err)
                     <p class="text-danger">{{ $err }}</p>
@@ -65,7 +79,6 @@
                             <div class="">
                                 Recent Bitcoin Wallets
                             </div>
-                           
                         </div>
                         <div class="table-responsive p-3">
                             <table class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
@@ -90,7 +103,7 @@
                                         <td >{{$wallet->address}}</td>
                                         <td >{{ $wallet->type }} </td>
                                         <td >{{$wallet->primaryWallet->name ?? ''}}</td>
-                                        <td >{{ $wallet->balance }} </td>
+                                        <td >{{ number_format((float)$wallet->balance, 8 ) }} </td>
                                         <td>
                                             <button class="btn btn-group">
                                                 <button class="btn btn-primary">View</button>
