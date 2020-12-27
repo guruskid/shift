@@ -38,7 +38,7 @@
                     <div class="col-12 col-md-10 mx-auto">
                         <span class="address_input_label">Address</span>
                         <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
-                            <input type="text" class="form-control" id="receipientAddress"
+                            <input type="text" class="form-control" id="receipientAddress" name="address"
                                 aria-label="Recipient's username" aria-describedby="basic-addon2">
                                 <input type="hidden" name="fees" value="{{ $fees }}" >
                             <div class="input-group-append">

@@ -77,6 +77,7 @@
                                             <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                         </div>
                                     </a>
+
                                     <div class="d-flex justify-content-center align-items-center"
                                         style="height:60px;box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);">
                                         <a class="mx-1 mx-lg-2 px-1" href="#">
@@ -104,6 +105,9 @@
 
                                 {{-- Bitcoin  menu  --}}
                                 <div class="walletpage__menu-container mx-auto mt-4">
+                                    @foreach ($errors->all() as $err)
+                                    <p class="text-danger">{{ $err }}</p>
+                                    @endforeach
                                     <div
                                         class="walletpage_menu d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
                                         <div class="mb-4 mb-lg-0">
