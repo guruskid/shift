@@ -23,10 +23,13 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                     @endforeach
                     <div class="mt-2 ">
                         <div class="form-group">
+                            <input type="text" name="username" required value="{{ Auth::user()->username ?? '' }}" placeholder="Username" class="form-control col-11 mx-auto mx-md-0 col-lg-8"  />
+                        </div>
+                        <div class="form-group">
                             <div class="input-group mb-0 number_inputgroup mx-auto mx-md-0 ">
                                 <div class="input-group-prepend"
                                     style="border: 1px solid rgba(0, 0, 112, 0.25);border-right:0px;border-top-left-radius:5px;border-bottom-left-radius:5px;">
-                                    <select name="country_id" id="country-id" class="form-control">
+                                    <select name="country_id" id="country-id" class="form-control border-0">
                                         <option value="156">+234 (NG)</option>
                                         @foreach ($countries as $country)
                                             <option value="{{ $country->id }}">+{{ $country->phonecode }} ({{ $country->iso }})</option>
@@ -40,7 +43,6 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                         </div>
                         <div class="form-group">
                             <input type="text" name="otp" placeholder="Phone OTP Code" class="form-control col-11 mx-auto mx-md-0 col-lg-8"  />
-
                         </div>
                         <button id="sign-up-btn"  class="btn text-white col-11 signup_first_step col-lg-8 mt-4"
                             style="background: #000070;border-radius: 5px;">Verify</button>

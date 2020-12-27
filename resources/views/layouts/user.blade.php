@@ -172,7 +172,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                                             <div class="col  ml-2 header-user-info">
                                                 <div class="widget-heading text-custom">
                                                     @auth
-                                                    {{Auth::user()->first_name}}
+                                                    {{Auth::user()->username ?? ''}}
                                                     @endauth
                                                 </div>
                                                 <div class="widget-subheading text-dark">

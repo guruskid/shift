@@ -34,7 +34,11 @@ class BitcoinWalletController extends Controller
         }else{
             $transactions = Auth::user()->bitcoinWallet->transactions()->paginate(5);
         }
-        return view('newpages.bitcoin-wallet', compact('transactions'));
+        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_TESTNET);
+        $fees = $fees_req->payload->recommended;
+        $charge = 0.000001;
+        $total_fees = $fees + $charge;
+        return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'charge', 'total_fees'));
     }
 
 
@@ -133,6 +137,7 @@ class BitcoinWalletController extends Controller
             'amount' => 'required|numeric',
             'address' => 'required|string',
             'pin' => 'required',
+            'fees' => 'required',
         ]);
         if (!Auth::user()->bitcoinWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
@@ -140,7 +145,7 @@ class BitcoinWalletController extends Controller
 
         $user_wallet = Auth::user()->bitcoinWallet;
         $primary_wallet = $user_wallet->primaryWallet;
-        $fees = 0.00001; //get from API
+        $fees = $data['fees']; //get from API
         $charge = 0.0000001; // Get from Admin
         $total = $data['amount'] + $fees + $charge;
 

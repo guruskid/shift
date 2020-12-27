@@ -25,14 +25,14 @@
                             <label for="" class="networkfee_text">Network fee</label>
                             <select class="custom-select" style="height: 42px;border-radius:0px;">
                                 <option selected>Network fee</option>
-                                <option value="1">Regular</option>
+                                {{-- <option value="1">Regular</option> --}}
                             </select>
                         </div>
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end btctext">0.0000001 BTC</span>
-                            <span class="d-block align-self-end customfee">Customize Fee</span>
+                            <span class="d-block align-self-end btctext">{{ number_format((float)$total_fees, 8) }} BTC</span>
+                            <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>
                     <div class="col-12 col-md-10 mx-auto">
@@ -40,6 +40,7 @@
                         <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
                             <input type="text" class="form-control" id="receipientAddress"
                                 aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                <input type="hidden" name="fees" value="{{ $fees }}" >
                             <div class="input-group-append">
                                 <span class="input-group-text" onclick="copywalletaddress('receipientAddress')"
                                     style="cursor:pointer;background: #000070;" id="basic-addon2"><svg width="17"

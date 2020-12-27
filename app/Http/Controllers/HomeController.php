@@ -127,7 +127,8 @@ class HomeController extends Controller
     {
         $data = $r->validate([
             'phone' => 'required',
-            'otp' => 'required'
+            'otp' => 'required',
+            'username' => 'required|string',
         ]);
 
         try {
@@ -152,6 +153,7 @@ class HomeController extends Controller
         }
 
         Auth::user()->phone_verified_at = now();
+        Auth::user()->username = $data['username'];
         Auth::user()->save();
 
         return redirect()->route('user.dashboard');
