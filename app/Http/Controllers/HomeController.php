@@ -246,6 +246,9 @@ class HomeController extends Controller
         }
 
         if ($err == 0) {
+            $request->validate([
+                'account_number' => 'required|unique:accounts,account_number'
+            ]);
             $a = new Account();
             $a->user_id = Auth::user()->id;
             $a->account_name = $request->account_name;

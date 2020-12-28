@@ -38,11 +38,19 @@ $not = $notifications->last();
         </div>
         {{-- User Side bar --}}
         @include('layouts.partials.user')
-
     </div>
     <div class="app-main__outer">
         <div class="app-main__inner">
             <div class="row">
+                @if (Auth::user()->nairaWallet->status == 'paused')
+                <div class="col-md-12 mb-3">
+                    <div class="alert text-white alert-dismissible" style="background: #f51109 url('/user_assets/images/goup.png') repeat center; background-size: full">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>Froozen account</strong>
+                         <p>Sorry, your Naira wallet is currently froozen, please contact the support for more info about yout account</p>
+                    </div>
+                </div>
+                @endif
                 @foreach ($notifications as $item)
                 <div class="col-md-12 mb-3">
                     <div class="alert text-white alert-dismissible" style="background: #000070 url('/user_assets/images/group.png') repeat center; background-size: full">

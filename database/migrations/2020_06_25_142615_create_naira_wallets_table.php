@@ -23,6 +23,7 @@ class CreateNairaWalletsTable extends Migration
             $table->integer('amount');
             $table->string('password');
             $table->string('amount_control');
+            $table->enum('status', ['active', 'paused'])->default('active');
             $table->timestamps();
         });
     }
