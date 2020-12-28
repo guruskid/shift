@@ -116,7 +116,8 @@ function sendOtp() {
             }
         })
 
-        .fail(function (res) {
+        .fail(function (xhr, err, status) {
+            console.log(xhr, err, status);
             swal('An error occured, please try again');
         })
 }

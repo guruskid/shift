@@ -207,8 +207,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                                                 <div class="dropdown">
                                                     <a data-toggle="dropdown" class="p-0 btn">
                                                         <img width="35" class="rounded-circle"
-                                                            src="{{asset('storage/avatar/'.Auth::user()->dp)}} "
-                                                            alt="DP">
+                                                            src="{{asset('storage/avatar/'.Auth::user()->dp)}} " >
                                                         {{-- <i class="fa fa-angle-down ml-2 opacity-8"></i> --}}
                                                     </a>
                                                     <div tabindex="-1" role="menu" aria-hidden="true"

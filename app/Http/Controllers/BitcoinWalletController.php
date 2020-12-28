@@ -37,7 +37,12 @@ class BitcoinWalletController extends Controller
         }
         $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_TESTNET);
         $fees = $fees_req->payload->recommended;
-        $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
+        $charge = Setting::where('name', 'bitcoin_charge')->first();
+        if (!$charge) {
+            $charge = 0;
+        }else{
+            $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
+        }
         $total_fees = $fees + $charge;
         return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'charge', 'total_fees'));
     }
@@ -148,7 +153,7 @@ class BitcoinWalletController extends Controller
 
         $user_wallet = Auth::user()->bitcoinWallet;
         $primary_wallet = $user_wallet->primaryWallet;
-        $fees = $data['fees']; 
+        $fees = $data['fees'];
         $charge = Setting::where('name', 'bitcoin_charge')->first()->value;; // Get from Admin
         $total = $data['amount'] + $fees + $charge;
 
