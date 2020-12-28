@@ -1,8 +1,10 @@
 <?php
 
+use App\Jobs\RegistrationEmailJob;
 use App\Mail\UserRegistered;
 use App\NairaTransaction;
 use Illuminate\Support\Facades\Mail;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -19,36 +21,216 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('mailable', function () {
-    Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
+//Done
+Route::get('/etherwallet', function () {
+    return view('newpages.ethereumwallet');
+});
+
+
+Route::get('/tetherwallet', function () {
+    return view('newpages.tetherwallet');
+});
+
+
+
+// Route::get('/newlandingpage', function () {
+//     return view('newpages.newlandingpage');
+// });
+
+// Route::get('/faq', function () {
+//     return view('newpages.faq');
+// });
+
+// Route::get('/about-us', function () {
+//     return view('newpages.about');
+// });
+
+// Route::get('/terms-conditions', function () {
+//     return view('newpages.terms-conditions');
+// });
+
+//Done
+Route::get('/etherwallet', function () {
+    return view('newpages.ethereumwallet');
+});
+
+
+Route::get('/tetherwallet', function () {
+    return view('newpages.tetherwallet');
+});
+
+
+
+// Route::get('/showcards', function () {
+//     return view('newpages.cards');
+// });
+/*
+Route::get('/cardcalculator', function () {
+    return view('newpages.cardcalculator');
+}); */
+/*
+Route::get('/transaction', function () {
+    return view('newpages.Transactionscreen');
+}); */
+
+/* Route::get('/bitcoin', function () {
+    return view('newpages.bitcoin');
+});
+
+Route::get('/ethereum', function () {
+    return view('newpages.ethereumscreen');
+}); */
+
+Route::get('/airtocash', function () {
+    return view('newpages.airtimetocash');
+});
+
+
+//Mobile done
+Route::get('/newprofile', function () {
+    return view('newpages.profile');
+});
+
+//mobile and web done
+/* Route::get('/btc-transaction', function(){
+    return view('newpages.btc_payment_transaction');
+}); */
+
+//mobile and web done
+Route::get('/btc-transaction-hash', function(){
+    return view('newpages.btc_payment_transaction2');
+});
+
+
+
+// Route::get('/transactions', function(){
+//     return view('newpages.btc_payment_transaction2');
+// });
+
+/* Route::get('/newdashboard', function () {
+    return view('newpages.dashboard');
+});
+Route::get('/creditsuccess', function () {
+    return view('newpages.creditsuccess');
+});
+Route::get('/creditfailure', function () {
+    return view('newpages.creditfailure');
+}); */
+
+// mobile and tab screen done
+Route::get('/smartbudget', function () {
+    return view('newpages.smartbudget');
+});
+
+Route::get('/paytv', function(){
+    return view('newpages.paytv');
+});
+
+Route::get('/paybills', function(){
+    return view('newpages.paybills');
+});
+
+Route::get('/notifications', function(){
+    return view('newpages.notifications');
+});
+
+//Mobile and tab done
+/* Route::get('/choosewallet', function () {
+    return view('newpages.choosewallet');
+}); */
+
+//Mobile and tab screen done
+/* Route::get('/walletpage', function () {
+    return view('newpages.bitcoin-wallet');
+}); */
+
+//Mobile and tab done
+//  Route::get('/nairawalletmain', function () {
+//     return view('newpages.nairawallet');
+// });
+
+// Route::get('/nairawalletdtodconfirm', function () {
+//     return view('newpages.nairawalletdtodconfirm');
+// });
+
+//Mobile and tab screen done
+Route::get('/recharge', function () {
+    return view('newpages.rechargemenu');
+});
+
+//Mobile and Tab done
+Route::get('/buyairtime', function () {
+    return view('newpages.buyairtime');
+});
+
+//Mobile and tab done
+Route::get('/buydata', function () {
+    return view('newpages.buydata');
+});
+
+//mobile and tab done
+Route::get('/newlogin', function () {
+    return view('newpages.newlogin');
+});
+
+//mobile and tab done
+Route::get('/newsignup', function () {
+    return view('newpages.newsignup');
+});
+
+
+/*
+//Mobile and desktop done
+Route::get('/all-transactions', function(){
+    return view('newpages.all-transactions');
+}); */
+
+
+
+
+
+
+
+
+
+
+
+
+
+Route::get('test', function () {
+    /* $emailJob = (); */
+        dispatch(new RegistrationEmailJob('shean@gmail.com'));
+    /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() ); */
     /* $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
     return new App\Mail\WalletAlert($txn, 'Debit'); */
 });
+
+Route::get('/tested', 'HomeController@test')->name('tested');
 
 
 Auth::routes(['verify' => true]);
 Route::get('/', 'HomeController@index')->name('welcome');
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
-Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.add-bank');
+
+
+//Registration and verification routes
+Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
+    Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.add-bank');
+    Route::get('/verify-phone-number', 'HomeController@phoneVerification')->name('user.verify-phone');
+    Route::get('/resend-otp', 'HomeController@resendOtp');
+
+    //old users
+    Route::get('/send-otp/{phone}/{country_id}', 'HomeController@sendOtp');
+    Route::post('/verify-phone', 'HomeController@verifyPhone')->name('user.verify-phone-number');
+});
 
 Route::view('/disabled', 'disabled')->name('disabled');
-
-Route::get('/message/{id}', 'MessageController@index')->name('message');
-Route::get('/read-messages/{id}', 'MessageController@read')->name('message');
-/* Route::post('/message', 'MessageController@store')->name('message.store'); */
-Route::post('/pop', 'MessageController@pop')->name('message.pop');
-Route::get('/conversation-details/{id}', 'MessageController@convDetails');
-
-Route::get('/inbox', 'ChatController@inbox')->name('admin.inbox');
-Route::get('/agents', 'ChatController@agents');
 
 /* Upload Transaction image */
 Route::post('/transacion-image', 'PopController@add')->name('transaction.add-image');
 
 /* Add Admin middleware */
-Route::get('/user-details/{id}', 'ChatController@userDetails');
-Route::get('/user-transactions/{id}', 'ChatController@userTransactions');
 Route::post('/get-bank-details', 'NairaWalletController@acctDetails');
 
 /* Callbacks */
@@ -56,13 +238,12 @@ Route::post('/naira/recieve-funds-dhfhshd', 'NairaWalletController@callback')->n
 Route::post('/naira/recharge/dhfhd-q23-nfnd-dnf', 'BillsPaymentController@rechargeCallback')->name('recharge-card.callback');
 Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@electricityCallback')->name('electricity.callback');
 
+/* Bitcoin Wallet Callback */
+Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
+
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
+
     /* ajax calls */
-    Route::get('/get-card/{card}', 'UserController@getCard');
-    Route::get('/get-country/{card}', 'UserController@getCountry');
-    Route::get('/get-type/{card}', 'UserController@getType');
-    Route::get('/get-wallet-id/{card}', 'UserController@getWalletId');
-    Route::POST('/get-rate', 'UserController@getRate')->name('rate');
     Route::POST('/add_transaction', 'UserController@addTransaction');
     /* Profile Ajax functions */
     Route::post('update-profile', "UserController@updateProfile");
@@ -73,11 +254,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     /* ajax ends here */
 
     Route::get('/', 'UserController@dashboard')->name('user.dashboard');
-    Route::get('/calculator', 'UserController@calculator')->name('user.calculator');
-    Route::get('/calculator/crypto', 'UserController@calcCrypto')->name('user.calcCrypto');
-    Route::get('/calculator/gift-card', 'UserController@calcCard')->name('user.calcCard');
     Route::get('/rates', 'UserController@rates')->name('user.rates');
-    Route::view('account', 'user.profile')->name('user.profile');
+    Route::view('account', 'newpages.profile')->name('user.profile');
     Route::POST('/account', 'UserController@updateProfile')->name('user.update_profile');
     Route::POST('/id_card', 'UserController@idcard')->name('user.idcard');
     Route::get('/transactions', 'UserController@transactions')->name('user.transactions');
@@ -87,11 +265,11 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::POST('/profile-picture', 'UserController@profilePicture')->name('user.dp');
     Route::POST('/user-bank-details', 'UserController@updateBankDetails')->name('user.update_bank_details');
     Route::get('/view-transaction/{id}/{uid}', 'UserController@viewTransac')->name('user.view-transaction');
-    Route::get('/notifications', 'UserController@notifications')->name('user.notifications');
-    Route::POST('/notification-switch', 'UserController@notificationSetting');
 
-   /*  Route::get('/chat', 'UserController@chat')->name('user.chat');
-    Route::get('/chat/{id}', 'UserController@chat'); */
+    Route::get('/notifications', 'UserController@notifications')->name('user.notifications');
+    // Route::post('/notifications', 'UserController@filtermonth')->name('filtermonth');
+
+    Route::POST('/notification-switch', 'UserController@notificationSetting');
 
     Route::get('/portfolio', 'PortfolioController@view')->name('user.portfolio');
     Route::get('/wallet', 'PortfolioController@nairaWallet')->name('user.naira-wallet')->middleware('verified');
@@ -102,31 +280,48 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::get('/pay-bills', 'BillsPaymentController@view')->name('user.bills');
     Route::post('/get-dec-user', 'BillsPaymentController@getUser');
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
-    Route::get('/paytv', 'BillsPaymentController@paytvView')->name('user.paytv');
+    // Route::view('/paytv', 'newpages.smartbudget')->name('user.paytv');
+    Route::get('/paytv', 'BillsPaymentController@CableView')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@paytv')->name('user.paytv');
-    Route::view('/recharge', 'user.recharge')->name('user.recharge');
+    Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge');
     Route::post('/airtime', 'BillsPaymentController@airtime')->name('user.airtime');
+    Route::view('/data', 'newpages.buydata')->name('user.data');
     Route::view('/discounted-airtime', 'user.discount_airtime')->name('user.discount-airtime');
+    Route::view('/airtime-to-cash', 'newpages.airtimetocash')->name('user.airtime-to-cash');
+    Route::post('/airtime-to-cash', 'BillsPaymentController@airtimeToCash')->name('user.airtime-to-cash');
     Route::get('/electricity', 'BillsPaymentController@electricityView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.electricity');
 
-    /* Route::get('/banklist', 'NairaWalletController@banklist')->name('user.banklist'); */
+    /* Routes for the new calculator */
+    Route::get('/assets/{asset_type?}', 'TradeController@assets')->name('user.assets');
+    Route::get('/trade/{trade_type}/{card_id}/{card_name}', 'TradeController@assetRates')->name('user.asset.rate');
+    Route::view('/gift-card-calculator', 'user.gift_card_calculator');
+    Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
+    Route::post('/trade-crypto', 'TradeController@tradeCrypto')->name('user.trade-crypto');
+
+    /* Bitcooin  */
+    Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
+    Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
+    Route::get('/bitcoin-wallet', 'BitcoinWalletController@wallet')->name('user.bitcoin-wallet');
+    Route::post('/send-bitcoin', 'BitcoinWalletController@send')->name('user.send-bitcoin');
+
+
 });
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function () {
-     /* ajax calls */
-     Route::GET('/get-user/{email}', 'AdminController@getUser');
-     Route::GET('/get-rate/{id}', 'AdminController@getRate');
-     Route::GET('/get-transac/{id}', 'AdminController@getTransac');
-     Route::GET('/get-card/{id}', 'AdminController@getCard');
-     Route::GET('/get-notification/{id}', 'AdminController@getNotification');
-     Route::GET('/update-transaction/{id}/{status}', 'AdminController@updateTransaction');  //to accept or decline a new transaction
+    /* ajax calls */
+    Route::GET('/get-user/{email}', 'AdminController@getUser');
+    Route::GET('/get-rate/{id}', 'AdminController@getRate');
+    Route::GET('/get-transac/{id}', 'AdminController@getTransac');
+    Route::GET('/get-card/{id}', 'AdminController@getCard');
+    Route::GET('/get-notification/{id}', 'AdminController@getNotification');
+    Route::GET('/update-transaction/{id}/{status}', 'AdminController@updateTransaction');  //to accept or decline a new transaction
 
     /* ajax ends here */
     Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
-    Route::get('/rates', 'AdminController@rates')->name('admin.rates');
+
 
     Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
     Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
@@ -140,13 +335,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
-
 });
 
 /* For Super Admins Only */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ], function () {
     Route::post('/cards', 'AdminController@addCard' )->name('admin.add_card');
-    Route::post('/edit-card', 'AdminController@editCard' )->name('admin.edit_card');
+
 
     Route::post('/transactions', 'AdminController@addTransaction' )->name('admin.add_transaction');
     Route::GET('/delete-transaction/{id}', 'AdminController@deleteTransac');
@@ -169,11 +363,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::post('/search', 'AdminController@searchUser' )->name('admin.search');
 });
 
-/* Manager */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
-    Route::post('/edit-rate', 'AdminController@editRate' )->name('admin.edit_rate');
-    Route::post('/rates', 'AdminController@addRate' )->name('admin.add_rate');
-    Route::GET('/delete-rate/{id}', 'AdminController@deleteRate');
 
 
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
@@ -192,13 +382,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant'] 
 
     Route::get('/query-transaction/{id}', 'NairaWalletController@query' )->name('admin.query-transaction');
     Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus' )->name('admin.update-naira-transaction');
-
-
 });
 
 /* for super admin and all accountants */
 Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountant'] ], function () {
-    Route::post('/admin-transfer', 'NairaWalletController@adminTransfer' )->name('admin.transfer');
+
     Route::post('/admin-refund', 'NairaWalletController@adminRefund' )->name('admin.refund');
     Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
     Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');
@@ -219,4 +407,5 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
 Route::group(['prefix' => 'db'], function () {
     Route::GET('/function', 'DatabaseController@transactions');
 });
+
 

@@ -1,0 +1,2002 @@
+body {
+    font-family: "Quicksand" !important;
+    overflow-x: hidden !important;
+}
+.notification {
+    background-color: #000070;
+    color: #fff;
+    height: 38px;
+    width: 38px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 14px;
+    position: relative;
+    border-radius: 15px;
+    top: -10px;
+    left: 38px;
+    padding: 2px;
+}
+.menu-categories span {
+    color: white;
+}
+.primary-color {
+    color: #000070;
+}
+.menu-categories .menu.active span {
+    color: #000070 !important;
+}
+.list-cards-title {
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 50px;
+}
+.search-giftcard {
+    background: rgba(214, 214, 224, 0.459);
+    color: #fff;
+    border-radius: 30px;
+}
+.list-cards-search .search-icon,
+.list-cards-search .giftcard.search-icon {
+    position: absolute;
+    right: 14.4em;
+    /* top: 2.8em; */
+    top: 2.4em;
+}
+.card-type__sell-card,
+.card-type__sell-card:hover {
+    background-color: #000070;
+    color: #ffffff;
+    border-radius: 25px;
+    padding: 2px 22px;
+}
+.card-type__buy-card {
+    border: 1px solid #000070;
+    box-sizing: border-box;
+    border-radius: 25px;
+    padding: 2px 22px;
+}
+.walletbalance-text {
+    color: rgba(0, 0, 112, 0.75);
+    opacity: 0.5;
+}
+.price {
+    color: rgba(0, 0, 112, 0.75);
+    font-size: 30px;
+    font-style: normal;
+}
+.select-country-custom-select {
+    width: 85%;
+    height: 35px;
+    opacity: 0.25;
+    border: 1px solid #000070;
+    border-radius: 5px;
+}
+.select-card-add-button {
+    background: #000070;
+    border-radius: 5px;
+    border: 0;
+    color: #ffffff;
+    width: 110px;
+    padding: 5px 0;
+}
+.transaction-title {
+    color: rgba(0, 0, 112, 0.75);
+    font-size: 18px;
+    font-weight: 500;
+}
+.transaction-subtitle {
+    font-size: 12px;
+    color: rgba(0, 0, 112, 0.75);
+    opacity: 0.7;
+}
+.transaction-title_bottomborder {
+    border: 1px solid #efeff8;
+    width: 98%;
+    height: 0px;
+}
+.table_card_title th {
+    font-size: 14px !important;
+    text-align: center !important;
+}
+.decrement-icon,
+.increment-icon {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background: #000070;
+}
+.price-percard-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 0, 112, 0.75);
+}
+.price-percard_display {
+    font-size: 18px;
+    color: #000070;
+    opacity: 0.7;
+}
+.label-style {
+    color: rgba(0, 0, 112, 0.75);
+    font-size: 14px;
+    line-height: 10px;
+    font-weight: 500;
+}
+.allcards-container {
+    box-sizing: border-box;
+    border: 1px solid #c9ced6;
+    border-radius: 10px;
+    width: 100%;
+    height: 320px;
+    padding: 0px 5px;
+}
+.allcards-container .table-borderless thead tr th {
+    color: rgba(0, 0, 112, 0.75);
+    opacity: 0.5;
+    font-size: 10px;
+}
+.gradient-text {
+    color: rgba(0, 0, 112, 0.75);
+    line-height: 30px;
+    font-size: 16px;
+}
+.proceed-button {
+    width: 120px;
+    color: #fff;
+    font-size: 16px;
+    background: linear-gradient(180deg, #000070 10%, #5c23ba 100%);
+    border-radius: 5px;
+}
+.card-upload-btn {
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    font-size: 18px;
+    width: 180px;
+    background: linear-gradient(180deg, #000070 0%, #240070 100%);
+    border-radius: 30px;
+    margin: auto 35%;
+}
+.thumb {
+    width: 120px;
+    height: 100px;
+}
+
+.zoom {
+    transition: transform 0.2s; /* Animation */
+}
+
+.zoom:hover {
+    position: relative;
+    top: -230px;
+    width: 480px;
+    height: 320px;
+    transform: scale(
+        1.5
+    ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+.removeitem {
+    cursor: pointer;
+}
+.button-modal {
+    display: none;
+}
+.modal-dialog-custom {
+    width: 50vw;
+    margin: 90px 25%;
+}
+.modal-content-custom {
+    width: 50vw;
+}
+.dashed-border {
+    width: 80%;
+    border: 1px dashed #000000;
+    border-radius: 5px;
+    margin: 0;
+    padding: 0;
+}
+.previewImg {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: #fff !important;
+    box-shadow: none !important;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+.buy-sell-title {
+    /* width: 300px;
+    height: 40px;
+    border: 1px solid rgba(0, 0, 112, 0.2);
+    border-radius: 30px; */
+    width: 250px;
+    height: 40px;
+    border: 1px solid rgba(0, 0, 112, 0.2);
+    border-radius: 25px;
+}
+.buy-sell-title .active-title-item {
+    background: #000070;
+    text-align: center;
+    box-shadow: -2px 0px 2px rgba(0, 0, 112, 0.3);
+    border-radius: 25px;
+}
+.bitcoin-input-radius {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-radius: 30px;
+}
+.bitcoin-input-radius {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.full-input-radius {
+    border-radius: 5px;
+    border-radius: 25px;
+    outline: none !important;
+    box-shadow: none !important;
+}
+.label_text {
+    color: rgba(0, 0, 112, 0.75);
+}
+.calculator_form {
+    width: 460px;
+}
+.network_cards {
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.network_card_container {
+    width: 600px;
+}
+.list_all_cards {
+    height: 110px;
+    width: 350px;
+    box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);
+    border-radius: 10px;
+}
+.list_all_cards .sell_button {
+    border: 1px solid rgba(0, 0, 112, 0.8);
+    background: rgba(0, 0, 112, 0.8);
+    border-radius: 25px;
+}
+.list_all_cards .buy_button {
+    border: 1px solid #000070;
+    box-sizing: border-box;
+    border-radius: 25px;
+}
+.input-group-text.input_label {
+    background-color: #fff;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.bitcoin_calculator_btn {
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    background: #000070;
+    border-radius: 5px;
+    height: 40px;
+}
+
+/* New profile page css code */
+.profile_card_content {
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.07);
+    border-radius: 10px;
+    padding: 0px;
+}
+.shadow_bg {
+    margin-top: 70px;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 112, 0.07) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    height: 60px;
+    width: 100%;
+}
+.profile_root_container {
+    height: 640px;
+    /* max-height: 650px; */
+}
+.profile_image_root_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.07);
+    border-radius: 7px;
+    margin-left: 30px;
+    height: 490px;
+    margin-top: 35px;
+    /* height:500px; */
+}
+.profile_image_root_container .profile_image {
+    height: 140px;
+    width: 140px;
+    border: 1px;
+    border-radius: 70px;
+}
+.profile_image_container {
+    position: relative;
+    top: -100px;
+}
+.camera_button {
+    cursor: pointer;
+    background: #2b2b84;
+    height: 40px;
+    width: 40px;
+    border: 1px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: -30px;
+    left: 97px;
+}
+.wallet_balance_section {
+    position: relative;
+    top: -100px;
+    background: rgba(0, 0, 112, 0.75) !important;
+    width: 220px;
+    color: #fff;
+    text-transform: uppercase;
+}
+.profile_image_root_container .btc_wallet_balance,
+.profile_image_root_container .eth_wallet_balance {
+    background: #fff;
+    width: 180px;
+    max-width: 190px;
+    height: 60px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+.profile_details .nav-tabs .active {
+    border-radius: 0;
+    margin: 0;
+    padding: 0px;
+    background: linear-gradient(180deg, #000070 0%, #2146c7 100%) !important;
+}
+.profile_details .nav-tabs .active:hover {
+    color: #fff !important;
+}
+.user_profile_text {
+    color: rgba(0, 0, 112, 0.75);
+    font-size: 16.5px;
+    line-height: 29px;
+    letter-spacing: 0.01em;
+}
+.profile_verification_status_text {
+    border: 1px;
+    border-radius: 80px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #ff001f;
+    width: 180px;
+}
+.profile_details_col {
+    height: 70px;
+    width: 100%;
+    color: rgba(0, 0, 112, 0.75);
+}
+.profile_select_bank {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(0, 0, 112, 0.75);
+}
+.upload_id_column {
+    background: #00b9cd;
+    border-radius: 10px;
+    color: #fff;
+    height: 65px;
+}
+.upload_id_column .upload_id_text {
+    border: 1px solid #fff;
+    border-radius: 30px;
+    background: #fff;
+    color: #000070;
+    width: 160px;
+}
+.wallet_balance_section .labelText {
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.wallet_balance_section .details {
+    background-color: #fff;
+    border-radius: 80px;
+    width: 180px;
+    height: 35px;
+    color: rgba(0, 0, 112, 0.75);
+    line-height: 24px;
+    letter-spacing: 0.01em;
+    font-weight: 600;
+}
+.changepassword_text {
+    color: rgba(0, 0, 112, 0.75);
+    letter-spacing: 0.01em;
+    font-size: 16px;
+    font-weight: 600;
+}
+.changePasswordLabelText {
+    letter-spacing: 0.01em;
+    color: rgba(0, 0, 112, 0.6);
+    margin-bottom: 0px;
+    padding: 0px;
+}
+.form-control {
+    outline: none !important;
+    box-shadow: none !important;
+}
+.card-price-input {
+    position: relative;
+    left: -45px;
+}
+.card-qty-input {
+    position: relative;
+    right: -18px;
+}
+.increment-icon-sizing {
+    position: relative;
+    left: -15px;
+}
+.price-per-card-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(0, 0, 112, 0.75);
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+    color: #fff;
+    border-color: #c9ced6;
+    background-color: #c9ced6;
+}
+.custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+    background-color: #000070 !important;
+    transform: translateX(0.75rem);
+}
+input {
+    box-shadow: none !important;
+    outline: none !important;
+}
+.custom-switch .custom-control-label::before {
+    width: 31px;
+    background-color: #c9ced6;
+}
+.custom-switch .custom-control-label::after {
+    top: 2px;
+    left: -35px;
+    width: 18px;
+    height: 18px;
+    background-color: #000070;
+    border-radius: 0.5rem;
+    transition: transform 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+.notifications-container {
+    margin-top: 60px;
+    width: 520px;
+    box-shadow: 0px 4px 10px rgba(239, 239, 248, 0.5);
+    border-radius: 10px;
+}
+.transaction-sms-notification {
+    color: #000070;
+    font-size: 18px;
+    line-height: 25px;
+    position: relative;
+    right: 100px;
+}
+.transaction-email-alert {
+    color: #000070;
+    font-size: 18px;
+    line-height: 25px;
+    position: relative;
+    right: 122px;
+}
+.transaction-sms-notification2 {
+    color: #000070;
+    font-size: 18px;
+    line-height: 25px;
+    position: relative;
+    right: 100px;
+}
+.transaction-email-alert2 {
+    color: #000070;
+    font-size: 18px;
+    line-height: 25px;
+    position: relative;
+    right: 122px;
+}
+.accordion_cards {
+    cursor: pointer;
+    height: 70px;
+    width: 350px;
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+    border-radius: 8px;
+    color: #000070;
+    font-size: 16px;
+    line-height: 20px;
+}
+.accordion_arrow_rotate {
+    transform: rotate(-180deg);
+    -webkit-transform: rotate(-180deg);
+    -ms-transform: rotate(-180deg);
+    transition: transform 0.5s;
+}
+.accordion_arrow_return {
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transition: transform 0.5s;
+}
+.select_dial_code {
+    outline: none !important;
+    box-shadow: 0px !important;
+    border-radius: 5px;
+    height: 40px;
+    /* width: 30px; */
+    border-right: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.dial_code_input {
+    outline: none !important;
+    box-shadow: 0px !important;
+    border-radius: 5px;
+    height: 40px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.otp_code_input {
+    outline: none !important;
+    box-shadow: 0px !important;
+    border-radius: 5px;
+    height: 40px;
+    /* width:185px !important; */
+}
+.input-group-prepend,
+.custom-select {
+    outline: none !important;
+    box-shadow: none !important;
+    outline-style: none !important;
+}
+.address_verification_labelText {
+    color: #000070;
+    width: 80%;
+    font-size: 14px;
+}
+.upload_address_photo {
+    cursor: pointer;
+    border: 0.5px dashed #676b87;
+    border-radius: 5px;
+    width: 175px;
+    height: 70px;
+}
+.select_id_type_dropdown,
+.select_id_type_dropdown:hover,
+.select_id_type_dropdown:focus,
+.select_id_type_dropdown:visited {
+    width: 95%;
+    height: 45px;
+    background-color: #fff;
+    border: 0.5px solid #676b87;
+    color: rgba(0, 0, 112, 0.7);
+    font-size: 14px;
+    line-height: 17px;
+}
+.btn-secondary:not(:disabled):not(.disabled):active,
+.btn-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-secondary.dropdown-toggle {
+    color: rgba(0, 0, 112, 0.7);
+    background-color: #fff !important;
+    border: 0.5px solid #676b87 !important;
+}
+#bvnVerification .dropdown-menu.show {
+    width: 95%;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+}
+.front_photo_card_box {
+    cursor: pointer;
+    border: 0.5px dashed #676b87;
+    border-radius: 5px;
+    width: 110px;
+}
+.front_photo_card_text {
+    color: #000070;
+    font-size: 10px;
+    letter-spacing: 0.01em;
+    font-weight: 300;
+}
+/* New profile page css code ends here */
+
+/*New Dashboard CSS starts */
+
+.user_dashboard_container .card {
+    border-radius: 20px;
+    padding: 4%;
+    padding-bottom: 1%;
+    background-color: white;
+    margin: 0px;
+}
+
+.user_dashboard_container img {
+    width: 80%;
+    height: 80%;
+    padding-bottom: 0px;
+    align-items: end;
+}
+
+.user_dashboard_container h5 {
+    font-size: 50px;
+}
+
+.user_dashboard_container h4 {
+    font-size: 16px;
+}
+
+.user_dashboard_container #heat {
+    width: 50%;
+    height: 50%;
+    margin: auto;
+}
+
+.user_dashboard_container col {
+    border: 0px;
+}
+
+.user_dashboard_container #line {
+    border: 0px;
+}
+
+.user_dashboard_container #description {
+    font-size: 10px;
+    color: #676b87;
+    margin: 0px;
+    padding: 0px;
+    margin-top: -10px;
+}
+
+.user_dashboard_container h3 {
+    font-size: 24px;
+    font-weight: bolder;
+    color: black;
+}
+
+.user_dashboard_container button {
+    background-color: #000070;
+    border: 0px;
+    color: white;
+    border-radius: 25px;
+    padding: 7px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 10px;
+}
+
+.user_dashboard_container table {
+    background-color: white;
+    border-radius: 20px;
+    color: #000070;
+    font-size: 13px;
+}
+
+.user_dashboard_container #headingtab {
+    color: #000070;
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.asset_card_container {
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+    border-radius: 10px;
+    width: 180px;
+    height: 220px;
+}
+.asset_card_title {
+    color: #000070;
+    font-size: 16px;
+}
+.asset_card_description {
+    color: #676b87;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.user_dashboard_container table {
+    background-color: white;
+    border-radius: 20px;
+    color: #000070;
+    font-size: 13px;
+}
+
+.user_dashboard_container #headingtab {
+    color: #000070;
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+.user_dashboard_container #descript {
+    font-size: 10px;
+}
+.transaction_content {
+    font-weight: bold;
+    font-size: 14px;
+}
+.ngn_amount {
+    font-size: 12px;
+    color: #676b87;
+    line-height: 15px;
+}
+tr:nth-child(odd) {
+    background: #fff !important;
+}
+tr:nth-child(even) {
+    background: #f6f6fc !important;
+}
+.status_inprogress {
+    background: #fff1ce;
+    border-radius: 15px;
+    color: #ffb800;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    width: 80px;
+    text-align: center;
+}
+.status_declined {
+    background: #eeb3b3;
+    border-radius: 15px;
+    color: #ff001f;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    width: 80px;
+    text-align: center;
+}
+.status_success {
+    background: rgba(115, 219, 158, 0.3);
+    border-radius: 15px;
+    color: #219653;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    width: 80px;
+    text-align: center;
+}
+.status_waiting {
+    background: rgba(103, 107, 135, 0.3);
+    border-radius: 15px;
+    color: #676b87;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    width: 80px;
+    text-align: center;
+}
+.transaction_view_link {
+    color: #000070 !important;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+}
+.canvasjs-chart-credit {
+    display: none !important;
+}
+.modal-content-custom.quickrecharge_modal {
+    border: 1px solid #fff;
+    border-radius: 10px;
+    width: 600px;
+    margin-left: -90px;
+}
+.quickcard_networks {
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+    border-radius: 5px;
+    margin: auto 6px;
+}
+.amount_to_recharge .dropdown-toggle:empty::after {
+    margin-left: 90%;
+}
+.amount_to_recharge .dropdown-menu.show {
+    width: 100%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+.wdselectamount {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+.wdbtn {
+    background: #000070;
+    border-radius: 5px;
+    background: #000070;
+    border-radius: 5px;
+    width: 130px;
+    height: 45px;
+    letter-spacing: 0.01em;
+    position: relative;
+    left: 37%;
+    margin-top: 40px;
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+.list_assets {
+    width: 47.5em;
+}
+.list_assets-card {
+    height: 270px;
+}
+.recent_transactions {
+    height: 350px;
+}
+.budget_card {
+    width: 22.5em;
+}
+input[type="file"]::-webkit-file-upload-button {
+    background-image: url("../../customizeduploadbtn.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 0px;
+    transition: 1s;
+    width: 80px;
+    height: 100px;
+}
+
+/* input[type=file]::file-selector-button {
+    border: 2px solid #0e054e;
+    padding: .2em .4em;
+    border-radius: .2em;
+    background-color: #130d6b;
+    transition: 1s;
+  }
+
+  input[type=file]::-webkit-file-upload-button:hover {
+    background-color: #081d63;
+    border: 2px solid #071b72bb;
+  }
+
+  input[type=file]::file-selector-button:hover {
+    background-color: #091070;
+    border: 2px solid #020d68;
+  } */
+
+.walletpage__menu-container {
+    width: 750px;
+}
+.walletpage_menu {
+    border: 1px solid #eff4f7;
+    border-radius: 10px;
+    width: 100%;
+    left: 509px;
+    padding: 24px 30px;
+}
+.walletpage_menu-active {
+    background: #efeff8;
+}
+.walletpage_btn {
+    font-size: 16px;
+    background: #000070;
+    width: 520px;
+    position: relative;
+    left: 25%;
+    height: 50px;
+}
+.address_input_label {
+    color: #000070;
+    font-size: 16px;
+    font-weight: 600;
+    position: relative;
+    left: 23.4%;
+    top: 26px;
+}
+.nairawallet_trx_type-card {
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+    border-radius: 5px;
+    height: 70px;
+    width: 500px;
+}
+.primary_text_color {
+    color: #000070;
+}
+
+.wallettransfertype {
+    max-width: 700px;
+}
+.dailysmartbudgetamnt .bugdetdailytext {
+    color: #676b87;
+    font-size: 16px;
+    font-weight: 500;
+}
+.dailysmartbudgetamnt .bugdetdailyamount {
+    color: #000070;
+    font-size: 20px;
+    font-weight: 300;
+}
+.smartbudget_container {
+    border: 0.5px solid #cbcbcb;
+    border-radius: 10px;
+}
+.smartbudget_item_container {
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+    border-radius: 10px;
+    /* width: 450px; */
+    height: 140px;
+}
+.smartbudget_item_container .titlename {
+    color: #000070;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+}
+.smartbudget_item_container .phoneNumber {
+    color: #676b87;
+    font-size: 14px;
+    line-height: 15px;
+}
+.smartbudget_item_container .duration {
+    color: #676b87;
+    font-size: 14px;
+    line-height: 15px;
+}
+.nairawallet_trx_type_title {
+    letter-spacing: 0.01em;
+    font-weight: 600;
+    font-size: 18px;
+    color: #000000;
+}
+.nairawallet_trx_type_desc {
+    letter-spacing: 0.01em;
+    font-size: 14px;
+    color: #969cba;
+}
+.airtimepage_card {
+    border: 0.5px solid #b2b2b2;
+    border-radius: 10px;
+    width: 290px;
+    height: 220px;
+    margin: 10px 15px;
+}
+.bills_type_text {
+    color: #000070;
+    font-size: 20px;
+}
+.airtime_network_card {
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+    border-radius: 5px;
+    width: 110px;
+    height: 110px;
+    margin: 10px;
+    cursor: pointer;
+}
+.txn_history_title {
+    font-size: 20px;
+    color: #000000;
+    letter-spacing: 0.01em;
+}
+.wallet_trxs tr:nth-child(even) {
+    background: #fff !important;
+}
+
+/*New Dashboard CSS Ends */
+
+/* Login page css */
+.chevron_arrow_bg {
+    width: 26px;
+    height: 26px;
+    background: #cccce2;
+    border-radius: 13px;
+}
+.profile_tab_title {
+    width: 25%;
+}
+.profile_details {
+    width: 70%;
+}
+.bvn_verification_arrow,
+.id_verification_arrow {
+    position: relative;
+    left: 22px;
+}
+.phoneNumberVerifyBtn {
+    position: relative;
+    top: 11px;
+}
+.confirmVerificationBtn {
+    position: relative;
+    top: 19px;
+}
+.confirmVerificationBtnSize {
+    height: 40px;
+    width: 78px;
+}
+.addressVerificationForm {
+    width: 350px;
+}
+.bvnConfidenceText {
+    color: #000070;
+    font-size: 13px;
+    width: 93%;
+}
+.needBvnTrx {
+    color: #000070;
+    font-size: 13px;
+    width: 75%;
+    margin-top: 5px;
+}
+.accordion_full_container {
+    margin-bottom: 20px;
+    border: 0.5px solid #b1b1b1;
+    border-radius: 7px;
+    height: 520px;
+}
+.verifyIdSubmitBtn {
+    height: 38px;
+    width: 82px;
+    position: relative;
+    top: 54%;
+}
+.active_airtime_choice {
+    border: 3px solid #000070;
+    cursor: pointer;
+}
+.rechargemyself_labeltext {
+    color: #000070;
+    font-size: 16px;
+}
+.recharge-submitbutton-container {
+    width: 40%;
+    margin: auto;
+}
+.recharge-submitbutton {
+    background: #000070;
+    border-radius: 5px;
+    width: 100%;
+    height: 40px;
+}
+.togglevisibility {
+    cursor: pointer;
+    position: relative;
+    left: 70%;
+    top: 36px;
+}
+.buyairtime_border {
+    border: 1px solid #efeff8;
+    border-radius: 20px;
+}
+.buyairtime_choice_layer {
+    box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+}
+.walletpage_btcbaltext {
+    color: #0d1f3c;
+    font-size: 30px;
+}
+.walletpage_forminterchange {
+    border: 1px solid rgba(0, 0, 112, 0.12);
+    height: 42px;
+    width: 520px;
+}
+/* .networkfee_container {
+    width:520px;
+} */
+.networkfee_container .btctext {
+    color: #696969;
+    font-size: 20px;
+    letter-spacing: 0.01em;
+}
+.networkfee_container .customfee {
+    color: #000070;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+.walletpage_amountText {
+    color: #000070;
+    font-size: 18px;
+    position: relative;
+    top: 45.8px;
+    left: 15.5%;
+}
+.recent_trx_text {
+    color: #000070;
+    font-size: 24px;
+    font-weight: 500;
+}
+.usd_bg_text {
+    background-color: #fff;
+    border: 0px;
+    margin: 0;
+    padding: 0;
+}
+.networkfee_text {
+    color: #000070;
+    font-size: 18px;
+}
+.show_receiving_btc_address {
+    font-size: 16px;
+    color: #000070;
+    border: 1px solid rgba(0, 0, 112, 0.25);
+    border-radius: 5px;
+}
+.nairawalletmain__transactionhistory-container {
+    border: 1px solid #eff4f6;
+    border-radius: 10px;
+    margin-top: 25px;
+}
+.dtd_confirm_btn {
+    background-color: #000070;
+    width: 340px;
+}
+.dtdform_container .form-group {
+    width: 340px;
+}
+.modal.dtdModal {
+    background-color: #a9a9a994;
+}
+.dtdform_container {
+    position: relative;
+    left: 20%;
+}
+.nairawallet_wdText {
+    font-size: 20px;
+    font-weight: 500;
+    display: none;
+}
+.modal.dantownToOtherModal {
+    background-color: #a9a9a994;
+}
+.modal.dantownToOtherModal .closeBtn {
+    cursor: pointer;
+    position: relative;
+    left: 160px;
+}
+.dtob_header {
+    color: #000070;
+    font-size: 20px;
+    font-weight: 500;
+}
+.deposit_tab_bankdetailsText {
+    font-size: 15px;
+    color: #000070;
+    font-weight: 600;
+}
+.choosewallet_selection {
+    color: #000070;
+    font-size: 18px;
+    position: relative;
+    bottom: -5px;
+}
+.choosewallet_selection_amnt_equiv {
+    color: #000070;
+    font-size: 24px;
+}
+.choosewallet_selection_ngn_equiv {
+    color: #676b87;
+    font-size: 16px;
+}
+.choosewallet_selection_card_height {
+    height: 500px;
+}
+.close_notification_icon {
+    position: relative;
+    left: 98%;
+    top: -85px;
+    cursor: pointer;
+}
+.welcomeText {
+    color: #000070;
+    font-weight: 500;
+    font-size: 15px;
+}
+.quick_menu_btns {
+    position: relative;
+    left: 15%;
+}
+.login_welcomeText {
+    color: #676b87;
+    font-size: 30px;
+    font-weight: 500;
+}
+.removeobscure_pwd {
+    cursor: pointer;
+    position: relative;
+    left: 62%;
+    top: 28px;
+    z-index: 2;
+}
+.removeobscure_pwd.smartbudget {
+    left: 83%;
+}
+.forgotpwd_text {
+    position: relative;
+    /* left: 250px; */
+    left: 47.4%;
+}
+.trxn_summary_text_header {
+    color: #000000;
+    font-size: 24px;
+    font-weight: 500;
+    position: relative;
+    left: 32%;
+}
+.trxn_status {
+    background: #fff9e9;
+    border-radius: 15px;
+    /* width: 90px; */
+    color: #ffb800;
+}
+.trxn_ok_btn {
+    background: #000070;
+    width: 85px;
+    position: relative;
+    left: 40%;
+}
+.trxn_explorer_btn {
+    background: #fff;
+    color: #000070;
+    border: 1px solid #000070;
+    width: 180px;
+    position: relative;
+    left: 37%;
+}
+.tab_active_mobile {
+    background: #000070 !important;
+    color: #fff;
+}
+.trade_type-sell {
+    color: #ff001f;
+    font-size: 14px;
+}
+.position_form {
+    position: absolute;
+    width: 100%;
+    top: 10%;
+    left: 16%;
+}
+.number_inputgroup {
+    border: 0px;
+    width: 67%;
+}
+.btn-outline-secondary.signup_custom {
+    color: rgba(0, 0, 112, 0.25);
+    background-color: #fff;
+    border: 0px solid rgba(0, 0, 112, 0.25);
+    border-right: 0px;
+}
+.signup_first_step {
+    margin-left: 0px;
+}
+.step_two_container {
+    display: none;
+}
+/* .smartbudget_cardmenu {
+    display: none;
+} */
+.bg_custom_blue {
+    background-color: #000070;
+}
+.app-sidebar .app-sidebar__inner {
+    padding: 2px 1.5rem 1.5rem;
+    padding-right: 0px !important;
+}
+.vertical-nav-menu li a.mm-active {
+    color: #000070;
+    background: #EFEFF8;
+    font-weight: bold;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+.custom_progress {
+    width: 320px;
+    height: 5px;
+}
+.coin_chart_price {
+    font-size: 22px;
+    color: #676b87;
+}
+.airtime_card_last {
+    position: relative;
+    top:-70px;
+}
+.recharge_form_container {
+    border: 1px solid #EFEFF8;
+    border-radius: 20px;
+    width:60%;
+}
+.airtime_percentage {
+    position: relative;
+    left:80%;
+    top:7%;
+}
+.airtime_info_text {
+    color: rgba(0, 0, 112, 0.75);
+}
+.custom-select {
+    color: #000000;
+}
+.country_code_form {
+    outline: none;
+    box-shadow: none;
+    border: 0;
+    background-color:#fff;
+}
+
+.pwd_visibility_toggle {
+    cursor: pointer;
+    position: relative;
+    left: 78%;
+    top: 28px;
+    z-index: 2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 639px) {
+    .card-xs {
+        background-color: #fff;
+        padding: 5px 10px;
+    }
+    .pwd_visibility_toggle {
+        left: 71%;
+    }
+    
+    .airtime_info_text {
+        font-size: 14px;
+    }
+    .airtime_percentage {
+        position: relative;
+        left: 5%;
+    }
+    .recharge_form_container {
+        width: 100%;
+    }
+    .airtime_card_last {
+        top: auto;
+    }
+    .coin_chart_price {
+        font-size: 16px;
+        position: relative;
+        left: 24px;
+    }
+    .custom_progress {
+        width: 250px;
+    }
+    .removeobscure_pwd.smartbudget {
+        left: 78%;
+    }
+    .form-check-label-sm {
+        font-size: 14px;
+    }
+    .signup_first_step {
+        margin-left: 10px;
+    }
+    .step_two_container {
+        width: 100%;
+    }
+    .number_inputgroup {
+        width: 92%;
+    }
+    .position_form {
+        width: 90%;
+        margin-top: 42px;
+        left: 5%;
+    }
+    .trxn_explorer_btn {
+        border: 1px solid #000070;
+        width: 180px;
+        left: 16%;
+    }
+    .trxn_ok_btn {
+        left: 35%;
+    }
+    .trxn_summary_text_header {
+        font-size: 20px;
+        left: 6%;
+    }
+    .forgotpwd_text {
+        left: 54%;
+    }
+    .removeobscure_pwd {
+        left: 86%;
+    }
+    .login_welcomeText {
+        color: #676b87;
+        font-size: 20px;
+        font-weight: 500;
+    }
+    .phoneVerificationCard {
+        position: relative !important;
+        left: -4px !important;
+    }
+    .accordion_full_container {
+        height: auto !important;
+        padding-bottom: 30px;
+    }
+    .col_name {
+        color: rgba(0, 0, 112, 0.75);
+    }
+    .profile_tab_title_mobile {
+        border-radius: 0px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+        width: 25%;
+        height: 36px;
+        background-color: #fff;
+        font-size: 13px;
+        /* margin-right: auto 10px; */
+    }
+
+    .logos_assets {
+        width: 70px;
+        height: 70px;
+    }
+    .card-text {
+        font-size: 10px !important;
+    }
+    .mini_border {
+        border-radius: 10px !important;
+    }
+    .close_notification_icon {
+        top: -96px;
+        left: 92%;
+        cursor: pointer;
+    }
+    .welcomeText {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+    .choosewallet_selection_card_height {
+        height: 360px;
+    }
+    .choosewallet_selection_ngn_equiv {
+        font-size: 14px;
+    }
+    .choosewallet_selection_amnt_equiv {
+        color: #000070;
+        font-size: 18px;
+    }
+    .deposit_tab_bankdetailsText {
+        font-size: 13px;
+    }
+    .modal.dantownToOtherModal .closeBtn {
+        left: 0px;
+    }
+    .dtob_header {
+        font-size: 18px;
+    }
+    .modal.dantownToOtherModal {
+        background-color: #a9a9a994;
+        overflow-y: scroll;
+    }
+    .nairawallet_wdText {
+        font-size: 16px;
+    }
+    .dtdform_container {
+        left: 0;
+    }
+    .modal.dtdModal {
+        overflow-y: scroll;
+    }
+    .dtdform_container .form-group {
+        width: 100%;
+    }
+    .dtd_confirm_btn {
+        background-color: #000070;
+        width: 100%;
+    }
+    .modal_container_content {
+        width: 100%;
+    }
+    .nairawalletmain__transactionhistory-container {
+        position: relative;
+        top: 120px;
+        margin-bottom: 33px;
+    }
+    .modal-content-custom.quickrecharge_modal {
+        width: 90%;
+        margin-left: 1em;
+        margin-top: 85px;
+    }
+    .show_receiving_btc_address {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+    .networkfee_text {
+        font-size: 14px;
+        margin-bottom: -11px;
+    }
+    /* .wallet_trx_tabs {
+        position: relative;
+        right: 14.5em;
+    } */
+    .status_inprogress {
+        padding: 5px 7px;
+        font-size: 11px;
+    }
+    .recent_trx_text {
+        font-size: 22px;
+        font-weight: 500;
+    }
+    .walletpage_amountText {
+        color: #000070;
+        font-size: 16px;
+        top: 14px;
+        left: 15.5%;
+    }
+    .form_calc_container {
+        position: relative;
+        left: -223px;
+    }
+    .walletpage_btn {
+        font-size: 16px;
+        /* width:260px; */
+        left: 0;
+        height: 40px;
+    }
+    .networkfee_container .customfee {
+        font-size: 12px;
+    }
+    .networkfee_container .btctext {
+        font-size: 13px;
+    }
+    .networkfee_container {
+        margin-top: 25px;
+    }
+    .walletpage_forminterchange {
+        border: 1px solid rgba(0, 0, 112, 0.12);
+        height: 42px;
+        width: 260px;
+        position: relative;
+        left: 4%;
+    }
+    .recharge-submitbutton-container {
+        width: 70%;
+    }
+    .recharge_amount {
+        width: 230px;
+    }
+    .buyairtime_choice_layer {
+        box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);
+        width: 240px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        position: relative;
+        left: 10px;
+        height: 44px;
+    }
+
+    .buyairtime_border {
+        border: none;
+        border-radius: 0px;
+    }
+    .togglevisibility {
+        left: 80%;
+    }
+    .card-body_buyairtime {
+        background: inherit;
+    }
+    .rechargemyself_labeltext {
+        color: #000070;
+        font-size: 16px;
+    }
+    .airtimechoice_container {
+        width: 85vw;
+        position: relative;
+        left: -30px;
+    }
+    .airtimelogo {
+        width: 60px;
+    }
+    .airtime_network_card {
+        width: 100px;
+        height: 90px;
+        margin: 0px;
+        background-color: #fff;
+    }
+    .rechargemenu_subtitle {
+        font-size: 16px;
+    }
+    .rechargemenu_icons {
+        width: 60px;
+        height: 60px;
+    }
+    .bills_type_text {
+        font-size: 13px;
+        text-align: center;
+    }
+    .airtimepage_card {
+        /* width: 48%; */
+        width: 37vw;
+        /* height: 150px; */
+        height: 135px;
+        margin: 10px 0px;
+        padding: 5px;
+        margin: 5px auto !important;
+    }
+    .verifyIdSubmitBtn {
+        height: 42px;
+        width: 145px;
+        position: relative;
+        top: 21%;
+        margin: auto;
+    }
+    #idVerification .select_id_type_dropdown {
+        width: 87%;
+        left: 16px;
+    }
+    .needBvnTrx {
+        font-size: 11px;
+    }
+    .bvnConfidenceText {
+        font-size: 11px;
+    }
+    .upload_address_photo {
+        width: 165px;
+    }
+    .addressVerificationForm {
+        width: 253px;
+    }
+    .confirmVerificationBtnSize {
+        height: 40px;
+        width: 82px;
+    }
+    .confirmVerificationBtn {
+        position: relative;
+        top: -6px;
+    }
+    .phoneNumberVerifyBtn {
+        position: relative;
+        top: -1px;
+    }
+    .id_verification_arrow {
+        position: relative;
+        left: 43px;
+    }
+    .idVerificationCard span {
+        font-size: 14px;
+    }
+    .bvn_verification_arrow {
+        position: relative;
+        left: 34px;
+    }
+    .phoneVerificationCard > span {
+        font-size: 14px;
+        margin-left: 10px;
+    }
+    .addressVerificationCard > span {
+        font-size: 14px;
+    }
+    .bvnVerificationCard > span {
+        font-size: 14px;
+    }
+    .accordion_cards {
+        width: 249px;
+        position: relative;
+        left: 5px;
+    }
+    .profile_details {
+        width: 100%;
+    }
+    .profile_root_container {
+        height: 92vh;
+    }
+    .profile_tab_title {
+        width: 100%;
+        border-bottom: 0.3px solid rgb(150, 156, 186);
+    }
+    .nairawallet_trx_type_desc {
+        font-size: 12px;
+    }
+    .nairawallet_trx_type_title {
+        font-weight: 600;
+        font-size: 15px;
+        color: #000000;
+    }
+    .nairawallet_trx_type-card {
+        height: 70px;
+        width: 255px;
+        position: relative;
+        left: -18px;
+    }
+    .wallettransfertype {
+        position: relative;
+        left: 7.5%;
+        /* max-width: 290px; */
+    }
+    .walletpage_menu {
+        width: 80vw;
+        left: 0;
+        padding: 8px 10px;
+    }
+    .budget_card {
+        width: 100%;
+    }
+    .recent_transactions {
+        height: 100%;
+    }
+    .asset_card_container {
+        margin: auto;
+        height: auto;
+        width: 100%;
+    }
+    .list_assets-card {
+        height: 100%;
+    }
+    .list_assets {
+        width: 100%;
+    }
+    .allcards-container {
+        height: 100%;
+    }
+    .increment-icon-sizing {
+        position: relative;
+        left: -4px;
+    }
+    .card-image .giftcard_image {
+        width: 90%;
+        height: 110px;
+    }
+    .cctype_container {
+        margin-top: 5em !important;
+    }
+    .list-cards-search .giftcard.search-icon {
+        position: absolute;
+        right: 0;
+        left: 2.3em;
+        top: 6.4em;
+    }
+    .list_all_cards {
+        height: 140px;
+        /* height: 160px; */
+        width: 100%;
+        box-sizing: border-box;
+        box-shadow: 0px 2px 10px rgba(166, 166, 166, 0.25);
+        border-radius: 10px;
+        margin: 10px 0;
+    }
+    /* .listcard_images {
+        height:55px;
+        width: 90px;
+    } */
+    .network_card_container {
+        width: 100%;
+    }
+    .network_cards {
+        width: 110px;
+        height: 115px;
+    }
+    .isp_image {
+        height: 70px;
+    }
+    .calculator_form {
+        width: 100%;
+    }
+    .buy-sell-title {
+        width: 100%;
+    }
+    .zoom:hover {
+        top: -150px;
+        width: 95%;
+        height: 50%;
+    }
+    .thumb {
+        width: 80px;
+        height: 70px;
+    }
+    .dashed-border {
+        width: 97%;
+    }
+    .card-upload-btn {
+        margin: 0 15%;
+    }
+    .modal-dialog-custom {
+        width: 97%;
+        margin: 90px 10px;
+    }
+    .modal-content-custom {
+        width: 97%;
+    }
+    .widget-chart-one {
+        padding: 25px 10px;
+    }
+    .card-price-qty {
+        height: 100% !important;
+    }
+    .card-price-input {
+        position: relative;
+        left: 0;
+        margin: auto;
+    }
+    .card-qty-input {
+        position: relative;
+        margin: auto;
+    }
+    .card-image {
+        height: 50px;
+        width: 100%;
+        margin-left: 10%;
+    }
+    .list-cards-search .search-icon {
+        position: absolute;
+        left: 2.7em;
+        top: 6.7em;
+    }
+    .giftcard-text {
+        font-size: 16px;
+    }
+    .walletbalance-text {
+        font-size: 18px;
+    }
+    .walletpage_btcbaltext {
+        color: #0d1f3c;
+        font-size: 20px;
+    }
+    .price {
+        font-size: 18px;
+    }
+    .select-country-custom-select {
+        width: 100% !important;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (min-width: 640px) and (max-width: 992px) {
+    .list_all_cards {
+        width: 311px;
+    }
+    .list-cards-search {
+        position: relative;
+        top: -30px;
+    }
+    .list-cards-search .search-icon,
+.list-cards-search .giftcard.search-icon {
+    position: relative;
+    left: 5px;
+    top: 30px;
+}
+    .airtime_percentage {
+        left: 100%;
+    }
+    .recharge_form_container{
+        width: 100%;
+    }
+    .airtime_card_last {
+        top: 0px;
+    }
+    .network_cards {
+        width: 134px;
+        height: 140px;
+    }
+    .removeobscure_pwd.smartbudget {
+        left: 85%;
+    }
+    .number_inputgroup {
+        width: 92%;
+    }
+    .removeobscure_pwd {
+        left: 82%;
+        padding: 5px 10px;
+    }
+    .accordion_full_container {
+        height: auto !important;
+        padding-bottom: 100px;
+    }
+    .profile_tab_title_mobile {
+        border-radius: 0px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+        width: 25%;
+        height: 36px;
+        background-color: #fff;
+        font-size: 13px;
+        border-right: 0.1px solid #13137ead;
+        border-left: 0.1px solid #13137ead;
+        /* margin-right: auto 10px; */
+    }
+    .close_notification_icon {
+        top: -95px;
+        left: 92%;
+    }
+    .nairawalletmain__transactionhistory-container {
+        position: relative;
+        top: 140px;
+    }
+    .modal.dtdModal {
+        overflow-y: scroll;
+    }
+    .walletpage_btn {
+        /* width:520px; */
+        position: relative;
+        left: 11%;
+        height: 50px;
+    }
+    .walletpage_menu {
+        width: 80vw;
+        padding: 8px 10px;
+        margin-left: 25px;
+    }
+    .recharge-submitbutton-container {
+        width: 50%;
+        margin: auto;
+    }
+    .buyairtime_choice_layer {
+        width: 280px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff;
+        position: relative;
+        left: 10px;
+        height: 44px;
+    }
+    .rechargemenu_subtitle {
+        font-size: 30px;
+    }
+    .rechargemenu_icons {
+        width: 90px;
+        height: 90px;
+    }
+    .bills_type_text {
+        font-size: 20px;
+        text-align: center;
+    }
+    .airtimepage_card {
+        width: 25vw;
+        height: 185px;
+        margin: 20px 0px;
+        padding: 5px;
+    }
+}

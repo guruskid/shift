@@ -10,16 +10,10 @@ class TransactionController extends Controller
 {
     public function allTransactions()
     {
-        if ($transactions = Auth::user()->transactions) {
-            return response()->json([
-                'success' => true,
-                'transactions' => $transactions
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'No transaction yet'
-            ]);
-        }
+        $transactions = Auth::user()->transactions;
+        return response()->json([
+            'success' => true,
+            'data' => $transactions
+        ]);
     }
 }

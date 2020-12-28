@@ -96,6 +96,7 @@ class AdminController extends Controller
 
         $transfer_charge = NairaWallet::where('account_number', 0000000001)->first()->amount;
         $sms_charge = NairaWallet::where('account_number', 0000000002)->first()->amount;
+
         $charges = $transfer_charge + $sms_charge;
         $old_charges = NairaTransaction::sum('charge');
 
@@ -123,8 +124,7 @@ class AdminController extends Controller
 
 
         if (Auth::user()->role == 999) { //Super admin
-            return view(
-                'admin.super_dashboard',
+            return view( 'admin.super_dashboard',
                 compact([
                     'transactions', 'users', 'verified_users', 'users_count', 'notifications', 'usersChart',
                     'withdraw_txns', 'airtime_txns', 'buy_txns_wallet',
@@ -168,7 +168,7 @@ class AdminController extends Controller
         }
     }
 
-    public function cards()
+    /* public function cards()
     {
         $cards = Card::orderBy('id', 'desc')->get();
         return view('admin.cards', compact(['cards']));
@@ -187,16 +187,7 @@ class AdminController extends Controller
         return redirect()->back()->with(['success' => 'Card added']);
     }
 
-    public function editCard(Request $r)
-    {
 
-        $card = Card::find($r->id);
-        $card->name = $r->name;
-        $card->wallet_id = $r->wallet_id;
-        $card->is_crypto = $r->is_crypto;
-        $card->save();
-        return redirect()->back()->with(['success' => 'Card updated']);
-    }
 
     public function getCard($id)
     {
@@ -208,9 +199,9 @@ class AdminController extends Controller
     {
         $card = Card::find($id);
         return response()->json($card->delete());
-    }
+    } */
 
-    public function rates()
+    /* public function rates()
     {
         $buy = Rate::where('rate_type', 'buy')->orderBy('created_at', 'desc')->get();
         $sell = Rate::where('rate_type', 'sell')->orderBy('created_at', 'desc')->get();
@@ -267,7 +258,7 @@ class AdminController extends Controller
     {
         $rate = Rate::find($id);
         return response()->json($rate->delete());
-    }
+    } */
 
     /* TRANSACTIONS */
 
@@ -317,7 +308,7 @@ class AdminController extends Controller
     {
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
-        })->paginate(1000);
+        })->latest()->paginate(10);
 
         $segment = 'Crypto';
         if ($id == 1) {
@@ -347,27 +338,8 @@ class AdminController extends Controller
         return response()->json($transac);
     }
 
-    public function addTransaction(Request $r)
-    {
-        $card_id = Card::where('name', $r->card)->first()->id;
 
-        $t = new Transaction();
-        $t->uid = uniqid();
-        $t->user_email = $r->user_email;
-        $t->user_id = User::where('email', $r->user_email)->first()->id;
-        $t->card = $r->card;
-        $t->card_id = $card_id;
-        $t->type = $r->trade_type;
-        $t->country = $r->country;
-        $t->amount = $r->amount;
-        $t->amount_paid = $r->amount_paid;
-        $t->status = $r->status;
-        $t->save();
 
-        return redirect()->back()->with(['success' => 'Transaction added']);
-    }
-
-    
 
     public function viewTransac($id, $uid)
     {

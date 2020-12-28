@@ -79,7 +79,46 @@ class AuthController extends Controller
         ]);
     }
 
-    public function bankDetails(Request $request)
+    public function getBankName(Request $r)
+    {
+        $validator = Validator::make($r->all(), [
+            'account_number' => 'required|integer',
+            'bank_code' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $client = new Client();
+        $url = env('RUBBIES_API') . "/nameenquiry";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                "accountnumber" => $r->account_number,
+                "bankcode" => $r->bank_code
+            ],
+            'headers' => [
+                'authorization' => env('RUBBIES_SECRET_KEY'),
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+        if ($body->responsecode == 00) {
+            return response()->json([
+                'success' => true,
+                'acct' => $body->accountname
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => $body->responsemessage
+            ]);
+        }
+    }
+
+    public function addBankDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'bank_id' => 'required',

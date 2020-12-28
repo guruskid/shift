@@ -62,6 +62,18 @@
     color: white;
 }
 
+.btn-c-rounded{
+    border-radius: 25px;
+    padding: 2px 15px;
+}
+
+@media(min-width: 767px) {
+    .btn-c-rounded{
+        border-radius: 25px;
+        padding: 2px 25px;
+    }
+}
+
 .c-rounded {
     border-radius: 10px !important;
 }
@@ -418,8 +430,8 @@ a:hover {
     position: absolute;
     left: 20px;
     top: 10px;
-    width: 25px;
-    height: 25px;
+    width: 22px;
+    height: 22px;
 }
 
 

@@ -2997,6 +2997,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["trans", "val", "amt"],
@@ -3018,9 +3022,12 @@ __webpack_require__.r(__webpack_exports__);
       console.log(txn);
       $('#d-txn-uid').text(txn.uid);
       $('#d-txn-asset-type').text(txn.card);
+      $('#d-txn-card-type').text(txn.card_type);
       $('#d-txn-txn-type').text(txn.type);
       $('#d-txn-country').text(txn.country);
       $('#d-txn-amount').text(txn.amount);
+      $('#d-txn-rate').text(txn.card_price);
+      $('#d-txn-quantity').text(txn.quantity);
       $('#d-txn-amt-paid').text('₦' + txn.amount_paids);
       $('#d-txn-status').text(txn.status);
       $('#d-txn-date').text(txn.created_ats);
@@ -3345,6 +3352,376 @@ __webpack_require__.r(__webpack_exports__);
     userMessage: function userMessage(id) {
       _event_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit("get_user_messages", id);
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _event_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../event.js */ "./resources/js/event.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["card", 'buy_sell'],
+  data: function data() {
+    return {
+      currencies: this.card.currencies,
+      types: [],
+      quantities: [],
+      trades: [],
+      selectedType: '',
+      selectedCurrency: '',
+      selectedQuantity: '',
+      price: 0,
+      cardQuantity: 1,
+      total: 0
+    };
+  },
+  mounted: function mounted() {
+    console.log('DevBoy');
+  },
+  methods: {
+    onCurrencyChange: function onCurrencyChange(event) {
+      this.selectedType = '';
+      this.selectedQuantity = '';
+      this.quantities = [];
+      this.price = 0;
+      this.types = this.currencies[this.selectedCurrency].payment_mediums;
+    },
+    onTypeChange: function onTypeChange(event) {
+      this.selectedQuantity = '';
+      this.quantities = [];
+      this.price = 0;
+      this.quantities = this.types[this.selectedType].pricing;
+    },
+    onQuantityChange: function onQuantityChange(event) {
+      this.price = 0;
+      this.price = this.quantities[this.selectedQuantity].rate;
+    },
+    updateQuantity: function updateQuantity(op) {
+      if (op == 'add') {
+        this.cardQuantity += 1;
+      } else if (op == 'subtract' && this.cardQuantity > 1) {
+        this.cardQuantity -= 1;
+      }
+    },
+    addTrade: function addTrade() {
+      if (this.price == 0) {
+        console.log('fill in details');
+        return;
+      }
+
+      var singleTrade = {
+        cardName: this.card.name,
+        currency: this.currencies[this.selectedCurrency].name,
+        cardType: this.types[this.selectedType].name,
+        cardPrice: this.price,
+        cardValue: this.quantities[this.selectedQuantity].value,
+        cardQuantity: this.cardQuantity,
+        cardTotal: parseInt(this.price * this.cardQuantity)
+      };
+      this.playSound();
+      this.trades.push(singleTrade);
+      this.tradeTotal();
+      this.cardQuantity = 1;
+      this.selectedQuantity = '';
+      this.price = 0;
+    },
+    removeTrade: function removeTrade(index) {
+      this.trades.splice(index, 1);
+      this.tradeTotal();
+    },
+    tradeTotal: function tradeTotal() {
+      var sum = 0;
+      $.each(this.trades, function (key, trade) {
+        sum += parseInt(trade.cardTotal);
+      });
+      this.total = sum;
+      return sum;
+    },
+    playSound: function playSound() {
+      var audio = new Audio("/sound/alert.wav"); // path to file
+
+      audio.play();
+    },
+
+    /* When the proceed btn is clicked send the trades to the upload component */
+    proceed: function proceed() {
+      _event_js__WEBPACK_IMPORTED_MODULE_0__["default"].$emit("process_trades", [this.trades, this.buy_sell]);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/uploadModalComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/uploadModalComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _event_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../event.js */ "./resources/js/event.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      trades: [],
+      buy_sell: [],
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    _event_js__WEBPACK_IMPORTED_MODULE_0__["default"].$on("process_trades", function (data) {
+      _this.trades = [];
+      console.log(data);
+      _this.trades = data[0];
+      _this.buy_sell = data[1];
+    });
   }
 });
 
@@ -50836,6 +51213,10 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("td", { staticClass: "text-center bg-custom-accent" }, [
+                    _vm._v(_vm._s(t.quantity))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-center bg-custom-accent" }, [
                     _vm._v("₦" + _vm._s(t.amount_paids))
                   ]),
                   _vm._v(" "),
@@ -50843,7 +51224,7 @@ var render = function() {
                     _vm._v(_vm._s(t.created_ats))
                   ]),
                   _vm._v(" "),
-                  t.status == "waiting"
+                  t.status == "waiting" && t.type == "sell"
                     ? _c(
                         "td",
                         { staticClass: "text-center bg-custom-accent" },
@@ -51069,6 +51450,10 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("td", { staticClass: "text-center" }, [
+                    _vm._v(_vm._s(t.quantity))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-center" }, [
                     _vm._v("₦" + _vm._s(t.amount_paids))
                   ]),
                   _vm._v(" "),
@@ -51076,7 +51461,7 @@ var render = function() {
                     _vm._v(_vm._s(t.created_ats))
                   ]),
                   _vm._v(" "),
-                  t.status == "waiting"
+                  t.status == "waiting" && t.type == "sell"
                     ? _c("td", { staticClass: "text-center text-dark" }, [
                         _c(
                           "a",
@@ -51257,6 +51642,10 @@ var staticRenderFns = [
         ]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center text-custom border-0" }, [
+          _vm._v("Quantity")
+        ]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center text-custom border-0" }, [
           _vm._v("Cash value")
         ]),
         _vm._v(" "),
@@ -51283,6 +51672,8 @@ var staticRenderFns = [
         _c("th", { staticClass: "text-center" }, [_vm._v("Tran. type")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center" }, [_vm._v("Units")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "text-center" }, [_vm._v("Quantity")]),
         _vm._v(" "),
         _c("th", { staticClass: "text-center" }, [_vm._v("Cash value")]),
         _vm._v(" "),
@@ -51822,6 +52213,1206 @@ var render = function() {
                     0
                   )
                 ])
+              ]
+            )
+          ]
+        )
+      ])
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce&":
+/*!*****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce& ***!
+  \*****************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-12 col-md-6 col-lg-6 my-0 py-3" }, [
+        _c("div", { staticClass: "d-flex flex-column" }, [
+          _c(
+            "div",
+            { staticClass: "allcards-container py-2 pt-lg-3 pb-lg-3" },
+            [
+              _c("div", { staticClass: "d-flex flex-column ml-4" }, [
+                _c("div", { staticClass: "transaction-title" }, [
+                  _vm._v("Transaction")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass: "d-block",
+                    staticStyle: {
+                      "font-size": "12px",
+                      color: "rgba(0, 0, 112, 0.75)",
+                      opacity: "0.7"
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                            " +
+                        _vm._s(
+                          _vm.buy_sell == 1
+                            ? "Buy " + _vm.card.name + " from us"
+                            : "Sell " + _vm.card.name + " to us"
+                        ) +
+                        "\n                        "
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", {
+                staticClass: "mx-auto my-2",
+                staticStyle: {
+                  border: "1px solid #EFEFF8",
+                  width: "98%",
+                  height: "0px"
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "d-flex flex-row justify-content-around align-items-center flex-wrap flex-lg-nowrap p-2 p-lg-3 pl-lg-4 mt-3"
+                },
+                [
+                  _c("div", { staticClass: "card-image mr-lg-2" }, [
+                    _c("img", {
+                      staticClass: "img-fluid giftcard_image",
+                      attrs: {
+                        src: "/storage/assets/" + _vm.card.image,
+                        alt: "card"
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "d-flex flex-column mx-1 mt-4 mt-lg-0 ml-lg-4 cctype_container"
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "d-flex flex-column align-items-around"
+                        },
+                        [
+                          _c("label", { staticClass: "label-style" }, [
+                            _vm._v("Currency")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.selectedCurrency,
+                                  expression: "selectedCurrency"
+                                }
+                              ],
+                              staticClass:
+                                "form-control custom-select select-country-custom-select",
+                              attrs: { id: "countries_list", name: "country" },
+                              on: {
+                                change: [
+                                  function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.selectedCurrency = $event.target
+                                      .multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  },
+                                  function($event) {
+                                    return _vm.onCurrencyChange($event)
+                                  }
+                                ]
+                              }
+                            },
+                            [
+                              _c(
+                                "option",
+                                { attrs: { disabled: "", value: "" } },
+                                [_vm._v("Select currency")]
+                              ),
+                              _vm._v(" "),
+                              _vm._l(_vm.currencies.length, function(i) {
+                                return _c(
+                                  "option",
+                                  {
+                                    key: i,
+                                    class:
+                                      _vm.currencies[i - 1].buy_sell ==
+                                      _vm.buy_sell
+                                        ? ""
+                                        : "d-none",
+                                    domProps: { value: i - 1 }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                        " +
+                                        _vm._s(_vm.currencies[i - 1].name) +
+                                        " "
+                                    )
+                                  ]
+                                )
+                              })
+                            ],
+                            2
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "mt-2 flex-column",
+                          attrs: { id: "card_type" }
+                        },
+                        [
+                          _c("label", { staticClass: "label-style" }, [
+                            _vm._v("Card type")
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.selectedType,
+                                  expression: "selectedType"
+                                }
+                              ],
+                              staticClass:
+                                "form-control custom-select select-country-custom-select cardtypelist",
+                              attrs: { id: "cardtype_list" },
+                              on: {
+                                change: [
+                                  function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.selectedType = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  },
+                                  function($event) {
+                                    return _vm.onTypeChange($event)
+                                  }
+                                ]
+                              }
+                            },
+                            [
+                              _c(
+                                "option",
+                                { attrs: { disabled: "", value: "" } },
+                                [_vm._v("Select Card Type")]
+                              ),
+                              _vm._v(" "),
+                              _vm._l(_vm.types.length, function(i) {
+                                return _c(
+                                  "option",
+                                  { key: i, domProps: { value: i - 1 } },
+                                  [_vm._v(_vm._s(_vm.types[i - 1].name) + " ")]
+                                )
+                              })
+                            ],
+                            2
+                          )
+                        ]
+                      )
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "d-block mt-3 text-center",
+                  staticStyle: {
+                    color: "#C4C4C4",
+                    "line-height": "30px",
+                    position: "relative",
+                    top: "-11px"
+                  }
+                },
+                [_vm._v("Select country and card type to proceed")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass:
+                "text-center d-flex flex-column mt-4 p-2 pt-3 justify-content-center align-items-center allcards-container card-price-qty",
+              staticStyle: { height: "320px" }
+            },
+            [
+              _c(
+                "div",
+                { staticClass: "d-flex flex-row flex-wrap mt-2 mt-lg-4" },
+                [
+                  _c("div", { staticClass: "card-price-input" }, [
+                    _c(
+                      "label",
+                      { staticClass: "label-style", attrs: { for: "country" } },
+                      [_vm._v("Card\n                                price")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.selectedQuantity,
+                            expression: "selectedQuantity"
+                          }
+                        ],
+                        staticClass:
+                          "custom-select select-country-custom-select cardprice",
+                        attrs: { id: "cardprice" },
+                        on: {
+                          change: [
+                            function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.selectedQuantity = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            },
+                            function($event) {
+                              return _vm.onQuantityChange($event)
+                            }
+                          ]
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { disabled: "", value: "" } }, [
+                          _vm._v("Select Quantity")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.quantities.length, function(i) {
+                          return _c(
+                            "option",
+                            { key: i, domProps: { value: i - 1 } },
+                            [_vm._v(_vm._s(_vm.quantities[i - 1].value) + " ")]
+                          )
+                        })
+                      ],
+                      2
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "ml-5 ml-lg-4 mt-4 mt-md-0 text-center card-qty-input"
+                    },
+                    [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "label-style",
+                          attrs: { for: "country" }
+                        },
+                        [_vm._v("Quantity")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "d-flex justify-content-center align-items-center"
+                        },
+                        [
+                          _c(
+                            "div",
+                            {
+                              staticClass: "text-center decrement-icon",
+                              on: {
+                                click: function($event) {
+                                  return _vm.updateQuantity("subtract")
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "svg",
+                                {
+                                  attrs: {
+                                    width: "8",
+                                    height: "2",
+                                    viewBox: "0 0 12 2",
+                                    fill: "#ffffff",
+                                    xmlns: "http://www.w3.org/2000/svg"
+                                  }
+                                },
+                                [
+                                  _c("path", {
+                                    attrs: {
+                                      d: "M0 0H12V2H0V0Z",
+                                      fill: "#ffffff"
+                                    }
+                                  })
+                                ]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.cardQuantity,
+                                expression: "cardQuantity"
+                              }
+                            ],
+                            staticClass: "mx-1 form-control text-center",
+                            staticStyle: {
+                              width: "50px",
+                              padding: "2px 0 0 0",
+                              border: "0px"
+                            },
+                            attrs: { min: "1", readonly: "", type: "number" },
+                            domProps: { value: _vm.cardQuantity },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.cardQuantity = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "text-center increment-icon increment-icon-sizing",
+                              on: {
+                                click: function($event) {
+                                  return _vm.updateQuantity("add")
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "svg",
+                                {
+                                  attrs: {
+                                    width: "8",
+                                    height: "8",
+                                    viewBox: "0 0 14 14",
+                                    fill: "#ffffff",
+                                    xmlns: "http://www.w3.org/2000/svg"
+                                  }
+                                },
+                                [
+                                  _c("path", {
+                                    attrs: {
+                                      d: "M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z",
+                                      fill: "#ffffff"
+                                    }
+                                  })
+                                ]
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "d-block text-center mt-3 mt-lg-5 mb-3" },
+                [
+                  _c("span", { staticClass: "price-per-card-text" }, [
+                    _vm._v("Price\n                            Per card:")
+                  ]),
+                  _vm._v(" "),
+                  _c("span", [_vm._v("₦" + _vm._s(_vm.price) + " ")])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "select-card-add-button py-2",
+                  attrs: { id: "addcard_buon" },
+                  on: {
+                    click: function($event) {
+                      return _vm.addTrade()
+                    }
+                  }
+                },
+                [_vm._v("Add")]
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "d-block mt-3 mt-lg-5 mb-lg-3 text-center",
+                  staticStyle: {
+                    color: "rgba(71, 71, 71, 0.5)",
+                    "font-size": "15px"
+                  }
+                },
+                [
+                  _vm._v(
+                    "Scroll up\n                        to see\n                        the card you just added"
+                  )
+                ]
+              )
+            ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: " col-12 col-md-6 col-lg-6 my-0",
+          attrs: { id: "list_added_cards" }
+        },
+        [
+          _c("div", { staticClass: "row" }, [
+            _c(
+              "div",
+              {
+                staticClass: "col-12 mt-3 mb-2 py-3 allcards-container",
+                staticStyle: {
+                  height: "320px !important",
+                  "overflow-y": "scroll"
+                },
+                attrs: { id: "addedCards" }
+              },
+              [
+                _c("div", { staticClass: "container" }, [
+                  _c(
+                    "table",
+                    { staticClass: "table table-borderless table-striped" },
+                    [
+                      _vm._m(0),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        {
+                          staticClass: "selectedcardslist disable-scrollbars",
+                          staticStyle: { "overflow-y": "scroll" },
+                          attrs: { id: "selectedcardslist" }
+                        },
+                        _vm._l(_vm.trades, function(trade, index) {
+                          return _c(
+                            "tr",
+                            { key: trade.key, staticClass: "my-2" },
+                            [
+                              _c("td", [_vm._v(_vm._s(trade.cardValue))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
+                                  "₦" + _vm._s(trade.cardPrice.toLocaleString())
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(trade.cardQuantity))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
+                                  "₦" + _vm._s(trade.cardTotal.toLocaleString())
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "td",
+                                {
+                                  staticClass: "removeitem",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.removeTrade(index)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("span", [
+                                    _c(
+                                      "svg",
+                                      {
+                                        attrs: {
+                                          width: "20",
+                                          height: "20",
+                                          viewBox: "0 0 24 24",
+                                          fill: "none",
+                                          xmlns: "http://www.w3.org/2000/svg"
+                                        }
+                                      },
+                                      [
+                                        _c("path", {
+                                          attrs: {
+                                            d:
+                                              "M12 2C6.47 2 2 6.47 2 12C2 17.53 6.47 22 12 22C17.53 22 22 17.53 22 12C22 6.47 17.53 2 12 2ZM17 15.59L15.59 17L12 13.41L8.41 17L7 15.59L10.59 12L7 8.41L8.41 7L12 10.59L15.59 7L17 8.41L13.41 12L17 15.59Z",
+                                            fill: "#CD0B0B"
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ])
+                                ]
+                              )
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm.trades.length == 0
+                    ? _c(
+                        "div",
+                        {
+                          staticClass: "text-center",
+                          staticStyle: {
+                            color: "#C4C4C4",
+                            "line-height": "30px",
+                            "font-size": "16px"
+                          },
+                          attrs: { id: "nocardavailable" }
+                        },
+                        [
+                          _vm._v(
+                            "No\n                        card has\n                        been added\n                        yet 😕"
+                          )
+                        ]
+                      )
+                    : _vm._e()
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "col-12 text-center my-3 allcards-container flex-column justify-content-center align-items-center",
+                staticStyle: { height: "320px" },
+                attrs: { id: "total_price" }
+              },
+              [
+                _c(
+                  "span",
+                  {
+                    staticClass: "d-block text-center gradient-text",
+                    staticStyle: { "margin-top": "60px" }
+                  },
+                  [
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(
+                          _vm.buy_sell == 1
+                            ? "You are paying "
+                            : "You are getting"
+                        ) +
+                        "\n                    "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "d-block text-center mt-4 mb-3 gradient-text",
+                    staticStyle: { "font-size": "38px" }
+                  },
+                  [_vm._v("₦" + _vm._s(_vm.total.toLocaleString()) + " ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn mt-3 mt-lg-4 proceed-button",
+                    attrs: {
+                      disabled: _vm.trades.length == 0 ? true : false,
+                      id: "proceedtoupload"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.proceed()
+                      }
+                    }
+                  },
+                  [_vm._v("Proceed")]
+                ),
+                _vm._v(" "),
+                _c("span", { staticClass: "d-block mt-4 gradient-text" }, [
+                  _vm._v("Turn up time: 5 -\n                        20minutes")
+                ])
+              ]
+            )
+          ])
+        ]
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", { staticClass: "table_card_title" }, [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Card Value")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Price per card (₦)")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Qty")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Total")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Action")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/uploadModalComponent.vue?vue&type=template&id=483f7cba&":
+/*!**********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/uploadModalComponent.vue?vue&type=template&id=483f7cba& ***!
+  \**********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "modal",
+      staticStyle: { "background-color": "#a9a9a994" },
+      attrs: { id: "uploadCardImageModal", tabindex: "-1" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog" }, [
+        _c(
+          "div",
+          {
+            staticClass: "modal-content modal-content-custom",
+            staticStyle: { "margin-top": "100px" }
+          },
+          [
+            _c(
+              "div",
+              {
+                staticClass: "container py-4",
+                attrs: { id: "modal_container_content" }
+              },
+              [
+                _c(
+                  "div",
+                  { staticClass: "d-flex justify-content-between mb-4" },
+                  [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "d-block",
+                        staticStyle: {
+                          color: "#000000",
+                          "letter-spacing": "0.01em",
+                          "font-size": "18px"
+                        }
+                      },
+                      [
+                        _vm._v(
+                          _vm._s(_vm.buy_sell == 2 ? "Upload cards" : "") + " "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        staticClass: "d-block",
+                        staticStyle: { cursor: "pointer" },
+                        attrs: {
+                          "data-dismiss": "modal",
+                          onclick: "inputfile()"
+                        }
+                      },
+                      [
+                        _c(
+                          "svg",
+                          {
+                            attrs: {
+                              width: "18",
+                              height: "18",
+                              viewBox: "0 0 34 34",
+                              fill: "none",
+                              xmlns: "http://www.w3.org/2000/svg"
+                            }
+                          },
+                          [
+                            _c("g", { attrs: { opacity: "0.4" } }, [
+                              _c("path", {
+                                attrs: {
+                                  d:
+                                    "M34 5.63477L28.3653 0L17 11.3652L5.63477 0L0 5.63477L11.3652 17L0 28.3652L5.63477 34L17 22.6348L28.3653 34L34 28.3652L22.6348 17L34 5.63477ZM31.1827 28.3652L28.3653 31.1826L17 19.8174L5.63477 31.1826L2.81742 28.3653L14.1826 17L2.81742 5.63477L5.63477 2.81742L17 14.1826L28.3653 2.81742L31.1827 5.63477L19.8174 17L31.1827 28.3652Z",
+                                  fill: "#000070",
+                                  "fill-opacity": "0.75"
+                                }
+                              })
+                            ])
+                          ]
+                        )
+                      ]
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "form",
+                  {
+                    attrs: {
+                      action: "/user/trade",
+                      method: "POST",
+                      id: "uploadcardsform",
+                      enctype: "multipart/form-data"
+                    }
+                  },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "p-2 mx-auto dashed-border" },
+                      [
+                        _vm.buy_sell == 2
+                          ? _c("span", { staticClass: "d-block text-center" }, [
+                              _c(
+                                "svg",
+                                {
+                                  attrs: {
+                                    width: "120",
+                                    height: "120",
+                                    viewBox: "0 0 48 48",
+                                    fill: "none",
+                                    xmlns: "http://www.w3.org/2000/svg"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "g",
+                                    { attrs: { "clip-path": "url(#clip0)" } },
+                                    [
+                                      _c("path", {
+                                        attrs: {
+                                          d:
+                                            "M69.3421 37.04V77.8851C69.3421 81.2625 66.6043 84.0002 63.227 84.0002H12.9901C9.61271 84.0002 6.875 81.2624 6.875 77.8851V13.9003C6.875 10.522 9.61353 7.78516 12.9901 7.78516H40.0865L69.3421 37.04Z",
+                                          fill: "#BED8FB"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("path", {
+                                        attrs: {
+                                          d:
+                                            "M20.7753 76.2152C17.3979 76.2152 14.6602 73.4774 14.6602 70.1001V6.1151C14.66 2.73689 17.3985 0 20.7753 0H47.8715C52.53 0 77.1271 24.5969 77.1271 29.255V70.1001C77.1271 73.4775 74.3892 76.2152 71.012 76.2152H20.7753Z",
+                                          fill: "#DDEAFB"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("path", {
+                                        attrs: {
+                                          d:
+                                            "M77.1274 29.2555V31.8422C77.1274 26.3962 72.7112 21.9799 67.2651 21.9799H61.2625C57.886 21.9799 55.1474 19.2414 55.1474 15.8648V9.86229C55.1474 4.41623 50.7312 0 45.2852 0H47.8719C52.5297 0 56.9982 1.85062 60.2916 5.14418L71.9834 16.8359C75.2766 20.1293 77.1274 24.5977 77.1274 29.2555Z",
+                                          fill: "#BED8FB"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("path", {
+                                        attrs: {
+                                          d:
+                                            "M39.8043 46.6865V64.5652C39.8043 65.3365 40.4296 65.9617 41.2008 65.9617H50.5842C51.3555 65.9617 51.9807 65.3365 51.9807 64.5652V46.6865H55.9699C57.214 46.6865 57.8371 45.1824 56.9574 44.3027L48.0437 35.389C46.8557 34.2011 44.9295 34.2011 43.7415 35.389L34.8278 44.3027C33.9481 45.1824 34.5712 46.6865 35.8153 46.6865H39.8043Z",
+                                          fill: "#80B4FB"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("path", {
+                                        attrs: {
+                                          d:
+                                            "M35.0104 30.4823H56.7742C58.2772 30.4823 59.4955 29.2639 59.4955 27.761V27.6861C59.4955 26.1832 58.2772 24.9648 56.7742 24.9648H35.0104C33.5074 24.9648 32.2891 26.1832 32.2891 27.6861V27.761C32.2891 29.2638 33.5074 30.4823 35.0104 30.4823Z",
+                                          fill: "#80B4FB"
+                                        }
+                                      })
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("defs", [
+                                    _c("clipPath", { attrs: { id: "clip0" } }, [
+                                      _c("rect", {
+                                        attrs: {
+                                          width: "84",
+                                          height: "84",
+                                          fill: "white"
+                                        }
+                                      })
+                                    ])
+                                  ])
+                                ]
+                              )
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.buy_sell == 2
+                          ? _c(
+                              "div",
+                              {
+                                staticClass: "mb-2",
+                                attrs: { id: "upload_text_desc" }
+                              },
+                              [
+                                _c(
+                                  "span",
+                                  {
+                                    staticClass:
+                                      "d-block primary-color text-center"
+                                  },
+                                  [
+                                    _vm._v(
+                                      "Place your Images/card receipts\n                                here"
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "span",
+                                  {
+                                    staticClass: "d-block text-center",
+                                    staticStyle: {
+                                      color: "rgba(0, 0, 112, 0.7)",
+                                      "letter-spacing": "0.01em"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "Click to select\n                                image/images"
+                                    )
+                                  ]
+                                )
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("input", {
+                          attrs: { type: "hidden", name: "_token" },
+                          domProps: { value: _vm.csrf }
+                        }),
+                        _vm._v(" "),
+                        _vm._l(_vm.trades, function(trade) {
+                          return _c("div", { key: trade.key }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: trade.cardName,
+                                  expression: "trade.cardName"
+                                }
+                              ],
+                              attrs: { type: "hidden", name: "cards[]" },
+                              domProps: { value: trade.cardName },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    trade,
+                                    "cardName",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: trade.currency,
+                                  expression: "trade.currency"
+                                }
+                              ],
+                              attrs: { type: "hidden", name: "currencies[]" },
+                              domProps: { value: trade.currency },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    trade,
+                                    "currency",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: trade.cardType,
+                                  expression: "trade.cardType"
+                                }
+                              ],
+                              attrs: { type: "hidden", name: "card_types[]" },
+                              domProps: { value: trade.cardType },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    trade,
+                                    "cardType",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: trade.cardPrice,
+                                  expression: "trade.cardPrice"
+                                }
+                              ],
+                              attrs: { type: "hidden", name: "prices[]" },
+                              domProps: { value: trade.cardPrice },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    trade,
+                                    "cardPrice",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: trade.cardValue,
+                                  expression: "trade.cardValue"
+                                }
+                              ],
+                              attrs: { type: "hidden", name: "values[]" },
+                              domProps: { value: trade.cardValue },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    trade,
+                                    "cardValue",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: trade.cardQuantity,
+                                  expression: "trade.cardQuantity"
+                                }
+                              ],
+                              attrs: { type: "hidden", name: "quantities[]" },
+                              domProps: { value: trade.cardQuantity },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    trade,
+                                    "cardQuantity",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: trade.cardTotal,
+                                  expression: "trade.cardTotal"
+                                }
+                              ],
+                              attrs: { type: "hidden", name: "totals[]" },
+                              domProps: { value: trade.cardTotal },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    trade,
+                                    "cardTotal",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ])
+                        }),
+                        _vm._v(" "),
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.buy_sell,
+                              expression: "buy_sell"
+                            }
+                          ],
+                          attrs: { type: "hidden", name: "buy_sell" },
+                          domProps: { value: _vm.buy_sell },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.buy_sell = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _vm.buy_sell == 2
+                          ? _c("input", {
+                              staticClass: "form-control",
+                              staticStyle: {
+                                border: "0px",
+                                outline: "none !important"
+                              },
+                              attrs: {
+                                type: "file",
+                                name: "card_images[]",
+                                onchange: "preview(this);",
+                                multiple: "multiple",
+                                accept: "image/*"
+                              }
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.buy_sell == 2
+                          ? _c("div", {
+                              staticClass:
+                                "my-3 previewImg d-flex d-lg-block justify-content-center flex-wrap align-items-around",
+                              attrs: { id: "previewImg" }
+                            })
+                          : _vm._e()
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass:
+                          "btn text-white mt-4 mt-lg-5 card-upload-btn",
+                        attrs: { id: "upload_card_btn", type: "submit" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Trade\n                    "
+                        )
+                      ]
+                    )
+                  ]
+                )
               ]
             )
           ]
@@ -64372,6 +65963,8 @@ Vue.component('transactions-component', __webpack_require__(/*! ./components/Tra
 Vue.component('messages-component', __webpack_require__(/*! ./components/chat/MessagesComponent.vue */ "./resources/js/components/chat/MessagesComponent.vue")["default"]);
 Vue.component('main-message-component', __webpack_require__(/*! ./components/chat/MessageComponent.vue */ "./resources/js/components/chat/MessageComponent.vue")["default"]);
 Vue.component('form-component', __webpack_require__(/*! ./components/chat/FormComponent.vue */ "./resources/js/components/chat/FormComponent.vue")["default"]);
+Vue.component('gift-card-component', __webpack_require__(/*! ./components/calculator/giftCardCalculatorComponent.vue */ "./resources/js/components/calculator/giftCardCalculatorComponent.vue")["default"]);
+Vue.component('upload-modal-component', __webpack_require__(/*! ./components/calculator/uploadModalComponent.vue */ "./resources/js/components/calculator/uploadModalComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -65501,6 +67094,144 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersComponent_vue_vue_type_template_id_47d47080___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersComponent_vue_vue_type_template_id_47d47080___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/giftCardCalculatorComponent.vue":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/calculator/giftCardCalculatorComponent.vue ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _giftCardCalculatorComponent_vue_vue_type_template_id_2d98c5ce___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce& */ "./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce&");
+/* harmony import */ var _giftCardCalculatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./giftCardCalculatorComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _giftCardCalculatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _giftCardCalculatorComponent_vue_vue_type_template_id_2d98c5ce___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _giftCardCalculatorComponent_vue_vue_type_template_id_2d98c5ce___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/calculator/giftCardCalculatorComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_giftCardCalculatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./giftCardCalculatorComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_giftCardCalculatorComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce& ***!
+  \***********************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_giftCardCalculatorComponent_vue_vue_type_template_id_2d98c5ce___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_giftCardCalculatorComponent_vue_vue_type_template_id_2d98c5ce___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_giftCardCalculatorComponent_vue_vue_type_template_id_2d98c5ce___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/uploadModalComponent.vue":
+/*!*********************************************************************!*\
+  !*** ./resources/js/components/calculator/uploadModalComponent.vue ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _uploadModalComponent_vue_vue_type_template_id_483f7cba___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./uploadModalComponent.vue?vue&type=template&id=483f7cba& */ "./resources/js/components/calculator/uploadModalComponent.vue?vue&type=template&id=483f7cba&");
+/* harmony import */ var _uploadModalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./uploadModalComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/calculator/uploadModalComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _uploadModalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _uploadModalComponent_vue_vue_type_template_id_483f7cba___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _uploadModalComponent_vue_vue_type_template_id_483f7cba___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/calculator/uploadModalComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/uploadModalComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/calculator/uploadModalComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_uploadModalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./uploadModalComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/uploadModalComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_uploadModalComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/uploadModalComponent.vue?vue&type=template&id=483f7cba&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/components/calculator/uploadModalComponent.vue?vue&type=template&id=483f7cba& ***!
+  \****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_uploadModalComponent_vue_vue_type_template_id_483f7cba___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./uploadModalComponent.vue?vue&type=template&id=483f7cba& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/uploadModalComponent.vue?vue&type=template&id=483f7cba&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_uploadModalComponent_vue_vue_type_template_id_483f7cba___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_uploadModalComponent_vue_vue_type_template_id_483f7cba___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

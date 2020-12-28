@@ -2,238 +2,123 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Register - Dantown Multi services</title>
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{asset('fav.png')}}">
     <link rel="shortcut icon" href="{{asset('fav.png')}}">
-    <link href=" {{asset('user_main.css')}} " rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: "Roboto";
-        }
-
-        .app {
-            background: #000070;
-        }
-
-        .col-lg-5 img {
-            width: inherit;
-            height: 100vh;
-        }
-
-        .login {
-            width: inherit;
-            background: url('images/login page background 1.png');
-            background-size: contain;
-            background-position: bottom;
-            background-repeat: no-repeat;
-        }
-
-        #logo {
-            display: block;
-            width: 150px;
-            height: 40px;
-            margin-top: 40px;
-            float: right;
-
-        }
-
-        .col-lg-12 {
-            margin-top: 90px;
-            display: flex;
-        }
-
-        .col-lg-12 .col-lg-2 {
-            transform: rotate(-90deg);
-            width: fit-content;
-        }
-
-        .col-lg-12 .col-lg-2 h1 {
-            margin-left: -190px;
-            margin-top: 160px;
-            font-size: 120px;
-            width: 686px;
-            font-style: normal;
-            font-weight: normal;
-            text-align: center;
-            opacity: 0.5;
-            color: rgba(255, 255, 255, 0.52);
-        }
-
-        .col-lg-12 .col-lg-10 h3.text-white {
-            font-size: 20px;
-        }
-
-        .col-lg-12 .col-lg-10 form {
-            width: 65%;
-        }
-
-        .input  {
-            background: none;
-            border: 0;
-            color: white;
-        }
-
-        .input:focus {
-            background: transparent;
-            color: white;
-        }
-
-        form .btn {
-            font-size: 12px;
-            background-color: white;
-            color: #21B8C7;
-        }
-
-        @media screen and (max-width: 768px) {
-            .col-md-0 {
-                display: none;
-            }
-
-            .col-md-12,
-            .col-sm-12,
-            .col-12 {
-                padding: 5px;
-                padding-bottom: 40px !important;
-            }
-
-            .app {
-                width: 100% !important;
-                height: auto;
-                padding: 0px;
-                margin: 0px;
-            }
-
-            .col-lg-12 {
-                display: flex;
-                flex-direction: row;
-            }
-
-            .col-lg-12 .col-lg-2 {
-                transform: rotate(0deg);
-            }
-
-
-            .col-lg-12 .col-lg-2 h1 {
-                font-size: 40px;
-                margin-top: 0px;
-                margin-left: 50px;
-            }
-
-            .col-lg-10.col-md-10.col-10.col-sm-10 {
-                padding: 0px !important;
-                margin-top: 50px;
-            }
-
-            .col-lg-12 .col-lg-10 h3.text-white {
-                font-size: 12px;
-            }
-
-            form .btn {
-                font-size: 1.1ch;
-            }
-
-            .col-lg-12 .col-lg-10 form {
-                width: 90%;
-                margin: 0px !important;
-            }
-        }
-
-    </style>
+    <!-- ========================================= Css files -->
+    <link rel="stylesheet" href="{{asset('css/bootstrap/css/bootstrap.min.css')}} ">
+    <link rel="stylesheet" href="{{asset('css/fa.min.css')}} ">
+    <link rel="stylesheet" href="{{asset('user_assets/css/style.css')}} ">
+    <title>Signup | Dantown Multi Services</title>
 </head>
 
-<body>
-    <div class="row app w-100 m-0 p-0 shadow">
-        <div class="col-md-5 d-none d-md-flex align-items-center p-0 m-0" style="height: 100vh; background: #E8F0FE " >
-            <div >
-                <img src="{{asset('images/city.png')}}" class="img-fluid" alt="">
-            </div>
-        </div>
-        <div class="col-md-7  m-0 p-0 login" style="height: 100vh" >
-            <img src="{{asset('logo.svg')}} " class="mr-5" id="logo">
-            <div class="col-lg-12 col-md-12 col-12 col-sm-12">
-                <div class="col-lg-2 col-md-2 col-2 col-sm-2 ml-2 welcome-div">
-                    <h1 class="w-100">Payment Info</h1>
+<body class="account_page">
+    <div class="has_cover">
+        <div class="row">
+            <div class="col-lg-5 p-0 lg-hidden">
+                <div class="left_part">
+                    <div class="left_part_wrap">
+                        <img src="{{asset('images/city.png')}}" alt="">
+                    </div>
                 </div>
+            </div>
+            <div class="col-lg-7 col-md-12 bg-blue">
+                <h1 class="welcome">Welcome!</h1>
+                <div class="right_part">
+                    <div class="site-branding">
+                        <div class="site-title">
+                            <a href="../index.html">
+                                <div class="logo_sign">
+                                    <img src="{{asset('images/logo.svg')}} " class="svg-logo" alt="ootancy">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
 
-                <div class="col-lg-10 col-md-10 col-10 col-sm-10 pl-5 ml-1">
-                    <h3 class="text-white mb-4 mt-5 mx-0">Just a few more seconds and you're done</h3>
-                    @if (count($errors) > 0)
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li class="text-warning">{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    @endif
-                    <form action="{{route('signup.add-bank')}} " method="post" class="ml-5">
-                        {{ csrf_field() }}
-                        <div class="input-group input-group-sm border mb-4 border-top-0 border-left-0 border-right-0"
-                            style="outline: none;">
-                            <div class="input-group-prepend my-auto mr-4" style="outline: none;">
-                                <i class="fa fa-briefcase text-white"></i>
+                    <div class="head">
+                        <h4 class="sign_title">
+                            Just a few more seconds and you’re done!
+                        </h4>
+                    </div>
+
+                    <div class="sign-form">
+                        <form action="{{route('signup.add-bank')}} " method="post">
+                            @csrf
+                            @foreach ($errors->all() as $error)
+                            <p class="text-warning">{{ $error }}</p>
+                            @endforeach
+                            <div class="input-group mb-15">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <ion-icon name="briefcase"></ion-icon>
+                                    </span>
+                                </div>
+                                <select name="bank_code" id="bank-name" class="form-control" style="background-color: transparent; color: #495057 !important">
+                                    <option value="">Select Bank Name</option>
+                                    @foreach ($banks as $bank)
+                                    <option value="{{$bank->code}}">{{$bank->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <select name="bank_name" id="bank-name" class="form-control" style="outline: none; background-color: transparent; border: none">
-                                <option value="">Select Bank Name</option>
-                                @foreach ($banks as $bank)
-                                <option value="{{$bank->code}}">{{$bank->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="input-group input-group-sm border mb-4 border-top-0 border-left-0 border-right-0"
-                            style="outline: none;">
-                            <div class="input-group-prepend my-auto mr-4"  style="outline: none;">
-                                <i class="fa fa-address-card text-white"></i>
+
+                            <div class="input-group mb-15">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <ion-icon name="card"></ion-icon>
+                                    </span>
+                                </div>
+                                <input type="text" id="account-number" name="account_number" class="form-control" placeholder="Account Number"
+                                     required="" />
                             </div>
-                            <input type="number" id="account-number" name="account_number" required style="outline: none;" placeholder="Account Number"
-                                class="form-control input">
-                        </div>
-                        <div class="input-group input-group-sm border mb-4 border-top-0 border-left-0 border-right-0"
-                            style="outline: none;">
-                            <div class="input-group-prepend my-auto mr-4" style="outline: none;">
-                                <i class="fa fa-user text-white"></i>
+
+                            <div class="input-group mb-15">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <ion-icon name="person"></ion-icon>
+                                    </span>
+                                </div>
+                                <input type="text" class="acct-name form-control" readonly name="account_name" placeholder="Account Name"
+                                     required="" style="outline: none; background-color: transparent" />
                             </div>
-                            <input type="text" readonly name="account_name" required style="outline: none; background-color: transparent"
-                                placeholder="Account name" class="form-control input acct-name">
-                        </div>
-                        <div class="input-group input-group-sm border mb-4 border-top-0 border-left-0 border-right-0"
-                            style="outline: none;">
-                            <div class="input-group-prepend my-auto mr-4" style="outline: none;">
-                                <i class="fa fa-phone text-white"></i>
+
+                            <div class="input-group mb-50 mb-sm-30">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <ion-icon name="call"></ion-icon>
+                                    </span>
+                                </div>
+                                <input type="tel" name="phone" class="form-control" placeholder="Phone number"
+                                    aria-describedby="inputGroupPrepend3" required="" />
                             </div>
-                            <input type="tel" name="phone" style="outline: none;" placeholder="Phone number"
-                                class="form-control input">
+
+                            <div class="d-flex justify-content-between mb-30 mb-sm-15">
+                                <div class="custom-control mr-4">
+                                    <input type="checkbox" class="form-check-input" />
+                                    <label class="form-check-label" for="check-1">Agree to <a href="#">terms &amp;
+                                            conditions</a>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" id="sign-up-btn" disabled class="btn w-50">Sign up to DANTOWN</button>
+                        <div class="flex around">
+                            <button id="sign-up-btn" disabled class="btn btn-primary">FINISH</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="{{asset('assets/scripts/main.js')}} "></script>
+    <!-- ====================================== js files  -->
+    <script src="{{asset('js/bootstrap.min.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
+    <script src="{{asset('user_assets/js/main.js')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
-
-    <script>
-        function passwordToggle(params) {
-            if (params.nextElementSibling.type == 'password') {
-                params.nextElementSibling.type = "text";
-                params.firstElementChild.src = 'main/svg/visibility_off.svg';
-                params.firstElementChild.style.height = '18px';
-            } else {
-                params.nextElementSibling.type = "password";
-                params.firstElementChild.src = 'main/svg/Vector (3).svg';
-                params.firstElementChild.style.height = '12px';
-            }
-        }
-
-    </script>
 </body>
 
 </html>

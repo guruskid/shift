@@ -21,6 +21,7 @@ use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\NairaWallet;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -50,17 +51,15 @@ class UserController extends Controller
         }
         $s = Auth::user()->transactions->where('status', 'success')->count();
         $w = Auth::user()->transactions->where('status', 'waiting')->count();
+        $p = Auth::user()->transactions->where('status', 'in progress')->count();
         $d = Auth::user()->transactions->where('status', 'declined')->count();
-        $f = Auth::user()->transactions->where('status', 'failed')->count();
 
         $borderColors = [
-            "rgba(255, 99, 132, 1.0)",
             "rgba(22,160,133, 1.0)",
             "rgba(255, 205, 86, 1.0)",
             "rgba(51,105,232, 1.0)"
         ];
         $fillColors = [
-            "rgba(255, 99, 132, 1.0)",
             "rgba(22,160,133, 1.0)",
             "rgba(255, 205, 86, 1.0)",
             "rgba(51,105,232, 1.0)"
@@ -68,8 +67,8 @@ class UserController extends Controller
         ];
         $usersChart = new UserChart;
         $usersChart->minimalist(true);
-        $usersChart->labels(['Failed', 'Successful', 'Declined', 'Waiting']);
-        $usersChart->dataset('Users by trimester', 'doughnut', [$f, $s, $d, $w])
+        $usersChart->labels(['Successful', 'Declined', 'Waiting']);
+        $usersChart->dataset('Users by trimester', 'doughnut', [ $s, $d, $w])
             ->color($borderColors)
             ->backgroundcolor($fillColors);
 
@@ -90,77 +89,16 @@ class UserController extends Controller
         if (Auth::user()->nairaWallet) {
             $naira_balance = Auth::user()->nairaWallet->amount;
         }
-
-        return view('user.dashboard', compact(['transactions', 's', 'w', 'd', 'f', 'notifications', 'usersChart', 'naira_balance']));
+        return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
+        return view('user.dashboard', compact(['transactions', 's', 'w', 'd',  'notifications', 'usersChart', 'naira_balance']));
     }
 
     /* ajax functions */
-    public function getCard($c)
-    {
-
-        $card = Card::where('name', $c)->first();
-        return response()->json($card);
-    }
-
-    public function getCountry($card)
-    {
-        $countries = Rate::where('card', $card)->distinct()->get(['country']);
-        return response()->json($countries);
-    }
-
-    public function getType($card)
-    {
-        $types = Rate::where('card', $card)->distinct()->get(['type']);
-        return response()->json($types);
-    }
-
-    public function getWalletId($card)
-    {
-        $id = Card::where('name', $card)->first();
-        return response()->json($id->wallet_id);
-    }
-
-    public function getRate(Request $request)
-    {
-        $country = '';
-        $tmp_amount = $request->value;
-        $equiv = 0;
-
-        if ($request->is_crypto == 1 && $request->country == 'ngn') {
-            /* return back if amount is less than 2 to avoid division error */
-            if ($tmp_amount <= 4600) {
-                return response()->json();
-            }
-            /* convert naira to dollar to get the range */
-            $tmp_amount = 10;
-            $country = 'USD';
-        } else {
-            $country = $request->country;
-        }
-
-        $rate = Rate::where('card', $request->card)->where('rate_type', $request->rate_type)
-            ->where('min', '<=', $tmp_amount)->where('max', '>=', $tmp_amount)->value($country);
-        $card_value = Rate::where('card', $request->card)->where('rate_type', $request->rate_type)
-            ->where('min', '<=', $tmp_amount)->where('max', '>=', $tmp_amount)->value('card_value');
-
-        /* if it is a crypto and ngn / to get the equivalent in btc or eth */
-        if ($request->is_crypto == 1 && $request->country == 'ngn') {
-            $value = $request->value;
-            $equiv = round(($card_value / $rate) * $request->value, 7);
-        } else {
-            $value = $rate * $request->value;
-            $equiv = $request->value * $card_value;
-        }
-
-        return response()->json(['rate' => $rate, 'equiv' => $equiv, 'value' => $value, 'card' => $request->card]);
-    }
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-        /*  $user->first_name = $request->first_name;
-        $user->last_name = $request->last_name; */
         $user->phone = $request->phone;
 
         return response()->json($user->save());
@@ -290,14 +228,19 @@ class UserController extends Controller
         return redirect()->back()->with("success", "Email changed");
     }
 
-    public function transactions()
+    public function transactions(Request $r)
     {
-        $transactions = Auth::user()->transactions;
+        if ($r->has('start_date') || $r->has('end_date') ) {
+            $transactions = Auth::user()->transactions()->where('created_at', '>=', $r->start_date)
+            ->where('created_at', '<=', $r->end_date)->latest()->get();
+        }else{
+            $transactions = Auth::user()->transactions()->paginate(10);
+        }
         foreach ($transactions as $t) {
             $t->created_ats = $t->created_at->format('d M Y h:i a');
             $t->amount_paids = number_format($t->amount_paid);
             if ($t->status == 'approved') {
-                $t->stats = 'success';
+                $t->status = 'success';
             } else {
                 $t->stats = $t->status;
             }
@@ -306,16 +249,11 @@ class UserController extends Controller
         $value = Auth::user()->transactions->sum('amount');
         $amount = Auth::user()->transactions->sum('amount_paid');
 
-        return view('user.transactions', compact(['transactions', 'segment', 'value', 'amount']));
+        return view('newpages.all-transactions', compact(['transactions', 'segment', 'value', 'amount']));
     }
 
     public function addTransaction(Request $r)
     {
-
-        /*  $rate = Rate::where('card', $r->card)->where('rate_type', $r->rate_type)
-            ->where('min', '<=', $r->amount)->where('max', '>=', $r->amount)
-            ->value($r->country);
-        $value = $rate * $r->amount; */
 
         if ($r->rate_type == 'buy') {
             if (!Auth::user()->nairaWallet || $r->pay_with != 'wallet') {
@@ -474,71 +412,18 @@ class UserController extends Controller
         return redirect()->back()->with(["success" => 'Details updated']);
     }
 
-    public function calcCrypto()
+
+    public function notifications(Request $request)
     {
-        $cards = Card::where('is_crypto', 1)->has('rates', '>=', 1)->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 1;
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
+        $month =  $request->input('month');
+        $notifications = DB::table('notifications')->when($month, function ($query,  $month) {
+            return $query->whereMonth('created_at','=',$month);
+        })->paginate(10);
+        
+        return view('newpages.notifications', compact('notifications'));
+        // return view('user.notifications', compact('notifications'));
     }
 
-    public function calcCard()
-    {
-        $cards = Card::where('is_crypto', 0)->has('rates', '>=', 1)->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 0;
-
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
-    }
-
-    public function calculator()
-    {
-        $cards = Card::orderBy('id', 'desc')->get();
-        $agents = User::where('role', 888)->where('status', 'active')->get();
-        if ($agents->count() == 0) {
-            $agents = User::where('role', 999)->get();
-        }
-        $is_crypto = 0;
-
-        return view('user.calculator', compact(['cards', 'agents', 'is_crypto']));
-    }
-
-    public function chat()
-    {
-        $users = User::where('role', 888)->where('status', 'active')->get();
-        if ($users->count() == 0) {
-            $users = User::where('role', 999)->get();
-        }
-        $user = $users->last();
-        Talk::setAuthUserId(Auth::User()->id);
-        $inboxes = Talk::getInbox();
-        foreach ($inboxes as $inbox) {
-            $inbox->unread = Talk::getConversationsById($inbox->thread->conversation_id, 0, 100000000000000)
-                ->messages->where('is_seen', 0)->where('user_id', '!=', Auth::user()->id)->count();
-        }
-        return view('user.chat', compact(['user', 'inboxes']));
-    }
-
-    public function chatAgent($id)
-    {
-        $user = User::find($id);
-        if ($user->role != 999 || $user->role != 888) {
-            return redirect()->back()->with(['error' => 'Agent not available']);
-        }
-        return view('user.chat', compact(['user']));
-    }
-
-
-    public function notifications()
-    {
-        return view('user.notifications');
-    }
 
     public function readNot($id)
     {
@@ -562,6 +447,19 @@ class UserController extends Controller
                 Auth::user()->notificationSetting->trade_sms = $v;
                 break;
             case 't-e':
+                Auth::user()->notificationSetting->trade_email = $v;
+                break;
+            //Mobile
+            case 'w-s2':
+                Auth::user()->notificationSetting->wallet_sms = $v;
+                break;
+            case 'w-e2':
+                Auth::user()->notificationSetting->wallet_email = $v;
+                break;
+            case 't-s2':
+                Auth::user()->notificationSetting->trade_sms = $v;
+                break;
+            case 't-e2':
                 Auth::user()->notificationSetting->trade_email = $v;
                 break;
 

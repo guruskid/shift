@@ -22,7 +22,12 @@ class CreateUsersTable extends Migration
             $table->integer('role')->default(1);
             $table->string('id_card')->nullable();
             $table->string('dp')->nullable();
+            $table->string('bvn')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
+            $table->string('phone_pin_id')->nullable();
+            $table->string('bvn_pin_id')->nullable();
+            $table->timestamp('bvn_verified_at')->nullable();
             $table->enum('status', ['not verified', 'waiting', 'verified', 'declined', 'active'] )->default("not verified");
             $table->string('password');
             $table->integer('is_deleted')->default(0);
