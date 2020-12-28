@@ -36,6 +36,7 @@ $not = $nots->last();
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="Dantown multi services">
     <meta name="msapplication-tap-highlight" content="no">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     <link href=" {{asset('main.css')}} " rel="stylesheet">
     <link href=" {{asset('custom.css')}} " rel="stylesheet">
 
@@ -164,7 +165,9 @@ $not = $nots->last();
                                                 <a href=" {{route('user.transactions')}} "><button type="button"
                                                         tabindex="0" class="dropdown-item">My
                                                         transactions</button></a>
-                                                <a href=" {{route('user.calculator')}} "><button type="button"
+
+                                                <a href=" {{route('user.assets')}} "><button type="button"
+
                                                         tabindex="0" class="dropdown-item">Trade</button></a>
                                                 <div tabindex="-1" class="dropdown-divider"></div>
                                                 <a href="#"
@@ -225,7 +228,6 @@ $not = $nots->last();
 
             @yield('content')
 
-
     </div>
 </div>
     <script src="/js/app.js?v=1"></script>
@@ -241,7 +243,11 @@ $not = $nots->last();
 
     @auth
     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666] ))
+
     <script src="{{asset('js/sa.js?v=5')}}"></script>
+
+    <script src="{{asset('js/sa.js?v=7')}}"></script>
+    
     @endif
     @endauth
 

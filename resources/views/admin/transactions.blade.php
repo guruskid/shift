@@ -1,6 +1,7 @@
 @php
 $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
 $emails = App\User::orderBy('email', 'asc' )->pluck('email');
+$primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1])->get();
 @endphp
 @extends('layouts.app')
 @section('content')
@@ -60,117 +61,6 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                 </div>
             </div>
 
-            @if (Auth::user()->role == 999 )
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="main-card p-3 mb-3 card">
-                        <p>Add new transaction</p>
-                        @if (count($errors) > 0)
-                        <div class="alert alert-danger alert-dismissible">
-                            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
-                        <form action=" {{route('admin.add_transaction')}} " method="POST" class=" mb-3">
-                            {{ csrf_field() }}
-                            <div class="row">
-
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                        <label for="">User Email</label>
-                                        <select name="user_email" id="user_email" class="form-control">
-                                            <option value=""></option>
-                                            @foreach ($emails as $e)
-                                            <option value="{{$e}}"> {{ ucfirst($e) }} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-5">
-                                    <div class="form-group">
-                                        <label for="">Name</label>
-                                        <input type="text" readonly id="user_name" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="">Trade Type</label>
-                                        <select name="trade_type" class="form-control">
-                                            <option value="buy">Buy</option>
-                                            <option value="sell">Sell</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-
-                                <div class="col-3">
-                                    <div class="form-group">
-                                        <label for="">Card</label>
-                                        <select name="card" class="form-control">
-                                            @foreach ($cards as $card)
-                                            <option value=" {{$card->name}} "> {{ ucfirst($card->name) }} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="">Country</label>
-                                        <select name="country" class="form-control">
-                                            <option value="USD">USD</option>
-                                            <option value="EUR">EUR</option>
-                                            <option value="GBP">GBP</option>
-                                            <option value="AUD">AUD</option>
-                                            <option value="CAD">CAD</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="">Value</label>
-                                        <input type="number" placeholder="Value" class="form-control" name="amount">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="">Amount Paid</label>
-                                        <input type="number" placeholder="Amount paid" class="form-control"
-                                            name="amount_paid">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="">Status</label>
-                                        <select name="status" class="form-control">
-                                            <option value="success">Success</option>
-                                            <option value="waiting">Waiting</option>
-                                            <option value="failed">Failed</option>
-                                            <option value="declined">Declined</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <button type="submit" class="btn-success btn ">Add Transaction</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            @endif
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
@@ -190,18 +80,23 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                             </form>
                         </div>
                         <div class="table-responsive p-3">
+                            @foreach ($errors->all() as $err)
+                            <span class="text-danger">{{ $err }}</span>
+                            @endforeach
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>
                                     <tr>
                                         <th class="text-center">ID</th>
-                                        <th class="text-center">Asset type</th>
-                                        <th class="text-center">Tran. type</th>
+                                        <th class="text-center">Asset</th>
+                                        <th class="text-center">Trade type</th>
+                                        <th class="text-center">Currency</th>
+                                        <th class="text-center">Card type</th>
                                         <th class="text-center">Asset value</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Card price</th>
                                         <th class="text-center">Cash value</th>
                                         <th class="text-center">Wallet ID</th>
                                         <th class="text-center">User</th>
-                                        <th class="text-center">Bank Details</th>
-                                        <th class="text-center">Wallet?</th>
                                         <th class="text-center">Date</th>
                                         <th class="text-center">Status</th>
                                         @if (in_array(Auth::user()->role, [999, 889] ))
@@ -215,31 +110,31 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                 <tbody>
                                     @foreach ($transactions as $t)
                                     @php
-                                    $bank_name = $t->user->accounts()->first()['bank_name'];
-                                    $acct_num = $t->user->accounts()->first()['account_number'];
                                     $c = $t->card;
-                                    if ($t->user->nairaWallet) {
-                                    $t->wallet = 'Yes';
-                                    } else {
-                                    $t->wallet = 'No';
-                                    }
                                     @endphp
 
                                     <tr>
                                         <td class="text-center text-muted">{{$t->uid}}</td>
                                         <td
-                                            class="text-center  {{$c == 'perfect money' || $c == 'bitcoin' || $c == 'etherum' ? 'text-info   ': '' }} ">
+                                            class="text-center  {{$c == 'perfect money' || $c == 'bitcoins' || $c == 'etherum' ? 'text-info   ': '' }} ">
                                             {{ucwords($t->card)}}</td>
-                                        <td class="text-center">{{$t->type}}</td>
+                                        <td class="text-center text-capitalize">{{$t->type}}</td>
+                                        <td class="text-center">{{$t->country}}</td>
+                                        <td class="text-center">{{$t->card_type}}</td>
                                         <td class="text-center">{{$t->amount}}</td>
+
+                                        @if ($t->asset->is_crypto)
+                                        <td class="text-center">{{ sprintf('%.8f', floatval($t->quantity))}}</td>
+                                        @else
+                                        <td class="text-center">{{ $t->quantity}}</td>
+                                        @endif
+                                        <td class="text-center">{{$t->card_price}}</td>
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
                                         <td class="text-center">{{$t->wallet_id}}</td>
                                         <td class="text-center"><a
                                                 href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
                                                 {{$t->user->first_name." ".$t->user->last_name}}</a> </td>
-                                        <td class="text-center">{{$bank_name." ".$acct_num }} </td>
-                                        <td class="text-center">{{$t->wallet}}</td>
-                                        <td class="text-center">{{$t->created_at->format('d M y, H:ia')}} </td>
+                                        <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
                                         <td class="text-center">
                                             @switch($t->status)
                                             @case('success')
@@ -277,9 +172,16 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                                         class="btn btn-sm btn-info">Edit</span></a>
 
                                                 @if ($t->status == 'approved')
-                                                <button data-toggle="modal" data-target="#confirm-modal"
-                                                    onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
-                                                    class="btn btn-sm btn-outline-success">Pay</button>
+                                                    @if (\Str::lower($t->card) == 'bitcoins')
+                                                        <button data-toggle="modal" data-target="#confirm-btc-modal"
+                                                        onclick="confirmBtcTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                        class="btn btn-sm btn-outline-success">Pay BTC</button>
+                                                    @else
+                                                        <button data-toggle="modal" data-target="#confirm-modal"
+                                                        onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                        class="btn btn-sm btn-outline-success">Pay</button>
+                                                    @endif
+
                                                 @elseif($t->status == 'success' || ($t->type == 'buy' && $t->status ==
                                                 'declined' ) )
                                                 <button data-toggle="modal" data-target="#refund-modal"
@@ -295,16 +197,25 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                             </a>
 
                                             @if ($t->status == 'approved')
-                                            <button data-toggle="modal" data-target="#confirm-modal"
-                                                onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
-                                                class="btn btn-sm btn-outline-success">Pay</button>
-                                            @elseif($t->status == 'success')
+                                            @if (\Str::lower($t->card) == 'bitcoins')
+                                                        <button data-toggle="modal" data-target="#confirm-btc-modal"
+                                                        onclick="confirmBtcTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                        class="btn btn-sm btn-outline-success">Pay BTC</button>
+                                                    @else
+                                                        <button data-toggle="modal" data-target="#confirm-modal"
+                                                        onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                        class="btn btn-sm btn-outline-success">Pay</button>
+                                                    @endif
+
+                                            @elseif($t->status == 'success' || ($t->type == 'buy' && $t->status ==
+                                            'declined' ))
                                             <button data-toggle="modal" data-target="#refund-modal"
                                                 onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
                                                 class="btn btn-sm btn-outline-success">Refund</button>
                                             @endif
 
                                             @endif
+
 
                                             @if (Auth::user()->role == 777) {{-- Junior Accountant --}}
                                             @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
@@ -471,6 +382,57 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                 <label for="">Wallet pin </label>
                                 <input type="password" name="pin" required class="form-control">
                                 <input type="hidden" name="id" id="t-id" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Confirm Btc transfer payment --}}
+<div class="modal fade " id="confirm-btc-modal">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form action="{{ route('admin.btc-transfer') }}" method="post" class="txn-form">
+            @csrf
+            <div class="modal-content  c-rounded">
+                <!-- Modal Header -->
+                <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                    <h4 class="modal-title">Confirm BTC transfer of <i class="fa fa-paper-plane"></i></h4>
+                    <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+
+                <div class="modal-body p-4">
+                    <p class="text-success text-center">Select Wallet, and input wallet password and your account pin to confirm the transfer of <span class="amount"></span> worth of Bitcoins to
+                        <span class="acct-name"></span> </p>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Select Primary Wallet</label>
+                            <select name="primary_wallet_id" required id="" class="form-control">
+                                <option value="" >Select Wallet</option>
+                                @foreach ($primary_wallets as $wallet)
+                                    <option value="{{ $wallet->id }}">{{ $wallet->name }} - {{ $wallet->balance }}</option>
+                                @endforeach
+                            </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Primary Wallet pin </label>
+                                <input type="password" name="primary_wallet_pin" required class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Your Wallet pin </label>
+                                <input type="password" name="wallet_pin" required class="form-control">
+                                <input type="hidden" name="transaction_id" id="tx-id" required class="form-control">
                             </div>
                         </div>
                     </div>

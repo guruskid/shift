@@ -25,7 +25,12 @@ class Transaction extends Model
 
     public function pops()
     {
-        return $this->hasMany('App\Pop')->orderBy('created_at', 'desc');
+        return $this->hasMany('App\Pop')->latest();
+    }
+
+    public function batchPops()
+    {
+        return $this->hasMany('App\Pop', 'transaction_id', 'batch_id')->latest();
     }
 
     public function asset()

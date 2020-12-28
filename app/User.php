@@ -78,4 +78,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne('App\NotificationSetting');
     }
+
+    public function bitcoinWallet()
+    {
+        return $this->hasOne('App\BitcoinWallet');
+    }
 }

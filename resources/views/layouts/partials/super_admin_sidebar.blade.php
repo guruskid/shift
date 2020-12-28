@@ -26,6 +26,24 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin-wallets' ? 'active' : '' }}  ">
+        <a href="{{route('admin.bitcoin-wallets')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="logo-bitcoin"></ion-icon>
+                <span>Bitcoin Wallets</span>
+            </div>
+        </a>
+    </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'active' : '' }}  ">
+        <a href="{{route('admin.bitcoin-wallets-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="cash-outline"></ion-icon>
+                <span>Bitcoin Wallet Transactions</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.rates' ? 'active' : '' }}">
         <a href="{{route('admin.rates')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">

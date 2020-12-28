@@ -66,6 +66,7 @@
                                     </div>
                                 </div>
                                 @else
+
                                 <div class="col-md-4 col-lg-3 col-6 col-sm-6 my-3">
                                     <div class="card card-body text-center text-custom">
                                         <img src="{{asset('svg/naira.svg')}}" style="height: 40px; width: 40px"
@@ -73,6 +74,27 @@
                                         <h4 class="mb-0 mt-3"><strong>Dantown Wallet</strong></h4>
                                         <p>₦{{number_format($nw->amount)}} </p>
                                         <a href=" {{route('user.naira-wallet')}}"><button class="btn portfolio-btn">Go
+                                                to wallet</button></a>
+                                    </div>
+                                </div>
+                                @endif
+
+                                @if (!Auth::user()->bitcoinWallet)
+                                <div class="col-md-4 col-lg-3 col-6 col-sm-6 my-3">
+                                    <div class="card card-body text-center text-custom py-5 ">
+                                        <p>You dont have a Bitcoin wallet yet.</p>
+                                        <button data-toggle="modal" data-target="#new-bitcoin-wallet"
+                                            class="btn portfolio-btn">Create Bitcoin Wallet</button>
+                                    </div>
+                                </div>
+                                @else
+                                <div class="col-md-4 col-lg-3 col-6 col-sm-6 my-3">
+                                    <div class="card card-body text-center text-custom">
+                                        <img src="{{asset('svg/naira.svg')}}" style="height: 40px; width: 40px"
+                                            class="align-self-center">
+                                        <h4 class="mb-0 mt-3"><strong>{{ Auth::user()->bitcoinWallet->name }}</strong></h4>
+                                        <p>BTC {{Auth::user()->bitcoinWallet->balance}} </p>
+                                        <a href=" {{route('user.bitcoin-wallet')}}"><button class="btn portfolio-btn">Go
                                                 to wallet</button></a>
                                     </div>
                                 </div>
@@ -114,6 +136,42 @@
                             <div class="form-group">
                                 <label for="">Confirm password</label>
                                 <input type="password" class="form-control wallet-pin" required name="password_confirmation" placeholder="- - - -" >
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient">
+                        Create wallet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Bitcoin Wallet --}}
+<div class="modal fade " id="new-bitcoin-wallet">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content  c-rounded">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                <h4 class="modal-title">New Naira Wallet </h4>
+                <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+            </div>
+
+            <form action="{{route('user.bitcoin-wallet.create')}}" method="POST">@csrf
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Wallet Password (4) </label>
+                                <input type="password" class="form-control" required name="wallet_password" minlength="4" maxlength="4"  >
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Confirm password</label>
+                                <input type="password" class="form-control" required name="wallet_password_confirmation" >
                             </div>
                         </div>
                     </div>

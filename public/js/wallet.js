@@ -25,14 +25,14 @@ $(function () {
         $('#confirm-modal').modal('hide');
         $('#send-modal').modal('hide');
 
-     });
+    });
 
-     /* disable btn after buying airtime */
-     $('#airtime-form').submit(function (e) {
-         $('#recharge-btn').prop('disabled', true);
-         Notify('Transaction initiated, please wait', null, null, 'success');
-         $('#airtime-recharge-modal').modal('hide');
-      });
+    /* disable btn after buying airtime */
+    $('#airtime-form').submit(function (e) {
+        $('#recharge-btn').prop('disabled', true);
+        Notify('Transaction initiated, please wait', null, null, 'success');
+        $('#airtime-recharge-modal').modal('hide');
+    });
 
     /* Disable cable btn */
     $('#cable-form').submit(function (e) {
@@ -46,7 +46,7 @@ $(function () {
         $('#electricity-btn').prop('disabled', true);
         Notify('Transaction initiated, please wait', null, null, 'success');
         $('#electricity-modal').modal('hide');
-     });
+    });
 });
 /* Get the name of associated to the account number */
 function getAccountName() {
@@ -181,29 +181,74 @@ function showDetails(txnType, netwkPrvdr, phone, amount) {
 } /* Get the details for electricitypurchase */
 function getElectUser() {
     var providerId = $('#provider').find(':selected').data('scid');
-    var account = $('#dec-acct-num').val();
-    var acctName = $('#dec-acct-name');
-    if (!isNaN(providerId) && account != '') {
+    var account = $('#acct-num').val();
+    console.log(account)
+    var productcode = $('#billercode').val();
+    var acctName = $('#acct-name');
+    if (productcode != '' && account != '') {
         acctName.val('Loading, please wait..');
-        var formData = {
-            account: account,
-            service_category_id: providerId
-        };
         $('#d-provider').text($('#provider').find(':selected').text());
         $('#d-meter-no').text(account);
         $('#scid').val(providerId);
-        $.post("/user/get-elect-user", formData, function (data) {
-            if (data['data'] == undefined) {
-                acctName.val('No account found');
-                $('#d-acct-name').text('No account found');
-            } else {
-                acctName.val(data['data']['name']);
-                $('#d-acct-name').text(data['data']['name']);
+        $.ajax({
+            type: "post",
+            url: "/user/get-elect-user",
+            dataType: 'json',
+            data: {
+                "billercode": productcode,
+                "billercustomerid":account
+            },
+            success: function (result){
+                console.log('hi')
+                console.log(result)
+                if (result == undefined) {
+                    acctName.val('No account found');
+                    $('#d-acct-name').text('No account found');
+                } else {
+                    acctName.val(result);
+                    $('#d-acct-name').text(result);
+                }
             }
         });
+
+
     }
+
 }
 
 function getElectPrice() {
     $('#d-amount').text('₦' + $('#amount').val());
+}
+function getAirtimeAmount() {
+    var amount = $('#airtime_amount').val();
+    $('#new-amount').text('₦' +(0.7 * amount));
+
+}
+function getCableUser() {
+    var productcode = $('#dec-billercode').val();
+    var decoder = $('#decoder').val();
+    var acctName = $('#owner-name');
+    if (productcode != '' && decoder != '') {
+        acctName.val('Loading, please wait..');
+        $.ajax({
+            type: "post",
+            url: "/user/get-elect-user",
+            dataType: 'json',
+            data: {
+                "billercode": productcode,
+                "billercustomerid":decoder
+            },
+            success: function (result){
+                if (result != undefined) {
+                    acctName.val(result);
+                    $('#owner-name').text(result);
+                }
+                // acctName.val('No account found');
+                // $('#owner-name').text('No account found');
+            }
+        });
+
+
+    }
+
 }

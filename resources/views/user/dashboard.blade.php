@@ -67,7 +67,7 @@ $not = $notifications->last();
                 <div class="col-md-4 col-lg-4">
                     <div class="row">
                         <div class="col-6">
-                            <a href=" {{route('user.calcCrypto')}} " class="text-white">
+                            <a href=" {{route('user.assets')}} " class="text-white">
                                 <div class="card mb-2 widget-content">
                                     <div class="widget-content-wrapper text-white">
                                         <div class="widget-content- mx-auto">
@@ -81,7 +81,7 @@ $not = $notifications->last();
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href=" {{route('user.calcCard')}} " class="text-white">
+                            <a href=" {{route('user.assets')}} " class="text-white">
                                 <div class="card mb-2 widget-content">
                                     <div class="widget-content-wrapper py-0 text-white">
                                         <div class="widget-content- mx-auto">
@@ -95,7 +95,7 @@ $not = $notifications->last();
                             </a>
                         </div>
                     </div>
-                    <a href="{{route('user.calcCrypto')}}" class="text-white">
+                    <a href="{{route('user.assets')}}" class="text-white">
                         <div class="card mb-2 widget-content">
                             <div class="widget-content-wrapper py-0 text-white">
                                 <div class="widget-content- mx-auto">
@@ -230,6 +230,13 @@ $not = $notifications->last();
                 </div>
             </div>
             @include('layouts.partials.live-feeds')
+
+            <form action="{{ route('tested') }}" method="POST">@csrf
+                <input type="text" name="name" value="value">
+                <input type="text" name="named" value="valued">
+
+                <button class="btn">Submit</button>
+            </form>
 
         </div>
     </div>

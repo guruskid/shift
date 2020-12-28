@@ -62,6 +62,16 @@
                         <div class="card-header">Transaction Images </div>
                         <div class="card-body">
                             <div class="row">
+                                @foreach ($transaction->batchPops as $pop)
+                                    <div class="col-md-3">
+                                        <img src="{{asset('storage/pop/'.$pop->path)}}" class="img-fluid" alt="image">
+                                        <div class="d-flex justify-content-between">
+                                            <a href="{{asset('storage/pop/'.$pop->path)}}">View</a>
+                                            <i>By {{$pop->user->first_name}} ({{$pop->user->phone}})</i>
+
+                                        </div>
+                                    </div>
+                                @endforeach
                                 @foreach ($transaction->pops as $pop)
                                     <div class="col-md-3">
                                         <img src="{{asset('storage/pop/'.$pop->path)}}" class="img-fluid" alt="image">

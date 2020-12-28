@@ -65,7 +65,7 @@ class NairaWalletController extends Controller
                 'body' => $msg_body,
             ]);
 
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.naira-wallet') ));
+            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.naira-wallet')));
 
             return back()->with(['success' => 'Naira wallet account opened successfully']);
         } else {
@@ -183,7 +183,7 @@ class NairaWalletController extends Controller
                 'account_id' => 'required',
                 'pin' => 'required',
                 'amount' => 'required',
-                'narration' => 'required',
+                'narration' => 'nullable',
                 'ref' => 'required|unique:naira_transactions,reference',
             ]);
             /*
@@ -192,7 +192,7 @@ class NairaWalletController extends Controller
             } */
 
             /* get bank details */
-            $bd = Account::where('id', $r->account_id)->first();
+            $bd = Account::find($r->account_id);
             if (!$bd) {
                 return redirect()->back()->with(['error' => 'Error getting account details']);
             }
@@ -223,7 +223,7 @@ class NairaWalletController extends Controller
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
-        if ($tid == 0 ) {
+        if ($tid == 0) {
             return redirect()->back()->with(['error' => 'Something went wrong, please try again']);
         }
 
@@ -340,86 +340,7 @@ class NairaWalletController extends Controller
     }
 
 
-    public function adminTransfer(Request $r)
-    {
-        $r->validate([
-            'id' => 'required',
-            'pin' => 'required',
-        ]);
-
-        $n = NairaWallet::find(1); /* Admin general Wallet */
-        $t = Transaction::find($r->id);
-        $user_wallet = $t->user->nairaWallet;
-
-        if (Hash::check($r->pin, $n->password) == false) {
-            return back()->with(['error' => 'Wrong wallet pin']);
-        }
-
-        if ($t->status == 'success') {
-            return back()->with(['error' => 'Transaction already completed']);
-        }
-
-        if (!$user_wallet) {
-            return back()->with(['error' => 'User wallet not found']);
-        }
-
-        $amount = $t->amount_paid;
-        $reference = \Str::random(2) . '-' . $t->id;
-
-        $prev_bal = $user_wallet->amount;
-        $user_wallet->amount += $amount;
-        $user_wallet->save();
-
-        $nt = new NairaTransaction();
-        $nt->reference = $reference;
-        $nt->amount = $amount;
-        $nt->amount_paid = $amount;
-        $nt->user_id = $t->user->id;
-        $nt->type = 'naira wallet';
-
-        $nt->previous_balance = $prev_bal;
-        $nt->current_balance = $user_wallet->amount;
-        $nt->charge = 0;
-        $nt->transaction_type_id = 4;
-
-
-        $nt->dr_wallet_id = $n->id;
-        $nt->cr_wallet_id = $user_wallet->id;
-        $nt->dr_acct_name = 'Dantown';
-        $nt->cr_acct_name = $t->user->first_name;
-        $nt->narration = 'Payment for transaction with id ' . $t->uid;
-        $nt->trans_msg = 'This transaction was approved by ' . Auth::user()->email;
-        $nt->cr_user_id = $t->user->id;
-        $nt->dr_user_id = 1;
-        $nt->status = 'success';
-        $nt->save();
-
-        /* Update Transaction satus */
-        $t->status = 'success';
-        $t->accountant_id = Auth::user()->id;
-        $t->save();
-
-        $title = 'Dantown wallet Credit';
-        $msg_body = 'Your Dantown wallet has been credited with N' . $amount . ' from Dantown desc: Payment for transaction with id ' . $t->uid;
-        /* Send notification */
-        $not = Notification::create([
-            'user_id' => $t->user->id,
-            'title' => $title,
-            'body' => $msg_body
-        ]);
-
-        if ($t->user->notificationSetting->wallet_email == 1) {
-            Mail::to($t->user->email)->send(new WalletAlert($nt, 'credit'));
-        }
-
-        $client = new Client();
-        $token = env('SMS_TOKEN');
-        $to = $t->user->phone;
-        $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        /* $snd_sms = $client->request('GET', $sms_url); */
-
-        return back()->with(['success' => 'Transfer made successfully']);
-    }
+    
 
     public function adminRefund(Request $r)
     {
