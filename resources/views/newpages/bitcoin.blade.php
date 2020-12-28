@@ -99,7 +99,7 @@
                                         {{-- Sell Bitcoin --}}
                                         <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home"
                                             role="tabpanel" aria-labelledby="home-tab">
-                                            <form action="{{ route('user.trade-bitcoin') }}" method="post"> @csrf
+                                            <form action="{{ route('user.trade-bitcoin') }}" class="disable-form" method="post"> @csrf
                                                 <input type="hidden" name="card_id" value="{{ $card->id }}">
                                                 <input type="hidden" name="type" value="sell">
                                                 <div class="form-group mb-4">
@@ -185,7 +185,7 @@
                                         {{-- Buy --}}
                                         <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
-                                            <form action="{{ route('user.trade-bitcoin') }}" method="post">@csrf
+                                            <form action="{{ route('user.trade-bitcoin') }}" class="disable-form" method="post">@csrf
 
                                                 <div class="form-group mb-4">
                                                     <label for="inlineFormInputGroupUsername2"

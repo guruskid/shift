@@ -70,7 +70,15 @@ $(document).ready(function () {
             .html(fileName);
     });
 
+    //Disable form button once clicked
+    $('.disable-form').submit(function (e) {
+        var $form = $(this);
+        var $submitBtn = $("button", $form);
+        console.log($submitBtn)
+        $submitBtn.html('<i class="spinner-border"></i>');
+        $submitBtn.attr('disabled', 'true');
 
+    })
 
 });
 

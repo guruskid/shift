@@ -1,5 +1,5 @@
 <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="bitcoin_wallet_send_tab">
-    <form action="{{ route('user.send-bitcoin') }}" method="post"> @csrf
+    <form action="{{ route('user.send-bitcoin') }}" method="post" class="disable-form"> @csrf
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">

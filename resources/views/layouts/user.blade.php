@@ -92,6 +92,27 @@ $naira_balance = Auth::user()->nairaWallet->amount;
             margin-right: 15px;
             max-width: 300px;
         }
+
+        .swal-text{
+            color: black;
+        }
+
+        .swal-button {
+            height: 40px;
+            padding: 9px 20px;
+            border: 0px solid #000070 ;
+            background: #000070 ;
+            color: #fff;
+            border-radius: 5px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .swal-button:not([disabled]):hover {
+            background: #31318d;
+            color: #fff !important;
+        }
     </style>
 
 </head>
@@ -405,7 +426,8 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     <script src="{{asset('js/popper.min.js')}} "></script>
     <script src="{{asset('js/bootstrap.min.js')}} "></script>
     <script src="{{asset('js/custom.js?v=25')}}"></script>
-    <script src="{{asset('js/bootstrap-notify.js')}}"></script>
+    {{-- <script src="{{asset('js/bootstrap-notify.js')}}"></script> --}}
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
     <script src="{{asset('newpages/main.js?v=9')}} "></script>
 
@@ -419,6 +441,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"> </script>
 
     <script>
+
         $(document).ready(function () {
             /* Data tables */
             $('.transactions-table').DataTable({
@@ -431,7 +454,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     </script>
 
 
-    @if(session()->has('success'))
+    {{-- @if(session()->has('success'))
     <script>
         $(document).ready(function () {
             Notify("{{session()->get('success')}} ", null, null, 'success');
@@ -447,8 +470,28 @@ $naira_balance = Auth::user()->nairaWallet->amount;
         });
 
     </script>
+    @endif --}}
+
+
+    @if (session('error'))
+    <script>
+        swal(
+        'Oops!',
+        '{{ session("error") }}',
+        'error'
+        )
+    </script>
     @endif
 
+    @if (session('success'))
+    <script>
+        swal(
+        'Good Job!',
+        '{{ session("success") }}',
+        'success'
+        )
+    </script>
+    @endif
 
 
 </body>
