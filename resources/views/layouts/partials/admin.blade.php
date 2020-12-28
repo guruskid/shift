@@ -102,8 +102,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.buy_transac')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.buy_transac' ? 'mm-active' : '' }} ">
+                        <a href="{{route('admin.bitcoin-wallets-transactions')}}"
+                            class=" {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'mm-active' : '' }} ">
                             <i class="metismenu-icon">
                             </i>All Wallet Transactions
                         </a>

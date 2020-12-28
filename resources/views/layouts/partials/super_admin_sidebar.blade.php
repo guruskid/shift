@@ -35,8 +35,8 @@
         </a>
     </li>
 
-    <li class="menu {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'active' : '' }}  ">
-        <a href="{{route('admin.wallet-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
+    <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'active' : '' }}  ">
+        <a href="{{route('admin.bitcoin-wallets-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="cash-outline"></ion-icon>
                 <span>Bitcoin Wallet Transactions</span>

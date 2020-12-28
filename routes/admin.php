@@ -26,7 +26,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::get('/profit-manager', 'NairaTransactionController@profits')->name('admin.profits');
     Route::POST('/send-charges', 'NairaTransactionController@sendCharges')->name('admin.send-charges');
 
-    Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets')->name('admin.bitcoin-wallets');
+
     Route::POST('/bitcoin-wallet', 'BitcoinWalletController@createHdWallet')->name('admin.bitcoin-wallet.create');
 
     Route::POST('/set-bitcoin-charge', 'BitcoinWalletController@setCharge')->name('admin.set-bitcoin-charge');
@@ -41,5 +41,8 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::post('/admin-hd-wallet-recieve-hghdhfh-ehe7sjdhsjaqwe', 'BitcoinWalletController@webhook' )->name('admin.hdwallet-recieve');
 
     Route::get('/setup-webhooks', 'BitcoinWalletController@webhooks' );
+
+    Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets')->name('admin.bitcoin-wallets');
+    Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
 
 });

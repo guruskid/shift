@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\BitcoinTransaction;
 use App\BitcoinWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -32,6 +33,13 @@ class BitcoinWalletController extends Controller
         $bitcoin_charge = Setting::where('name', 'bitcoin_charge')->first();
 
         return view('admin.bitcoin_wallet.wallets', compact(['wallets', 'bitcoin_charge']));
+    }
+
+    public function transactions()
+    {
+        $transactions = BitcoinTransaction::latest()->paginate(200);
+
+        return view('admin.bitcoin_wallet.transactions', compact(['transactions']));
     }
 
 
