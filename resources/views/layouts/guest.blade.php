@@ -12,6 +12,29 @@
     <link rel="stylesheet" href="{{asset('css/fa.min.css')}} ">
     <link rel="stylesheet" href="{{asset('user_assets/css/main.css')}} ">
     <title>@yield('title') | Dantown Multi Services</title>
+
+    <style>
+        .swal-text{
+            color: black;
+        }
+
+        .swal-button {
+            height: 40px;
+            padding: 9px 20px;
+            border: 0px solid #000070 ;
+            background: #000070 ;
+            color: #fff;
+            border-radius: 5px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .swal-button:not([disabled]):hover {
+            background: #31318d;
+            color: #fff !important;
+        }
+    </style>
 </head>
 <body>
 
