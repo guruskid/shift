@@ -35,7 +35,7 @@ class BitcoinWalletController extends Controller
         }else{
             $transactions = Auth::user()->bitcoinWallet->transactions()->paginate(5);
         }
-        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_TESTNET);
+        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
         $fees = $fees_req->payload->recommended;
         $charge = Setting::where('name', 'bitcoin_charge')->first();
         if (!$charge) {
@@ -61,7 +61,7 @@ class BitcoinWalletController extends Controller
 
         try {
             $primary_wallet = BitcoinWallet::where(['user_id' => 1, 'primary_wallet_id' => 0])->first();
-            $result = $this->instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, 1);
+            $result = $this->instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, 1);
             $wallet = new BitcoinWallet();
             $address = $result->payload->addresses[0];
             $wallet->user_id = Auth::user()->id;
@@ -75,7 +75,7 @@ class BitcoinWalletController extends Controller
             $wallet->save();
 
             $callback = route('user.wallet-webhook');
-            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 3);
+            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, $wallet->address, 6);
         } catch (\Throwable  $e) {
             report($e);
             return back()->with(['error' => 'An error occured, please try again']);
@@ -204,7 +204,7 @@ class BitcoinWalletController extends Controller
 
         try {
             //update status and hash if it goes through
-            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, $input,  $outputs,  $fee);
+            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, $input,  $outputs,  $fee);
             $btc_transaction->hash = $result->payload->txid;
             $btc_transaction->status = 'success';
             $btc_transaction->save();
@@ -226,7 +226,7 @@ class BitcoinWalletController extends Controller
 
     public function webhook(Request $request)
     {
-        $confirmed = 3;  //set to 6 during live
+        $confirmed = 6;  //set to 6 during live
         //Get the address
         $address = $request->address;
         //Get the transaction id
@@ -236,7 +236,7 @@ class BitcoinWalletController extends Controller
 
         if ($btc_txn == null) { //New Transaction e.g recieve
             //Get transaction details
-            $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_TESTNET, $txn_id);
+            $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_MAINNET, $txn_id);
             $txn_details = $result->payload;
 
             //if no confirmations and unconfirmed == true

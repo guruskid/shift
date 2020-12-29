@@ -22,8 +22,8 @@ class BitcoinWalletController extends Controller
     public function webhooks()
     {
         $callback = route('user.wallet-webhook');
-        $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, 'mggWuRKhgwwGmdoDizJyxEJEhLt84Rv2jh', 3);
-        $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, 'mntuQZQ6ErrBtRjHf26nWfHepPx2g8p63W', 3);
+        $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, 'mggWuRKhgwwGmdoDizJyxEJEhLt84Rv2jh', 3);
+        $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, 'mntuQZQ6ErrBtRjHf26nWfHepPx2g8p63W', 3);
         dd($result);
     }
 
@@ -76,11 +76,11 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Wrong Account password']);
         }
         $password = Hash::make($data['wallet_password']);
-        /*   $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_TESTNET, $data['name'], $password,1);
+        /*   $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_MAINNET, $data['name'], $password,1);
         dd($result->payload->addresses[0]->path); */
 
         try {
-            $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_TESTNET, $data['name'], $password, 1);
+            $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_MAINNET, $data['name'], $password, 1);
             $wallet = new BitcoinWallet();
             $address = $result->payload->addresses[0];
             $wallet->user_id = 1;
@@ -95,7 +95,7 @@ class BitcoinWalletController extends Controller
 
             $callback = route('user.wallet-webhook');
 
-            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
+            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, $wallet->address, 6);
         } catch (\Throwable  $e) {
             report($e);
             return back()->with(['error' => 'An error occured, please try again']);
