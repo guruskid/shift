@@ -147,7 +147,7 @@ class HomeController extends Controller
             report($e);
             return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
         }
-        if ($body->verified != 'true') {
+        if (!$body->verified || $body->verified != 'true') {
             /* $this->resendOtp(); */
             return back()->with(['error' => 'Phone verification failed. A new OTP has been sent to you']);
         }

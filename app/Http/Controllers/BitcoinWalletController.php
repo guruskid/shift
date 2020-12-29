@@ -56,6 +56,9 @@ class BitcoinWalletController extends Controller
             'wallet_password' => 'required|min:4|confirmed',
         ]);
 
+        if (Auth::user()->bitcoinWallet) {
+            return back()->with(['error' => 'Bitcoin wallet already exists']);
+        }
 
         $password = Hash::make($data['wallet_password']);
 
