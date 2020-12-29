@@ -199,7 +199,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                                                 <div class="widget-subheading text-dark">
                                                     Hi there,
                                                 </div>
-                                            </div>
+                                                </div>
                                         </a>
                                         <div class="col ml-1">
                                             <div class="btn-group">
