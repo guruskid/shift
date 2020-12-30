@@ -97,91 +97,9 @@
                                             cryptocurrency in less than a minute</div>
 
                                         {{-- Sell Bitcoin --}}
-                                        <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home"
-                                            role="tabpanel" aria-labelledby="home-tab">
-                                            <form action="{{ route('user.trade-bitcoin') }}" class="disable-form" method="post"> @csrf
-                                                <input type="hidden" name="card_id" value="{{ $card->id }}">
-                                                <input type="hidden" name="type" value="sell">
-                                                <div class="form-group mb-4">
-                                                    <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
-                                                    <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                USD</div>
-                                                        </div>
-                                                        <input type="number" required step="any" min="0" name="amount"
-                                                            class="form-control bitcoin-input-radius" value=""
-                                                            id="sell_usd_field">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group mb-4">
-                                                    <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">Bitcoin equivalent</label>
-                                                    <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                BTC</div>
-                                                        </div>
-                                                        <input type="number" required step="any" min="0" name="quantity"
-                                                            class="form-control bitcoin-input-radius" value=""
-                                                            id="sell_btc_field">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group mb-4">
-                                                    <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">Naira equivalent</label>
-                                                    <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                NGN</div>
-                                                        </div>
-                                                        <input type="number" required name="amount_paid" step="any" min="0"
-                                                            class="form-control bitcoin-input-radius" value=""
-                                                            id="sell_ngn_field">
-                                                    </div>
-                                                </div>
-                                                {{-- <div class="form-group mb-4">
-                                                    <label for="wallet_address"
-                                                        style="color: rgba(0, 0, 112, 0.75);">Wallet Address</label>
-                                                    <span id="copied_text" class="text-success"
-                                                        style="display: none;">Wallet address copied</span>
-                                                    <div class="input-group mb-2 mr-sm-2">
-                                                        <input type="text" min="34" minlength="34" maxlength="35"
-                                                            max="35" class="form-control bitcoin-input-radius"
-                                                            id="wallet_address"
-                                                            style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
-                                                        <div class="input-group-append" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                <span id="copyWalletAddress" style="cursor: pointer;">
-                                                                    <svg width="26" height="20" viewBox="0 0 32 32"
-                                                                        fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <g clip-path="url(#clip0)">
-                                                                            <path
-                                                                                d="M12.9792 26.0012C9.85522 26.0012 7.3125 23.4585 7.3125 20.3345V6.66797H4.97925C2.95654 6.66797 1.3125 8.31177 1.3125 10.3345V28.3345C1.3125 30.3572 2.95654 32.0012 4.97925 32.0012H21.6458C23.6685 32.0012 25.3125 30.3572 25.3125 28.3345V26.0012H12.9792Z"
-                                                                                fill="#000070" />
-                                                                            <path
-                                                                                d="M30.6458 3.66675C30.6458 1.64136 29.0044 0 26.9792 0H12.9792C10.9539 0 9.3125 1.64136 9.3125 3.66675V20.3333C9.3125 22.3586 10.9539 24 12.9792 24H26.9792C29.0044 24 30.6458 22.3586 30.6458 20.3333V3.66675Z"
-                                                                                fill="#000070" />
-                                                                        </g>
-                                                                        <defs>
-                                                                            <clipPath id="clip0">
-                                                                                <rect width="32" height="32"
-                                                                                    fill="white" />
-                                                                            </clipPath>
-                                                                        </defs>
-                                                                    </svg>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div> --}}
-                                                <button {{-- type="button" data-toggle="modal"
-                                                    data-target="#uploadCardImageModal" id="sell_submit_btn" alt="sell"
-                                                    disabled="true" --}}
-                                                    class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
-                                            </form>
-                                        </div>
+                                       <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}" ></bitcoin-sell-component>
+
+
                                         {{-- Buy --}}
                                         <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
                                             role="tabpanel" aria-labelledby="profile-tab">
@@ -281,5 +199,5 @@
     };
 
 </script>
-<script src="{{asset('newpages/js/main.js?v=45')}} "></script>
+<script src="{{asset('newpages/js/main.js?v=495')}} "></script>
 @endsection

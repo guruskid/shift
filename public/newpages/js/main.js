@@ -75,10 +75,10 @@ $("#copyEthWalletAddress").on("click", function() {
 });
 
 // === Bitcoin calculator onchange logic ===
-const sell_usd_per_btc = 15637.88;
+//const sell_usd_per_btc = 15637.88;
 // const sell_ngn_per_usd = 382;
-const sell_usd_per_btc = 10500;
-const sell_ngn_per_usd = bit_sell[0].rate;
+const sell_usd_per_btc = 2000;
+const sell_ngn_per_usd = 500;
 
 const sellusdfield = $("#sell_usd_field");
 const sellbtcfield = $("#sell_btc_field");
@@ -89,6 +89,7 @@ sellusdfield.on("keyup", function() {
 
     //btc equivalent
     let btc = value / sell_usd_per_btc;
+    console.log(sell_usd_per_btc)
     sellbtcfield.val(btc);
 
     //naira equivalent

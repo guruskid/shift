@@ -44,7 +44,10 @@ class BitcoinWalletController extends Controller
             $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
         }
         $total_fees = $fees + $charge;
-        return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'charge', 'total_fees'));
+        $res = json_decode(file_get_contents("https://blockchain.info/ticker"));
+        $btc_rate = $res->USD->last;
+        $btc_usd = Auth::user()->bitcoinWallet->balance * $btc_rate;
+        return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'btc_usd', 'charge', 'total_fees'));
     }
 
 
@@ -136,7 +139,7 @@ class BitcoinWalletController extends Controller
             'body' => $body,
         ]);
         if (Auth::user()->notificationSetting->trade_email == 1) {
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+           // Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
         }
 
         return redirect()->route('user.transactions');

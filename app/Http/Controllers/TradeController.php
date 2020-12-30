@@ -65,7 +65,10 @@ class TradeController extends Controller
         $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
-        return view('newpages.bitcoin', compact(['rates', 'card']));
+        $res = json_decode(file_get_contents("https://blockchain.info/ticker"));
+        $btc_real_time = $res->USD->last;
+
+        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time']));
     }
 
     public function ethereum($card_id)

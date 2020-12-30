@@ -52,9 +52,9 @@
                                         <span class="h3 giftcard-text" style="color: #000070;">Bitcoin Wallet</span>
                                     </div>
                                     <div class="widget-n" style="justify-content: center; text-align: center;">
-                                        {{-- <span class="d-block" style="h6 walletbalance-text">Naira Wallet Balance</span>
+                                        <span class="d-block" style="h6 walletbalance-text">Naira Wallet Balance</span>
                                         <span class="d-block price">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
-                                        --}}
+
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                                     </div>
                                     <div class="d-flex">
                                         <div class="mr-1 mr-lg-2" style="">
-                                            {{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}
+                                           {{--  {{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }} --}}
                                         </div>
                                     </div>
                                 </div>
@@ -117,9 +117,9 @@
                                                 <span
                                                     style="color: #000070;font-size: 30px;">{{ number_format((float) Auth::user()->bitcoinWallet->balance, 8) }}</span>
                                                 <span style="color: #000070;font-size: 30px;">BTC</span>
-                                            </span>{{--
+                                            </span>
                                             <span class="d-block"
-                                                style="color: #565656;font-size: 16px;opacity: 0.5;">₦20,000</span> --}}
+                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$btc_usd, 2) }}
                                         </div>
                                         <div class="d-flex">
                                             <a id="bitcoin_send" class="btn walletpage_menu-active">
