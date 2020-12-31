@@ -1,28 +1,28 @@
 //Preview image before upload
-$("#proceedtoupload").on("click", function() {
+$("#proceedtoupload").on("click", function () {
     $("#uploadCardImageModal").show();
 });
 
 $('.sell_submit_btn').on("click", function (e) {
-   var calculatorForm = $(this).parent('form')
-   var uploadForm = $( '#uploadcardsform' );
-    $.each( calculatorForm.prop( 'elements' ), function( idx, elem ) {
-        uploadForm.append( $( '<input />' ).attr({
-            type : "hidden",
-            name : elem.name,
-            value : elem.value
+    var calculatorForm = $(this).parent('form')
+    var uploadForm = $('#uploadcardsform');
+    $.each(calculatorForm.prop('elements'), function (idx, elem) {
+        uploadForm.append($('<input />').attr({
+            type: "hidden",
+            name: elem.name,
+            value: elem.value
         }));
     });
     uploadForm.attr('action', calculatorForm.attr('action'));
- })
+})
 
 function preview(input) {
     $("#upload_text_desc").hide();
     if (input.files && input.files[0]) {
-        $(input.files).each(function() {
+        $(input.files).each(function () {
             var reader = new FileReader();
             reader.readAsDataURL(this);
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 $("#previewImg").append(
                     "<img class='thumb m-2 zoom' src='" + e.target.result + "'>"
                 );
@@ -39,8 +39,10 @@ function inputfile() {
     $("#uploadCardImageModal").hide();
 }
 
+
+
 // ===== BITCOIN CALCULATOR ======
-$("#myTab .nav-item").on("click", function() {
+$("#myTab .nav-item").on("click", function () {
     $("#myTab .nav-item").removeClass("active-title-item");
     $("#myTab .nav-item .nav-link").removeClass("text-white");
     $(this).addClass("active-title-item");
@@ -48,7 +50,7 @@ $("#myTab .nav-item").on("click", function() {
     /* $("input").val("") */
 });
 
-$("#copyWalletAddress").on("click", function() {
+$("#copyWalletAddress").on("click", function () {
     const inputText = document.querySelector("#wallet_address");
     inputText.select();
     inputText.setSelectionRange(0, 99999);
@@ -56,12 +58,12 @@ $("#copyWalletAddress").on("click", function() {
     $("#copied_text").css("display", "block");
     $("#inputText").css("box-shadow", "none !important");
     $("#inputText").css("outline", "none !important");
-    setTimeout(function() {
+    setTimeout(function () {
         $("#copied_text").css("display", "none");
     }, 1700);
 });
 
-$("#copyEthWalletAddress").on("click", function() {
+$("#copyEthWalletAddress").on("click", function () {
     const inputText = document.querySelector("#eth_wallet_address");
     inputText.select();
     inputText.setSelectionRange(0, 99999);
@@ -69,7 +71,7 @@ $("#copyEthWalletAddress").on("click", function() {
     $("#copied_text").css("display", "block");
     $("#inputText").css("box-shadow", "none !important");
     $("#inputText").css("outline", "none !important");
-    setTimeout(function() {
+    setTimeout(function () {
         $("#copied_text").css("display", "none");
     }, 1700);
 });
@@ -77,7 +79,7 @@ $("#copyEthWalletAddress").on("click", function() {
 // === Bitcoin calculator onchange logic ===
 //const sell_usd_per_btc = 15637.88;
 // const sell_ngn_per_usd = 382;
-const sell_usd_per_btc = 2000;
+/* const sell_usd_per_btc = 2000;
 const sell_ngn_per_usd = 500;
 
 const sellusdfield = $("#sell_usd_field");
@@ -121,7 +123,7 @@ sellngnfield.on("keyup", function(e) {
     //naira equivalent
     // let naira = dollars * sell_ngn_per_usd;
     // sellngnfield.val(naira);
-});
+}); */
 
 /*===== BUY BITCOIN =====*/
 // const buy_usd_per_btc = 10500;
@@ -133,7 +135,7 @@ const btcfield = $("#buy_btc_field");
 const usdfield = $("#buy_usd_field");
 const ngnfield = $("#buy_ngn_field");
 
-btcfield.on("keyup", function(e) {
+btcfield.on("keyup", function (e) {
     let value = $(this).val();
 
     //dollar equivalent
@@ -145,7 +147,7 @@ btcfield.on("keyup", function(e) {
     ngnfield.val(naira);
 });
 
-usdfield.on("keyup", function(e) {
+usdfield.on("keyup", function (e) {
     let value = $(this).val();
 
     //btc equivalent
@@ -157,7 +159,7 @@ usdfield.on("keyup", function(e) {
     ngnfield.val(naira);
 });
 
-ngnfield.on("keyup", function(e) {
+ngnfield.on("keyup", function (e) {
     let value = $(this).val();
 
     //dollar equivalent
@@ -170,7 +172,7 @@ ngnfield.on("keyup", function(e) {
 });
 /*===== END BUY CRYPTO =====*/
 
-$("#sell_submit_bt").on("click", function(e) {
+$("#sell_submit_bt").on("click", function (e) {
     e.preventDefault();
     const getAlt = $(this).attr("alt");
     const uploadText = `
@@ -187,7 +189,7 @@ $("#sell_submit_bt").on("click", function(e) {
     }
 });
 
-$("#upload_pop_success").on("click", function() {
+$("#upload_pop_success").on("click", function () {
     $("#uploadPopModal").css("display", "none");
 });
 /*===== END BUY BITCOIN =====*/
@@ -199,7 +201,7 @@ const sell_ngn_per_usd_eth = sell_eth[0].rate;
 
 //Convert USD to ETH, naira equivalent
 //Sell ETH
-$("#sell_usd_field_eth").on("keyup", function(){
+$("#sell_usd_field_eth").on("keyup", function () {
     let value = $(this).val();
 
     //eth equivalent
@@ -211,7 +213,7 @@ $("#sell_usd_field_eth").on("keyup", function(){
     $("#sell_ngn_eth_field").val(naira);
 })
 
-$("#sell_eth_equiv_field").on("keyup", function(e) {
+$("#sell_eth_equiv_field").on("keyup", function (e) {
     let value = $(this).val();
 
     //dollar equivalent
@@ -223,7 +225,7 @@ $("#sell_eth_equiv_field").on("keyup", function(e) {
     $("#sell_ngn_eth_field").val(naira);
 });
 
-$("#sell_ngn_eth_field").on("keyup", function(e) {
+$("#sell_ngn_eth_field").on("keyup", function (e) {
     let value = $(this).val();
 
     //dollar equivalent
@@ -242,7 +244,7 @@ const buy_usd_per_eth = 5465;
 // const buy_ngn_per_usd_eth = 380;
 const buy_ngn_per_usd_eth = buy_eth[0].rate;
 
-$("#buy_usd_field_eth").on("keyup", function() {
+$("#buy_usd_field_eth").on("keyup", function () {
     let value = $(this).val();
 
     //btc equivalent
@@ -254,7 +256,7 @@ $("#buy_usd_field_eth").on("keyup", function() {
     $("#buy_ngn_field_eth").val(naira);
 });
 
-$("#buy_eth_field").on("keyup", function() {
+$("#buy_eth_field").on("keyup", function () {
     let value = $(this).val();
 
     //dollar equivalent
@@ -267,7 +269,7 @@ $("#buy_eth_field").on("keyup", function() {
 });
 
 
-$("#buy_ngn_field_eth").on("keyup", function() {
+$("#buy_ngn_field_eth").on("keyup", function () {
     let value = $(this).val();
 
     //dollar equivalent
@@ -279,25 +281,25 @@ $("#buy_ngn_field_eth").on("keyup", function() {
 
 
 //Disable submit button if fields are empty in sell btc tab
-$("#wallet_address").on("keyup", function(){
-    if($(this).val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
+$("#wallet_address").on("keyup", function () {
+    if ($(this).val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
         $("#sell_submit_btn").removeAttr('disabled')
     } else {
-        $("#sell_submit_btn").attr('disabled',"true")
+        $("#sell_submit_btn").attr('disabled', "true")
     }
 })
-$("#sell_btc_field").on("keyup", function(){
-    if($("#wallet_address").val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
+$("#sell_btc_field").on("keyup", function () {
+    if ($("#wallet_address").val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
         $("#sell_submit_btn").removeAttr('disabled')
     } else {
-        $("#sell_submit_btn").attr('disabled',"true")
+        $("#sell_submit_btn").attr('disabled', "true")
     }
 })
-$("#sell_usd_field").on("keyup", function(){
-    if($("#wallet_address").val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
+$("#sell_usd_field").on("keyup", function () {
+    if ($("#wallet_address").val().trim().length > 10 && $("#sell_ngn_field").val().trim().length > 1) {
         $("#sell_submit_btn").removeAttr('disabled')
     } else {
-        $("#sell_submit_btn").attr('disabled',"true")
+        $("#sell_submit_btn").attr('disabled', "true")
     }
 })
 
@@ -310,72 +312,71 @@ $("#sell_usd_field").on("keyup", function(){
 // })
 
 //Disable submit button if fields are empty in buy btc tab
-$("#buy_wallet_address").on("keyup", function(){
-    if($(this).val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
+$("#buy_wallet_address").on("keyup", function () {
+    if ($(this).val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
         $("#buy_btc_btn").removeAttr('disabled')
     } else {
-        $("#buy_btc_btn").attr('disabled',"true")
+        $("#buy_btc_btn").attr('disabled', "true")
     }
 })
-$("#buy_btc_field").on("keyup", function(){
-    if($("#wallet_address").val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
+$("#buy_btc_field").on("keyup", function () {
+    if ($("#wallet_address").val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
         $("#buy_btc_btn").removeAttr('disabled')
     } else {
-        $("#buy_btc_btn").attr('disabled',"true")
+        $("#buy_btc_btn").attr('disabled', "true")
     }
 })
-$("#buy_usd_field").on("keyup", function(){
-    if($("#wallet_address").val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
+$("#buy_usd_field").on("keyup", function () {
+    if ($("#wallet_address").val().trim().length > 10 && $("#buy_ngn_field").val().trim().length > 1) {
         $("#buy_btc_btn").removeAttr('disabled')
     } else {
-        $("#buy_btc_btn").attr('disabled',"true")
+        $("#buy_btc_btn").attr('disabled', "true")
     }
 })
 
 
 //Disable submit button if fields are empty in sell eth tab
-$("#eth_wallet_address").on("keyup", function(){
-    if($(this).val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
+$("#eth_wallet_address").on("keyup", function () {
+    if ($(this).val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
         $("#sell_eth_submit_btn").removeAttr('disabled')
     } else {
-        $("#sell_eth_submit_btn").attr('disabled',"true")
+        $("#sell_eth_submit_btn").attr('disabled', "true")
     }
 })
-$("#sell_usd_field_eth").on("keyup", function(){
-    if($("#eth_wallet_address").val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
+$("#sell_usd_field_eth").on("keyup", function () {
+    if ($("#eth_wallet_address").val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
         $("#sell_eth_submit_btn").removeAttr('disabled')
     } else {
-        $("#sell_eth_submit_btn").attr('disabled',"true")
+        $("#sell_eth_submit_btn").attr('disabled', "true")
     }
 })
-$("#sell_eth_equiv_field").on("keyup", function(){
-    if($("#eth_wallet_address").val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
+$("#sell_eth_equiv_field").on("keyup", function () {
+    if ($("#eth_wallet_address").val().trim().length > 10 && $("#sell_ngn_eth_field").val().trim().length > 1) {
         $("#sell_eth_submit_btn").removeAttr('disabled')
     } else {
-        $("#sell_eth_submit_btn").attr('disabled',"true")
+        $("#sell_eth_submit_btn").attr('disabled', "true")
     }
 })
 
 //Disable submit button if fields are empty in buy eth tab
-$("#eth_wallet_address").on("keyup", function(){
-    if($(this).val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
+$("#eth_wallet_address").on("keyup", function () {
+    if ($(this).val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
         $("#buy_eth_submit_btn").removeAttr('disabled')
     } else {
-        $("#buy_eth_submit_btn").attr('disabled',"true")
+        $("#buy_eth_submit_btn").attr('disabled', "true")
     }
 })
-$("#buy_usd_field_eth").on("keyup", function(){
-    if($("#eth_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
+$("#buy_usd_field_eth").on("keyup", function () {
+    if ($("#eth_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
         $("#buy_eth_submit_btn").removeAttr('disabled')
     } else {
-        $("#buy_eth_submit_btn").attr('disabled',"true")
+        $("#buy_eth_submit_btn").attr('disabled', "true")
     }
 })
-$("#buy_eth_field").on("keyup", function(){
-    if($("#eth_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
+$("#buy_eth_field").on("keyup", function () {
+    if ($("#eth_wallet_address").val().trim().length > 10 && $("#buy_ngn_field_eth").val().trim().length > 1) {
         $("#buy_eth_submit_btn").removeAttr('disabled')
     } else {
-        $("#buy_eth_submit_btn").attr('disabled',"true")
+        $("#buy_eth_submit_btn").attr('disabled', "true")
     }
 })
-

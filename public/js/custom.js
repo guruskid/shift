@@ -93,6 +93,19 @@ function copy() {
     $("#wallet-id").attr("disabled", "true");
 }
 
+function copyAddress(id) {
+    console.log('hi');
+    /* Get the text field */
+    var copyText = document.getElementById(id);
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+    /* Alert the copied text */
+    swal("Address copied: " + copyText.value);
+}
+
 //Send OTP for old users
 function sendOtp() {
     var otpText = $('#otp-text');
