@@ -424,7 +424,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
     <script src="{{asset('js/bootstrap.min.js')}} "></script>
-    <script src="{{asset('js/custom.js?v=25')}}"></script>
+    <script src="{{asset('js/custom.js?v=26')}}"></script>
     {{-- <script src="{{asset('js/bootstrap-notify.js')}}"></script> --}}
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
