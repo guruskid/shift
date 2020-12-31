@@ -101,66 +101,7 @@
 
 
                                         {{-- Buy --}}
-                                        <div class="tab-pane fade mx-auto p-3 calculator_form" id="profile"
-                                            role="tabpanel" aria-labelledby="profile-tab">
-                                            <form action="{{ route('user.trade-bitcoin') }}" class="disable-form" method="post">@csrf
-
-                                                <div class="form-group mb-4">
-                                                    <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
-                                                    <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                USD</div>
-                                                        </div>
-                                                        <input type="number" required step="any" name="amount" min="0"
-                                                            class="form-control bitcoin-input-radius"
-                                                            id="buy_usd_field">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group mb-4">
-                                                    <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">Bitcoin equivalent</label>
-                                                    <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                BTC</div>
-                                                        </div>
-                                                        <input type="number" required step="any" name="quantity" min="0"
-                                                            class="form-control bitcoin-input-radius"
-                                                            id="buy_btc_field">
-                                                        <input type="hidden" name="card_id" value="{{ $card->id }}">
-                                                        <input type="hidden" name="type" value="buy">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group mb-4">
-                                                    <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">Naira equivalent</label>
-                                                    <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                NGN</div>
-                                                        </div>
-                                                        <input type="number" required name="amount_paid" class="form-control bitcoin-input-radius"
-                                                            id="buy_ngn_field">
-                                                    </div>
-                                                </div>
-                                               {{--  <div class="form-group mb-4">
-                                                    <label for="wallet_address"
-                                                        style="color: rgba(0, 0, 112, 0.75);">Wallet Address</label>
-                                                    <span id="copied_text" class="text-success"
-                                                        style="display: none;">Wallet address copied</span>
-                                                    <div class="input-group mb-2 mr-sm-2">
-                                                        <input type="text" min="34" minlength="34" maxlength="35"
-                                                            max="35" class="form-control bitcoin-input-radius"
-                                                            id="buy_wallet_address"
-                                                            style="border-top-left-radius: 5px;border-bottom-left-radius: 5px;">
-                                                    </div>
-                                                </div> --}}
-                                                <button type="submit" id="buy_btc_btn"
-                                                    class="btn w-100 text-white mt-2 bitcoin_calculator_btn">Buy</button>
-                                            </form>
-                                        </div>
+                                        <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
 
                                     </div>
                                 </div>

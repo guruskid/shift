@@ -46,6 +46,7 @@ Vue.component('gift-card-component', require('./components/calculator/giftCardCa
 Vue.component('upload-modal-component', require('./components/calculator/uploadModalComponent.vue').default);
 
 Vue.component('bitcoin-sell-component', require('./components/calculator/bitcoinSellComponent.vue').default);
+Vue.component('bitcoin-buy-component', require('./components/calculator/bitcoinBuyComponent.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

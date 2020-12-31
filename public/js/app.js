@@ -3357,6 +3357,107 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['rate', 'real_btc', 'card_id'],
+  data: function data() {
+    return {
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      //Input fields
+      nairaBuy: '',
+      usdBuy: '',
+      btcBuy: '',
+      //rates
+      btcToUsdBuy: this.real_btc,
+      usdToNairaBuy: this.rate.buy[0].rate,
+      //our rate
+      btcToNairaBuy: ''
+    };
+  },
+  mounted: function mounted() {
+    console.log(this.usdToNairaBuy);
+    this.btcToNairaBuy = this.btcToUsdBuy * this.usdToNairaBuy;
+  },
+  methods: {
+    //When USD field is updated
+    getRateUsdBuy: function getRateUsdBuy() {
+      this.nairaBuy = this.usdBuy * this.usdToNairaBuy;
+      this.btcBuy = this.usdBuy / this.btcToUsdBuy;
+    },
+
+    /* When btc is updated */
+    getRateBtcBuy: function getRateBtcBuy() {
+      this.usdBuy = this.btcToUsdBuy * this.btcBuy;
+      this.nairaBuy = this.btcBuy * this.btcToNairaBuy;
+    },
+
+    /* When ngn is updated */
+    getRateNgnBuy: function getRateNgnBuy() {
+      this.btcBuy = this.nairaBuy / this.btcToNairaBuy;
+      this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSellComponent.vue?vue&type=script&lang=js&":
 /*!******************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/bitcoinSellComponent.vue?vue&type=script&lang=js& ***!
@@ -52332,6 +52433,279 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=template&id=542b1fd3&":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=template&id=542b1fd3& ***!
+  \*********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "tab-pane fade show  mx-auto p-3 calculator_form",
+      attrs: {
+        id: "profile",
+        role: "tabpanel",
+        "aria-labelledby": "profile-tab"
+      }
+    },
+    [
+      _c(
+        "form",
+        {
+          staticClass: "disable-form",
+          attrs: { action: "/user/trade-bitcoin", method: "post" }
+        },
+        [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.card_id,
+                expression: "card_id"
+              }
+            ],
+            attrs: { type: "hidden", name: "card_id" },
+            domProps: { value: _vm.card_id },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.card_id = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            attrs: { type: "hidden", name: "type", value: "buy" }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            attrs: { type: "hidden", name: "_token" },
+            domProps: { value: _vm.csrf }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group mb-4" }, [
+            _c(
+              "label",
+              {
+                staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                attrs: { for: "inlineFormInputGroupUsername2" }
+              },
+              [_vm._v("USD equivalentsssss")]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.usdBuy,
+                    expression: "usdBuy"
+                  }
+                ],
+                staticClass: "form-control bitcoin-input-radius",
+                attrs: {
+                  type: "number",
+                  required: "",
+                  step: "any",
+                  min: "0",
+                  name: "amount"
+                },
+                domProps: { value: _vm.usdBuy },
+                on: {
+                  keyup: function($event) {
+                    return _vm.getRateUsdBuy()
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.usdBuy = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group mb-4" }, [
+            _c(
+              "label",
+              {
+                staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                attrs: { for: "inlineFormInputGroupUsername2" }
+              },
+              [_vm._v("Bitcoin\n                equivalent")]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.btcBuy,
+                    expression: "btcBuy"
+                  }
+                ],
+                staticClass: "form-control bitcoin-input-radius",
+                attrs: {
+                  type: "number",
+                  required: "",
+                  step: "any",
+                  min: "0",
+                  name: "quantity"
+                },
+                domProps: { value: _vm.btcBuy },
+                on: {
+                  keyup: function($event) {
+                    return _vm.getRateBtcBuy()
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.btcBuy = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group mb-4" }, [
+            _c(
+              "label",
+              {
+                staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                attrs: { for: "inlineFormInputGroupUsername2" }
+              },
+              [_vm._v("Naira\n                equivalent")]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.nairaBuy,
+                    expression: "nairaBuy"
+                  }
+                ],
+                staticClass: "form-control bitcoin-input-radius",
+                attrs: {
+                  type: "number",
+                  required: "",
+                  name: "amount_paid",
+                  step: "any",
+                  min: "0"
+                },
+                domProps: { value: _vm.nairaBuy },
+                on: {
+                  keyup: function($event) {
+                    return _vm.getRateNgnBuy()
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.nairaBuy = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass:
+                "sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn"
+            },
+            [_vm._v("Buy")]
+          )
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "input-group-prepend",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _c("div", { staticClass: "input-group-text input_label" }, [
+          _vm._v(" USD")
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "input-group-prepend",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _c("div", { staticClass: "input-group-text input_label" }, [
+          _vm._v("\n                        BTC")
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "input-group-prepend",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _c("div", { staticClass: "input-group-text input_label" }, [
+          _vm._v("\n                        NGN")
+        ])
+      ]
+    )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSellComponent.vue?vue&type=template&id=a25e9082&":
 /*!**********************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/bitcoinSellComponent.vue?vue&type=template&id=a25e9082& ***!
@@ -66339,6 +66713,7 @@ Vue.component('form-component', __webpack_require__(/*! ./components/chat/FormCo
 Vue.component('gift-card-component', __webpack_require__(/*! ./components/calculator/giftCardCalculatorComponent.vue */ "./resources/js/components/calculator/giftCardCalculatorComponent.vue")["default"]);
 Vue.component('upload-modal-component', __webpack_require__(/*! ./components/calculator/uploadModalComponent.vue */ "./resources/js/components/calculator/uploadModalComponent.vue")["default"]);
 Vue.component('bitcoin-sell-component', __webpack_require__(/*! ./components/calculator/bitcoinSellComponent.vue */ "./resources/js/components/calculator/bitcoinSellComponent.vue")["default"]);
+Vue.component('bitcoin-buy-component', __webpack_require__(/*! ./components/calculator/bitcoinBuyComponent.vue */ "./resources/js/components/calculator/bitcoinBuyComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -67468,6 +67843,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersComponent_vue_vue_type_template_id_47d47080___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersComponent_vue_vue_type_template_id_47d47080___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/bitcoinBuyComponent.vue":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinBuyComponent.vue ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _bitcoinBuyComponent_vue_vue_type_template_id_542b1fd3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bitcoinBuyComponent.vue?vue&type=template&id=542b1fd3& */ "./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=template&id=542b1fd3&");
+/* harmony import */ var _bitcoinBuyComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bitcoinBuyComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _bitcoinBuyComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _bitcoinBuyComponent_vue_vue_type_template_id_542b1fd3___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _bitcoinBuyComponent_vue_vue_type_template_id_542b1fd3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/calculator/bitcoinBuyComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinBuyComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./bitcoinBuyComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinBuyComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=template&id=542b1fd3&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=template&id=542b1fd3& ***!
+  \***************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinBuyComponent_vue_vue_type_template_id_542b1fd3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./bitcoinBuyComponent.vue?vue&type=template&id=542b1fd3& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinBuyComponent.vue?vue&type=template&id=542b1fd3&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinBuyComponent_vue_vue_type_template_id_542b1fd3___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinBuyComponent_vue_vue_type_template_id_542b1fd3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
