@@ -211,9 +211,9 @@ Route::get('/tested', 'HomeController@test')->name('tested');
 Auth::routes(['verify' => true]);
 Route::get('/', 'HomeController@index')->name('welcome');
 Route::get('/home', 'HomeController@index')->name('home');
-Route::view('/login', 'errors.503')->name('login');
+/* Route::view('/login', 'errors.503')->name('login');
 Route::view('/register', 'errors.503')->name('register');
-Route::view('/login-test', 'auth.login');
+Route::view('/login-test', 'auth.login'); */
 
 
 //Registration and verification routes
