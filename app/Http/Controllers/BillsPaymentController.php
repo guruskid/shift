@@ -103,7 +103,7 @@ class BillsPaymentController extends Controller
 
         if ($body->responsecode == "00"){
             $providers = $body->billers;
-            return view('newpages.smartbudget', compact(['providers']));
+            return view('newpages.paytv', compact(['providers']));
         }
         else{
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
@@ -329,7 +329,7 @@ class BillsPaymentController extends Controller
         $body = json_decode($response->getBody()->getContents());
         if ($body->responsecode == "00"){
             $providers = $body->billers;
-            return view('user.electricity', compact(['providers']));
+            return view('newpages.paybills', compact(['providers']));
         }
         else{
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
@@ -358,11 +358,10 @@ class BillsPaymentController extends Controller
     public function payElectricity(Request $r)
     {
         //uncommeting this line will make real transaction
-         dd('hi,this app works,uncomment this line in the controller');
+        dd('hi,this app works,uncomment this line in the BillsPaymentcontroller');
 
         $r->validate([
-            // 'scid' => 'required',
-            'provider' => 'required',
+           // 'provider' => 'required',
             'account' => 'required',
             'amount' => 'required',
             'password' => 'required',
@@ -372,10 +371,9 @@ class BillsPaymentController extends Controller
         $callback = route('recharge-card.callback');
         $n = Auth::user()->nairaWallet;
 
-        if (Hash::check($r->password, $n->password) == false) {
-            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
-        }
-
+//        if (Hash::check($r->password, $n->password) == false) {
+//            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+//        }
         $amount = $r->amount;
         //check if he has enough money
         if ($amount > $n->amount) {
@@ -383,6 +381,7 @@ class BillsPaymentController extends Controller
         }
         //what I remove here is below this page
         $reference = $r->scid .Str::random(16);
+       // dd('hi,this app works,uncomment this line in the BillsPaymentcontroller');
         $client = new Client();
         $url = env('RUBBIES_API')."/billerpurchase";
         $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
@@ -391,7 +390,7 @@ class BillsPaymentController extends Controller
             "billercustomerid"  => $r->account,
             "productcode"=> $r->productcode,
             "amount" => $amount,
-            "mobilenumber" =>Auth::user()->phone,
+            "mobilenumber" =>$r->phone,
             "name" => Auth::user()->first_name,
             "billercode" => $r->billercode,
         ];

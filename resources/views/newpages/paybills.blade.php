@@ -105,17 +105,20 @@
                                                         Select <b>"Prepaid"</b> if you load token on your meter.
                                                     </span>
                                                     <div class="row mt-2 mt-md-5">
-                                                        <form action="" method="post">
+                                                        <form method="post" action="{{route('user.pay-electricity')}}">
                                                             @csrf
                                                             <div class="row">
                                                                 <div class="col-12 my-1 my-md-0 col-md">
                                                                     <label for="electricy_board" class="mb-0 pb-0"
                                                                         style="color: #000070;">Electricity
                                                                         Board</label>
-                                                                    <select name="" id="electricy_board"
+                                                                    <select name="provider" id="electricy_board"
                                                                         style="color: #000070;" class="custom-select">
                                                                         <option value="" selected>Select electricity
                                                                             board</option>
+                                                                        @foreach ($providers as $p)
+                                                                            <option value="{{$p->servicename}}" >{{$p->servicename}}</option>
+                                                                        @endforeach
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-12 my-1 my-md-0 col-md">
@@ -132,8 +135,8 @@
                                                                 <div class="col-12 my-1 my-md-0 col-lg">
                                                                     <label for="metrenumber" class="mb-0 pb-0"
                                                                         style="color: #000070;">Meter Number</label>
-                                                                    <input type="number" name="" id="metrenumber"
-                                                                        class="form-control"
+                                                                    <input type="number" name="account" id="metrenumber"
+                                                                        class="form-control" onchange="getElectUser()"
                                                                         placeholder="Enter meter number" />
                                                                 </div>
                                                                 <div class="col-12 my-1 my-md-0 col-lg">
@@ -143,35 +146,35 @@
                                                                         style="">
                                                                         <div class="input-group-prepend"
                                                                             style="border: 1px solid rgba(0, 0, 112, 0.25);border-right:0px;border-top-left-radius:5px;border-bottom-left-radius:5px;">
-                                                                            <select id="dialcode_select" name="phone"
+                                                                            <select id="dialcode_select" name="phoney"
                                                                                 class="signup_custom country_code_form">
                                                                                 <option value="+234">+234</option>
-                                                                                <option value="+91">+91</option>
-                                                                                <option value="+14">+14</option>
+{{--                                                                                <option value="+91">+91</option>--}}
+{{--                                                                                <option value="+14">+14</option>--}}
                                                                             </select>
                                                                         </div>
-                                                                        <input type="tel" id="phoneNumber4Power"
+                                                                        <input name="phone" type="tel" id="phoneNumber4Power"
                                                                             placeholder="8141894420"
                                                                             class="form-control"
                                                                             style="border-left: 0px;"
                                                                             aria-label="Text input with dropdown button">
-                                                                        <input type="hidden" name="phone"
-                                                                            id="phoneNumber" />
+{{--                                                                        <input type="hidden" name="phone"--}}
+{{--                                                                            id="phoneNumber" />--}}
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="row mt-3 mt-md-4">
                                                                 <div class="col-12 my-1 my-md-0 col-md">
                                                                     <label for="email" class="mb-0 pb-0"
-                                                                        style="color: #000070;">Email
-                                                                        Address</label>
-                                                                    <input type="email" name="" id="email"
-                                                                        class="form-control" placeholder="Your email" />
+                                                                        style="color: #000070;">Meter Name
+                                                                    </label>
+                                                                    <input type="email" readonly id="acct-name"
+                                                                        class="form-control"/>
                                                                 </div>
                                                                 <div class="col-12 my-1 my-md-0 col-md">
                                                                     <label for="metre_type" class="mb-0 pb-0"
                                                                         style="color: #000070;">Amount</label>
-                                                                    <input type="number" name="" class="form-control"
+                                                                    <input type="number" name="amount" class="form-control"
                                                                         placeholder="Amount" id="">
                                                                 </div>
                                                             </div>
@@ -184,9 +187,12 @@
                                                                     <img id="pwd_visibility_toggle2"
                                                                         src="{{asset('svg/obscure-password.svg')}}" />
                                                                 </span>
-                                                                <input type="password" id="walletpin"
+                                                                <input type="password" id="walletpin" name="password"
                                                                     class="form-control" placeholder="Pin" />
                                                             </div>
+                                                            <input type="hidden" id="scid" name="scid" >
+                                                            <input type="hidden" id="productcode" name="productcode" value="{{$p->productcode}}" data-scid="{{$p->productcode}}">
+                                                            <input type="hidden" id="billercode" name="billercode" value="{{$p->billercode}}" >
                                                             <div class="d-flex mx-auto">
                                                                 <button type="submit" class="btn text-white px-4 mt-2 mt-md-4 mx-auto" style="background-color: #000070;">Continue</button>
                                                             </div>

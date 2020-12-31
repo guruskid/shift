@@ -181,15 +181,18 @@ function showDetails(txnType, netwkPrvdr, phone, amount) {
 } /* Get the details for electricitypurchase */
 function getElectUser() {
     var providerId = $('#provider').find(':selected').data('scid');
-    var account = $('#acct-num').val();
-    console.log(account)
+    var account = $('#metrenumber').val();
     var productcode = $('#billercode').val();
+    console.log(account,productcode)
     var acctName = $('#acct-name');
     if (productcode != '' && account != '') {
         acctName.val('Loading, please wait..');
+        //use in the previous design
         $('#d-provider').text($('#provider').find(':selected').text());
         $('#d-meter-no').text(account);
         $('#scid').val(providerId);
+        //end of usage
+
         $.ajax({
             type: "post",
             url: "/user/get-elect-user",
@@ -226,7 +229,9 @@ function getAirtimeAmount() {
 }
 function getCableUser() {
     var productcode = $('#dec-billercode').val();
+    console.log(productcode)
     var decoder = $('#decoder').val();
+    console.log(decoder)
     var acctName = $('#owner-name');
     if (productcode != '' && decoder != '') {
         acctName.val('Loading, please wait..');
