@@ -48,7 +48,10 @@
                             </i>
                         </div>
                         <div class="widget-subheading">
-                            User Wallets
+                            HD Wallets <br>
+                            @if (in_array(Auth::user()->role, [999, 889]))
+                            <button data-toggle="modal" data-target="#new-wallet-modal" class="btn btn-primary">Create HD Wallet</button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -63,7 +66,7 @@
                     <div class="main-card mb-3 pb-3 card">
                         <div class="card-header d-flex justify-content-between">
                             <div class="">
-                                Bitcoin Wallets
+                                HD Wallets
                             </div>
                         </div>
                         <div class="table-responsive p-3">
@@ -75,25 +78,25 @@
                                         <th >Path</th>
                                         <th >Address</th>
                                         <th >Type</th>
-                                        <th >Primary Wallet</th>
+                                        <th >Secondary Wallets</th>
                                         <th >Balance</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($wallets as $wallet)
+                                    @foreach ($hd_wallets as $wallet)
                                     <tr>
                                         <td class="text-muted">{{$wallet->id}}</td>
                                         <td >{{ucwords($wallet->user->first_name)}}</td>
                                         <td >{{$wallet->path}}</td>
                                         <td >{{$wallet->address}}</td>
                                         <td >{{ $wallet->type }} </td>
-                                        <td >{{$wallet->primaryWallet->name ?? ''}}</td>
+                                        <td >{{$wallet->secondaryWallets->count() }}</td>
                                         <td >{{ number_format((float)$wallet->balance, 8 ) }} </td>
-                                        <td>
-                                            <button class="btn btn-group">
+                                        <td>--
+                                           {{--  <button class="btn btn-group">
                                                 <button class="btn btn-primary">View</button>
-                                            </button>
+                                            </button> --}}
                                         </td>
                                     </tr>
                                     @endforeach

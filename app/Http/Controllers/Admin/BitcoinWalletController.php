@@ -43,6 +43,13 @@ class BitcoinWalletController extends Controller
         return view('admin.bitcoin_wallet.wallets', compact(['wallets', 'bitcoin_charge', 'bitcoin_buy_charge', 'bitcoin_sell_charge']));
     }
 
+    public function hdWallets()
+    {
+        $hd_wallets = BitcoinWallet::where('type', 'primary')->get();
+
+        return view('admin.bitcoin_wallet.hd_wallets', compact('hd_wallets'));
+    }
+
     public function charges()
     {
         $transactions = BitcoinTransaction::where('charge', '!=', 0)->latest()->paginate(200);

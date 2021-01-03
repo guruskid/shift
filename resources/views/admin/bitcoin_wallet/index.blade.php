@@ -81,28 +81,32 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card mb-3 widget-content ">
-                        <div class="widget-content-wrapper ">
-                            <div class="widget-content-left">
-                                <div class="widget-heading">
-                                    <h5>HD Wallets Balance</h5>
-                                    <span>{{number_format((float)$hd_wallets_balance, 8) }}BTC</span>
+                    <a href="{{route('admin.bitcoin.hd-wallets')}}">
+                        <div class="card mb-3 widget-content ">
+                            <div class="widget-content-wrapper ">
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">
+                                        <h5>HD Wallets Balance</h5>
+                                        <span>{{number_format((float)$hd_wallets_balance, 8) }}BTC</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-3">
-                    <div class="card mb-3 widget-content ">
-                        <div class="widget-content-wrapper ">
-                            <div class="widget-content-left">
-                                <div class="widget-heading">
-                                    <h5>Users Wallets Balance</h5>
-                                    <span>{{number_format((float)$users_wallet_balance, 8) }}BTC</span>
+                    <a href="{{ route('admin.bitcoin-wallets') }}">
+                        <div class="card mb-3 widget-content ">
+                            <div class="widget-content-wrapper ">
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">
+                                        <h5>Users Wallets Balance</h5>
+                                        <span>{{number_format((float)$users_wallet_balance, 8) }}BTC</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
