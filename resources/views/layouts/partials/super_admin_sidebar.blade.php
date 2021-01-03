@@ -26,11 +26,11 @@
         </a>
     </li>
 
-    <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin-wallets' ? 'active' : '' }}  ">
-        <a href="{{route('admin.bitcoin-wallets')}}"  aria-expanded="false" class="dropdown-toggle">
+    <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
+        <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="logo-bitcoin"></ion-icon>
-                <span>Bitcoin Wallets</span>
+                <span>Bitcoin Wallet</span>
             </div>
         </a>
     </li>

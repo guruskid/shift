@@ -88,11 +88,11 @@
             </li>
 
             <li>
-                <a href="#">
+                <a href="{{ route('admin.bitcoin') }}">
                     <i class="metismenu-icon pe-7s-cash"></i>
-                    Bitcoin Wallets
-                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                </a>
+                    Bitcoin Wallet
+                    <i class="metismenu-state-icon "></i>
+                </a>{{--
                 <ul>
                     <li>
                         <a href="{{route('admin.bitcoin-wallets')}}"
@@ -108,7 +108,7 @@
                             </i>All Wallet Transactions
                         </a>
                     </li>
-                </ul>
+                </ul> --}}
             </li>
             @endif
 

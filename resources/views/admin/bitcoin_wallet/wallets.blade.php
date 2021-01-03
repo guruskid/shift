@@ -58,28 +58,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-5 mx-auto mb-3">
-                    <div class="card card-body">
-                        <h5>Bitcoin Settings</h5>
-                        <form action="{{ route('admin.set-bitcoin-charge') }}" method="POST" >@csrf
-                            <div class="form-group">
-                                <label for="">Send transaction charge</label>
-                                <input type="number" step="any" name="bitcoin_charge" value="{{ $bitcoin_charge->value ?? '' }}" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="">Buy bitcoin charge</label>
-                                <input type="number" step="any" name="bitcoin_buy_charge" value="{{ $bitcoin_buy_charge->value ?? '' }}" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="">Sell bitcoin charge</label>
-                                <input type="number" step="any" name="bitcoin_sell_charge" value="{{ $bitcoin_sell_charge->value ?? '' }}" class="form-control">
-                            </div>
-                            <button class="btn btn-primary">Save</button>
-                        </form>
-                    </div>
-                </div>
+                
                 <div class="col-md-12">
                     @foreach ($errors->all() as $err)
                     <p class="text-danger">{{ $err }}</p>

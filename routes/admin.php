@@ -46,7 +46,9 @@ Route::group(['middleware' => ['accountant'] ], function () {
 
     Route::get('/setup-webhooks', 'BitcoinWalletController@webhooks' );
 
+    Route::get('/bitcoin', 'BitcoinWalletController@index')->name('admin.bitcoin');
     Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets')->name('admin.bitcoin-wallets');
+    Route::get('/bitcoin-charges', 'BitcoinWalletController@charges')->name('admin.bitcoin.charges');
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
 
 

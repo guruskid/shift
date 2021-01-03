@@ -22,22 +22,36 @@ class BitcoinWalletController extends Controller
         $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
     }
 
-    public function webhooks()
+    public function index()
     {
-        $callback = route('user.wallet-webhook');
-        $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, 'mggWuRKhgwwGmdoDizJyxEJEhLt84Rv2jh', 3);
-        $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, 'mntuQZQ6ErrBtRjHf26nWfHepPx2g8p63W', 3);
-        dd($result);
+        $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
+        $hd_wallets_balance = BitcoinWallet::where('type', 'primary')->sum('balance');
+        $users_wallet_balance = BitcoinWallet::where('type', 'secondary')->where('user_id', '!=', 1)->sum('balance');
+        $live_balance = 10; //get from api
+        $transactions = BitcoinTransaction::latest()->paginate(200);
+
+        return view('admin.bitcoin_wallet.index', compact('charges', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
     }
 
     public function wallets()
     {
-        $wallets = BitcoinWallet::latest()->get();
+        $wallets = BitcoinWallet::where('user_id', '!=', 1)->latest()->get();
         $bitcoin_charge = Setting::where('name', 'bitcoin_charge')->first();
         $bitcoin_buy_charge = Setting::where('name', 'bitcoin_buy_charge')->first();
         $bitcoin_sell_charge = Setting::where('name', 'bitcoin_sell_charge')->first();
 
         return view('admin.bitcoin_wallet.wallets', compact(['wallets', 'bitcoin_charge', 'bitcoin_buy_charge', 'bitcoin_sell_charge']));
+    }
+
+    public function charges()
+    {
+        $transactions = BitcoinTransaction::where('charge', '!=', 0)->latest()->paginate(200);
+        $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
+        $bitcoin_buy_charge = Setting::where('name', 'bitcoin_buy_charge')->first();
+        $bitcoin_sell_charge = Setting::where('name', 'bitcoin_sell_charge')->first();
+
+        return view('admin.bitcoin_wallet.charges', compact('transactions', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
+
     }
 
     public function transactions()
