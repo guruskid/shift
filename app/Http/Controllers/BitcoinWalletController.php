@@ -108,7 +108,9 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
         } */
 
-        if ($data['type'] == 'sell' && Auth::user()->bitcoinWallet->balance < $data['quantity']) {
+        $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+
+        if ($data['type'] == 'sell' && Auth::user()->bitcoinWallet->balance < ($data['quantity'] + $charge)) {
             return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
         }
 

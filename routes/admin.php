@@ -40,7 +40,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
 Route::group(['middleware' => ['accountant'] ], function () {
     Route::post('/admin-transfer', 'AssetTransactionController@payTransaction' )->name('admin.transfer');
-    Route::post('/admin-btc-transfer', 'AssetTransactionController@payBtcTransaction' )->name('admin.btc-transfer');
+    Route::post('/admin-btc-transfer', 'BitcoinWalletController@payBtcTransaction' )->name('admin.btc-transfer');
 
     Route::post('/admin-hd-wallet-recieve-hghdhfh-ehe7sjdhsjaqwe', 'BitcoinWalletController@webhook' )->name('admin.hdwallet-recieve');
 
