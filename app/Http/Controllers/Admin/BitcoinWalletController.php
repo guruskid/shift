@@ -56,10 +56,57 @@ class BitcoinWalletController extends Controller
         $fees = $fees_req->payload->recommended;
         $transactions = BitcoinTransaction::where('charge', '!=', 0)->latest()->paginate(200);
         $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
+        $bitcoin_charge = Setting::where('name', 'bitcoin_charge')->first();
         $bitcoin_buy_charge = Setting::where('name', 'bitcoin_buy_charge')->first();
         $bitcoin_sell_charge = Setting::where('name', 'bitcoin_sell_charge')->first();
 
-        return view('admin.bitcoin_wallet.charges', compact('transactions', 'fees', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
+        return view('admin.bitcoin_wallet.charges', compact('transactions', 'fees', 'bitcoin_charge', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
+    }
+
+    public function setCharge(Request $r)
+    {
+        $data = $r->validate([
+            'bitcoin_charge' => 'required',
+            'bitcoin_buy_charge' => 'required',
+            'bitcoin_sell_charge' => 'required',
+        ]);
+
+        $id = Setting::latest()->first()->id;
+        /* $id += 3; */
+        $send_charge = Setting::updateorCreate(
+            [
+
+                'name' => 'bitcoin_charge',
+            ],
+            [
+                //'id' => $id +1,
+                'value' => $data['bitcoin_charge']
+            ]
+        );
+
+        $buy_charge = Setting::updateorCreate(
+            [
+
+                'name' => 'bitcoin_buy_charge',
+            ],
+            [
+                //'id' => $id+2,
+                'value' => $data['bitcoin_buy_charge']
+            ]
+        );
+
+        $sell_charge = Setting::updateorCreate(
+            [
+
+                'name' => 'bitcoin_sell_charge',
+            ],
+            [
+                //'id' => $id+4,
+                'value' => $data['bitcoin_sell_charge']
+            ]
+        );
+
+        return back()->with(['success' => 'Bitcoin charge set successfully']);
     }
 
     public function transferCharges(Request $r)
@@ -143,51 +190,7 @@ class BitcoinWalletController extends Controller
     }
 
 
-    public function setCharge(Request $r)
-    {
-        $data = $r->validate([
-            'bitcoin_charge' => 'required',
-            'bitcoin_buy_charge' => 'required',
-            'bitcoin_sell_charge' => 'required',
-        ]);
 
-        $id = Setting::latest()->first()->id;
-        /* $id += 3; */
-        $send_charge = Setting::updateorCreate(
-            [
-
-                'name' => 'bitcoin_charge',
-            ],
-            [
-                'id' => $id +1,
-                'value' => $data['bitcoin_charge']
-            ]
-        );
-
-        $buy_charge = Setting::updateorCreate(
-            [
-
-                'name' => 'bitcoin_buy_charge',
-            ],
-            [
-                'id' => $id+2,
-                'value' => $data['bitcoin_buy_charge']
-            ]
-        );
-
-        $sell_charge = Setting::updateorCreate(
-            [
-
-                'name' => 'bitcoin_sell_charge',
-            ],
-            [
-                'id' => $id+4,
-                'value' => $data['bitcoin_sell_charge']
-            ]
-        );
-
-        return back()->with(['success' => 'Bitcoin charge set successfully']);
-    }
 
     public function createHdWallet(Request $r)
     {
