@@ -50,6 +50,7 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets')->name('admin.bitcoin-wallets');
     Route::get('/bitcoin-hd-wallets', 'BitcoinWalletController@hdWallets')->name('admin.bitcoin.hd-wallets');
     Route::get('/bitcoin-charges', 'BitcoinWalletController@charges')->name('admin.bitcoin.charges');
+    Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges' )->name('admin.bitcoin.transfer-charges');
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
 
 

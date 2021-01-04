@@ -19,7 +19,7 @@ class BitcoinWalletController extends Controller
 
     public function __construct()
     {
-        $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
+        $this->instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
     }
 
     public function index()
@@ -52,12 +52,86 @@ class BitcoinWalletController extends Controller
 
     public function charges()
     {
+        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
+        $fees = $fees_req->payload->recommended;
         $transactions = BitcoinTransaction::where('charge', '!=', 0)->latest()->paginate(200);
         $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
         $bitcoin_buy_charge = Setting::where('name', 'bitcoin_buy_charge')->first();
         $bitcoin_sell_charge = Setting::where('name', 'bitcoin_sell_charge')->first();
 
-        return view('admin.bitcoin_wallet.charges', compact('transactions', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
+        return view('admin.bitcoin_wallet.charges', compact('transactions', 'fees', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
+    }
+
+    public function transferCharges(Request $r)
+    {
+        $data = $r->validate([
+            'fees'=> 'required',
+            'amount' => 'required',
+            'pin' => 'required',
+            'address' => 'required',
+        ]);
+
+        if (!Hash::check($data['pin'], Auth::user()->bitcoinWallet->password)) {
+            return back()->with(['error' => 'Incorrect pin']);
+        }
+
+        $total = $data['amount'] + $data['fees'];
+        $charges_wallet = BitcoinWallet::where('name', 'bitcoin charges')->first();
+        $primary_wallet = BitcoinWallet::where('type', 'primary')->first();
+
+
+        if ($total > $charges_wallet->balance ) {
+            return back()->with(['error' => 'Insufficient balance']);
+        }
+
+        $charges_wallet->balance -= $total;
+        $charges_wallet->save();
+
+        $btc_transaction = new BitcoinTransaction();
+        $btc_transaction->user_id = 1;
+        $btc_transaction->primary_wallet_id = $primary_wallet->id;
+        $btc_transaction->wallet_id = $charges_wallet->address; //The wallet of the owner user
+        $btc_transaction->hash = 'none';
+        $btc_transaction->debit = $total;
+        $btc_transaction->fee = $data['fees'];
+        $btc_transaction->charge = 0;
+        $btc_transaction->previous_balance = $charges_wallet->getOriginal('balance');
+        $btc_transaction->current_balance = $charges_wallet->balance;
+        $btc_transaction->transaction_type_id = 21;
+        $btc_transaction->counterparty = $data['address'];
+        $btc_transaction->narration = 'Sending bitcoin to ' . $data['address'] . ' Authorized by '. Auth::user()->first_name;
+        $btc_transaction->confirmations = 0;
+        $btc_transaction->status = 'pending';
+        $btc_transaction->save();
+
+        $outputs = new \RestApis\Blockchain\BTC\Snippets\Output();
+        $input = new \RestApis\Blockchain\BTC\Snippets\Input();
+        $outputs->add($data['address'], $data['amount']);
+        $input->add($primary_wallet->address, $data['amount']);
+
+        $fee = new \RestApis\Blockchain\BTC\Snippets\Fee();
+        $fee->set($data['fees']);
+
+        try {
+            //update status and hash if it goes through
+            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, $input,  $outputs,  $fee);
+            $btc_transaction->hash = $result->payload->txid;
+            $btc_transaction->status = 'success';
+            $btc_transaction->save();
+
+            //send mail
+            return back()->with(['success' => 'Charges sent successfully']);
+        } catch (\Exception $e) {
+            report($e);
+            $charges_wallet->balance = $charges_wallet->getOriginal('balance');
+            $charges_wallet->save();
+
+            $btc_transaction->status = 'failed';
+            $btc_transaction->save();
+            //set the transaction status to failed
+
+            return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
+        }
 
     }
 

@@ -69,26 +69,31 @@
                     </div>
 
                     <div class="card card-body">
-                        <form action="" method="POST" >@csrf
+                        <form action="{{ route('admin.bitcoin.transfer-charges') }}" method="POST">@csrf
                             <div class="row">
-                               <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Wallet Pin</label>
-                                    <input type="number" step="any" name="bitcoin_charge" value="{{ $bitcoin_charge->value ?? '' }}" class="form-control">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Txn Fee</label>
+                                        <input type="number"  name="fees"
+                                            value="{{ $fees ?? '' }}" class="form-control">
+                                    </div>
                                 </div>
-                               </div>
-
-                               <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Amount</label>
-                                    <input type="number" step="any" name="bitcoin_buy_charge" value="{{ $bitcoin_buy_charge->value ?? '' }}" class="form-control">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Amount</label>
+                                        <input type="number" step="any" name="amount" class="form-control">
+                                    </div>
                                 </div>
-                               </div>
-
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Address</label>
-                                        <input type="number" step="any" name="bitcoin_sell_charge" value="{{ $bitcoin_sell_charge->value ?? '' }}" class="form-control">
+                                        <input type="text"  name="address" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Your Wallet Pin</label>
+                                        <input type="password" name="pin" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -99,20 +104,23 @@
                 <div class="col-md-6 mb-3">
                     <div class="card card-body py-3">
                         <h5>Bitcoin Settings</h5>
-                        <form action="{{ route('admin.set-bitcoin-charge') }}" method="POST" >@csrf
+                        <form action="{{ route('admin.set-bitcoin-charge') }}" method="POST">@csrf
                             <div class="form-group">
                                 <label for="">Send transaction charge</label>
-                                <input type="number" step="any" name="bitcoin_charge" value="{{ $bitcoin_charge->value ?? '' }}" class="form-control">
+                                <input type="number" step="any" name="bitcoin_charge"
+                                    value="{{ $bitcoin_charge->value ?? '' }}" class="form-control">
                             </div>
 
                             <div class="form-group">
                                 <label for="">Buy bitcoin charge</label>
-                                <input type="number" step="any" name="bitcoin_buy_charge" value="{{ $bitcoin_buy_charge->value ?? '' }}" class="form-control">
+                                <input type="number" step="any" name="bitcoin_buy_charge"
+                                    value="{{ $bitcoin_buy_charge->value ?? '' }}" class="form-control">
                             </div>
 
                             <div class="form-group">
                                 <label for="">Sell bitcoin charge</label>
-                                <input type="number" step="any" name="bitcoin_sell_charge" value="{{ $bitcoin_sell_charge->value ?? '' }}" class="form-control">
+                                <input type="number" step="any" name="bitcoin_sell_charge"
+                                    value="{{ $bitcoin_sell_charge->value ?? '' }}" class="form-control">
                             </div>
                             <button class="btn btn-primary">Save</button>
                         </form>
@@ -141,7 +149,9 @@
                                     <tr>
                                         <td class="text-center">{{$t->id}}</td>
                                         <td class="text-center">{{$t->type->name}}</td>
-                                        <td class="text-center">{{$t->debit == 0 ? number_format((float)$t->credit, 8) : number_format((float)$t->debit)}}</td>
+                                        <td class="text-center">
+                                            {{$t->debit == 0 ? number_format((float)$t->credit, 8) : number_format((float)$t->debit)}}
+                                        </td>
                                         <td class="text-center">{{number_format((float)$t->charge, 8)}}</td>
                                         <td class="text-center">{{ucwords($t->status)}} </td>
                                         <td class="text-center">{{$t->created_at->format('d M y ')}}</td>

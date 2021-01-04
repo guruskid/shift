@@ -75,7 +75,7 @@
                                     <tr>
                                         <th >#</th>
                                         <th >User</th>
-                                        <th >Path</th>
+                                        {{-- <th >Path</th> --}}
                                         <th >Address</th>
                                         <th >Type</th>
                                         <th >Secondary Wallets</th>
@@ -88,7 +88,7 @@
                                     <tr>
                                         <td class="text-muted">{{$wallet->id}}</td>
                                         <td >{{ucwords($wallet->user->first_name)}}</td>
-                                        <td >{{$wallet->path}}</td>
+                                        {{-- <td >{{$wallet->path}}</td> --}}
                                         <td >{{$wallet->address}}</td>
                                         <td >{{ $wallet->type }} </td>
                                         <td >{{$wallet->secondaryWallets->count() }}</td>
@@ -135,7 +135,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Account Login Password </label>
-                                <input type="text" name="account_password" required class="form-control">
+                                <input type="password" name="account_password" required class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="">Wallet Name </label>
