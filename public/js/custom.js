@@ -156,6 +156,32 @@ function resendOtp() {
 }
 
 
+//Verify BVN
+function verifyBvn() {
+    var bvn = $('#bvn').val();
+    var sendOtp = $('#send-otp');
+    if (bvn.length < 11) {
+        swal('error', 'BVN is expecteed to be 11 or 12 digits, please confirm the BVN and try again');
+        return false;
+    }
+    sendOtp.text('Sending . . .');
+    $.get('/send-bvn-otp/'+bvn)
+    .done(function (res) {
+        if (res.success) {
+            sendOtp.text('Resend');
+            swal('success', 'An OTP has been sent to the phone number associated with your BVN. Please check and input it below');
+        }else{
+            swal('error', res.msg);
+            sendOtp.text('Resend');
+        }
+     })
+     .fail(function (xhr, status, err) {
+         console.log(err, xhr);
+      })
+      
+}
+
+
 
 /* Edit Bank details */
 function editBank(id) {

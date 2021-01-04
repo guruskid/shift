@@ -143,14 +143,15 @@ class HomeController extends Controller
                 ],
             ]);
             $body = json_decode($response->getBody()->getContents());
+
+            if (!$body->verified || $body->verified != 'true') {
+                return back()->with(['error' => 'Phone verification failed. A new OTP has been sent to you']);
+            }
         } catch (\Exception $e) {
             report($e);
             return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
         }
-        if (!$body->verified || $body->verified != 'true') {
-            /* $this->resendOtp(); */
-            return back()->with(['error' => 'Phone verification failed. A new OTP has been sent to you']);
-        }
+
 
         Auth::user()->phone_verified_at = now();
         Auth::user()->username = $data['username'];
@@ -173,8 +174,8 @@ class HomeController extends Controller
                 'api_key' => env('TERMII_API_KEY'),
                 "message_type" => "NUMERIC",
                 "to" => $phone,
-                "from" => "Dantown",
-                "channel" => "generic",
+                "from" => "N-Alert",
+                "channel" => "dnd",
                 "pin_attempts" => 4,
                 "pin_time_to_live" =>  10,
                 "pin_length" => 6,
@@ -309,5 +310,100 @@ class HomeController extends Controller
         }
 
         return;
+    }
+
+    public function sendBvnOtp($bvn)
+    {
+        $client = new Client();
+        $url = env('RUBBIES_API') . "/verifybvn";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                "reference" => time(),
+                "bvn" => $bvn
+            ],
+            'headers' => [
+                'authorization' => env('RUBBIES_SECRET_KEY'),
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+        if ($body->responsecode != "00") {
+            return response()->json([
+                'success' => false,
+                "msg" => $body->responsemessage
+            ]);
+        }
+
+        $phone = '234'. $body->phoneNumber;
+
+
+        $client = new Client();
+        $url = env('TERMII_SMS_URL') . "/otp/send";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                'api_key' => env('TERMII_API_KEY'),
+                "message_type" => "NUMERIC",
+                "to" => $phone,
+                "from" => "N-alert",
+                "channel" => "dnd",
+                "pin_attempts" => 4,
+                "pin_time_to_live" =>  10,
+                "pin_length" => 6,
+                "pin_placeholder" => "< 1234 >",
+                "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "pin_type" => "NUMERIC"
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+        //\Log::info($body);
+
+        if ($body->status == 200) {
+            Auth::user()->phone_pin_id = $body->pinId;
+            Auth::user()->save();
+
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+        return response()->json([
+            'success' => false,
+            'msg' => "OTP could not be sent to the associated phone number"
+        ]);
+    }
+
+    public function verifyBvnOtp(Request $r)
+    {
+        $data = $r->validate([
+            'otp' => 'required',
+            'bvn' => 'required',
+        ]);
+
+        try {
+            $client = new Client();
+            $url = env('TERMII_SMS_URL') . "/otp/verify";
+
+            $response = $client->request('POST', $url, [
+                'json' => [
+                    'api_key' => env('TERMII_API_KEY'),
+                    "pin_id" => Auth::user()->phone_pin_id,
+                    "pin" => $r->otp
+                ],
+            ]);
+            $body = json_decode($response->getBody()->getContents());
+
+            if (!$body->verified || $body->verified != 'true') {
+                return back()->with(['error' => 'Phone verification failed. A new OTP has been sent to you']);
+            }
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
+        }
+
+
+        Auth::user()->bvn_verified_at = now();
+        Auth::user()->save();
+
+        return redirect()->route('user.dashboard');
     }
 }

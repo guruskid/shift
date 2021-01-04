@@ -79,7 +79,6 @@ class BitcoinWalletController extends Controller
                 'name' => 'bitcoin_charge',
             ],
             [
-                //'id' => $id +1,
                 'value' => $data['bitcoin_charge']
             ]
         );
@@ -90,7 +89,6 @@ class BitcoinWalletController extends Controller
                 'name' => 'bitcoin_buy_charge',
             ],
             [
-                //'id' => $id+2,
                 'value' => $data['bitcoin_buy_charge']
             ]
         );
@@ -101,7 +99,6 @@ class BitcoinWalletController extends Controller
                 'name' => 'bitcoin_sell_charge',
             ],
             [
-                //'id' => $id+4,
                 'value' => $data['bitcoin_sell_charge']
             ]
         );

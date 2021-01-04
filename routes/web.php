@@ -226,6 +226,11 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     //old users
     Route::get('/send-otp/{phone}/{country_id}', 'HomeController@sendOtp');
     Route::post('/verify-phone', 'HomeController@verifyPhone')->name('user.verify-phone-number');
+
+    //BVN verification
+    Route::view('/verify-bvn', 'auth.bvn')->name('user.verify-bvn');
+    Route::get('/send-bvn-otp/{bvn}', 'HomeController@sendBvnOtp');
+    Route::post('/verify-bvn-otp', 'HomeController@verifyBvnOtp')->name('user.verify-bvn-otp');
 });
 
 Route::view('/disabled', 'disabled')->name('disabled');
@@ -275,7 +280,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::POST('/notification-switch', 'UserController@notificationSetting');
 
     Route::get('/portfolio', 'PortfolioController@view')->name('user.portfolio');
-    Route::get('/wallet', 'PortfolioController@nairaWallet')->name('user.naira-wallet')->middleware('verified');
+    Route::get('/wallet', 'PortfolioController@nairaWallet')->name('user.naira-wallet')->middleware(['verified', 'bvnVerified']);
     Route::POST('/naira-wallet/create', 'NairaWalletController@create')->name('user.create-naira');
     Route::POST('/naira-wallet/password', 'NairaWalletController@changePassword')->name('user.update-naira-password');
     Route::POST('/transfer-funds', 'NairaWalletController@transfer')->name('user.transfer');

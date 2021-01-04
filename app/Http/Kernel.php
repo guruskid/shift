@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\BvnCheck;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
         'accountant' => \App\Http\Middleware\Accountant::class,
         'seniorAccountant' => \App\Http\Middleware\SeniorAccountant::class,
         'manager' => \App\Http\Middleware\Manager::class,
+        'bvnVerified' => BvnCheck::class,
     ];
 
     /**
