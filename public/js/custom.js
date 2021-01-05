@@ -93,11 +93,11 @@ function getWalletBalance() {
     var naira = window.Laravel.user.naira_wallet_balance;
     var bitcoin = 0;
     var walletBalance = 0;
-    
+
 
     $.get('/user/get-bitcoin-ngn')
         .done(function (res) {
-            console.log(res)
+            //console.log(res)
             bitcoin = res.data;
             walletBalance = bitcoin + naira;
             $('.realtime-wallet-balance').text('₦'+walletBalance.toLocaleString());

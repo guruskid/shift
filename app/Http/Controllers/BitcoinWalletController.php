@@ -29,8 +29,8 @@ class BitcoinWalletController extends Controller
     {
         $card = Card::find(102);
         $rates = $card->currency->first();
-        $res = json_decode(file_get_contents("https://blockchain.info/ticker"));
-        $btc_rate = $res->USD->last;
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_rate = $res->bitcoin->usd;
         $btc_usd = Auth::user()->bitcoinWallet->balance ?? 0 * $btc_rate;
 
         $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
@@ -63,8 +63,8 @@ class BitcoinWalletController extends Controller
             $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
         }
         $total_fees = $fees + $charge;
-        $res = json_decode(file_get_contents("https://blockchain.info/ticker"));
-        $btc_rate = $res->USD->last;
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_rate = $res->bitcoin->usd;
         $btc_usd = Auth::user()->bitcoinWallet->balance * $btc_rate;
         return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'btc_usd', 'charge', 'total_fees'));
     }

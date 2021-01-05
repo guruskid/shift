@@ -384,10 +384,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
-                                        <span class="coin_chart_price">$20,000</span>
+                                    <div class="col-6 text-right">
+                                        <span class="coin_chart_price bitcoin-price">- - -</span>
                                     </div>
-                                    <div class="col-4">
+                                    {{-- <div class="col-4">
                                         <div class="d-flex flex-column">
                                             <div>
                                                 <svg width="60" height="27" viewBox="0 0 92 27" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -399,7 +399,7 @@
                                                 +5.24%
                                             </span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="row mt-4">
                                     <div class="col-4">
@@ -416,10 +416,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
-                                        <span class="coin_chart_price">$20,000</span>
+                                    <div class="col-6 text-right">
+                                        <span class="coin_chart_price ethereum-price">- - -</span>
                                     </div>
-                                    <div class="col-4">
+                                    {{-- <div class="col-4">
                                         <div class="d-flex flex-column">
                                             <div style="width: 10px;">
                                                 <svg width="60" height="27" viewBox="0 0 92 27" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -431,7 +431,7 @@
                                                 +5.24%
                                             </span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="row mt-4">
                                     <div class="col-4">
@@ -447,10 +447,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
-                                        <span class="coin_chart_price">$20,000</span>
+                                    <div class="col-6 text-right">
+                                        <span class="coin_chart_price litecoin-price">- - -</span>
                                     </div>
-                                    <div class="col-4">
+                                    {{-- <div class="col-4">
                                         <div class="d-flex flex-column">
                                             <div>
                                                 <svg width="60" height="27" viewBox="0 0 92 27" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -462,7 +462,7 @@
                                                 +5.24%
                                             </span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             {{-- <div class="p-2 card mt-3" style="height: 390px;"></div> --}}
@@ -475,7 +475,6 @@
 
             @include('newpages.modals.uploadcardmodal')
             @include('newpages.modals.popuploaded')
-            {{-- @include('layouts.partials.live-feeds') --}}
         </div>
     </div>
 </div>
@@ -484,4 +483,19 @@
 @if($usersChart)
 {!! $usersChart->script() !!}
 @endif
+@endsection
+
+@section('scripts')
+    <script>
+        $.get('https://api.coingecko.com/api/v3/simple/price?ids=Ethereum,bitcoin,litecoin&vs_currencies=usd')
+        .done(function (res) {
+            console.log(res)
+            $('.bitcoin-price').text('$'+res.bitcoin.usd.toLocaleString())
+            $('.ethereum-price').text('$'+res.ethereum.usd.toLocaleString())
+            $('.litecoin-price').text('$'+res.litecoin.usd.toLocaleString())
+         })
+        /*  .fail(
+             swal('error', 'An error occured while geting current cryptocurrency prices');
+         ) */
+    </script>
 @endsection

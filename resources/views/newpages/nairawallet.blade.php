@@ -52,8 +52,8 @@
                                         <span class="h3 giftcard-text" style="color: #000070;">Naira Wallet (₦) </span>
                                     </div>
                                     <div class="widget-n" style="justify-content: center; text-align: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price realtime-wallet-balance"></span>
+                                        <span class="d-block" style="h6 walletbalance-text">Naira Wallet Balance</span>
+                                        <span class="d-block price ">₦{{ number_format(Auth::user()->nairaWallet->amount) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -74,7 +74,7 @@
                                                 </span>
                                             </div>
                                             <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
-                                            
+
                                         </div>
                                     </a>
                                     <div class="d-flex justify-content-center align-items-center" style="height:60px;box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);">
