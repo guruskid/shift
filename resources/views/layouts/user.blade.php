@@ -75,7 +75,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                 'last_name' => auth()->check() ? auth()->user()->last_name : null,
                 'email' => auth()->check() ? auth()->user()->email : null,
                 'naira_wallet_balance' => Auth::user()->nairaWallet->amount,
-                'bitcoin_wallet_balance' => Auth::user()->bitcoinWallet->balance,
+                'bitcoin_wallet_balance' => Auth::user()->bitcoinWallet->balance ?? 0,
                 ]
             ])
         !!};
