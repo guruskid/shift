@@ -5,6 +5,11 @@ $(document).ready(function () {
         }
     });
 
+    //Get Wallet Balance
+    setTimeout(() => {
+        getWalletBalance();
+    }, 3000);
+
     /*  window.oncontextmenu = function () {
         return false;
     }
@@ -81,6 +86,26 @@ $(document).ready(function () {
     })
 
 });
+
+//Update wallet balance
+function getWalletBalance() {
+    $('.realtime-wallet-balance').text('Loading. . .');
+    var naira = window.Laravel.user.naira_wallet_balance;
+    var bitcoin = 0;
+    var walletBalance = 0;
+    
+
+    $.get('/user/get-bitcoin-ngn')
+        .done(function (res) {
+            console.log(res)
+            bitcoin = res.data;
+            walletBalance = bitcoin + naira;
+            $('.realtime-wallet-balance').text('₦'+walletBalance.toLocaleString());
+        })
+    .fail(function (xhr, status, err) {
+        console.log(xhr)
+     })
+}
 
 /* Copy Wallet Id */
 function copy() {
@@ -165,20 +190,20 @@ function verifyBvn() {
         return false;
     }
     sendOtp.text('Sending . . .');
-    $.get('/send-bvn-otp/'+bvn)
-    .done(function (res) {
-        if (res.success) {
-            sendOtp.text('Resend');
-            swal('success', 'An OTP has been sent to the phone number associated with your BVN. Please check and input it below');
-        }else{
-            swal('error', res.msg);
-            sendOtp.text('Resend');
-        }
-     })
-     .fail(function (xhr, status, err) {
-         console.log(err, xhr);
-      })
-      
+    $.get('/send-bvn-otp/' + bvn)
+        .done(function (res) {
+            if (res.success) {
+                sendOtp.text('Resend');
+                swal('success', 'An OTP has been sent to the phone number associated with your BVN. Please check and input it below');
+            } else {
+                swal('error', res.msg);
+                sendOtp.text('Resend');
+            }
+        })
+        .fail(function (xhr, status, err) {
+            console.log(err, xhr);
+        })
+
 }
 
 

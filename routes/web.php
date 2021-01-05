@@ -309,6 +309,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/trade-crypto', 'TradeController@tradeCrypto')->name('user.trade-crypto');
 
     /* Bitcooin  */
+    Route::get('/get-bitcoin-ngn', 'BitcoinWalletController@getbitcoinNgn');
     Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
     Route::get('/bitcoin-wallet', 'BitcoinWalletController@wallet')->name('user.bitcoin-wallet');

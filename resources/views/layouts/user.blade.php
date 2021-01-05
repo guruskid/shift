@@ -74,6 +74,8 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                 'first_name' => auth()->check() ? auth()->user()->first_name : null,
                 'last_name' => auth()->check() ? auth()->user()->last_name : null,
                 'email' => auth()->check() ? auth()->user()->email : null,
+                'naira_wallet_balance' => Auth::user()->nairaWallet->amount,
+                'bitcoin_wallet_balance' => Auth::user()->bitcoinWallet->balance,
                 ]
             ])
         !!};
@@ -117,7 +119,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
 
 </head>
 
-<body>
+<body >
     <div id="app">
         <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header closed-sidebar">
             <div class="app-header header-shadow header-text-light">
@@ -150,9 +152,9 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                     <div class="app-header-left">
                         <div class="col  ml-3 ">
                             <a href="{{route('user.naira-wallet')}}" title="View wallet">
-                                <div class="widget-heading text-custom">
+                                <div class="widget-heading text-custom realtime-wallet-balance">
                                     @auth
-                                    ₦{{number_format($naira_balance)}}
+                                    Loading . . .
                                     @endauth
                                 </div>
                                 <div class="widget-heading text-muted">

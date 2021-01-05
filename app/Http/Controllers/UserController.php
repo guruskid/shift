@@ -73,8 +73,19 @@ class UserController extends Controller
         if (Auth::user()->nairaWallet) {
             $naira_balance = Auth::user()->nairaWallet->amount;
         }
-        return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
-        return view('user.dashboard', compact(['transactions', 's', 'w', 'd',  'notifications', 'usersChart', 'naira_balance']));
+
+        $v_progress = 0;
+        if (Auth::user()->email_verified_at) {
+            $v_progress += 40;
+        }
+        if (Auth::user()->bvn_verified_at) {
+            $v_progress += 30;
+        }
+        if (Auth::user()->phone_verified_at) {
+            $v_progress += 30;
+        }
+
+        return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'v_progress', 'usersChart', 'naira_balance']));
     }
 
     /* ajax functions */

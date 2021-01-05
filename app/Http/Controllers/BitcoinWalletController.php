@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BitcoinTransaction;
 use App\BitcoinWallet;
 use App\Card;
+use App\CardCurrency;
 use App\Events\NewTransaction;
 use App\Mail\DantownNotification;
 use App\Notification;
@@ -22,6 +23,24 @@ class BitcoinWalletController extends Controller
     public function __construct()
     {
         $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
+    }
+
+    public function getBitcoinNgn()
+    {
+        $card = Card::find(102);
+        $rates = $card->currency->first();
+        $res = json_decode(file_get_contents("https://blockchain.info/ticker"));
+        $btc_rate = $res->USD->last;
+        $btc_usd = Auth::user()->bitcoinWallet->balance * $btc_rate;
+
+        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+
+        $btc_ngn = $btc_usd * $rates->sell[0]->rate;
+
+        return response()->json([
+            'data' => $btc_ngn
+        ]);
     }
 
     public function wallet(Request $r)

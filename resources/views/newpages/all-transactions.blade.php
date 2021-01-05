@@ -55,7 +55,7 @@
                                     <div class="widget-n" style="justify-content: center; text-align: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
                                         <span
-                                            class="d-block price">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span>
+                                            class="d-block price realtime-wallet-balance"></span>
                                     </div>
                                 </div>
                             </div>

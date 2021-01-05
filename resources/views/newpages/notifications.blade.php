@@ -52,8 +52,8 @@
                                         <span class="h3 giftcard-text" style="color: #000070;">Notifications</span>
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
-                                        {{-- <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price">₦56,758</span> --}}
+                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
+                                        <span class="d-block price realtime-wallet-balance"></span>
                                     </div>
                                 </div>
                             </div>
