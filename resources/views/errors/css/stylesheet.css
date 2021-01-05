@@ -1,0 +1,41 @@
+body {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-left: 20%;
+    background-color: white;
+    font-family: quicksand;
+    vertical-align: auto;
+    
+}
+
+h1 {
+    color: #000070;
+    font-size: 50px;
+    vertical-align: middle;
+    font-weight: bolder;
+}
+
+
+h3 {
+    font-weight: 200;
+    font-size: 18px;
+}
+button {
+    border-radius: 20px;
+    size: 30px;
+    font-size: large;
+    background-color: #000070;
+    color:  white;
+    padding-left: 5%;
+    padding-right: 5%;
+    border: 0px;
+    transition-duration: 0.6s;
+
+}
+
+
+button:hover {
+    background-color: white;
+    color: #000070;
+}
