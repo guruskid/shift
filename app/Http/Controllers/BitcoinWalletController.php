@@ -31,7 +31,7 @@ class BitcoinWalletController extends Controller
         $rates = $card->currency->first();
         $res = json_decode(file_get_contents("https://blockchain.info/ticker"));
         $btc_rate = $res->USD->last;
-        $btc_usd = Auth::user()->bitcoinWallet->balance * $btc_rate;
+        $btc_usd = Auth::user()->bitcoinWallet->balance ?? 0 * $btc_rate;
 
         $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
         $rates->sell = json_decode($sell->pivot->payment_range_settings);
