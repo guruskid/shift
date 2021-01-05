@@ -402,6 +402,7 @@ class HomeController extends Controller
 
 
         Auth::user()->bvn_verified_at = now();
+        Auth::user()->bvn = $data['bvn'];
         Auth::user()->save();
 
         return redirect()->route('user.dashboard');
