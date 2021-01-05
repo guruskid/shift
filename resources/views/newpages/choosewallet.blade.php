@@ -159,7 +159,7 @@
 
             <!-- Modal Header -->
             <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
-                <h4 class="modal-title">New Naira Wallet </h4>
+                <h4 class="modal-title">New Bitcoin Wallet </h4>
                 <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
             </div>
 
