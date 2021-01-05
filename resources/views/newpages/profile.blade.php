@@ -203,9 +203,11 @@
                                         </div>
                                         <div class="upload_id_column d-flex align-items-center px-4 mt-4 mb-5">
                                             <div class="text-center upload_id_text py-1 mr-2" style="font-size:14px;">
-                                                UPLOAD I.D</div>
+                                                Verification Progress</div>
                                             <div style="width: 100%;">
-                                                <div style="position: relative;left:88%;font-size:14px;">Verified
+                                                <div style="position: relative;left:88%;font-size:14px;">
+                                                    @if ($v_progress == 100)
+                                                    Verified
                                                     <span><svg width="18" height="18" viewBox="0 0 27 27" fill="none"
                                                             xmlns="http://www.w3.org/2000/svg">
                                                             <circle cx="13.5" cy="13.5" r="13.5" fill="white" />
@@ -213,13 +215,13 @@
                                                                 d="M11.4999 16.4993L7.99992 12.9993L6.83325 14.166L11.4999 18.8327L21.4999 8.83268L20.3333 7.66602L11.4999 16.4993Z"
                                                                 fill="black" fill-opacity="0.87" />
                                                         </svg>
-                                                    </span></div>
-                                                <div class="progress" style="height: 8px;">
-                                                    <div class="progress-bar" role="progressbar"
-                                                        style="border-radius: 50px;background:#fff;width: 100%"
-                                                        aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </span>
+                                                    @endif
                                                 </div>
-                                                <div style="position: relative;left:82%;font-size:14px;">..100% complete
+                                                <div class="progress" style="height: 8px;">
+                                                    <div class="progress-bar" role="progressbar" style="border-radius: 50px;background:#fff;width: {{ $v_progress }}%" ></div>
+                                                </div>
+                                                <div style="position: relative;left:82%;font-size:14px;">..{{ $v_progress }}% complete
                                                 </div>
                                             </div>
                                         </div>
@@ -1143,9 +1145,10 @@
                                                 stroke-linejoin="round" />
                                         </svg>
                                     </span>
-                                    <span style="font-size: 12px;">Upload I.D</span>
+                                    <span style="font-size: 12px;">Verification Progress</span>
                                 </div>
                                 <div class="mr-2">
+                                    @if ($v_progress == 100)
                                     <span>verified</span>
                                     <span>
                                         <svg width="8" height="8" viewBox="0 0 8 8" fill="none"
@@ -1155,14 +1158,14 @@
                                                 fill="#219653" />
                                         </svg>
                                     </span>
+                                    @endif
                                 </div>
                             </div>
                             <div class="progress mx-2 my-2" style="height: 8px;">
                                 <div class="progress-bar" role="progressbar"
-                                    style="border-radius: 50px;background:#000070;width: 100%" aria-valuenow="100"
-                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                    style="border-radius: 50px;background:#000070;width: {{ $v_progress }}%" ></div>
                             </div>
-                            <div class="mb-2" style="position: relative;left:60%;font-size:14px;">..100% complete</div>
+                            <div class="mb-2" style="position: relative;left:60%;font-size:14px;">..{{ $v_progress }}% complete</div>
                         </div>
 
                     </div>

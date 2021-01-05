@@ -30,22 +30,6 @@ class UserController extends Controller
 
     public function dashboard()
     {
-        /* $client = new Client();
-        $url = env('TERMII_SMS_URL') ;
-
-        $response = $client->request('POST', $url, [
-            'json' => [
-                "to" => '07067186987',
-                "from" => 'Dantown',
-                'sms' => 'We are the big boys',
-                'type' => 'plain',
-                'channel' => 'generic',
-                'api_key' => env('TERMII_API_KEY')
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents());
-        dd($body); */
-
         if (!Auth::user()->notificationsetting) {
             Auth::user()->notificationSetting()->create();
         }
@@ -149,7 +133,22 @@ class UserController extends Controller
         return view('user.rates', compact(['sell', 'buy']));
     }
 
+    public function account()
+    {
+        $v_progress = 0;
+        if (Auth::user()->email_verified_at) {
+            $v_progress += 40;
+        }
+        if (Auth::user()->bvn_verified_at) {
+            $v_progress += 30;
+        }
+        if (Auth::user()->phone_verified_at) {
+            $v_progress += 30;
+        }
 
+        //$v_progress = 70;
+        return view('newpages.profile', compact('v_progress'));
+    }
 
 
     public function profilePicture(Request $request)
@@ -419,7 +418,7 @@ class UserController extends Controller
         $notifications = DB::table('notifications')->when($month, function ($query,  $month) {
             return $query->whereMonth('created_at','=',$month);
         })->paginate(10);
-        
+
         return view('newpages.notifications', compact('notifications'));
         // return view('user.notifications', compact('notifications'));
     }

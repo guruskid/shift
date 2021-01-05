@@ -263,7 +263,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     Route::get('/', 'UserController@dashboard')->name('user.dashboard');
     Route::get('/rates', 'UserController@rates')->name('user.rates');
-    Route::view('account', 'newpages.profile')->name('user.profile');
+    Route::get('account', 'UserController@account')->name('user.profile');
     Route::POST('/account', 'UserController@updateProfile')->name('user.update_profile');
     Route::POST('/id_card', 'UserController@idcard')->name('user.idcard');
     Route::get('/transactions', 'UserController@transactions')->name('user.transactions');
