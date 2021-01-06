@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">
-                    <input type="number" id="usd-amount"  required class="form-control" placeholder="0.00"
+                    <input type="number" step="any" id="usd-amount"  required class="form-control" placeholder="0.00"
                         style="border: 0px;">
                     <div class="input-group-append">
                         <span class="input-group-text usd_bg_text pr-1">USD</span>
@@ -80,5 +80,10 @@
     usdAmount.keyup(function (e) {
         btcAmount.val( $(this).val() / btc_to_usd)
     });
+
+    //refresh page after 60s
+    setInterval(() => {
+        location.reload();
+    }, 60000);
 </script>
 @endsection

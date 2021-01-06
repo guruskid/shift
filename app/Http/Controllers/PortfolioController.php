@@ -15,7 +15,12 @@ class PortfolioController extends Controller
     {
         $naira = Auth::user()->nairaWallet()->count();
         $nw = Auth::user()->nairaWallet;
-        return view('newpages.choosewallet', compact(['naira', 'nw' ]) );
+
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_rate = $res->bitcoin->usd;
+        $btc_usd = Auth::user()->bitcoinWallet->balance * $btc_rate;
+
+        return view('newpages.choosewallet', compact(['naira', 'btc_usd', 'nw' ]) );
     }
 
 
