@@ -3,16 +3,16 @@
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">
-                    <input type="text" name="amount" required class="form-control" placeholder="0.00"
+                    <input type="number" id="usd-amount"  required class="form-control" placeholder="0.00"
                         style="border: 0px;">
-                   {{--  <div class="input-group-append">
+                    <div class="input-group-append">
                         <span class="input-group-text usd_bg_text pr-1">USD</span>
                         <span class="input-group-text usd_bg_text">
                             <img src="/svg/conversion-arrow.svg" alt="">
                         </span>
-                    </div> --}}
-                    {{-- <input type="text" aria-label="Last name" placeholder="0" class="form-control"
-                        style="border: 0px;border-right:0px;"> --}}
+                    </div>
+                    <input type="number" step="any" name="amount" id="btc-amount" placeholder="0" class="form-control"
+                        style="border: 0px;border-right:0px;">
                     <div class="input-group-prepend">
                         <span class="input-group-text usd_bg_text">BTC</span>
                     </div>
@@ -66,3 +66,19 @@
         </div>
     </form>
 </div>
+
+@section('scripts')
+<script>
+    var btc_to_usd = {{ $btc_rate  }}
+    var btcAmount = $('#btc-amount');
+    var usdAmount = $('#usd-amount');
+    //$('#usd-amount').ke
+    btcAmount.keyup(function (e) {
+        usdAmount.val(btc_to_usd * $(this).val())
+    });
+
+    usdAmount.keyup(function (e) {
+        btcAmount.val( $(this).val() / btc_to_usd)
+    });
+</script>
+@endsection

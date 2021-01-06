@@ -45,16 +45,14 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     <meta name="description" content="Dantown multi services">
     <meta name="msapplication-tap-highlight" content="no">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
-    <link href="{{asset('user_assets/OwlCarousel/assets/owl.carousel.css')}} " rel="stylesheet">
-    <link href="{{asset('user_assets/OwlCarousel/assets/owl.theme.default.min.css')}} " rel="stylesheet">
     <link href=" {{asset('css/app.css?v=4.5')}} " rel="stylesheet">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
-    <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet">
+    {{-- <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet"> --}}
     {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
     <link href=" {{asset('custom.css?v = 3.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/main.css?v=8')}} " rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> --}}
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
 
@@ -228,10 +226,6 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                                                             <button type="button" tabindex="0" class="dropdown-item"
                                                                 style="color: red;">Logout</button>
                                                         </a>
-                                                        <form id="logout-form" action="{{ route('logout') }}"
-                                                            method="POST" style="display: none;">
-                                                            @csrf
-                                                        </form>
                                                     </div>
                                                 </div>
 
@@ -256,10 +250,10 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                                                         stroke-linecap="round" stroke-linejoin="round" />
                                                 </svg>
                                             </span>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                            {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                                 style="display: none;">
                                                 @csrf
-                                            </form>
+                                            </form> --}}
                                         </div>
                                     </div>
 
@@ -443,35 +437,17 @@ $naira_balance = Auth::user()->nairaWallet->amount;
 
     <script>
 
-        $(document).ready(function () {
-            /* Data tables */
+       /*  $(document).ready(function () {
+            Data tables
             $('.transactions-table').DataTable({
                 paging: false,
                 order: [[0, 'desc'] ],
                 responsive: true
             });
-        });
+        }); */
 
     </script>
 
-
-    {{-- @if(session()->has('success'))
-    <script>
-        $(document).ready(function () {
-            Notify("{{session()->get('success')}} ", null, null, 'success');
-        });
-
-    </script>
-    @endif
-
-    @if(session()->has('error'))
-    <script>
-        $(document).ready(function () {
-            Notify("{{session()->get('error')}} ", null, null, 'danger');
-        });
-
-    </script>
-    @endif --}}
 
 
     @if (session('error'))
