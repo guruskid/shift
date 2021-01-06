@@ -31,7 +31,8 @@ class BitcoinWalletController extends Controller
         $rates = $card->currency->first();
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $btc_rate = $res->bitcoin->usd;
-        $btc_usd = Auth::user()->bitcoinWallet->balance ?? 0 * $btc_rate;
+        $btc_wallet_bal  = Auth::user()->bitcoinWallet->balance ?? 0;
+        $btc_usd = $btc_wallet_bal  * $btc_rate;
 
         $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
         $rates->sell = json_decode($sell->pivot->payment_range_settings);
@@ -39,7 +40,7 @@ class BitcoinWalletController extends Controller
         $btc_ngn = $btc_usd * $rates->sell[0]->rate;
 
         return response()->json([
-            'data' => $btc_ngn
+            'data' => (int)$btc_ngn
         ]);
     }
 

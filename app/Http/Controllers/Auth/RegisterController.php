@@ -60,8 +60,8 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'country_id' => 'required|integer',
-            'phone' => 'required|integer',
-            'username' => 'string|required'
+            'phone' => 'required|integer|unique:users,phone',
+            'username' => 'string|required|unique:users,username'
         ]);
     }
 

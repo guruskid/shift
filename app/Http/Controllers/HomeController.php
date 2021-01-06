@@ -126,9 +126,9 @@ class HomeController extends Controller
     public function verifyPhone(Request $r)
     {
         $data = $r->validate([
-            'phone' => 'required',
+            'phone' => 'required|unique:users,phone',
             'otp' => 'required',
-            'username' => 'required|string',
+            'username' => 'required|string|unique:users,username',
         ]);
 
         try {

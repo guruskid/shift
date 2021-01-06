@@ -54,7 +54,7 @@
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
                                         <span
-                                            class="d-block price">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span>
+                                            class="d-block price realtime-wallet-balance"></span>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +73,7 @@
                                         </a>
                                     </div>
                                     <div class="list-cards-search primary-color mt-3 mb-3 mt-lg-0">
-                                        <form action="" method="post">
+                                        {{-- <form action="" method="post">
                                             <div class="form-group p-0 m-0">
                                                 <span class="giftcard search-icon">
                                                     <svg width="1em" height="1em" viewBox="0 0 16 16"
@@ -88,7 +88,7 @@
                                                 <input type="text" class="form-control search-giftcard pl-4"
                                                     placeholder="Search for giftcard" />
                                             </div>
-                                        </form>
+                                        </form> --}}
                                     </div>
                                 </div>
                                 <div class="container">

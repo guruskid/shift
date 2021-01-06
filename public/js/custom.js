@@ -97,8 +97,9 @@ function getWalletBalance() {
 
     $.get('/user/get-bitcoin-ngn')
         .done(function (res) {
-            //console.log(res)
+            //console.log(res);
             bitcoin = res.data;
+            console.log(bitcoin, naira)
             walletBalance = bitcoin + naira;
             $('.realtime-wallet-balance').text('₦'+walletBalance.toLocaleString());
         })
