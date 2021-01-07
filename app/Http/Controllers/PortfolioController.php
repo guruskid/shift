@@ -18,9 +18,8 @@ class PortfolioController extends Controller
 
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $btc_rate = $res->bitcoin->usd;
-        $btc_usd = Auth::user()->bitcoinWallet->balance * $btc_rate;
-        echo Auth::user()->nairaWallet->amount;
-        echo '<br>'. $btc_usd /* + Auth::user()->nairaWallet->amount */;
+        $btc_wallet_bal  = Auth::user()->bitcoinWallet->balance ?? 0;
+        $btc_usd = $btc_wallet_bal  * $btc_rate;
 
         //dd('holla');
         return view('newpages.choosewallet', compact(['naira', 'btc_usd', 'nw' ]) );
