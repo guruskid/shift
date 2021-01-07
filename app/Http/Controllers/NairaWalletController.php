@@ -208,6 +208,17 @@ class NairaWalletController extends Controller
             $charge = 80;
         }
 
+        //Check daily limit
+        $today_total = Auth::user()->nairaTransactions()->whereDate('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        if ($today_total >= Auth::user()->daily_max) {
+            return redirect()->back()->with(['error' => 'Daily limit exceeded, please upgrade your account limits from the account settings page.']);
+        }
+
+        //check Monthly
+        $monthly_total = Auth::user()->nairaTransactions()->whereYear('created_at', now())->whereMonth('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        if ($monthly_total >= Auth::user()->monthly_max) {
+            return redirect()->back()->with(['error' => 'Monthly limit exceeded, please upgrade your account limits from the account settings page.']);
+        }
 
         $n = Auth::user()->nairaWallet;
 
@@ -340,7 +351,7 @@ class NairaWalletController extends Controller
     }
 
 
-    
+
 
     public function adminRefund(Request $r)
     {

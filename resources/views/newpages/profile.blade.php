@@ -206,7 +206,7 @@
                                                 Verification Progress</div>
                                             <div style="width: 100%;">
                                                 <div style="position: relative;left:88%;font-size:14px;">
-                                                    @if ($v_progress == 100)
+                                                    @if (Auth::user()->v_progress == 100)
                                                     Verified
                                                     <span><svg width="18" height="18" viewBox="0 0 27 27" fill="none"
                                                             xmlns="http://www.w3.org/2000/svg">
@@ -219,9 +219,9 @@
                                                     @endif
                                                 </div>
                                                 <div class="progress" style="height: 8px;">
-                                                    <div class="progress-bar" role="progressbar" style="border-radius: 50px;background:#fff;width: {{ $v_progress }}%" ></div>
+                                                    <div class="progress-bar" role="progressbar" style="border-radius: 50px;background:#fff;width: {{ Auth::user()->v_progress }}%" ></div>
                                                 </div>
-                                                <div style="position: relative;left:82%;font-size:14px;">..{{ $v_progress }}% complete
+                                                <div style="position: relative;left:82%;font-size:14px;">..{{ Auth::user()->v_progress }}% complete
                                                 </div>
                                             </div>
                                         </div>
@@ -1148,7 +1148,7 @@
                                     <span style="font-size: 12px;">Verification Progress</span>
                                 </div>
                                 <div class="mr-2">
-                                    @if ($v_progress == 100)
+                                    @if (Auth::user()->v_progress == 100)
                                     <span>verified</span>
                                     <span>
                                         <svg width="8" height="8" viewBox="0 0 8 8" fill="none"
@@ -1163,9 +1163,9 @@
                             </div>
                             <div class="progress mx-2 my-2" style="height: 8px;">
                                 <div class="progress-bar" role="progressbar"
-                                    style="border-radius: 50px;background:#000070;width: {{ $v_progress }}%" ></div>
+                                    style="border-radius: 50px;background:#000070;width: {{ Auth::user()->v_progress }}%" ></div>
                             </div>
-                            <div class="mb-2" style="position: relative;left:60%;font-size:14px;">..{{ $v_progress }}% complete</div>
+                            <div class="mb-2" style="position: relative;left:60%;font-size:14px;">..{{ Auth::user()->v_progress }}% complete</div>
                         </div>
 
                     </div>

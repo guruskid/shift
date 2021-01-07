@@ -362,9 +362,9 @@
                                         </span>
                                         <span>Verification</span>
                                     <div class="progress custom_progress mt-3">
-                                        <div class="progress-bar" role="progressbar" style="width: {{$v_progress}}%" ></div>
+                                        <div class="progress-bar" role="progressbar" style="width: {{Auth::user()->v_progress}}%" ></div>
                                     </div>
-                                    <span class="d-block float-lg-right" style="font-size: 14px;">{{$v_progress}}% completed</span>
+                                    <span class="d-block float-lg-right" style="font-size: 14px;">{{Auth::user()->v_progress}}% completed</span>
                                     </div>
                                 </div>
                             </div>

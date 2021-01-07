@@ -73,6 +73,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne('App\NairaWallet');
     }
 
+    public function nairaTransactions()
+    {
+        return $this->hasMany('App\NairaTransaction');
+    }
 
     public function notificationSetting()
     {

@@ -30,9 +30,12 @@ class UserController extends Controller
 
     public function dashboard()
     {
+        $today_total = Auth::user()->nairaTransactions()->whereDate('created_at', now('y'))->whereIn('transaction_type_id', [3, 2])->get();
+        dd($today_total);
         if (!Auth::user()->notificationsetting) {
             Auth::user()->notificationSetting()->create();
         }
+        $this->verificationProgress();
         $s = Auth::user()->transactions->where('status', 'success')->count();
         $w = Auth::user()->transactions->where('status', 'waiting')->count();
         $p = Auth::user()->transactions->where('status', 'in progress')->count();
@@ -74,21 +77,30 @@ class UserController extends Controller
             $naira_balance = Auth::user()->nairaWallet->amount;
         }
 
-        $v_progress = 0;
-        if (Auth::user()->email_verified_at) {
-            $v_progress += 40;
-        }
-        if (Auth::user()->bvn_verified_at) {
-            $v_progress += 30;
-        }
-        if (Auth::user()->phone_verified_at) {
-            $v_progress += 30;
-        }
-
-        return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'v_progress', 'usersChart', 'naira_balance']));
+        return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
     }
 
-    /* ajax functions */
+    public function verificationProgress()
+    {
+        $v_progress = 0;
+        if (Auth::user()->email_verified_at && Auth::user()->phone_verified_at) {
+            $v_progress += 25;
+        }
+        if (Auth::user()->bvn_verified_at) {
+            $v_progress += 25;
+        }
+        if (Auth::user()->address_verified_at) {
+            $v_progress += 25;
+        }
+        if (Auth::user()->idcard_verified_at) {
+            $v_progress += 25;
+        }
+
+        Auth::user()->v_progress = $v_progress;
+        Auth::user()->save();
+
+        return true;
+    }
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)
@@ -146,19 +158,26 @@ class UserController extends Controller
 
     public function account()
     {
+
         $v_progress = 0;
-        if (Auth::user()->email_verified_at) {
-            $v_progress += 40;
+        if (Auth::user()->email_verified_at && Auth::user()->phone_verified_at) {
+            $v_progress += 25;
         }
         if (Auth::user()->bvn_verified_at) {
-            $v_progress += 30;
+            $v_progress += 25;
         }
-        if (Auth::user()->phone_verified_at) {
-            $v_progress += 30;
+        if (Auth::user()->address_verified_at) {
+            $v_progress += 25;
+        }
+        if (Auth::user()->idcard_verified_at) {
+            $v_progress += 25;
         }
 
+        Auth::user()->v_progress = $v_progress;
+        Auth::user()->save();
+
         //$v_progress = 70;
-        return view('newpages.profile', compact('v_progress'));
+        return view('newpages.profile');
     }
 
 
