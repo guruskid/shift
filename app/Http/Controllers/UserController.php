@@ -30,8 +30,6 @@ class UserController extends Controller
 
     public function dashboard()
     {
-        $today_total = Auth::user()->nairaTransactions()->whereDate('created_at', now('y'))->whereIn('transaction_type_id', [3, 2])->get();
-        dd($today_total);
         if (!Auth::user()->notificationsetting) {
             Auth::user()->notificationSetting()->create();
         }
