@@ -14,8 +14,7 @@
             <div class="col-12 col-md-8 mx-md-auto col-lg-6">
                 <span class="address_input_label text-left">Address</span>
                 <div class="input-group mb-3 mt-4">
-                    <input type="text" class="form-control" value="{{ Auth::user()->bitcoinWallet->address }}" id="myAddress" aria-label="Recipient's username"
-                        aria-describedby="basic-addon2">
+                    <input type="text" class="form-control" value="{{ Auth::user()->bitcoinWallet->address }}" id="myAddress" readonly>
                     <div class="input-group-append">
                         <span class="input-group-text" onclick="copyAddress('myAddress')"
                             style="cursor:pointer;background: #000070;" id="basic-addon2">
