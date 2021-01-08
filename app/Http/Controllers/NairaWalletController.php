@@ -186,10 +186,6 @@ class NairaWalletController extends Controller
                 'narration' => 'nullable',
                 'ref' => 'required|unique:naira_transactions,reference',
             ]);
-            /*
-            if ($r->amount > 300000 ) {
-                return back()->with(['error' => 'Limit on withdraw transaction is ₦300,000' ]);
-            } */
 
             /* get bank details */
             $bd = Account::find($r->account_id);
@@ -334,14 +330,14 @@ class NairaWalletController extends Controller
                 'body' => $msg_body,
             ]);
             if (Auth::user()->notificationSetting->wallet_email == 1) {
-                Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
+               // Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
             }
 
 
             /* Send SMS */
-            $token = env('SMS_TOKEN');
+            /* $token = env('SMS_TOKEN');
             $to = Auth::user()->phone;
-            $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
+            $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2'; */
             /* $snd_sms = $client->request('GET', $sms_url); */
 
             return back()->with(['success' => 'Transfer made successfully']);

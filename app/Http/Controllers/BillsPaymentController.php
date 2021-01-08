@@ -21,12 +21,12 @@ class BillsPaymentController extends Controller
 
     public function view()
     {
-        if (!Auth::user()->nairaWallet ) {
+        if (!Auth::user()->nairaWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please create a Dantown wallet to continue']);
         }
-        $client = new Client();
+       /*  $client = new Client();
 
-        /* Cable tv sellers */
+        Cable tv sellers
         $url = env('RUBBIES_API') . "/billspaymentcategories";
 
         $response = $client->request('POST', $url, [
@@ -40,7 +40,7 @@ class BillsPaymentController extends Controller
         $body = json_decode($response->getBody()->getContents());
         $billers = $body->servicecategory;
 
-        /* Electricity providers */
+        Electricity providers
         $url = env('RUBBIES_API') . "/billspaymentcategories";
         $response = $client->request('POST', $url, [
             'json' => [
@@ -51,8 +51,8 @@ class BillsPaymentController extends Controller
 
         $providers = $body->servicecategory;
 
-        $ref = \Str::random(2) . time();
-        return view('newpages.rechargemenu', compact(['billers', 'providers', 'ref' ]) );
+        $ref = \Str::random(2) . time(); */
+        return view('newpages.rechargemenu');
     }
 
 
@@ -84,12 +84,11 @@ class BillsPaymentController extends Controller
         $response = $client->post($url, $params);
         $body = json_decode($response->getBody()->getContents());
 
-        if ($body->responsecode == "00"){
+        if ($body->responsecode == "00") {
             $providers = $body->billers;
             return response()->json($providers);
         }
         return response()->json("Error occur");
-
     }
     public function CableView()
     {
@@ -101,14 +100,12 @@ class BillsPaymentController extends Controller
         $response = $client->post($url, $params);
         $body = json_decode($response->getBody()->getContents());
 
-        if ($body->responsecode == "00"){
+        if ($body->responsecode == "00") {
             $providers = $body->billers;
             return view('newpages.paytv', compact(['providers']));
-        }
-        else{
+        } else {
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
-
     }
     public function paytv(Request $r)
     {
@@ -132,20 +129,20 @@ class BillsPaymentController extends Controller
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
         //what I remove here is below this page
-        $reference = $r->billercode .Str::random(16);
+        $reference = $r->billercode . Str::random(16);
         $client = new Client();
-        $url = env('RUBBIES_API')."/billerpurchase";
+        $url = env('RUBBIES_API') . "/billerpurchase";
         $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
         $params['json'] = [
             "reference" => $reference,
             "billercustomerid"  => $r->account,
-            "productcode"=> $r->productcode,
+            "productcode" => $r->productcode,
             "amount" => $amount,
-            "mobilenumber" =>Auth::user()->phone,
+            "mobilenumber" => Auth::user()->phone,
             "name" => Auth::user()->first_name,
             "billercode" => $r->billercode,
         ];
-        $response = $client->post($url,$params);
+        $response = $client->post($url, $params);
         $body =  json_decode($response->getBody()->getContents());
 
         $prev_bal = $n->amount;
@@ -162,7 +159,7 @@ class BillsPaymentController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $n->amount;
-        $nt->charge = (1/100) * $amount;
+        $nt->charge = (1 / 100) * $amount;
         $nt->transaction_type_id = 11;
 
 
@@ -211,8 +208,8 @@ class BillsPaymentController extends Controller
         ]);
 
         if ($r->rechargetype == 'self') {
-            $phone = Auth::user()->country->phonecode. Auth::user()->phone;
-        }else{
+            $phone = Auth::user()->country->phonecode . Auth::user()->phone;
+        } else {
             $phone = $r->phone;
         }
 
@@ -281,7 +278,7 @@ class BillsPaymentController extends Controller
 
             $nt->previous_balance = $prev_bal;
             $nt->current_balance = $n->amount;
-            $nt->charge = ($charge/100) * $amount;
+            $nt->charge = ($charge / 100) * $amount;
             $nt->transaction_type_id = 9;
 
 
@@ -293,6 +290,11 @@ class BillsPaymentController extends Controller
             $nt->trans_msg = 'done';
             $nt->status = 'success';
             $nt->save();
+
+            /* Credit Transfer Wallet */
+            $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+            $transfer_charges_wallet->amount += $nt->charge;
+            $transfer_charges_wallet->save();
 
             $title = 'Recharge card purchase';
             $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for recharge card purchase';
@@ -327,11 +329,10 @@ class BillsPaymentController extends Controller
         $params['json'] = ["biller" => "electricity",];
         $response = $client->post($url, $params);
         $body = json_decode($response->getBody()->getContents());
-        if ($body->responsecode == "00"){
+        if ($body->responsecode == "00") {
             $providers = $body->billers;
             return view('newpages.paybills', compact(['providers']));
-        }
-        else{
+        } else {
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
     }
@@ -340,16 +341,16 @@ class BillsPaymentController extends Controller
     public function getElectUser(Request $request)
     {
         $client = new Client();
-        $url = env('RUBBIES_API')."/billerverification";
+        $url = env('RUBBIES_API') . "/billerverification";
         $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
         $params['json'] = [
-            "billercode"=>$request->billercode,
-            "billercustomerid"=>$request->billercustomerid
+            "billercode" => $request->billercode,
+            "billercustomerid" => $request->billercustomerid
         ];
-        $response = $client->post($url,$params);
+        $response = $client->post($url, $params);
         $body = json_decode($response->getBody()->getContents());
 
-        if ($body != null ) {
+        if ($body != null) {
             return response()->json($body->name);
         }
         return response()->json('No account found');
@@ -361,7 +362,7 @@ class BillsPaymentController extends Controller
         dd('hi,this app works,uncomment this line in the BillsPaymentcontroller');
 
         $r->validate([
-           // 'provider' => 'required',
+            // 'provider' => 'required',
             'account' => 'required',
             'amount' => 'required',
             'password' => 'required',
@@ -380,21 +381,21 @@ class BillsPaymentController extends Controller
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
         //what I remove here is below this page
-        $reference = $r->scid .Str::random(16);
-       // dd('hi,this app works,uncomment this line in the BillsPaymentcontroller');
+        $reference = $r->scid . Str::random(16);
+        // dd('hi,this app works,uncomment this line in the BillsPaymentcontroller');
         $client = new Client();
-        $url = env('RUBBIES_API')."/billerpurchase";
+        $url = env('RUBBIES_API') . "/billerpurchase";
         $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
         $params['json'] = [
             "reference" => $reference,
             "billercustomerid"  => $r->account,
-            "productcode"=> $r->productcode,
+            "productcode" => $r->productcode,
             "amount" => $amount,
-            "mobilenumber" =>$r->phone,
+            "mobilenumber" => $r->phone,
             "name" => Auth::user()->first_name,
             "billercode" => $r->billercode,
         ];
-        $response = $client->post($url,$params);
+        $response = $client->post($url, $params);
         $body =  json_decode($response->getBody()->getContents());
 
         $prev_bal = $n->amount;
@@ -411,7 +412,7 @@ class BillsPaymentController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $n->amount;
-        $nt->charge = (1/100) * $amount;
+        $nt->charge = (1 / 100) * $amount;
         $nt->transaction_type_id = 11;
 
 
@@ -468,20 +469,23 @@ class BillsPaymentController extends Controller
 
     private function checkPayment($reference)
     {
-        try{
+        try {
             $client = new Client();
-            $url = env('RUBBIES_API')."/billerquery";
+            $url = env('RUBBIES_API') . "/billerquery";
             $params['headers'] = ['Content-Type' => 'application/json', 'Authorization' => env('RUBBIES_SECRET_KEY')];
             $params['json'] = [
                 "reference" => $reference,
             ];
-            $response = $client->post($url,$params);
+            $response = $client->post($url, $params);
             $body =  json_decode($response->getBody()->getContents());
             //dd($body,$reference,1);
-        }
-        catch (Exception $exception){
+        } catch (Exception $exception) {
             return back()->with(['error' => 'Oops! ']);
         }
     }
-}
 
+    public function disabledView()
+    {
+        return back()->with(['error' => 'Service currently not available']);
+    }
+}

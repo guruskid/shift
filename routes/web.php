@@ -289,15 +289,15 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/get-dec-user', 'BillsPaymentController@getUser');
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
     // Route::view('/paytv', 'newpages.smartbudget')->name('user.paytv');
-    Route::get('/paytv', 'BillsPaymentController@CableView')->name('user.paytv');
+    Route::get('/paytv', 'BillsPaymentController@disabledView')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@paytv')->name('user.paytv');
     Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge');
     Route::post('/airtime', 'BillsPaymentController@airtime')->name('user.airtime');
-    Route::view('/data', 'newpages.buydata')->name('user.data');
-    Route::view('/discounted-airtime', 'user.discount_airtime')->name('user.discount-airtime');
-    Route::view('/airtime-to-cash', 'newpages.airtimetocash')->name('user.airtime-to-cash');
+    Route::get('/data', 'BillsPaymentController@disabledView')->name('user.data');
+    Route::get('/discounted-airtime', 'BillsPaymentController@disabledView')->name('user.discount-airtime');
+    Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
     Route::post('/airtime-to-cash', 'BillsPaymentController@airtimeToCash')->name('user.airtime-to-cash');
-    Route::get('/electricity', 'BillsPaymentController@electricityView')->name('user.electricity');
+    Route::get('/electricity', 'BillsPaymentController@disabledView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
     Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.pay-electricity');
 
