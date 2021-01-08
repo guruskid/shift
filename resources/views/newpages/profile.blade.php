@@ -367,13 +367,13 @@
                                             <div class="d-flex flex-column align-items-center ml-4 ml-lg-0">
                                                 <span class="my-1" style="color: #000070;font-size:15px;">Maximum
                                                     monthly limit:
-                                                    <span style="font-weight: bold;">N300,000</span></span>
+                                                    <span style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
                                                 <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily
                                                     limit:
-                                                    <span style="font-weight: bold;">N100,000</span></span>
-                                                <span class="my-1" style="color: #000070;font-size:14px;">Remaining
+                                                    <span style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
+                                                {{-- <span class="my-1" style="color: #000070;font-size:14px;">Remaining
                                                     daily limit:
-                                                    <span>N300,000</span></span>
+                                                    <span>N300,000</span></span> --}}
                                             </div>
 
                                             <div class="container-fluid mt-3">
@@ -856,13 +856,13 @@
                                             <div class="d-flex flex-column align-items-center ml-4 ml-lg-0">
                                                 <span class="my-1" style="color: #000070;font-size:15px;">Maximum
                                                     monthly limit:
-                                                    <span style="font-weight: bold;">N300,000</span></span>
+                                                    <span style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
                                                 <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily
                                                     limit:
-                                                    <span style="font-weight: bold;">N100,000</span></span>
-                                                <span class="my-1" style="color: #000070;font-size:14px;">Remaining
+                                                    <span style="font-weight: bold;">₦{{ number_format(Auth::user()->daily_max) }}</span></span>
+                                                {{-- <span class="my-1" style="color: #000070;font-size:14px;">Remaining
                                                     daily limit:
-                                                    <span>N300,000</span></span>
+                                                    <span>N300,000</span></span> --}}
                                             </div>
 
                                             <div class="container-fluid mt-3">
