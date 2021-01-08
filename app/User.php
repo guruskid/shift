@@ -43,6 +43,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Transaction')->latest();
     }
 
+    public function country()
+    {
+        return $this->belongsTo('App\Country');
+    }
+
     public function messages()
     {
         return $this->hasMany('App\Message');

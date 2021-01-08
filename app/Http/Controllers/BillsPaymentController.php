@@ -211,7 +211,7 @@ class BillsPaymentController extends Controller
         ]);
 
         if ($r->rechargetype == 'self') {
-            $phone = Auth::user()->phone;
+            $phone = Auth::user()->country->phonecode. Auth::user()->phone;
         }else{
             $phone = $r->phone;
         }
@@ -233,9 +233,9 @@ class BillsPaymentController extends Controller
         $url = env('RUBBIES_API') . "/airtimepurchase";
         $response = $client->request('POST', $url, [
             'json' => [
-                "mobilenumber" => '07067186987',
-                "product" => 'mtn',
-                "amount" => '10',
+                "mobilenumber" => $phone,
+                "product" => $r->network,
+                "amount" => $amount,
                 "reference" => $reference,
                 "callbackurl" => $callback
             ],
@@ -305,10 +305,10 @@ class BillsPaymentController extends Controller
 
             /* Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body)); */
 
-            $token = env('SMS_TOKEN');
+            /* $token = env('SMS_TOKEN');
             $to = Auth::user()->phone;
             $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-            $snd_sms = $client->request('GET', $sms_url);
+            $snd_sms = $client->request('GET', $sms_url); */
 
             return back()->with(['success' => 'Recharge made successfully']);
         } else {
@@ -371,9 +371,9 @@ class BillsPaymentController extends Controller
         $callback = route('recharge-card.callback');
         $n = Auth::user()->nairaWallet;
 
-//        if (Hash::check($r->password, $n->password) == false) {
-//            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
-//        }
+        if (Hash::check($r->password, $n->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+        }
         $amount = $r->amount;
         //check if he has enough money
         if ($amount > $n->amount) {
@@ -477,7 +477,7 @@ class BillsPaymentController extends Controller
             ];
             $response = $client->post($url,$params);
             $body =  json_decode($response->getBody()->getContents());
-//            dd($body,$reference,1);
+            //dd($body,$reference,1);
         }
         catch (Exception $exception){
             return back()->with(['error' => 'Oops! ']);

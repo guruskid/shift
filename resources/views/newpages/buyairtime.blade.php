@@ -88,9 +88,9 @@
                                         <div class="col-12 col-lg-6">
                                             <span class="d-block mb-2" style="color: #000070;font-size: 22px;">Buy
                                                 Airtime</span>
-                                                @foreach ($errors->all() as $err)
-                                                    <p class="text-danger">{{$err}}</p>
-                                                @endforeach
+                                            @foreach ($errors->all() as $err)
+                                            <p class="text-danger">{{$err}}</p>
+                                            @endforeach
                                             <div
                                                 class="d-flex flex-row flex-wrap justify-content-around justify-content-lg-between airtimechoice_container mx-0">
 
@@ -170,19 +170,10 @@
                                                     </div>
                                                     <div id="otherphonenumber" class="col-12 col-md-7"
                                                         style="display: none;">
-                                                        <div class="input-group mb-3">
-                                                            {{-- <input type="hidden" id="fullphonenumber" name="phone" value="" /> --}}
-                                                            {{-- <input type="hidden" id="dcode" value="+234" /> --}}
-                                                            {{-- <div class="input-group-prepend">
-                                                                <select id="swapcountrycode" style="border: 1px solid rgba(0, 0, 112, 0.25);">
-                                                                    <option value="+234">+234</option>
-                                                                    <option value="+91">+91</option>
-                                                                </select>
-                                                            </div> --}}
+                                                        <div class="form-group mb-3">
+                                                            <label for="amount" style="color: #000070;">Phone</label>
                                                             <input type="text" id="phonenumber" name="phone"
-                                                                class="form-control" style="border-left:0px;"
-                                                                aria-label="Text input with dropdown button">
-
+                                                                class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
