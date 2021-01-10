@@ -60,6 +60,15 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-dec-user', 'BillsPaymentController@getUser');
         Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
 
+        //BTC Wallet
+        Route::group(['prefix' => 'bitcoin-wallet'], function () {
+            Route::POST('/create', 'Api\BitcoinWalletController@create');
+            Route::GET('/balance', 'Api\BitcoinWalletController@balance');
+            Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');
+            Route::GET('/transactions', 'Api\BitcoinWalletController@transactions');
+            Route::POST('/trade', 'Api\BitcoinWalletController@trade');
+        });
+
 
     });
 });
