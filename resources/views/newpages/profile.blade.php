@@ -219,9 +219,12 @@
                                                     @endif
                                                 </div>
                                                 <div class="progress" style="height: 8px;">
-                                                    <div class="progress-bar" role="progressbar" style="border-radius: 50px;background:#fff;width: {{ Auth::user()->v_progress }}%" ></div>
+                                                    <div class="progress-bar" role="progressbar"
+                                                        style="border-radius: 50px;background:#fff;width: {{ Auth::user()->v_progress }}%">
+                                                    </div>
                                                 </div>
-                                                <div style="position: relative;left:82%;font-size:14px;">..{{ Auth::user()->v_progress }}% complete
+                                                <div style="position: relative;left:82%;font-size:14px;">
+                                                    ..{{ Auth::user()->v_progress }}% complete
                                                 </div>
                                             </div>
                                         </div>
@@ -367,10 +370,12 @@
                                             <div class="d-flex flex-column align-items-center ml-4 ml-lg-0">
                                                 <span class="my-1" style="color: #000070;font-size:15px;">Maximum
                                                     monthly limit:
-                                                    <span style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
+                                                    <span
+                                                        style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
                                                 <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily
                                                     limit:
-                                                    <span style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
+                                                    <span
+                                                        style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
                                                 {{-- <span class="my-1" style="color: #000070;font-size:14px;">Remaining
                                                     daily limit:
                                                     <span>N300,000</span></span> --}}
@@ -549,7 +554,10 @@
                                                                                 required by the CBN</label>
                                                                         </div>
                                                                         <div class="col mt-2 mt-lg-0">
-                                                                            <a href="{{ route('user.verify-bvn') }}"><button type="button" class="btn btn-primary mb-2" style="height:40px;width:78px;">Verify</button></a>
+                                                                            <a href="{{ route('user.verify-bvn') }}"><button
+                                                                                    type="button"
+                                                                                    class="btn btn-primary mb-2"
+                                                                                    style="height:40px;width:78px;">Verify</button></a>
                                                                         </div>
                                                                     </div>
                                                                 </form>
@@ -559,7 +567,7 @@
 
                                                         {{-- ID verification card --}}
                                                         <div
-                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-4">
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
                                                             <span class="d-block">ID verification</span>
                                                             <span
                                                                 class="d-block ml-5 accordion_arrow id_verification_arrow">
@@ -575,21 +583,7 @@
                                                         <div class="accordion_content" id="idVerification"
                                                             style="display: none;">
                                                             <div class="mt-2">
-                                                                <form>
-                                                                    @csrf
-                                                                    <div class="dropdown">
-                                                                        <a class="btn btn-secondary dropdown-toggle d-flex align-items-center justify-content-center select_id_type_dropdown"
-                                                                            href="#" role="button" id="dropdownMenuLink"
-                                                                            data-toggle="dropdown" aria-haspopup="true"
-                                                                            aria-expanded="false">
-                                                                            Select card type
-                                                                        </a>
-
-                                                                        <div class="dropdown-menu"
-                                                                            aria-labelledby="dropdownMenuLink">
-                                                                            <a class="dropdown-item" href="#">Action</a>
-                                                                        </div>
-                                                                    </div>
+                                                                <form> @csrf
                                                                     <div class="d-flex justify-content-start">
                                                                         <div
                                                                             class="d-flex flex-row flex-wrap flex-lg-nowrap justify-content-center justify-content-lg-start mt-3">
@@ -609,24 +603,6 @@
                                                                                 </div>
                                                                                 <span
                                                                                     class="d-block front_photo_card_text">Front
-                                                                                    photo of your card</span>
-                                                                            </div>
-
-                                                                            <div id="backPhotoID"
-                                                                                class="text-center p-3 front_photo_card_box mr-2">
-                                                                                <input type="file" id="backPhotoIdInput"
-                                                                                    name="backPhotoOfCard" />
-                                                                                <div>
-                                                                                    <svg width="20" height="20"
-                                                                                        viewBox="0 0 20 20" fill="none"
-                                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                                        <path
-                                                                                            d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
-                                                                                            fill="#A6ACBE" />
-                                                                                    </svg>
-                                                                                </div>
-                                                                                <span
-                                                                                    class="d-block front_photo_card_text">Back
                                                                                     photo of your card</span>
                                                                             </div>
                                                                             <button type="submit"
@@ -653,9 +629,16 @@
                 <div class="container-fluid d-lg-none mb-4">
                     <div class="d-flex flex-column align-items-center">
                         <div class="profilepicture_mobile">
-                            <div style="height: 140px;width:140px;border:1px solid;border-radius:70px;">
-                                {{-- <img src="/storage/avatar/{{ Auth::user()->dp }}" alt=""> --}}
-                            </div>
+                            <img class="img-fluid rounded-circle" style="height: 200px"
+                                src="/storage/avatar/{{ Auth::user()->dp }}" alt="">
+                                <div class="camera_button" data-toggle="modal" data-target="#upload-dp-modal">
+                                    <svg width="20" height="20" viewBox="0 0 40 37" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M5.21739 5.21739V0H8.69565V5.21739H13.913V8.69565H8.69565V13.913H5.21739V8.69565H0V5.21739H5.21739ZM10.4348 15.6522V10.4348H15.6522V5.21739H27.8261L31.0087 8.69565H36.5217C38.4348 8.69565 40 10.2609 40 12.1739V33.0435C40 34.9565 38.4348 36.5217 36.5217 36.5217H8.69565C6.78261 36.5217 5.21739 34.9565 5.21739 33.0435V15.6522H10.4348ZM22.6087 31.3043C27.4087 31.3043 31.3043 27.4087 31.3043 22.6087C31.3043 17.8087 27.4087 13.913 22.6087 13.913C17.8087 13.913 13.913 17.8087 13.913 22.6087C13.913 27.4087 17.8087 31.3043 22.6087 31.3043ZM17.0435 22.6087C17.0435 25.687 19.5304 28.1739 22.6087 28.1739C25.687 28.1739 28.1739 25.687 28.1739 22.6087C28.1739 19.5304 25.687 17.0435 22.6087 17.0435C19.5304 17.0435 17.0435 19.5304 17.0435 22.6087Z"
+                                            fill="white" />
+                                    </svg>
+                                </div>
                             <span class="d-block text-center my-3"
                                 style="color: #000070;font-size:16px;">{{ Auth::user()->first_name }}</span>
                         </div>
@@ -745,7 +728,8 @@
                                         </div>
                                     </div>
 
-                                    <span class="d-block h6 mt-3" style="color: rgba(0, 0, 112, 0.75);">Change Naira Wallet
+                                    <span class="d-block h6 mt-3" style="color: rgba(0, 0, 112, 0.75);">Change Naira
+                                        Wallet
                                         Pin</span>
                                     <div style="height: 0;width:100%;border: 1px solid rgba(0, 0, 112, 0.75);"></div>
                                     <div class="row my-3">
@@ -856,10 +840,12 @@
                                             <div class="d-flex flex-column align-items-center ml-4 ml-lg-0">
                                                 <span class="my-1" style="color: #000070;font-size:15px;">Maximum
                                                     monthly limit:
-                                                    <span style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
+                                                    <span
+                                                        style="font-weight: bold;">₦{{ number_format(Auth::user()->monthly_max) }}</span></span>
                                                 <span class="my-1" style="color: #000070;font-size:15px;">Maximum daily
                                                     limit:
-                                                    <span style="font-weight: bold;">₦{{ number_format(Auth::user()->daily_max) }}</span></span>
+                                                    <span
+                                                        style="font-weight: bold;">₦{{ number_format(Auth::user()->daily_max) }}</span></span>
                                                 {{-- <span class="my-1" style="color: #000070;font-size:14px;">Remaining
                                                     daily limit:
                                                     <span>N300,000</span></span> --}}
@@ -1002,7 +988,9 @@
                                                                     @csrf
                                                                     <div class="form-row align-items-center">
                                                                         <div class="col">
-                                                                            <a href="{{ route('user.verify-bvn') }}"><button type="button" class="btn text-white" style="background-color: #000070;">verify</button></a>
+                                                                            <a href="{{ route('user.verify-bvn') }}"><button
+                                                                                    type="button" class="btn text-white"
+                                                                                    style="background-color: #000070;">verify</button></a>
                                                                         </div>
                                                                     </div>
                                                                 </form>
@@ -1109,25 +1097,6 @@
                             </div>
                         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         <!-- Upload ID card -->
                         <div class="card card-body mt-3 m-0 p-0"
                             style="border-radius: 5px;width:90vw;overflow-x:hidden;">
@@ -1163,41 +1132,34 @@
                             </div>
                             <div class="progress mx-2 my-2" style="height: 8px;">
                                 <div class="progress-bar" role="progressbar"
-                                    style="border-radius: 50px;background:#000070;width: {{ Auth::user()->v_progress }}%" ></div>
+                                    style="border-radius: 50px;background:#000070;width: {{ Auth::user()->v_progress }}%">
+                                </div>
                             </div>
-                            <div class="mb-2" style="position: relative;left:60%;font-size:14px;">..{{ Auth::user()->v_progress }}% complete</div>
+                            <div class="mb-2" style="position: relative;left:60%;font-size:14px;">
+                                ..{{ Auth::user()->v_progress }}% complete</div>
                         </div>
-
                     </div>
                 </div>
-
-                {{-- <div class="card card-body d-flex flex-row justify-content-between mt-5 px-5"
-                    style="border-radius: 10px;">
-                    <div class="d-flex flex-column justify-content-center align-items-start">
-                        <div style="line-height: 32px;">LTC/NGN</div>
-                        <div style="color: #000070;">15,688.91NGN</div>
-                    </div>
-                    <div class="d-flex flex-column justify-content-center align-items-start">
-                        <div style="line-height: 32px;">ETH/NGN</div>
-                        <div style="color: #000070;">15,688.91NGN</div>
-                    </div>
-                    <div class="d-flex flex-column justify-content-center align-items-start">
-                        <div style="line-height: 32px;">XRP/NGN</div>
-                        <div style="color: #000070;">15,688.91NGN</div>
-                    </div>
-                    <div class="d-flex flex-column justify-content-center align-items-start">
-                        <div style="line-height: 32px;">USDT/NGN</div>
-                        <div style="color: #000070;">15,688.91NGN</div>
-                    </div>
-                    <div class="d-flex flex-column justify-content-center align-items-start">
-                        <div style="line-height: 32px;">BTC/NGN</div>
-                        <div style="color: #000070;">150,688,903.91NGN</div>
-                    </div>
-                </div> --}}
-
             </div>
+        </div>
+    </div>
+</div>
 
-            {{-- @include('layouts.partials.live-feeds') --}}
+
+
+{{-- Add image --}}
+<div class="modal fade  item-badge-rightm" id="upload-dp-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form method="POST" action="{{route('user.dp')}}" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <input type="file" name="dp" class="form-control" accept="images/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

@@ -76,58 +76,6 @@ $("#copyEthWalletAddress").on("click", function () {
     }, 1700);
 });
 
-// === Bitcoin calculator onchange logic ===
-//const sell_usd_per_btc = 15637.88;
-// const sell_ngn_per_usd = 382;
-/* const sell_usd_per_btc = 2000;
-const sell_ngn_per_usd = 500;
-
-const sellusdfield = $("#sell_usd_field");
-const sellbtcfield = $("#sell_btc_field");
-const sellngnfield = $("#sell_ngn_field");
-
-sellusdfield.on("keyup", function() {
-    let value = $(this).val();
-
-    //btc equivalent
-    let btc = value / sell_usd_per_btc;
-    console.log(sell_usd_per_btc)
-    sellbtcfield.val(btc);
-
-    //naira equivalent
-    let naira = value * sell_ngn_per_usd;
-    sellngnfield.val(naira);
-});
-
-sellbtcfield.on("keyup", function(e) {
-    let value = $(this).val();
-
-    //dollar equivalent
-    let dollars = value * sell_usd_per_btc;
-    sellusdfield.val(dollars);
-
-    //naira equivalent
-    let naira = dollars * sell_ngn_per_usd;
-    sellngnfield.val(naira);
-});
-
-sellngnfield.on("keyup", function(e) {
-    let value = $(this).val();
-
-    //dollar equivalent
-    let dollars = value / sell_ngn_per_usd;
-    let btc = dollars / sell_usd_per_btc;
-    sellusdfield.val(dollars);
-    sellbtcfield.val(btc)
-
-    //naira equivalent
-    // let naira = dollars * sell_ngn_per_usd;
-    // sellngnfield.val(naira);
-}); */
-
-/*===== BUY BITCOIN =====*/
-// const buy_usd_per_btc = 10500;
-// const buy_ngn_per_usd = 300;
 const buy_usd_per_btc = 10465.6;
 const buy_ngn_per_usd = bit_buy[0].rate;
 
@@ -303,13 +251,7 @@ $("#sell_usd_field").on("keyup", function () {
     }
 })
 
-// $("#sell_ngn_field").on("keyup", function(){
-//     if($("#wallet_address").val().trim().length > 10 && $(this).val().trim().length > 1) {
-//         $("#sell_submit_btn").removeAttr('disabled')
-//     } else {
-//         $("#sell_submit_btn").attr('disabled',"true")
-//     }
-// })
+
 
 //Disable submit button if fields are empty in buy btc tab
 $("#buy_wallet_address").on("keyup", function () {
