@@ -84,7 +84,7 @@
                                     @foreach ($wallets as $wallet)
                                     <tr>
                                         <td class="text-muted">{{$wallet->id}}</td>
-                                        <td >{{ucwords($wallet->user->first_name)}}</td>
+                                        <td >{{ucwords($wallet->user->first_name ?? 'No user found')}}</td>
                                         <td >{{$wallet->path}}</td>
                                         <td >{{$wallet->address}}</td>
                                         <td >{{ $wallet->type }} </td>

@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end btctext">{{ number_format((float)$total_fees, 8) }} BTC</span>
+                            <span class="d-block align-self-end btctext">{{ number_format((float)$total_fees, 5) }} BTC</span>
                             <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>

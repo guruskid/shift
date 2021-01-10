@@ -54,8 +54,24 @@
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Bitcoin Wallet Balance</span>
                                         <span
-                                            class="d-block price">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : 'No bitcoin wallet' }}</span>
+                                            class="d-block price">{{ Auth::user()->bitcoinWallet ? number_format((float)Auth::user()->bitcoinWallet->balance, 8) : 'No bitcoin wallet' }}</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                            <div class="widget widget-chart-one">
+                                <div class="widget-heading d-flex justify-content-between mt-2">
+                                    <a href="{{ route('user.bitcoin-wallet') }}">
+                                        <div>
+                                            <span class=" giftcard-text">Send BTC</span>
+                                        </div>
+                                    </a>
+                                    <a href="{{ route('user.bitcoin-wallet') }}">
+                                        <div>
+                                            <span class=" giftcard-text">Receive BTC</span>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>

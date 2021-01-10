@@ -262,7 +262,7 @@
                                             </form>
                                         </div>
                                         <div class="d-flex changepassword_text mt-4 pb-1">
-                                            Change Wallet Pin</div>
+                                            Change Naira Wallet Pin</div>
                                         <div style="border: 1px solid #CBCBCB;width:100%;"></div>
                                         <div class="my-4 mb-4">
                                             <form method="POST" action="{{ route('user.update-naira-password') }}">
@@ -745,7 +745,7 @@
                                         </div>
                                     </div>
 
-                                    <span class="d-block h6 mt-3" style="color: rgba(0, 0, 112, 0.75);">Change Wallet
+                                    <span class="d-block h6 mt-3" style="color: rgba(0, 0, 112, 0.75);">Change Naira Wallet
                                         Pin</span>
                                     <div style="height: 0;width:100%;border: 1px solid rgba(0, 0, 112, 0.75);"></div>
                                     <div class="row my-3">
