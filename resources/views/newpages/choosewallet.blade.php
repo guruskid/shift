@@ -176,13 +176,14 @@
         <div class="modal-content  c-rounded">
 
             <!-- Modal Header -->
-            <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+           {{--  <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
                 <h4 class="modal-title">New Bitcoin Wallet </h4>
                 <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
-            </div>
+            </div> --}}
 
             <form action="{{route('user.bitcoin-wallet.create')}}" method="POST">@csrf
                 <div class="modal-body p-4">
+                    <h4 class="modal-title">New Bitcoin Wallet </h4>
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
