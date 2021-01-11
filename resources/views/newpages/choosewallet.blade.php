@@ -186,14 +186,14 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="">Wallet Password (4) </label>
+                                <label for="">Wallet Pin (4) </label>
                                 <input type="password" class="form-control" required name="wallet_password"
                                     minlength="4" maxlength="4">
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="">Confirm password</label>
+                                <label for="">Confirm Pin</label>
                                 <input type="password" class="form-control" required
                                     name="wallet_password_confirmation">
                             </div>
