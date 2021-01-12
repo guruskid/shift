@@ -77,11 +77,15 @@ class BitcoinWalletController extends Controller
     public function create(Request $r)
     {
         $data = $r->validate([
-            'wallet_password' => 'required|min:4|confirmed',
+            'wallet_password' => 'required|min:4',
         ]);
 
         if (Auth::user()->bitcoinWallet) {
             return back()->with(['error' => 'Bitcoin wallet already exists']);
+        }
+
+        if (!Hash::check($data['wallet_password'], Auth::user()->nairaWallet->password)) {
+            return back()->with(['error' => 'Incorrect Naira wallet password']);
         }
 
         $password = Hash::make($data['wallet_password']);

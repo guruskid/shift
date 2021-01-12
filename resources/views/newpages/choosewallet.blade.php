@@ -175,30 +175,24 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content  c-rounded">
 
-            <!-- Modal Header -->
-           {{--  <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
-                <h4 class="modal-title">New Bitcoin Wallet </h4>
-                <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
-            </div> --}}
-
             <form action="{{route('user.bitcoin-wallet.create')}}" method="POST">@csrf
                 <div class="modal-body p-4">
-                    <h4 class="modal-title">New Bitcoin Wallet </h4>
+                    <h5 class="modal-title mb-3">New Bitcoin Wallet </h5>
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
-                                <label for="">Wallet Pin (4) </label>
+                                <label for="">Naira Wallet Pin (4) </label>
                                 <input type="password" class="form-control" required name="wallet_password"
                                     minlength="4" maxlength="4">
                             </div>
-                        </div>
+                        </div>{{--
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="">Confirm Pin</label>
                                 <input type="password" class="form-control" required
                                     name="wallet_password_confirmation">
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <button class="btn btn-block c-rounded bg-custom-gradient">
                         Create wallet
