@@ -52,7 +52,7 @@ class BitcoinWalletController extends Controller
 
         if ($r->has('start')) {
             $transactions = Auth::user()->bitcoinWallet->transactions()->where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->paginate(20);
-        }else{
+        } else {
             $transactions = Auth::user()->bitcoinWallet->transactions()->paginate(5);
         }
         $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
@@ -60,7 +60,7 @@ class BitcoinWalletController extends Controller
         $charge = Setting::where('name', 'bitcoin_charge')->first();
         if (!$charge) {
             $charge = 0;
-        }else{
+        } else {
             $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
         }
         $total_fees = $fees + $charge;
@@ -111,6 +111,17 @@ class BitcoinWalletController extends Controller
             report($e);
             return back()->with(['error' => 'An error occured, please try again']);
         }
+
+        $title = 'Bitcoin Wallet created';
+        $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';
+        $not = Notification::create([
+            'user_id' => Auth::user()->id,
+            'title' => $title,
+            'body' => $msg_body,
+        ]);
+
+        Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.bitcoin-wallet')));
+
         return back()->with(['success' => 'Wallet created successfully']);
     }
 
@@ -166,7 +177,7 @@ class BitcoinWalletController extends Controller
             'body' => $body,
         ]);
         if (Auth::user()->notificationSetting->trade_email == 1) {
-           // Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+            // Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
         }
 
         return redirect()->route('user.transactions');
