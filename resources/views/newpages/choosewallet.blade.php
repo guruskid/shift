@@ -177,7 +177,7 @@
 
             <form action="{{route('user.bitcoin-wallet.create')}}" method="POST">@csrf
                 <div class="modal-body p-4">
-                    <h5 class="modal-title mb-3">New Bitcoin Wallet </h5>
+                    <h5 class="modal-title mb-3">Enter Wallet Pin</h5>
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
