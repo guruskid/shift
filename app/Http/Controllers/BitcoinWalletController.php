@@ -140,9 +140,13 @@ class BitcoinWalletController extends Controller
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
 
-        /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+        if (!Auth::user()->nairaWallet) {
+            return back()->with(['error' => 'Please create a Naira wallet to continue']);
+        }
+
+        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
-        } */
+        }
 
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
 
@@ -150,9 +154,11 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
         }
 
-        if (!Auth::user()->nairaWallet) {
-            return back()->with(['error' => 'Please create a Naira wallet to continue']);
+        if ($r->type == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
+            return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
         }
+
+
 
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
         $data['status'] = 'waiting';
