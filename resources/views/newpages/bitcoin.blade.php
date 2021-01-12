@@ -63,14 +63,10 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading d-flex justify-content-between mt-2">
                                     <a href="{{ route('user.bitcoin-wallet') }}">
-                                        <div>
-                                            <span class=" giftcard-text">Send BTC</span>
-                                        </div>
+                                        <button class="btn btn-primary">Send BTC</button>
                                     </a>
                                     <a href="{{ route('user.bitcoin-wallet') }}">
-                                        <div>
-                                            <span class=" giftcard-text">Receive BTC</span>
-                                        </div>
+                                        <button class="btn btn-primary">Receive BTC</button>
                                     </a>
                                 </div>
                             </div>
