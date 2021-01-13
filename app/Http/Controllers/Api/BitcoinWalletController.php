@@ -70,6 +70,12 @@ class BitcoinWalletController extends Controller
 
     public function balance()
     {
+        if (!Auth::user()->bitcoinWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'No bitcoin wallet exists for this account'
+            ]);
+        }
         $card = Card::find(102);
         $rates = $card->currency->first();
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
@@ -93,7 +99,7 @@ class BitcoinWalletController extends Controller
 
     public function transactions()
     {
-        $transactions = Auth::user()->bitcoinWallet->transactions()->paginate(5);
+        $transactions = Auth::user()->bitcoinWallet->transactions;
 
         return response()->json([
             'success' => true,

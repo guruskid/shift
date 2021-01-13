@@ -144,9 +144,9 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Please create a Naira wallet to continue']);
         }
 
-        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+        /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
-        }
+        } */
 
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
 
