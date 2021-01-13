@@ -32,8 +32,7 @@ class BitcoinWalletController extends Controller
 
         $hd_wallets = BitcoinWallet::where('primary_wallet_id', 0)->get();
         foreach ($hd_wallets as $wallet ) {
-            $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_TESTNET, $wallet->name);
-            \Log::info($wallet->name. ' '.$result->payload->totalBalance);
+            $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_MAINNET, $wallet->name);
             $live_balance += $result->payload->totalBalance;
         }
 
