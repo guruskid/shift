@@ -286,7 +286,7 @@ class BitcoinWalletController extends Controller
 
         if ($btc_txn == null) { //New Transaction e.g recieve
             //Get transaction details
-            $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_MAINNET, $txn_id);
+            $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_TESTNET, $txn_id);
             $txn_details = $result->payload;
 
             //if no confirmations and unconfirmed == true
@@ -311,7 +311,7 @@ class BitcoinWalletController extends Controller
                         //Create txn
                         $btc_transaction = new BitcoinTransaction();
                         $btc_transaction->user_id = $user->id;
-                        $btc_transaction->primary_wallet_id = $user_wallet->primaryWallet->id;
+                        $btc_transaction->primary_wallet_id = $user_wallet->primary_wallet_id;
                         $btc_transaction->wallet_id = $user_wallet->address; //The wallet of the owner user
                         $btc_transaction->hash = $txn_details->txid;
                         $btc_transaction->credit = $output->amount;
