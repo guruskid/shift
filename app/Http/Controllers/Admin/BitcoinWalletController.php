@@ -27,8 +27,16 @@ class BitcoinWalletController extends Controller
         $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
         $hd_wallets_balance = BitcoinWallet::where('type', 'primary')->sum('balance');
         $users_wallet_balance = BitcoinWallet::where('type', 'secondary')->where('user_id', '!=', 1)->sum('balance');
-        $live_balance = 10; //get from api
+        $live_balance = 0; //get from api
         $transactions = BitcoinTransaction::latest()->paginate(200);
+
+        $hd_wallets = BitcoinWallet::where('primary_wallet_id', 0)->get();
+        foreach ($hd_wallets as $wallet ) {
+            $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_TESTNET, $wallet->name);
+            \Log::info($wallet->name. ' '.$result->payload->totalBalance);
+            $live_balance += $result->payload->totalBalance;
+        }
+
 
         return view('admin.bitcoin_wallet.index', compact('charges', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
     }
@@ -41,6 +49,19 @@ class BitcoinWalletController extends Controller
         $bitcoin_sell_charge = Setting::where('name', 'bitcoin_sell_charge')->first();
 
         return view('admin.bitcoin_wallet.wallets', compact(['wallets', 'bitcoin_charge', 'bitcoin_buy_charge', 'bitcoin_sell_charge']));
+    }
+
+    public function liveBalance()
+    {
+        $hd_wallets = BitcoinWallet::where('primary_wallet_id', 0)->get();
+        $total = 0;
+
+        foreach ($hd_wallets as $wallet ) {
+            $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_TESTNET, $wallet->name);
+            \Log::info($wallet->name. ' '.$result->payload->totalBalance);
+            $total += $result->payload->totalBalance;
+        }
+        //return response()->json([])
     }
 
     public function hdWallets()
@@ -205,7 +226,7 @@ class BitcoinWalletController extends Controller
         dd($result->payload->addresses[0]->path); */
 
         try {
-            $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_TESTNET, $data['name'], $password, 1);
+            $result = $this->instance->walletApiBtcCreateAddress()->createHd(Constants::$BTC_MAINNET, $data['name'], $password, 1);
             $wallet = new BitcoinWallet();
             $address = $result->payload->addresses[0];
             $wallet->user_id = 1;
@@ -220,7 +241,7 @@ class BitcoinWalletController extends Controller
 
             $callback = route('user.wallet-webhook');
 
-            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
+            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, $wallet->address, 6);
         } catch (\Throwable  $e) {
             report($e);
             return back()->with(['error' => 'An error occured, please try again']);

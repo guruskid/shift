@@ -286,7 +286,7 @@ class BitcoinWalletController extends Controller
 
         if ($btc_txn == null) { //New Transaction e.g recieve
             //Get transaction details
-            $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_TESTNET, $txn_id);
+            $result = $this->instance->transactionApiBtcTransactionsTxid()->get(Constants::$BTC_MAINNET, $txn_id);
             $txn_details = $result->payload;
 
             //if no confirmations and unconfirmed == true
@@ -342,6 +342,7 @@ class BitcoinWalletController extends Controller
 
                     $btc_txn->confirmations = $request->confirmations;
                     $btc_txn->status = 'success';
+                    $btc_txn->previous_balance = $user_wallet->getOriginal('balance');
                     $btc_txn->current_balance = $user_wallet->balance;
                     $btc_txn->save();
 
