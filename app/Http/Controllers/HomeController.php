@@ -145,7 +145,7 @@ class HomeController extends Controller
             $body = json_decode($response->getBody()->getContents());
 
             if (!$body->verified || $body->verified != 'true') {
-                return back()->with(['error' => 'Phone verification failed. A new OTP has been sent to you']);
+                return back()->with(['error' => 'Phone verification failed. Please request for a new OTP']);
             }
         } catch (\Exception $e) {
             report($e);
@@ -159,8 +159,6 @@ class HomeController extends Controller
 
         return redirect()->route('user.dashboard');
     }
-
-
 
     public function resendOtp()
     {
@@ -223,14 +221,16 @@ class HomeController extends Controller
                     ],
                 ]);
                 $body = json_decode($response->getBody()->getContents());
+
+                if ($body->verified != 'true') {
+                    
+                    return back()->with(['error' => 'Phone verification failed. Please request a new OTP']);
+                }
             } catch (\Exception $e) {
                 report($e);
                 return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
             }
-            if ($body->verified != 'true') {
-                /* $this->resendOtp(); */
-                return back()->with(['error' => 'Phone verification failed. A new OTP has been sent to you']);
-            }
+            
 
             Auth::user()->phone_verified_at = now();
         }

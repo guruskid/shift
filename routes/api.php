@@ -21,6 +21,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/register', 'Api\AuthController@register');
     Route::post('/login', 'Api\AuthController@login');
     Route::get('/banks', 'Api\AuthController@bankList' );
+    Route::get('/countries', 'Api\AuthController@countries' );
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Account;
 use App\Bank;
+use App\Country;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,9 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
+            'username' => 'string|required|unique:users,username',
+            'country_id' => 'required|integer',
+            'phone' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -55,10 +59,40 @@ class AuthController extends Controller
             ], 401);
         }
         $input = $request->all();
+
+        $country = Country::find($input['country_id']);
+        $phone = $country->phonecode . (int)$input['phone'];
+
+        $client = new Client();
+        $url = env('TERMII_SMS_URL') . "/otp/send";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                'api_key' => env('TERMII_API_KEY'),
+                "message_type" => "NUMERIC",
+                "to" => $phone,
+                "from" => "Dantown",
+                "channel" => "generic",
+                "pin_attempts" => 4,
+                "pin_time_to_live" =>  10,
+                "pin_length" => 6,
+                "pin_placeholder" => "< 1234 >",
+                "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "pin_type" => "NUMERIC"
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+
+
+
         $user = User::create([
             'first_name' => ' ',
             'last_name' => ' ',
+            'username' => $input['username'],
+            'country_id' => $input['country_id'],
             'email' => $input['email'],
+            'phone' => $phone,
+            'phone_pin_id' => $body->pinId,
             'password' => Hash::make($input['password']),
         ]);
         $auth_user = User::find($user->id);
@@ -76,6 +110,14 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => $banks
+        ]);
+    }
+
+    public function countries()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => Country::all()
         ]);
     }
 
@@ -116,6 +158,42 @@ class AuthController extends Controller
                 'msg' => $body->responsemessage
             ]);
         }
+    }
+
+    public function verifyPhone(Request $r)
+    {
+        $data = $r->validate([
+            'phone' => 'required',
+            'otp' => 'required',
+        ]);
+
+        try {
+            $client = new Client();
+            $url = env('TERMII_SMS_URL') . "/otp/verify";
+
+            $response = $client->request('POST', $url, [
+                'json' => [
+                    'api_key' => env('TERMII_API_KEY'),
+                    "pin_id" => Auth::user()->phone_pin_id,
+                    "pin" => $r->otp
+                ],
+            ]);
+            $body = json_decode($response->getBody()->getContents());
+
+            if (!$body->verified || $body->verified != 'true') {
+                return back()->with(['error' => 'Phone verification failed. Please request for a new OTP']);
+            }
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
+        }
+
+
+        Auth::user()->phone_verified_at = now();
+        Auth::user()->username = $data['username'];
+        Auth::user()->save();
+
+        return redirect()->route('user.dashboard');
     }
 
     public function addBankDetails(Request $request)
@@ -161,7 +239,6 @@ class AuthController extends Controller
             $a->save();
         }
 
-        Auth::user()->phone = $request->phone;
         Auth::user()->first_name = $request->account_name;
         Auth::user()->save();
 
