@@ -181,7 +181,7 @@ class TradeController extends Controller
         $data['agent_id'] = $online_agent->id;
 
         $t = Transaction::create($data);
-        if ($r->type == 'sell' && $r->has('card_images')) {
+        /* if ($r->type == 'sell' && $r->has('card_images')) {
             foreach ($r->card_images as $file) {
                 $extension = $file->getClientOriginalExtension();
                 $filenametostore = time() . uniqid() . '.' . $extension;
@@ -194,7 +194,7 @@ class TradeController extends Controller
             }
             $t->status = 'in progress';
             $t->save();
-        }
+        } */
         try {
             broadcast(new NewTransaction($t))->toOthers();
         } catch (\Exception $e) {

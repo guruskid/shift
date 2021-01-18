@@ -6,14 +6,14 @@
             <input type="hidden" name="type" value="buy">
             <input type="hidden" name="_token" :value="csrf">
             <div class="form-group mb-4">
-                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">USD equivalentsssss</label>
+                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">USD
+                    equivalentsssss</label>
                 <div class="input-group mb-2 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
                         <div class="input-group-text input_label"> USD</div>
                     </div>
-                    <input type="number" required step="any" min="0" name="amount"
-                    v-model="usdBuy" @keyup="getRateUsdBuy()"
-                     class="form-control bitcoin-input-radius"  >
+                    <input type="number" required step="any" min="0" name="amount" v-model="usdBuy"
+                        @keyup="getRateUsdBuy()" class="form-control bitcoin-input-radius">
                 </div>
             </div>
             <div class="form-group mb-4">
@@ -24,22 +24,24 @@
                         <div class="input-group-text input_label">
                             BTC</div>
                     </div>
-                    <input type="number" required step="any" min="0" name="quantity"
-                    v-model="btcBuy" @keyup="getRateBtcBuy()"
-                        class="form-control bitcoin-input-radius"  >
+                    <input type="number" required step="any" min="0" name="quantity" v-model="btcBuy"
+                        @keyup="getRateBtcBuy()" class="form-control bitcoin-input-radius">
                 </div>
             </div>
             <div class="form-group mb-4">
-                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Naira
-                    equivalent</label>
+                <div class="d-flex justify-content-between">
+                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Naira
+                        equivalent</label>
+                    <label for="inlineFormInputGroupUsername2"
+                        style="color: rgba(0, 0, 112, 0.75);">{{ usdToNairaBuy }}/$</label>
+                </div>
                 <div class="input-group mb-2 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
                         <div class="input-group-text input_label">
                             NGN</div>
                     </div>
-                    <input type="number" required name="amount_paid" step="any" min="0"
-                    v-model="nairaBuy" @keyup="getRateNgnBuy()"
-                        class="form-control bitcoin-input-radius"  >
+                    <input type="number" required name="amount_paid" step="any" min="0" v-model="nairaBuy"
+                        @keyup="getRateNgnBuy()" class="form-control bitcoin-input-radius">
                 </div>
             </div>
             <button class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Buy</button>
@@ -59,13 +61,13 @@
                 btcBuy: '',
 
                 //rates
-                btcToUsdBuy:  this.real_btc,
+                btcToUsdBuy: this.real_btc,
                 usdToNairaBuy: this.rate.buy[0].rate, //our rate
                 btcToNairaBuy: '',
 
             }
         },
-        mounted () {
+        mounted() {
             console.log(this.usdToNairaBuy);
             this.btcToNairaBuy = this.btcToUsdBuy * this.usdToNairaBuy;
         },
@@ -78,13 +80,13 @@
             },
 
             /* When btc is updated */
-            getRateBtcBuy(){
+            getRateBtcBuy() {
                 this.usdBuy = this.btcToUsdBuy * this.btcBuy
                 this.nairaBuy = this.btcBuy * this.btcToNairaBuy
             },
 
             /* When ngn is updated */
-            getRateNgnBuy(){
+            getRateNgnBuy() {
                 this.btcBuy = this.nairaBuy / this.btcToNairaBuy;
                 this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
             }

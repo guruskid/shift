@@ -30,8 +30,12 @@
                 </div>
             </div>
             <div class="form-group mb-4">
-                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Naira
-                    equivalent</label>
+                <div class="d-flex justify-content-between">
+                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Naira
+                        equivalent</label>
+                    <label for="inlineFormInputGroupUsername2"
+                        style="color: rgba(0, 0, 112, 0.75);">{{ usdToNaira }}/$</label>
+                </div>
                 <div class="input-group mb-2 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
                         <div class="input-group-text input_label">

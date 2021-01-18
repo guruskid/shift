@@ -3415,6 +3415,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['rate', 'real_btc', 'card_id'],
   data: function data() {
@@ -3467,6 +3469,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
 //
 //
 //
@@ -52503,7 +52509,7 @@ var render = function() {
                 staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
                 attrs: { for: "inlineFormInputGroupUsername2" }
               },
-              [_vm._v("USD equivalentsssss")]
+              [_vm._v("USD\n                equivalentsssss")]
             ),
             _vm._v(" "),
             _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
@@ -52589,14 +52595,25 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "form-group mb-4" }, [
-            _c(
-              "label",
-              {
-                staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
-                attrs: { for: "inlineFormInputGroupUsername2" }
-              },
-              [_vm._v("Naira\n                equivalent")]
-            ),
+            _c("div", { staticClass: "d-flex justify-content-between" }, [
+              _c(
+                "label",
+                {
+                  staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                  attrs: { for: "inlineFormInputGroupUsername2" }
+                },
+                [_vm._v("Naira\n                    equivalent")]
+              ),
+              _vm._v(" "),
+              _c(
+                "label",
+                {
+                  staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                  attrs: { for: "inlineFormInputGroupUsername2" }
+                },
+                [_vm._v(_vm._s(_vm.usdToNairaBuy) + "/$")]
+              )
+            ]),
             _vm._v(" "),
             _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
               _vm._m(2),
@@ -52858,14 +52875,25 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "form-group mb-4" }, [
-            _c(
-              "label",
-              {
-                staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
-                attrs: { for: "inlineFormInputGroupUsername2" }
-              },
-              [_vm._v("Naira\n                equivalent")]
-            ),
+            _c("div", { staticClass: "d-flex justify-content-between" }, [
+              _c(
+                "label",
+                {
+                  staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                  attrs: { for: "inlineFormInputGroupUsername2" }
+                },
+                [_vm._v("Naira\n                    equivalent")]
+              ),
+              _vm._v(" "),
+              _c(
+                "label",
+                {
+                  staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                  attrs: { for: "inlineFormInputGroupUsername2" }
+                },
+                [_vm._v(_vm._s(_vm.usdToNaira) + "/$")]
+              )
+            ]),
             _vm._v(" "),
             _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
               _vm._m(2),
