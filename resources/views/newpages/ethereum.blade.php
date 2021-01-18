@@ -254,8 +254,6 @@
          sell_eth = {!! json_encode($rates->sell, JSON_HEX_TAG) !!};
          buy_eth = {!! json_encode($rates->buy, JSON_HEX_TAG) !!};
 
-         bit_sell = {!! json_encode($rates->sell, JSON_HEX_TAG) !!};
-         bit_buy = {!! json_encode($rates->buy, JSON_HEX_TAG) !!};
     </script>
-    <script src="{{asset('newpages/js/main.js?v=45')}} "></script>
+    <script src="{{asset('newpages/js/main.js?v=450')}} "></script>
 @endsection

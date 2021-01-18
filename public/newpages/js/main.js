@@ -76,7 +76,7 @@ $("#copyEthWalletAddress").on("click", function () {
     }, 1700);
 });
 
-const buy_usd_per_btc = 10465.6;
+/* const buy_usd_per_btc = 10465.6;
 const buy_ngn_per_usd = bit_buy[0].rate;
 
 const btcfield = $("#buy_btc_field");
@@ -117,7 +117,7 @@ ngnfield.on("keyup", function (e) {
     //naira equivalent
     let btc = dollar / buy_usd_per_btc;
     btcfield.val(btc);
-});
+}); */
 /*===== END BUY CRYPTO =====*/
 
 $("#sell_submit_bt").on("click", function (e) {
