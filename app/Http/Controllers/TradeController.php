@@ -65,6 +65,8 @@ class TradeController extends Controller
         $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
+        //dd($rates->buy);
+
         $res = json_decode(file_get_contents("https://blockchain.info/ticker"));
         $btc_real_time = $res->USD->last;
 
@@ -153,7 +155,7 @@ class TradeController extends Controller
         return redirect()->route('user.transactions')->with(['success' => 'Transaction initiated']);
     }
 
-    /* Trade Crypto */
+    /* Trade Crypto no longer in use for btc */
     public function tradeCrypto(Request $r)
     {
 
@@ -181,7 +183,7 @@ class TradeController extends Controller
         $data['agent_id'] = $online_agent->id;
 
         $t = Transaction::create($data);
-        /* if ($r->type == 'sell' && $r->has('card_images')) {
+        if ($r->type == 'sell' && $r->has('card_images')) {
             foreach ($r->card_images as $file) {
                 $extension = $file->getClientOriginalExtension();
                 $filenametostore = time() . uniqid() . '.' . $extension;
@@ -194,7 +196,7 @@ class TradeController extends Controller
             }
             $t->status = 'in progress';
             $t->save();
-        } */
+        }
         try {
             broadcast(new NewTransaction($t))->toOthers();
         } catch (\Exception $e) {

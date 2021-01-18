@@ -3417,6 +3417,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['rate', 'real_btc', 'card_id'],
   data: function data() {
@@ -3469,6 +3470,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -52498,6 +52500,27 @@ var render = function() {
           }),
           _vm._v(" "),
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.btcToUsdBuy,
+                expression: "btcToUsdBuy"
+              }
+            ],
+            attrs: { type: "hidden", name: "current_rate" },
+            domProps: { value: _vm.btcToUsdBuy },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.btcToUsdBuy = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("input", {
             attrs: { type: "hidden", name: "_token" },
             domProps: { value: _vm.csrf }
           }),
@@ -52509,7 +52532,7 @@ var render = function() {
                 staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
                 attrs: { for: "inlineFormInputGroupUsername2" }
               },
-              [_vm._v("USD\n                equivalentsssss")]
+              [_vm._v("USD\n                equivalent")]
             ),
             _vm._v(" "),
             _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
@@ -52780,6 +52803,27 @@ var render = function() {
           _c("input", {
             attrs: { type: "hidden", name: "_token" },
             domProps: { value: _vm.csrf }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.btcToUsd,
+                expression: "btcToUsd"
+              }
+            ],
+            attrs: { type: "hidden", name: "current_rate" },
+            domProps: { value: _vm.btcToUsd },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.btcToUsd = $event.target.value
+              }
+            }
           }),
           _vm._v(" "),
           _c("div", { staticClass: "form-group mb-4" }, [
@@ -68439,4 +68483,3 @@ module.exports = __webpack_require__(/*! C:\Users\Winston\Desktop\Clients\Larave
 /***/ })
 
 /******/ });
-

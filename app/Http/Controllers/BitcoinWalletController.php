@@ -8,6 +8,8 @@ use App\Card;
 use App\CardCurrency;
 use App\Events\NewTransaction;
 use App\Mail\DantownNotification;
+use App\NairaTransaction;
+use App\NairaWallet;
 use App\Notification;
 use App\Setting;
 use App\Transaction;
@@ -134,6 +136,7 @@ class BitcoinWalletController extends Controller
             'amount' => 'required',
             'amount_paid' => 'required',
             'quantity' => 'required',
+
         ]);
 
         if (!Auth::user()->bitcoinWallet) {
@@ -188,15 +191,167 @@ class BitcoinWalletController extends Controller
 
         //Call autonated pay function
         if ($t->amount < 1000 && $t->amount > 0) {
-            //$this->automatedPayment($t);
+            $this->automatedPayment($t, $data['card_id'], $r->current_rate);
         }
 
         return redirect()->route('user.transactions');
     }
 
-    public function automatedPayment(Transaction $t)
+    public function automatedPayment(Transaction $t, $card_id, $current_rate)
     {
-        dd($t);
+        //dd($t);
+        $card = Card::find($card_id);
+        $rates = $card->currency->first();
+
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $current_btc_rate = $res->bitcoin->usd;
+        #confirm id the difference is less than $10 before assigning
+        if (abs($current_btc_rate - $current_rate) >= 10) {
+            return back()->with(['success' => 'Trade initiated successfully']);
+        }
+        $current_btc_rate = $current_rate;
+        $trade_rate = 0;
+
+        if ($t->type == 'buy') {
+            $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
+            $trade_rate = json_decode($buy->pivot->payment_range_settings);
+            $trade_rate = $trade_rate[0]->rate;
+        } else {
+            $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+            $trade_rate = json_decode($sell->pivot->payment_range_settings);
+            $trade_rate = $trade_rate[0]->rate;
+        }
+
+        //Correct figures
+        $trade_usd = $t->amount;
+        $trade_btc = $t->amount / $current_btc_rate;
+        $trade_ngn = $t->amount * $trade_rate;
+
+        if ($t->amount_paid != $trade_ngn || $t->quantity != $trade_btc) {
+            dd($trade_btc);
+            //Incorrect trade
+            $t->status = 'declined';
+            $t->save();
+
+            return back()->with(['error' => 'Incorrect trade parameters, trade has been declined']);
+        }
+
+
+        $transaction = $t;
+        $btc_txn_type = 0;
+        $user_naira_wallet = $transaction->user->nairaWallet;
+        $user_btc_wallet = $transaction->user->bitcoinWallet;
+        $primary_wallet = $user_btc_wallet->primaryWallet;
+        $user = $transaction->user;
+        $charge = 0;
+        $charge_wallet = BitcoinWallet::where('name', 'bitcoin charges')->first();
+
+
+        if ($transaction->type == 'buy') {
+            $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
+            /* Cross Check Balance */
+            if ($user_naira_wallet->amount < $transaction->amount_paid) {
+                return redirect()->back()->with(['error' => 'Insufficient user naira wallet balance']);
+            }
+            $btc_txn_type = 19;
+            /* Deduct cost from user naira wallet and create new naira wallet transaction */
+            $user_naira_wallet->amount -= $transaction->amount_paid;
+            $user_naira_wallet->save();
+
+            $reference = \Str::random(2) . '-' . $transaction->id;
+            $n = NairaWallet::find(1);
+            $nt = new NairaTransaction();
+            $nt->reference = $reference;
+            $nt->amount = $transaction->amount_paid;
+            $nt->user_id = $user->id;
+            $nt->type = 'naira wallet';
+            $nt->previous_balance = $user_naira_wallet->getOriginal('amount');
+            $nt->current_balance = $user_naira_wallet->amount;
+            $nt->charge = 0;
+            $nt->transaction_type_id = 5;
+            $nt->cr_wallet_id = $n->id;
+            $nt->dr_wallet_id = $user_naira_wallet->id;
+            $nt->cr_acct_name = 'Dantown';
+            $nt->dr_acct_name = $user->first_name . ' ' . $user->last_name;
+            $nt->narration = 'Debit for buy transaction with id ' . $transaction->uid;
+            $nt->trans_msg = 'This transaction was handled automatically';
+            $nt->dr_user_id = $user->id;
+            $nt->cr_user_id = 1;
+            $nt->status = 'success';
+            $nt->save();
+
+            $user_btc_wallet->balance += ($transaction->quantity - $charge);
+            $user_btc_wallet->save();
+
+            $primary_wallet->balance -= $transaction->quantity;
+            $primary_wallet->save();
+        } elseif ($transaction->type == 'sell') {
+            $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+            $btc_txn_type = 20;
+            if ($user_btc_wallet->balance < ($transaction->quantity + $charge)) {
+                return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance']);
+            }
+            $user_btc_wallet->balance -= ($transaction->quantity + $charge);
+            $user_btc_wallet->save();
+
+            $primary_wallet->balance += $transaction->quantity;
+            $primary_wallet->save();
+
+            $user_naira_wallet->amount += $transaction->amount_paid;
+            $user_naira_wallet->save();
+
+            //Create naira txn
+            $reference = \Str::random(2) . '-' . $transaction->id;
+            $n = NairaWallet::find(1);
+            $nt = new NairaTransaction();
+            $nt->reference = $reference;
+            $nt->amount = $transaction->amount_paid;
+            $nt->user_id = $user->id;
+            $nt->type = 'naira wallet';
+            $nt->previous_balance = $user_naira_wallet->getOriginal('amount');
+            $nt->current_balance = $user_naira_wallet->amount;
+            $nt->charge = 0;
+            $nt->transaction_type_id = 4;
+            $nt->dr_wallet_id = $n->id;
+            $nt->cr_wallet_id = $user_naira_wallet->id;
+            $nt->dr_acct_name = 'Dantown';
+            $nt->cr_acct_name = $user->first_name . ' ' . $user->last_name;
+            $nt->narration = 'Credit for sell transaction with id ' . $transaction->uid;
+            $nt->trans_msg = 'This transaction was handled automatically ';
+            $nt->cr_user_id = $user->id;
+            $nt->dr_user_id = 1;
+            $nt->status = 'success';
+            $nt->save();
+        } else {
+            return back()->with(['error' => 'Invalid transaction']);
+        }
+
+        #send charge to charge wallet
+        $charge_wallet->balance += $charge;
+        $charge_wallet->save();
+
+        $btc_transaction = new BitcoinTransaction();
+        $btc_transaction->user_id = $transaction->user->id;
+        $btc_transaction->primary_wallet_id = $primary_wallet->id;
+        $btc_transaction->wallet_id = $user_btc_wallet->address; //The wallet of the owner user
+        $btc_transaction->hash = 'none';
+        if ($transaction->type == 'buy') {
+            $btc_transaction->credit = ($transaction->quantity - $charge);
+        } elseif ($transaction->type == 'sell') {
+            $btc_transaction->debit = ($transaction->quantity + $charge);
+        }
+        $btc_transaction->fee = 0;
+        $btc_transaction->charge = $charge;
+        $btc_transaction->previous_balance = $user_btc_wallet->getOriginal('balance');
+        $btc_transaction->current_balance = $user_btc_wallet->balance;
+        $btc_transaction->transaction_type_id = $btc_txn_type;
+        $btc_transaction->counterparty = 'Dantown Assets';
+        $btc_transaction->narration = 'Approved automatically';
+        $btc_transaction->confirmations = 3;
+        $btc_transaction->save();
+
+        $transaction->status = 'success';
+        $transaction->save();
     }
 
     public function send(Request $r)

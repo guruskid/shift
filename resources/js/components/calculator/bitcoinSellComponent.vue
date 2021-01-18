@@ -5,6 +5,7 @@
             <input type="hidden" name="card_id" v-model="card_id">
             <input type="hidden" name="type" value="sell">
             <input type="hidden" name="_token" :value="csrf">
+            <input type="hidden" name="current_rate" v-model="btcToUsd">
             <div class="form-group mb-4">
                 <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
                 <div class="input-group mb-2 mr-sm-2">
