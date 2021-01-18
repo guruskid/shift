@@ -105,7 +105,7 @@ class RegisterController extends Controller
             'username' => $data['username'],
             'country_id' => $data['country_id'],
             'email' => $data['email'],
-            'phone' => $phone,
+            'phone' => $data['phone'],
             'phone_pin_id' => $body->pinId,
             'password' => Hash::make($data['password']),
         ]);
