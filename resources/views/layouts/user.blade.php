@@ -415,7 +415,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
         </div>
     </div>
 
-    {{-- <script src="/js/app.js?v = 2"></script> --}}
+    <script src="/js/app.js?v=32"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
