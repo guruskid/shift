@@ -28,6 +28,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
 
+        Route::post('/send-otp', 'Api\AuthController@sendOtp');
+        Route::post('/verify-phone', 'Api\AuthController@verifyPhone');
+
         Route::post('/update-password', 'Api\UserController@updatePassword');
         Route::post('/update-email', 'Api\UserController@updateEmail');
         Route::post('/update-dp', 'Api\UserController@updateDp');

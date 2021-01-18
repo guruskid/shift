@@ -181,20 +181,79 @@ class AuthController extends Controller
             $body = json_decode($response->getBody()->getContents());
 
             if (!$body->verified || $body->verified != 'true') {
-                return back()->with(['error' => 'Phone verification failed. Please request for a new OTP']);
+                return response()->json([
+                    'success' => false,
+                    'msg' => 'Phone verification failed. Please request for a new OTP'
+                ]);
             }
         } catch (\Exception $e) {
             report($e);
-            return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Phone verification failed. Please request for a new OTP'
+            ]);
         }
 
 
         Auth::user()->phone_verified_at = now();
-        Auth::user()->username = $data['username'];
         Auth::user()->save();
 
-        return redirect()->route('user.dashboard');
+        return response()->json([
+            'success' => true,
+            'data' => Auth::user()
+        ]);
     }
+
+    public function sendOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required',
+            'country_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $client = new Client();
+        $url = env('TERMII_SMS_URL') . "/otp/send";
+        $country = Country::find($request->country_id);
+        $full_num = $country->phonecode . $request->phone;
+
+            $response = $client->request('POST', $url, [
+                'json' => [
+                    'api_key' => env('TERMII_API_KEY'),
+                    "message_type" => "NUMERIC",
+                    "to" => $full_num,
+                    "from" => "N-Alert",
+                    "channel" => "dnd",
+                    "pin_attempts" => 4,
+                    "pin_time_to_live" =>  10,
+                    "pin_length" => 6,
+                    "pin_placeholder" => "< 1234 >",
+                    "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                    "pin_type" => "NUMERIC"
+                ],
+            ]);
+        $body = json_decode($response->getBody()->getContents());
+
+        if ($body->status == 200) {
+            Auth::user()->phone = $request->phone;
+            Auth::user()->country_id = $request->country_id;
+            Auth::user()->phone_pin_id = $body->pinId;
+            Auth::user()->save();
+
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+        return response()->json([
+            'msg' => 'An error occured while resending OTP, please try again'
+        ]);
+    }
+
 
     public function addBankDetails(Request $request)
     {
