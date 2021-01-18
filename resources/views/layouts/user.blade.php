@@ -45,7 +45,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     <meta name="description" content="Dantown multi services">
     <meta name="msapplication-tap-highlight" content="no">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
-    <link href=" {{asset('css/app.css?v=4.6')}} " rel="stylesheet">
+    {{-- <link href=" {{asset('css/app.css?v=4.6')}} " rel="stylesheet"> --}}
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
     {{-- <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet"> --}}
     {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
@@ -415,20 +415,18 @@ $naira_balance = Auth::user()->nairaWallet->amount;
         </div>
     </div>
 
-    <script src="/js/app.js?v = 2"></script>
+    {{-- <script src="/js/app.js?v = 2"></script> --}}
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
     <script src="{{asset('js/bootstrap.min.js')}} "></script>
     <script src="{{asset('js/custom.js?v=39')}}"></script>
-    {{-- <script src="{{asset('js/bootstrap-notify.js')}}"></script> --}}
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
 
 
     {{-- Calculator scripts --}}
     <script src="{{asset('user_assets/js/calculator.js')}} "></script>
-    {{-- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> --}}
     @yield('scripts')
 
 

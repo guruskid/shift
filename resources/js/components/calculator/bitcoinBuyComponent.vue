@@ -31,7 +31,7 @@
             <div class="form-group mb-4">
                 <div class="d-flex justify-content-between">
                     <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Naira
-                        </label>
+                        equivalent</label>
                     <label for="inlineFormInputGroupUsername2"
                         style="color: rgba(0, 0, 112, 0.75);">{{ usdToNairaBuy }}/$</label>
                 </div>
