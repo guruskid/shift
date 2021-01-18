@@ -8,7 +8,9 @@ $("#proceedtoupload").on("click", function() {
 function preview(input) {
     $("#upload_text_desc").hide();
     $('#previewImg').html('');
-    if (input.files && input.files[0]) {
+    if (input.
+
+        s && input.files[0]) {
         $(input.files).each(function() {
             var reader = new FileReader();
             reader.readAsDataURL(this);

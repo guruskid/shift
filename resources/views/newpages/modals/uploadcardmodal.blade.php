@@ -78,7 +78,7 @@
 
             <div id="modal_container_content" class="container py-4">
                 <div class="d-flex justify-content-between mb-4">
-                    <span class="d-block" style="color: #000000;letter-spacing: 0.01em;font-size: 18px;">Upload cards</span>
+                    <span class="d-block" style="color: #000000;letter-spacing: 0.01em;font-size: 18px;">Upload cardssss</span>
                     <span class="d-block" data-dismiss="modal" style="cursor: pointer;" onclick="inputfile()">
                         <svg width="18" height="18" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g opacity="0.4">

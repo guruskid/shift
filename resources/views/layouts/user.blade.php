@@ -45,13 +45,13 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     <meta name="description" content="Dantown multi services">
     <meta name="msapplication-tap-highlight" content="no">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
-    <link href=" {{asset('css/app.css?v=46')}} " rel="stylesheet">
+    <link href="/css/app.css?v={{ env('APP_STATIC_FILES_VERSION') }}" rel="stylesheet">
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
     {{-- <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet"> --}}
     {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
-    <link href=" {{asset('custom.css?v = 3.0')}} " rel="stylesheet">
+    <link href=" {{asset('custom.css?v=3.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
-    <link href=" {{asset('user_assets/css/main.css?v=8')}} " rel="stylesheet">
+    <link href=" {{asset('user_assets/css/main.css?v=80')}} " rel="stylesheet">
     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> --}}
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
@@ -415,18 +415,18 @@ $naira_balance = Auth::user()->nairaWallet->amount;
         </div>
     </div>
 
-    <script src="/js/app.js?v=320"></script>
+    <script src="/js/app.js?v={{ env('APP_STATIC_FILES_VERSION') }}"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
     <script src="{{asset('js/bootstrap.min.js')}} "></script>
-    <script src="{{asset('js/custom.js?v=46')}}"></script>
+    <script src="/js/custom.js?v={{ env('APP_STATIC_FILES_VERSION') }}"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
 
 
     {{-- Calculator scripts --}}
-    <script src="{{asset('user_assets/js/calculator.js')}} "></script>
+    <script src="/user_assets/js/calculator.js?v={{ env('APP_STATIC_FILES_VERSION') }}"></script>
     @yield('scripts')
 
 
