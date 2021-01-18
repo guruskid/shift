@@ -186,7 +186,17 @@ class BitcoinWalletController extends Controller
             // Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
         }
 
+        //Call autonated pay function
+        if ($t->amount < 1000 && $t->amount > 0) {
+            //$this->automatedPayment($t);
+        }
+
         return redirect()->route('user.transactions');
+    }
+
+    public function automatedPayment(Transaction $t)
+    {
+        dd($t);
     }
 
     public function send(Request $r)
