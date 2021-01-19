@@ -128,6 +128,7 @@ class TradeController extends Controller
 
         if ($r->has('card_images')) {
             foreach ($r->card_images as $file) {
+                dd($file);
                 $extension = $file->getClientOriginalExtension();
                 $filenametostore = time() . uniqid() . '.' . $extension;
                 Storage::put('public/pop/' . $filenametostore, fopen($file, 'r+'));
