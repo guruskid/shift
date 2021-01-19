@@ -20,7 +20,7 @@ function preview(input) {
             reader.readAsDataURL(this);
             reader.onload = function(e) {
                 $("#previewImg").append(
-                    "<img class='thumb m-2 zoom' src='" + e.target.result + "'>"
+                    "<img class='thumb m-2 zoom' src='/" + e.target.result + "'>"
                 );
             };
         });

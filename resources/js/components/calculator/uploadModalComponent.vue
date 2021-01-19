@@ -23,9 +23,6 @@
                                     here</span>
 
                             </div>
-                            <div class="row">
-                                <button class="btn btn-primary mx-auto" type="button" id="upload-input-btn">Upload</button>
-                            </div>
                             <input type="hidden" name="_token" :value="csrf">
                             <div v-for="trade in trades" :key="trade.key" >
                                 <input type="hidden" v-model="trade.cardName" name="cards[]">
@@ -37,8 +34,7 @@
                                 <input type="hidden" v-model="trade.cardTotal" name="totals[]">
                             </div>
                             <input type="hidden" name="buy_sell" v-model="buy_sell">
-
-                            <input  v-if="buy_sell == 2" type="file" class="form-control d-none" id="upload-input" name="card_images[]" onchange="preview(this);"
+                            <input  v-if="buy_sell == 2" type="file" class="form-control " name="card_images[]" onchange="preview(this);"
                                 multiple="multiple" style="border: 0px; outline: none !important" accept="image/*" />
                             <div  v-if="buy_sell == 2" id="previewImg"
                                 class="my-3 previewImg d-flex d-lg-block justify-content-center flex-wrap align-items-around">
