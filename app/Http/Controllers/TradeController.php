@@ -89,7 +89,6 @@ class TradeController extends Controller
     /* Trade GiftCards */
     public function trade(Request $r)
     {
-        dd('hollap');
         if (count($r->cards) != count($r->totals)) {
             return back()->with(['error' => 'Invalid trade details']);
         }
@@ -126,7 +125,7 @@ class TradeController extends Controller
             $t->card_price = $r->prices[$i];
             $t->save();
         }
-
+        dd($r->card_images);
         if ($r->has('card_images')) {
             foreach ($r->card_images as $file) {
                 dd($file);
