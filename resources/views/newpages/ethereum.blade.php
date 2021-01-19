@@ -118,7 +118,7 @@
                                                             <div class="input-group-text input_label">
                                                                 ETH</div>
                                                         </div>
-                                                        <input type="number" step="any" class="form-control bitcoin-input-radius" value=""
+                                                        <input type="number" step="any" name="quantity" class="form-control bitcoin-input-radius" value=""
                                                             id="sell_eth_equiv_field">
                                                     </div>
                                                 </div>
@@ -130,7 +130,7 @@
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input type="number" class="form-control bitcoin-input-radius" value=""
+                                                        <input type="number" name="amount_paid" class="form-control bitcoin-input-radius" value=""
                                                             id="sell_ngn_eth_field">
                                                     </div>
                                                 </div>
@@ -209,11 +209,11 @@
                                                     <label for="inlineFormInputGroupUsername2"
                                                         style="color: rgba(0, 0, 112, 0.75);">Naira equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" name="amount_paid" style="border-radius: 30px;">
+                                                        <div class="input-group-prepend"  style="border-radius: 30px;">
                                                             <div class="input-group-text input_label">
                                                                 NGN</div>
                                                         </div>
-                                                        <input type="text" class="form-control bitcoin-input-radius"
+                                                        <input type="text" name="amount_paid" class="form-control bitcoin-input-radius"
                                                             id="buy_ngn_field_eth">
                                                     </div>
                                                 </div>
