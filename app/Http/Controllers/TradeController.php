@@ -125,10 +125,10 @@ class TradeController extends Controller
             $t->card_price = $r->prices[$i];
             $t->save();
         }
-        dd($r->card_images);
+        /* dd($r->card_images); */
         if ($r->has('card_images')) {
             foreach ($r->card_images as $file) {
-                dd($file);
+                /* dd($file); */
                 $extension = $file->getClientOriginalExtension();
                 $filenametostore = time() . uniqid() . '.' . $extension;
                 Storage::put('public/pop/' . $filenametostore, fopen($file, 'r+'));
