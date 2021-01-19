@@ -5,12 +5,16 @@ $("#proceedtoupload").on("click", function() {
     $("#uploadCardImageModal").show();
 });
 
+$('#upload-input-btn').on('click', function(){
+    //console.log('wew');
+    //$('#upload-input').click();
+    document.getElementById("upload-input").click();
+})
+
 function preview(input) {
     $("#upload_text_desc").hide();
     $('#previewImg').html('');
-    if (input.
-
-        s && input.files[0]) {
+    if (input.files && input.files[0]) {
         $(input.files).each(function() {
             var reader = new FileReader();
             reader.readAsDataURL(this);

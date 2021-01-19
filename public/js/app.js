@@ -3885,6 +3885,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -53863,6 +53867,8 @@ var render = function() {
                             )
                           : _vm._e(),
                         _vm._v(" "),
+                        _vm._m(0),
+                        _vm._v(" "),
                         _c("input", {
                           attrs: { type: "hidden", name: "_token" },
                           domProps: { value: _vm.csrf }
@@ -54070,13 +54076,14 @@ var render = function() {
                         _vm._v(" "),
                         _vm.buy_sell == 2
                           ? _c("input", {
-                              staticClass: "form-control",
+                              staticClass: "form-control d-none",
                               staticStyle: {
                                 border: "0px",
                                 outline: "none !important"
                               },
                               attrs: {
                                 type: "file",
+                                id: "upload-input",
                                 name: "card_images[]",
                                 onchange: "preview(this);",
                                 multiple: "multiple",
@@ -54119,7 +54126,23 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary mx-auto",
+          attrs: { type: "button", id: "upload-input-btn" }
+        },
+        [_vm._v("Upload")]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 

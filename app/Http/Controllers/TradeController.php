@@ -93,9 +93,9 @@ class TradeController extends Controller
             return back()->with(['error' => 'Invalid trade details']);
         }
 
-        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+       /*  if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
-        }
+        } */
 
         if ($r->buy_sell == 1 && Auth::user()->nairaWallet->amount < $r->amount_paid) {
             return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
