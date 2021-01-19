@@ -206,9 +206,11 @@ class BitcoinWalletController extends Controller
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $current_btc_rate = $res->bitcoin->usd;
         #confirm id the difference is less than $10 before assigning
-        /* if (abs($current_btc_rate - $current_rate) >= 10) {
+        $abs = abs($current_btc_rate - $current_rate);
+        //dd($abs, $current_btc_rate, $current_rate);
+        if ($abs >= 10) {
             return back()->with(['success' => 'Trade initiated successfully']);
-        } */
+        }
         $current_btc_rate = $current_rate;
         $trade_rate = 0;
 

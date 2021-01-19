@@ -149,7 +149,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
 
                     <div class="app-header-left">
                         <div class="col  ml-3 ">
-                            <a href="{{route('user.naira-wallet')}}" title="View wallet">
+                            <a href="{{route('user.portfolio')}}" title="View wallet">
                                 <div class="widget-heading text-custom realtime-wallet-balance">
                                     @auth
                                     Loading . . .

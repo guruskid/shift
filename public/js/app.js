@@ -3885,6 +3885,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -52479,7 +52488,7 @@ var render = function() {
                 expression: "btcToUsdBuy"
               }
             ],
-            attrs: { type: "hidden", name: "current_rate" },
+            attrs: { type: "hidden", step: "any", name: "current_rate" },
             domProps: { value: _vm.btcToUsdBuy },
             on: {
               input: function($event) {
@@ -53779,7 +53788,8 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          _vm._s(_vm.buy_sell == 2 ? "Upload cards" : "") + " "
+                          _vm._s(_vm.buy_sell == 2 ? "Upload cards" : "") +
+                            "\n                    "
                         )
                       ]
                     ),
@@ -53855,12 +53865,30 @@ var render = function() {
                                   },
                                   [
                                     _vm._v(
-                                      "Place your Images/card receipts\n                                here"
+                                      "Place your Images card receipts\n                                here"
                                     )
                                   ]
                                 )
                               ]
                             )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.buy_sell == 2
+                          ? _c("div", { staticClass: "row" }, [
+                              _vm._m(0),
+                              _vm._v(" "),
+                              _c("input", {
+                                staticClass: "d-none",
+                                attrs: {
+                                  type: "file",
+                                  id: "file",
+                                  name: "card_images[]",
+                                  multiple: "",
+                                  onchange: "preview(this);",
+                                  accept: "image/*"
+                                }
+                              })
+                            ])
                           : _vm._e(),
                         _vm._v(" "),
                         _c("input", {
@@ -54069,23 +54097,6 @@ var render = function() {
                         }),
                         _vm._v(" "),
                         _vm.buy_sell == 2
-                          ? _c("input", {
-                              staticClass: "form-control ",
-                              staticStyle: {
-                                border: "0px",
-                                outline: "none !important"
-                              },
-                              attrs: {
-                                type: "file",
-                                name: "card_images[]",
-                                onchange: "preview(this);",
-                                multiple: "multiple",
-                                accept: "image/*"
-                              }
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm.buy_sell == 2
                           ? _c("div", {
                               staticClass:
                                 "my-3 previewImg d-flex d-lg-block justify-content-center flex-wrap align-items-around",
@@ -54119,7 +54130,18 @@ var render = function() {
     ]
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "mx-auto", attrs: { for: "file" } }, [
+      _c("span", { staticClass: "badge badge-primary p-2" }, [
+        _vm._v("Choose images")
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 

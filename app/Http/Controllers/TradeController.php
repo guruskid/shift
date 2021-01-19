@@ -67,8 +67,8 @@ class TradeController extends Controller
 
         //dd($rates->buy);
 
-        $res = json_decode(file_get_contents("https://blockchain.info/ticker"));
-        $btc_real_time = $res->USD->last;
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_real_time = $res->bitcoin->usd;
 
         return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time']));
     }
@@ -195,8 +195,8 @@ class TradeController extends Controller
                 $p->path = $filenametostore;
                 $p->save();
             }
-            $t->status = 'in progress';
-            $t->save();
+            //$t->status = 'in progress';
+            //$t->save();
         }
         try {
             broadcast(new NewTransaction($t))->toOthers();

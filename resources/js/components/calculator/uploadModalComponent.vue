@@ -4,7 +4,9 @@
             <div class="modal-content modal-content-custom" style="margin-top: 100px">
                 <div id="modal_container_content" class="container py-4">
                     <div class="d-flex justify-content-between mb-4">
-                        <span class="d-block" style="color: #000000; letter-spacing: 0.01em; font-size: 18px">{{ buy_sell == 2 ? 'Upload cards' : '' }} </span>
+                        <span class="d-block"
+                            style="color: #000000; letter-spacing: 0.01em; font-size: 18px">{{ buy_sell == 2 ? 'Upload cards' : '' }}
+                        </span>
                         <span class="d-block" data-dismiss="modal" style="cursor: pointer" onclick="inputfile()">
                             <svg width="18" height="18" viewBox="0 0 34 34" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -16,15 +18,21 @@
                             </svg>
                         </span>
                     </div>
-                    <form action="/user/trade" method="POST" id="uploadcardsform" enctype="multipart/form-data" >
+                    <form action="/user/trade" method="POST" id="uploadcardsform" enctype="multipart/form-data">
                         <div class="p-2 mx-auto dashed-border">
-                            <div  v-if="buy_sell == 2" id="upload_text_desc" class="mb-2">
-                                <span class="d-block primary-color text-center">Place your Images/card receipts
+                            <div v-if="buy_sell == 2" id="upload_text_desc" class="mb-2">
+                                <span class="d-block primary-color text-center">Place your Images card receipts
                                     here</span>
 
                             </div>
+                            <div v-if="buy_sell == 2" class="row">
+                                <label for="file" class="mx-auto">
+                                    <span class="badge badge-primary p-2">Choose images</span>
+                                </label>
+                                <input type="file" class="d-none" id="file" name="card_images[]" multiple onchange="preview(this);" accept="image/*">
+                            </div>
                             <input type="hidden" name="_token" :value="csrf">
-                            <div v-for="trade in trades" :key="trade.key" >
+                            <div v-for="trade in trades" :key="trade.key">
                                 <input type="hidden" v-model="trade.cardName" name="cards[]">
                                 <input type="hidden" v-model="trade.currency" name="currencies[]">
                                 <input type="hidden" v-model="trade.cardType" name="card_types[]">
@@ -34,9 +42,10 @@
                                 <input type="hidden" v-model="trade.cardTotal" name="totals[]">
                             </div>
                             <input type="hidden" name="buy_sell" v-model="buy_sell">
-                            <input  v-if="buy_sell == 2" type="file" class="form-control " name="card_images[]" onchange="preview(this);"
-                                multiple="multiple" style="border: 0px; outline: none !important" accept="image/*" />
-                            <div  v-if="buy_sell == 2" id="previewImg"
+                            <!-- <input v-if="buy_sell == 2" type="file" class="form-control " name="card_images[]"
+                                onchange="preview(this);" multiple="multiple"
+                                style="border: 0px; outline: none !important" accept="image/*" > -->
+                            <div v-if="buy_sell == 2" id="previewImg"
                                 class="my-3 previewImg d-flex d-lg-block justify-content-center flex-wrap align-items-around">
                             </div>
                         </div>

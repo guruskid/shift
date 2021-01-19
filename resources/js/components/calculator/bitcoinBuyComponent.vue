@@ -4,7 +4,7 @@
         <form action="/user/trade-bitcoin" class="disable-form" method="post">
             <input type="hidden" name="card_id" v-model="card_id">
             <input type="hidden" name="type" value="buy">
-            <input type="hidden" name="current_rate" v-model="btcToUsdBuy">
+            <input type="hidden" step="any" name="current_rate" v-model="btcToUsdBuy">
             <input type="hidden" name="_token" :value="csrf">
             <div class="form-group mb-4">
                 <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">USD

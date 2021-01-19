@@ -5,12 +5,6 @@ $("#proceedtoupload").on("click", function() {
     $("#uploadCardImageModal").show();
 });
 
-$('#upload-input-btn').on('click', function(){
-    //console.log('wew');
-    //$('#upload-input').click();
-    document.getElementById("upload-input").click();
-})
-
 function preview(input) {
     $("#upload_text_desc").hide();
     $('#previewImg').html('');
@@ -20,7 +14,7 @@ function preview(input) {
             reader.readAsDataURL(this);
             reader.onload = function(e) {
                 $("#previewImg").append(
-                    "<img class='thumb m-2 zoom' src='/" + e.target.result + "'>"
+                    "<img class='thumb m-2 zoom' src='" + e.target.result + "'>"
                 );
             };
         });

@@ -78,7 +78,7 @@
 
             <div id="modal_container_content" class="container py-4">
                 <div class="d-flex justify-content-between mb-4">
-                    <span class="d-block" style="color: #000000;letter-spacing: 0.01em;font-size: 18px;">Upload cardssss</span>
+                    <span class="d-block" style="color: #000000;letter-spacing: 0.01em;font-size: 18px;">Upload cards</span>
                     <span class="d-block" data-dismiss="modal" style="cursor: pointer;" onclick="inputfile()">
                         <svg width="18" height="18" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g opacity="0.4">
@@ -95,16 +95,19 @@
                             <img src="{{asset('/customizeduploadbtn.png')}}" alt="">
                         </span>
 
-                        <div id="upload_text_desc" class="mb-2">
+                        {{-- <div id="upload_text_desc" class="mb-2">
                             <span class="d-block primary-color text-center">Place your Images/card receipts here</span>
-                            <span class="d-block text-center"
-                                style="color: rgba(0, 0, 112, 0.7);letter-spacing: 0.01em;">Click to select
-                                image/images</span>
+                        </div> --}}
+                        <div class="row">
+                            <label for="file" class="mx-auto">
+                                <span class="badge badge-primary p-2">Choose images</span>
+                            </label>
+                            <input type="file" class="d-none" id="file" name="card_images[]" multiple onchange="preview(this);" accept="image/*">
                         </div>
 
 
-                        <input type='file' class="form-control" name="card_images[]" onchange="preview(this);"
-                            multiple="multiple" style="border:0px;outline:none !important;" accept="image/*" />
+                        {{-- <input type='file' class="form-control" name="card_images[]" onchange="preview(this);"
+                            multiple="multiple" style="border:0px;outline:none !important;" accept="image/*" /> --}}
                         <div id="previewImg"
                             class="my-3 previewImg d-flex d-lg-block justify-content-center flex-wrap align-items-around">
                         </div>
