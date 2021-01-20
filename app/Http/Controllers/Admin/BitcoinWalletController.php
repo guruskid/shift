@@ -180,7 +180,7 @@ class BitcoinWalletController extends Controller
 
         try {
             //update status and hash if it goes through
-            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, $input,  $outputs,  $fee);
+            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password,  $outputs,  $fee);
             $btc_transaction->hash = $result->payload->txid;
             $btc_transaction->status = 'success';
             $btc_transaction->save();
@@ -262,7 +262,7 @@ class BitcoinWalletController extends Controller
 
         try {
             //update status and hash if it goes through
-            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, $input,  $outputs,  $fee);
+            $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, $outputs,  $fee);
             $btc_transaction->hash = $result->payload->txid;
             $btc_transaction->status = 'success';
             $btc_transaction->save();
