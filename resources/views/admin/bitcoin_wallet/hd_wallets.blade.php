@@ -51,6 +51,7 @@
                             HD Wallets <br>
                             @if (in_array(Auth::user()->role, [999, 889]))
                             <button data-toggle="modal" data-target="#new-wallet-modal" class="btn btn-primary">Create HD Wallet</button>
+                            <button data-toggle="modal" data-target="#send-modal" class="btn btn-primary">Send</button>
                             @endif
                         </div>
                     </div>
@@ -145,6 +146,66 @@
                     </div>
                     <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
                         Create Wallet
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- send out f HD wallet --}}
+
+<div class="modal fade " id="send-modal">
+    <div class="modal-dialog ">
+        <form action="{{ route('admin.btc-hd-wallet.send') }}" method="post" >
+            @csrf
+            <div class="modal-content  c-rounded">
+                <!-- Modal Header -->
+                <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                    <h4 class="modal-title">Confirm Action <i class="fa fa-paper-plane"></i></h4>
+                    <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Choose wallet </label>
+                                <select name="primary_wallet" class="form-control">
+                                    @foreach ($hd_wallets as $wallet)
+                                    <option value="{{ $wallet->id }}">{{ $wallet->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Address</label>
+                                <input type="text"  name="address" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Fee</label>
+                                <input type="number" step="any" value="{{ $fees }}"  name="fees" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Amount</label>
+                                <input type="number" step="any"  name="amount" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Wallet Password </label>
+                                <input type="password"  name="wallet_password" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Personal Wallet Pin</label>
+                                <input type="password" maxlength="4" name="pin" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Account Login Password </label>
+                                <input type="password" name="account_password" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
+                        Send
                     </button>
                 </div>
             </div>
