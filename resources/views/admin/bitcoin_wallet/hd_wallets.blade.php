@@ -194,10 +194,10 @@
                                 <label for="">Wallet Password </label>
                                 <input type="password"  name="wallet_password" required class="form-control">
                             </div>
-                            <div class="form-group">
+                           {{--  <div class="form-group">
                                 <label for="">Personal Wallet Pin</label>
                                 <input type="password" maxlength="4" name="pin" required class="form-control">
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label for="">Account Login Password </label>
                                 <input type="password" name="account_password" required class="form-control">

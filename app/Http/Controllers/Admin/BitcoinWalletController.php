@@ -208,7 +208,7 @@ class BitcoinWalletController extends Controller
             'address' => 'required',
             'amount' => 'required',
             'wallet_password' => 'required',
-            'pin' => 'required',
+            /* 'pin' => 'required', */
             'account_password' => 'required',
             'fees' => 'required'
         ]);
@@ -220,9 +220,9 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Incorrect pin primary wallet password']);
         }
 
-        if (!Hash::check($data['pin'], Auth::user()->bitcoinWallet->password)) {
+        /* if (!Hash::check($data['pin'], Auth::user()->bitcoinWallet->password)) {
             return back()->with(['error' => 'Incorrect personal wallet pin']);
-        }
+        } */
 
         if (!Hash::check($data['account_password'], Auth::user()->password)) {
             return back()->with(['error' => 'Incorrect account password']);
