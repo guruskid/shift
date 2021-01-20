@@ -23,9 +23,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
-                <button type="submit" class="btn text-white mt-4 walletpage_btn">Confirm</button>
-            </div>
         </div>
     </form>
 </div>
