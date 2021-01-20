@@ -261,7 +261,7 @@ class AuthController extends Controller
             'bank_id' => 'required',
             'account_number' => 'required',
             'account_name' => 'required',
-            'phone' => 'required',
+            /* 'phone' => 'required', */
         ]);
         if ($validator->fails()) {
             return response()->json([
