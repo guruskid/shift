@@ -358,7 +358,7 @@ class HomeController extends Controller
                 "pin_time_to_live" =>  10,
                 "pin_length" => 6,
                 "pin_placeholder" => "< 1234 >",
-                "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "message_text" => "Your BVN verification pin is < 1234 > This pin will be invalid after 10 minutes",
                 "pin_type" => "NUMERIC"
             ],
         ]);
@@ -400,7 +400,7 @@ class HomeController extends Controller
             $body = json_decode($response->getBody()->getContents());
 
             if (!$body->verified || $body->verified != 'true') {
-                return back()->with(['error' => 'Phone verification failed. A new OTP has been sent to you']);
+                return back()->with(['error' => 'Phone verification failed. Please try again']);
             }
         } catch (\Exception $e) {
             report($e);

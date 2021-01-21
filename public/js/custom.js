@@ -137,8 +137,13 @@ function sendOtp() {
     var otpText = $('#otp-text');
     var phone = $('#signup_phonenumber').val();
     var country_id = $('#country-id').val();
+    if (phone.length > 10) {
+        swal('Your phone number should be 10 digits and should not start with 0 digit');
+        return false;
+    }
     if (!phone) {
         alert('Please enter a valid phone number');
+        return false;
     }
     otpText.text('sending . . .');
     $.get('send-otp/' + phone + '/' + country_id)
@@ -152,12 +157,14 @@ function sendOtp() {
                 swal('A new OTP has been sent to your provided number');
             } else {
                 swal(res['msg']);
+                otpText.text('Send');
             }
         })
 
         .fail(function (xhr, err, status) {
             console.log(xhr, err, status);
             swal('An error occured, please try again');
+            otpText.text('Send');
         })
 }
 
