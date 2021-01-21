@@ -85,6 +85,11 @@ class HomeController extends Controller
     //send OTP for old users
     public function sendOtp($phone, $country_id)
     {
+        if(strlen($phone) > 10 ){
+            return response()->json([
+                'msg' => 'Your phone number should be maximum of 10 digits and should not include the starting 0 digit'
+            ]);
+        }
         $client = new Client();
         $url = env('TERMII_SMS_URL') . "/otp/send";
         $country = Country::find($country_id);
@@ -223,14 +228,14 @@ class HomeController extends Controller
                 $body = json_decode($response->getBody()->getContents());
 
                 if ($body->verified != 'true') {
-                    
+
                     return back()->with(['error' => 'Phone verification failed. Please request a new OTP']);
                 }
             } catch (\Exception $e) {
                 report($e);
                 return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
             }
-            
+
 
             Auth::user()->phone_verified_at = now();
         }
@@ -333,7 +338,9 @@ class HomeController extends Controller
                 "msg" => $body->responsemessage
             ]);
         }
-
+        /* if (strlen($body->phoneNumber) > 10) {
+            substr($body->phoneNumber, 1)
+        } */
         $phone = '234'. $body->phoneNumber;
 
 
