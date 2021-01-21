@@ -13,7 +13,7 @@ class CardController extends Controller
     public function store(Request $r)
     {
         $this->validate($r, [
-            'image' => 'image|mimes:jpeg,JPEG,png,jpg|max:5048|required',
+            'image' => 'image|mimes:jpeg,JPEG,png,jpg,svg|max:5048|required',
             'name' => 'string|required',
         ]);
 
