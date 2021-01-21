@@ -86,7 +86,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="profile_details ml-lg-4 mt-3">
                             <ul class="nav nav-tabs mb-0 d-flex flex-column flex-lg-row" id="myTab" role="tablist"
@@ -148,10 +148,10 @@
                                                 style="position:relative;left:1.7em;width: 14%;">Bank</div>
                                             <div class="" style="width:56%;">
                                                 <div class="d-flex" style="position: relative;left:35px;">
-                                                    {{ Auth::user()->accounts->first()->bank_name }}
+                                                    {{ Auth::user()->accounts->first()->bank_name ?? 'No account' }}
                                                     <div class="user_profile_text ml-4" style="font-size: 18px;">
                                                         <div style="font-size:16px;">Acc. No.
-                                                            {{ Auth::user()->accounts->first()->account_number }}</div>
+                                                            {{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }}</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -677,8 +677,8 @@
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Bank</div>
-                                        <div class="col-9">{{ Auth::user()->accounts->first()->account_number }},
-                                            {{ Auth::user()->accounts->first()->bank_name }}</div>
+                                        <div class="col-9">{{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }},
+                                            {{ Auth::user()->accounts->first()->bank_name ?? 'No account' }}</div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Mobile No</div>
