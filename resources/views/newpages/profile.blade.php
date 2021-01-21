@@ -86,10 +86,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div style="position:relative;top:-65px;">
-                                <button class="btn btn-outline-danger"
-                                    style="font-size:16px;width: 190px;height:45px;">DELETE ACCOUNT</button>
-                            </div>
+                            
                         </div>
                         <div class="profile_details ml-lg-4 mt-3">
                             <ul class="nav nav-tabs mb-0 d-flex flex-column flex-lg-row" id="myTab" role="tablist"
