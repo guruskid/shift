@@ -338,10 +338,16 @@ class HomeController extends Controller
                 "msg" => $body->responsemessage
             ]);
         }
-        /* if (strlen($body->phoneNumber) > 10) {
+        $phone = '';
+        if (strlen($body->phoneNumber) == 11) {
             \Log::info($body->phoneNumber);
-        } */
-        $phone = '234'. $body->phoneNumber;
+            $phone = '234'. substr($body->phoneNumber, 1);
+        }elseif (strlen($body->phoneNumber) == 13) {
+            $phone = $body->phoneNumber;
+        }else{
+            $phone = $body->phoneNumber;
+        }
+
 
 
         $client = new Client();
