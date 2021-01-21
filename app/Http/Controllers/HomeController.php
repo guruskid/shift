@@ -339,7 +339,7 @@ class HomeController extends Controller
             ]);
         }
         /* if (strlen($body->phoneNumber) > 10) {
-            substr($body->phoneNumber, 1)
+            \Log::info($body->phoneNumber);
         } */
         $phone = '234'. $body->phoneNumber;
 
@@ -358,7 +358,7 @@ class HomeController extends Controller
                 "pin_time_to_live" =>  10,
                 "pin_length" => 6,
                 "pin_placeholder" => "< 1234 >",
-                "message_text" => "Your BVN verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "message_text" => "Your bvn verification pin is < 1234 > This pin will be invalid after 10 minutes",
                 "pin_type" => "NUMERIC"
             ],
         ]);
