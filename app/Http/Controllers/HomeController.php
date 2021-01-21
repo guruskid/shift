@@ -358,7 +358,7 @@ class HomeController extends Controller
                 "pin_time_to_live" =>  10,
                 "pin_length" => 6,
                 "pin_placeholder" => "< 1234 >",
-                "message_text" => "Your bvn verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "message_text" => "Your bank verification pin is < 1234 > This pin will be invalid after 10 minutes",
                 "pin_type" => "NUMERIC"
             ],
         ]);
