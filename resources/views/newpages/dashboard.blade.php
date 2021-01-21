@@ -68,7 +68,8 @@
                         @endforeach
                         <div class="col-sm-12 col-md-4 mb-3 mb-md-0 d-none d-md-block">
                             <div class="card card-body py-5">
-                            <div class="row">
+                                <a href="{{ route('user.portfolio') }}">
+                                    <div class="row">
                                         <div class="col-12 col-8 col-md-8 text-center text-md-left">
                                             <h6 class="card-title mb-0 pb-2 realtime-wallet-balance">Loading . . .</h6>
                                             <p class="card-text" style="color:#2C3E50;">Wallet Balance</p>
@@ -79,6 +80,7 @@
                                             </span>
                                         </div>
                                     </div>
+                                </a>
                             </div>
                         </div>
                         <div class="col-6 d-md-none">
@@ -234,7 +236,8 @@
                                                         <img class="img-fluid logos_assets"
                                                             src="{{asset('svg/tetherwallet_logo.svg')}}">
                                                     </span>
-                                                    <span class="d-block text-center asset_card_title">Stable coin</span>
+                                                    <span class="d-block text-center asset_card_title">Stable
+                                                        coin</span>
                                                     <span class="d-block text-center asset_card_description px-1">DSTV,
                                                         GoTV, PHCN
                                                         and more</span>
@@ -361,10 +364,12 @@
                                             </svg>
                                         </span>
                                         <span>Verification</span>
-                                    <div class="progress custom_progress mt-3">
-                                        <div class="progress-bar" role="progressbar" style="width: {{Auth::user()->v_progress}}%" ></div>
-                                    </div>
-                                    <span class="d-block float-lg-right" style="font-size: 14px;">{{Auth::user()->v_progress}}% completed</span>
+                                        <div class="progress custom_progress mt-3">
+                                            <div class="progress-bar" role="progressbar"
+                                                style="width: {{Auth::user()->v_progress}}%"></div>
+                                        </div>
+                                        <span class="d-block float-lg-right"
+                                            style="font-size: 14px;">{{Auth::user()->v_progress}}% completed</span>
                                     </div>
                                 </div>
                             </div>
@@ -374,13 +379,18 @@
                                     <div class="col-4">
                                         <div class="d-flex align-items-center">
                                             <div>
-                                                <svg width="48" height="49" viewBox="0 0 48 49" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M22.5474 23.0119C24.071 23.0624 27.374 23.1718 27.4143 20.8689C27.4544 18.5045 24.2512 18.5388 22.6933 18.5555C22.5217 18.5574 22.37 18.559 22.2449 18.5572L22.172 23.0013C22.279 23.003 22.4055 23.0072 22.5474 23.0119ZM22.4846 30.1543C24.309 30.2113 28.2853 30.3355 28.3257 27.8019C28.3751 25.2163 24.5563 25.2341 22.6822 25.2429C22.4688 25.2439 22.2806 25.2447 22.1263 25.2416L22.0451 30.1424C22.1708 30.1445 22.3188 30.1491 22.4846 30.1543ZM31.9354 19.5032C32.0939 21.4681 31.2586 22.6295 29.9323 23.2757C32.0814 23.8316 33.4103 25.1413 33.0961 28.0043C32.7009 31.5723 30.0248 32.4852 26.2161 32.6332L26.1527 36.3877L23.8911 36.3453L23.955 32.6485C23.3684 32.6363 22.7681 32.6203 22.1531 32.5962L22.0873 36.3127L19.8271 36.2764L19.8892 32.5159C19.3602 32.5033 18.8237 32.486 18.2765 32.4776L15.3327 32.426L15.8272 29.7325C15.8272 29.7325 17.5018 29.7891 17.4765 29.7629C18.1132 29.7698 18.2898 29.3121 18.339 29.0249L18.4403 23.1C18.5237 23.0999 18.601 23.1013 18.6783 23.1027C18.5846 23.0859 18.5073 23.0845 18.4421 23.0803L18.5173 18.8484C18.4362 18.3861 18.1456 17.8501 17.2315 17.8367C17.2245 17.8062 15.5884 17.8055 15.5884 17.8055L15.6276 15.3909L18.7517 15.4458L18.7485 15.4594C19.2184 15.4664 19.6991 15.4644 20.1873 15.4672L20.2531 11.7507L22.5147 11.7931L22.4503 15.4323C23.0537 15.4341 23.6619 15.4284 24.2546 15.4391L24.3185 11.8256L26.5787 11.8619L26.519 15.577C29.4323 15.8859 31.7277 16.8249 31.9354 19.5032ZM24.333 4.27111C13.2932 4.08077 4.18614 12.8739 3.99532 23.9128C3.79981 34.9593 12.5933 44.0651 23.6332 44.2555C34.6806 44.4505 43.7876 35.6574 43.977 24.6124C44.1739 13.572 35.379 4.46005 24.333 4.27111Z" fill="#FFBA50"/>
-                                                    </svg>
+                                                <svg width="48" height="49" viewBox="0 0 48 49" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M22.5474 23.0119C24.071 23.0624 27.374 23.1718 27.4143 20.8689C27.4544 18.5045 24.2512 18.5388 22.6933 18.5555C22.5217 18.5574 22.37 18.559 22.2449 18.5572L22.172 23.0013C22.279 23.003 22.4055 23.0072 22.5474 23.0119ZM22.4846 30.1543C24.309 30.2113 28.2853 30.3355 28.3257 27.8019C28.3751 25.2163 24.5563 25.2341 22.6822 25.2429C22.4688 25.2439 22.2806 25.2447 22.1263 25.2416L22.0451 30.1424C22.1708 30.1445 22.3188 30.1491 22.4846 30.1543ZM31.9354 19.5032C32.0939 21.4681 31.2586 22.6295 29.9323 23.2757C32.0814 23.8316 33.4103 25.1413 33.0961 28.0043C32.7009 31.5723 30.0248 32.4852 26.2161 32.6332L26.1527 36.3877L23.8911 36.3453L23.955 32.6485C23.3684 32.6363 22.7681 32.6203 22.1531 32.5962L22.0873 36.3127L19.8271 36.2764L19.8892 32.5159C19.3602 32.5033 18.8237 32.486 18.2765 32.4776L15.3327 32.426L15.8272 29.7325C15.8272 29.7325 17.5018 29.7891 17.4765 29.7629C18.1132 29.7698 18.2898 29.3121 18.339 29.0249L18.4403 23.1C18.5237 23.0999 18.601 23.1013 18.6783 23.1027C18.5846 23.0859 18.5073 23.0845 18.4421 23.0803L18.5173 18.8484C18.4362 18.3861 18.1456 17.8501 17.2315 17.8367C17.2245 17.8062 15.5884 17.8055 15.5884 17.8055L15.6276 15.3909L18.7517 15.4458L18.7485 15.4594C19.2184 15.4664 19.6991 15.4644 20.1873 15.4672L20.2531 11.7507L22.5147 11.7931L22.4503 15.4323C23.0537 15.4341 23.6619 15.4284 24.2546 15.4391L24.3185 11.8256L26.5787 11.8619L26.519 15.577C29.4323 15.8859 31.7277 16.8249 31.9354 19.5032ZM24.333 4.27111C13.2932 4.08077 4.18614 12.8739 3.99532 23.9128C3.79981 34.9593 12.5933 44.0651 23.6332 44.2555C34.6806 44.4505 43.7876 35.6574 43.977 24.6124C44.1739 13.572 35.379 4.46005 24.333 4.27111Z"
+                                                        fill="#FFBA50" />
+                                                </svg>
                                             </div>
                                             <div class="d-flex flex-column">
-                                                <span class="d-block my-0 py-0" style="color: #676B87;font-size: 15px;">Bitcoin</span>
-                                                <span class="d-block my-0 py-0" style="color: #676B87;font-size: 12px;">BTC</span>
+                                                <span class="d-block my-0 py-0"
+                                                    style="color: #676B87;font-size: 15px;">Bitcoin</span>
+                                                <span class="d-block my-0 py-0"
+                                                    style="color: #676B87;font-size: 12px;">BTC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -405,14 +415,19 @@
                                     <div class="col-4">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div>
-                                                <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <circle cx="20" cy="20.373" r="20" fill="#11263A"/>
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.3809 20.6218L19.9885 25.5153L19.9931 25.5197L19.9947 25.5188L19.9964 25.5197V25.5178L19.997 25.5174V25.5224L28.6124 20.6245L28.6075 20.6224L28.6086 20.6218L19.9964 6.8783V6.87312L19.9948 6.87571L19.9931 6.87305L19.9899 6.88347L11.3809 20.6218ZM19.9964 27.0892V27.0943L19.9976 27.0929L28.6182 22.1975L19.9976 33.874L19.9961 33.87L11.3809 22.1938L19.9964 27.0892Z" fill="white"/>
-                                                    </svg>
+                                                <svg width="40" height="41" viewBox="0 0 40 41" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="20" cy="20.373" r="20" fill="#11263A" />
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M11.3809 20.6218L19.9885 25.5153L19.9931 25.5197L19.9947 25.5188L19.9964 25.5197V25.5178L19.997 25.5174V25.5224L28.6124 20.6245L28.6075 20.6224L28.6086 20.6218L19.9964 6.8783V6.87312L19.9948 6.87571L19.9931 6.87305L19.9899 6.88347L11.3809 20.6218ZM19.9964 27.0892V27.0943L19.9976 27.0929L28.6182 22.1975L19.9976 33.874L19.9961 33.87L11.3809 22.1938L19.9964 27.0892Z"
+                                                        fill="white" />
+                                                </svg>
                                             </div>
                                             <div class="d-flex flex-column ml-2">
-                                                <span class="d-block my-0 py-0" style="color: #676B87;font-size: 15px;">Ethereum</span>
-                                                <span class="d-block my-0 py-0" style="color: #676B87;font-size: 12px;">ETH</span>
+                                                <span class="d-block my-0 py-0"
+                                                    style="color: #676B87;font-size: 15px;">Ethereum</span>
+                                                <span class="d-block my-0 py-0"
+                                                    style="color: #676B87;font-size: 12px;">ETH</span>
                                             </div>
                                         </div>
                                     </div>
@@ -437,13 +452,18 @@
                                     <div class="col-4">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div>
-                                                <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.0593 20.1246L16.9122 9.40625H23.0982L20.9169 17.6195L23.9442 16.5135L23.9704 16.5847L23.2053 19.4595L20.1297 20.5831L18.8311 25.4744H29.1089L28.0533 29.4064H11.5893L13.2706 23.0893L10.8906 23.9586L11.6777 20.9946L14.0593 20.1246ZM20 0.132812C8.95422 0.132812 0 9.08721 0 20.1327C0 31.1784 8.95422 40.1328 20 40.1328C31.0458 40.1328 40 31.1784 40 20.1327C40 9.08721 31.0458 0.132812 20 0.132812Z" fill="#347AF0"/>
-                                                    </svg>
+                                                <svg width="40" height="41" viewBox="0 0 40 41" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M14.0593 20.1246L16.9122 9.40625H23.0982L20.9169 17.6195L23.9442 16.5135L23.9704 16.5847L23.2053 19.4595L20.1297 20.5831L18.8311 25.4744H29.1089L28.0533 29.4064H11.5893L13.2706 23.0893L10.8906 23.9586L11.6777 20.9946L14.0593 20.1246ZM20 0.132812C8.95422 0.132812 0 9.08721 0 20.1327C0 31.1784 8.95422 40.1328 20 40.1328C31.0458 40.1328 40 31.1784 40 20.1327C40 9.08721 31.0458 0.132812 20 0.132812Z"
+                                                        fill="#347AF0" />
+                                                </svg>
                                             </div>
                                             <div class="d-flex flex-column ml-2">
-                                                <span class="d-block my-0 py-0" style="color: #676B87;font-size: 15px;">Litecoin</span>
-                                                <span class="d-block my-0 py-0" style="color: #676B87;font-size: 12px;">LTC</span>
+                                                <span class="d-block my-0 py-0"
+                                                    style="color: #676B87;font-size: 15px;">Litecoin</span>
+                                                <span class="d-block my-0 py-0"
+                                                    style="color: #676B87;font-size: 12px;">LTC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -486,16 +506,17 @@
 @endsection
 
 @section('scripts')
-    <script>
-        $.get('https://api.coingecko.com/api/v3/simple/price?ids=Ethereum,bitcoin,litecoin&vs_currencies=usd')
+<script>
+    $.get('https://api.coingecko.com/api/v3/simple/price?ids=Ethereum,bitcoin,litecoin&vs_currencies=usd')
         .done(function (res) {
             console.log(res)
-            $('.bitcoin-price').text('$'+res.bitcoin.usd.toLocaleString())
-            $('.ethereum-price').text('$'+res.ethereum.usd.toLocaleString())
-            $('.litecoin-price').text('$'+res.litecoin.usd.toLocaleString())
-         })
-        /*  .fail(
-             swal('error', 'An error occured while geting current cryptocurrency prices');
-         ) */
-    </script>
+            $('.bitcoin-price').text('$' + res.bitcoin.usd.toLocaleString())
+            $('.ethereum-price').text('$' + res.ethereum.usd.toLocaleString())
+            $('.litecoin-price').text('$' + res.litecoin.usd.toLocaleString())
+        })
+    /*  .fail(
+         swal('error', 'An error occured while geting current cryptocurrency prices');
+     ) */
+
+</script>
 @endsection
