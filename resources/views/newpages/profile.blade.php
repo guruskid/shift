@@ -158,7 +158,7 @@
                                             <div class="user_profile_text text-center ml-5"
                                                 style="width: 30%;position:relative;left:12px;">
                                                 <div class="profile_verification_status_text" style="color: #00B9CD;">
-                                                    verified
+                                                    {{ Auth::user()->accounts->count() > 0 : 'verified' : 'Not verified' }}
                                                 </div>
                                             </div>
                                         </div>
