@@ -106,7 +106,7 @@ class HomeController extends Controller
                     "pin_time_to_live" =>  10,
                     "pin_length" => 6,
                     "pin_placeholder" => "< 1234 >",
-                    "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                    "message_text" => "Your Dantown confirmation code is < 1234 >, valid for 10 minutes, one-time use only",
                     "pin_type" => "NUMERIC"
                 ],
             ]);
@@ -183,7 +183,7 @@ class HomeController extends Controller
                 "pin_time_to_live" =>  10,
                 "pin_length" => 6,
                 "pin_placeholder" => "< 1234 >",
-                "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "message_text" => "Your Dantown confirmation code is < 1234 >, valid for 10 minutes, one-time use only",
                 "pin_type" => "NUMERIC"
             ],
         ]);
@@ -364,7 +364,7 @@ class HomeController extends Controller
                 "pin_time_to_live" =>  10,
                 "pin_length" => 6,
                 "pin_placeholder" => "< 1234 >",
-                "message_text" => "Your bank verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "message_text" => "Your Dantown confirmation code is < 1234 >, valid for 10 minutes, one-time use only",
                 "pin_type" => "NUMERIC"
             ],
         ]);
