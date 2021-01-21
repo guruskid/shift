@@ -80,24 +80,26 @@
                                             </span>
                                         </div>
                                     </div>
-                                </a>
+                                    </a>
                             </div>
                         </div>
                         <div class="col-6 d-md-none">
                             <div class="card mb-3 mini_border" style="margin: 0px;">
-                                <div class="p-1 py-3 pt-2 card-body">
-                                    <div class="row">
-                                        <div class="col-12 col-8 col-md-8 text-center text-md-left">
-                                            <h5 class="card-title mb-0 pb-2 realtime-wallet-balance">Loading . . .</h5>
-                                            <p class="card-text" style="color:#2C3E50;">Wallet Balance</p>
-                                        </div>
-                                        <div class="d-none col-md-4" style="justify-content: right">
-                                            <span style="width: 800px;">
-                                                <img class="img-fluid" src="/svg/pendingtransaction.svg" />
-                                            </span>
+                                <a href="{{ route('user.portfolio') }}">
+                                    <div class="p-1 py-3 pt-2 card-body">
+                                        <div class="row">
+                                            <div class="col-12 col-8 col-md-8 text-center text-md-left">
+                                                <h5 class="card-title mb-0 pb-2 realtime-wallet-balance">Loading . . .</h5>
+                                                <p class="card-text" style="color:#2C3E50;">Wallet Balance</p>
+                                            </div>
+                                            <div class="d-none col-md-4" style="justify-content: right">
+                                                <span style="width: 800px;">
+                                                    <img class="img-fluid" src="/svg/pendingtransaction.svg" />
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
                         <div class="col-6 col-md-4">
