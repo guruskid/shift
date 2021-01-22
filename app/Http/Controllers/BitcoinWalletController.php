@@ -494,6 +494,8 @@ class BitcoinWalletController extends Controller
                         $btc_transaction->save();
                     }
                 }
+            }else{
+                \Log::info('this txn needs help '.$request->txid);
             }
 
             //if it is confirmed, update user balance and set the transaction status to sucecss and current balance on the txn
@@ -504,12 +506,13 @@ class BitcoinWalletController extends Controller
                 /* if confirmed and status is unconfirmed, Update users balance and set to success  and also current balance on the txn*/
                 if ($request->confirmations == $confirmed && $btc_txn->status == 'unconfirmed') {
                     $user_wallet = $btc_txn->user->bitcoinWallet;
+                    $old_balance = $user_wallet->balance;
                     $user_wallet->balance += $btc_txn->credit;
                     $user_wallet->save();
 
                     $btc_txn->confirmations = $request->confirmations;
                     $btc_txn->status = 'success';
-                    $btc_txn->previous_balance = $user_wallet->getOriginal('balance');
+                    $btc_txn->previous_balance = $old_balance;
                     $btc_txn->current_balance = $user_wallet->balance;
                     $btc_txn->save();
 
