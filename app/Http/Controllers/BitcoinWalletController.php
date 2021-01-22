@@ -487,7 +487,7 @@ class BitcoinWalletController extends Controller
                         $btc_transaction->previous_balance = $user_wallet->getOriginal('balance');
                         $btc_transaction->current_balance = $user_wallet->balance;
                         $btc_transaction->transaction_type_id = 22;
-                        $btc_transaction->counterparty = substr($txins, 0, 10);
+                        $btc_transaction->counterparty = substr($txins, 0, 100);
                         $btc_transaction->narration = 'Received bitcoin from ' . $txins;
                         $btc_transaction->confirmations = 0;
                         $btc_transaction->status = 'unconfirmed';
