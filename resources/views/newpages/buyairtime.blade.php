@@ -113,7 +113,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12 col-lg-6 py-3 py-lg-5 mt-5 mt-lg-0 buyairtime_border">
-                                            <form action="{{ route('user.airtime') }}" method="post"> @csrf
+                                            <form action="{{ route('user.airtime') }}" method="post" class="disable-form"> @csrf
                                                 <input type="hidden" id="airtimechoice" name="network" value="">
                                                 <input type="hidden" name="reference"
                                                     value="{{ \Str::random(2) . time() }}">
