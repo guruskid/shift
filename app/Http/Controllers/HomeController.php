@@ -149,8 +149,10 @@ class HomeController extends Controller
             ]);
             $body = json_decode($response->getBody()->getContents());
 
-            if (!$body->verified || $body->verified != 'true') {
-                return back()->with(['error' => 'Phone verification failed. Please request for a new OTP']);
+            if ($body->verified && $body->verified != 'true') {
+                return back()->with(['error' => 'Phone verification failed. Please try again']);
+            }else{
+                return back()->with(['error' => 'Phone verification failed. Please try again']);
             }
         } catch (\Exception $e) {
             report($e);
@@ -405,7 +407,9 @@ class HomeController extends Controller
             ]);
             $body = json_decode($response->getBody()->getContents());
 
-            if (!$body->verified || $body->verified != 'true') {
+            if ($body->verified && $body->verified != 'true') {
+                return back()->with(['error' => 'Phone verification failed. Please try again']);
+            }else{
                 return back()->with(['error' => 'Phone verification failed. Please try again']);
             }
         } catch (\Exception $e) {
