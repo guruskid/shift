@@ -38,6 +38,9 @@ class TradeController extends Controller
 
     public function assetRates($buy_sell, $card_id, $card_name)
     {
+        if (!Auth::user()->nairaWallet) {
+            return redirect()->route('user.portfolio')->with(['error' => 'Please create a Naira Wallet to continue']);
+        }
         if ($buy_sell == 'sell') {
             $buy_sell = 2;
         } else {
