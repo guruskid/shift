@@ -340,7 +340,6 @@ class HomeController extends Controller
         }
         $phone = '';
         if (strlen($body->phoneNumber) == 11) {
-            \Log::info($body->phoneNumber);
             $phone = '234'. substr($body->phoneNumber, 1);
         }elseif (strlen($body->phoneNumber) == 13) {
             $phone = $body->phoneNumber;
