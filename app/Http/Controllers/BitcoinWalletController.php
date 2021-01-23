@@ -332,7 +332,7 @@ class BitcoinWalletController extends Controller
             if ($user_btc_wallet->balance < ($transaction->quantity /* + $charge */)) {
                 return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance']);
             }
-            $user_btc_wallet->balance -= ($transaction->quantity + $charge);
+            $user_btc_wallet->balance -= ($transaction->quantity /* + $charge */);
             $user_btc_wallet->save();
 
             $primary_wallet->balance += $transaction->quantity;
