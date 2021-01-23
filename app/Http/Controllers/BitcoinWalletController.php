@@ -245,6 +245,8 @@ class BitcoinWalletController extends Controller
         $btc_txn_type = 0;
         $user_naira_wallet = $transaction->user->nairaWallet;
         $user_btc_wallet = $transaction->user->bitcoinWallet;
+        $old_user_btc_balance = $user_btc_wallet->balance;
+        $old_user_naira_balance = $user_naira_wallet->amount;
         $primary_wallet = $user_btc_wallet->primaryWallet;
         $user = $transaction->user;
         $charge = 0;
@@ -269,7 +271,7 @@ class BitcoinWalletController extends Controller
             $nt->amount = $transaction->amount_paid;
             $nt->user_id = $user->id;
             $nt->type = 'naira wallet';
-            $nt->previous_balance = $user_naira_wallet->getOriginal('amount');
+            $nt->previous_balance = $old_user_naira_balance;
             $nt->current_balance = $user_naira_wallet->amount;
             $nt->charge = 0;
             $nt->transaction_type_id = 5;
@@ -312,7 +314,7 @@ class BitcoinWalletController extends Controller
             $nt->amount = $transaction->amount_paid;
             $nt->user_id = $user->id;
             $nt->type = 'naira wallet';
-            $nt->previous_balance = $user_naira_wallet->getOriginal('amount');
+            $nt->previous_balance = $old_user_naira_balance;
             $nt->current_balance = $user_naira_wallet->amount;
             $nt->charge = 0;
             $nt->transaction_type_id = 4;
@@ -346,7 +348,7 @@ class BitcoinWalletController extends Controller
         }
         $btc_transaction->fee = 0;
         $btc_transaction->charge = $charge;
-        $btc_transaction->previous_balance = $user_btc_wallet->getOriginal('balance');
+        $btc_transaction->previous_balance = $old_user_btc_balance;
         $btc_transaction->current_balance = $user_btc_wallet->balance;
         $btc_transaction->transaction_type_id = $btc_txn_type;
         $btc_transaction->counterparty = 'Dantown Assets';
