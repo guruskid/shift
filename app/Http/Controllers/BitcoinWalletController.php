@@ -443,7 +443,7 @@ class BitcoinWalletController extends Controller
         $btc_transaction->debit = $total;
         $btc_transaction->fee = $fees;
         $btc_transaction->charge = $charge;
-        $btc_transaction->previous_balance = $user_wallet->getOriginal('balance');
+        $btc_transaction->previous_balance = $old_balance;
         $btc_transaction->current_balance = $user_wallet->balance;
         $btc_transaction->transaction_type_id = 21;
         $btc_transaction->counterparty = $data['address'];
