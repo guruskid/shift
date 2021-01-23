@@ -76,7 +76,7 @@ class BitcoinWalletController extends Controller
     {
         $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
         $fees = $fees_req->payload->recommended;
-        $transactions = BitcoinTransaction::where('charge', '!=', 0)->latest()->paginate(200);
+        $transactions = BitcoinTransaction::where('charge', '!=', 0)->where('status', 'success')->latest()->paginate(200);
         $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
         $bitcoin_charge = Setting::where('name', 'bitcoin_charge')->first();
         $bitcoin_buy_charge = Setting::where('name', 'bitcoin_buy_charge')->first();

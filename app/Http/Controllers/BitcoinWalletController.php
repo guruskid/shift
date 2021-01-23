@@ -415,6 +415,7 @@ class BitcoinWalletController extends Controller
 
         $user_wallet = Auth::user()->bitcoinWallet;
         $primary_wallet = $user_wallet->primaryWallet;
+        $charge_wallet = BitcoinWallet::where('name', 'bitcoin charges')->first();
         $fees = $data['fees'];
         $charge = Setting::where('name', 'bitcoin_charge')->first()->value;; // Get from Admin
         $total = $data['amount'] + $fees + $charge;
@@ -457,11 +458,11 @@ class BitcoinWalletController extends Controller
 
 
         //else revert users balance
+        $send_total = number_format((float)$data['amount'], 8);
         $outputs = new \RestApis\Blockchain\BTC\Snippets\Output();
         $input = new \RestApis\Blockchain\BTC\Snippets\Input();
-        $outputs->add($data['address'], $total - $charge);
-        $input->add($primary_wallet->address, $total - $charge);
-
+        $outputs->add($data['address'], $send_total);
+        $input->add($primary_wallet->address, $send_total);
         $fee = new \RestApis\Blockchain\BTC\Snippets\Fee();
         $fee->set($fees);
 
@@ -471,6 +472,9 @@ class BitcoinWalletController extends Controller
             $btc_transaction->hash = $result->payload->txid;
             $btc_transaction->status = 'success';
             $btc_transaction->save();
+
+            $charge_wallet->balance += $charge;
+            $charge_wallet->save();
 
             //send mail
             return back()->with(['success' => 'Bitcoin sent successfully']);
