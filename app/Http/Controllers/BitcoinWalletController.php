@@ -395,6 +395,7 @@ class BitcoinWalletController extends Controller
         $btc_transaction->counterparty = 'Dantown Assets';
         $btc_transaction->narration = 'Approved automatically';
         $btc_transaction->confirmations = 3;
+        $btc_transaction->status = 'success';
         $btc_transaction->save();
 
         $transaction->status = 'success';
