@@ -385,6 +385,7 @@ class BitcoinWalletController extends Controller
         }
 
         //Debit User
+        $old_balance = $user_wallet->balance;
         $user_wallet->balance -= $total;
         $user_wallet->save();
 
@@ -430,7 +431,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['success' => 'Bitcoin sent successfully']);
         } catch (\Exception $e) {
             report($e);
-            $user_wallet->balance = $user_wallet->getOriginal('balance');
+            $user_wallet->balance = $old_balance;
             $user_wallet->save();
 
             $btc_transaction->status = 'failed';
