@@ -149,6 +149,14 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Please create a Naira wallet to continue']);
         }
 
+        if ($data['type'] == 'sell' && Auth::user()->bitcoinWallet->balance < ($data['quantity'] /* + $charge */)) {
+            return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
+        }
+
+        if ($r->type == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
+            return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
+        }
+
         /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
         } */
@@ -191,14 +199,6 @@ class BitcoinWalletController extends Controller
 
         if ($data['amount_paid'] != $trade_ngn || $data['quantity'] != $trade_btc) {
             return back()->with(['error' => 'Incorrect trade parameters, trade has been declined']);
-        }
-
-        if ($data['type'] == 'sell' && Auth::user()->bitcoinWallet->balance < ($data['quantity'] /* + $charge */)) {
-            return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
-        }
-
-        if ($r->type == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
-            return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
         }
 
         if($data['type'] == 'sell') {
