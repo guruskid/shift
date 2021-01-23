@@ -86,7 +86,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Bitcoin wallet already exists']);
         }
 
-        if(Auth::user()->nairaWallet->count() > 0){
+        if (Auth::user()->nairaWallet->count() > 0) {
             if (!Hash::check($data['wallet_password'], Auth::user()->nairaWallet->password)) {
                 return back()->with(['error' => 'Incorrect Naira wallet password']);
             }
@@ -153,9 +153,41 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
         } */
 
-        $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+        //Check if the trade details are correct
 
-        if ($data['type'] == 'sell' && Auth::user()->bitcoinWallet->balance < ($data['quantity'] + $charge)) {
+        //Correct figures
+        $card = Card::find($data['card_id']);
+        $card_id = $data['card_id'];
+        $rates = $card->currency->first();
+
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $current_btc_rate = $res->bitcoin->usd;
+
+        $trade_rate = 0;
+
+        if ($data['type'] == 'buy') {
+            $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
+            $trade_rate = json_decode($buy->pivot->payment_range_settings);
+            $trade_rate = $trade_rate[0]->rate;
+        } else {
+            $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+            $trade_rate = json_decode($sell->pivot->payment_range_settings);
+            $trade_rate = $trade_rate[0]->rate;
+        }
+
+        $trade_usd = $data['amount'];
+        $trade_btc = $data['amount'] / $current_btc_rate;
+        $trade_ngn = $data['amount'] * $trade_rate;
+
+        //Convert the charge t naira and subtract it from the amount paid
+        $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+        $charge_ngn = $charge * $current_btc_rate * $trade_rate;
+
+        if ($data['amount_paid'] != $trade_ngn || $data['quantity'] != $trade_btc) {
+            return back()->with(['error' => 'Incorrect trade parameters, trade has been declined']);
+        }
+
+        if ($data['type'] == 'sell' && Auth::user()->bitcoinWallet->balance < ($data['quantity'] /* + $charge */)) {
             return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
         }
 
@@ -163,6 +195,10 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
         }
 
+        if($data['type'] == 'sell') {
+            //Deduct the charge from the tranaction amount_paid
+            $data['amount_paid'] -=  $charge_ngn;
+        }
 
 
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
@@ -199,21 +235,21 @@ class BitcoinWalletController extends Controller
         return redirect()->route('user.transactions');
     }
 
+
+
     public function automatedPayment(Transaction $t, $card_id, $current_rate)
     {
-        //dd($t);
         $card = Card::find($card_id);
         $rates = $card->currency->first();
 
-        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        /* $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $current_btc_rate = $res->bitcoin->usd;
         #confirm id the difference is less than $10 before assigning
         $abs = abs($current_btc_rate - $current_rate);
-        //dd($abs, $current_btc_rate, $current_rate);
         if ($abs >= 10) {
             return back()->with(['success' => 'Trade initiated successfully']);
-        }
-        $current_btc_rate = $current_rate;
+        } */
+        /* $current_btc_rate = $current_rate;
         $trade_rate = 0;
 
         if ($t->type == 'buy') {
@@ -232,13 +268,12 @@ class BitcoinWalletController extends Controller
         $trade_ngn = $t->amount * $trade_rate;
 
         if ($t->amount_paid != $trade_ngn || $t->quantity != $trade_btc) {
-            dd($trade_btc);
             //Incorrect trade
             $t->status = 'declined';
             $t->save();
 
             return back()->with(['error' => 'Incorrect trade parameters, trade has been declined']);
-        }
+        } */
 
 
         $transaction = $t;
@@ -294,7 +329,7 @@ class BitcoinWalletController extends Controller
         } elseif ($transaction->type == 'sell') {
             $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
             $btc_txn_type = 20;
-            if ($user_btc_wallet->balance < ($transaction->quantity + $charge)) {
+            if ($user_btc_wallet->balance < ($transaction->quantity /* + $charge */)) {
                 return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance']);
             }
             $user_btc_wallet->balance -= ($transaction->quantity + $charge);
@@ -499,8 +534,8 @@ class BitcoinWalletController extends Controller
                         $btc_transaction->save();
                     }
                 }
-            }else{
-                \Log::info('this txn needs help '.$request->txid);
+            } else {
+                \Log::info('this txn needs help ' . $request->txid);
             }
 
             //if it is confirmed, update user balance and set the transaction status to sucecss and current balance on the txn

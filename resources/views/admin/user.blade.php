@@ -51,9 +51,15 @@
                             <span class="text-custom">
                                 @if ($user->nairaWallet)
                                 ₦{{number_format($user->nairaWallet->amount ) }}
-                                <p>{{ $user->nairaWallet->account_number }}</p>
                                 @else
-                                No wallet
+                                No Naira wallet
+                                @endif
+                            </span>
+                            <span class="text-custom">
+                                @if ($user->bitcoinWallet)
+                                <p>{{ number_format((float)$user->bitcoinWallet->balance,8) }} BTC</p>
+                                @else
+                                No Bitcoin wallet
                                 @endif
                             </span>
                         </div>
@@ -71,7 +77,9 @@
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Bank <div
                                             class="d-none d-md-block ml-1"> details</div> </a></li>
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-4"
-                                        class="nav-link">Wallet transactions</a></li>
+                                        class="nav-link">Naira Wallet transactions</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#btc-txns"
+                                    class="nav-link">Bitcoin Wallet transactions</a></li>
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-2"
                                     class="nav-link">Transactions</a></li>
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-3" class="nav-link">Id
@@ -192,7 +200,7 @@
                                     </div>
                                 </div>
 
-                                {{-- Wallet Transactions --}}
+                                {{--Naira Wallet Transactions --}}
                                 <div class="tab-pane" id="tab-eg11-4" role="tabpanel">
                                     <div class="table-responsive">
                                         <table class="mb-2 transactions-table table " id="nt-table">
@@ -233,6 +241,72 @@
                                                 </tr>
                                             </tbody>
                                             {{$wallet_txns->links()}}
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {{-- BTC Tranactions --}}
+                                <div class="tab-pane" id="btc-txns" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr
+                                                    style="background-color: rgba(0, 0, 112, 0.05) !important;color:#000070;font-size:16px;">
+                                                    <th scope="col">ID</th>
+                                                    <th scope="col">TRANSACTION TYPE</th>
+                                                    <th scope="col">AMOUNT</th>
+                                                    <th scope="col">DATE</th>
+                                                    <th scope="col">TIME</th>
+                                                    <th scope="col">STATUS</th>
+                                                    {{-- <th scope="col"></th> --}}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($user->bitcoinWallet->transactions as $key => $transaction)
+                                                <tr>
+                                                    <th scope="row">{{ $transaction->id }}</th>
+                                                    <td>
+                                                        {{ $transaction->type->name }}</td>
+                                                    <td>
+                                                        @if ($transaction->credit != null)
+                                                        <span class="d-block"
+                                                            style="font-size: 14px;color: #000000;font-weight: 500;">BTC
+                                                            {{ number_format((float) $transaction->credit, 8) }}</span>
+                                                        @else
+                                                        <span class="d-block"
+                                                            style="font-size: 14px;color: #000000;font-weight: 500;">BTC
+                                                            {{ number_format((float) $transaction->debit, 8) }}</span>
+                                                        @endif
+                                                        {{-- <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span> --}}
+                                                    </td>
+                                                    <td style="color: #000000;font-size: 14px;">
+                                                        {{ $transaction->created_at->format('M, d Y') }}</td>
+                                                    <td style="font-weight: 500;">
+                                                        {{ $transaction->created_at->format('h:i a') }}</td>
+                                                    <td>
+                                                        @switch($transaction->status)
+                                                        @case('success')
+                                                        <span class="status_success">{{ $transaction->status }}</span>
+                                                        @break
+                                                        @case('unconfirmed')
+                                                        <span class="status_waiting">{{ $transaction->status }}</span>
+                                                        @break
+                                                        @case('pending')
+                                                        <span class="status_inprogress">{{ $transaction->status }}</span>
+                                                        @break
+                                                        @default
+                                                        <span class="status_waiting">{{ $transaction->status }}</span>
+                                                        @endswitch
+                                                    </td>
+                                                    {{-- <td>
+                                                        <a href="#"
+                                                            style="color: #000070;font-size: 15px;font-weight: 600;">View
+                                                        </a>
+                                                    </td> --}}
+                                                </tr>
+                                                @endforeach
+
+                                            </tbody>
                                         </table>
                                     </div>
                                 </div>
