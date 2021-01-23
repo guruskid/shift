@@ -175,7 +175,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content  c-rounded">
 
-            <form action="{{route('user.bitcoin-wallet.create')}}" method="POST">@csrf
+            <form class="disable-form" action="{{route('user.bitcoin-wallet.create')}}" method="POST">@csrf
                 <div class="modal-body p-4">
                     <h5 class="modal-title mb-3">Enter Wallet Pin</h5>
                     <div class="row">
