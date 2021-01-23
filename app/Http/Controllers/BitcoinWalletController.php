@@ -163,6 +163,12 @@ class BitcoinWalletController extends Controller
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $current_btc_rate = $res->bitcoin->usd;
 
+        #confirm id the difference is less than $10 before assigning
+        $abs = abs($current_btc_rate - $r->current_rate);
+        if ($abs >= 10) {
+            return back()->with(['success' => 'Trade initiated successfully']);
+        }
+
         $trade_rate = 0;
 
         if ($data['type'] == 'buy') {
@@ -176,12 +182,12 @@ class BitcoinWalletController extends Controller
         }
 
         $trade_usd = $data['amount'];
-        $trade_btc = $data['amount'] / $current_btc_rate;
+        $trade_btc = $data['amount'] / $r->current_rate;
         $trade_ngn = $data['amount'] * $trade_rate;
 
         //Convert the charge t naira and subtract it from the amount paid
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
-        $charge_ngn = $charge * $current_btc_rate * $trade_rate;
+        $charge_ngn = $charge * $r->current_rate * $trade_rate;
 
         if ($data['amount_paid'] != $trade_ngn || $data['quantity'] != $trade_btc) {
             return back()->with(['error' => 'Incorrect trade parameters, trade has been declined']);
