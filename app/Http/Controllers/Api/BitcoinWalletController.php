@@ -137,6 +137,13 @@ class BitcoinWalletController extends Controller
             'pin' => 'required',
             'fees' => 'required',
         ]);
+
+        if ($data->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $data->errors(),
+            ], 401);
+        }
         if (!Auth::user()->bitcoinWallet) {
             return response()->json([
                 'success' => false,
