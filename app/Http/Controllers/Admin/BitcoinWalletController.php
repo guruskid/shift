@@ -408,10 +408,10 @@ class BitcoinWalletController extends Controller
         } elseif ($transaction->type == 'sell') {
             $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
             $btc_txn_type = 20;
-            if ($user_btc_wallet->balance < ($transaction->quantity + $charge)) {
+            if ($user_btc_wallet->balance < ($transaction->quantity /* + $charge */)) {
                 return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance, when charge was included']);
             }
-            $user_btc_wallet->balance -= ($transaction->quantity + $charge);
+            $user_btc_wallet->balance -= ($transaction->quantity /* + $charge */);
             $user_btc_wallet->save();
 
             $primary_wallet->balance += $transaction->quantity;
