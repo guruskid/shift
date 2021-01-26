@@ -131,17 +131,17 @@ class BitcoinWalletController extends Controller
 
     public function send(Request $r)
     {
-        $data = $r->validate([
+        $validator = Validator::make($r->all(), [
             'amount' => 'required|numeric',
             'address' => 'required|string',
             'pin' => 'required',
             'fees' => 'required',
         ]);
 
-        if ($data->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $data->errors(),
+                'message' => $validator->errors(),
             ], 401);
         }
         if (!Auth::user()->bitcoinWallet) {
@@ -154,12 +154,12 @@ class BitcoinWalletController extends Controller
         $user_wallet = Auth::user()->bitcoinWallet;
         $primary_wallet = $user_wallet->primaryWallet;
         $charge_wallet = BitcoinWallet::where('name', 'bitcoin charges')->first();
-        $fees = $data['fees'];
+        $fees = $r->fees;
         $charge = Setting::where('name', 'bitcoin_charge')->first()->value;; // Get from Admin
-        $total = $data['amount'] + $fees + $charge;
+        $total = $r->amount + $fees + $charge;
 
         //Check password
-        if (!Hash::check($data['pin'], $user_wallet->password)) {
+        if (!Hash::check($r->pin, $user_wallet->password)) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Incorrect Bitcoin wallet password'
@@ -191,8 +191,8 @@ class BitcoinWalletController extends Controller
         $btc_transaction->previous_balance = $old_balance;
         $btc_transaction->current_balance = $user_wallet->balance;
         $btc_transaction->transaction_type_id = 21;
-        $btc_transaction->counterparty = $data['address'];
-        $btc_transaction->narration = 'Sending bitcoin to ' . $data['address'];
+        $btc_transaction->counterparty = $r->address;
+        $btc_transaction->narration = 'Sending bitcoin to ' . $r->address;
         $btc_transaction->confirmations = 0;
         $btc_transaction->status = 'pending';
         $btc_transaction->save();
@@ -202,10 +202,10 @@ class BitcoinWalletController extends Controller
 
 
         //else revert users balance
-        $send_total = number_format((float)$data['amount'], 8);
+        $send_total = number_format((float)$r->amount, 8);
         $outputs = new \RestApis\Blockchain\BTC\Snippets\Output();
         $input = new \RestApis\Blockchain\BTC\Snippets\Input();
-        $outputs->add($data['address'], $send_total);
+        $outputs->add($r->address, $send_total);
         $input->add($primary_wallet->address, $send_total);
 
         $fee = new \RestApis\Blockchain\BTC\Snippets\Fee();
