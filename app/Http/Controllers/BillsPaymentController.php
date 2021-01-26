@@ -290,7 +290,7 @@ class BillsPaymentController extends Controller
             return back()->with(['success' => 'Recharge made successfully']);
         } else {
             \Log::info('User' . Auth::user()->first_name . ' bought airtime but it was declined');
-            \Log::info($body);
+            \Log::info($body->responsemessage);
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
     }
