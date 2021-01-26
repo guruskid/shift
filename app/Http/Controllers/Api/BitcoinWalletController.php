@@ -16,6 +16,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use RestApis\Blockchain\Constants;
+use Illuminate\Support\Facades\Validator;
 
 class BitcoinWalletController extends Controller
 {
