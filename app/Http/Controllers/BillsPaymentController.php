@@ -24,34 +24,6 @@ class BillsPaymentController extends Controller
         if (!Auth::user()->nairaWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please create a Dantown wallet to continue']);
         }
-       /*  $client = new Client();
-
-        Cable tv sellers
-        $url = env('RUBBIES_API') . "/billspaymentcategories";
-
-        $response = $client->request('POST', $url, [
-            'json' => [
-                "categoryid" => "1"
-            ],
-            'headers' => [
-                'authorization' => env('RUBBIES_SECRET_KEY'),
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents());
-        $billers = $body->servicecategory;
-
-        Electricity providers
-        $url = env('RUBBIES_API') . "/billspaymentcategories";
-        $response = $client->request('POST', $url, [
-            'json' => [
-                "categoryid" => 2,
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents());
-
-        $providers = $body->servicecategory;
-
-        $ref = \Str::random(2) . time(); */
         return view('newpages.rechargemenu');
     }
 

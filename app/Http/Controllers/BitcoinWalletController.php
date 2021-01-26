@@ -91,7 +91,7 @@ class BitcoinWalletController extends Controller
                 return back()->with(['error' => 'Incorrect Naira wallet password']);
             }
         }
-        
+
         $password = Hash::make($data['wallet_password']);
 
         try {
@@ -570,7 +570,7 @@ class BitcoinWalletController extends Controller
                     //Update user bitcoin if the transaction is unconfirmed
 
 
-                    //if status is pending and confirmed, set status to success
+                    //if status is pending and confirmed, set status to success  for send txns
                 } elseif ($request->confirmations == $confirmed && $btc_txn->status == 'pending') {
                     $btc_txn->confirmations = $request->confirmations;
                     $btc_txn->status = 'success';

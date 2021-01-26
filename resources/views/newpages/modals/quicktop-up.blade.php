@@ -33,7 +33,7 @@
 
 
                 <div class="container mt-4">
-                    <form action="{{ route('user.airtime') }}" method="post">@csrf
+                    <form action="{{ route('user.airtime') }}" class="disable-form" method="post">@csrf
                         <div class="row">
                             <div class="col-md-12 d-flex justify-content-between">
                                 <div class="form-check my-1">
