@@ -198,6 +198,59 @@ class BillsPaymentController extends Controller
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
+        $prev_bal = $n->amount;
+        $n->amount -= $amount;
+        $n->save();
+
+        $charge = 0;
+        switch ($r->network) {
+            case 'mtn':
+                $charge = 4.5;
+                break;
+
+            case 'glo':
+                $charge = 4;
+                break;
+
+            case 'airtel':
+                $charge = 7.5;
+                break;
+
+            case '9mobile':
+                $charge = 3.5;
+                break;
+
+            default:
+                $charge = 1;
+                break;
+        }
+
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->amount = $amount;
+        $nt->user_id = Auth::user()->id;
+        $nt->type = 'recharge card';
+
+        $nt->previous_balance = $prev_bal;
+        $nt->current_balance = $n->amount;
+        $nt->charge = ($charge / 100) * $amount;
+        $nt->transaction_type_id = 9;
+
+
+        $nt->dr_user_id = Auth::user()->id;
+        $nt->dr_wallet_id = $n->id;
+        $nt->dr_acct_name = $n->account_name;
+        $nt->cr_acct_name = $r->network . ' ' . $r->phone;
+        $nt->narration = 'Payment for recharge card';
+        $nt->trans_msg = 'done';
+        $nt->status = 'pending';
+        $nt->save();
+
+        /* Credit Transfer Wallet */
+        $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        $transfer_charges_wallet->amount += $nt->charge;
+        $transfer_charges_wallet->save();
+
         $client = new Client();
         $url = env('RUBBIES_API') . "/airtimepurchase";
         $response = $client->request('POST', $url, [
@@ -215,58 +268,8 @@ class BillsPaymentController extends Controller
         $body = json_decode($response->getBody()->getContents());
         if ($body->responsecode == 00) {
 
-            $charge = 0;
-            switch ($r->network) {
-                case 'mtn':
-                    $charge = 4.5;
-                    break;
-
-                case 'glo':
-                    $charge = 4;
-                    break;
-
-                case 'airtel':
-                    $charge = 7.5;
-                    break;
-
-                case '9mobile':
-                    $charge = 3.5;
-                    break;
-
-                default:
-                    $charge = 1;
-                    break;
-            }
-
-            $prev_bal = $n->amount;
-            $n->amount -= $amount;
-            $n->save();
-
-            $nt = new NairaTransaction();
-            $nt->reference = $reference;
-            $nt->amount = $amount;
-            $nt->user_id = Auth::user()->id;
-            $nt->type = 'recharge card';
-
-            $nt->previous_balance = $prev_bal;
-            $nt->current_balance = $n->amount;
-            $nt->charge = ($charge / 100) * $amount;
-            $nt->transaction_type_id = 9;
-
-
-            $nt->dr_user_id = Auth::user()->id;
-            $nt->dr_wallet_id = $n->id;
-            $nt->dr_acct_name = $n->account_name;
-            $nt->cr_acct_name = $r->network . ' ' . $r->phone;
-            $nt->narration = 'Payment for recharge card';
-            $nt->trans_msg = 'done';
             $nt->status = 'success';
             $nt->save();
-
-            /* Credit Transfer Wallet */
-            $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
-            $transfer_charges_wallet->amount += $nt->charge;
-            $transfer_charges_wallet->save();
 
             $title = 'Recharge card purchase';
             $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for recharge card purchase';
@@ -286,6 +289,8 @@ class BillsPaymentController extends Controller
 
             return back()->with(['success' => 'Recharge made successfully']);
         } else {
+            \Log::info('User' . Auth::user()->first_name . ' bought airtime but it was declined');
+            \Log::info($body);
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
     }
