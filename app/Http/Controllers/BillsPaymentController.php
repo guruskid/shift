@@ -170,7 +170,7 @@ class BillsPaymentController extends Controller
 
     public function airtime(Request $r)
     {
-
+        return back()->with(['error' => 'Currently not available']);
         $r->validate([
             'network' => 'required',
             'amount' => 'required',
