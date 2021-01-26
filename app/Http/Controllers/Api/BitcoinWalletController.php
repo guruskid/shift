@@ -131,6 +131,7 @@ class BitcoinWalletController extends Controller
 
     public function send(Request $r)
     {
+        return response()->json(true);
         $data = $r->validate([
             'amount' => 'required|numeric',
             'address' => 'required|string',
