@@ -52,7 +52,7 @@
                                         <span class="h3 giftcard-text" style="color: #000070;">Wallet Portfolio </span>
                                     </div>
                                     <div class="widget-n" style="justify-content: center; text-align: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
+                                        <span class="d-block" style="h6 walletbalance-text">Naira Wallet</span>
                                         <span class="d-block price realtime-wallet-balance"></span>
                                     </div>
                                 </div>
@@ -142,10 +142,10 @@
                                                 </div>
                                                 <div>
                                                     <span
-                                                        class="d-block pb-0 mb-0 choosewallet_selection">${{ number_format($btc_usd, 2) }}</span>
+                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : '' }}BTC</span>
                                                     <div>
                                                         <span
-                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : '' }}</span><span
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Bitcoin Wallet</span><span
                                                             style="color: #000070;">BTC</span>
                                                     </div>
                                                 </div>
@@ -158,9 +158,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
 
