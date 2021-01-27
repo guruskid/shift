@@ -357,7 +357,7 @@ class HomeController extends Controller
                 'api_key' => env('TERMII_API_KEY'),
                 "message_type" => "NUMERIC",
                 "to" => $phone,
-                "from" => "N-alert",
+                "from" => "N-Alert",
                 "channel" => "dnd",
                 "pin_attempts" => 4,
                 "pin_time_to_live" =>  10,
