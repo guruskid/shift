@@ -145,8 +145,7 @@
                                                         class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : '' }}BTC</span>
                                                     <div>
                                                         <span
-                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Bitcoin Wallet</span><span
-                                                            style="color: #000070;">BTC</span>
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Bitcoin Wallet</span></span>
                                                     </div>
                                                 </div>
                                             </div>
