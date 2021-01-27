@@ -174,7 +174,7 @@ class BitcoinWalletController extends Controller
         #confirm id the difference is less than $10 before assigning
         $abs = abs($current_btc_rate - $r->current_rate);
         if ($abs >= 10) {
-            return back()->with(['success' => 'Trade initiated successfully']);
+            return back()->with(['error' => 'Network busy, please try again']);
         }
 
         $trade_rate = 0;
@@ -248,39 +248,6 @@ class BitcoinWalletController extends Controller
         $card = Card::find($card_id);
         $rates = $card->currency->first();
 
-        /* $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
-        $current_btc_rate = $res->bitcoin->usd;
-        #confirm id the difference is less than $10 before assigning
-        $abs = abs($current_btc_rate - $current_rate);
-        if ($abs >= 10) {
-            return back()->with(['success' => 'Trade initiated successfully']);
-        } */
-        /* $current_btc_rate = $current_rate;
-        $trade_rate = 0;
-
-        if ($t->type == 'buy') {
-            $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
-            $trade_rate = json_decode($buy->pivot->payment_range_settings);
-            $trade_rate = $trade_rate[0]->rate;
-        } else {
-            $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-            $trade_rate = json_decode($sell->pivot->payment_range_settings);
-            $trade_rate = $trade_rate[0]->rate;
-        }
-
-        //Correct figures
-        $trade_usd = $t->amount;
-        $trade_btc = $t->amount / $current_btc_rate;
-        $trade_ngn = $t->amount * $trade_rate;
-
-        if ($t->amount_paid != $trade_ngn || $t->quantity != $trade_btc) {
-            //Incorrect trade
-            $t->status = 'declined';
-            $t->save();
-
-            return back()->with(['error' => 'Incorrect trade parameters, trade has been declined']);
-        } */
-
 
         $transaction = $t;
         $btc_txn_type = 0;
@@ -298,7 +265,7 @@ class BitcoinWalletController extends Controller
             $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
             /* Cross Check Balance */
             if ($user_naira_wallet->amount < $transaction->amount_paid) {
-                return redirect()->back()->with(['error' => 'Insufficient user naira wallet balance']);
+                return redirect()->back()->with(['error' => 'Insufficient Naira wallet balance to complete trade']);
             }
             $btc_txn_type = 19;
             /* Deduct cost from user naira wallet and create new naira wallet transaction */
@@ -419,7 +386,7 @@ class BitcoinWalletController extends Controller
         $charge_wallet = BitcoinWallet::where('name', 'bitcoin charges')->first();
         $fees = $data['fees'];
         $charge = Setting::where('name', 'bitcoin_charge')->first()->value;; // Get from Admin
-        $total = $data['amount'] + $fees + $charge;
+        $total = $data['amount'] - $fees - $charge;
 
         //Check password
         if (!Hash::check($data['pin'], $user_wallet->password)) {
@@ -433,7 +400,7 @@ class BitcoinWalletController extends Controller
 
         //Debit User
         $old_balance = $user_wallet->balance;
-        $user_wallet->balance -= $total;
+        $user_wallet->balance -= $data['amount'];
         $user_wallet->save();
 
         //Create transaction and set to pending
@@ -442,7 +409,7 @@ class BitcoinWalletController extends Controller
         $btc_transaction->primary_wallet_id = $user_wallet->primaryWallet->id;
         $btc_transaction->wallet_id = $user_wallet->address; //The wallet of the owner user
         $btc_transaction->hash = 'none';
-        $btc_transaction->debit = $total;
+        $btc_transaction->debit = $data['amount'];
         $btc_transaction->fee = $fees;
         $btc_transaction->charge = $charge;
         $btc_transaction->previous_balance = $old_balance;
@@ -459,7 +426,7 @@ class BitcoinWalletController extends Controller
 
 
         //else revert users balance
-        $send_total = number_format((float)$data['amount'], 8);
+        $send_total = number_format((float)$total, 8);
         $outputs = new \RestApis\Blockchain\BTC\Snippets\Output();
         $input = new \RestApis\Blockchain\BTC\Snippets\Input();
         $outputs->add($data['address'], $send_total);

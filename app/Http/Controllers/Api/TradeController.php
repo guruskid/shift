@@ -38,9 +38,13 @@ class TradeController extends Controller
         }
         $card = Card::find($card_id);
         $card_rates =  new CardResource($card);
+
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_real_time = $res->bitcoin->usd;
         return response()->json([
             'success' => true,
-            'data' => $card_rates
+            'data' => $card_rates,
+            'btc_current_rate' => $btc_real_time
         ]);
     }
 
@@ -52,14 +56,14 @@ class TradeController extends Controller
                 'success' => false,
                 'msg' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions',
             ]);
-        }
+        }*/
 
         if ($r->buy_sell == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Insufficient wallet balance to complete this transaction, please topup and try again ',
             ]);
-        } */
+        }
 
         /* $image = base64_encode(Storage::get('public/assets/AMAZON.png'));
         return response()->json($image); */

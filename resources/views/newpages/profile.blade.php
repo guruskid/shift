@@ -49,7 +49,7 @@
                         <div class="profile_image_root_container pb-5">
                             <div class="profile_image_container">
                                 <img src="/storage/avatar/{{ Auth::user()->dp }}" class="img-fluid profile_image" />
-                                <div class="camera_button">
+                                <div class="camera_button" data-target="#upload-dp-modal" data-toggle="modal">
                                     <svg width="20" height="20" viewBox="0 0 40 37" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -620,7 +620,6 @@
                     </div>
                 </div>
 
-
                 {{-- Mobile --}}
 
                 <div class="container-fluid d-lg-none mb-4">
@@ -1145,7 +1144,7 @@
 
 
 {{-- Add image --}}
-<div class="modal fade  item-badge-rightm" id="upload-dp-modal" role="dialog">
+<div class="modal fade  item-badge-rightm" id="upload-dp-moda" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
