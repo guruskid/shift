@@ -141,6 +141,10 @@ class BitcoinWalletController extends Controller
 
         ]);
 
+        if ($data['amount'] < 3 ) {
+            return back()->with(['error' => 'Minimum trade amount is $3']);
+        }
+
         if (!Auth::user()->bitcoinWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
