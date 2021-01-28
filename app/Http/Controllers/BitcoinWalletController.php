@@ -48,6 +48,7 @@ class BitcoinWalletController extends Controller
 
     public function wallet(Request $r)
     {
+        return back()->with(['error' => 'Network busy']);
         if (!Auth::user()->bitcoinWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
