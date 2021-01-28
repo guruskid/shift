@@ -48,7 +48,7 @@ class BitcoinWalletController extends Controller
 
     public function wallet(Request $r)
     {
-        return back()->with(['error' => 'Network busy']);
+        
         if (!Auth::user()->bitcoinWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
@@ -58,7 +58,12 @@ class BitcoinWalletController extends Controller
         } else {
             $transactions = Auth::user()->bitcoinWallet->transactions()->paginate(5);
         }
-        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
+        try {
+            $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
+        } catch (\Throwable $th) {
+            return back()->with(['error' => 'Network busy']);
+        }
+        
         $fees = $fees_req->payload->recommended;
         $charge = Setting::where('name', 'bitcoin_charge')->first();
         if (!$charge) {
