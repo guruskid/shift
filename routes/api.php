@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::POST('/trade-btc', 'Api\BitcoinWalletController@send');
+Route::POST('/trade-btc', 'Api\BitcoinWalletController@tradeBtc');
 
 Route::group(['prefix' => 'v1'], function () {
     Route::post('/register', 'Api\AuthController@register');
