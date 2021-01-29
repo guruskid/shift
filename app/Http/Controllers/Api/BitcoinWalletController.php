@@ -256,28 +256,12 @@ class BitcoinWalletController extends Controller
 
         ]);
 
-
-        //dont ask me y I did it twice, its for creating a txn
-        /* $data = $r->validate([
-            'card_id' => 'required|integer',
-            'type' => 'required|string',
-            'amount' => 'required',
-            'amount_paid' => 'required',
-            'quantity' => 'required',
-
-        ]); */
-
-        return response()->json([
-            'success' => false,
-            'msg' => 'Please a Bitcoin wallet to continue'
-        ]);
-
-        /* if ($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
             ], 401);
-        } */
+        }
 
         if (!Auth::user()->bitcoinWallet) {
             return response()->json([
@@ -371,6 +355,12 @@ class BitcoinWalletController extends Controller
         $data['user_id'] = Auth::user()->id;
         $data['card'] = Card::find($r->card_id)->name;
         $data['agent_id'] = $online_agent->id;
+
+        $data['card_id'] = $r->card_id;
+        $data['type'] = $r->type;
+        $data['amount'] = $r->amount;
+        $data['amount_paid'] = $r->amount_paid;
+        $data['quantity'] = $r->quantity;
 
         $t = Transaction::create($data);
 
