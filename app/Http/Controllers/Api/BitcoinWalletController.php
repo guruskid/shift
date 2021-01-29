@@ -29,18 +29,25 @@ class BitcoinWalletController extends Controller
 
     public function create(Request $r)
     {
-        $data = $r->validate([
+        $validator = Validator::make($r->all(), [
             'wallet_password' => 'required|min:4|confirmed',
         ]);
 
-        if (Auth::user()->bitcoinWallet) {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'msg' => 'A bitcoin wallet exists for this account'
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        if (Auth::user()->bitcoinWallet->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'A Bitcoin wallet exists for this account'
             ]);
         }
 
-        $password = Hash::make($data['wallet_password']);
+        $password = Hash::make($r->wallet_password);
 
         try {
             $primary_wallet = BitcoinWallet::where(['user_id' => 1, 'primary_wallet_id' => 0])->first();
