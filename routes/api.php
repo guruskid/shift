@@ -17,15 +17,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::POST('/trade-btc', 'Api\BitcoinWalletController@tradeBtc');
-
 Route::group(['prefix' => 'v1'], function () {
     Route::post('/register', 'Api\AuthController@register');
     Route::post('/login', 'Api\AuthController@login');
     Route::get('/banks', 'Api\AuthController@bankList' );
     Route::get('/countries', 'Api\AuthController@countries' );
 
-    Route::group([/* 'middleware' => 'auth:api' */], function () {
+    Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
@@ -72,7 +70,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::GET('/balance', 'Api\BitcoinWalletController@balance');
             Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');
             Route::GET('/transactions', 'Api\BitcoinWalletController@transactions');
-
+            Route::POST('/trade', 'Api\BitcoinWalletController@trade');
             Route::POST('/send', 'Api\BitcoinWalletController@send');
         });
 
