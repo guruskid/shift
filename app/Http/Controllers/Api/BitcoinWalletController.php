@@ -255,6 +255,10 @@ class BitcoinWalletController extends Controller
             'quantity' => 'required',
 
         ]); */
+        return response()->json([
+            'success' => false,
+            'msg' => 'Please a Bitcoin wallet to continue'
+        ]);
 
         //dont ask me y I did it twice, its for creating a txn
         $data = $r->validate([
