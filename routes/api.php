@@ -23,7 +23,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/banks', 'Api\AuthController@bankList' );
     Route::get('/countries', 'Api\AuthController@countries' );
 
-    Route::group(['middleware' => 'auth:api'], function () {
+    Route::group([/* 'middleware' => 'auth:api' */], function () {
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
