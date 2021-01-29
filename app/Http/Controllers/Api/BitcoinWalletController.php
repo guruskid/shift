@@ -247,18 +247,7 @@ class BitcoinWalletController extends Controller
 
     public function tradeBtc(Request $r)
     {
-        /* $validator = Validator::make($r->all(), [
-            'card_id' => 'required|integer',
-            'type' => 'required|string',
-            'amount' => 'required',
-            'amount_paid' => 'required',
-            'quantity' => 'required',
-
-        ]); */
-
-
-        //dont ask me y I did it twice, its for creating a txn
-        $data = $r->validate([
+        $validator = Validator::make($r->all(), [
             'card_id' => 'required|integer',
             'type' => 'required|string',
             'amount' => 'required',
@@ -266,6 +255,17 @@ class BitcoinWalletController extends Controller
             'quantity' => 'required',
 
         ]);
+
+
+        //dont ask me y I did it twice, its for creating a txn
+        /* $data = $r->validate([
+            'card_id' => 'required|integer',
+            'type' => 'required|string',
+            'amount' => 'required',
+            'amount_paid' => 'required',
+            'quantity' => 'required',
+
+        ]); */
 
         return response()->json([
             'success' => false,
