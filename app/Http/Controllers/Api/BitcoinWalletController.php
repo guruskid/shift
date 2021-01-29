@@ -245,7 +245,7 @@ class BitcoinWalletController extends Controller
         }
     }
 
-    public function tradeBtc(Request $r)
+    public function trade(Request $r)
     {
         $validator = Validator::make($r->all(), [
             'card_id' => 'required|integer',
