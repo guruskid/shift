@@ -15,7 +15,7 @@ class UserController extends Controller
 
     public function dashboard()
     {
-        $transactions = Auth::user()->transactions->take(3)->get();
+        $transactions = Auth::user()->transactions->take(3);
         $naira_wallet = Auth::user()->nairaWallet;
         $naira_wallet_transactions = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->latest()->with('transactionType')->get();
 
