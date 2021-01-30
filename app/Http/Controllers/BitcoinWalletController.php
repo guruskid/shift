@@ -48,7 +48,7 @@ class BitcoinWalletController extends Controller
 
     public function wallet(Request $r)
     {
-        
+
         if (!Auth::user()->bitcoinWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
@@ -63,7 +63,7 @@ class BitcoinWalletController extends Controller
         } catch (\Throwable $th) {
             return back()->with(['error' => 'Network busy']);
         }
-        
+
         $fees = $fees_req->payload->recommended;
         $charge = Setting::where('name', 'bitcoin_charge')->first();
         if (!$charge) {
@@ -448,7 +448,6 @@ class BitcoinWalletController extends Controller
             //update status and hash if it goes through
             $result = $this->instance->transactionApiBtcNewTransactionHdWallet()->create(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, $outputs,  $fee);
             $btc_transaction->hash = $result->payload->txid;
-            $btc_transaction->status = 'success';
             $btc_transaction->save();
 
             $charge_wallet->balance += $charge;
@@ -460,6 +459,9 @@ class BitcoinWalletController extends Controller
             report($e);
             $user_wallet->balance = $old_balance;
             $user_wallet->save();
+
+            $charge_wallet->balance -= $charge;
+            $charge_wallet->save();
 
             $btc_transaction->status = 'failed';
             $btc_transaction->save();
