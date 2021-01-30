@@ -31,7 +31,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/send-otp', 'Api\AuthController@sendOtp');
         Route::post('/verify-phone', 'Api\AuthController@verifyPhone');
 
-        Route::get('/send-bvn-otp/{otp}', 'Api\AuthController@sendBvnOtp');
+        //BVN verification
+        Route::get('/send-bvn-otp/{bvn}', 'Api\AuthController@sendBvnOtp');
+        Route::post('/verify-bvn-otp/{bvn}', 'Api\AuthController@verifyBvnOtp');
 
         Route::post('/update-password', 'Api\UserController@updatePassword');
         Route::post('/update-email', 'Api\UserController@updateEmail');
