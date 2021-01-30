@@ -202,7 +202,7 @@ function verifyBvn() {
         .done(function (res) {
             if (res.success) {
                 sendOtp.text('Resend');
-                swal('success', 'An OTP has been sent to the phone number associated with your BVN. Please check and input it below');
+                swal('success', 'An OTP has been sent to the phone number '+res.phone+' to confirm your BVN. Please check and input it below');
             } else {
                 swal('error', res.msg);
                 sendOtp.text('Resend');

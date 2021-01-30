@@ -413,8 +413,5 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
 });
 
 
-Route::group(['prefix' => 'db'], function () {
-    Route::GET('/function', 'DatabaseController@transactions');
-});
 
 

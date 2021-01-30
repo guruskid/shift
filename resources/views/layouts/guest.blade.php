@@ -48,7 +48,7 @@
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{{asset('user_assets/js/main.js')}}"></script>
-    <script src="{{asset('js/custom.js?v=2')}}"></script>
+    <script src="{{asset('js/custom.js?v=3')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
 
 

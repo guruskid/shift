@@ -347,8 +347,6 @@ class HomeController extends Controller
             $phone = $body->phoneNumber;
         }
 
-
-
         $client = new Client();
         $url = env('TERMII_SMS_URL') . "/otp/send";
 
@@ -376,6 +374,7 @@ class HomeController extends Controller
 
             return response()->json([
                 'success' => true,
+                'phone' => $phone
             ]);
         }
         return response()->json([
