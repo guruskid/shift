@@ -33,7 +33,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         //BVN verification
         Route::get('/send-bvn-otp/{bvn}', 'Api\AuthController@sendBvnOtp');
-        Route::post('/verify-bvn-otp/{bvn}', 'Api\AuthController@verifyBvnOtp');
+        Route::post('/verify-bvn', 'Api\AuthController@verifyBvnOtp');
 
         Route::post('/update-password', 'Api\UserController@updatePassword');
         Route::post('/update-email', 'Api\UserController@updateEmail');
