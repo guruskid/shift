@@ -58,8 +58,8 @@ class PortfolioController extends Controller
                 break;
 
             case 100:
-                Auth::user()->daily_max = 5000000;
-                Auth::user()->monthly_max = 10000000;
+                Auth::user()->daily_max = 10000000;
+                Auth::user()->monthly_max = 90000000;
                 Auth::user()->save();
                 break;
 
