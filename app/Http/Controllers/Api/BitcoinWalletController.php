@@ -245,6 +245,9 @@ class BitcoinWalletController extends Controller
             $btc_transaction->save();
             //set the transaction status to failed
 
+            $charge_wallet->balance -= $charge;
+            $charge_wallet->save();
+
             return response()->json([
                 'success' => false,
                 'msg' => 'An error occured while processing the transaction please confirm the details and try again'
