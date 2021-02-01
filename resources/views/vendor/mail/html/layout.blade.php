@@ -100,8 +100,6 @@
 <body style=" background-color: #f4f4f4; margin: 0 !important; padding: 0 !important; ">
      <!-- HIDDEN PREHEADER TEXT -->
   <div style=" display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; ">
-    Congratulations on Signing up on Dantown.
-    We welcome you to a new world of endless possibilities where you can trade your btc and gift cards.
 
   </div>
 
@@ -113,7 +111,7 @@
           <tr>
             <td align="center" valign="top" style="padding: 20px">
               <a href="#" target="_blank">
-                <img alt="Logo" src="https://user.dantownms.com/logo_bg.png" width="300" height="300" style="
+                <img alt="Logo" src="https://app.dantownms.com/logo_bg.png" width="300" height="300" style="
                       display: block;
                       font-family: 'Lato', Helvetica, Arial, sans-serif;
                       color: #ffffff;
