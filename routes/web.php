@@ -30,25 +30,6 @@ Route::get('/etherwallet', function () {
 Route::get('/tetherwallet', function () {
     return view('newpages.tetherwallet');
 });
-
-
-
-// Route::get('/newlandingpage', function () {
-//     return view('newpages.newlandingpage');
-// });
-
-// Route::get('/faq', function () {
-//     return view('newpages.faq');
-// });
-
-// Route::get('/about-us', function () {
-//     return view('newpages.about');
-// });
-
-// Route::get('/terms-conditions', function () {
-//     return view('newpages.terms-conditions');
-// });
-
 //Done
 Route::get('/etherwallet', function () {
     return view('newpages.ethereumwallet');
@@ -58,28 +39,6 @@ Route::get('/etherwallet', function () {
 Route::get('/tetherwallet', function () {
     return view('newpages.tetherwallet');
 });
-
-
-
-// Route::get('/showcards', function () {
-//     return view('newpages.cards');
-// });
-/*
-Route::get('/cardcalculator', function () {
-    return view('newpages.cardcalculator');
-}); */
-/*
-Route::get('/transaction', function () {
-    return view('newpages.Transactionscreen');
-}); */
-
-/* Route::get('/bitcoin', function () {
-    return view('newpages.bitcoin');
-});
-
-Route::get('/ethereum', function () {
-    return view('newpages.ethereumscreen');
-}); */
 
 Route::get('/airtocash', function () {
     return view('newpages.airtimetocash');
@@ -92,30 +51,10 @@ Route::get('/newprofile', function () {
 });
 
 //mobile and web done
-/* Route::get('/btc-transaction', function(){
-    return view('newpages.btc_payment_transaction');
-}); */
-
-//mobile and web done
 Route::get('/btc-transaction-hash', function(){
     return view('newpages.btc_payment_transaction2');
 });
 
-
-
-// Route::get('/transactions', function(){
-//     return view('newpages.btc_payment_transaction2');
-// });
-
-/* Route::get('/newdashboard', function () {
-    return view('newpages.dashboard');
-});
-Route::get('/creditsuccess', function () {
-    return view('newpages.creditsuccess');
-});
-Route::get('/creditfailure', function () {
-    return view('newpages.creditfailure');
-}); */
 
 // mobile and tab screen done
 Route::get('/smartbudget', function () {
@@ -127,31 +66,11 @@ Route::get('/paytv','BillsPaymentController@CableView')->name('user.paytv');
 //});
 
 Route::get('/paybills','BillsPaymentController@electricityView')->name('newpages.paybills');
-   // return view('newpages.paybills');
-
 
 Route::get('/notifications', function(){
     return view('newpages.notifications');
 });
 
-//Mobile and tab done
-/* Route::get('/choosewallet', function () {
-    return view('newpages.choosewallet');
-}); */
-
-//Mobile and tab screen done
-/* Route::get('/walletpage', function () {
-    return view('newpages.bitcoin-wallet');
-}); */
-
-//Mobile and tab done
-//  Route::get('/nairawalletmain', function () {
-//     return view('newpages.nairawallet');
-// });
-
-// Route::get('/nairawalletdtodconfirm', function () {
-//     return view('newpages.nairawalletdtodconfirm');
-// });
 
 //Mobile and tab screen done
 Route::get('/recharge', function () {
@@ -179,13 +98,6 @@ Route::get('/newsignup', function () {
 });
 
 
-/*
-//Mobile and desktop done
-Route::get('/all-transactions', function(){
-    return view('newpages.all-transactions');
-}); */
-
-
 
 
 
@@ -211,9 +123,6 @@ Route::get('/tested', 'HomeController@test')->name('tested');
 Auth::routes(['verify' => true]);
 Route::get('/', 'HomeController@index')->name('welcome');
 Route::get('/home', 'HomeController@index')->name('home');
-/* Route::view('/login', 'errors.503')->name('login');
-Route::view('/register', 'errors.503')->name('register');
-Route::view('/login-test', 'auth.login'); */
 
 
 //Registration and verification routes
@@ -231,6 +140,10 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::view('/verify-bvn', 'auth.bvn')->name('user.verify-bvn');
     Route::get('/send-bvn-otp/{bvn}', 'HomeController@sendBvnOtp');
     Route::post('/verify-bvn-otp', 'HomeController@verifyBvnOtp')->name('user.verify-bvn-otp');
+
+    //Upload ID Card
+    Route::post('/upload-id-card', 'VerificationController@uploadId')->name('user.upload-id');
+    Route::post('/upload-address', 'VerificationController@uploadAddress')->name('user.upload-address');
 });
 
 Route::view('/disabled', 'disabled')->name('disabled');

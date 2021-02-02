@@ -205,19 +205,7 @@ class UserController extends Controller
 
     public function idcard(Request $request)
     {
-        $this->validate($request, [
-            'id_card' => 'image|mimes:jpeg,JPEG,png,jpg|max:5048|required',
-        ]);
-        $user = Auth::user();
-
-        $file = $request->id_card;
-        $extension = $file->getClientOriginalExtension();
-        $filenametostore = $user->email . '.' . $extension;
-        Storage::put('public/idcards/' . $filenametostore, fopen($file, 'r+'));
-        $user->id_card = $filenametostore;
-        $user->status = 'waiting';
-        $user->save();
-        return redirect()->back()->with(['success' => 'Id card uploaded, please hold on while we verify your account']);
+        
     }
 
     public function password(Request $request)

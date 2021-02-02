@@ -151,7 +151,8 @@
                                                     {{ Auth::user()->accounts->first()->bank_name ?? 'No account' }}
                                                     <div class="user_profile_text ml-4" style="font-size: 18px;">
                                                         <div style="font-size:16px;">Acc. No.
-                                                            {{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }}</div>
+                                                            {{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -457,6 +458,7 @@
                                                             </div>
                                                         </div>
                                                         @endif
+                                                        @if (Auth::user()->address_verified_at == null)
                                                         {{-- Address verification tab --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards addressVerificationCard mt-4">
@@ -474,43 +476,31 @@
                                                         {{-- Address verification content --}}
                                                         <div class="accordion_content mt-3 pb-3"
                                                             id="AddressVerification" style="display: none;">
-                                                            <form action="" method="post">
-                                                                @csrf
-                                                                <div class="form-group addressVerificationForm">
-                                                                    <label for="youraddress"
-                                                                        class="address_verification_labelText">Enter
-                                                                        your
-                                                                        address as shown in your document</label>
-                                                                    <textarea placeholder="Your address"
-                                                                        id="youraddress" class="form-control"
-                                                                        style="resize: none;" name=""
-                                                                        rows="2"></textarea>
+                                                            <div class="d-flex justify-content-start align-items-end">
+                                                                <div class="d-flex justify-content-center align-items-center px-2 upload_address_photo"
+                                                                    id="uploadAddressVerification">
+                                                                    <input type="file" id="uploadPhotoInput"
+                                                                        style="display: none;" />
+                                                                    <span>
+                                                                        <svg width="28" height="26" viewBox="0 0 20 20"
+                                                                            fill="none"
+                                                                            xmlns="http://www.w3.org/2000/svg">
+                                                                            <path
+                                                                                d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
+                                                                                fill="#A6ACBE" />
+                                                                        </svg>
+                                                                    </span>
+                                                                    <span class="ml-3"
+                                                                        style="font-size: 10px;color: #000070;letter-spacing: 0.01em;line-height: 10px;">Upload
+                                                                        your Bank <br> Statement of Account</span>
                                                                 </div>
-                                                                <div
-                                                                    class="d-flex justify-content-start align-items-end">
-                                                                    <div class="d-flex justify-content-center align-items-center px-2 upload_address_photo"
-                                                                        id="uploadAddressVerification">
-                                                                        <input type="file" id="uploadPhotoInput"
-                                                                            style="display: none;" />
-                                                                        <span>
-                                                                            <svg width="28" height="26"
-                                                                                viewBox="0 0 20 20" fill="none"
-                                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                                <path
-                                                                                    d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
-                                                                                    fill="#A6ACBE" />
-                                                                            </svg>
-                                                                        </span>
-                                                                        <span class="ml-3"
-                                                                            style="font-size: 10px;color: #000070;letter-spacing: 0.01em;line-height: 10px;">Upload
-                                                                            your Bank <br> Statement of Account</span>
-                                                                    </div>
-                                                                    <button type="submit"
-                                                                        class="btn btn-primary mb-2 ml-2"
-                                                                        style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
-                                                                </div>
-                                                            </form>
+                                                                <button class="btn btn-primary mb-2 ml-2"
+                                                                    data-target="#upload-address-modal"
+                                                                    data-toggle="modal"
+                                                                    style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
+                                                            </div>
                                                         </div>
+                                                        @endif
                                                     </div>
 
                                                     <div class="col-12 col-lg-6 mt-3">
@@ -562,6 +552,7 @@
                                                         </div>
                                                         @endif
 
+                                                        @if (Auth::user()->idcard_verified_at == null)
                                                         {{-- ID verification card --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
@@ -576,7 +567,7 @@
                                                                 </svg>
                                                             </span>
                                                         </div>
-                                                        {{-- BVN verification content --}}
+                                                        {{-- Id verification content --}}
                                                         <div class="accordion_content" id="idVerification"
                                                             style="display: none;">
                                                             <div class="mt-2">
@@ -602,13 +593,15 @@
                                                                                     class="d-block front_photo_card_text">Front
                                                                                     photo of your card</span>
                                                                             </div>
-                                                                            <button type="submit"
+                                                                            <button type="button" data-toggle="modal"
+                                                                                data-target="#upload-id-modal"
                                                                                 class="btn btn-primary verifyIdSubmitBtn">Upload</button>
                                                                         </div>
                                                                     </div>
                                                                 </form>
                                                             </div>
                                                         </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -627,14 +620,14 @@
                         <div class="profilepicture_mobile">
                             <img class="img-fluid rounded-circle" style="height: 200px"
                                 src="/storage/avatar/{{ Auth::user()->dp }}" alt="">
-                                <div class="camera_button" data-toggle="modal" data-target="#upload-dp-modal">
-                                    <svg width="20" height="20" viewBox="0 0 40 37" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M5.21739 5.21739V0H8.69565V5.21739H13.913V8.69565H8.69565V13.913H5.21739V8.69565H0V5.21739H5.21739ZM10.4348 15.6522V10.4348H15.6522V5.21739H27.8261L31.0087 8.69565H36.5217C38.4348 8.69565 40 10.2609 40 12.1739V33.0435C40 34.9565 38.4348 36.5217 36.5217 36.5217H8.69565C6.78261 36.5217 5.21739 34.9565 5.21739 33.0435V15.6522H10.4348ZM22.6087 31.3043C27.4087 31.3043 31.3043 27.4087 31.3043 22.6087C31.3043 17.8087 27.4087 13.913 22.6087 13.913C17.8087 13.913 13.913 17.8087 13.913 22.6087C13.913 27.4087 17.8087 31.3043 22.6087 31.3043ZM17.0435 22.6087C17.0435 25.687 19.5304 28.1739 22.6087 28.1739C25.687 28.1739 28.1739 25.687 28.1739 22.6087C28.1739 19.5304 25.687 17.0435 22.6087 17.0435C19.5304 17.0435 17.0435 19.5304 17.0435 22.6087Z"
-                                            fill="white" />
-                                    </svg>
-                                </div>
+                            <div class="camera_button" data-toggle="modal" data-target="#upload-dp-modal">
+                                <svg width="20" height="20" viewBox="0 0 40 37" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M5.21739 5.21739V0H8.69565V5.21739H13.913V8.69565H8.69565V13.913H5.21739V8.69565H0V5.21739H5.21739ZM10.4348 15.6522V10.4348H15.6522V5.21739H27.8261L31.0087 8.69565H36.5217C38.4348 8.69565 40 10.2609 40 12.1739V33.0435C40 34.9565 38.4348 36.5217 36.5217 36.5217H8.69565C6.78261 36.5217 5.21739 34.9565 5.21739 33.0435V15.6522H10.4348ZM22.6087 31.3043C27.4087 31.3043 31.3043 27.4087 31.3043 22.6087C31.3043 17.8087 27.4087 13.913 22.6087 13.913C17.8087 13.913 13.913 17.8087 13.913 22.6087C13.913 27.4087 17.8087 31.3043 22.6087 31.3043ZM17.0435 22.6087C17.0435 25.687 19.5304 28.1739 22.6087 28.1739C25.687 28.1739 28.1739 25.687 28.1739 22.6087C28.1739 19.5304 25.687 17.0435 22.6087 17.0435C19.5304 17.0435 17.0435 19.5304 17.0435 22.6087Z"
+                                        fill="white" />
+                                </svg>
+                            </div>
                             <span class="d-block text-center my-3"
                                 style="color: #000070;font-size:16px;">{{ Auth::user()->first_name }}</span>
                         </div>
@@ -676,7 +669,8 @@
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Bank</div>
-                                        <div class="col-9">{{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }},
+                                        <div class="col-9">
+                                            {{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }},
                                             {{ Auth::user()->accounts->first()->bank_name ?? 'No account' }}</div>
                                     </div>
                                     <div class="row py-1 my-1">
@@ -899,6 +893,7 @@
 
 
                                                     <!-- Address verification card mobile -->
+                                                    @if (Auth::user()->address_verified_at == null)
                                                     <div class="col-8 col-md-8 mx-auto my-2">
                                                         <div id="mobile_address_verification_card"
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
@@ -914,43 +909,15 @@
                                                     <div id="mobile_address_verification_card_content"
                                                         class="d-none flex-column justify-content-center mx-auto mt-3">
                                                         <div class="col-12">
-                                                            <form action="" method="post">
-                                                                @csrf
-                                                                <div class="form-group">
-                                                                    <label class="mb-0 pb-0" for="address">Enter your
-                                                                        address as shown on your document.</label>
-                                                                    <textarea name="" class="form-control"
-                                                                        style="resize: none;" id="address" cols="4"
-                                                                        rows="3"></textarea>
-                                                                </div>
-
-                                                                <div
-                                                                    class="d-flex justify-content-start align-items-end">
-                                                                    <div class="d-flex justify-content-center align-items-center px-2 py-2"
-                                                                        style="border: 0.5px dashed #676b87;"
-                                                                        id="uploadAddressVerification">
-                                                                        <input type="file" id="uploadPhotoInputMobile"
-                                                                            style="display: none;" />
-                                                                        <span>
-                                                                            <svg width="28" height="26"
-                                                                                viewBox="0 0 20 20" fill="none"
-                                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                                <path
-                                                                                    d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
-                                                                                    fill="#A6ACBE" />
-                                                                            </svg>
-                                                                        </span>
-                                                                        <span class="ml-3"
-                                                                            style="font-size: 10px;color: #000070;letter-spacing: 0.01em;line-height: 10px;">Upload
-                                                                            your Bank <br> Statement of Account</span>
-                                                                    </div>
-                                                                    <button type="submit"
-                                                                        class="btn btn-primary mb-2 ml-2"
-                                                                        style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
-                                                                </div>
-                                                            </form>
+                                                            <div class="d-flex justify-content-start align-items-end">
+                                                                <button type="button" data-toggle="modal"
+                                                                    data-target="#upload-address-modal"
+                                                                    class="btn btn-primary mb-2 ml-2"
+                                                                    style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    @endif
 
 
                                                     <!-- BVN verification card mobile -->
@@ -998,6 +965,7 @@
 
 
                                                     <!-- ID verification card mobile -->
+                                                    @if (Auth::user()->idcard_verified_at == null)
                                                     <div class="col-8 col-md-8 mx-auto my-2">
                                                         <div id="mobile_id_verification_card"
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
@@ -1079,10 +1047,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button type="submit" class="btn text-white w-50 mt-3"
+                                                            <button type="button" class="btn text-white w-50 mt-3"
+                                                                data-toggle="modal" data-target="#upload-id-modal"
                                                                 style="background: #000070;margin-left:24%;">Upload</button>
                                                         </form>
                                                     </div>
+                                                    @endif
 
 
                                                 </div>
@@ -1144,7 +1114,7 @@
 
 
 {{-- Add image --}}
-<div class="modal fade  item-badge-rightm" id="upload-dp-moda" role="dialog">
+<div class="modal fade  item-badge-rightm" id="upload-dp-modal" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -1159,5 +1129,48 @@
         </div>
     </div>
 </div>
+
+{{-- Id upload modal --}}
+<div class="modal fade  item-badge-rightm" id="upload-id-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form method="POST" action="{{route('user.upload-id')}}" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <input type="file" name="id_card" class="form-control" accept="images/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Id Card</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Address upload modal --}}
+<div class="modal fade  item-badge-rightm" id="upload-address-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form method="POST" action="{{route('user.upload-address')}}" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <div class="form-group ">
+                        <label for="" class="address_verification_labelText">
+                            Enter your address as shown in your document
+                        </label>
+                        <textarea placeholder="Your address" class="form-control" style="resize: none;" name="location"
+                            rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="file" name="address" class="form-control" accept="images/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Address Image</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @endsection

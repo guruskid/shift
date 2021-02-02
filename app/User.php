@@ -92,4 +92,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne('App\BitcoinWallet');
     }
+
+    public function verifications()
+    {
+        return $this->hasMany('App\Verification');
+    }
 }

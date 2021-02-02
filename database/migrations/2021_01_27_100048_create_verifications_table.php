@@ -18,6 +18,7 @@ class CreateVerificationsTable extends Migration
             $table->bigInteger('user_id');
             $table->string('type');
             $table->string('path');
+            $table->string('status');
             $table->timestamps();
         });
     }
