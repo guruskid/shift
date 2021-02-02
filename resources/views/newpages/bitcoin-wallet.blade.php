@@ -238,11 +238,13 @@
                                                     <span class="status_waiting">{{ $transaction->status }}</span>
                                                     @endswitch
                                                 </td>
-                                                {{-- <td>
-                                                    <a href="#"
-                                                        style="color: #000070;font-size: 15px;font-weight: 600;">View
-                                                    </a>
-                                                </td> --}}
+                                                <td class="transaction_content">
+                                                    @if ($transaction->hash != null)
+                                                    <a href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->hash }}" class="btn transaction_view_link">Explorer</a>
+                                                    @else
+                                                    - - -
+                                                    @endif
+                                                </td>
                                             </tr>
                                             @endforeach
 

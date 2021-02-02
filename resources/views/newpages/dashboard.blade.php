@@ -306,8 +306,13 @@
                                                             class="d-block status_waiting text-capitalize">{{ $t->status }}</span>
                                                         @endswitch
                                                     </td>
-                                                    <td class="transaction_content"><a
-                                                            class="btn transaction_view_link">view</a></td>
+                                                    <td class="transaction_content">
+                                                        @if ($t->hash != null)
+                                                        <a href="https://blockexplorer.one/btc/mainnet/tx/{{ $t->hash }}" class="btn transaction_view_link">Explorer</a>
+                                                        @else
+                                                        - - -
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
