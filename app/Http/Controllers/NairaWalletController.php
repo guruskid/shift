@@ -222,11 +222,11 @@ class NairaWalletController extends Controller
             return redirect()->back()->with(['error' => 'Wrong wallet pin entered']);
         }
 
-        $amount = $r->amount + $charge;
+        $amount = $r->amount - $charge;
         $amount_paid = $r->amount;
 
 
-        if ($amount > $n->amount) {
+        if ($r->amount > $n->amount) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
@@ -235,13 +235,13 @@ class NairaWalletController extends Controller
         }
 
         $prev_bal = $n->amount;
-        $n->amount -= $amount;
+        $n->amount -= $r->amount;
         $n->save();
 
         $msg = 'Transaction initiated';
         $nt = new NairaTransaction();
         $nt->reference = $reference;
-        $nt->amount = $amount;
+        $nt->amount = $r->amount;
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $n->amount;
@@ -283,7 +283,7 @@ class NairaWalletController extends Controller
         $response = $client->request('POST', $url, [
             'json' => [
                 "reference" => $reference,
-                "amount" => $r->amount,
+                "amount" => $amount,
                 "narration" => $r->narration,
                 "craccountname" => $acct_name,
                 "bankname" => $bank_name,

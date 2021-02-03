@@ -18,9 +18,9 @@
             <label for="amount" style="color: #000070;">Amount</label>
             <input type="number" class="form-control" name="amount" id="amount">
         </div>
-        <span class="d-block" style="color: #000070;font-weight:600;font-size: 11px;position: relative;top:-11px;">A
+        <span class="d-block text-info" style="color:font-weight:600;font-size: 11px;position: relative;top:-11px;">A
             charge
-            of ₦80.00 will be added for each transaction outside Dantown wallet.</span>
+            of ₦80.00 will be deducted from the inputed amount for each transaction outside Dantown wallet.</span>
         <select class="custom-select my-3" name="narration">
             <option value="Personal">Personal</option>
             <option value="Card Purchase">Card Purchase</option>
