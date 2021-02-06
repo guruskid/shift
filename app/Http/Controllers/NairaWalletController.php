@@ -149,6 +149,8 @@ class NairaWalletController extends Controller
 
     public function transfer(Request $r)
     {
+        return back()->with(['error' => 'Service not available']);
+
         $charge = 0;
         $bank_name = '';
         $acct_name = '';
