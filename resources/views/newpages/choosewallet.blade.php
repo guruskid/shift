@@ -80,31 +80,46 @@
                                 {{-- border line --}}
                                 <div class="mt-4" style="width: 100%;border: 1px solid #C9CED6;"></div>
 
-                                {{-- Bitcoin  menu  --}}
-                                <a href="{{ route('user.naira-wallet') }}">
-                                    <div class="row">
-                                        <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-5"
-                                            style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
-                                            <div class="d-flex align-items-center">
-                                                <div class="mx-3">
-                                                    <svg width="50" height="50" viewBox="0 0 70 70" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <circle cx="35" cy="35" r="35" fill="#1A5420" />
-                                                        <path
-                                                            d="M49.1553 28.4404H54.4287V32.3467H49.1553V36.0332H54.4287V39.9395H49.1553V52H42.9785L35.3857 39.9395H27.1094V52H20.957V39.9395H15.8057V36.0332H20.957V32.3467H15.8057V28.4404H20.957V16.4531H27.1094L34.6533 28.4404H43.0273V16.4531H49.1553V28.4404ZM39.4141 36.0332H43.0273V32.3467H37.0947L39.4141 36.0332ZM27.1094 36.0332H32.9199L30.6006 32.3467H27.1094V36.0332ZM43.0273 41.7705V39.9395H41.8799L43.0273 41.7705ZM27.1094 28.4404H28.1592L27.1094 26.7803V28.4404Z"
-                                                            fill="#EFEFF8" />
-                                                    </svg>
-                                                </div>
-                                                <div>
-                                                    <span class="d-block pb-0 mb-0 choosewallet_selection">Naira</span>
+                                {{-- Naira wallet --}}
+                                @if (Auth::user()->country_id == 156)
+
+                                <div class="row">
+                                    <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-5"
+                                        style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
+                                        <div class="d-flex align-items-center">
+                                            <div class="mx-3">
+                                                <svg width="50" height="50" viewBox="0 0 70 70" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="35" cy="35" r="35" fill="#1A5420" />
+                                                    <path
+                                                        d="M49.1553 28.4404H54.4287V32.3467H49.1553V36.0332H54.4287V39.9395H49.1553V52H42.9785L35.3857 39.9395H27.1094V52H20.957V39.9395H15.8057V36.0332H20.957V32.3467H15.8057V28.4404H20.957V16.4531H27.1094L34.6533 28.4404H43.0273V16.4531H49.1553V28.4404ZM39.4141 36.0332H43.0273V32.3467H37.0947L39.4141 36.0332ZM27.1094 36.0332H32.9199L30.6006 32.3467H27.1094V36.0332ZM43.0273 41.7705V39.9395H41.8799L43.0273 41.7705ZM27.1094 28.4404H28.1592L27.1094 26.7803V28.4404Z"
+                                                        fill="#EFEFF8" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <span class="d-block pb-0 mb-0 choosewallet_selection">Naira</span>
+                                                @if (Auth::user()->nairaWallet)
+                                                <a href="{{ route('user.naira-wallet') }}">
                                                     <span
-                                                        class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}</span><span
+                                                        class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ number_format(Auth::user()->nairaWallet->amount) }}</span><span
                                                         style="color: #000070;"> NGN</span>
-                                                </div>
+                                                </a>
+
+                                                @else
+                                                <a href="#" data-toggle="modal" data-target="#new-naira-wallet">
+                                                    <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Create
+                                                        Naira Wallet</span>
+                                                </a>
+                                                @endif
+
                                             </div>
                                         </div>
                                     </div>
-                                </a>
+                                </div>
+
+                                @endif
+
+                                {{-- Bitcoin Wallet --}}
                                 @if (!Auth::user()->bitcoinWallet)
                                 <div class="row">
                                     <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
@@ -145,7 +160,8 @@
                                                         class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : '' }}BTC</span>
                                                     <div>
                                                         <span
-                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Bitcoin Wallet</span></span>
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Bitcoin
+                                                            Wallet</span></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -199,4 +215,53 @@
     </div>
 </div>
 
+{{-- create Naira Wallet --}}
+<div class="modal fade " id="new-naira-wallet">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content  c-rounded">
+
+            <form action="{{route('user.create-naira')}}" method="POST">
+                @csrf
+                <div class="modal-body p-4">
+                    <select name="bank_code" class="form-control col-11 mx-auto mx-md-0 col-lg-8" id="bank-name">
+                        <option selected>Bank name</option>
+                        @foreach (\App\Bank::all() as $bank)
+                        <option value="{{$bank->code}}">{{$bank->name}}</option>
+                        @endforeach
+                    </select>
+                    <div class="form-group mt-3">
+                        <input type="text" id="account-number" name="account_number" class="form-control col-11 mx-auto mx-md-0 col-lg-8"
+                            placeholder="Account number" />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="account_name" class="acct-name form-control col-11 mx-auto mx-md-0 col-lg-8" readonly />
+                    </div>
+                    @if (Auth::user()->phone_verified_at == null)
+                    <div class="form-group">
+                        <input type="text" name="otp" placeholder="Phone OTP Code" class="form-control col-11 mx-auto mx-md-0 col-lg-8"  />
+                        <small>Didn't get the OTP? <a href="#" id="otp-text" onclick="resendOtp()">Resend</a></small>
+                    </div>
+                    @endif
+                    <div class="form-group">
+                        <label for="">Wallet Password (4 digits)</label>
+                        <input type="password" class="form-control " required name="password" minlength="4"
+                            maxlength="4" placeholder="- - - -">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Confirm password</label>
+                        <input type="password" class="form-control " required name="password_confirmation"
+                            placeholder="- - - -">
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient" id="sign-up-btn">
+                        Create wallet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
+ @section('scripts')
+ <script src="{{asset('js/wallet.js')}} "></script>
+ @endsection
