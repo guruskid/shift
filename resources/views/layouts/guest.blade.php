@@ -51,6 +51,8 @@
     <script src="{{asset('js/custom.js?v=3')}}"></script>
     <script src="{{asset('js/wallet.js')}} "></script>
 
+    @yield('scripts')
+
 
     @if (session('error'))
     <script>

@@ -18,10 +18,10 @@ class CheckName
     {
         $user = Auth::user();
         if (Auth::user()->phone_verified_at == null || strlen(trim($user->phone))  <= 0 || strlen(trim($user->username))  <= 0) {
-            return  redirect()->route('user.verify-phone');
+            //return  redirect()->route('user.verify-phone');
         }
         if (strlen(trim($user->first_name))  <= 0) {
-            return redirect('/setup-bank-account');
+            //return redirect('/setup-bank-account');
         }
         return $next($request);
     }
