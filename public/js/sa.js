@@ -286,11 +286,10 @@ function queryTransaction(id) {
             } else {
                 swal({
                     title: "Ooops!",
-                    text: response.data.responsemessage,
+                    text: 'Invalid Transaction',
                     icon: "error",
                     button: "OK",
                 });
-                console.log(response.data)
             }
         })
         .fail(function (xhr, status, error) {

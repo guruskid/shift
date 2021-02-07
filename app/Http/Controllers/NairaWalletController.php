@@ -145,9 +145,7 @@ class NairaWalletController extends Controller
             ]);
         }
     }
-
-
-    public function transfer(Request $r)
+    public function oldTransfer(Request $r)
     {
         return back()->with(['error' => 'Service not available']);
 
@@ -332,7 +330,7 @@ class NairaWalletController extends Controller
                 'body' => $msg_body,
             ]);
             if (Auth::user()->notificationSetting->wallet_email == 1) {
-               // Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
+                // Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
             }
 
 
@@ -349,6 +347,123 @@ class NairaWalletController extends Controller
     }
 
 
+    public function transfer(Request $r)
+    {
+        
+        $r->validate([
+            'account_id' => 'required',
+            'pin' => 'required',
+            'amount' => 'required',
+            'narration' => 'nullable',
+            'ref' => 'required|unique:naira_transactions,reference',
+        ]);
+
+        $charge = 0;
+        $bank_name = '';
+        $acct_name = '';
+        $acct_num = '';
+        $bank_code = '';
+        $tid = 0;
+        $reference = $r->ref;
+
+        /* get bank details */
+        $bd = Account::find($r->account_id);
+        if (!$bd) {
+            return redirect()->back()->with(['error' => 'Error getting account details']);
+        }
+
+        $acct_name = $bd->account_name;
+        $bank_name = $bd->bank_name;
+        $acct_num = $bd->account_number;
+        $bank_code = Bank::find($bd->bank_id)->code;
+        $tid = 3;
+
+        if ($bank_code != '090175') {
+            $charge = 100;
+        }
+
+        //Check daily limit
+        $today_total = Auth::user()->nairaTransactions()->whereDate('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        if ($today_total >= Auth::user()->daily_max) {
+            return redirect()->back()->with(['error' => 'Daily limit exceeded, please upgrade your account limits from the account settings page to continue.']);
+        }
+
+        //check Monthly
+        $monthly_total = Auth::user()->nairaTransactions()->whereYear('created_at', now())->whereMonth('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        if ($monthly_total >= Auth::user()->monthly_max) {
+            return redirect()->back()->with(['error' => 'Monthly limit exceeded, please upgrade your account limits from the account settings page.']);
+        }
+
+        $n = Auth::user()->nairaWallet;
+
+        if (Hash::check($r->pin, $n->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong wallet pin entered']);
+        }
+
+        $amount = $r->amount - $charge;
+        //$amount_paid = $r->amount;
+
+        if ($r->amount > $n->amount) {
+            return redirect()->back()->with(['error' => 'Insufficient funds']);
+        }
+
+        if ($tid == 0) {
+            return redirect()->back()->with(['error' => 'Something went wrong, please try again']);
+        }
+
+        $prev_bal = $n->amount;
+        $n->amount -= $r->amount;
+        $n->save();
+
+        $msg = 'Transaction initiated';
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->amount = $r->amount;
+
+        $nt->previous_balance = $prev_bal;
+        $nt->current_balance = $n->amount;
+        $nt->charge = $charge;
+        $nt->transfer_charge = 81.38;
+        $nt->sms_charge = 2.55;
+        if ($charge == 0) {
+            $nt->transfer_charge = 0; //overide the previous
+            $nt->sms_charge = 0;
+        }
+        $nt->amount_paid = $amount;
+        $nt->transaction_type_id = $tid;
+        $nt->user_id = Auth::user()->id;
+        $nt->type = 'naira wallet';
+        $nt->dr_user_id = Auth::user()->id;
+        $nt->dr_wallet_id = $n->id;
+        $nt->dr_acct_name = Auth::user()->first_name;
+        $nt->cr_acct_name = $acct_name . ' ' . $acct_num . " " . $bank_name;
+        $nt->narration = $r->narration;
+        $nt->trans_msg = $msg;
+        $nt->status = 'pending';
+        $nt->save();
+
+        /* Credit SMS and Transfer Wallet */
+        $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        $transfer_charges_wallet->amount += $nt->transfer_charge;
+        $transfer_charges_wallet->save();
+
+        $sms_charges_wallet = NairaWallet::where('account_number', 0000000002)->first();
+        $sms_charges_wallet->amount += $nt->sms_charge;
+        $sms_charges_wallet->save();
+
+        $title = 'Dantown wallet Debit';
+        $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for transfer to ' . $nt->cr_acct_name . ' desc: ' . $r->narration;
+        $not = Notification::create([
+            'user_id' => Auth::user()->id,
+            'title' => $title,
+            'body' => $msg_body,
+        ]);
+        if (Auth::user()->notificationSetting->wallet_email == 1) {
+            // Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
+        }
+
+        return back()->with(['success' => 'Withdrawal request made successfully']);
+    }
 
 
     public function adminRefund(Request $r)
@@ -543,7 +658,8 @@ class NairaWalletController extends Controller
 
     public function query($id)
     {
-        $reference = NairaTransaction::findOrFail($id)->reference;
+        try {
+            $reference = NairaTransaction::findOrFail($id)->reference;
 
         $client = new Client();
         $url = env('RUBBIES_API') . "/transactionquery";
@@ -558,20 +674,24 @@ class NairaWalletController extends Controller
         ]);
         $body = json_decode($response->getBody()->getContents());
         $body->requestdate  = date('d M h:ia', $body->requestdate);
+        
         if ($body->responsecode != 13) {
             return response()->json([
-                'success' =>true,
+                'success' => true,
                 'data' => $body
             ]);
         } else {
             return response()->json([
-                'success' =>false,
+                'success' => false,
                 'data' => $body
             ]);
         }
-
-
-
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                //'data' => $body
+            ]);
+        }
     }
 
     public function updateStatus(Request $r)
@@ -579,7 +699,7 @@ class NairaWalletController extends Controller
         $transaction = NairaTransaction::find($r->id);
         $transaction->status = $r->status;
         $transaction->save();
-        return back()->with(['success' => 'Transaction status updated to '.$r->status]);
+        return back()->with(['success' => 'Transaction status updated to ' . $r->status]);
     }
 
     public function callback(Request $r)
