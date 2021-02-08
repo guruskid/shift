@@ -81,10 +81,10 @@ class UserController extends Controller
     public function verificationProgress()
     {
         $v_progress = 0;
-        if (Auth::user()->email_verified_at && Auth::user()->phone_verified_at) {
+        if (Auth::user()->email_verified_at) {
             $v_progress += 25;
         }
-        if (Auth::user()->bvn_verified_at) {
+        if (Auth::user()->phone_verified_at) {
             $v_progress += 25;
         }
         if (Auth::user()->address_verified_at) {
@@ -205,7 +205,7 @@ class UserController extends Controller
 
     public function idcard(Request $request)
     {
-        
+
     }
 
     public function password(Request $request)

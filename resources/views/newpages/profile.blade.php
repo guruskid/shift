@@ -384,79 +384,21 @@
                                                     <div class="col-12 col-lg-6">
                                                         {{-- Phone verification card --}}
                                                         @if (Auth::user()->phone_verified_at == null)
-                                                        <div
-                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
-                                                            <span class="d-block">Phone number verification</span>
-                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
-                                                                style="position: relative;left: 22px;">
-                                                                <svg width="20" height="20" viewBox="0 0 20 20"
-                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path
-                                                                        d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
-                                                                        fill="#000070" />
-                                                                </svg>
-                                                            </span>
-                                                        </div>
-                                                        {{-- Phone number verification content --}}
-
-                                                        <div class="accordion_content" id="phoneVerification"
-                                                            style="display: none;">
-                                                            <div class="mt-3">
-                                                                <form>
-                                                                    @csrf
-                                                                    <div
-                                                                        class="form-row align-items-center d-flex justify-content-start align-items-center">
-                                                                        <div class="col-auto">
-                                                                            <label for="inlineFormInput"
-                                                                                style="color: #000070;">Phone
-                                                                                number</label>
-                                                                            <div class="input-group mb-3">
-                                                                                <div class="input-group-prepend">
-                                                                                    <select name="" id=""
-                                                                                        class="custom-select select_dial_code">
-                                                                                        <option value="">+234</option>
-                                                                                        <option value="">+234</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                <input type="text" style="width: 185px;"
-                                                                                    class="form-control dial_code_input"
-                                                                                    aria-label="Text input with dropdown button" />
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-auto phoneNumberVerifyBtn">
-                                                                            <button type="submit"
-                                                                                class="btn btn-primary mb-2 px-3"
-                                                                                style="height:40px;width:80px;">Verify</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </form>
+                                                        <a href="{{ route('user.verify-phone') }}">
+                                                                <div
+                                                                class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                                <span class="d-block">Phone number verification</span>
+                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
+                                                                    style="position: relative;left: 22px;">
+                                                                    <svg width="20" height="20" viewBox="0 0 20 20"
+                                                                        fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path
+                                                                            d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
+                                                                            fill="#000070" />
+                                                                    </svg>
+                                                                </span>
                                                             </div>
-                                                            <div class="mt-2" id="phoneVerification">
-                                                                <form>
-                                                                    @csrf
-                                                                    <div
-                                                                        class="form-row align-items-center d-flex justify-content-start align-items-center">
-                                                                        <div class="col-auto">
-                                                                            <label for="inlineFormInput"
-                                                                                style="color: #000070;font-size:13px;width:260px;">Enter
-                                                                                the OTP sent to the Phone number your
-                                                                                entered</label>
-                                                                            <div class="input-group mb-3"
-                                                                                style="width: 256px;">
-                                                                                <input type="text"
-                                                                                    class="form-control otp_code_input"
-                                                                                    aria-label="Text input with dropdown button"
-                                                                                    placeholder="000000" />
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-auto confirmVerificationBtn">
-                                                                            <button type="submit"
-                                                                                class="btn btn-primary mb-2 confirmVerificationBtnSize">Confirm</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
+                                                        </a>
                                                         @endif
                                                         @if (Auth::user()->address_verified_at == null)
                                                         {{-- Address verification tab --}}
@@ -504,8 +446,8 @@
                                                     </div>
 
                                                     <div class="col-12 col-lg-6 mt-3">
-                                                        @if (Auth::user()->bvn_verified_at == null)
-                                                        {{-- BVN verification card --}}
+                                                        {{-- @if (Auth::user()->bvn_verified_at == null)
+                                                        BVN verification card
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards bvnVerificationCard">
                                                             <span class="d-block">BVN verification</span>
@@ -518,10 +460,10 @@
                                                                         fill="#000070" />
                                                                 </svg>
                                                             </span>
-                                                        </div>
+                                                        </div> --}}
 
                                                         {{-- BVN verification content --}}
-                                                        <div class="accordion_content" id="bvnVerification"
+                                                        {{-- <div class="accordion_content" id="bvnVerification"
                                                             style="display: none;">
                                                             <div class="mt-2">
                                                                 <form>
@@ -550,7 +492,7 @@
                                                                 </form>
                                                             </div>
                                                         </div>
-                                                        @endif
+                                                        @endif--}}
 
                                                         @if (Auth::user()->idcard_verified_at == null)
                                                         {{-- ID verification card --}}
@@ -847,20 +789,22 @@
 
                                                     <!-- Phone verification card mobile -->
                                                     @if (Auth::user()->phone_verified_at == null)
-                                                    <div class="col-8 col-md-8 mx-auto my-2">
-                                                        <div id="mobile_phone_verification_card"
-                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
-                                                            <span class="d-block">Phone number verification</span>
-                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
-                                                                style="position: relative;left: 21px;">
-                                                                <img src="/svg/accordion_arrow.svg" class="img-fluid" />
-                                                            </span>
+                                                    <a href="{{ route('user.verify-phone') }}">
+                                                        <div class="col-8 col-md-8 mx-auto my-2">
+                                                            <div id="mobile_phone_verification_card"
+                                                                class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                                <span class="d-block">Phone number verification</span>
+                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
+                                                                    style="position: relative;left: 21px;">
+                                                                    <img src="/svg/accordion_arrow.svg" class="img-fluid" />
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
 
 
                                                     <!-- Mobile phone verification content -->
-                                                    <div id="mobile_phone_verification_card_content"
+                                                   {{--  <div id="mobile_phone_verification_card_content"
                                                         class="d-none flex-column justify-content-center mx-auto mt-3">
                                                         <div class="col-12">
                                                             <form action="" method="post">
@@ -888,7 +832,7 @@
                                                                     style="background: #000070;">Confirm</button>
                                                             </form>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                     @endif
 
 
@@ -921,7 +865,7 @@
 
 
                                                     <!-- BVN verification card mobile -->
-                                                    @if (Auth::user()->bvn_verified_at == null)
+                                                    {{-- @if (Auth::user()->bvn_verified_at == null)
                                                     <div class="col-8 col-md-8 mx-auto my-2">
                                                         <div id="mobile_bvn_verification_card"
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
@@ -960,7 +904,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    @endif
+                                                    @endif --}}
 
 
 

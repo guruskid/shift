@@ -40,25 +40,25 @@ class PortfolioController extends Controller
 
         switch (Auth::user()->v_progress) {
             case 25:
-                Auth::user()->daily_max = 30000;
-                Auth::user()->monthly_max = 300000;
+                Auth::user()->daily_max = 0;
+                Auth::user()->monthly_max = 0;
                 Auth::user()->save();
                 break;
 
             case 50:
-                Auth::user()->daily_max = 2000000;
-                Auth::user()->monthly_max = 10000000;
+                Auth::user()->daily_max = 2000;
+                Auth::user()->monthly_max = 5000;
                 Auth::user()->save();
                 break;
 
             case 75:
-                Auth::user()->daily_max = 3500000;
-                Auth::user()->monthly_max = 10000000;
+                Auth::user()->daily_max = 2000000;
+                Auth::user()->monthly_max = 60000000;
                 Auth::user()->save();
                 break;
 
             case 100:
-                Auth::user()->daily_max = 10000000;
+                Auth::user()->daily_max = 5000000;
                 Auth::user()->monthly_max = 90000000;
                 Auth::user()->save();
                 break;
@@ -83,7 +83,15 @@ class PortfolioController extends Controller
                 $dr_total += $t->amount;
             }
         }
+
+        $daily_total = Auth::user()->nairaTransactions()->whereDate('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        $daily_rem = Auth::user()->daily_max - $daily_total;
+
+        //check Monthly
+        $monthly_total = Auth::user()->nairaTransactions()->whereYear('created_at', now())->whereMonth('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        $monthly_rem = Auth::user()->monthly_max - $monthly_total;
+
         $ref = \Str::random(2) . time();
-        return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref']));
+        return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref', 'daily_rem', 'monthly_rem']));
     }
 }

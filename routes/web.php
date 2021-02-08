@@ -162,7 +162,7 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 /* Bitcoin Wallet Callback */
 Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName', 'verified'] ], function () {
 
     /* ajax calls */
     Route::POST('/add_transaction', 'UserController@addTransaction');
@@ -193,7 +193,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::POST('/notification-switch', 'UserController@notificationSetting');
 
     Route::get('/portfolio', 'PortfolioController@view')->name('user.portfolio');
-    Route::get('/wallet', 'PortfolioController@nairaWallet')->name('user.naira-wallet')->middleware(['verified', 'bvnVerified']);
+    Route::get('/wallet', 'PortfolioController@nairaWallet')->name('user.naira-wallet');
     Route::POST('/naira-wallet/create', 'NairaWalletController@create')->name('user.create-naira');
     Route::POST('/naira-wallet/password', 'NairaWalletController@changePassword')->name('user.update-naira-password');
     Route::POST('/transfer-funds', 'NairaWalletController@transfer')->name('user.transfer');

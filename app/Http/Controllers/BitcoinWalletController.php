@@ -79,9 +79,6 @@ class BitcoinWalletController extends Controller
         return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'btc_usd', 'btc_rate', 'charge', 'total_fees'));
     }
 
-
-
-
     public function create(Request $r)
     {
         $data = $r->validate([
@@ -147,6 +144,8 @@ class BitcoinWalletController extends Controller
 
         ]);
 
+
+
         if ($data['amount'] < 3 ) {
             return back()->with(['error' => 'Minimum trade amount is $3']);
         }
@@ -190,6 +189,10 @@ class BitcoinWalletController extends Controller
         $trade_rate = 0;
 
         if ($data['type'] == 'buy') {
+            if (Auth::user()->v_progress < 50) {
+                return back()->with(['error' => 'Please upgrade your account to start buying Bitcoin']);
+            }
+
             $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
             $trade_rate = json_decode($buy->pivot->payment_range_settings);
             $trade_rate = $trade_rate[0]->rate;

@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <div id="content_bg" class="card card-body mb-4" style="height:550px;">
+                            <div id="content_bg" class="card card-body mb-4" {{-- style="height:550px;" --}}>
                                 <div class="container px-4 d-flex justify-content-between align-items-center">
                                     <a href="{{ route('user.portfolio') }}">
                                         <div class="d-flex align-items-center">
@@ -113,30 +113,36 @@
                                                     <span class="d-block">
                                                         <span style="color: #000070;font-size: 30px;">₦{{ number_format($n->amount) }}</span>
                                                     </span>
-                                                    {{-- <span class="d-block"
-                                                        style="color: #565656;font-size: 16px;opacity: 0.5;">₦20,000</span> --}}
                                                 </div>
+
                                                 <div class="d-flex mt-3 mt-md-0">
-                                                    <a id="naira_transfer" class="btn walletpage_menu-active naira_menu">
+                                                   {{--  <a id="naira_transfer" class="btn  naira_menu">
                                                         <span class="d-block">
                                                         <img src="{{asset('svg/bitcoin-send-icon.svg')}}" alt="">
                                                         </span>
                                                         <span class="d-block"
                                                             style="color: #000000;font-size: 14px;">Transfer</span>
-                                                    </a>
-                                                    <a id="naira_withdraw" class="btn naira_menu">
+                                                    </a> --}}
+                                                    <a id="naira_withdraw" class="btn naira_menu walletpage_menu-active">
                                                         <span class="d-block">
                                                             <img src="{{asset('svg/naira-withdraw-icon.svg')}}" alt="">
                                                         </span>
                                                         <span class="d-block"
                                                             style="color: #000000;font-size: 14px;">Withdraw</span>
                                                     </a>
-                                                    <a id="naira_deposit" class="btn naira_menu">
+                                                   {{--  <a id="naira_deposit" class="btn naira_menu">
                                                         <span class="d-block">
                                                             <img src="{{asset('svg/naira-deposit-icon.svg')}}" alt="">
                                                         </span>
                                                         <span class="d-block" style="color: #000000;font-size: 14px;">Deposit</span>
-                                                    </a>
+                                                    </a> --}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <p><strong class="text-primary mb-0">Daily Limit:</strong> ₦{{ number_format(Auth::user()->daily_max) }}  <strong class="text-primary">Rem: </strong>₦{{ number_format($daily_rem) }} </p>
+                                                    <p><strong class="text-primary mb-0">Monthly Limit:</strong> ₦{{ number_format(Auth::user()->monthly_max) }} <strong class="text-primary">Rem: </strong>₦{{ number_format($monthly_rem) }}</p>
+                                                    <p>Please visit <a href="{{ route('user.profile') }}">Account settings</a> to upgrade your limits</p>
                                                 </div>
                                             </div>
 
@@ -181,12 +187,50 @@
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
+
+{{-- Add bank account --}}
+<div class="modal fade  item-badge-rightm" id="add-bank-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="user-bank-details" class="mb-4">
+                    {{ csrf_field() }}
+                    <div class="form-row ">
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Bank Name</label>
+                                <select name="bank_code"  class="form-control">
+                                    @foreach ($banks as $b)
+                                    <option value="{{$b->code}}">{{$b->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Account Number</label>
+                                <input type="text" required class="form-control"
+                                    name="account_number">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Account Name</label>
+                                <input type="text" required class="form-control " name="account_name">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
+                        <i class="spinner-border spinner-border-sm" id="s-b" style="display: none;"></i>
+                        Save</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

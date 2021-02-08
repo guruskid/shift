@@ -24,12 +24,14 @@
                     @endforeach
                     <div id="step_one">
                         <div class="form-group">
+                            <input type="text" name="name" required placeholder="Full Name" class="form-control col-11 mx-auto mx-md-0 col-lg-8">
+                        </div>
+                        <div class="form-group">
                             <input type="text" id="username" name="username" required placeholder="Username"
                                 class="form-control col-11 mx-auto mx-md-0 col-lg-8" />
                         </div>
                         <div class="form-group">
-                            <input type="email" name="email" required placeholder="Email" class="form-control col-11 mx-auto mx-md-0 col-lg-8"
-                                value="" />
+                            <input type="email" name="email" required placeholder="Email" class="form-control col-11 mx-auto mx-md-0 col-lg-8">
                         </div>
                         <div class="form-group mb-0">
                             <select name="country_id" class="form-control col-11 mx-auto mx-md-0 col-lg-8">

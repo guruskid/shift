@@ -54,10 +54,10 @@ $(document).ready(function () {
             success: function (data) {
                 $("#s-b").hide();
                 if (data == true) {
-                    Notify("Bank details added", null, null, "success");
+                    swal('success', 'Bank Account added')
                     location.reload();
                 } else {
-                    Notify("An error occured", null, null, "danger");
+                    swal('error', 'An error occured. Please reload and try again')
                 }
             }
         });

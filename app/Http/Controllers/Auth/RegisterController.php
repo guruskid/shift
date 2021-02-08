@@ -15,6 +15,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 /* Mails */
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistered;
+use App\NairaWallet;
 use App\Notification;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -40,7 +41,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/setup-bank-account';
+    protected $redirectTo = '/user';
 
     /**
      * Create a new controller instance.
@@ -61,6 +62,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
+            'name' => 'string|required',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'country_id' => 'required|integer',
@@ -103,7 +105,7 @@ class RegisterController extends Controller
         $body = json_decode($response->getBody()->getContents()); */
 
         $user =  User::create([
-            'first_name' => ' ',
+            'first_name' => $data['name'],
             'last_name' => ' ',
             'username' => $data['username'],
             'country_id' => $data['country_id'],
@@ -117,13 +119,13 @@ class RegisterController extends Controller
             return $user;
         }
 
-        $password = '0000';
+        $password = '';
 
         try {
             $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
 
             $primary_wallet = BitcoinWallet::where(['user_id' => 1, 'primary_wallet_id' => 0])->first();
-            $result = $instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, 1);
+            $result = $instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, 1);
 
             $wallet = new BitcoinWallet();
             $address = $result->payload->addresses[0];
@@ -131,14 +133,14 @@ class RegisterController extends Controller
             $wallet->path = $address->path;
             $wallet->address = $address->address;
             $wallet->type = 'secondary';
-            $wallet->name = $data['username'];
+            $wallet->name = $data['name'];
             $wallet->password = $password;
             $wallet->balance = 0.00000000;
             $wallet->primary_wallet_id = $primary_wallet->id;
             $wallet->save();
 
             $callback = route('user.wallet-webhook');
-            $result = $this->instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, $wallet->address, 6);
+            $result = $instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
         } catch (\Exception  $e) {
             report($e);
             return $user;
@@ -152,7 +154,18 @@ class RegisterController extends Controller
             'body' => $msg_body,
         ]);
 
-        Mail::to($user->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.bitcoin-wallet')));
+        //Mail::to($user->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.bitcoin-wallet')));
+
+        NairaWallet::create([
+            'user_id' => $user->id,
+            'account_number' => time(),
+            'account_name' => $user->first_name,
+            'bank_name' => 'Dantown',
+            'bank_code' => '000000',
+            'amount' => 0,
+            'password' => $password,
+            'amount_control' => 'VARIABLE',
+        ]);
 
         return $user;
     }
