@@ -379,7 +379,7 @@ class NairaWalletController extends Controller
         $tid = 3;
 
         if ($bank_code != '090175') {
-            $charge = 100;
+            $charge = 200;
         }
 
         //Check daily limit
@@ -423,8 +423,8 @@ class NairaWalletController extends Controller
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $n->amount;
         $nt->charge = $charge;
-        $nt->transfer_charge = 81.38;
-        $nt->sms_charge = 2.55;
+        $nt->transfer_charge = 197;
+        $nt->sms_charge = 3;
         if ($charge == 0) {
             $nt->transfer_charge = 0; //overide the previous
             $nt->sms_charge = 0;

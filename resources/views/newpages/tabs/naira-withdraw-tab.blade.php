@@ -23,7 +23,7 @@
         </div>
         <span class="d-block text-info" style="color:font-weight:600;font-size: 11px;position: relative;top:-11px;">A
             charge
-            of ₦100.00 will be deducted from the inputed amount for each transaction outside Dantown wallet.</span>
+            of ₦200.00 will be deducted from the inputed amount for each transaction outside Dantown wallet.</span>
         <select class="custom-select my-3" name="narration">
             <option value="Personal">Personal</option>
             <option value="Card Purchase">Card Purchase</option>
