@@ -125,7 +125,7 @@ class RegisterController extends Controller
             $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
 
             $primary_wallet = BitcoinWallet::where(['user_id' => 1, 'primary_wallet_id' => 0])->first();
-            $result = $instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_TESTNET, $primary_wallet->name, $primary_wallet->password, 1);
+            $result = $instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, 1);
 
             $wallet = new BitcoinWallet();
             $address = $result->payload->addresses[0];
@@ -140,7 +140,7 @@ class RegisterController extends Controller
             $wallet->save();
 
             $callback = route('user.wallet-webhook');
-            $result = $instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_TESTNET, $callback, $wallet->address, 6);
+            $result = $instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, $wallet->address, 6);
         } catch (\Exception  $e) {
             report($e);
             return $user;
