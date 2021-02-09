@@ -349,7 +349,7 @@ class NairaWalletController extends Controller
 
     public function transfer(Request $r)
     {
-        
+
         $r->validate([
             'account_id' => 'required',
             'pin' => 'required',
@@ -462,7 +462,7 @@ class NairaWalletController extends Controller
             // Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
         }
 
-        return back()->with(['success' => 'Withdrawal request made successfully']);
+        return back()->with(['success' => 'Your withdrawal order has been placed, it will be processed in 3-4 hours']);
     }
 
 
@@ -674,7 +674,7 @@ class NairaWalletController extends Controller
         ]);
         $body = json_decode($response->getBody()->getContents());
         $body->requestdate  = date('d M h:ia', $body->requestdate);
-        
+
         if ($body->responsecode != 13) {
             return response()->json([
                 'success' => true,

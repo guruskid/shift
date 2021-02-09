@@ -47,7 +47,7 @@ class PortfolioController extends Controller
 
             case 50:
                 Auth::user()->daily_max = 500000;
-                Auth::user()->monthly_max = 500000;
+                Auth::user()->monthly_max = 5000000;
                 Auth::user()->save();
                 break;
 
