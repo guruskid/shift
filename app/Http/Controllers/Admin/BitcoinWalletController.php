@@ -232,6 +232,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Insufficient balance']);
         }
 
+        $old_balance = $primary_wallet->balance;
         $primary_wallet->balance -= $total;
         $primary_wallet->save();
 
@@ -271,7 +272,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['success' => 'Bitcoin sent successfully']);
         } catch (\Exception $e) {
             report($e);
-            $primary_wallet->balance = $primary_wallet->getOriginal('balance');
+            $primary_wallet->balance = $old_balance;
             $primary_wallet->save();
 
             $btc_transaction->status = 'failed';
