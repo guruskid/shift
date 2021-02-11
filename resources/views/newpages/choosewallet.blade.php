@@ -81,7 +81,6 @@
                                 <div class="mt-4" style="width: 100%;border: 1px solid #C9CED6;"></div>
 
                                 {{-- Naira wallet --}}
-                                @if (Auth::user()->country_id == 156)
 
                                 <div class="row">
                                     <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-5"
@@ -117,7 +116,6 @@
                                     </div>
                                 </div>
 
-                                @endif
 
                                 {{-- Bitcoin Wallet --}}
                                 @if (!Auth::user()->bitcoinWallet)
