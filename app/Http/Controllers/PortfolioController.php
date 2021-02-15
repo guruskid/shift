@@ -38,37 +38,7 @@ class PortfolioController extends Controller
             return redirect()->route('user.dashboard')->with(['error' => 'Naia wallet currently froozen, please contact support for more info']);
         }
 
-        switch (Auth::user()->v_progress) {
-            case 25:
-                Auth::user()->daily_max = 0;
-                Auth::user()->monthly_max = 0;
-                Auth::user()->save();
-                break;
-
-            case 50:
-                Auth::user()->daily_max = 500000;
-                Auth::user()->monthly_max = 5000000;
-                Auth::user()->save();
-                break;
-
-            case 75:
-                Auth::user()->daily_max = 2000000;
-                Auth::user()->monthly_max = 60000000;
-                Auth::user()->save();
-                break;
-
-            case 100:
-                Auth::user()->daily_max = 5000000;
-                Auth::user()->monthly_max = 90000000;
-                Auth::user()->save();
-                break;
-
-            default:
-                Auth::user()->daily_max = 30000;
-                Auth::user()->monthly_max = 300000;
-                Auth::user()->save();
-                break;
-        }
+        
 
         $banks = Bank::all();
         $nts = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->orderBy('id', 'desc')->with('transactionType')->paginate(5);

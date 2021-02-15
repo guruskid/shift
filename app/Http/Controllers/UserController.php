@@ -95,6 +95,39 @@ class UserController extends Controller
         }
 
         Auth::user()->v_progress = $v_progress;
+
+        switch (Auth::user()->v_progress) {
+            case 25:
+                Auth::user()->daily_max = 0;
+                Auth::user()->monthly_max = 0;
+                Auth::user()->save();
+                break;
+
+            case 50:
+                Auth::user()->daily_max = 500000;
+                Auth::user()->monthly_max = 5000000;
+                Auth::user()->save();
+                break;
+
+            case 75:
+                Auth::user()->daily_max = 2000000;
+                Auth::user()->monthly_max = 60000000;
+                Auth::user()->save();
+                break;
+
+            case 100:
+                Auth::user()->daily_max = 5000000;
+                Auth::user()->monthly_max = 90000000;
+                Auth::user()->save();
+                break;
+
+            default:
+                Auth::user()->daily_max = 30000;
+                Auth::user()->monthly_max = 300000;
+                Auth::user()->save();
+                break;
+        }
+        
         Auth::user()->save();
 
         return true;
