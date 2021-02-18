@@ -96,7 +96,7 @@ class UserController extends Controller
 
         Auth::user()->v_progress = $v_progress;
 
-        switch (Auth::user()->v_progress) {
+        switch ($v_progress) {
             case 25:
                 Auth::user()->daily_max = 0;
                 Auth::user()->monthly_max = 0;
