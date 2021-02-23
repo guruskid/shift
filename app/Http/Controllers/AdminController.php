@@ -168,97 +168,6 @@ class AdminController extends Controller
         }
     }
 
-    /* public function cards()
-    {
-        $cards = Card::orderBy('id', 'desc')->get();
-        return view('admin.cards', compact(['cards']));
-    }
-
-    public function addCard(Request $request)
-    {
-        $this->validate($request, [
-            'name' => 'required|unique:cards',
-        ]);
-        $card = new Card();
-        $card->name = $request->name;
-        $card->is_crypto = $request->is_crypto;
-        $card->wallet_id = $request->wallet_id;
-        $card->save();
-        return redirect()->back()->with(['success' => 'Card added']);
-    }
-
-
-
-    public function getCard($id)
-    {
-        $card = Card::find($id);
-        return response()->json($card);
-    }
-
-    public function deleteCard($id)
-    {
-        $card = Card::find($id);
-        return response()->json($card->delete());
-    } */
-
-    /* public function rates()
-    {
-        $buy = Rate::where('rate_type', 'buy')->orderBy('created_at', 'desc')->get();
-        $sell = Rate::where('rate_type', 'sell')->orderBy('created_at', 'desc')->get();
-        $cards = Card::orderBy('name', 'asc')->get(['name']);
-
-        return view('admin.rates', compact(['buy', 'sell', 'cards']));
-    }
-
-    public function addRate(Request $request)
-    {
-
-        $rate = Rate::updateOrCreate(
-            [
-                'card' => $request->card,
-                'rate_type' => $request->rate_type,
-                'min' => $request->min,
-                'max' => $request->max
-            ],
-            [
-                'usd' => $request->usd,
-                'eur' => $request->eur,
-                'gbp' => $request->gbp,
-                'aud' => $request->aud,
-                'cad' => $request->cad,
-
-            ]
-        );
-        return redirect()->back()->with(['success' => 'Rate added']);
-    }
-
-    public function getRate($id)
-    {
-        $rate = Rate::find($id);
-        return response()->json($rate);
-    }
-
-    public function editRate(Request $r)
-    {
-        $rate = Rate::find($r->id);
-        $rate->card = $r->card;
-        $rate->rate_type = $r->rate_type;
-        $rate->usd = $r->usd;
-        $rate->eur = $r->eur;
-        $rate->gbp = $r->gbp;
-        $rate->aud = $r->aud;
-        $rate->cad = $r->cad;
-        $rate->min = $r->min;
-        $rate->max = $r->max;
-        $rate->save();
-        return redirect()->back()->with(['success' => 'Rate Edited']);
-    }
-
-    public function deleteRate($id)
-    {
-        $rate = Rate::find($id);
-        return response()->json($rate->delete());
-    } */
 
     /* TRANSACTIONS */
 
@@ -490,6 +399,7 @@ class AdminController extends Controller
 
     public function user($id, $email)
     {
+        dd('I got here');
         $user = User::find($id);
         $transactions = $user->transactions;
 
