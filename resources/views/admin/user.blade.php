@@ -262,6 +262,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @if ($user->bitcoinWallet)
                                                 @foreach ($user->bitcoinWallet->transactions as $key => $transaction)
                                                 <tr>
                                                     <th scope="row">{{ $transaction->id }}</th>
@@ -305,6 +306,7 @@
                                                     </td> --}}
                                                 </tr>
                                                 @endforeach
+                                                @endif
 
                                             </tbody>
                                         </table>
