@@ -399,9 +399,9 @@ class AdminController extends Controller
 
     public function user($id, $email)
     {
-        dd('I got here');
         $user = User::find($id);
         $transactions = $user->transactions;
+        dd($user);
 
         $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->orderBy('id', 'desc')->paginate(20);
         $dr_total = 0;
