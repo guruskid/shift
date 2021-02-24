@@ -62,7 +62,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'string|required',
+            /* 'name' => 'string|required', */
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'country_id' => 'required|integer',
@@ -79,12 +79,12 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $country = Country::find($data['country_id']);
-        //$phone = $country->phonecode . (int)$data['phone'];
+        $phone = $country->phonecode . (int)$data['phone'];
 
         $emailJob = (new RegistrationEmailJob($data['email']));
         dispatch($emailJob);
 
-       /*  $client = new Client();
+        $client = new Client();
         $url = env('TERMII_SMS_URL') . "/otp/send";
 
         $response = $client->request('POST', $url, [
@@ -102,22 +102,20 @@ class RegisterController extends Controller
                 "pin_type" => "NUMERIC"
             ],
         ]);
-        $body = json_decode($response->getBody()->getContents()); */
+        $body = json_decode($response->getBody()->getContents());
+        $username = \Str::lower($data['username']);
 
         $user =  User::create([
-            'first_name' => $data['name'],
+            'first_name' => ' ',
             'last_name' => ' ',
-            'username' => $data['username'],
+            'username' => $username,
             'country_id' => $data['country_id'],
             'email' => $data['email'],
-            /* 'phone' => $data['phone'],
-            'phone_pin_id' => $body->pinId, */
+            'phone' => $data['phone'],
+            'phone_pin_id' => $body->pinId,
             'password' => Hash::make($data['password']),
         ]);
 
-        if ($user->bitcoinWallet) {
-            return $user;
-        }
 
         $password = '';
 
@@ -133,7 +131,7 @@ class RegisterController extends Controller
             $wallet->path = $address->path;
             $wallet->address = $address->address;
             $wallet->type = 'secondary';
-            $wallet->name = $data['name'];
+            $wallet->name = $username;
             $wallet->password = $password;
             $wallet->balance = 0.00000000;
             $wallet->primary_wallet_id = $primary_wallet->id;
@@ -159,7 +157,7 @@ class RegisterController extends Controller
         NairaWallet::create([
             'user_id' => $user->id,
             'account_number' => time(),
-            'account_name' => $user->first_name,
+            'account_name' => $username,
             'bank_name' => 'Dantown',
             'bank_code' => '000000',
             'amount' => 0,

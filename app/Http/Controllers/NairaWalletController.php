@@ -28,7 +28,7 @@ class NairaWalletController extends Controller
         if (Auth::user()->nairaWallet()->count() > 0) {
             return back()->with(['error' => 'You already own a naira wallet']);
         }
-        $client = new Client();
+        /* $client = new Client();
         $url = env('RUBBIES_API') . "/createvirtualaccount";
 
         $response = $client->request('POST', $url, [
@@ -45,9 +45,9 @@ class NairaWalletController extends Controller
             ],
         ]);
         $body = json_decode($response->getBody()->getContents());
-        if ($body->responsecode == 00) {
+        if ($body->responsecode == 00) { */
 
-            Auth::user()->nairaWallet()->create([
+        /* Auth::user()->nairaWallet()->create([
                 'account_number' => $body->virtualaccount,
                 'account_name' => $body->virtualaccountname,
                 'bank_name' => $body->bankname,
@@ -55,22 +55,32 @@ class NairaWalletController extends Controller
                 'amount' => $body->amount,
                 'password' => Hash::make($r->password),
                 'amount_control' => $body->amountcontrol,
-            ]);
+            ]); */
+        NairaWallet::create([
+            'user_id' => Auth::user()->id,
+            'account_number' => time(),
+            'account_name' => Auth::user()->username,
+            'bank_name' => 'Dantown',
+            'bank_code' => '000000',
+            'amount' => 0,
+            'password' => Hash::make($r->password),
+            'amount_control' => 'VARIABLE',
+        ]);
 
-            $title = 'Wallet created';
-            $msg_body = 'Congratulations your Dantown Naira Wallet has been created successfully, you can now send, receive and store money in the wallet. Guess what that is not all, you can also pay bills and get airtime on our website';
-            $not = Notification::create([
-                'user_id' => Auth::user()->id,
-                'title' => $title,
-                'body' => $msg_body,
-            ]);
+        $title = 'Wallet created';
+        $msg_body = 'Congratulations your Dantown Naira Wallet has been created successfully, you can now send, receive and store money in the wallet. Guess what that is not all, you can also pay bills and get airtime on our website';
+        $not = Notification::create([
+            'user_id' => Auth::user()->id,
+            'title' => $title,
+            'body' => $msg_body,
+        ]);
 
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.naira-wallet')));
+        Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.naira-wallet')));
 
-            return back()->with(['success' => 'Naira wallet account opened successfully']);
-        } else {
+        return back()->with(['success' => 'Naira wallet account opened successfully']);
+        /* } else {
             return back()->with(['error' => 'Oops! an error occured' . $body->responsemessage]);
-        }
+        } */
     }
 
 
@@ -349,6 +359,10 @@ class NairaWalletController extends Controller
 
     public function transfer(Request $r)
     {
+        //Check If user owns a wallet
+        if (Auth::user()->accounts->count() == 0) {
+            return redirect()->back()->with(['error' => 'Please add account details to continue']);
+        }
 
         $r->validate([
             'account_id' => 'required',
@@ -661,31 +675,31 @@ class NairaWalletController extends Controller
         try {
             $reference = NairaTransaction::findOrFail($id)->reference;
 
-        $client = new Client();
-        $url = env('RUBBIES_API') . "/transactionquery";
+            $client = new Client();
+            $url = env('RUBBIES_API') . "/transactionquery";
 
-        $response = $client->request('POST', $url, [
-            'json' => [
-                "reference" => $reference,
-            ],
-            'headers' => [
-                'authorization' => env('RUBBIES_SECRET_KEY'),
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents());
-        $body->requestdate  = date('d M h:ia', $body->requestdate);
+            $response = $client->request('POST', $url, [
+                'json' => [
+                    "reference" => $reference,
+                ],
+                'headers' => [
+                    'authorization' => env('RUBBIES_SECRET_KEY'),
+                ],
+            ]);
+            $body = json_decode($response->getBody()->getContents());
+            $body->requestdate  = date('d M h:ia', $body->requestdate);
 
-        if ($body->responsecode != 13) {
-            return response()->json([
-                'success' => true,
-                'data' => $body
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'data' => $body
-            ]);
-        }
+            if ($body->responsecode != 13) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $body
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'data' => $body
+                ]);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

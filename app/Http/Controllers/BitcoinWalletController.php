@@ -89,7 +89,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Bitcoin wallet already exists']);
         }
 
-        if (Auth::user()->nairaWallet) {
+        if (Auth::user()->nairaWallet->count() > 0) {
             if (!Hash::check($data['wallet_password'], Auth::user()->nairaWallet->password)) {
                 return back()->with(['error' => 'Incorrect Naira wallet password']);
             }

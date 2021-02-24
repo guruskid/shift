@@ -221,25 +221,21 @@
             <form action="{{route('user.create-naira')}}" method="POST">
                 @csrf
                 <div class="modal-body p-4">
-                    <select name="bank_code" class="form-control col-11 mx-auto mx-md-0 col-lg-8" id="bank-name">
+                    {{-- <label for="">Bank Name</label>
+                    <select name="bank_code" class="form-control " >
                         <option selected>Bank name</option>
                         @foreach (\App\Bank::all() as $bank)
                         <option value="{{$bank->code}}">{{$bank->name}}</option>
                         @endforeach
                     </select>
                     <div class="form-group mt-3">
-                        <input type="text" id="account-number" name="account_number" class="form-control col-11 mx-auto mx-md-0 col-lg-8"
-                            placeholder="Account number" />
+                        <label for="">Account Number</label>
+                        <input type="text" name="account_number" required class="form-control ">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="account_name" class="acct-name form-control col-11 mx-auto mx-md-0 col-lg-8" readonly />
-                    </div>
-                    @if (Auth::user()->phone_verified_at == null)
-                    <div class="form-group">
-                        <input type="text" name="otp" placeholder="Phone OTP Code" class="form-control col-11 mx-auto mx-md-0 col-lg-8"  />
-                        <small>Didn't get the OTP? <a href="#" id="otp-text" onclick="resendOtp()">Resend</a></small>
-                    </div>
-                    @endif
+                        <label for="">Account Name</label>
+                        <input type="text" name="account_name" class="form-control" required>
+                    </div> --}}
                     <div class="form-group">
                         <label for="">Wallet Password (4 digits)</label>
                         <input type="password" class="form-control " required name="password" minlength="4"
