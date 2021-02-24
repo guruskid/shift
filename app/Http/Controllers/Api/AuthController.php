@@ -49,8 +49,8 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required',
             'username' => 'string|required|unique:users,username',
-            /* 'country_id' => 'required|integer',
-            'phone' => 'required', */
+            'country_id' => 'required|integer',
+            /*'phone' => 'required', */
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -64,7 +64,7 @@ class AuthController extends Controller
             'first_name' => ' ',
             'last_name' => ' ',
             'username' => $input['username'],
-            /* 'country_id' => $input['country_id'], */
+            'country_id' => $input['country_id'],
             'email' => $input['email'],
             /* 'phone' => $phone,
             'phone_pin_id' => $body->pinId, */
