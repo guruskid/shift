@@ -127,7 +127,7 @@ class UserController extends Controller
                 Auth::user()->save();
                 break;
         }
-        
+
         Auth::user()->save();
 
         return true;
@@ -144,6 +144,7 @@ class UserController extends Controller
 
     public function updateBank(Request $request)
     {
+
         $a = new Account();
         $bank = Bank::where('code', $request->bank_code)->first();
         $a->user_id = Auth::user()->id;
@@ -151,6 +152,9 @@ class UserController extends Controller
         $a->bank_name = $bank->name;
         $a->bank_id = $bank->id;
         $a->account_number = $request->account_number;
+
+        Auth::user()->first_name = $request->account_name;
+        Auth::user()->save();
 
         return response()->json($a->save());
     }
@@ -235,11 +239,6 @@ class UserController extends Controller
         return redirect()->back()->with(['success' => 'Profile updated']);
     }
 
-
-    public function idcard(Request $request)
-    {
-
-    }
 
     public function password(Request $request)
     {
