@@ -97,15 +97,6 @@ class UserController extends Controller
 
     public function updateDp(Request $r)
     {
-        /* $validator = Validator::make($r->all(), [
-            'image' => 'required|mimes:png,jpg,jpeg|max:3048',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors(),
-            ], 401);
-        } */
 
         if ($r->has('image')) {
             $file = $r->image;
@@ -119,6 +110,90 @@ class UserController extends Controller
 
             Auth::user()->dp = $imageName;
             Auth::user()->save();
+
+            return response()->json([
+                'success' => true,
+                'data' => Auth::user(),
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Image file not present'
+            ]);
+        }
+    }
+
+    public function uploadId(Request $r)
+    {
+        $user = Auth::user();
+
+        if ($user->verifications()->where(['type' => 'ID Card', 'status' => 'Waiting'])->exists()) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'ID Card verification already in progress'
+            ]);
+        }
+
+        if ($r->has('image')) {
+            $file = $r->image;
+            $folderPath = public_path('storage/idcards/');
+            $image_base64 = base64_decode($file);
+
+            $imageName = time() . uniqid() . '.png';
+            $imageFullPath = $folderPath . $imageName;
+
+            file_put_contents($imageFullPath, $image_base64);
+
+            Auth::user()->id_card = $imageName;
+            Auth::user()->save();
+
+            $user->verifications()->create([
+                'path' => $imageName,
+                'type' => 'ID Card',
+                'status' => 'Waiting'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => Auth::user(),
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Image file not present'
+            ]);
+        }
+    }
+
+    public function uploadAddress(Request $r)
+    {
+        $user = Auth::user();
+
+        if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Address verification already in progress'
+            ]);
+        }
+
+        if ($r->has('image')) {
+            $file = $r->image;
+            $folderPath = public_path('storage/idcards/');
+            $image_base64 = base64_decode($file);
+
+            $imageName = time() . uniqid() . '.png';
+            $imageFullPath = $folderPath . $imageName;
+
+            file_put_contents($imageFullPath, $image_base64);
+
+            Auth::user()->address_img = $imageName;
+            Auth::user()->save();
+
+            $user->verifications()->create([
+                'path' => $imageName,
+                'type' => 'Address',
+                'status' => 'Waiting'
+            ]);
 
             return response()->json([
                 'success' => true,
