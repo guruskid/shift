@@ -65,6 +65,11 @@ class NairaWalletController extends Controller
         $n->password = Hash::make($r->new_pin);
         $n->save();
 
+        if (Auth::user()->bitcoinWallet->count() > 0) {
+            Auth::user()->bitcoinWallet->password = Hash::make($r->new_pin);
+            Auth::user()->bitcoinWallet->save();
+        }
+
         return response()->json([
             'success' => true,
             'data' => $n,

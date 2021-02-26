@@ -21,6 +21,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
+            'user' => Auth::user(),
             'assets_transactions' => $transactions,
             'naira_wallet' => $naira_wallet,
             'naira_wallet_transactions' => $naira_wallet_transactions,
