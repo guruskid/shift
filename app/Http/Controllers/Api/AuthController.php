@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Account;
 use App\Bank;
+use App\BitcoinWallet;
 use App\Country;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,9 +13,11 @@ use Illuminate\Support\Facades\Validator;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\DantownNotification;
+use App\NairaWallet;
 use App\Notification;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Mail;
+use RestApis\Blockchain\Constants;
 
 class AuthController extends Controller
 {
@@ -59,6 +62,7 @@ class AuthController extends Controller
             ], 401);
         }
         $input = $request->all();
+        $username = \Str::lower($input['username']);
 
         $user = User::create([
             'first_name' => ' ',
@@ -72,6 +76,53 @@ class AuthController extends Controller
         ]);
         $auth_user = User::find($user->id);
         $success['token'] = $user->createToken('appToken')->accessToken;
+        $password = '';
+
+        NairaWallet::create([
+            'user_id' => $user->id,
+            'account_number' => time(),
+            'account_name' => $username,
+            'bank_name' => 'Dantown',
+            'bank_code' => '000000',
+            'amount' => 0,
+            'password' => $password,
+            'amount_control' => 'VARIABLE',
+        ]);
+
+        try {
+            $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
+
+            $primary_wallet = BitcoinWallet::where(['user_id' => 1, 'primary_wallet_id' => 0])->first();
+            $result = $instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, 1);
+
+            $wallet = new BitcoinWallet();
+            $address = $result->payload->addresses[0];
+            $wallet->user_id = $user->id;
+            $wallet->path = $address->path;
+            $wallet->address = $address->address;
+            $wallet->type = 'secondary';
+            $wallet->name = $username;
+            $wallet->password = $password;
+            $wallet->balance = 0.00000000;
+            $wallet->primary_wallet_id = $primary_wallet->id;
+            $wallet->save();
+
+            $callback = route('user.wallet-webhook');
+            $result = $instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, $wallet->address, 6);
+        } catch (\Exception  $e) {
+            report($e);
+            return $user;
+        }
+
+        $title = 'Bitcoin Wallet created';
+        $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';
+        $not = Notification::create([
+            'user_id' => $user->id,
+            'title' => $title,
+            'body' => $msg_body,
+        ]);
+
+
         return response()->json([
             'success' => true,
             'token' => $success,
@@ -276,16 +327,18 @@ class AuthController extends Controller
         Auth::user()->first_name = $request->account_name;
         Auth::user()->save();
 
+        return response()->json([
+            'success' => true,
+            'user' => Auth::user(),
+            'bank_accounts' => Auth::user()->accounts,
+            'naira_wallet' => Auth::user()->nairaWallet,
+        ]);
+
         if (Auth::user()->nairaWallet()->count() > 0) {
-            return response()->json([
-                'success' => true,
-                'user' => Auth::user(),
-                'bank_accounts' => Auth::user()->accounts,
-                'naira_wallet' => Auth::user()->nairaWallet,
-            ]);
+
         }
 
-        $callback = route('recieve-funds.callback');
+        /* $callback = route('recieve-funds.callback');
         $client = new Client();
         $url = env('RUBBIES_API') . "/createvirtualaccount";
 
@@ -336,7 +389,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => $body->responsemessage,
             ]);
-        }
+        } */
     }
 
     public function sendBvnOtp($bvn)

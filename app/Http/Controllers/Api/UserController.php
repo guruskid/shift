@@ -34,6 +34,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'data' => Auth::user(),
+            'bank_details' => Auth::user()->accounts()->first()
         ]);
     }
 
