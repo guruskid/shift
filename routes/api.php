@@ -19,15 +19,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('email/verify/{id}', 'VerificationController@verify')->name('verification.verify'); // Make sure to keep this as your route name
 
-Route::get('email/resend', 'VerificationController@resend')->name('verification.resend');
 
 Route::group(['prefix' => 'v1'], function () {
+
+
     Route::post('/register', 'Api\AuthController@register');
     Route::post('/login', 'Api\AuthController@login');
     Route::get('/banks', 'Api\AuthController@bankList' );
     Route::get('/countries', 'Api\AuthController@countries' );
 
     Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('email/resend', 'Api\VerificationController@resend')->name('verification.resend');
+        
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
