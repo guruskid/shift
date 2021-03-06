@@ -148,6 +148,12 @@ class UserController extends Controller
     {
         if (Auth::user()->phone_verified_at == null) {
 
+            if (Auth::user()->phone == null) {
+                $validator = Validator::make($request->all(), [
+                    'phone' => 'required|unique:users,phone,',
+                ]);
+            }
+
             $validator = Validator::make($request->all(), [
                 'phone' => 'required',
                 'otp' => 'required',
