@@ -7,6 +7,7 @@ use App\Bank;
 use App\Country;
 use App\Mail\DantownNotification;
 use App\Notification;
+use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -85,7 +86,15 @@ class HomeController extends Controller
     //send OTP for old users
     public function sendOtp($phone, $country_id)
     {
-        if(strlen($phone) > 10 ){
+        if (Auth::user()->phone == null) {
+           if (User::where('phone', $phone)->exists()) {
+            return response()->json([
+                'msg' => 'Phone number already in use'
+            ]);
+           }
+        }
+
+        if (strlen($phone) > 10) {
             return response()->json([
                 'msg' => 'Your phone number should be maximum of 10 digits and should not include the starting 0 digit'
             ]);
@@ -95,21 +104,21 @@ class HomeController extends Controller
         $country = Country::find($country_id);
         $full_num = $country->phonecode . $phone;
 
-            $response = $client->request('POST', $url, [
-                'json' => [
-                    'api_key' => env('TERMII_API_KEY'),
-                    "message_type" => "NUMERIC",
-                    "to" => $full_num,
-                    "from" => "N-Alert",
-                    "channel" => "dnd",
-                    "pin_attempts" => 4,
-                    "pin_time_to_live" =>  10,
-                    "pin_length" => 6,
-                    "pin_placeholder" => "< 1234 >",
-                    "message_text" => "Your Dantown confirmation code is < 1234 >, valid for 10 minutes, one-time use only",
-                    "pin_type" => "NUMERIC"
-                ],
-            ]);
+        $response = $client->request('POST', $url, [
+            'json' => [
+                'api_key' => env('TERMII_API_KEY'),
+                "message_type" => "NUMERIC",
+                "to" => $full_num,
+                "from" => "N-Alert",
+                "channel" => "dnd",
+                "pin_attempts" => 4,
+                "pin_time_to_live" =>  10,
+                "pin_length" => 6,
+                "pin_placeholder" => "< 1234 >",
+                "message_text" => "Your Dantown confirmation code is < 1234 >, valid for 10 minutes, one-time use only",
+                "pin_type" => "NUMERIC"
+            ],
+        ]);
         $body = json_decode($response->getBody()->getContents());
 
         if ($body->status == 200) {
@@ -211,6 +220,9 @@ class HomeController extends Controller
         ]);
         $s = Bank::where('code', $request->bank_code)->first();
         $err = 0;
+
+
+
 
         //verify phone
         if ($request->has('otp')) {
@@ -340,10 +352,10 @@ class HomeController extends Controller
         }
         $phone = '';
         if (strlen($body->phoneNumber) == 11) {
-            $phone = '234'. substr($body->phoneNumber, 1);
-        }elseif (strlen($body->phoneNumber) == 13) {
+            $phone = '234' . substr($body->phoneNumber, 1);
+        } elseif (strlen($body->phoneNumber) == 13) {
             $phone = $body->phoneNumber;
-        }else{
+        } else {
             $phone = $body->phoneNumber;
         }
 
