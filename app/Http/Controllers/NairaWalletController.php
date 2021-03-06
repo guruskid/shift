@@ -25,6 +25,15 @@ class NairaWalletController extends Controller
             'password' => 'required|string|confirmed|min:4|max:4'
         ]);
 
+        if (Auth::user()->username == null) {
+            $r->validate([
+                'username' => 'required|string'
+            ]);
+
+            Auth::user()->username = $r->username;
+            Auth::user()->save();
+        }
+
         if (Auth::user()->nairaWallet()->count() > 0) {
             return back()->with(['error' => 'You already own a naira wallet']);
         }
@@ -407,6 +416,7 @@ class NairaWalletController extends Controller
         if ($monthly_total >= Auth::user()->monthly_max) {
             return redirect()->back()->with(['error' => 'Monthly limit exceeded, please upgrade your account limits from the account settings page.']);
         }
+        dd('hollap');
 
         $n = Auth::user()->nairaWallet;
 

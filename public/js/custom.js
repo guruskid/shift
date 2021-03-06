@@ -53,12 +53,18 @@ $(document).ready(function () {
             data: formData,
             success: function (data) {
                 $("#s-b").hide();
-                if (data == true) {
+                if (data.success) {
                     swal('success', 'Bank Account added')
                     location.reload();
                 } else {
-                    swal('error', 'An error occured. Please reload and try again')
+                    swal('error', data.msg)
                 }
+            },
+            error: function (xhr, stat, err) {
+                console.log(err)
+                $("#s-b").hide();
+                swal('error', 'An error occured, please reload and try again');
+                console.log(err)
             }
         });
     });
@@ -146,14 +152,14 @@ function sendOtp() {
         return false;
     }
     otpText.text('sending . . .');
-    $.get('send-otp/' + phone + '/' + country_id)
+    $.get('/send-otp/' + phone + '/' + country_id)
         .done(function (res) {
             console.log(res);
             if (res['success']) {
                 otpText.text('Sent');
                 setTimeout(() => {
                     otpText.text('Resend');
-                }, 4000);
+                }, 50000);
                 swal('A new OTP has been sent to your provided number');
             } else {
                 swal(res['msg']);

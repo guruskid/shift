@@ -175,7 +175,7 @@
                                             <div class="user_profile_text text-center"
                                                 style="width: 30%;position:relative;left:25px;">
                                                 <div class="profile_verification_status_text" style="color: #00B9CD;">
-                                                    Verified
+                                                    {{ Auth::user()->phone_verified_at == null ? 'Not verified' : 'Verified' }}
                                                 </div>
                                             </div>
                                         </div>

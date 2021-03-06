@@ -30,7 +30,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                             <input type="text" id="username" name="username" required placeholder="Username"
                                 class="form-control col-11 mx-auto mx-md-0 col-lg-8" />
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mb-0">
                             <input type="email" name="email" required placeholder="Email"
                                 class="form-control col-11 mx-auto mx-md-0 col-lg-8">
                         </div>
@@ -42,7 +42,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                 @endforeach
                             </select>
                         </div> --}}
-                        <div class="input-group mb-0 number_inputgroup mx-auto mx-md-0" style="">
+                        {{-- <div class="input-group mb-0 number_inputgroup mx-auto mx-md-0" style="">
                             <div class="input-group-prepend"
                                 style="border: 1px solid rgba(0, 0, 112, 0.25);border-right:0px;border-top-left-radius:5px;border-bottom-left-radius:5px;">
                                 <select name="country_id" class="form-control">
@@ -55,7 +55,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                             <input type="tel" id="signup_phonenumber" min="1" maxlength="10" name="phone" autofocus
                                 placeholder="8141894420" class="form-control col-12" style="border-left: 0px;"
                                 pattern="[1-9]\d*" title="Number not starting with 0">
-                        </div>
+                        </div> --}}
                         <div class="form-group mb-0">
                             <span id="removeobscure_pwd" class="removeobscure_pwd"><img id="toggleshowpassword"
                                     src="{{asset('svg/obscure-password.svg')}}" /></span>

@@ -226,16 +226,18 @@
                         <option selected>Bank name</option>
                         @foreach (\App\Bank::all() as $bank)
                         <option value="{{$bank->code}}">{{$bank->name}}</option>
-                        @endforeach
+                    @endforeach
                     </select>
                     <div class="form-group mt-3">
                         <label for="">Account Number</label>
                         <input type="text" name="account_number" required class="form-control ">
-                    </div>
+                    </div>--}}
+                    @if (Auth::user()->username == null)
                     <div class="form-group">
-                        <label for="">Account Name</label>
-                        <input type="text" name="account_name" class="form-control" required>
-                    </div> --}}
+                        <label for="">Username</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+                    @endif
                     <div class="form-group">
                         <label for="">Wallet Password (4 digits)</label>
                         <input type="password" class="form-control " required name="password" minlength="4"
@@ -256,6 +258,6 @@
 </div>
 
 @endsection
- @section('scripts')
- <script src="{{asset('js/wallet.js')}} "></script>
- @endsection
+@section('scripts')
+<script src="{{asset('js/wallet.js')}} "></script>
+@endsection

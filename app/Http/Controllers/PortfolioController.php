@@ -28,7 +28,7 @@ class PortfolioController extends Controller
 
     public function nairaWallet()
     {
-
+        \Artisan::call('naira:limit');
         $n = Auth::user()->nairaWallet;
         if (!$n) {
             return redirect()->route('user.portfolio')->with(['error' => 'No Naira wallet associated to this account']);
@@ -38,7 +38,7 @@ class PortfolioController extends Controller
             return redirect()->route('user.dashboard')->with(['error' => 'Naia wallet currently froozen, please contact support for more info']);
         }
 
-        
+
 
         $banks = Bank::all();
         $nts = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->orderBy('id', 'desc')->with('transactionType')->paginate(5);

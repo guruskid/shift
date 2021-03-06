@@ -63,9 +63,9 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             /* 'name' => 'string|required', */
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'country_id' => 'required|integer',
+            /* 'country_id' => 'required|integer', */
             'username' => 'string|required|unique:users,username'
         ]);
     }
@@ -78,13 +78,13 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $country = Country::find($data['country_id']);
-        $phone = $country->phonecode . (int)$data['phone'];
+       /*  $country = Country::find($data['country_id']);
+        $phone = $country->phonecode . (int)$data['phone']; */
 
         $emailJob = (new RegistrationEmailJob($data['email']));
         dispatch($emailJob);
 
-        $client = new Client();
+        /* $client = new Client();
         $url = env('TERMII_SMS_URL') . "/otp/send";
 
         $response = $client->request('POST', $url, [
@@ -102,22 +102,33 @@ class RegisterController extends Controller
                 "pin_type" => "NUMERIC"
             ],
         ]);
-        $body = json_decode($response->getBody()->getContents());
+        $body = json_decode($response->getBody()->getContents()); */
         $username = \Str::lower($data['username']);
 
         $user =  User::create([
             'first_name' => ' ',
             'last_name' => ' ',
             'username' => $username,
-            'country_id' => $data['country_id'],
+            /* 'country_id' => $data['country_id'], */
             'email' => $data['email'],
-            'phone' => $data['phone'],
-            'phone_pin_id' => $body->pinId,
+            /* 'phone' => $data['phone'],
+            'phone_pin_id' => $body->pinId, */
             'password' => Hash::make($data['password']),
         ]);
 
 
         $password = '';
+
+        NairaWallet::create([
+            'user_id' => $user->id,
+            'account_number' => time(),
+            'account_name' => $username,
+            'bank_name' => 'Dantown',
+            'bank_code' => '000000',
+            'amount' => 0,
+            'password' => $password,
+            'amount_control' => 'VARIABLE',
+        ]);
 
         try {
             $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
@@ -154,16 +165,7 @@ class RegisterController extends Controller
 
         //Mail::to($user->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.bitcoin-wallet')));
 
-        NairaWallet::create([
-            'user_id' => $user->id,
-            'account_number' => time(),
-            'account_name' => $username,
-            'bank_name' => 'Dantown',
-            'bank_code' => '000000',
-            'amount' => 0,
-            'password' => $password,
-            'amount_control' => 'VARIABLE',
-        ]);
+
 
         return $user;
     }

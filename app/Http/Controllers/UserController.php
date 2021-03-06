@@ -23,6 +23,7 @@ use App\NairaWallet;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -33,7 +34,8 @@ class UserController extends Controller
         if (!Auth::user()->notificationsetting) {
             Auth::user()->notificationSetting()->create();
         }
-        $this->verificationProgress();
+        //$this->verificationProgress();
+        \Artisan::call('naira:limit');
         $s = Auth::user()->transactions->where('status', 'success')->count();
         $w = Auth::user()->transactions->where('status', 'waiting')->count();
         $p = Auth::user()->transactions->where('status', 'in progress')->count();
@@ -78,7 +80,7 @@ class UserController extends Controller
         return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
     }
 
-    public function verificationProgress()
+   /*  public function verificationProgress()
     {
         $v_progress = 0;
         if (Auth::user()->email_verified_at) {
@@ -131,7 +133,7 @@ class UserController extends Controller
         Auth::user()->save();
 
         return true;
-    }
+    } */
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)
@@ -144,6 +146,51 @@ class UserController extends Controller
 
     public function updateBank(Request $request)
     {
+        if (Auth::user()->phone_verified_at == null) {
+
+            $validator = Validator::make($request->all(), [
+                'phone' => 'required',
+                'otp' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'msg' => $validator->errors(),
+                ], 401);
+            }
+
+            try {
+                $client = new Client();
+                $url = env('TERMII_SMS_URL') . "/otp/verify";
+
+                $response = $client->request('POST', $url, [
+                    'json' => [
+                        'api_key' => env('TERMII_API_KEY'),
+                        "pin_id" => Auth::user()->phone_pin_id,
+                        "pin" => $request->otp
+                    ],
+                ]);
+                $body = json_decode($response->getBody()->getContents());
+
+                if (!$body->verified || $body->verified != 'true') {
+                    return response()->json([
+                        'success' => false,
+                        'msg' => 'Phone verification failed. Please request for a new OTP'
+                    ]);
+                }
+            } catch (\Exception $e) {
+                //report($e);
+                return response()->json([
+                    'success' => false,
+                    'msg' => 'Phone verification failed. Please request new OTP'
+                ]);
+            }
+
+            Auth::user()->phone_verified_at = now();
+            Auth::user()->save();
+
+            \Artisan::call('naira:limit');
+        }
 
         $a = new Account();
         $bank = Bank::where('code', $request->bank_code)->first();
@@ -152,11 +199,14 @@ class UserController extends Controller
         $a->bank_name = $bank->name;
         $a->bank_id = $bank->id;
         $a->account_number = $request->account_number;
+        $a->save();
 
         Auth::user()->first_name = $request->account_name;
         Auth::user()->save();
 
-        return response()->json($a->save());
+        return response()->json([
+            'success' => true,
+        ]);
     }
 
     public function getBank($id)
