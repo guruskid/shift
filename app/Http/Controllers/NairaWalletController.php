@@ -416,7 +416,7 @@ class NairaWalletController extends Controller
         if ($monthly_total >= Auth::user()->monthly_max) {
             return redirect()->back()->with(['error' => 'Monthly limit exceeded, please upgrade your account limits from the account settings page.']);
         }
-        dd('hollap');
+        
 
         $n = Auth::user()->nairaWallet;
 
