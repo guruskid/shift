@@ -269,7 +269,6 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                             </div>
                             <small>Number must not start with '0'.</small>
                         </div>
-                        @endif
 
                         <div class="col-md-12">
                             <div class="position-relative form-group">
@@ -277,6 +276,10 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                 <input type="nnumber" required class="form-control " name="otp">
                             </div>
                         </div>
+                        
+                        @endif
+
+
 
                     </div>
                     <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
