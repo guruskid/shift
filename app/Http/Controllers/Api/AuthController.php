@@ -73,8 +73,10 @@ class AuthController extends Controller
             /* 'phone' => $phone,
             'phone_pin_id' => $body->pinId, */
             'password' => Hash::make($input['password']),
-        ])->sendEmailVerificationNotification();
-        
+        ]);
+
+        $user->sendEmailVerificationNotification();
+
         $auth_user = User::find($user->id);
         $success['token'] = $user->createToken('appToken')->accessToken;
         $password = '';
