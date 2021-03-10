@@ -9,6 +9,7 @@ use App\User;
 class VerificationController extends Controller
 {
     public function verify($user_id, Request $request) {
+        return response()->json('we re here');
         if (!$request->hasValidSignature()) {
             return response()->json(["msg" => "Invalid/Expired url provided."], 401);
         }
