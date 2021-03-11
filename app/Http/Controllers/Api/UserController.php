@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTransaction;
 use App\Notification;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -205,6 +206,20 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'msg' => 'Image file not present'
+            ]);
+        }
+    }
+
+    public function checkPhone($phone)
+    {
+        if (User::where('phone', $phone)->exists()) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Phone number already in use'
+            ]);
+        }else{
+            return response()->json([
+                'success' => true
             ]);
         }
     }

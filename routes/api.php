@@ -28,9 +28,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/banks', 'Api\AuthController@bankList' );
     Route::get('/countries', 'Api\AuthController@countries' );
 
+    Route::get('/check-phone/{phone}', 'Api\UserController@checkPhone');
+
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('email/resend', 'Api\VerificationController@resend')->name('verification.resend');
-        
+
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
