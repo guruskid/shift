@@ -391,7 +391,7 @@ class BitcoinWalletController extends Controller
         }
 
         //Call autonated pay function
-        if ($t->amount < 1000 && $t->amount > 0) {
+        if ($t->amount < 49000 && $t->amount > 0) {
             $this->automatedPayment($t, $data['card_id'], $r->current_rate);
         }
 
