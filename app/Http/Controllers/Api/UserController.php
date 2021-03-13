@@ -169,8 +169,19 @@ class UserController extends Controller
         }
     }
 
-    public function uploadAddress(Request $r)
+    public function uploadAddress(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required',
+            'location' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
         $user = Auth::user();
 
         if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
@@ -180,35 +191,28 @@ class UserController extends Controller
             ]);
         }
 
-        if ($r->has('image')) {
-            $file = $r->image;
-            $folderPath = public_path('storage/idcards/');
-            $image_base64 = base64_decode($file);
+        $file = $request->image;
+        $folderPath = public_path('storage/idcards/');
+        $image_base64 = base64_decode($file);
 
-            $imageName = time() . uniqid() . '.png';
-            $imageFullPath = $folderPath . $imageName;
+        $imageName = time() . uniqid() . '.png';
+        $imageFullPath = $folderPath . $imageName;
 
-            file_put_contents($imageFullPath, $image_base64);
+        file_put_contents($imageFullPath, $image_base64);
 
-            Auth::user()->address_img = $imageName;
-            Auth::user()->save();
+        Auth::user()->address_img = $request->location;
+        Auth::user()->save();
 
-            $user->verifications()->create([
-                'path' => $imageName,
-                'type' => 'Address',
-                'status' => 'Waiting'
-            ]);
+        $user->verifications()->create([
+            'path' => $imageName,
+            'type' => 'Address',
+            'status' => 'Waiting'
+        ]);
 
-            return response()->json([
-                'success' => true,
-                'data' => Auth::user(),
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'msg' => 'Image file not present'
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'msg' => 'Adress uploaded'
+        ]);
     }
 
     public function checkPhone($phone)
@@ -218,7 +222,7 @@ class UserController extends Controller
                 'success' => false,
                 'msg' => 'Phone number already in use'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'success' => true
             ]);
