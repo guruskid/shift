@@ -257,10 +257,10 @@ class BitcoinWalletController extends Controller
 
     public function trade(Request $r)
     {
-        return response()->json([
+       /*  return response()->json([
             'success' => false,
             'msg' => 'balance is '. Auth::user()->bitcoinWallet->balance .' and amount is '. $r->quantity
-        ]);
+        ]); */
 
         $validator = Validator::make($r->all(), [
             'card_id' => 'required|integer',
@@ -276,6 +276,13 @@ class BitcoinWalletController extends Controller
                 'success' => false,
                 'message' => $validator->errors(),
             ], 401);
+        }
+
+        if ($r->amount < 3 ) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Minimum trade amount is $3'
+            ]);
         }
 
         if (!Auth::user()->bitcoinWallet) {
