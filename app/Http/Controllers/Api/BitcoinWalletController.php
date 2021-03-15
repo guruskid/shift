@@ -257,6 +257,12 @@ class BitcoinWalletController extends Controller
 
     public function trade(Request $r)
     {
+        if (!Auth::user()->nairaWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Something missing'
+            ]);
+        }
         $validator = Validator::make($r->all(), [
             'card_id' => 'required|integer',
             'type' => 'required|string',
@@ -287,7 +293,7 @@ class BitcoinWalletController extends Controller
             ]);
         }
 
-        if ($r->type == 'sell' && Auth::user()->bitcoinWallet->balance < ($r->quantity)) {
+        if ($r->type == 'sell' && Auth::user()->bitcoinWallet->balance < $r->quantity) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Insufficient Bitcoin wallet balance to initiate trade'
