@@ -158,7 +158,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Please create a Naira wallet to continue']);
         }
 
-        if ($data['type'] == 'sell' && Auth::user()->bitcoinWallet->balance < ($data['quantity'] /* + $charge */)) {
+        if ($data['type'] == 'sell' && Auth::user()->bitcoinWallet->balance < $data['quantity'] /* + $charge */) {
             return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
         }
 
