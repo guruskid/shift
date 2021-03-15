@@ -257,11 +257,11 @@ class BitcoinWalletController extends Controller
 
     public function trade(Request $r)
     {
-        return response()->json([
+       /*  return response()->json([
             'success' => false,
             'msg' => 'Something missing'
-        ]);
-        
+        ]); */
+
         $validator = Validator::make($r->all(), [
             'card_id' => 'required|integer',
             'type' => 'required|string',
