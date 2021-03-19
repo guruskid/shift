@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Validator;
 class NairaWalletController extends Controller
 {
     public function index(){
-        if (Auth::user()->nairaWallet->count() == 0) {
+        if (!Auth::user()->nairaWallet ) {
             return response()->json([
                 'success' => false,
                 'msg' => 'No Naira wallet for this account'
