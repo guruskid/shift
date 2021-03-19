@@ -14,7 +14,7 @@ Route::get('/rate/delete/{id}', 'RateController@deleteRate');
 Route::get('/index', 'CurrencyController@index')->name('admin.currency.index');
 
 Route::group(['middleware'=>'manager'], function(){
-    
+
 });
 
 Route::group(['middleware' => 'seniorAccountant'], function () {
@@ -55,5 +55,10 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges' )->name('admin.bitcoin.transfer-charges');
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
 
-
+    //Trade Naira
+    Route::prefix('trade-naira')->group(function () {
+        Route::get('/', 'TradeNairaController@index')->name('admin.trade-naira.index');
+        Route::post('/top-up', 'TradeNairaController@topup')->name('admin.trade-naira.topup');
+        Route::post('/deduct', 'TradeNairaController@deduct')->name('admin.trade-naira.deduct');
+    });
 });

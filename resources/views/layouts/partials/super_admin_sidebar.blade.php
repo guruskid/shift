@@ -26,6 +26,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.trade-naira.index' ? 'active' : '' }}  ">
+        <a href="{{route('admin.trade-naira.index')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="cash-outline"></ion-icon>
+                <span>Trade Naira <span class="badge badge-warning">New</span></span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
