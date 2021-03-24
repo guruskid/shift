@@ -193,7 +193,7 @@ class AuthController extends Controller
     public function verifyPhone(Request $r)
     {
         $data = $r->validate([
-            'phone' => 'required',
+            'required|unique:users,phone',
             'otp' => 'required',
         ]);
 
@@ -224,7 +224,7 @@ class AuthController extends Controller
             ]);
         }
 
-
+        Auth::user()->phone = $r->phone;
         Auth::user()->phone_verified_at = now();
         Auth::user()->save();
         \Artisan::call('naira:limit');
@@ -271,7 +271,7 @@ class AuthController extends Controller
         $body = json_decode($response->getBody()->getContents());
 
         if ($body->status == 200) {
-            Auth::user()->phone = $request->phone;
+
             Auth::user()->country_id = $request->country_id;
             Auth::user()->phone_pin_id = $body->pinId;
             Auth::user()->save();
