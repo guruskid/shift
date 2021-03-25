@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TradeController extends Controller
@@ -69,5 +70,61 @@ class TradeController extends Controller
             'reference' => $ref
         ]);
 
+    }
+
+    public function transactions()
+    {
+        $transactions = Auth::user()->nairaTrades;
+
+        return response()->json([
+            'success' => true,
+            'data' => $transactions
+        ]);
+    }
+
+
+    public function confirm(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'pin' => 'required',
+            'reference' => 'integer|required',
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $txn = NairaTrade::where('reference', $request->reference)->first();
+
+        if (!$txn) {
+            return response()->json([
+                'success' =>  false,
+                'msg' => 'Transaction not found'
+            ], 404);
+        }
+
+        $user = $txn->user;
+        $user_wallet = $user->nairaWallet;
+
+        if ($txn->status != 'waiting') {
+            return response()->json([
+                'success' =>  false,
+                'msg' => 'Invalid transactionn'
+            ]);
+        }
+
+        $user_wallet += $txn->amount;
+        $user_wallet->save();
+
+        $txn->status = 'success';
+        $txn->save();
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Transaction confirmed'
+        ]);
     }
 }

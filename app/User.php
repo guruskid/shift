@@ -97,4 +97,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Verification');
     }
+
+
+    public function nairaTrades()
+    {
+        return $this->hasMany(NairaTrade::class)->latest();
+    }
 }
