@@ -193,7 +193,7 @@ class AuthController extends Controller
     public function verifyPhone(Request $r)
     {
         $data = $r->validate([
-            'required|unique:users,phone',
+            'phone' => 'required|unique:users,phone',
             'otp' => 'required',
         ]);
 
