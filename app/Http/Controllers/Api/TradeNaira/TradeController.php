@@ -38,7 +38,7 @@ class TradeController extends Controller
 
         $agent = User::find($request->agent_id);
         $agent_wallet = $agent->nairaWallet;
-        $ref = Str::random(2).time();
+        $ref = \Str::random(3).time();
         if ($agent->role != 777) {
             return response()->json([
                 'success' =>  false,
