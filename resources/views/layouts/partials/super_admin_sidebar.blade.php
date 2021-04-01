@@ -74,6 +74,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
+        <a href="{{route('admin.user-verifications')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                <span>Users verification <span class="badge badge-warning">New</span></span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.cards' ? 'active' : '' }}">
         <a href="{{route('admin.cards')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -92,14 +101,7 @@
         </a>
     </li>
 
-    <li class="menu {{ Route::currentRouteName() == 'admin.verify' ? 'active' : '' }}">
-        <a href="{{route('admin.verify')}}" aria-expanded="false" class="dropdown-toggle" >
-            <div class="">
-                <ion-icon name="shield-checkmark-outline"></ion-icon>
-                <span>Verify Users</span>
-            </div>
-        </a>
-    </li>
+    
 
     <li class="menu {{ Route::currentRouteName() == 'admin.chat_agents' ? 'active' : '' }}">
         <a href="{{route('admin.chat_agents')}}" aria-expanded="false" class="dropdown-toggle" >

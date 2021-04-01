@@ -92,23 +92,7 @@
                     <i class="metismenu-icon pe-7s-cash"></i>
                     Bitcoin Wallet
                     <i class="metismenu-state-icon "></i>
-                </a>{{--
-                <ul>
-                    <li>
-                        <a href="{{route('admin.bitcoin-wallets')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.bitcoin-wallets' ? 'mm-active' : '' }} ">
-                            <i class="metismenu-icon"></i>
-                            All Wallets
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{route('admin.bitcoin-wallets-transactions')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'mm-active' : '' }} ">
-                            <i class="metismenu-icon">
-                            </i>All Wallet Transactions
-                        </a>
-                    </li>
-                </ul> --}}
+                </a>
             </li>
             @endif
 
@@ -152,10 +136,6 @@
 
             {{-- for Super Admin Only --}}
             @if (Auth::user()->role == 999 )
-
-
-
-
             <li class="my-3">
                 <a href="{{route('admin.notification')}}"
                     class=" {{ Route::currentRouteName() == 'admin.notification' ? 'mm-active' : '' }} ">
@@ -165,14 +145,12 @@
             </li>
 
             <li class="my-3">
-                <a href="{{route('admin.verify')}}"
-                    class=" {{ Route::currentRouteName() == 'admin.verify' ? 'mm-active' : '' }} ">
+                <a href="{{route('admin.user-verifications')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.user-verifications' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-user"></i>
-                    Verify Users
+                    Users' Verification
                 </a>
             </li>
-
-
 
                 <li class="my-3">
                     <a href="{{route('admin.accountants')}}"

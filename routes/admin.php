@@ -14,7 +14,7 @@ Route::get('/rate/delete/{id}', 'RateController@deleteRate');
 Route::get('/index', 'CurrencyController@index')->name('admin.currency.index');
 
 Route::group(['middleware'=>'manager'], function(){
-    
+
 });
 
 Route::group(['middleware' => 'seniorAccountant'], function () {
@@ -54,6 +54,10 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::get('/bitcoin-charges', 'BitcoinWalletController@charges')->name('admin.bitcoin.charges');
     Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges' )->name('admin.bitcoin.transfer-charges');
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
+});
 
-
+Route::group(['middleware' => ['accountant'] ], function () {
+    Route::get('/user-verification', 'UserController@verifications')->name('admin.user-verifications');
+    Route::put('/user-verification/{verification}', 'UserController@verify')->name('admin.verify');
+    Route::put('/cancel-verification/{verification}', 'UserController@cancelVerification')->name('admin.cancel-verification');
 });
