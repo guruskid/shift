@@ -79,7 +79,7 @@ class TradeController extends Controller
 
     public function transactions()
     {
-        $transactions = Auth::user()->nairaTrades;
+        $transactions = Auth::user()->nairaTrades()->with('pops')->get();
 
         return response()->json([
             'success' => true,
