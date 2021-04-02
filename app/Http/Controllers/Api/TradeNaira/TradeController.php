@@ -14,7 +14,7 @@ class TradeController extends Controller
 {
     public function agents()
     {
-        $agents = User::where(['role' => 777, 'status' => 'active'])->with('accounts')->get();
+        $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
         foreach ($agents as $a) {
             $a->successful = $a->agentNairaTrades()->where('status', 'success')->count();
             $a->declined = $a->agentNairaTrades()->where('status', 'failed')->count();
@@ -100,7 +100,7 @@ class TradeController extends Controller
                 'message' => $validator->errors(),
             ], 401);
         }
-        
+
         $txn = NairaTrade::find($r->transaction_id);
         if ($txn->user_id != Auth::user()->id) {
             return response()->json([
