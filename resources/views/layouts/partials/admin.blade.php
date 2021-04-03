@@ -124,6 +124,16 @@
             </li>
             @endif
 
+            @if (Auth::user()->role == 666)
+            <li class="my-3">
+                <a href="{{route('admin.user-verifications')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.user-verifications' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-user"></i>
+                    Users' Verification
+                </a>
+            </li>
+            @endif
+
             @if (in_array(Auth::user()->role, [999, 889, 777] ))
             <li class="my-3">
                 <a href="{{route('admin.users')}}"
@@ -152,13 +162,13 @@
                 </a>
             </li>
 
-                <li class="my-3">
-                    <a href="{{route('admin.accountants')}}"
-                        class=" {{ Route::currentRouteName() == 'admin.accountants' ? 'mm-active' : '' }} ">
-                        <i class="metismenu-icon pe-7s-users"></i>
-                        Accountants
-                    </a>
-                </li>
+            <li class="my-3">
+                <a href="{{route('admin.accountants')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.accountants' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Accountants
+                </a>
+            </li>
             @endif
 
             <li class="my-3">
