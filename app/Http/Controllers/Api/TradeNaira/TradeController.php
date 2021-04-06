@@ -72,7 +72,8 @@ class TradeController extends Controller
 
         return response()->json([
             'success' => true,
-            'reference' => $ref
+            'reference' => $ref,
+            'id' => $txn->id
         ]);
 
     }
