@@ -341,7 +341,7 @@
 <div class="modal fade  item-badge-rightm" id="update" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action=" {{route('admin.verify_user')}}" enctype="multipart/form-data">
+            <form method="POST" action=" {{-- {{route('admin.verify_user')}} --}}" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="modal-header">
                     <div class="media">
