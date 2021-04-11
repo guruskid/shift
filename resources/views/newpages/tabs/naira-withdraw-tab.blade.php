@@ -3,9 +3,9 @@
     <form action="{{ route('user.transfer') }}" method="post"> @csrf
         <input type="hidden" name="ref" value="{{ $ref }}">
         <input type="hidden" name="trans_type" value="2">
-        @if (Auth::user()->accounts->count() == 0)
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-bank-modal">Add Bank Account</button>
-        @endif
+        {{--  --}}
+        <a href="#" class="text-right" data-toggle="modal" data-target="#add-bank-modal">Add Bank Account</a>
+        {{--  --}}
         @foreach (Auth::user()->accounts as $a)
         <div class="px-2 px-lg-5 py-2 mb-2" style="border: 1px solid rgba(0, 0, 112, 0.25);border-radius: 5px;">
             <div class="custom-control custom-radio">
