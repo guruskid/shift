@@ -373,6 +373,7 @@ class NairaWalletController extends Controller
 
     public function transfer(Request $r)
     {
+        return back()->with(['error' => 'Service not available']);
         //Check If user owns a wallet
         if (Auth::user()->accounts->count() == 0) {
             return redirect()->back()->with(['error' => 'Please add account details to continue']);

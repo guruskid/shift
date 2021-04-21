@@ -305,6 +305,10 @@ class NairaWalletController extends Controller
 
     public function transfer(Request $r)
     {
+        return response()->json([
+            'success' => false,
+            'msg' => 'We are currently under maintenance'
+        ]);
         //Check If user owns a wallet
         if (Auth::user()->accounts->count() == 0) {
             return response()->json([

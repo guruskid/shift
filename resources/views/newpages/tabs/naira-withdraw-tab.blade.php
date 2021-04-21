@@ -48,6 +48,7 @@
             <label for="amount" style="color: #000070;">Pin</label>
             <input type="password" max="4" placeholder="- - - -" class="form-control" name="pin" >
         </div>
-        <button type="submit" class="btn text-white w-100 py-2 mt-3" style="background-color: #000070">Confirm</button>
+        <button type="submit" disabled class="btn text-white w-100 py-2 mt-3" style="background-color: #000070">Confirm</button>
+        <p class="text-primary">We are currently under maintenance</p>
     </form>
 </div>
