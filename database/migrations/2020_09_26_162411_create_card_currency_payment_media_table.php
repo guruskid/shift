@@ -23,7 +23,7 @@ class CreateCardCurrencyPaymentMediaTable extends Migration
             $table->timestamps();
         });
     }
-
+me
     /**
      * Reverse the migrations.
      *
