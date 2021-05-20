@@ -30,11 +30,11 @@ class BitcoinWalletController extends Controller
         $live_balance = 0; //get from api
         $transactions = BitcoinTransaction::latest()->paginate(200);
 
-       /*  $hd_wallets = BitcoinWallet::where('primary_wallet_id', 0)->get();
+        $hd_wallets = BitcoinWallet::where('primary_wallet_id', 0)->get();
         foreach ($hd_wallets as $wallet ) {
             $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_MAINNET, $wallet->name);
             $live_balance += $result->payload->totalBalance;
-        } */
+        }
 
 
         return view('admin.bitcoin_wallet.index', compact('charges', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
