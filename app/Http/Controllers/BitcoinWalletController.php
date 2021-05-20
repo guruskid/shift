@@ -166,9 +166,9 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
         }
 
-        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+        /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
-        }
+        } */
 
         //Check if the trade details are correct
 
@@ -318,10 +318,10 @@ class BitcoinWalletController extends Controller
             if ($user_btc_wallet->balance < ($transaction->quantity /* + $charge */)) {
                 return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance']);
             }
-            $user_btc_wallet->balance -= ($transaction->quantity /* + $charge */);
+            $user_btc_wallet->balance -= $transaction->quantity;
             $user_btc_wallet->save();
 
-            $primary_wallet->balance += $transaction->quantity;
+            $primary_wallet->balance += $transaction->quantity - $charge;
             $primary_wallet->save();
 
             $user_naira_wallet->amount += $transaction->amount_paid;
@@ -365,7 +365,7 @@ class BitcoinWalletController extends Controller
         if ($transaction->type == 'buy') {
             $btc_transaction->credit = ($transaction->quantity - $charge);
         } elseif ($transaction->type == 'sell') {
-            $btc_transaction->debit = ($transaction->quantity + $charge);
+            $btc_transaction->debit = ($transaction->quantity);
         }
         $btc_transaction->fee = 0;
         $btc_transaction->charge = $charge;
