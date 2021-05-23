@@ -177,7 +177,7 @@ class BitcoinWalletController extends Controller
         }
 
         //Add fees and Check balance
-        if ($total > $user_wallet->balance) {
+        if ($r->amount > $user_wallet->balance) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Insufficient Bitcoin Balance'
@@ -245,8 +245,8 @@ class BitcoinWalletController extends Controller
             $btc_transaction->save();
             //set the transaction status to failed
 
-            $charge_wallet->balance -= $charge;
-            $charge_wallet->save();
+            /* $charge_wallet->balance -= $charge;
+            $charge_wallet->save(); */
 
             return response()->json([
                 'success' => false,

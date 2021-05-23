@@ -407,7 +407,7 @@ class BitcoinWalletController extends Controller
         }
 
         //Add fees and Check balance
-        if ($total > $user_wallet->balance) {
+        if ($data['amount'] > $user_wallet->balance) {
             return back()->with(['error' => 'Insufficient balance']);
         }
 
