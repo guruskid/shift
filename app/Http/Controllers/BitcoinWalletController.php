@@ -227,6 +227,7 @@ class BitcoinWalletController extends Controller
         $data['user_id'] = Auth::user()->id;
         $data['card'] = Card::find($r->card_id)->name;
         $data['agent_id'] = $online_agent->id;
+        $data['card_price'] = $current_btc_rate;
 
         $t = Transaction::create($data);
 

@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Summary;
+use App\Transaction;
+
+class SummaryController extends Controller
+{
+    public function index()
+    {
+        $today = Summary::whereDate('created_at', now())->first();
+        if (!$today) {
+            Summary::create();
+        }
+        $summaries = Summary::orderBy('id')->paginate(30);
+
+        return view('admin.bitcoin_wallet.summary', compact('summaries'));
+    }
+
+    public function transactions(Summary $summary)
+    {
+        $sell_transactions = Transaction::where('card_id', 102)->where('type', 'sell')->whereDate('created_at', now())->get();
+        $sell_btc = $sell_transactions->sum('quantity');
+        $sell_usd = $sell_transactions->sum('amount');
+        try {
+            $sell_average = $sell_usd / $sell_btc;
+        } catch (\Throwable $th) {
+            $sell_average = 0;
+        }
+
+        $buy_transactions = Transaction::where('card_id', 102)->where('type', 'buy')->whereDate('created_at', now())->get();
+        $buy_btc = $buy_transactions->sum('quantity');
+        $buy_usd = $buy_transactions->sum('amount');
+        try {
+            $buy_average = $buy_usd / $buy_btc;
+        } catch (\Throwable $th) {
+            $buy_average = 0;
+        }
+
+        return view('admin.bitcoin_wallet.summary-txns', compact('buy_transactions', 'buy_btc', 'buy_usd', 'buy_average', 
+        'sell_transactions', 'sell_btc', 'sell_usd', 'sell_average'));
+    }
+}

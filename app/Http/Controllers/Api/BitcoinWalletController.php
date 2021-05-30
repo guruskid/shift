@@ -485,7 +485,7 @@ class BitcoinWalletController extends Controller
             $user_btc_wallet->balance -= ($transaction->quantity );
             $user_btc_wallet->save();
 
-            $primary_wallet->balance += $transaction->quantity;
+            $primary_wallet->balance += $transaction->quantity - $charge;
             $primary_wallet->save();
 
             $user_naira_wallet->amount += $transaction->amount_paid;
