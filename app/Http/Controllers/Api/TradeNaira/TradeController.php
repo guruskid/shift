@@ -18,6 +18,11 @@ class TradeController extends Controller
         foreach ($agents as $a) {
             $a->successful = $a->agentNairaTrades()->where('status', 'success')->count();
             $a->declined = $a->agentNairaTrades()->where('status', 'failed')->count();
+            if (!$a->agentLimits) {
+                $a->agentLimits()->create();
+            }
+            $a->min = $a->agentLimits->min;
+            $a->max = $a->agentLimits->max;
         }
 
         return response()->json([
@@ -50,11 +55,13 @@ class TradeController extends Controller
                 'msg' => 'Invalid agent'
             ]);
         }
+        $min = $agent->agentLimits->min;
+        $max = $agent->agentLimits->max;
 
-        if ($agent_wallet->amount < $request->amount) {
+        if ($request->amount < $min || $request->amount > $max ) {
             return response()->json([
                 'success' =>  false,
-                'msg' => 'Insufficient agent balance'
+                'msg' => 'Trade range not met'
             ]);
         }
 

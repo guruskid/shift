@@ -26,6 +26,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
+        <a href="{{route('admin.naira-p2p')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="logo-bitcoin"></ion-icon>
+                <span>Naira P2P</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">

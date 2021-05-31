@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
@@ -108,5 +109,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function agentNairaTrades(): HasMany
     {
         return $this->hasMany(NairaTrade::class, 'agent_id', 'id');
+    }
+
+    public function agentLimits(): HasOne
+    {
+        return $this->hasOne(AgentLimit::class);
     }
 }

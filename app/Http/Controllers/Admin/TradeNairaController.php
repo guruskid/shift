@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\NairaTrade;
 use App\NairaTransaction;
 use App\User;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,71 @@ class TradeNairaController extends Controller
         $users = User::where('role', 777)->get();
 
         return view('admin.trade_naira.index', compact('users'));
+    }
+
+
+    public function transactions()
+    {
+        if (!Auth::user()->agentLimits) {
+            Auth::user()->agentLimits()->create();
+        }
+
+        $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+
+        return view('admin.trade_naira.transactions', compact('transactions'));
+    }
+
+    public function setLimits(Request $request)
+    {
+        $data = $request->validate([
+            'min' => 'required|min:0',
+            'max' => 'required|min:0',
+        ]);
+
+        Auth::user()->agentLimits()->update($data);
+
+        return back()->with(['success' => 'Limits uppdated']);
+    }
+
+    public function confirm(Request $request, NairaTrade $transaction)
+    {
+        if (!Hash::check($request->pin, Auth::user()->nairaWallet->password)) {
+            return back()->with(['error' => 'Incorrect pin']);
+        }
+
+        $user = $transaction->user;
+        $user_wallet = $transaction->user->nairaWallet;
+
+        if ($transaction->status != 'waiting') {
+            return back()->with(['error' => 'Invalid transaction']);
+        }
+        $user_wallet->amount += $transaction->amount;
+        $user_wallet->save();
+
+
+        $nt = new NairaTransaction();
+        $nt->reference = $transaction->reference;
+        $nt->amount = $transaction->amount;
+        $nt->user_id = $user->id;
+        $nt->type = 'naira wallet';
+        $nt->previous_balance = $user_wallet->amount;
+        $nt->current_balance = $user_wallet->amount + $transaction->amount;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 1;
+        $nt->cr_wallet_id = $user_wallet->id;
+        $nt->cr_acct_name = $user->first_name;
+        $nt->narration = 'Deposit ' . $transaction->reference;
+        $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+        $nt->cr_user_id = $user->id;
+        $nt->dr_user_id = 1;
+        $nt->status = 'success';
+        $nt->save();
+        //dd($user_wallet);
+
+        $transaction->status = 'success';
+        $transaction->save();
+
+        return back()->with(['success' => 'Transaction confirmed']);
     }
 
     public function topup(Request $request)

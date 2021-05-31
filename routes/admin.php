@@ -60,5 +60,9 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::get('/', 'TradeNairaController@index')->name('admin.trade-naira.index');
         Route::post('/top-up', 'TradeNairaController@topup')->name('admin.trade-naira.topup');
         Route::post('/deduct', 'TradeNairaController@deduct')->name('admin.trade-naira.deduct');
+
+        Route::get('/transactions', 'TradeNairaController@transactions')->name('admin.naira-p2p');
+        Route::post('/set-limits', 'TradeNairaController@setLimits')->name('admin.naira-p2p.set-limits');
+        Route::put('/confirm/{transaction}', 'TradeNairaController@confirm')->name('admin.naira-p2p.confirm');
     });
 });
