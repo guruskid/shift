@@ -58,8 +58,9 @@ class SummaryController extends Controller
         $wallets = BitcoinWallet::all();
 
         foreach ($wallets as $wallet) {
-            $wallet->in = $wallet->transactions->sum('credit');
-            $wallet->out = $wallet->transactions->sum('debit');
+            $transactions = $wallet->transactions()->where('status', 'success')->get();
+            $wallet->in = $transactions->sum('credit');
+            $wallet->out = $transactions->sum('debit');
 
             $wallet->lbal = $wallet->in - $wallet->out;
             $wallet->diff = 0;
