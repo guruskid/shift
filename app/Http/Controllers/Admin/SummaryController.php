@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\BitcoinWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Summary;
@@ -40,7 +41,30 @@ class SummaryController extends Controller
             $buy_average = 0;
         }
 
-        return view('admin.bitcoin_wallet.summary-txns', compact('buy_transactions', 'buy_btc', 'buy_usd', 'buy_average', 
-        'sell_transactions', 'sell_btc', 'sell_usd', 'sell_average'));
+        return view('admin.bitcoin_wallet.summary-txns', compact(
+            'buy_transactions',
+            'buy_btc',
+            'buy_usd',
+            'buy_average',
+            'sell_transactions',
+            'sell_btc',
+            'sell_usd',
+            'sell_average'
+        ));
+    }
+
+    public function ledgerBalance()
+    {
+        $wallets = BitcoinWallet::all();
+
+        foreach ($wallets as $wallet) {
+            $wallet->in = $wallet->transactions->sum('credit');
+            $wallet->out = $wallet->transactions->sum('debit');
+
+            $wallet->lbal = $wallet->in - $wallet->out;
+            $wallet->diff = 0;
+        }
+
+        return view('admin.bitcoin_wallet.wallet_balances', compact('wallets'));
     }
 }
