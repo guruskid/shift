@@ -63,7 +63,7 @@ class SummaryController extends Controller
             $wallet->out = $transactions->sum('debit');
 
             $wallet->lbal = $wallet->in - $wallet->out;
-            $wallet->diff = 0;
+            $wallet->diff = $wallet->balance - $wallet->lbal;
         }
 
         return view('admin.bitcoin_wallet.wallet_balances', compact('wallets'));
