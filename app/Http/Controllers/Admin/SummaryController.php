@@ -23,7 +23,8 @@ class SummaryController extends Controller
 
     public function transactions(Summary $summary)
     {
-        $sell_transactions = Transaction::where('card_id', 102)->where('type', 'sell')->whereDate('created_at', now())->get();
+        $date = $summary->created_at;
+        $sell_transactions = Transaction::where('card_id', 102)->where('type', 'sell')->whereDate('created_at', $date)->get();
         $sell_btc = $sell_transactions->sum('quantity');
         $sell_usd = $sell_transactions->sum('amount');
         try {
@@ -32,7 +33,7 @@ class SummaryController extends Controller
             $sell_average = 0;
         }
 
-        $buy_transactions = Transaction::where('card_id', 102)->where('type', 'buy')->whereDate('created_at', now())->get();
+        $buy_transactions = Transaction::where('card_id', 102)->where('type', 'buy')->whereDate('created_at', $date)->get();
         $buy_btc = $buy_transactions->sum('quantity');
         $buy_usd = $buy_transactions->sum('amount');
         try {
