@@ -16,7 +16,7 @@ class SummaryController extends Controller
         if (!$today) {
             Summary::create();
         }
-        $summaries = Summary::orderBy('id')->paginate(30);
+        $summaries = Summary::orderBy('id', 'desc')->paginate(30);
 
         return view('admin.bitcoin_wallet.summary', compact('summaries'));
     }
