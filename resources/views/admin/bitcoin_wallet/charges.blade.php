@@ -112,13 +112,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="">Buy bitcoin charge</label>
+                                <label for="">Buy bitcoin charge (%)</label>
                                 <input type="number" step="any" name="bitcoin_buy_charge"
                                     value="{{ $bitcoin_buy_charge->value ?? '' }}" class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <label for="">Sell bitcoin charge</label>
+                                <label for="">Sell bitcoin charge (%)</label>
                                 <input type="number" step="any" name="bitcoin_sell_charge"
                                     value="{{ $bitcoin_sell_charge->value ?? '' }}" class="form-control">
                             </div>

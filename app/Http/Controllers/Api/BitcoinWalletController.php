@@ -434,6 +434,7 @@ class BitcoinWalletController extends Controller
 
         if ($transaction->type == 'buy') {
             $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
+            $charge = ($charge /100) * $transaction->quantity;
             /* Cross Check Balance */
             if ($user_naira_wallet->amount < $transaction->amount_paid) {
                 return response()->json([
@@ -475,6 +476,7 @@ class BitcoinWalletController extends Controller
             $primary_wallet->save();
         } elseif ($transaction->type == 'sell') {
             $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+            $charge = ($charge /100) * $transaction->quantity;
             $btc_txn_type = 20;
             if ($user_btc_wallet->balance < ($transaction->quantity )) {
                 return response()->json([
