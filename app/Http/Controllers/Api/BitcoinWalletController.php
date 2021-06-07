@@ -355,6 +355,7 @@ class BitcoinWalletController extends Controller
 
         //Convert the charge to naira and subtract it from the amount paid
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+        $charge = ($charge /100) * $transaction->quantity;
         $charge_ngn = $charge * $r->current_rate * $trade_rate;
 
         if ($r->amount_paid != $trade_ngn || $r->quantity != $trade_btc) {
