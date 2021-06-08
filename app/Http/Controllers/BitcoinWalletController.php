@@ -144,9 +144,11 @@ class BitcoinWalletController extends Controller
 
         ]);
 
+        if ($r->type == 'buy') {
+            return back()->with(['error' => 'Currently not available']);
+        }
 
-
-        if ($data['amount'] < 3 ) {
+        if ($data['amount'] < 3) {
             return back()->with(['error' => 'Minimum trade amount is $3']);
         }
 
@@ -208,14 +210,14 @@ class BitcoinWalletController extends Controller
 
         //Convert the charge t naira and subtract it from the amount paid
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
-        $charge = ($charge /100) * $data['quantity'];
+        $charge = ($charge / 100) * $data['quantity'];
         $charge_ngn = $charge * $r->current_rate * $trade_rate;
 
         if ($data['amount_paid'] != $trade_ngn || $data['quantity'] != $trade_btc) {
             return back()->with(['error' => 'Incorrect trade parameters, trade has been declined']);
         }
 
-        if($data['type'] == 'sell') {
+        if ($data['type'] == 'sell') {
             //Deduct the charge from the tranaction amount_paid
             $data['amount_paid'] -=  $charge_ngn;
         }
@@ -278,7 +280,7 @@ class BitcoinWalletController extends Controller
 
         if ($transaction->type == 'buy') {
             $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
-            $charge = ($charge /100) * $transaction->quantity;
+            $charge = ($charge / 100) * $transaction->quantity;
             /* Cross Check Balance */
             if ($user_naira_wallet->amount < $transaction->amount_paid) {
                 return redirect()->back()->with(['error' => 'Insufficient Naira wallet balance to complete trade']);
@@ -317,7 +319,7 @@ class BitcoinWalletController extends Controller
             $primary_wallet->save();
         } elseif ($transaction->type == 'sell') {
             $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
-            $charge = ($charge /100) * $transaction->quantity;
+            $charge = ($charge / 100) * $transaction->quantity;
             $btc_txn_type = 20;
             if ($user_btc_wallet->balance < ($transaction->quantity /* + $charge */)) {
                 return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance']);
@@ -388,6 +390,9 @@ class BitcoinWalletController extends Controller
 
     public function send(Request $r)
     {
+
+        return back()->with(['error' => 'Currently not available']);
+
         $data = $r->validate([
             'amount' => 'required|numeric',
             'address' => 'required|string',
