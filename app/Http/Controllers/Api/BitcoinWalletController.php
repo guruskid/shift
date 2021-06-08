@@ -141,6 +141,13 @@ class BitcoinWalletController extends Controller
 
     public function send(Request $r)
     {
+        if (!Auth::user()->bitcoinWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Currently not available'
+            ]);
+        }
+
         $validator = Validator::make($r->all(), [
             'amount' => 'required|numeric',
             'address' => 'required|string',
