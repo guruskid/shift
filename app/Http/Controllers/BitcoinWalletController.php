@@ -183,14 +183,17 @@ class BitcoinWalletController extends Controller
         $current_btc_rate = $res->bitcoin->usd;
 
         #confirm id the difference is less than $10 before assigning
-        $abs = abs($current_btc_rate - $r->current_rate);
-        if ($abs >= 10) {
-            return back()->with(['error' => 'Network busy, please try again']);
-        }
+
 
         $trade_rate = 0;
 
         if ($data['type'] == 'buy') {
+            $current_btc_rate = $current_btc_rate + 503;
+            $abs = abs($current_btc_rate - $r->current_rate);
+            if ($abs >= 10) {
+                return back()->with(['error' => 'Network busy, please try again']);
+            }
+
             if (Auth::user()->v_progress < 50) {
                 return back()->with(['error' => 'Please upgrade your account to start buying Bitcoin']);
             }
@@ -199,6 +202,12 @@ class BitcoinWalletController extends Controller
             $trade_rate = json_decode($buy->pivot->payment_range_settings);
             $trade_rate = $trade_rate[0]->rate;
         } else {
+            $current_btc_rate = $current_btc_rate - 603;
+            $abs = abs($current_btc_rate - $r->current_rate);
+            if ($abs >= 10) {
+                return back()->with(['error' => 'Network busy, please try again']);
+            }
+
             $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
             $trade_rate = json_decode($sell->pivot->payment_range_settings);
             $trade_rate = $trade_rate[0]->rate;

@@ -109,11 +109,11 @@
                                             cryptocurrency in less than a minute</div>
 
                                         {{-- Sell Bitcoin --}}
-                                       <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}" ></bitcoin-sell-component>
+                                       <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time - 603 }}" :card_id="{{ $card->id }}" ></bitcoin-sell-component>
 
 
                                         {{-- Buy --}}
-                                        <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
+                                        <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time + 503 }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
 
                                     </div>
                                 </div>
