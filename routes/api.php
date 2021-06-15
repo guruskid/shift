@@ -38,6 +38,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/logout', 'Api\AuthController@logout');
 
         Route::post('/send-otp', 'Api\AuthController@sendOtp');
+        Route::post('/resend-otp', 'Api\AuthController@resendOtp');
         Route::post('/verify-phone', 'Api\AuthController@verifyPhone');
 
         //BVN verification

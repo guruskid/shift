@@ -33,23 +33,23 @@ class VerificationController extends Controller
             'status' => 'Waiting'
         ]);
 
-        return redirect()->back()->with(['success' => 'Id card uploaded, please hold on while we verify your account']);
+        return back()->with(['success' => 'Id card uploaded, please hold on while we verify your account']);
     }
 
 
     public function uploadAddress(Request $request)
     {
         $this->validate($request, [
-            'address' => 'image|mimes:jpeg,JPEG,png,jpg|max:5048|required',
+            'address' => 'required',
             'location' => 'required',
 
         ]);
         $user = Auth::user();
-
         if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
             return back()->with(['error' => 'Address verification already in progress']);
+            dd('hi ');
         }
-
+        
         $file = $request->address;
         $extension = $file->getClientOriginalExtension();
         $filenametostore =  $user->email . uniqid(). '.' . $extension;
@@ -62,7 +62,8 @@ class VerificationController extends Controller
             'type' => 'Address',
             'status' => 'Waiting'
         ]);
-
-        return redirect()->back()->with(['success' => 'Address uploaded, please hold on while we verify your account']);
+        
+        
+        return back()->with(['success' => 'Address uploaded, please hold on while we verify your account']);
     }
 }

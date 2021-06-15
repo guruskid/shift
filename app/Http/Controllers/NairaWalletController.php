@@ -132,6 +132,11 @@ class NairaWalletController extends Controller
         $n->password = Hash::make($request->new_password);
         $n->save();
 
+        if (Auth::user()->bitcoinWallet) {
+            Auth::user()->bitcoinWallet->password = Hash::make($request->new_password);
+            Auth::user()->bitcoinWallet->save();
+        }
+
         return redirect()->back()->with("success", "Password changed");
     }
 
@@ -368,6 +373,7 @@ class NairaWalletController extends Controller
 
     public function transfer(Request $r)
     {
+        
         //Check If user owns a wallet
         if (Auth::user()->accounts->count() == 0) {
             return redirect()->back()->with(['error' => 'Please add account details to continue']);
@@ -416,7 +422,7 @@ class NairaWalletController extends Controller
         if ($monthly_total >= Auth::user()->monthly_max) {
             return redirect()->back()->with(['error' => 'Monthly limit exceeded, please upgrade your account limits from the account settings page.']);
         }
-        
+
 
         $n = Auth::user()->nairaWallet;
 

@@ -193,7 +193,7 @@ class AuthController extends Controller
     public function verifyPhone(Request $r)
     {
         $data = $r->validate([
-            'phone' => 'required',
+            'phone' => 'required|unique:users,phone',
             'otp' => 'required',
         ]);
 
@@ -224,7 +224,7 @@ class AuthController extends Controller
             ]);
         }
 
-
+        Auth::user()->phone = $r->phone;
         Auth::user()->phone_verified_at = now();
         Auth::user()->save();
         \Artisan::call('naira:limit');
@@ -238,7 +238,7 @@ class AuthController extends Controller
     public function sendOtp(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required',
+            'phone' => 'required|unique:users,phone',
             'country_id' => 'required',
         ]);
         if ($validator->fails()) {
@@ -271,7 +271,7 @@ class AuthController extends Controller
         $body = json_decode($response->getBody()->getContents());
 
         if ($body->status == 200) {
-            Auth::user()->phone = $request->phone;
+
             Auth::user()->country_id = $request->country_id;
             Auth::user()->phone_pin_id = $body->pinId;
             Auth::user()->save();
@@ -281,6 +281,45 @@ class AuthController extends Controller
             ]);
         }
         return response()->json([
+            'msg' => 'An error occured while resending OTP, please try again'
+        ]);
+    }
+
+    public function resendOtp()
+    {
+        $phone = Auth::user()->phone;
+        $full_num = Auth::user()->country_id . $phone;
+
+        $client = new Client();
+        $url = env('TERMII_SMS_URL') . "/otp/send";
+
+        $response = $client->request('POST', $url, [
+            'json' => [
+                'api_key' => env('TERMII_API_KEY'),
+                "message_type" => "NUMERIC",
+                "to" => $full_num,
+                "from" => "N-Alert",
+                "channel" => "dnd",
+                "pin_attempts" => 4,
+                "pin_time_to_live" =>  10,
+                "pin_length" => 6,
+                "pin_placeholder" => "< 1234 >",
+                "message_text" => "Your Dantown confirmation code is < 1234 >, valid for 10 minutes, one-time use only",
+                "pin_type" => "NUMERIC"
+            ],
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+
+        if ($body->status == 200) {
+            Auth::user()->phone_pin_id = $body->pinId;
+            Auth::user()->save();
+
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+        return response()->json([
+            'success' => false,
             'msg' => 'An error occured while resending OTP, please try again'
         ]);
     }

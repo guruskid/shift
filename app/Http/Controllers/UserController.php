@@ -80,60 +80,6 @@ class UserController extends Controller
         return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
     }
 
-   /*  public function verificationProgress()
-    {
-        $v_progress = 0;
-        if (Auth::user()->email_verified_at) {
-            $v_progress += 25;
-        }
-        if (Auth::user()->phone_verified_at) {
-            $v_progress += 25;
-        }
-        if (Auth::user()->address_verified_at) {
-            $v_progress += 25;
-        }
-        if (Auth::user()->idcard_verified_at) {
-            $v_progress += 25;
-        }
-
-        Auth::user()->v_progress = $v_progress;
-
-        switch ($v_progress) {
-            case 25:
-                Auth::user()->daily_max = 0;
-                Auth::user()->monthly_max = 0;
-                Auth::user()->save();
-                break;
-
-            case 50:
-                Auth::user()->daily_max = 500000;
-                Auth::user()->monthly_max = 5000000;
-                Auth::user()->save();
-                break;
-
-            case 75:
-                Auth::user()->daily_max = 2000000;
-                Auth::user()->monthly_max = 60000000;
-                Auth::user()->save();
-                break;
-
-            case 100:
-                Auth::user()->daily_max = 10000000;
-                Auth::user()->monthly_max = 99000000;
-                Auth::user()->save();
-                break;
-
-            default:
-                Auth::user()->daily_max = 30000;
-                Auth::user()->monthly_max = 300000;
-                Auth::user()->save();
-                break;
-        }
-
-        Auth::user()->save();
-
-        return true;
-    } */
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)
@@ -261,7 +207,7 @@ class UserController extends Controller
         Auth::user()->v_progress = $v_progress;
         Auth::user()->save();
 
-        //$v_progress = 70;
+        \Artisan::call('naira:limit');
         return view('newpages.profile');
     }
 
@@ -513,12 +459,13 @@ class UserController extends Controller
     public function notifications(Request $request)
     {
         $month =  $request->input('month');
-        $notifications = DB::table('notifications')->when($month, function ($query,  $month) {
-            return $query->whereMonth('created_at','=',$month);
-        })->paginate(10);
+        if ($month) {
+            $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->paginate(10);
+        }else{
+            $notifications = Auth::user()->notifications()->paginate(10);
+        }
 
-        return view('newpages.notifications', compact('notifications'));
-        // return view('user.notifications', compact('notifications'));
+        return view('newpages.notifications', compact('notifications', 'month'));
     }
 
 

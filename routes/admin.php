@@ -14,7 +14,13 @@ Route::get('/rate/delete/{id}', 'RateController@deleteRate');
 Route::get('/index', 'CurrencyController@index')->name('admin.currency.index');
 
 Route::group(['middleware'=>'manager'], function(){
+<<<<<<< HEAD
 
+=======
+    Route::get('/user-verification', 'UserController@verifications')->name('admin.user-verifications');
+    Route::put('/user-verification/{verification}', 'UserController@verify')->name('admin.verify');
+    Route::put('/cancel-verification/{verification}', 'UserController@cancelVerification')->name('admin.cancel-verification');
+>>>>>>> 2c50de2c84ed8827a9934b04519e76f327ca79a0
 });
 
 Route::group(['middleware' => 'seniorAccountant'], function () {
@@ -37,6 +43,10 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::POST('/set-bitcoin-charge', 'BitcoinWalletController@setCharge')->name('admin.set-bitcoin-charge');
     Route::POST('/send-from-hd-wallet', 'BitcoinWalletController@sendFromHd')->name('admin.btc-hd-wallet.send');
 
+    Route::get('/bitcoin-summary', 'SummaryController@index')->name('admin.bitcoin-summary');
+    Route::get('/bitcoin-summary-txns/{summary}', 'SummaryController@transactions')->name('admin.bitcoin-summary-txns');
+    Route::get('/bitcoin-users-balance', 'SummaryController@ledgerBalance');
+
 });
 
 
@@ -54,6 +64,7 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::get('/bitcoin-charges', 'BitcoinWalletController@charges')->name('admin.bitcoin.charges');
     Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges' )->name('admin.bitcoin.transfer-charges');
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
+<<<<<<< HEAD
 
     //Trade Naira
     Route::prefix('trade-naira')->group(function () {
@@ -65,4 +76,6 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::post('/set-limits', 'TradeNairaController@setLimits')->name('admin.naira-p2p.set-limits');
         Route::put('/confirm/{transaction}', 'TradeNairaController@confirm')->name('admin.naira-p2p.confirm');
     });
+=======
+>>>>>>> 2c50de2c84ed8827a9934b04519e76f327ca79a0
 });

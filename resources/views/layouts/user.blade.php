@@ -471,7 +471,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                 order: [[0, 'desc'] ],
                 responsive: true
             });
-        }); */
+        }); */ 
 
     </script>
 
@@ -496,6 +496,28 @@ $naira_balance = Auth::user()->nairaWallet->amount;
         )
     </script>
     @endif
+
+    @php
+    $err_msg = '';
+    foreach ($errors->all() as $err ) {
+    $err_msg .= $err . '. ';
+    if (strlen(trim($err_msg)) > 0) {
+    echo '
+    <script>
+        swal({
+            title: "Ooops!",
+            text: "'.$err_msg .'",
+            icon: "error",
+            button: "OK",
+        });
+
+    </script>
+    ';
+
+
+    }
+    }
+    @endphp
 
 
 </body>

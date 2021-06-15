@@ -74,7 +74,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Txn Fee</label>
-                                        <input type="number"  name="fees"
+                                        <input type="number" step="any" name="fees"
                                             value="{{ $fees ?? '' }}" class="form-control">
                                     </div>
                                 </div>

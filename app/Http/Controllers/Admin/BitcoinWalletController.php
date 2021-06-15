@@ -150,6 +150,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Insufficient balance']);
         }
 
+        $c_old_balance = $charges_wallet->balance;
         $charges_wallet->balance -= $total;
         $charges_wallet->save();
 
@@ -161,7 +162,7 @@ class BitcoinWalletController extends Controller
         $btc_transaction->debit = $total;
         $btc_transaction->fee = $data['fees'];
         $btc_transaction->charge = 0;
-        $btc_transaction->previous_balance = $charges_wallet->getOriginal('balance');
+        $btc_transaction->previous_balance = $c_old_balance;
         $btc_transaction->current_balance = $charges_wallet->balance;
         $btc_transaction->transaction_type_id = 21;
         $btc_transaction->counterparty = $data['address'];
@@ -170,10 +171,11 @@ class BitcoinWalletController extends Controller
         $btc_transaction->status = 'pending';
         $btc_transaction->save();
 
+        $send_total = number_format((float)$data['amount'], 8);
         $outputs = new \RestApis\Blockchain\BTC\Snippets\Output();
         $input = new \RestApis\Blockchain\BTC\Snippets\Input();
-        $outputs->add($data['address'], $data['amount']);
-        $input->add($primary_wallet->address, $data['amount']);
+        $outputs->add($data['address'], $send_total);
+        $input->add($primary_wallet->address, $send_total);
 
         $fee = new \RestApis\Blockchain\BTC\Snippets\Fee();
         $fee->set($data['fees']);
@@ -189,7 +191,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['success' => 'Charges sent successfully']);
         } catch (\Exception $e) {
             report($e);
-            $charges_wallet->balance = $charges_wallet->getOriginal('balance');
+            $charges_wallet->balance = $c_old_balance;
             $charges_wallet->save();
 
             $btc_transaction->status = 'failed';
@@ -244,7 +246,7 @@ class BitcoinWalletController extends Controller
         $btc_transaction->debit = $total;
         $btc_transaction->fee = $data['fees'];
         $btc_transaction->charge = 0;
-        $btc_transaction->previous_balance = $primary_wallet->getOriginal('balance');
+        $btc_transaction->previous_balance = $old_balance;
         $btc_transaction->current_balance = $primary_wallet->balance;
         $btc_transaction->transaction_type_id = 21;
         $btc_transaction->counterparty = $data['address'];
@@ -363,6 +365,8 @@ class BitcoinWalletController extends Controller
         }
 
         /* Update User Balance */
+        $u_old_n_balance =  $user_naira_wallet->amount;
+        $u_old_b_balance = $user->bitcoinWallet->balance;
 
         if ($transaction->type == 'buy') {
             $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
@@ -376,6 +380,7 @@ class BitcoinWalletController extends Controller
             }
             $btc_txn_type = 19;
             /* Deduct cost from user naira wallet and create new naira wallet transaction */
+
             $user_naira_wallet->amount -= $transaction->amount_paid;
             $user_naira_wallet->save();
 
@@ -386,7 +391,7 @@ class BitcoinWalletController extends Controller
             $nt->amount = $transaction->amount_paid;
             $nt->user_id = $user->id;
             $nt->type = 'naira wallet';
-            $nt->previous_balance = $user_naira_wallet->getOriginal('amount');
+            $nt->previous_balance = $u_old_n_balance;
             $nt->current_balance = $user_naira_wallet->amount;
             $nt->charge = 0;
             $nt->transaction_type_id = 5;
@@ -415,7 +420,7 @@ class BitcoinWalletController extends Controller
             $user_btc_wallet->balance -= ($transaction->quantity /* + $charge */);
             $user_btc_wallet->save();
 
-            $primary_wallet->balance += $transaction->quantity;
+            $primary_wallet->balance += $transaction->quantity - $charge;
             $primary_wallet->save();
 
             $user_naira_wallet->amount += $transaction->amount_paid;
@@ -429,7 +434,7 @@ class BitcoinWalletController extends Controller
             $nt->amount = $transaction->amount_paid;
             $nt->user_id = $user->id;
             $nt->type = 'naira wallet';
-            $nt->previous_balance = $user_naira_wallet->getOriginal('amount');
+            $nt->previous_balance = $u_old_n_balance;
             $nt->current_balance = $user_naira_wallet->amount;
             $nt->charge = 0;
             $nt->transaction_type_id = 4;
@@ -460,11 +465,11 @@ class BitcoinWalletController extends Controller
         if ($transaction->type == 'buy') {
             $btc_transaction->credit = ($transaction->quantity - $charge);
         } elseif ($transaction->type == 'sell') {
-            $btc_transaction->debit = ($transaction->quantity + $charge);
+            $btc_transaction->debit = ($transaction->quantity);
         }
         $btc_transaction->fee = 0;
         $btc_transaction->charge = $charge;
-        $btc_transaction->previous_balance = $user_btc_wallet->getOriginal('balance');
+        $btc_transaction->previous_balance = $u_old_b_balance;
         $btc_transaction->current_balance = $user_btc_wallet->balance;
         $btc_transaction->transaction_type_id = $btc_txn_type;
         $btc_transaction->counterparty = 'Dantown Assets';
