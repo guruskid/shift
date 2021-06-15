@@ -148,8 +148,7 @@ class TradeController extends Controller
     public function confirm(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'pin' => 'required',
-            'reference' => 'integer|required',
+            'reference' => 'string|required',
 
         ]);
         if ($validator->fails()) {
@@ -159,7 +158,7 @@ class TradeController extends Controller
             ], 401);
         }
 
-        $txn = NairaTrade::where('reference', $request->reference)->first();
+        $txn = Auth::user()->nairaTrades()->where('reference', $request->reference)->first();
 
         if (!$txn) {
             return response()->json([
@@ -168,25 +167,51 @@ class TradeController extends Controller
             ], 404);
         }
 
-        $user = $txn->user;
-        $user_wallet = $user->nairaWallet;
 
         if ($txn->status != 'waiting') {
             return response()->json([
                 'success' =>  false,
-                'msg' => 'Invalid transactionn'
+                'msg' => 'Transaction already updated'
             ]);
         }
 
-        $user_wallet += $txn->amount;
-        $user_wallet->save();
 
-        $txn->status = 'success';
+        $txn->status = 'pending';
         $txn->save();
 
         return response()->json([
             'success' => true,
-            'msg' => 'Transaction confirmed'
+            'msg' => 'Transaction updated'
+        ]);
+    }
+
+    public function cancel(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'reference' => 'string|required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $txn = Auth::user()->nairaTrades()->where('reference', $request->reference)->first();
+
+        if (!$txn) {
+            return response()->json([
+                'success' =>  false,
+                'msg' => 'Transaction not found'
+            ], 404);
+        }
+
+        $txn->status = 'cancelled';
+        $txn->save();
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Transaction cancelled'
         ]);
     }
 }

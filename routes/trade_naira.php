@@ -7,4 +7,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/upload-pop', 'TradeController@upload');
 
     Route::post('/confirm_transaction', 'TradeController@confirm');
+    Route::post('/cancel_transaction', 'TradeController@cancel');
+
 });
