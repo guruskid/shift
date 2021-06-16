@@ -1,3 +1,8 @@
+@php
+    $banks = App\Bank::all();
+    $countries = App\Country::orderBy('phonecode', 'asc')->get();
+@endphp
+
 @extends('layouts.user')
 @section('content')
 <div class="app-main">
@@ -148,12 +153,16 @@
                                                 style="position:relative;left:1.7em;width: 14%;">Bank</div>
                                             <div class="" style="width:56%;">
                                                 <div class="d-flex" style="position: relative;left:35px;">
-                                                    {{ Auth::user()->accounts->first()->bank_name ?? 'No account' }}
+                                                    @if (Auth::user()->accounts->count() > 0)
+                                                    {{ Auth::user()->accounts->first()->bank_name }}
                                                     <div class="user_profile_text ml-4" style="font-size: 18px;">
                                                         <div style="font-size:16px;">Acc. No.
-                                                            {{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }}
+                                                            {{ Auth::user()->accounts->first()->account_number }}
                                                         </div>
                                                     </div>
+                                                    @else
+                                                    <button class="btn btn-sm btn-primary">Add Bank</button>
+                                                    @endif
                                                 </div>
                                             </div>
                                             <div class="user_profile_text text-center ml-5"
@@ -169,7 +178,11 @@
                                                 style="position:relative;left:1.7em;width: 14%;">Mobile No.</div>
                                             <div class="" style="width:56%;">
                                                 <div style="position: relative;left:35px;">
-                                                    {{ Auth::user()->phone }}
+                                                    @if (!Auth::user()->phone)
+                                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Phone</button>
+                                                    @else
+                                                        {{ Auth::user()->phone }}
+                                                    @endif
                                                 </div>
                                             </div>
                                             <div class="user_profile_text text-center"
@@ -529,12 +542,18 @@
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Bank</div>
                                         <div class="col-9">
-                                            {{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }},
-                                            {{ Auth::user()->accounts->first()->bank_name ?? 'No account' }}</div>
+
+                                            @if (Auth::user()->accounts->count() == 0)
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank</button>
+                                            @else
+                                                {{ Auth::user()->accounts->first()->account_number  }}
+                                                {{ Auth::user()->accounts->first()->bank_name }}
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Mobile No</div>
-                                        <div class="col-9">{{ Auth::user()->phone }}</div>
+                                        <div class="col-9"> {{ Auth::user()->phone }} </div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Status</div>
@@ -911,5 +930,83 @@
     </div>
 </div>
 
+{{-- Add bank account --}}
+<div class="modal fade  item-badge-rightm" id="add-bank-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="user-bank-details" class="mb-4">
+                    {{ csrf_field() }}
+                    <div class="form-row ">
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Bank Name</label>
+                                <select name="bank_code" class="form-control">
+                                    @foreach ($banks as $b)
+                                    <option value="{{$b->code}}">{{$b->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Account Number</label>
+                                <input type="text" required class="form-control" name="account_number">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Account Name</label>
+                                @if (Auth::user()->accounts->count() == 0)
+                                <input type="text" required class="form-control " name="account_name">
+                                @else
+                                <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="account_name">
+                                @endif
+                            </div>
+                        </div>
+
+                        @if (Auth::user()->phone_verified_at == null)
+                        <div class="col-md-12">
+                            <label for="">Phone Number</label>
+                            <div class="position-relative input-group mb-0 mx-auto mx-md-0" style="">
+                                <div class="input-group-prepend"
+                                    style="border: 1px solid rgba(0, 0, 112, 0.25);border-right:0px;border-top-left-radius:5px;border-bottom-left-radius:5px;">
+                                    <select name="country_id" id="country-id" class="form-control">
+                                        <option value="156">+234</option>
+                                        @foreach ($countries as $country)
+                                        <option value="{{ $country->id }}">+ {{ $country->phonecode }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <input type="tel" id="signup_phonenumber" min="1" maxlength="10" name="phone" value="{{ Auth::user()->phone ?? '' }}"
+                                    placeholder="8141894420" class="form-control col-12" style="border-left: 0px;"
+                                    pattern="[1-9]\d*" title="Number not starting with 0">
+                                <div class="input-group-prepend">
+                                    <button id="otp-text" type="button" onclick="sendOtp()" class="btn btn-outline-primary btn-block">Send OTP</button>
+                                </div>
+                            </div>
+                            <small>Number must not start with '0'.</small>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>OTP Code</label>
+                                <input type="nnumber" required class="form-control " name="otp">
+                            </div>
+                        </div>
+
+                        @endif
+
+
+
+                    </div>
+                    <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
+                        <i class="spinner-border spinner-border-sm" id="s-b" style="display: none;"></i>
+                        Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
