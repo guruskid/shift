@@ -50,9 +50,9 @@
 
             <div class="d-flex justify-content-around mb-2">
                 <span class="text-primary">Charges</span>
-                <span class="text-primary">{{ chargeBtc }}</span>
+                <span class="text-primary">{{ chargeBtc.toFixed(5) }}</span>
                 <span class="text-primary">{{ charge }}%</span>
-                <span class="text-primary">₦{{ chargeNgn.toLocaleString() }}</span>
+                <span class="text-primary">${{ chargeNgn.toLocaleString() }}</span>
             </div>
 
             <button class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
@@ -108,9 +108,8 @@
 
 
         updated () {
-            console.log(this.btc);
             this.chargeBtc = (this.charge/100) * this.btc
-            this.chargeNgn = this.chargeBtc * this.btcToUsd * this.usdToNaira
+            this.chargeNgn = this.chargeBtc * this.btcToUsd
         },
     }
 
