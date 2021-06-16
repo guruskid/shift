@@ -47,7 +47,7 @@
                             <i class="pe-7s-graph1 icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Transactions for 21 May 2021
+                        <div>Transactions
                         </div>
                     </div>
                 </div>
@@ -57,6 +57,17 @@
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
+                           <form action="{{ route('admin.bitcoin-summary-txns.sort') }}" method="post">@csrf
+                                <div class="form-inline mb-3">
+                                    <label class="mr-2">Start</label>
+                                    <input type="datetime-local" name="start" class="form-control mr-4">
+
+                                    <label class="mr-2">End</label>
+                                    <input type="datetime-local" name="end" class="form-control mr-4">
+
+                                    <button class="btn btn-primary">Sort</button>
+                                </div>
+                           </form>
                             <ul class="nav nav-tabs nav-justified">
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0"
                                         class="active nav-link">Sell Transactions</a></li>
@@ -111,8 +122,8 @@
                                                     <td>${{ number_format($sell_average) }}</td>
                                                 </tr>
                                             </tfoot>
-            
-            
+
+
                                         </table>
                                     </div>
                                 </div>
@@ -163,8 +174,8 @@
                                                     <td>${{ number_format($buy_average) }}</td>
                                                 </tr>
                                             </tfoot>
-            
-            
+
+
                                         </table>
                                     </div>
                                 </div>
@@ -177,7 +188,7 @@
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
-                            
+
                         </div>
                     </div>
                 </div>

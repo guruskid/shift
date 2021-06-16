@@ -54,6 +54,51 @@ class SummaryController extends Controller
         ));
     }
 
+    public function sortTransactions(Request $request)
+    {
+        $data = $request->validate([
+            'start' => 'required|date|string',
+            'end' => 'required|date|string',
+        ]);
+        //$transactions = Transaction::->paginate(200);
+        dd($data['start']);
+        $sell_transactions = Transaction::where('card_id', 102)->where('type', 'sell')
+        ->where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])
+        ->where('status', 'success')->get();
+
+
+        $sell_btc = $sell_transactions->sum('quantity');
+        $sell_usd = $sell_transactions->sum('amount');
+        try {
+            $sell_average = $sell_usd / $sell_btc;
+        } catch (\Throwable $th) {
+            $sell_average = 0;
+        }
+
+        $buy_transactions = Transaction::where('card_id', 102)->where('type', 'buy')
+        ->where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])
+        ->where('status', 'success')->get();
+
+        $buy_btc = $buy_transactions->sum('quantity');
+        $buy_usd = $buy_transactions->sum('amount');
+        try {
+            $buy_average = $buy_usd / $buy_btc;
+        } catch (\Throwable $th) {
+            $buy_average = 0;
+        }
+
+        return view('admin.bitcoin_wallet.summary-txns', compact(
+            'buy_transactions',
+            'buy_btc',
+            'buy_usd',
+            'buy_average',
+            'sell_transactions',
+            'sell_btc',
+            'sell_usd',
+            'sell_average'
+        ));
+    }
+
     public function ledgerBalance()
     {
         $wallets = BitcoinWallet::all();

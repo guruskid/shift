@@ -41,6 +41,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
     Route::get('/bitcoin-summary', 'SummaryController@index')->name('admin.bitcoin-summary');
     Route::get('/bitcoin-summary-txns/{summary}', 'SummaryController@transactions')->name('admin.bitcoin-summary-txns');
+    Route::post('/bitcoin-summary-txns/sort', 'SummaryController@sortTransactions')->name('admin.bitcoin-summary-txns.sort');
     Route::get('/bitcoin-users-balance', 'SummaryController@ledgerBalance');
 
 });
