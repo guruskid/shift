@@ -3524,8 +3524,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['rate', 'real_btc', 'card_id'],
+  props: ['rate', 'real_btc', 'card_id', 'charge'],
   data: function data() {
     return {
       csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -3533,6 +3541,8 @@ __webpack_require__.r(__webpack_exports__);
       naira: '',
       usd: '',
       btc: '',
+      chargeBtc: 0,
+      chargeNgn: 0,
       //rates
       btcToUsd: this.real_btc,
       usdToNaira: this.rate.sell[0].rate,
@@ -3562,6 +3572,11 @@ __webpack_require__.r(__webpack_exports__);
       this.btc = this.naira / this.btcToNaira;
       this.usd = this.naira / this.usdToNaira;
     }
+  },
+  updated: function updated() {
+    console.log(this.btc);
+    this.chargeBtc = this.charge / 100 * this.btc;
+    this.chargeNgn = this.chargeBtc * this.btcToUsd * this.usdToNaira;
   }
 });
 
@@ -52952,6 +52967,22 @@ var render = function() {
                   }
                 }
               })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "d-flex justify-content-around mb-2" }, [
+            _c("span", { staticClass: "text-primary" }, [_vm._v("Charges")]),
+            _vm._v(" "),
+            _c("span", { staticClass: "text-primary" }, [
+              _vm._v(_vm._s(_vm.chargeBtc))
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "text-primary" }, [
+              _vm._v(_vm._s(_vm.charge) + "%")
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "text-primary" }, [
+              _vm._v("₦" + _vm._s(_vm.chargeNgn.toLocaleString()))
             ])
           ]),
           _vm._v(" "),
