@@ -168,8 +168,8 @@
                                         <td>{{$t->debit == 0 ? '--' : number_format((float)$t->debit, 8) }} </td>
                                         <td>{{number_format((float)$t->fee, 8) }} </td>
                                         <td>{{number_format((float)$t->charge, 8) }} </td>
-                                        <td>{{number_format((float)$t->previous_balance, 8) }} </td>
-                                        <td>{{number_format((float)$t->current_balance, 8) }} </td>
+                                        <td>{{number_format($t->previous_balance) }} </td>
+                                        <td>{{number_format($t->current_balance) }} </td>
                                         <td>{{$t->counterparty}} </td>
                                         <td>{{$t->confirmations}} </td>
                                         <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
