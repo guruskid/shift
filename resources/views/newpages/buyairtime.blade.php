@@ -116,7 +116,7 @@
                                             <form action="{{ route('user.airtime') }}" method="post" class="disable-form"> @csrf
                                                 <input type="hidden" id="airtimechoice" name="network" value="">
                                                 <input type="hidden" name="reference"
-                                                    value="{{ \Str::random(2) . time() }}">
+                                                    value="{{ \Str::random(6) . time() }}">
                                                 <div
                                                     class="d-flex flex-column align-items-center justify-content-around">
                                                     <div class="d-flex flex-column flex-md-row">
