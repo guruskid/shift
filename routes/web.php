@@ -95,7 +95,22 @@ Route::get('/newlogin', function () {
 //mobile and tab done
 Route::get('/newsignup', function () {
     return view('newpages.newsignup');
+
 });
+
+//buy airtime with bitcoin
+Route::get('/bitcoin-airtime', function () {
+    $card = Card::find(102); $rates = $card->currency-> first();
+    $sell = CardCurrency::where([
+            'card_id' => 102,
+            'currency_id' => $rates->id,
+            'buy_sell' => 2])->first()->paymentMediums()->first();
+        $trade_rate = json_decode($sell->pivot->payment_range_settings);
+        $usd_rate=$trade_rate[0]->rate;
+    return view('newpages.buyairtime', compact('usd_rate'));
+
+});
+
 
 
 

@@ -303,11 +303,12 @@ class BillsPaymentController extends Controller
     {
         // dd('stop');
         $request->validate([
-            'network' => "required",
+            'network' => 'required',
             'reference' => 'required',
-            'amount' => "required",
-            'phone' => "required",
-            'password' => "required"
+            'amount' => 'required',
+            'phone' => 'required',
+            'rechargetype' => 'string',
+            'password' => 'required'
         ]);
 
         // $vtpassRequest = Http::post('https://sandbox.vtpass.com/api/pay', [
@@ -318,8 +319,11 @@ class BillsPaymentController extends Controller
 
         // ]);
 
-
-
+        if ($request->rechargetype == 'self') {
+            $phone = Auth::user()->country->phonecode . Auth::user()->phone;
+        } else{
+            $phone = $request->phone;
+        }
 
         $naira_wallet = Auth::user()->nairaWallet;
         $balance = $naira_wallet->amount;
@@ -350,7 +354,7 @@ class BillsPaymentController extends Controller
         // dd('stop here');
         $nt = new NairaTransaction();
         $nt->reference = $request->reference;
-        $nt->narration = $request->phone. ' ' . 'Payment for recharge card';
+        $nt->narration = $phone. ' ' . 'Payment for recharge card';
         $nt->amount = $request->amount;
         $nt->user_id = Auth::user()->id;
         $nt->type = 'recharge card';
@@ -410,7 +414,7 @@ class BillsPaymentController extends Controller
             return back()->with(['success'=> 'Your recharge is successful']);
         }
 
-        else{
+       elseif($body->code == 016){
             $nt->status ='failed';
             $nt->save();
             $new_balance = $naira_wallet->update([
@@ -419,7 +423,49 @@ class BillsPaymentController extends Controller
 
             return back()->with(['error'=> 'Your recharge failed']);
         }
-    }
+
+        elseif ($body->code == 021){
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return back()->with(['error'=> 'Your account is locked']);
+        }
+
+        elseif ($body->code == 022){
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return back()->with(['error'=> 'Your account is suspended']);
+        }
+
+        // elseif ($body->code == 083){
+        //     $nt->status ='failed';
+        //     $nt->save();
+        //     $new_balance = $naira_wallet->update([
+        //         "amount" => $balance,
+        //     ]);
+
+        //     return back()->with(['error'=> 'System Error']);
+
+        // }
+
+        else{
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return back()->with(['error'=> 'Please Try again later']);
+
+        }
+}
 
     public function bitcoinAirtime(Request $request)
     {
@@ -431,6 +477,14 @@ class BillsPaymentController extends Controller
             'password' => "required"
         ]);
 
+        if ($request->rechargetype == 'self') {
+            $phone = Auth::user()->country->phonecode . Auth::user()->phone;
+        } else  {
+            $phone = $request->phone;
+        }
+
+        // dd($phone);
+
         $card = Card::find(102);
         $rates = $card->currency-> first();
 
@@ -439,13 +493,14 @@ class BillsPaymentController extends Controller
             'currency_id' => $rates->id,
             'buy_sell' => 2])->first()->paymentMediums()->first();
         $trade_rate = json_decode($sell->pivot->payment_range_settings);
+        // dd($trade_rate);
 
-        $amt_usd= $request->amount/$trade_rate;
+        $amt_usd= $request->amount/$trade_rate[0]->rate;
 
         $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
+        // dd($res);
 
-        $current_btc_rate = $res->new_amount;
-        $amt_btc = $amt_usd/$current_btc_rate;
+        $amt_btc = $amt_usd/$res->data->amount;
 
         $bitcoin_wallet = Auth::user()->bitcoinWallet;
         $balance = $bitcoin_wallet->balance;
@@ -470,22 +525,23 @@ class BillsPaymentController extends Controller
 
         $priceDeduction = $balance - $amt_btc;
         $new_balance = $bitcoin_wallet->update([
-            "amount" => $priceDeduction,
+            "balance" => $priceDeduction,
         ]);
 
         $bt = new BitcoinTransaction();
         $bt->hash = $request->reference;
-        $bt->narration = $request->phone. ' ' . 'Payment for recharge card';
+        $bt->narration = $phone . ' ' . 'Payment for recharge card';
         $bt->user_id = Auth::user()->id;
         $bt->primary_wallet_id = 1;
         $bt->wallet_id = $bitcoin_wallet->address;
         $bt->previous_balance = $balance;
         $bt->current_balance = $new_balance;
         $bt->debit = $amt_btc;
+        $bt->fee = 0;
         $bt->credit = 0;
         $bt->charge = 0;
         $bt->transaction_type_id = 9;
-        $bt->counterparty = $request->phone;
+        $bt->counterparty = $phone ;
         $bt->confirmations = 3;
         $bt->status = 'pending';
         $bt->save();
@@ -522,8 +578,7 @@ class BillsPaymentController extends Controller
 
             $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
 
-            $current_btc_rate = $res->new_amount;
-            $bt->charge = $charge_usd/$current_btc_rate;
+            $bt->charge = $request->amount/$trade_rate[0]->rate;
             $bt->save();
 
 
@@ -547,14 +602,45 @@ class BillsPaymentController extends Controller
             return back()->with(['success'=> 'Your recharge is successful']);
         }
 
+        elseif($body->code == 016){
+            $bt->status ='failed';
+            $bt->save();
+            $new_balance = $bitcoin_wallet->update([
+                "balance" => $balance,
+            ]);
+
+            return back()->with(['error'=> 'Your recharge failed']);
+        }
+
+        elseif ($body->code == 021){
+            $bt->status ='failed';
+            $bt->save();
+            $new_balance = $bitcoin_wallet->update([
+                "balance" => $balance,
+            ]);
+
+            return back()->with(['error'=> 'Your account is locked']);
+        }
+
+        elseif ($body->code == 022){
+            $bt->status ='failed';
+            $bt->save();
+            $new_balance = $bitcoin_wallet->update([
+                "balance" => $balance,
+            ]);
+
+            return back()->with(['error'=> 'Your account is suspended']);
+        }
+
         else{
             $bt->status ='failed';
             $bt->save();
             $new_balance = $bitcoin_wallet->update([
-                "amount" => $balance,
+                "balance" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your recharge failed']);
+            return back()->with(['error'=> 'Please Try again later']);
+
         }
     }
 
