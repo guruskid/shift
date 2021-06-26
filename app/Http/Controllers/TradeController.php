@@ -71,12 +71,14 @@ class TradeController extends Controller
 
         //dd($rates->buy);
 
-        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
-        $btc_real_time = $res->bitcoin->usd;
+        $res = json_decode(file_get_contents("https://api.coinbase.com/v2/prices/spot?currency=USD"));
+        $btc_real_time = $res->data->amount;
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $btc_real_time;
 
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value;
 
-        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge']));
+        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp']));
     }
 
     public function ethereum($card_id)

@@ -264,11 +264,6 @@ class BitcoinWalletController extends Controller
 
     public function trade(Request $r)
     {
-       /*  return response()->json([
-            'success' => false,
-            'msg' => 'balance is '. Auth::user()->bitcoinWallet->balance .' and amount is '. $r->quantity
-        ]); */
-
         $validator = Validator::make($r->all(), [
             'card_id' => 'required|integer',
             'type' => 'required|string',
@@ -391,6 +386,7 @@ class BitcoinWalletController extends Controller
         $data['amount'] = $r->amount;
         $data['amount_paid'] = $r->amount_paid;
         $data['quantity'] = $r->quantity;
+        $data['card_price'] = $r->current_rate;
 
         $t = Transaction::create($data);
 

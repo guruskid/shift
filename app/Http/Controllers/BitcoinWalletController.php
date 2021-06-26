@@ -31,8 +31,13 @@ class BitcoinWalletController extends Controller
     {
         $card = Card::find(102);
         $rates = $card->currency->first();
-        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
-        $btc_rate = $res->bitcoin->usd;
+
+        $res = json_decode(file_get_contents("https://api.coinbase.com/v2/prices/spot?currency=USD"));
+        $btc_rate = $res->data->amount;
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $btc_rate;
+        $btc_rate -= $tp;
+
         $btc_wallet_bal  = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
 
@@ -168,9 +173,9 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
         }
 
-        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 1 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 1) {
+       /*  if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 1 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 1) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 1 waiting or processing transactions']);
-        }
+        } */
 
         //Check if the trade details are correct
 
@@ -179,16 +184,19 @@ class BitcoinWalletController extends Controller
         $card_id = $data['card_id'];
         $rates = $card->currency->first();
 
-        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
-        $current_btc_rate = $res->bitcoin->usd;
+        $res = json_decode(file_get_contents("https://api.coinbase.com/v2/prices/spot?currency=USD"));
+        $current_btc_rate = $res->data->amount;
+        $main_rate = $current_btc_rate;
 
         #confirm id the difference is less than $10 before assigning
 
 
         $trade_rate = 0;
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $current_btc_rate;
 
         if ($data['type'] == 'buy') {
-            $current_btc_rate = $current_btc_rate /* + 503 */;
+            $current_btc_rate = $current_btc_rate + $tp;
             $abs = abs($current_btc_rate - $r->current_rate);
             if ($abs >= 10) {
                 return back()->with(['error' => 'Network busy, please try again']);
@@ -202,7 +210,7 @@ class BitcoinWalletController extends Controller
             $trade_rate = json_decode($buy->pivot->payment_range_settings);
             $trade_rate = $trade_rate[0]->rate;
         } else {
-            $current_btc_rate = $current_btc_rate /* - 603 */;
+            $current_btc_rate = $current_btc_rate - $tp;
             $abs = abs($current_btc_rate - $r->current_rate);
             if ($abs >= 10) {
                 return back()->with(['error' => 'Network busy, please try again']);
@@ -239,7 +247,7 @@ class BitcoinWalletController extends Controller
         $data['user_id'] = Auth::user()->id;
         $data['card'] = Card::find($r->card_id)->name;
         $data['agent_id'] = $online_agent->id;
-        $data['card_price'] = $current_btc_rate;
+        $data['card_price'] = $r->current_rate;
 
         $t = Transaction::create($data);
 
@@ -261,7 +269,7 @@ class BitcoinWalletController extends Controller
 
         //Call autonated pay function
         if ($t->amount <= 49000 && $t->amount > 0) {
-            //$this->automatedPayment($t, $data['card_id'], $r->current_rate);
+            $this->automatedPayment($t, $data['card_id'], $r->current_rate, $main_rate);
         }
 
         return redirect()->route('user.transactions');
@@ -269,8 +277,9 @@ class BitcoinWalletController extends Controller
 
 
 
-    public function automatedPayment(Transaction $t, $card_id, $current_rate)
+    public function automatedPayment(Transaction $t, $card_id, $current_rate, $main_rate)
     {
+        //Current_rate was modified with % while $main_rate was not
         $card = Card::find($card_id);
         $rates = $card->currency->first();
 
@@ -285,9 +294,14 @@ class BitcoinWalletController extends Controller
         $user = $transaction->user;
         $charge = 0;
         $charge_wallet = BitcoinWallet::where('name', 'bitcoin charges')->first();
+        $fee_wallet = BitcoinWallet::where('name', 'bitcoin trade fee')->first();
 
 
         if ($transaction->type == 'buy') {
+            $main_btc_quantity = $t->amount / $main_rate;  //the actual worth in btc
+            $service_fee = abs($main_btc_quantity - $t->quantity);
+
+
             $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
             $charge = ($charge / 100) * $transaction->quantity;
             /* Cross Check Balance */
@@ -327,6 +341,9 @@ class BitcoinWalletController extends Controller
             $primary_wallet->balance -= $transaction->quantity;
             $primary_wallet->save();
         } elseif ($transaction->type == 'sell') {
+            $main_btc_quantity = $t->amount / $main_rate;  //the actual worth in btc
+            $service_fee = abs($main_btc_quantity - $t->quantity);
+
             $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
             $charge = ($charge / 100) * $transaction->quantity;
             $btc_txn_type = 20;
@@ -372,6 +389,9 @@ class BitcoinWalletController extends Controller
         $charge_wallet->balance += $charge;
         $charge_wallet->save();
 
+        $fee_wallet->balance += $service_fee;
+        $fee_wallet->save();
+
         $btc_transaction = new BitcoinTransaction();
         $btc_transaction->user_id = $transaction->user->id;
         $btc_transaction->primary_wallet_id = $primary_wallet->id;
@@ -382,7 +402,7 @@ class BitcoinWalletController extends Controller
         } elseif ($transaction->type == 'sell') {
             $btc_transaction->debit = ($transaction->quantity);
         }
-        $btc_transaction->fee = 0;
+        $btc_transaction->fee = $service_fee;
         $btc_transaction->charge = $charge;
         $btc_transaction->previous_balance = $old_user_btc_balance;
         $btc_transaction->current_balance = $user_btc_wallet->balance;
