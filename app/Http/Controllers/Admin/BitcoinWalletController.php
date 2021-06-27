@@ -25,7 +25,8 @@ class BitcoinWalletController extends Controller
     public function index()
     {
         $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
-        $hd_wallets_balance = BitcoinWallet::where('type', 'primary')->sum('balance');
+        $service_fee = BitcoinWallet::where('name', 'bitcoin trade fee')->first()->balance ?? 0;
+        $hd_wallets_balance = BitcoinWallet::where('type', 'primary')->sum('balance') - $service_fee;
         $users_wallet_balance = BitcoinWallet::where('type', 'secondary')->where('user_id', '!=', 1)->sum('balance');
         $live_balance = 0; //get from api
         $transactions = BitcoinTransaction::latest()->paginate(200);
@@ -37,7 +38,7 @@ class BitcoinWalletController extends Controller
         }
 
 
-        return view('admin.bitcoin_wallet.index', compact('charges', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
+        return view('admin.bitcoin_wallet.index', compact('charges', 'service_fee', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
     }
 
     public function wallets()

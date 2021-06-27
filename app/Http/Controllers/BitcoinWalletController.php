@@ -32,8 +32,9 @@ class BitcoinWalletController extends Controller
         $card = Card::find(102);
         $rates = $card->currency->first();
 
-        $res = json_decode(file_get_contents("https://api.coinbase.com/v2/prices/spot?currency=USD"));
-        $btc_rate = $res->data->amount;
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_rate = $res->bitcoin->usd;
+
         $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
         $tp = ($trading_per / 100) * $btc_rate;
         $btc_rate -= $tp;
@@ -184,8 +185,9 @@ class BitcoinWalletController extends Controller
         $card_id = $data['card_id'];
         $rates = $card->currency->first();
 
-        $res = json_decode(file_get_contents("https://api.coinbase.com/v2/prices/spot?currency=USD"));
-        $current_btc_rate = $res->data->amount;
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $current_btc_rate = $res->bitcoin->usd;
+
         $main_rate = $current_btc_rate;
 
         #confirm id the difference is less than $10 before assigning
