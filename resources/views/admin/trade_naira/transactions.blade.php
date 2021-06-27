@@ -144,7 +144,7 @@
 </div>
 @endforeach
 
-
+@if ($show_limit)
 {{-- Set Limits --}}
 <div class="modal fade " id="limits-modal">
     <div class="modal-dialog modal-dialog-centered ">
@@ -179,7 +179,7 @@
     </div>
 </div>
 
-@if ($show_limit)
+
 <div class="modal fade " id="account-modal">
     <div class="modal-dialog modal-dialog-centered ">
         <div class="modal-content">
