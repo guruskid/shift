@@ -32,10 +32,11 @@ class BitcoinWalletController extends Controller
         $transactions = BitcoinTransaction::latest()->paginate(200);
 
         $hd_wallets = BitcoinWallet::where('primary_wallet_id', 0)->get();
-        foreach ($hd_wallets as $wallet ) {
+        /* foreach ($hd_wallets as $wallet ) {
             $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_MAINNET, $wallet->name);
             $live_balance += $result->payload->totalBalance;
-        }
+        } */
+        $live_balance = 10;
 
 
         return view('admin.bitcoin_wallet.index', compact('charges', 'service_fee', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
@@ -202,6 +203,25 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
 
+    }
+
+    public function serviceFee()
+    {
+        $service_fee = BitcoinWallet::where('name', 'bitcoin trade fee')->first()->balance;
+        $transactions = BitcoinTransaction::whereIn('transaction_type_id', [19, 20])->where('fee', '!=', 0)->paginate(20);
+        $tp = Setting::where('name', 'trading_btc_per')->first()->value;
+
+        return view('admin.bitcoin_wallet.service', compact('transactions', 'service_fee', 'tp'));
+    }
+
+    public function setFee(Request $request)
+    {
+        $tp = Setting::where('name', 'trading_btc_per')->first();
+
+        $tp->value = $request->fee;
+        $tp->save();
+
+        return back()->with(['success' => 'Bitcoin fee set successfully']);
     }
 
     public function sendFromHd(Request $r)

@@ -35,6 +35,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
+        <a href="{{route('admin.bitcoin-summary')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="logo-bitcoin"></ion-icon>
+                <span>Bitcoin Summary </span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin-wallets-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -101,7 +110,7 @@
         </a>
     </li>
 
-    
+
 
     <li class="menu {{ Route::currentRouteName() == 'admin.chat_agents' ? 'active' : '' }}">
         <a href="{{route('admin.chat_agents')}}" aria-expanded="false" class="dropdown-toggle" >

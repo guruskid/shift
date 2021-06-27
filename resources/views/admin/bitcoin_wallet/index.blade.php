@@ -82,7 +82,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="card mb-3 widget-content">
-                        <a href="#">
+                        <a href="{{ route('admin.service-fee') }}">
                             <div class="widget-content-wrapper ">
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
