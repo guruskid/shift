@@ -10,6 +10,7 @@ use App\Notification;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -280,7 +281,7 @@ class BillsPaymentController extends Controller
                 'body' => $msg_body,
             ]);
 
-            /* Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body)); */
+            /*Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body)); */
 
             /* $token = env('SMS_TOKEN');
             $to = Auth::user()->phone;
@@ -292,6 +293,128 @@ class BillsPaymentController extends Controller
             \Log::info('User' . Auth::user()->first_name . ' bought airtime but it was declined');
             \Log::info($body->responsemessage);
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
+        }
+    }
+
+
+    public function buyAirtime(Request $request)
+    {
+        // dd('stop');
+        $request->validate([
+            'network' => "required",
+            'reference' => 'required',
+            'amount' => "required",
+            'phone' => "required",
+            'password' => "required"
+        ]);
+
+        // $vtpassRequest = Http::post('https://sandbox.vtpass.com/api/pay', [
+        //     'request_id' => $request->reference,
+        //     'serviceID' => $request->network,
+        //     'amount' => $request->amount,
+        //     'phone' => $request->phone
+
+        // ]);
+
+
+
+
+        $naira_wallet = Auth::user()->nairaWallet;
+        $balance = $naira_wallet->amount;
+        $pin = $naira_wallet->password;
+        $put_pin = $request->password;
+        $hash = Hash::check($put_pin, $pin);
+
+        if(!$hash)
+        {
+            return back()->with(['error' => 'Incorrect Pin']);
+        }
+
+        // dd($balance);
+
+        if($request->amount > $balance){
+            return back()->with(['error'=> 'Insufficient balance']);
+        }
+
+        if($request->amount < 0){
+            return back()->with(['error' => 'Invalid Amount']);
+        }
+
+        $priceDeduction = $balance - $request->amount;
+        $new_balance = $naira_wallet->update([
+            "amount" => $priceDeduction,
+        ]);
+
+        // dd('stop here');
+        $nt = new NairaTransaction();
+        $nt->reference = $request->reference;
+        $nt->narration = $request->phone. ' ' . 'Payment for recharge card';
+        $nt->amount = $request->amount;
+        $nt->user_id = Auth::user()->id;
+        $nt->type = 'recharge card';
+        $nt->previous_balance = $balance;
+        $nt->current_balance = $new_balance;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 9;
+
+
+        $nt->dr_user_id = Auth::user()->id;
+        $nt->dr_wallet_id = $naira_wallet->id;
+        $nt->dr_acct_name = $naira_wallet->account_name;
+        $nt->cr_acct_name = $request->network . ' ' . $request->phone;
+        $nt->trans_msg = 'done';
+        $nt->status = 'pending';
+        $nt->save();
+
+        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+        $url = "https://sandbox.vtpass.com/api/pay";
+        $response = $client->request('POST', $url, [
+            'json' => [
+                'request_id' => Str::random(6),
+                //'request_id' => $request->reference,
+                'serviceID' => $request->network,
+                'amount' => $request->amount,
+                'phone' => $request->phone
+            ]
+        ]);
+        $body = json_decode($response->getBody()->getContents());
+        // dd($body);
+        // $nt->charge = $body->content->transactions->commission;
+        // $nt->save();
+
+        if ($body->code == 000) {
+            $nt->status = 'success';
+            $nt->save();
+            // dd('success');
+
+            $title = 'Recharge card purchase';
+            $msg_body = 'Your Dantown wallet has been debited with N' . $request->amount . ' for recharge card purchase';
+
+            $not = Notification::create([
+                'user_id' => Auth::user()->id,
+                'title' => $title,
+                'body' => $msg_body,
+            ]);
+
+            //  Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+
+            $token = env('SMS_TOKEN');
+            $to = Auth::user()->phone;
+            $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
+            $snd_sms = $client->request('GET', $sms_url);
+
+            return back()->with(['success'=> 'Your recharge is successful']);
+        }
+
+        else{
+            $nt->status ='failed';
+            $nt->save();
+            $priceAddiction = $balance += $request->amount;
+            $new_balance = $naira_wallet->update([
+                "amount" => $priceAddiction,
+            ]);
+
+            return back()->with(['error'=> 'Your recharge failed']);
         }
     }
 

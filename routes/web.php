@@ -205,7 +205,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName', 'verifie
     Route::get('/paytv', 'BillsPaymentController@disabledView')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@paytv')->name('user.paytv');
     Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge');
-    Route::post('/airtime', 'BillsPaymentController@airtime')->name('user.airtime');
+    // Route::post('/airtime', 'BillsPaymentController@airtime')->name('user.airtime');
+    Route::post('/airtime', 'BillsPaymentController@buyAirtime')->name('user.airtime');
     Route::get('/data', 'BillsPaymentController@disabledView')->name('user.data');
     Route::get('/discounted-airtime', 'BillsPaymentController@disabledView')->name('user.discount-airtime');
     Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
