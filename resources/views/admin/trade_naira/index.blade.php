@@ -47,12 +47,12 @@
                             <i class="pe-7s-users icon-gradient bg-sunny-morning">
                             </i>
                         </div>
-                        <div>Trade Naira</div>
+                        <div>Naira P2P</div>
                     </div>
                 </div>
             </div>
 
-            @if (in_array(Auth::user()->role, [999]))
+            @if (in_array(Auth::user()->role, [999, 889]))
             <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 pb-3 card">
@@ -72,11 +72,12 @@
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Wallet balance</th>
-                                        <th>Date added</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Transactions</th>
+                                        <th>Success</th>
+                                        <th>Cancelled</th>
+                                        <th>Pending / Waiting</th>
+                                        <th>View Transactions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -85,11 +86,6 @@
                                         <td class="text-muted">{{$u->id}}</td>
                                         <td>{{ucwords($u->first_name)}}</td>
                                         <td>{{$u->email}}</td>
-                                        <td>{{$u->phone}}</td>
-                                        <td>
-                                            {{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }}
-                                        </td>
-                                        <td>{{$u->created_at->format('d M y')}}</td>
                                         <td>
                                             @switch($u->status)
                                             @case('verified')
@@ -109,11 +105,13 @@
 
                                             @endswitch
                                         </td>
-
+                                        <td>{{$u->agentNairaTrades->count()}}</td>
+                                        <td> {{$u->success }} </td>
+                                        <td> {{$u->cancelled }} </td>
+                                        <td> {{$u->pending }} </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="#" onclick="setUser('{{ $u->id }}')" data-target="#topup-modal" data-toggle="modal" class="btn btn-primary">Topup</a>
-                                                <a href="#" onclick="setUser('{{ $u->id }}')" data-target="#deduct-modal" data-toggle="modal" class="btn btn-danger">Deduct</a>
+                                                <a href="{{ route('p2p.agent-transactions', $u) }}"  class="btn btn-primary">View</a>
                                             </div>
                                         </td>
                                     </tr>

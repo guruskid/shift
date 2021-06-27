@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Account;
+use App\Bank;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
@@ -15,6 +17,11 @@ class TradeNairaController extends Controller
     public function index()
     {
         $users = User::where('role', 777)->get();
+        $users->each(function($u){
+            $u->success = $u->agentNairaTrades()->where('status', 'success')->count();
+            $u->cancelled = $u->agentNairaTrades()->where('status', 'cancelled')->count();
+            $u->pending = $u->agentNairaTrades()->whereIn('status', ['pending', 'waiting'])->count();
+        });
 
         return view('admin.trade_naira.index', compact('users'));
     }
@@ -26,9 +33,36 @@ class TradeNairaController extends Controller
             Auth::user()->agentLimits()->create();
         }
 
+        $show_limit = true;
         $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+        $banks = Bank::all();
+        $account = Auth::user()->accounts->first();
 
-        return view('admin.trade_naira.transactions', compact('transactions'));
+        return view('admin.trade_naira.transactions', compact('transactions', 'show_limit', 'banks', 'account'));
+    }
+
+    public function updateBankDetails(Request $request)
+    {
+        $a = Account::find($request->id);
+        if ($a->user_id != Auth::user()->id) {
+            return redirect()->back()->with(["error" => 'Invalid Operation']);
+        }
+        $bank = Bank::find($request->bank_id);
+        $a->account_name = $request->account_name;
+        $a->bank_name = $bank->name;
+        $a->account_number = $request->account_number;
+        $a->bank_id = $bank->id;
+        $a->save();
+
+        return redirect()->back()->with(["success" => 'Details updated']);
+    }
+
+    public function agentTransactions(User $user)
+    {
+        $transactions = $user->agentNairaTrades()->paginate(20);
+        $show_limit = false;
+
+        return view('admin.trade_naira.transactions', compact('transactions', 'show_limit'));
     }
 
     public function setLimits(Request $request)
