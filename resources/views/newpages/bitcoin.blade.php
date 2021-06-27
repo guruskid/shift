@@ -107,7 +107,7 @@
                                         <div class="text-center text-muted mb-3 mt-3 mt-lg-1"
                                             style="margin-top: -10px;">Buy or sell
                                             cryptocurrency in less than a minute
-                                            {{ $tp }}
+                                            
                                         </div>
 
                                         {{-- Sell Bitcoin --}}
