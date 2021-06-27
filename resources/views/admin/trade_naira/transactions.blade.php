@@ -59,7 +59,12 @@
                             <div class="">
                                 Transactions
                             </div>
-                            <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
+                            @if ($show_limit)
+                            <div>
+                                <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
+                            <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Set account details</button>
+                            </div>
+                            @endif
                         </div>
                         <div class="table-responsive p-3">
                             <table
@@ -84,7 +89,7 @@
                                         <td>{{ $t->user->phone }}</td>
                                         <td>₦{{ number_format($t->amount) }}</td>
                                         <td>{{ $t->reference }}</td>
-                                        <td>{{ $t->created_at->format('d m y') }}</td>
+                                        <td>{{ $t->created_at->format('d m y, h:ia') }}</td>
                                         <td>{{ $t->status }}</td>
                                         <td>
                                             <div class="btn-group">
@@ -173,4 +178,47 @@
         </form>
     </div>
 </div>
+
+@if ($show_limit)
+<div class="modal fade " id="account-modal">
+    <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form action="{{ route('agent.update-bank') }}" method="POST" class="mb-4">@csrf
+                    <div class="form-row ">
+                        <div class="col-md-12">
+                            <input type="hidden" value="{{ $account->id }}" name="id">
+                            <div class="position-relative form-group">
+                                <label>Bank Name</label>
+                                <select name="bank_id" class="form-control">
+                                    <option value="{{ $account->bank_id }}">{{ $account->bank_name }}</option>
+                                    @foreach ($banks as $b)
+                                    <option value="{{$b->id}}">{{$b->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Account Number</label>
+                                <input type="text" required class="form-control" value="{{ $account->account_number }}" name="account_number">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Account Name</label>
+                                <input type="text" required class="form-control" value="{{ $account->account_name }}" name="account_name">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
+                        <i class="spinner-border spinner-border-sm" id="s-b" style="display: none;"></i>
+                        Save
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
