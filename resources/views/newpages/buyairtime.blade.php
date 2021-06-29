@@ -77,6 +77,9 @@
                                         </div>
                                         <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                     </div>
+                                    <div>
+                                        <span style="color: #000080;font-size: 22px;"> 1USD = {{ $rate_naira }}NGN </span>
+                                    </div>
                                 </div>
                                 {{-- border line --}}
                                 <div class="mt-4 d-none d-lg-block" style="width: 100%;border: 1px solid #C9CED6;">
@@ -88,11 +91,11 @@
                                         <div class="col-12 col-lg-6">
                                             <span class="d-block mb-2" style="color: #000070;font-size: 22px;">Buy
                                                 Airtime</span>
+
                                             @foreach ($errors->all() as $err)
                                             <p class="text-danger">{{$err}}</p>
                                             @endforeach
-                                            <div
-                                                class="d-flex flex-row flex-wrap justify-content-around justify-content-lg-between airtimechoice_container mx-0">
+                                            <div class="d-flex flex-row flex-wrap justify-content-around justify-content-lg-between airtimechoice_container mx-0">
 
                                                 <div class="airtime_network_card my-2 my-lg-0 mx-0 mx-lg-0 d-flex justify-content-center align-items-center "
                                                     alt="airtel">
@@ -142,6 +145,7 @@
                                                             <label for="amount" style="color: #000070;">Amount</label>
                                                             <input type="number" name="amount"
                                                                 class="form-control recharge_amount" id="amount" />
+
                                                         </div>
                                                         <div class="form-group mt-2 mt-md-4 mx-2">
                                                             <label for="pin" style="color: #000070;">Pin</label>

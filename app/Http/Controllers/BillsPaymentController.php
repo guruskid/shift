@@ -299,6 +299,22 @@ class BillsPaymentController extends Controller
     }
 
 
+    public function nairaRate()
+    {
+        $card = Card::find(102);
+        $rates = $card->currency-> first();
+
+        $sell = CardCurrency::where([
+            'card_id' => 102,
+            'currency_id' => $rates->id,
+            'buy_sell' => 2])->first()->paymentMediums()->first();
+        $trade_rate = json_decode($sell->pivot->payment_range_settings);
+        $rate_naira = $trade_rate[0]->rate;
+        // dd($rate_naira);
+
+        return view('newpages.buyairtime', compact('card', 'rate_naira'));
+    }
+
     public function buyAirtime(Request $request)
     {
         // dd('stop');
@@ -306,7 +322,6 @@ class BillsPaymentController extends Controller
             'network' => 'required',
             'reference' => 'required',
             'amount' => 'required',
-            'phone' => 'required',
             'rechargetype' => 'string',
             'password' => 'required'
         ]);
@@ -322,6 +337,10 @@ class BillsPaymentController extends Controller
         if ($request->rechargetype == 'self') {
             $phone = Auth::user()->country->phonecode . Auth::user()->phone;
         } else{
+            $request->validate([
+                'phone' => 'required'
+            ]);
+
             $phone = $request->phone;
         }
 
@@ -473,15 +492,21 @@ class BillsPaymentController extends Controller
             'network' => "required",
             'reference' => 'required',
             'amount' => "required",
-            'phone' => "required",
+            'rechargetype' => 'string',
             'password' => "required"
         ]);
 
+
         if ($request->rechargetype == 'self') {
             $phone = Auth::user()->country->phonecode . Auth::user()->phone;
-        } else  {
+        } else{
+            $request->validate([
+                'phone' => 'required'
+            ]);
+
             $phone = $request->phone;
         }
+
 
         // dd($phone);
 
@@ -493,7 +518,7 @@ class BillsPaymentController extends Controller
             'currency_id' => $rates->id,
             'buy_sell' => 2])->first()->paymentMediums()->first();
         $trade_rate = json_decode($sell->pivot->payment_range_settings);
-        // dd($trade_rate);
+        //  dd($trade_rate);
 
         $amt_usd= $request->amount/$trade_rate[0]->rate;
 
