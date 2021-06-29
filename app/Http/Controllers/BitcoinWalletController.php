@@ -174,9 +174,9 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
         }
 
-       /*  if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 1 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 1) {
+        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 1) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 1 waiting or processing transactions']);
-        } */
+        }
 
         //Check if the trade details are correct
 
@@ -355,7 +355,7 @@ class BitcoinWalletController extends Controller
             $user_btc_wallet->balance -= $transaction->quantity;
             $user_btc_wallet->save();
 
-            $primary_wallet->balance += $transaction->quantity - $charge;
+            $primary_wallet->balance += $transaction->quantity - $charge - $service_fee;
             $primary_wallet->save();
 
             $user_naira_wallet->amount += $transaction->amount_paid;
@@ -383,6 +383,7 @@ class BitcoinWalletController extends Controller
             $nt->dr_user_id = 1;
             $nt->status = 'success';
             $nt->save();
+
         } else {
             return back()->with(['error' => 'Invalid transaction']);
         }

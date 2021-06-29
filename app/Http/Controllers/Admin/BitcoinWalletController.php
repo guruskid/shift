@@ -137,6 +137,7 @@ class BitcoinWalletController extends Controller
             'amount' => 'required',
             'pin' => 'required',
             'address' => 'required',
+            'wallet' => 'required',
         ]);
 
         if (!Hash::check($data['pin'], Auth::user()->bitcoinWallet->password)) {
@@ -144,9 +145,9 @@ class BitcoinWalletController extends Controller
         }
 
         $total = $data['amount'] + $data['fees'];
-        $charges_wallet = BitcoinWallet::where('name', 'bitcoin charges')->first();
+        $charges_wallet = BitcoinWallet::where('name', $data['wallet'])->first();
         $primary_wallet = BitcoinWallet::where('type', 'primary')->first();
-
+        
 
         if ($total > $charges_wallet->balance ) {
             return back()->with(['error' => 'Insufficient balance']);
@@ -207,11 +208,14 @@ class BitcoinWalletController extends Controller
 
     public function serviceFee()
     {
+        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
+        $fees = $fees_req->payload->recommended;
+
         $service_fee = BitcoinWallet::where('name', 'bitcoin trade fee')->first()->balance;
         $transactions = BitcoinTransaction::whereIn('transaction_type_id', [19, 20])->where('fee', '!=', 0)->paginate(20);
         $tp = Setting::where('name', 'trading_btc_per')->first()->value;
 
-        return view('admin.bitcoin_wallet.service', compact('transactions', 'service_fee', 'tp'));
+        return view('admin.bitcoin_wallet.service', compact('transactions', 'service_fee', 'tp', 'fees'));
     }
 
     public function setFee(Request $request)

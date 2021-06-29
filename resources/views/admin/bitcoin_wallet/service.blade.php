@@ -66,6 +66,40 @@
                         </div>
                     </div>
 
+                    <div class="card card-body">
+                        <form action="{{ route('admin.bitcoin.transfer-charges') }}" method="POST">@csrf
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Txn Fee</label>
+                                        <input type="text" value="bitcoin trade fee" name="wallet">
+                                        <input type="number" step="any" name="fees"
+                                            value="{{ $fees ?? '' }}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Amount</label>
+                                        <input type="number" step="any" name="amount" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Address</label>
+                                        <input type="text"  name="address" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Your Wallet Pin</label>
+                                        <input type="password" name="pin" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Transfer</button>
+                        </form>
+                    </div>
+
                 </div>
                 <div class="col-md-6 mb-3">
                     <div class="card card-body py-3">
