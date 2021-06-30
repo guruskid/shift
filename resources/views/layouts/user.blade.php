@@ -145,9 +145,9 @@ $naira_balance = Auth::user()->nairaWallet->amount;
         }
         .dantown-btn-init{
             background-color: #f2f2f2;
-            border: 2px solid lightgray;
-            box-shadow: 3px 3px 3px #727272;
-            border: 1px solid gray
+            /* border: 2px solid lightgray; */
+            /* box-shadow: 3px 3px 3px #727272; */
+            /* border: 1px solid gray */
         }
     </style>
 

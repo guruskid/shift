@@ -7,24 +7,25 @@ const btcusdapi = () => {
 	const ajax = new XMLHttpRequest;
 	setTimeout(()=>{
 		const current = JSON.parse(ajax.responseText)
-		document.getElementById("currentBtcRate").value = current.data.amount
-	}, 1000)
-
-	// setTimeout(()=>{
-	// 	document.write(ajax.responseText)
-	// }, 500)
-
+		__james_id("currentBtcRate").value = current.data.amount
+	}, 10000)
 	ajax.open("GET", "http://api.coinbase.com/v2/prices/spot?currency=USD")
 	ajax.send()
-
 }
 
 btcusdapi()
 
+
+
+
+// what if the api returns the rate lately
+
 const btccharge = () => {
 	const btcRate = parseInt(__james_id("currentBtcRate").value)
 	const amount = parseInt(__james_id("amount").value)
-	let ngnRate = 500;
+	let ngnRate = parseInt(__james_id("nairaRate").value);
+
+    // alert(ngnRate)
 
 	const usdRate = amount / ngnRate
 	const charge = usdRate / btcRate
@@ -37,9 +38,17 @@ const btccharge = () => {
 	}else{
 		__james_id("msg").innerHTML = ""
 	}
-
 	__james_id("rate").innerHTML = charge.toFixed(8) +  " (BTC)"
 
 }
+
+const showRate = (rType) => {
+    if(rType == "btcRecharge"){
+        __james_id("btc_show").classList.add("d-block")
+    }else{
+        __james_id("btc_show").classList.remove("d-block")
+    }
+}
+
 
 

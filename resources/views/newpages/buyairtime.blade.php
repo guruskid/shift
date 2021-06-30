@@ -77,6 +77,9 @@
                                         </div>
                                         <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                     </div>
+                                    <div>
+                                        <span style="color: #000080;font-size: 22px;"> 1USD = {{ $rate_naira }}NGN </span>
+                                    </div>
                                 </div>
                                 {{-- border line --}}
                                 <div class="mt-4 d-none d-lg-block" style="width: 100%;border: 1px solid #C9CED6;">
@@ -88,11 +91,11 @@
                                         <div class="col-12 col-lg-6">
                                             <span class="d-block mb-2" style="color: #000070;font-size: 22px;">Buy
                                                 Airtime</span>
+
                                             @foreach ($errors->all() as $err)
                                             <p class="text-danger">{{$err}}</p>
                                             @endforeach
-                                            <div
-                                                class="d-flex flex-row flex-wrap justify-content-around justify-content-lg-between airtimechoice_container mx-0">
+                                            <div class="d-flex flex-row flex-wrap justify-content-around justify-content-lg-between airtimechoice_container mx-0">
 
                                                 <div class="airtime_network_card my-2 my-lg-0 mx-0 mx-lg-0 d-flex justify-content-center align-items-center "
                                                     alt="airtel">
@@ -114,11 +117,16 @@
                                         </div>
                                         <div class="col-12 col-lg-6 py-3 py-lg-5 mt-5 mt-lg-0 buyairtime_border">
                                             <h5 class="text-center mb-2">Select wallet charge</h5>
+                                            <div class="d-none text-center" id="btc_show">
+                                                <span class="text-center" style="color: #000080;font-size: 14px;"> 1USD = {{ $rate_naira }} NGN  </span> &nbsp;
+                                                <span class="text-center" style="color: #000080;font-size: 14px;"> 1USD = {{ $btc_rate }} BTC </span>
+                                            </div>
+
                                                 {{-- <span class="btn" style="background-color: #ffffff; border:1px solid lightgray"> --}}
                                                     <ul class="nav nav-tabs nav-justified mb-3 ">
-                                                        <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="active nav-link btn rounded-pill dantown-btn-init"> Naira (NGN) </a>
+                                                        <li class="nav-item" onclick="showRate()"><a data-toggle="tab" href="#tab-eg11-1" class="active nav-link btn rounded-pill dantown-btn-init"> Naira (NGN) </a>
                                                         </li>
-                                                        <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0"
+                                                        <li class="nav-item" onclick="showRate('btcRecharge')"><a data-toggle="tab" href="#tab-eg11-0"
                                                                 class=" nav-link btn rounded-pill dantown-btn-init">Bitcoin (BTC)  </a></li>
                                                     </ul>
                                                 {{-- </span> --}}
@@ -152,7 +160,10 @@
 
                                                             <label for="amount" style="color: #000070;">Amount</label><br>
                                                             <span id="msg" class="text-danger"></span>
-                                                            <input type="hidden" id="currentBtcRate">
+                                                            {{-- Hidden form start's here --}}
+                                                            <input type="hidden" id="currentBtcRate" value="{{ $btc_rate }}">
+                                                            <input type="hidden" id="nairaRate" value="{{ $rate_naira }}" id="currentBtcRate">
+                                                            {{-- Hidden form end's here --}}
 
                                                             <input autocomplete="off"  oninput="btccharge()" type="number" name="amount"
                                                                 class="form-control recharge_amount" id="amount" />
