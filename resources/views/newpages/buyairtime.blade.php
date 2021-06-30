@@ -113,6 +113,15 @@
                                             </div>
                                         </div>
                                         <div class="col-12 col-lg-6 py-3 py-lg-5 mt-5 mt-lg-0 buyairtime_border">
+                                            <h5 class="text-center mb-2">Select wallet charge</h5>
+                                                {{-- <span class="btn" style="background-color: #ffffff; border:1px solid lightgray"> --}}
+                                                    <ul class="nav nav-tabs nav-justified mb-3 ">
+                                                        <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="active nav-link btn rounded-pill dantown-btn-init"> Naira (NGN) </a>
+                                                        </li>
+                                                        <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0"
+                                                                class=" nav-link btn rounded-pill dantown-btn-init">Bitcoin (BTC)  </a></li>
+                                                    </ul>
+                                                {{-- </span> --}}
                                             <form action="{{ route('user.airtime') }}" method="post" class="disable-form"> @csrf
                                                 <input type="hidden" id="airtimechoice" name="network" value="">
                                                 <input type="hidden" name="reference"
@@ -138,11 +147,18 @@
                                                     <div class="mt-4 d-md-none"
                                                         style="width: 240px;height:0px;border:1px solid #DBDBEE;"></div>
                                                     <div class="d-flex flex-column flex-md-row justify-content-center">
+
                                                         <div class="form-group mt-4 mx-2">
-                                                            <label for="amount" style="color: #000070;">Amount</label>
-                                                            <input type="number" name="amount"
+
+                                                            <label for="amount" style="color: #000070;">Amount</label><br>
+                                                            <span id="msg" class="text-danger"></span>
+                                                            <input type="hidden" id="currentBtcRate">
+
+                                                            <input autocomplete="off"  oninput="btccharge()" type="number" name="amount"
                                                                 class="form-control recharge_amount" id="amount" />
+                                                                <p class="" id="rate"></p>
                                                         </div>
+
                                                         <div class="form-group mt-2 mt-md-4 mx-2">
                                                             <label for="pin" style="color: #000070;">Pin</label>
                                                             <span id="togglepinvisibility" class="togglevisibility">
@@ -199,5 +215,10 @@
         </div>
     </div>
 </div>
+
+
+
+
+
 
 @endsection

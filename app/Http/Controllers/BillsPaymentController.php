@@ -301,6 +301,33 @@ class BillsPaymentController extends Controller
 
     public function buyAirtime(Request $request)
     {
+
+
+
+        // $card = Card::find(102);
+        // $rates = $card->currency-> first();
+
+        // $sell = CardCurrency::where([
+        //     'card_id' => 102,
+        //     'currency_id' => $rates->id,
+        //     'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $trade_rate = json_decode($sell->pivot->payment_range_settings);
+
+        // dd($trade_rate);
+
+        // $amt_usd= $request->amount/$trade_rate;
+
+        // $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
+
+        // $current_btc_rate = $res->new_amount;
+        // $amt_btc = $amt_usd/$current_btc_rate;
+
+
+        // dd($amt_btc);
+
+
+
+
         // dd('stop');
         $request->validate([
             'network' => "required",
@@ -309,6 +336,10 @@ class BillsPaymentController extends Controller
             'phone' => "required",
             'password' => "required"
         ]);
+
+
+
+
 
         // $vtpassRequest = Http::post('https://sandbox.vtpass.com/api/pay', [
         //     'request_id' => $request->reference,
@@ -421,6 +452,11 @@ class BillsPaymentController extends Controller
         }
     }
 
+
+
+
+
+
     public function bitcoinAirtime(Request $request)
     {
         $request->validate([
@@ -439,6 +475,8 @@ class BillsPaymentController extends Controller
             'currency_id' => $rates->id,
             'buy_sell' => 2])->first()->paymentMediums()->first();
         $trade_rate = json_decode($sell->pivot->payment_range_settings);
+
+        // dd($trade_rate);
 
         $amt_usd= $request->amount/$trade_rate;
 
