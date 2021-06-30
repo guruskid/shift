@@ -48,6 +48,10 @@ const showRate = (rType) => {
     }else{
         __james_id("btc_show").classList.remove("d-block")
     }
+
+
+    // Where it will be submitted will be here
+
 }
 
 
