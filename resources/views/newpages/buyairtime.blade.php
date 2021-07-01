@@ -123,20 +123,21 @@
                                             </div>
 
                                                 {{-- <span class="btn" style="background-color: #ffffff; border:1px solid lightgray"> --}}
+                                                <div class="pl-5 pr-5">
                                                     <ul class="nav nav-tabs nav-justified mb-3 ">
                                                         <li class="nav-item" onclick="showRate()"><a data-toggle="tab" href="#tab-eg11-1" class="active nav-link btn rounded-pill dantown-btn-init"> Naira (NGN) </a>
                                                         </li>
                                                         <li class="nav-item" onclick="showRate('btcRecharge')"><a data-toggle="tab" href="#tab-eg11-0"
                                                                 class=" nav-link btn rounded-pill dantown-btn-init">Bitcoin (BTC)  </a></li>
                                                     </ul>
+                                                </div>
                                                 {{-- </span> --}}
                                             <div class="d-block" id="NairaAirtimePurchase">
                                                 <form action="{{ route('user.airtime') }}" method="post" class="disable-form"> @csrf
                                                     <input type="hidden" id="airtimechoice" name="network" value="">
                                                     <input type="hidden" name="reference"
                                                         value="{{ \Str::random(6) . time() }}">
-                                                    <div
-                                                        class="d-flex flex-column align-items-center justify-content-around">
+                                                    <div class="d-flex flex-column align-items-center justify-content-around">
                                                         <div class="d-flex flex-column flex-md-row">
                                                             <div
                                                                 class="custom-control custom-radio custom-control-inline my-2 px-1 px-lg-5 py-2 buyairtime_choice_layer">
@@ -217,14 +218,12 @@
                                                 </form>
                                             </div>
 
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
 
                 </div>
             </div>

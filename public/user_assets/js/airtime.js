@@ -17,9 +17,6 @@ btcusdapi()
 
 
 
-
-// what if the api returns the rate lately
-
 const btccharge = () => {
 	const btcRate = parseInt(__james_id("currentBtcRate").value)
 	const amount = parseInt(__james_id("amount").value)
@@ -48,7 +45,6 @@ const showRate = (rType) => {
     }else{
         __james_id("btc_show").classList.remove("d-block")
     }
-
 
     // Where it will be submitted will be here
 
