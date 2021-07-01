@@ -78,7 +78,7 @@
                                         <div class="ml-2" style="color: #000070;font-size: 20px;">Back</div>
                                     </div>
                                     <div>
-                                        <span style="color: #000080;font-size: 22px;"> 1USD = {{ $rate_naira }}NGN </span>
+                                        {{-- <span style="color: #000080;font-size: 22px;"> 1USD = {{ $rate_naira }}NGN </span> --}}
                                     </div>
                                 </div>
                                 {{-- border line --}}
@@ -131,7 +131,7 @@
                                                     </ul>
                                                 {{-- </span> --}}
                                             <div class="d-block" id="NairaAirtimePurchase">
-                                                <form action="{{ route('user.airtime') }}" method="post" class="disable-form"> @csrf
+                                                <form action="{{ route('user.bitcoin-airtime') }}" method="post" class="disable-form"> @csrf
                                                     <input type="hidden" id="airtimechoice" name="network" value="">
                                                     <input type="hidden" name="reference"
                                                         value="{{ \Str::random(6) . time() }}">

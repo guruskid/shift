@@ -562,7 +562,7 @@ class BillsPaymentController extends Controller
 
         // dd($trade_rate);
 
-        $amt_usd= $request->amount/$trade_rate;
+        // $amt_usd= $request->amount/$trade_rate;
 
         $amt_usd= $request->amount/$trade_rate[0]->rate;
 
@@ -644,11 +644,11 @@ class BillsPaymentController extends Controller
                 'buy_sell' => 2])->first()->paymentMediums()->first();
             $trade_rate = json_decode($sell->pivot->payment_range_settings);
 
-            $charge_usd= $naira_charge/$trade_rate;
+            $charge_usd= $naira_charge/$trade_rate[0]->rate;
 
             $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
 
-            $bt->charge = $request->amount/$trade_rate[0]->rate;
+            $bt->charge = $charge_usd/$res->data->amount;
             $bt->save();
 
 
