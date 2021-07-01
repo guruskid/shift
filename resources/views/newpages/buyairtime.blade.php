@@ -119,7 +119,7 @@
                                             <h5 class="text-center mb-2">Select wallet charge</h5>
                                             <div class="d-none text-center" id="btc_show">
                                                 <span class="text-center" style="color: #000080;font-size: 14px;"> 1USD = {{ $rate_naira }} NGN  </span> &nbsp;
-                                                <span class="text-center" style="color: #000080;font-size: 14px;"> 1USD = {{ $btc_rate }} BTC </span>
+                                                <span class="text-center" style="color: #000080;font-size: 14px;"> 1BTC = {{ $btc_rate }} USD </span>
                                             </div>
 
                                                 {{-- <span class="btn" style="background-color: #ffffff; border:1px solid lightgray"> --}}
