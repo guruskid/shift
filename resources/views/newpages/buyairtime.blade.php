@@ -128,7 +128,7 @@
                                                         <li class="nav-item" onclick="showRate()"><a data-toggle="tab" href="#tab-eg11-1" class="active nav-link btn rounded-pill dantown-btn-init"> Naira (NGN) </a>
                                                         </li>
                                                         <li class="nav-item" onclick="showRate('btcRecharge')"><a data-toggle="tab" href="#tab-eg11-0"
-                                                                class=" nav-link btn rounded-pill dantown-btn-init">Bitcoin (BTC)  </a></li>
+                                                                class=" nav-link btn rounded-pill dantown-btn-init">Bitcoin   </a></li>
                                                     </ul>
                                                 </div>
                                                 {{-- </span> --}}
