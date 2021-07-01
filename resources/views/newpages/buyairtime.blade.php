@@ -119,7 +119,7 @@
                                             <h5 class="text-center mb-2">Select wallet charge</h5>
                                             <div class="d-none text-center" id="btc_show">
                                                 <span class="text-center" style="color: #000080;font-size: 14px;"> 1USD = {{ $rate_naira }} NGN  </span> &nbsp;
-                                                <span class="text-center" style="color: #000080;font-size: 14px;"> 1USD = {{ $btc_rate }} BTC </span>
+                                                <span class="text-center" style="color: #000080;font-size: 14px;"> 1BTC = {{ $btc_rate }} USD </span>
                                             </div>
 
                                                 {{-- <span class="btn" style="background-color: #ffffff; border:1px solid lightgray"> --}}
@@ -175,7 +175,7 @@
                                                                 <label for="amount" style="color: #000070;">Amount</label><br>
                                                                 <span id="msg" class="text-danger"></span>
                                                                 {{-- Hidden form start's here --}}
-                                                                <input type="hidden" id="currentBtcRate" value="{{ $btc_rate }}">
+                                                                <input required type="hidden" id="currentBtcRate" value="{{ $btc_rate }}">
                                                                 <input type="hidden" id="nairaRate" value="{{ $rate_naira }}" id="currentBtcRate">
                                                                 {{-- Hidden form end's here --}}
 
@@ -266,11 +266,10 @@
                                                                 <input type="hidden" id="nairaRate" value="{{ $rate_naira }}" id="currentBtcRate"> --}}
                                                                 {{-- Hidden form end's here --}}
 
-                                                                <input autocomplete="off"  oninput="btccharge('btcNairaAmount')" type="number" name="amount"
+                                                                <input autocomplete="off"  oninput="btccharge('btcNairaAmount')" type="number" required name="amount"
                                                                     class="form-control recharge_amount" id="nairaBtcAmount" />
                                                                     <p class="" id="btcrate"></p>
                                                             </div>
-
 
                                                             <div class="form-group mt-2 mt-md-4 mx-2">
                                                                 <label for="pin" style="color: #000070;">Pin</label>

@@ -12,7 +12,6 @@ const btcusdapi = () => {
 
 btcusdapi()
 
-
 const btccharge = (enterAmount) => {
 
 	const btcRate = parseInt(__james_id("currentBtcRate").value)
