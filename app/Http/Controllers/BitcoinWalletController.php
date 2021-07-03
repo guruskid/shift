@@ -592,7 +592,7 @@ class BitcoinWalletController extends Controller
 
                     //if status is pending and confirmed, set status to success  for send txns
                 } elseif ($request->confirmations == $confirmed && $btc_txn->status == 'pending') {
-                    $btc_txn->confirmations = $request->confirmations;
+                    $btc_txn->confirmations = 7;
                     $btc_txn->status = 'success';
                     $btc_txn->save();
                 }
