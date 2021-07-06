@@ -82,6 +82,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         //BTC Wallet
         Route::group(['prefix' => 'bitcoin-wallet'], function () {
+            Route::GET('/price', 'Api\BitcoinWalletController@btcPrice');
             Route::POST('/create', 'Api\BitcoinWalletController@create');
             Route::GET('/balance', 'Api\BitcoinWalletController@balance');
             Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');

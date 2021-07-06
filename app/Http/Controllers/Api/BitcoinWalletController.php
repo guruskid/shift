@@ -27,6 +27,21 @@ class BitcoinWalletController extends Controller
         $this->instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
     }
 
+    public function btcPrice()
+    {
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_rate = $res->bitcoin->usd;
+
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $btc_rate;
+        $btc_rate -= $tp;
+
+        return response()->json([
+            'success' => true,
+            'btc_usd' => $btc_rate
+        ]);
+    }
+
     public function create(Request $r)
     {
         $validator = Validator::make($r->all(), [
@@ -90,6 +105,12 @@ class BitcoinWalletController extends Controller
         $rates = $card->currency->first();
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $btc_rate = $res->bitcoin->usd;
+
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $btc_rate;
+        $btc_rate -= $tp;
+
+
         $btc_wallet_bal  = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
 
