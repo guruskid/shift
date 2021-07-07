@@ -331,9 +331,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                     <div class="row">
                         <div class="col">
+<!-- ///////////// WORK IN PROGRESS ////////////// -->
                             <div class="form-group">
                                 <label for="">Status</label>
-                                <select name="status" class="form-control">
+                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
                                     <option value="" id="e_status"></option>
                                     @if (in_array(Auth::user()->role, [889, 777, 999]))
                                     <option value="success">Success</option>
@@ -356,6 +357,23 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
+<!-- //////////////////////////////////// -->
+                        <div class="d-none col-12" id="yfailed">
+                            <div class="form-group">
+                            <label for="feedback">Feedback</label>
+                                <select name="feedbackstatus" class="form-control">
+                                    <option value="NULL">NULL</option>
+                                    <option value="feedone">feedback one</option>
+                                    <option value="feedone">feedback one</option>
+                                    <option value="feedtwo">feedback Two</option>
+                                    <option value="feedthree">feedback Three</option>
+                                    <option value="feedfour">feedback Four</option>
+                                    <option value="feedfive">feedback Five</option>
+                                    <option value="feedsix">feedback Six</option>
+                                </select>
+                            </div>
+                        </div>
+<!-- /////////////////////////////////////// -->
                     </div>
                 </div>
                 <div class="modal-footer">

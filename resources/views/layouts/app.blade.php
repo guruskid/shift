@@ -65,6 +65,8 @@ $not = $nots->last();
                 ]
             ])
         !!};
+
+        
     </script>
 
 
@@ -247,13 +249,16 @@ $not = $nots->last();
     @endif
     @endauth
 
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
             $('.transactions-table').DataTable({
                 paging: true,
                 order: [[0, 'desc'] ]
             });
         });
+
+       
+                  
 
     </script>
 
@@ -278,6 +283,24 @@ $not = $nots->last();
     @endif
 
     @yield('scripts')
+
+    <script type="text/javascript">
+        const __st_id = (feedback) => document.getElementById(feedback)
+        
+        const feedback_status = () => {
+             const feedback = __st_id("f_status")
+             if(feedback.value == "failed"){
+                 __st_id("yfailed").classList.remove("d-none")
+                 __st_id("yfailed").classList.add("d-block")
+             }else{
+                 __st_id("yfailed").classList.remove("d-block")
+                 __st_id("yfailed").classList.add("d-none")
+                 console.log("this is working")
+             }
+         }
+
+         feedback_status()
+    </script>
 
 </body>
 
