@@ -106,6 +106,97 @@
                         </div>
                     </div>
                 </div>
+
+
+                <div class="col-md-12">
+                    <div class="main-card mb-3 card">
+                        <div class="card-body">
+                           <form action="{{ route('live-balance.transactions') }}" method="get">
+                                <div class="form-inline mb-3">
+                                    <label class="mr-2">Start</label>
+                                    <input type="datetime-local" name="start" class="form-control mr-4">
+
+                                    <label class="mr-2">End</label>
+                                    <input type="datetime-local" name="end" class="form-control mr-4">
+
+                                    <button class="btn btn-primary">Sort</button>
+                                </div>
+                           </form>
+                            <ul class="nav nav-tabs nav-justified">
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0"
+                                        class="active nav-link">Credit Transactions</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Debit Transactions</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                {{-- Sell TXNS --}}
+                                <div class="tab-pane active" id="tab-eg11-0" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="mb-2 transactions-table table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>User</th>
+                                                    <th>Type</th>
+                                                    <th>BTC</th>
+                                                    <th>Status</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($credit_transactions as $transaction)
+                                                <tr>
+                                                    <td>{{ $transaction->id }}</td>
+                                                    <td>{{ $transaction->user->first_name }}</td>
+                                                    <td>{{ $transaction->type->name }}</td>
+                                                    <td>{{ number_format((float)$transaction->debit, 8) }}</td>
+                                                    <td>{{ucwords($transaction->status)}}</td>
+                                                    <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+
+
+
+                                        </table>
+                                    </div>
+                                </div>
+                                {{-- Buy TXNS --}}
+                                <div class="tab-pane" id="tab-eg11-1" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="mb-2 transactions-table table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>User</th>
+                                                    <th>Type</th>
+                                                    <th>BTC</th>
+                                                    <th>Status</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($debit_transactions as $transaction)
+                                                <tr>
+                                                    <td>{{ $transaction->id }}</td>
+                                                    <td>{{ $transaction->user->first_name }}</td>
+                                                    <td>{{ $transaction->type->name }}</td>
+                                                    <td>{{ number_format((float)$transaction->credit, 8) }}</td>
+                                                    <td>{{ucwords($transaction->status)}}</td>
+                                                    <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+
+
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

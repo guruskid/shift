@@ -33,11 +33,11 @@ class BitcoinWalletController extends Controller
         $transactions = BitcoinTransaction::latest()->paginate(200);
 
         $hd_wallets = BitcoinWallet::where('primary_wallet_id', 0)->get();
-        foreach ($hd_wallets as $wallet ) {
+        /* foreach ($hd_wallets as $wallet ) {
             $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_MAINNET, $wallet->name);
             $live_balance += $result->payload->totalBalance;
-        }
-        /* $live_balance = 30; */
+        } */
+        $live_balance = 30;
 
 
         return view('admin.bitcoin_wallet.index', compact('charges', 'service_fee', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
@@ -75,13 +75,31 @@ class BitcoinWalletController extends Controller
         return view('admin.bitcoin_wallet.live_summary', compact('credit_transactions', 'debit_transactions'));
     }
 
-    public function hdWallets()
+    public function hdWallets(Request $request)
     {
         $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
         $fees = $fees_req->payload->recommended;
         $hd_wallets = BitcoinWallet::where('type', 'primary')->get();
 
-        return view('admin.bitcoin_wallet.hd_wallets', compact('hd_wallets', 'fees'));
+        if ($request->start && $request->end) {
+
+            $credit_transactions = BitcoinTransaction::where('transaction_type_id', 20)->where('status', 'success')
+            ->where('created_at', '>=', $request->start)->where('created_at', '<=', $request->end)
+            ->paginate(200);
+
+            $debit_transactions = BitcoinTransaction::whereIn('transaction_type_id', [19, 21])->where('status', 'success')
+            ->where('created_at', '>=', $request->start)->where('created_at', '<=', $request->end);
+
+
+            $debit_transactions = $debit_transactions->where(['transaction_type_id' => 21, 'user_id' => 1])->paginate(200);
+        } else {
+            $credit_transactions = BitcoinTransaction::where('transaction_type_id', 20)->where('status', 'success')->paginate(200);
+            $debit_transactions = BitcoinTransaction::whereIn('transaction_type_id', [19, 21])->where('status', 'success');
+
+            $debit_transactions = $debit_transactions->where(['transaction_type_id' => 21, 'user_id' => 1])->paginate(200);
+        }
+
+        return view('admin.bitcoin_wallet.hd_wallets', compact('hd_wallets', 'fees', 'credit_transactions', 'debit_transactions'));
     }
 
     public function charges()
