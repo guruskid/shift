@@ -95,7 +95,7 @@
                                                     <td>{{ $transaction->id }}</td>
                                                     <td>{{ $transaction->user->first_name }}</td>
                                                     <td>{{ $transaction->type->name }}</td>
-                                                    <td>{{ number_format((float)$transaction->quantity, 8) }}</td>
+                                                    <td>{{ number_format((float)$transaction->credit, 8) }}</td>
                                                     <td>{{ucwords($transaction->status)}}</td>
                                                     <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
                                                 </tr>
@@ -127,7 +127,7 @@
                                                     <td>{{ $transaction->id }}</td>
                                                     <td>{{ $transaction->user->first_name }}</td>
                                                     <td>{{ $transaction->type->name }}</td>
-                                                    <td>{{ number_format((float)$transaction->quantity, 8) }}</td>
+                                                    <td>{{ number_format((float)$transaction->debit, 8) }}</td>
                                                     <td>{{ucwords($transaction->status)}}</td>
                                                     <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
                                                 </tr>
