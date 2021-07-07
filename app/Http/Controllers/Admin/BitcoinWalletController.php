@@ -27,7 +27,7 @@ class BitcoinWalletController extends Controller
         $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
         $service_fee = BitcoinWallet::where('name', 'bitcoin trade fee')->first()->balance ?? 0;
         $hd_wallets_balance = BitcoinWallet::where('type', 'primary')->sum('balance');
-        
+
         $users_wallet_balance = BitcoinWallet::where('type', 'secondary')->where('user_id', '!=', 1)->sum('balance');
         $live_balance = 0; //get from api
         $transactions = BitcoinTransaction::latest()->paginate(200);
@@ -37,6 +37,7 @@ class BitcoinWalletController extends Controller
             $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_MAINNET, $wallet->name);
             $live_balance += $result->payload->totalBalance;
         }
+        /* $live_balance = 30; */
 
 
         return view('admin.bitcoin_wallet.index', compact('charges', 'service_fee', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
@@ -52,17 +53,26 @@ class BitcoinWalletController extends Controller
         return view('admin.bitcoin_wallet.wallets', compact(['wallets', 'bitcoin_charge', 'bitcoin_buy_charge', 'bitcoin_sell_charge']));
     }
 
-    public function liveBalance()
+    public function liveBalanceTransactions(Request $request)
     {
-        $hd_wallets = BitcoinWallet::where('primary_wallet_id', 0)->get();
-        $total = 0;
 
-        foreach ($hd_wallets as $wallet ) {
-            $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_TESTNET, $wallet->name);
-            \Log::info($wallet->name. ' '.$result->payload->totalBalance);
-            $total += $result->payload->totalBalance;
+        if ($request->start && $request->end) {
+
+            $credit_transactions = BitcoinTransaction::where('transaction_type_id', 22)->where('status', 'success')
+            ->where('created_at', '>=', $request->start)->where('created_at', '<=', $request->end)
+            ->paginate(200);
+
+            $debit_transactions = BitcoinTransaction::where('transaction_type_id', 21)->where('status', 'success')
+            ->where('created_at', '>=', $request->start)->where('created_at', '<=', $request->end)
+            ->paginate(200);
+        } else {
+            $credit_transactions = BitcoinTransaction::where('transaction_type_id', 22)->where('status', 'success')->paginate(200);
+            $debit_transactions = BitcoinTransaction::where('transaction_type_id', 21)->where('status', 'success')->paginate(200);
         }
-        //return response()->json([])
+
+
+
+        return view('admin.bitcoin_wallet.live_summary', compact('credit_transactions', 'debit_transactions'));
     }
 
     public function hdWallets()
@@ -133,7 +143,7 @@ class BitcoinWalletController extends Controller
     public function transferCharges(Request $r)
     {
         $data = $r->validate([
-            'fees'=> 'required',
+            'fees' => 'required',
             'amount' => 'required',
             'pin' => 'required',
             'address' => 'required',
@@ -147,9 +157,9 @@ class BitcoinWalletController extends Controller
         $total = $data['amount'] + $data['fees'];
         $charges_wallet = BitcoinWallet::where('name', $data['wallet'])->first();
         $primary_wallet = BitcoinWallet::where('type', 'primary')->first();
-        
 
-        if ($total > $charges_wallet->balance ) {
+
+        if ($total > $charges_wallet->balance) {
             return back()->with(['error' => 'Insufficient balance']);
         }
 
@@ -169,7 +179,7 @@ class BitcoinWalletController extends Controller
         $btc_transaction->current_balance = $charges_wallet->balance;
         $btc_transaction->transaction_type_id = 21;
         $btc_transaction->counterparty = $data['address'];
-        $btc_transaction->narration = 'Sending bitcoin to ' . $data['address'] . ' Authorized by '. Auth::user()->first_name;
+        $btc_transaction->narration = 'Sending bitcoin to ' . $data['address'] . ' Authorized by ' . Auth::user()->first_name;
         $btc_transaction->confirmations = 0;
         $btc_transaction->status = 'pending';
         $btc_transaction->save();
@@ -203,7 +213,6 @@ class BitcoinWalletController extends Controller
 
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
-
     }
 
     public function serviceFee()
@@ -231,7 +240,7 @@ class BitcoinWalletController extends Controller
     public function sendFromHd(Request $r)
     {
         $data = $r->validate([
-            'primary_wallet'=> 'required|integer',
+            'primary_wallet' => 'required|integer',
             'address' => 'required',
             'amount' => 'required',
             'wallet_password' => 'required',
@@ -255,7 +264,7 @@ class BitcoinWalletController extends Controller
             return back()->with(['error' => 'Incorrect account password']);
         }
 
-        if ($total > $primary_wallet->balance ) {
+        if ($total > $primary_wallet->balance) {
             return back()->with(['error' => 'Insufficient balance']);
         }
 
@@ -275,7 +284,7 @@ class BitcoinWalletController extends Controller
         $btc_transaction->current_balance = $primary_wallet->balance;
         $btc_transaction->transaction_type_id = 21;
         $btc_transaction->counterparty = $data['address'];
-        $btc_transaction->narration = 'Sending bitcoin to ' . $data['address'] . ' Authorized by '. Auth::user()->first_name;
+        $btc_transaction->narration = 'Sending bitcoin to ' . $data['address'] . ' Authorized by ' . Auth::user()->first_name;
         $btc_transaction->confirmations = 0;
         $btc_transaction->status = 'pending';
         $btc_transaction->save();
@@ -308,7 +317,6 @@ class BitcoinWalletController extends Controller
 
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
-
     }
 
     public function transactions()
@@ -395,7 +403,7 @@ class BitcoinWalletController extends Controller
 
         if ($transaction->type == 'buy') {
             $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
-            $charge = ($charge /100) * $transaction->quantity;
+            $charge = ($charge / 100) * $transaction->quantity;
             /* Cross Check Balance */
             if ($primary_wallet->balance < $transaction->quantity) {
                 return redirect()->back()->with(['error' => 'Insufficient primary wallet balance']);
@@ -439,7 +447,7 @@ class BitcoinWalletController extends Controller
             $primary_wallet->save();
         } elseif ($transaction->type == 'sell') {
             $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
-            $charge = ($charge /100) * $transaction->quantity;
+            $charge = ($charge / 100) * $transaction->quantity;
             $btc_txn_type = 20;
             if ($user_btc_wallet->balance < ($transaction->quantity /* + $charge */)) {
                 return redirect()->back()->with(['error' => 'Insufficient user bitcoin wallet balance, when charge was included']);
@@ -475,7 +483,6 @@ class BitcoinWalletController extends Controller
             $nt->dr_user_id = 1;
             $nt->status = 'success';
             $nt->save();
-
         } else {
             return back()->with(['error' => 'Invalid transaction']);
         }

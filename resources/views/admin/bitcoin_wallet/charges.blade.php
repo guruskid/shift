@@ -151,7 +151,7 @@
                                         <td class="text-center">{{$t->id}}</td>
                                         <td class="text-center">{{$t->type->name}}</td>
                                         <td class="text-center">
-                                            {{$t->debit == 0 ? number_format((float)$t->credit, 8) : number_format((float)$t->debit)}}
+                                            {{$t->debit == 0 ? number_format((float)$t->credit, 8) : number_format((float)$t->debit, 8)}}
                                         </td>
                                         <td class="text-center">{{number_format((float)$t->charge, 8)}}</td>
                                         <td class="text-center">{{ucwords($t->status)}} </td>

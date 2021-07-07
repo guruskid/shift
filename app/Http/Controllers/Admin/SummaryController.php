@@ -60,8 +60,7 @@ class SummaryController extends Controller
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        //$transactions = Transaction::->paginate(200);
-        //dd($data['start']);
+        
         $sell_transactions = Transaction::where('card_id', 102)->where('type', 'sell')
         ->where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])
         ->where('status', 'success')->get();
