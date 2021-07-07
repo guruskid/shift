@@ -181,7 +181,11 @@
                                                     <td>{{ $transaction->id }}</td>
                                                     <td>{{ $transaction->user->first_name }}</td>
                                                     <td>{{ $transaction->type->name }}</td>
+                                                    @if ($transaction->credit == 0)
+                                                    <td>{{ number_format((float)$transaction->debit, 8) }}</td>
+                                                    @else
                                                     <td>{{ number_format((float)$transaction->credit, 8) }}</td>
+                                                    @endif
                                                     <td>{{ucwords($transaction->status)}}</td>
                                                     <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
                                                 </tr>
