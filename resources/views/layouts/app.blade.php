@@ -66,7 +66,7 @@ $not = $nots->last();
             ])
         !!};
 
-        
+
     </script>
 
 
@@ -257,8 +257,8 @@ $not = $nots->last();
             });
         });
 
-       
-                  
+
+
 
     </script>
 
@@ -285,21 +285,34 @@ $not = $nots->last();
     @yield('scripts')
 
     <script type="text/javascript">
-        const __st_id = (feedback) => document.getElementById(feedback)
-        
+        const __st_id = (activity) => document.getElementById(activity)
+
+        const hideit = (ide) => {
+            __st_id(ide).classList.remove("d-block")
+            __st_id(ide).classList.add("d-none")
+        }
+
+        const showit = (ide) => {
+            __st_id(ide).classList.remove("d-none")
+            __st_id(ide).classList.add("d-block")
+        }
+
         const feedback_status = () => {
              const feedback = __st_id("f_status")
              if(feedback.value == "failed"){
-                 __st_id("yfailed").classList.remove("d-none")
-                 __st_id("yfailed").classList.add("d-block")
+                showit("yfailed")
+                hideit("ydeclined")
+             }else if(feedback.value == "declined"){
+                hideit("yfailed")
+                showit("ydeclined")
              }else{
-                 __st_id("yfailed").classList.remove("d-block")
-                 __st_id("yfailed").classList.add("d-none")
-                 console.log("this is working")
+                hideit("ydeclined")
+                hideit("yfailed")
+                console.log("this is working")
              }
          }
 
-         feedback_status()
+
     </script>
 
 </body>

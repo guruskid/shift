@@ -10,7 +10,7 @@ const btcusdapi = () => {
 	ajax.send()
 }
 
-btcusdapi()
+// btcusdapi()
 
 const btccharge = (enterAmount) => {
 
@@ -75,6 +75,15 @@ const showRate = (rType) => {
     // Where it will be submitted will be here
 
 }
+
+const showFeedback = (feedback) => {
+    swal({
+        title: "Feedback",
+        text: feedback,
+        icon: "warning"
+    })
+}
+
 
 
 

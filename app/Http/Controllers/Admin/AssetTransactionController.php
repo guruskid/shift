@@ -32,6 +32,16 @@ class AssetTransactionController extends Controller
     public function editTransaction(Request $r)
     {
 
+        $actualFeedback = "";
+
+            if($r->status == "failed"){
+                $actualFeedback = $r->failfeedbackstatus;
+            }elseif($r->status == "declined"){
+                $actualFeedback = $r->declinefeedbackstatus;
+            }
+
+        // dd($actualFeedback);
+
         // dd($r->feedbackstatus);
         $t = Transaction::find($r->id);
         $t->card = Card::find($r->card_id)->name;
@@ -41,10 +51,10 @@ class AssetTransactionController extends Controller
         $t->amount = $r->amount;
         $t->amount_paid = $r->amount_paid;
         $t->status = $r->status;
-        $t->feedback = $r->feedbackstatus;
+        $t->feedback = $actualFeedback;
         $t->last_edited = Auth::user()->email;
         $t->save();
-        
+
         $user = $t->user; //Users should see success when a transaction is approved
         if ($t->status == 'approved') {
             $t->stats = 'success';
