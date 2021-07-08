@@ -153,7 +153,7 @@
                                                         </td>
                                                         <td>{{ $transaction->created_at->format('M.d Y') }}</td>
                                                         <td>{{ $transaction->created_at->format('h:ia') }}</td>
-                                                        <td>
+                                                        <td style="display: flex;">
                                                             @switch($transaction->status)
                                                             @case('success')
                                                             <span
@@ -173,12 +173,20 @@
                                                             @break
                                                             @case('failed')
                                                             <span
-                                                                class="status_declined">{{ $transaction->status }}</span>
+                                                                class="status_declined">{{ $transaction->status }}
+
+                                                            </span>
                                                             @break
                                                             @default
                                                             <span
                                                                 class="status_waiting">{{ $transaction->status }}</span>
                                                             @endswitch
+                                                            @if ($transaction->status == "failed")
+                                                                <span style="margin-left: -24px; margin-top: -16px" class="btn rounded-pill" onmouseover="showFeedback('{{ $transaction->feedback }}')"><i style="font-size:16px; " class="text-danger fa fa-info-circle"></i></span>
+                                                            @endif
+                                                            @if ($transaction->status == "declined")
+                                                                <span style="margin-left: -25px; postion: absolute; margin-top: -16px" class="btn rounded-pill" onmouseover="showFeedback('{{ $transaction->feedback }}')"><i style="font-size:16px; " class="text-danger fa fa-info-circle"></i></span>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -200,3 +208,4 @@
 </div>
 
 @endsection
+
