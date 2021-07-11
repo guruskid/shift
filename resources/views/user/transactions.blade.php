@@ -1,5 +1,8 @@
 @extends('layouts.user')
 @section('content')
+
+
+
 <div class="app-main">
     <div class="app-sidebar sidebar-shadow">
         <div class="app-header__logo">

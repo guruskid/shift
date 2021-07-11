@@ -65,6 +65,8 @@ $not = $nots->last();
                 ]
             ])
         !!};
+
+
     </script>
 
 
@@ -247,13 +249,16 @@ $not = $nots->last();
     @endif
     @endauth
 
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
             $('.transactions-table').DataTable({
                 paging: true,
                 order: [[0, 'desc'] ]
             });
         });
+
+
+
 
     </script>
 
@@ -278,6 +283,37 @@ $not = $nots->last();
     @endif
 
     @yield('scripts')
+
+    <script type="text/javascript">
+        const __st_id = (activity) => document.getElementById(activity)
+
+        const hideit = (ide) => {
+            __st_id(ide).classList.remove("d-block")
+            __st_id(ide).classList.add("d-none")
+        }
+
+        const showit = (ide) => {
+            __st_id(ide).classList.remove("d-none")
+            __st_id(ide).classList.add("d-block")
+        }
+
+        const feedback_status = () => {
+             const feedback = __st_id("f_status")
+             if(feedback.value == "failed"){
+                showit("yfailed")
+                hideit("ydeclined")
+             }else if(feedback.value == "declined"){
+                hideit("yfailed")
+                showit("ydeclined")
+             }else{
+                hideit("ydeclined")
+                hideit("yfailed")
+                console.log("this is working")
+             }
+         }
+
+
+    </script>
 
 </body>
 

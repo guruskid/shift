@@ -95,7 +95,14 @@ Route::get('/newlogin', function () {
 //mobile and tab done
 Route::get('/newsignup', function () {
     return view('newpages.newsignup');
+
 });
+
+// buy airtime with bitcoin
+// Route::get('/bitcoin-airtime', function () {
+//     return view('newpages.buyairtime');
+
+// });
 
 
 
@@ -204,9 +211,11 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName', 'verifie
     // Route::view('/paytv', 'newpages.smartbudget')->name('user.paytv');
     Route::get('/paytv', 'BillsPaymentController@disabledView')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@paytv')->name('user.paytv');
-    Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge');
-    // Route::post('/airtime', 'BillsPaymentController@airtime')->name('user.airtime');
-    Route::post('/airtime', 'BillsPaymentController@buyAirtime')->name('user.airtime');
+    // Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge'); //for naira wallet Airtime view
+    Route::get('/airtime', 'BillsPaymentController@nairaRate')->name('user.airtime'); // for the naira rate for the bitcoin
+
+    Route::post('/airtime', 'BillsPaymentController@buyAirtime')->name('user.airtime'); // the post for the naira wallet
+    Route::post('/bitcoin-airtime', 'BillsPaymentController@bitcoinAirtime')->name('user.bitcoin-airtime'); // the post for the bitcoin wallet
     Route::get('/data', 'BillsPaymentController@disabledView')->name('user.data');
     Route::get('/discounted-airtime', 'BillsPaymentController@disabledView')->name('user.discount-airtime');
     Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
