@@ -52,6 +52,22 @@ $not = $nots->last();
             max-width: 300px;
         }
 
+        .tooltip {
+            max-width: 200px;
+            padding: 3px 8px;
+            color: #fff;
+            text-align: center;
+            background-color: #000070 !important;
+            border-radius: .25rem;
+        }
+
+        .tooltip.bs-tooltip-auto[x-placement^=top] .arrow::before, .tooltip.bs-tooltip-top {
+            margin-left: -3px;
+            content: "";
+            border-width: 5px 5px 0;
+            border-top-color: #000070 !important;
+        }
+
     </style>
     <script>
         window.Laravel = {!! json_encode([
@@ -314,6 +330,12 @@ $not = $nots->last();
 
 
     </script>
+
+<script>
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 
 </body>
 

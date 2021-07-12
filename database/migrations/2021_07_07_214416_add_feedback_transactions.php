@@ -14,7 +14,7 @@ class AddFeedbackTransactions extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->longText('feedback');
+            $table->longText('feedback')->nullable();
         });
     }
 
