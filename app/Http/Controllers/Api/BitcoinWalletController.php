@@ -36,9 +36,16 @@ class BitcoinWalletController extends Controller
         $tp = ($trading_per / 100) * $btc_rate;
         $btc_rate -= $tp;
 
+        $card = Card::find(102);
+        $rates = $card->currency->first();
+        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        $usd_ngn = $rates->sell[0]->rate;
+
         return response()->json([
             'success' => true,
-            'btc_usd' => $btc_rate
+            'btc_usd' => $btc_rate,
+            'usd_ngn' => $usd_ngn
         ]);
     }
 

@@ -29,6 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/countries', 'Api\AuthController@countries' );
 
     Route::get('/check-phone/{phone}', 'Api\UserController@checkPhone');
+    Route::GET('/bitcoin-wallet/price', 'Api\BitcoinWalletController@btcPrice');
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('email/resend', 'Api\VerificationController@resend')->name('verification.resend');
@@ -82,7 +83,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         //BTC Wallet
         Route::group(['prefix' => 'bitcoin-wallet'], function () {
-            Route::GET('/price', 'Api\BitcoinWalletController@btcPrice');
+
             Route::POST('/create', 'Api\BitcoinWalletController@create');
             Route::GET('/balance', 'Api\BitcoinWalletController@balance');
             Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');
