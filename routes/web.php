@@ -78,9 +78,9 @@ Route::get('/recharge', function () {
 });
 
 //Mobile and Tab done
-Route::get('/buyairtime', function () {
-    return view('newpages.buyairtime');
-});
+// Route::get('/buyairtime', function () {
+//     return view('newpages.buyairtime');
+// });
 
 //Mobile and tab done
 Route::get('/buydata', function () {

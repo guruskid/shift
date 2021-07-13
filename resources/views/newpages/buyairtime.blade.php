@@ -259,7 +259,7 @@
 
                                                             <div class="form-group mt-4 mx-2">
 
-                                                                <label for="amount" style="color: #000070; font-weight: bolder">Amount (btc)</label><br>
+                                                                <label for="amount" style="color: #000070; font-weight: bolder">Amount (₦)</label><br>
                                                                 <span id="btcMsg" class="text-danger"></span>
                                                                 {{-- Hidden form start's here --}}
                                                                 {{-- <input type="hidden" id="currentBtcRate" value="{{ $btc_rate }}">
