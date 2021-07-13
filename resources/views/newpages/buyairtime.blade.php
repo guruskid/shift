@@ -53,7 +53,8 @@
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price realtime-wallet-balance"></span>
+                                    {{-- <span class="d-block price realtime-wallet-balance">{{$balance}}</span> --}}
+                                    <span class="d-block price">₦{{$balance}}</span>
                                     </div>
                                 </div>
                             </div>

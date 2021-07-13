@@ -303,6 +303,10 @@ class BillsPaymentController extends Controller
 
     public function nairaRate()
     {
+        $naira_wallet = Auth::user()->nairaWallet;
+        $balance = $naira_wallet->amount;
+        // dd($balance);
+
         $card = Card::find(102);
         $rates = $card->currency-> first();
 
@@ -325,22 +329,22 @@ class BillsPaymentController extends Controller
 
         // dd($body);
 
-         if ($body->response_description == "000") {
+         if ($body->response_description == 000) {
             $providers = $body->content[0]->identifier;
             // dd($providers);
 
-        return view('newpages.buyairtime', compact('card', 'rate_naira', 'btc_rate', 'providers'));
+        return view('newpages.buyairtime', compact('card', 'rate_naira', 'btc_rate', 'providers', 'balance'));
          }
 
-         elseif ($body->response_description == "021") {
+         elseif ($body->response_description == 021) {
             return back()->with(['error'=> 'Your account is locked']);
          }
 
-         elseif ($body->response_description == "022") {
+         elseif ($body->response_description == 022) {
             return back()->with(['error'=> 'Your account is suspended']);
          }
 
-         elseif ($body->response_description == "024") {
+         elseif ($body->response_description == 024) {
             return back()->with(['error'=> 'Your account is inactive']);
          }
     }
@@ -395,8 +399,12 @@ class BillsPaymentController extends Controller
             return back()->with(['error'=> 'Insufficient balance']);
         }
 
-        if($request->amount < 0){
-            return back()->with(['error' => 'Invalid Amount']);
+        if($request->amount < 100){
+            return back()->with(['error' => 'Minimium Amount is ₦100']);
+        }
+
+        if($request->amount > 25000){
+            return back()->with(['error' => 'Maximum Amount is ₦25000']);
         }
 
         $priceDeduction = $balance - $request->amount;
@@ -497,7 +505,7 @@ class BillsPaymentController extends Controller
             return back()->with(['error'=> 'Your account is suspended']);
         }
 
-        elseif ($body->response_description == "024") {
+        elseif ($body->code == 024) {
             $nt->status ='failed';
             $nt->save();
             $new_balance = $naira_wallet->update([
@@ -599,8 +607,12 @@ class BillsPaymentController extends Controller
             return back()->with(['error'=> 'Insufficient balance']);
         }
 
-        if($amt_btc < 0){
-            return back()->with(['error' => 'Invalid Amount']);
+        if($request->amount < 100){
+            return back()->with(['error' => 'Minimium Amount is ₦100']);
+        }
+
+        if($request->amount > 25000){
+            return back()->with(['error' => 'Maximum Amount is ₦25000']);
         }
 
         $priceDeduction = $balance - $amt_btc;
@@ -711,6 +723,16 @@ class BillsPaymentController extends Controller
 
             return back()->with(['error'=> 'Your account is suspended']);
         }
+
+        elseif ($body->code == 024) {
+            $bt->status ='failed';
+            $bt->save();
+            $new_balance = $bitcoin_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return back()->with(['error'=> 'Your account is inactive']);
+         }
 
         else{
             $bt->status ='failed';
