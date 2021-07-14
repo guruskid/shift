@@ -182,10 +182,10 @@
                                                                 class="status_waiting">{{ $transaction->status }}</span>
                                                             @endswitch
                                                             @if ($transaction->status == "failed")
-                                                                <span style="margin-left: -24px; margin-top: -16px" class="btn rounded-pill" onmouseover="showFeedback('{{ $transaction->feedback }}')"><i style="font-size:16px; " class="text-danger fa fa-info-circle"></i></span>
+                                                                <span style="margin-left: -24px; margin-top: -16px" data-toggle="tooltip" data-type="info" title="{{ $transaction->feedback }}" class="btn rounded-pill" ><i style="font-size:16px; " class="text-danger fa fa-info-circle"></i></span>
                                                             @endif
                                                             @if ($transaction->status == "declined")
-                                                                <span style="margin-left: -25px; postion: absolute; margin-top: -16px" class="btn rounded-pill" onmouseover="showFeedback('{{ $transaction->feedback }}')"><i style="font-size:16px; " class="text-danger fa fa-info-circle"></i></span>
+                                                                <span data-toggle="tooltip" title="{{ $transaction->feedback }}" data-type="info" style="margin-left: -25px; postion: absolute; margin-top: -16px" class="btn rounded-pill" ><i style="font-size:16px; " class="text-danger fa fa-info-circle"></i></span>
                                                             @endif
                                                         </td>
                                                     </tr>
