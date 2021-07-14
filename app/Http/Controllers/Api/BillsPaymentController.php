@@ -33,17 +33,12 @@ public function nairaRate()
         return response()->view('newpages.buyairtime', compact('card', 'rate_naira', 'btc_rate', 'providers', 'balance'));
          }
 
-         elseif ($body->response_description == 021) {
-            return back()->with(['error'=> 'Your account is locked']);
-         }
-
-         elseif ($body->response_description == 022) {
-            return back()->with(['error'=> 'Your account is suspended']);
-         }
-
-         elseif ($body->response_description == 024) {
-            return back()->with(['error'=> 'Your account is inactive']);
-         }
+         else{
+             return response()->json([
+                'success' => false,
+                'message' => 'Please try again later',
+            ]);
+        }
     }
 
     public function buyAirtime(Request $request)
@@ -189,7 +184,6 @@ public function nairaRate()
                 'response_description' => 'TRANSACTION SUCCESSFUL',
                 'message' => 'Your recharge is successful'
             ]);
-            return back()->with(['success'=> 'Your recharge is successful']);
         }
 
        elseif ($body->code == 016){
@@ -323,21 +317,37 @@ public function nairaRate()
 
         if(!$hash)
         {
-            return back()->with(['error' => 'Incorrect Pin']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect Pin',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
         }
 
         // dd($balance);
 
-        if($amt_btc > $balance){
-            return back()->with(['error'=> 'Insufficient balance']);
+        if($request->amount > $balance){
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
         }
 
         if($request->amount < 100){
-            return back()->with(['error' => 'Minimium Amount is ₦100']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Minimium amount is ₦100',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
         }
 
         if($request->amount > 25000){
-            return back()->with(['error' => 'Maximum Amount is ₦25000']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Minimium amount is ₦25000',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
         }
 
         $priceDeduction = $balance - $amt_btc;
@@ -416,7 +426,11 @@ public function nairaRate()
             $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
             $snd_sms = $client->request('GET', $sms_url);
 
-            return back()->with(['success'=> 'Your recharge is successful']);
+            return response()->json([
+                'success' => true,
+                'response_description' => 'TRANSACTION SUCCESSFUL',
+                'message' => 'Your recharge is successful'
+            ]);
         }
 
         elseif($body->code == 016){
@@ -426,7 +440,11 @@ public function nairaRate()
                 "balance" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your recharge failed']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Your recharge failed',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
         }
 
         elseif ($body->code == 021){
@@ -436,7 +454,11 @@ public function nairaRate()
                 "balance" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is locked']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is locked',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
         }
 
         elseif ($body->code == 022){
@@ -446,7 +468,11 @@ public function nairaRate()
                 "balance" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is suspended']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is suspended',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
         }
 
         elseif ($body->code == 024) {
@@ -456,7 +482,11 @@ public function nairaRate()
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is inactive']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is inactive',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
          }
 
         else{
@@ -466,7 +496,10 @@ public function nairaRate()
                 "balance" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Please Try again later']);
-
+            return response()->json([
+                'success' => false,
+                'message' => 'Please try again later',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
         }
     }
