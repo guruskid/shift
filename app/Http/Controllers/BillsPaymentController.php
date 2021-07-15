@@ -919,5 +919,12 @@ class BillsPaymentController extends Controller
     public function disabledView()
     {
         return back()->with(['error' => 'Service currently not available']);
+
+    }
+
+    public function TimeToCash()
+    {
+        return view("user.test");
+        // dd("what's the problem");
     }
 }
