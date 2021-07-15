@@ -18,12 +18,18 @@
                 </div>
             </div>
             <div class="form-group mb-4">
-                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Bitcoin
+                <div class="d-flex justify-content-between" >
+                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Bitcoin
                     equivalent</label>
+
+                    <div>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(100)"> 100% </span>
+                    </div>
+
+                </div>
                 <div class="input-group mb-2 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
-                        <div class="input-group-text input_label">
-                            BTC</div>
+                        <div class="input-group-text input_label">BTC</div>
                     </div>
                     <input type="number" required step="any" min="0" name="quantity" v-model="btcBuy"
                         @keyup="getRateBtcBuy()" class="form-control bitcoin-input-radius">
@@ -91,6 +97,11 @@
                 this.btcBuy = this.nairaBuy / this.btcToNairaBuy;
                 this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
             }
+
+            // btcPercentage(percentage) {
+            //     console.log(this.percentage);
+            // }
+
         },
     }
 
