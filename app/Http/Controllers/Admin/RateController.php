@@ -14,9 +14,14 @@ use Illuminate\Support\Facades\Auth;
 
 class RateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
-        if (Auth::user()->role == 777) {
+        if (Auth::user()->role == 888) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -36,6 +41,10 @@ class RateController extends Controller
 
     public function store(Request $request)
     {
+        if (Auth::user()->role == 888) {
+            return redirect()->route('admin.dashboard');
+        }
+
         $request->validate([
             'card_id' => 'required|integer',
             'currency_id' => 'required|integer',
@@ -63,6 +72,10 @@ class RateController extends Controller
 
     public function update(Request $request)
     {
+        if (Auth::user()->role == 888) {
+            return redirect()->route('admin.dashboard');
+        }
+        
         $card_currency = CardCurrency::findOrFail($request->cc_id);
         $value = $request->values;
         $rate = $request->rates;

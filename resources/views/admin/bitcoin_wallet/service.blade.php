@@ -47,7 +47,7 @@
                             <i class="pe-7s-graph1 icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Charges
+                        <div>Service fee
                         </div>
                     </div>
                 </div>
@@ -60,9 +60,7 @@
                             <div class="widget-content-left">
                                 <div class="widget-heading">
                                     <h4>Charges</h4>
-                                    <h5>{{number_format((float)$charges, 8) }}BTC</h5>{{--
-                                    <button class="btn btn-danger" data-toggle="modal"
-                                        data-target="#confirm-transfer-modal">Transfer</button> --}}
+                                    <h5>{{number_format((float)$service_fee, 8) }}BTC</h5>
                                 </div>
                             </div>
                         </div>
@@ -74,7 +72,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Txn Fee</label>
-                                        <input type="hidden" value="bitcoin charges" name="wallet">
+                                        <input type="hidden" value="bitcoin trade fee" name="wallet">
                                         <input type="number" step="any" name="fees"
                                             value="{{ $fees ?? '' }}" class="form-control">
                                     </div>
@@ -101,27 +99,15 @@
                             <button class="btn btn-primary">Transfer</button>
                         </form>
                     </div>
+
                 </div>
                 <div class="col-md-6 mb-3">
                     <div class="card card-body py-3">
-                        <h5>Bitcoin Settings</h5>
-                        <form action="{{ route('admin.set-bitcoin-charge') }}" method="POST">@csrf
+                        <form action="{{ route('admin.set-service-fee') }}" method="POST">@csrf
                             <div class="form-group">
-                                <label for="">Send transaction charge</label>
-                                <input type="number" step="any" name="bitcoin_charge"
-                                    value="{{ $bitcoin_charge->value ?? '' }}" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="">Buy bitcoin charge (%)</label>
-                                <input type="number" step="any" name="bitcoin_buy_charge"
-                                    value="{{ $bitcoin_buy_charge->value ?? '' }}" class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="">Sell bitcoin charge (%)</label>
-                                <input type="number" step="any" name="bitcoin_sell_charge"
-                                    value="{{ $bitcoin_sell_charge->value ?? '' }}" class="form-control">
+                                <label for="">Service fee (%)</label>
+                                <input type="number" step="any" name="fee"
+                                    value="{{ $tp ?? '' }}" class="form-control">
                             </div>
                             <button class="btn btn-primary">Save</button>
                         </form>
@@ -140,7 +126,7 @@
                                         <th class="text-center">Id</th>
                                         <th class="text-center">Type</th>
                                         <th class="text-center">Amount</th>
-                                        <th class="text-center">Charge (BTC)</th>
+                                        <th class="text-center">Fee (BTC)</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Date</th>
                                     </tr>
@@ -151,9 +137,9 @@
                                         <td class="text-center">{{$t->id}}</td>
                                         <td class="text-center">{{$t->type->name}}</td>
                                         <td class="text-center">
-                                            {{$t->debit == 0 ? number_format((float)$t->credit, 8) : number_format((float)$t->debit, 8)}}
+                                            {{$t->debit == 0 ? number_format((float)$t->credit, 8) : number_format((float)$t->debit)}}
                                         </td>
-                                        <td class="text-center">{{number_format((float)$t->charge, 8)}}</td>
+                                        <td class="text-center">{{number_format((float)$t->fee, 8)}}</td>
                                         <td class="text-center">{{ucwords($t->status)}} </td>
                                         <td class="text-center">{{$t->created_at->format('d M y ')}}</td>
                                     </tr>

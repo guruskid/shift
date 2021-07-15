@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTransaction;
 use App\Notification;
+use App\Setting;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -33,9 +34,16 @@ class UserController extends Controller
 
     public function details()
     {
+        $versions = [
+            'ios_current' => Setting::where('name', 'ios_current')->first()->value,
+            'ios_stable' => Setting::where('name', 'ios_stable')->first()->value,
+            'android_current' => Setting::where('name', 'android_current')->first()->value,
+            'android_stable' => Setting::where('name', 'android_stable')->first()->value,
+        ];
         return response()->json([
             'success' => true,
             'data' => Auth::user(),
+            'versions' => $versions,
             'bank_details' => Auth::user()->accounts()->first()
         ]);
     }

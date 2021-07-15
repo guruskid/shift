@@ -77,7 +77,7 @@ class AdminController extends Controller
 
 
 
-        $client = new Client();
+       /*  $client = new Client();
         $url = env('RUBBIES_API') . "/balanceenquiry";
 
         $response = $client->request('POST', $url, [
@@ -88,9 +88,9 @@ class AdminController extends Controller
                 'authorization' => env('RUBBIES_SECRET_KEY'),
             ],
         ]);
-        $body = json_decode($response->getBody()->getContents());
+        $body = json_decode($response->getBody()->getContents()); */
 
-        $rubies_balance = $body->balance;
+        $rubies_balance = 0;
         $users_wallet_balance = NairaWallet::sum('amount');
         $company_balance = $rubies_balance - $users_wallet_balance;
 
@@ -426,7 +426,7 @@ class AdminController extends Controller
         return view('admin.users', compact(['users']));
     }
 
-    public function verify()
+    /* public function verify()
     {
         $users = User::where('status', 'waiting')->orderBy('updated_at', 'asc')->get();
         return view('admin.verify', compact(['users']));
@@ -444,7 +444,7 @@ class AdminController extends Controller
             'body' => 'The status of your account has been updated to ' . $user->status,
         ]);
         return redirect()->back()->with(['success' => 'User Status updated']);
-    }
+    } */
 
     public function walletId(Request $request)
     {
