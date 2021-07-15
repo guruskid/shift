@@ -76,11 +76,10 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges' )->name('admin.bitcoin.transfer-charges');
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
 
-<<<<<<< HEAD
-=======
+
     Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
 
->>>>>>> 5321a2e8ac81ecdc7336f7dcccacae606665c951
+
 
     //Trade Naira
     Route::prefix('trade-naira')->group(function () {
