@@ -23,7 +23,10 @@
                     equivalent</label>
 
                     <div>
-                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(100)"> 100% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage()"> 25% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage()"> 50% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage()"> 75% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage()"> 100% </span>
                     </div>
 
                 </div>
@@ -74,6 +77,12 @@
 
             }
         },
+
+        // methods: {
+        //     btcPercentage(){
+        //         console.log("this is console");
+        //     }
+        // }
         mounted() {
             console.log(this.usdToNairaBuy);
             this.btcToNairaBuy = this.btcToUsdBuy * this.usdToNairaBuy;
@@ -96,13 +105,14 @@
             getRateNgnBuy() {
                 this.btcBuy = this.nairaBuy / this.btcToNairaBuy;
                 this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
+            },
+
+            btcPercentage() {
+                this.usdBuy = this.btcToUsdBuy * this.btcBuy
+                this.nairaBuy = this.btcBuy * this.btcToNairaBuy
             }
-
-            // btcPercentage(percentage) {
-            //     console.log(this.percentage);
-            // }
-
         },
+
     }
 
 </script>
