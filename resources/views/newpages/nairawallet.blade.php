@@ -243,7 +243,11 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                         <div class="col-md-12">
                             <div class="position-relative form-group">
                                 <label>Account Name</label>
+                                @if (Auth::user()->accounts->count() == 0)
                                 <input type="text" required class="form-control " name="account_name">
+                                @else
+                                <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="account_name">
+                                @endif
                             </div>
                         </div>
 
@@ -276,7 +280,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                 <input type="nnumber" required class="form-control " name="otp">
                             </div>
                         </div>
-                        
+
                         @endif
 
 

@@ -9,6 +9,7 @@ use App\Http\Resources\CardResource;
 use App\Mail\DantownNotification;
 use App\Notification;
 use App\Pop;
+use App\Setting;
 use App\Transaction;
 use App\User;
 use Illuminate\Http\Request;
@@ -73,7 +74,12 @@ class TradeController extends Controller
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $btc_real_time = $res->bitcoin->usd;
 
-        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time']));
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $btc_real_time;
+
+        $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value;
+
+        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp']));
     }
 
     public function ethereum($card_id)

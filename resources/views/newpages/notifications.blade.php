@@ -65,13 +65,14 @@
                             <div class="card card-body mb-4 card-body_buyairtime">
                                 <div class="container px-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
                                     <div class="d-flex align-items-center mb-3 mb-md-0">
-                                        <div class="ml-2" style="color: #000070;font-size: 20px;">This Month</div>
+                                        <div class="ml-2" style="color: #000070;font-size: 20px;">{{ $month ?? 'All notifications' }}</div>
                                     </div>
                                     <div class="d-flex justify-content-center align-items-center mb-2 mb-md-0">
                                         <span class="mr-1" style="color: #000070;font-size:13px;">Filter by month</span>
                                         <form id="filtermonthForm" method="GET" action="{{route('user.notifications')}}">
                                             @csrf
                                             <select name="month" id="filter_month" class="custom-select">
+                                                <option value="">Select month</option>
                                                 <option value="01">January</option>
                                                 <option value="02">February</option>
                                                 <option value="03">March</option>
@@ -114,7 +115,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="d-none d-md-flex flex-column align-items-end">
-                                                    <span class="d-block">{{$notification->created_at}}</span>
+                                                    <span class="d-block">{{$notification->created_at->format('d M, y h:ia')}}</span>
                                                     <span class="d-block">
                                                         <svg width="26" height="25" viewBox="0 0 26 25" fill="none"
                                                             xmlns="http://www.w3.org/2000/svg">
@@ -168,7 +169,7 @@
                                                     <div class="mr-2">
                                                         <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <path d="M20 4.71143H4C2.9 4.71143 2.01 5.61143 2.01 6.71143L2 18.7114C2 19.8114 2.9 20.7114 4 20.7114H20C21.1 20.7114 22 19.8114 22 18.7114V6.71143C22 5.61143 21.1 4.71143 20 4.71143ZM20 8.71143L12 13.7114L4 8.71143V6.71143L12 11.7114L20 6.71143V8.71143Z" fill="#FFB800"/>
-                                                            </svg>                                                            
+                                                            </svg>
                                                     </div>
                                                     <div class="d-flex flex-column">
                                                         <span class="d-block font-weight-bold" style="color: #000070;">Successful Login From New IP</span>
