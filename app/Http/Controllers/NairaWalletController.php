@@ -373,7 +373,7 @@ class NairaWalletController extends Controller
 
     public function transfer(Request $r)
     {
-        
+
         //Check If user owns a wallet
         if (Auth::user()->accounts->count() == 0) {
             return redirect()->back()->with(['error' => 'Please add account details to continue']);
@@ -433,7 +433,7 @@ class NairaWalletController extends Controller
         $amount = $r->amount - $charge;
         //$amount_paid = $r->amount;
 
-        if ($r->amount > $n->amount) {
+        if ($r->amount > $n->amount || $r->amount < 0 ) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 

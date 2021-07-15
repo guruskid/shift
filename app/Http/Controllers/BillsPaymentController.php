@@ -10,11 +10,13 @@ use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
 use App\User;
+
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Exception;
@@ -29,7 +31,6 @@ class BillsPaymentController extends Controller
         }
         return view('newpages.rechargemenu');
     }
-
 
     public function getUser(Request $details)
     {
@@ -65,6 +66,9 @@ class BillsPaymentController extends Controller
         }
         return response()->json("Error occur");
     }
+
+
+
     public function CableView()
     {
 
@@ -292,8 +296,8 @@ class BillsPaymentController extends Controller
 
             return back()->with(['success' => 'Recharge made successfully']);
         } else {
-            \Log::info('User' . Auth::user()->first_name . ' bought airtime but it was declined');
-            \Log::info($body->responsemessage);
+            Log::info('User' . Auth::user()->first_name . ' bought airtime but it was declined');
+            Log::info($body->responsemessage);
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
     }
@@ -301,6 +305,10 @@ class BillsPaymentController extends Controller
 
     public function nairaRate()
     {
+        $naira_wallet = Auth::user()->nairaWallet;
+        $balance = $naira_wallet->amount;
+        // dd($balance);
+
         $card = Card::find(102);
         $rates = $card->currency-> first();
 
@@ -315,39 +323,37 @@ class BillsPaymentController extends Controller
         $btc_rate = $res->data->amount;
         // dd($rate_naira);
 
-        return view('newpages.buyairtime', compact('card', 'rate_naira', 'btc_rate'));
+        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+        $url =  "https://vtpass.com/api/service-categories";
+        $response = $client->request('GET', $url);
+
+        $body = json_decode($response->getBody()->getContents());
+
+        // dd($body);
+
+         if ($body->response_description == 000) {
+            $providers = $body->content[0]->identifier;
+            // dd($providers);
+
+        return view('newpages.buyairtime', compact('card', 'rate_naira', 'btc_rate', 'providers', 'balance'));
+         }
+
+         elseif ($body->response_description == 021) {
+            return back()->with(['error'=> 'Your account is locked']);
+         }
+
+         elseif ($body->response_description == 022) {
+            return back()->with(['error'=> 'Your account is suspended']);
+         }
+
+         elseif ($body->response_description == 024) {
+            return back()->with(['error'=> 'Your account is inactive']);
+         }
     }
 
     public function buyAirtime(Request $request)
     {
 
-
-
-        // $card = Card::find(102);
-        // $rates = $card->currency-> first();
-
-        // $sell = CardCurrency::where([
-        //     'card_id' => 102,
-        //     'currency_id' => $rates->id,
-        //     'buy_sell' => 2])->first()->paymentMediums()->first();
-        // $trade_rate = json_decode($sell->pivot->payment_range_settings);
-
-        // dd($trade_rate);
-
-        // $amt_usd= $request->amount/$trade_rate;
-
-        // $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
-
-        // $current_btc_rate = $res->new_amount;
-        // $amt_btc = $amt_usd/$current_btc_rate;
-
-
-        // dd($amt_btc);
-
-
-
-
-        // dd('stop');
         $request->validate([
             'network' => 'required',
             'reference' => 'required',
@@ -395,8 +401,12 @@ class BillsPaymentController extends Controller
             return back()->with(['error'=> 'Insufficient balance']);
         }
 
-        if($request->amount < 0){
-            return back()->with(['error' => 'Invalid Amount']);
+        if($request->amount < 100){
+            return back()->with(['error' => 'Minimium Amount is ₦100']);
+        }
+
+        if($request->amount > 25000){
+            return back()->with(['error' => 'Maximum Amount is ₦25000']);
         }
 
         $priceDeduction = $balance - $request->amount;
@@ -426,7 +436,7 @@ class BillsPaymentController extends Controller
         $nt->save();
 
         $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
-        $url = "https://sandbox.vtpass.com/api/pay";
+        $url =  "https://vtpass.com/api/pay";
         $response = $client->request('POST', $url, [
             'json' => [
                 // 'request_id' => Str::random(6),
@@ -497,6 +507,16 @@ class BillsPaymentController extends Controller
             return back()->with(['error'=> 'Your account is suspended']);
         }
 
+        elseif ($body->code == 024) {
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return back()->with(['error'=> 'Your account is inactive']);
+         }
+
         // elseif ($body->code == 083){
         //     $nt->status ='failed';
         //     $nt->save();
@@ -525,194 +545,208 @@ class BillsPaymentController extends Controller
 
 
 
-    public function bitcoinAirtime(Request $request)
-    {
-        $request->validate([
-            'network' => "required",
-            'reference' => 'required',
-            'amount' => "required",
-            'rechargetype' => 'string',
-            'password' => "required"
-        ]);
+    // public function bitcoinAirtime(Request $request)
+    // {
+    //     $request->validate([
+    //         'network' => "required",
+    //         'reference' => 'required',
+    //         'amount' => "required",
+    //         'rechargetype' => 'string',
+    //         'password' => "required"
+    //     ]);
 
 
-        if ($request->rechargetype == 'self') {
-            $phone = Auth::user()->country->phonecode . Auth::user()->phone;
-        } else{
-            $request->validate([
-                'phone' => 'required'
-            ]);
+    //     if ($request->rechargetype == 'self') {
+    //         $phone = Auth::user()->country->phonecode . Auth::user()->phone;
+    //     } else{
+    //         $request->validate([
+    //             'phone' => 'required'
+    //         ]);
 
-            $phone = $request->phone;
-        }
-
-
-        // dd($phone);
-
-        $card = Card::find(102);
-        $rates = $card->currency-> first();
-
-        $sell = CardCurrency::where([
-            'card_id' => 102,
-            'currency_id' => $rates->id,
-            'buy_sell' => 2])->first()->paymentMediums()->first();
-        $trade_rate = json_decode($sell->pivot->payment_range_settings);
-        //  dd($trade_rate);
+    //         $phone = $request->phone;
+    //     }
 
 
-        // dd($trade_rate);
+    //     // dd($phone);
 
-        // $amt_usd= $request->amount/$trade_rate;
+    //     $card = Card::find(102);
+    //     $rates = $card->currency-> first();
 
-        $amt_usd= $request->amount/$trade_rate[0]->rate;
-
-
-        $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
-        // dd($res);
-
-        $amt_btc = $amt_usd/$res->data->amount;
-
-        $bitcoin_wallet = Auth::user()->bitcoinWallet;
-        $balance = $bitcoin_wallet->balance;
-        $pin = $bitcoin_wallet->password;
-        $put_pin = $request->password;
-        $hash = Hash::check($put_pin, $pin);
-
-        if(!$hash)
-        {
-            return back()->with(['error' => 'Incorrect Pin']);
-        }
-
-        // dd($balance);
-
-        if($amt_btc > $balance){
-            return back()->with(['error'=> 'Insufficient balance']);
-        }
-
-        if($amt_btc < 0){
-            return back()->with(['error' => 'Invalid Amount']);
-        }
-
-        $priceDeduction = $balance - $amt_btc;
-        $new_balance = $bitcoin_wallet->update([
-            "balance" => $priceDeduction,
-        ]);
-
-        $bt = new BitcoinTransaction();
-        $bt->hash = $request->reference;
-        $bt->narration = $phone . ' ' . 'Payment for recharge card';
-        $bt->user_id = Auth::user()->id;
-        $bt->primary_wallet_id = 1;
-        $bt->wallet_id = $bitcoin_wallet->address;
-        $bt->previous_balance = $balance;
-        $bt->current_balance = $new_balance;
-        $bt->debit = $amt_btc;
-        $bt->fee = 0;
-        $bt->credit = 0;
-        $bt->charge = 0;
-        $bt->transaction_type_id = 9;
-        $bt->counterparty = $phone ;
-        $bt->confirmations = 3;
-        $bt->status = 'pending';
-        $bt->save();
-
-        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
-        $url = "https://sandbox.vtpass.com/api/pay";
-        $response = $client->request('POST', $url, [
-            'json' => [
-                // 'request_id' => Str::random(6),
-                'request_id' => $request->reference,
-                'serviceID' => $request->network,
-                'amount' => $request->amount,
-                'phone' => $request->phone
-            ]
-        ]);
-        $body = json_decode($response->getBody()->getContents());
-        // dd($body);
+    //     $sell = CardCurrency::where([
+    //         'card_id' => 102,
+    //         'currency_id' => $rates->id,
+    //         'buy_sell' => 2])->first()->paymentMediums()->first();
+    //     $trade_rate = json_decode($sell->pivot->payment_range_settings);
+    //     //  dd($trade_rate);
 
 
-        if ($body->code == 000) {
-            $bt->status = 'success';
-            $bt->save();
-            // dd('success');
+    //     // dd($trade_rate);
 
-            $naira_charge = $body->content->transactions->commission;
+    //     // $amt_usd= $request->amount/$trade_rate;
 
-            $sell = CardCurrency::where([
-                'card_id' => 102,
-                'currency_id' => $rates->id,
-                'buy_sell' => 2])->first()->paymentMediums()->first();
-            $trade_rate = json_decode($sell->pivot->payment_range_settings);
-
-            $charge_usd= $naira_charge/$trade_rate[0]->rate;
-
-            $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
-
-            $bt->charge = $charge_usd/$res->data->amount;
-            $bt->save();
+    //     $amt_usd= $request->amount/$trade_rate[0]->rate;
 
 
+    //     $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
+    //     // dd($res);
 
-            $title = 'Recharge card purchase';
-            $msg_body = 'Your Dantown wallet has been debited with N' . $request->amount . ' for recharge card purchase';
+    //     $amt_btc = $amt_usd/$res->data->amount;
 
-            $not = Notification::create([
-                'user_id' => Auth::user()->id,
-                'title' => $title,
-                'body' => $msg_body,
-            ]);
+    //     $bitcoin_wallet = Auth::user()->bitcoinWallet;
+    //     $balance = $bitcoin_wallet->balance;
+    //     $pin = $bitcoin_wallet->password;
+    //     $put_pin = $request->password;
+    //     $hash = Hash::check($put_pin, $pin);
 
-            //  Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+    //     if(!$hash)
+    //     {
+    //         return back()->with(['error' => 'Incorrect Pin']);
+    //     }
 
-            $token = env('SMS_TOKEN');
-            $to = Auth::user()->phone;
-            $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-            $snd_sms = $client->request('GET', $sms_url);
+    //     // dd($balance);
 
-            return back()->with(['success'=> 'Your recharge is successful']);
-        }
+    //     if($amt_btc > $balance){
+    //         return back()->with(['error'=> 'Insufficient balance']);
+    //     }
 
-        elseif($body->code == 016){
-            $bt->status ='failed';
-            $bt->save();
-            $new_balance = $bitcoin_wallet->update([
-                "balance" => $balance,
-            ]);
+    //     if($request->amount < 100){
+    //         return back()->with(['error' => 'Minimium Amount is ₦100']);
+    //     }
 
-            return back()->with(['error'=> 'Your recharge failed']);
-        }
+    //     if($request->amount > 25000){
+    //         return back()->with(['error' => 'Maximum Amount is ₦25000']);
+    //     }
 
-        elseif ($body->code == 021){
-            $bt->status ='failed';
-            $bt->save();
-            $new_balance = $bitcoin_wallet->update([
-                "balance" => $balance,
-            ]);
+    //     $priceDeduction = $balance - $amt_btc;
+    //     $new_balance = $bitcoin_wallet->update([
+    //         "balance" => $priceDeduction,
+    //     ]);
 
-            return back()->with(['error'=> 'Your account is locked']);
-        }
+    //     $bt = new BitcoinTransaction();
+    //     $bt->hash = $request->reference;
+    //     $bt->narration = $phone . ' ' . 'Payment for recharge card';
+    //     $bt->user_id = Auth::user()->id;
+    //     $bt->primary_wallet_id = 1;
+    //     $bt->wallet_id = $bitcoin_wallet->address;
+    //     $bt->previous_balance = $balance;
+    //     $bt->current_balance = $new_balance;
+    //     $bt->debit = $amt_btc;
+    //     $bt->fee = 0;
+    //     $bt->credit = 0;
+    //     $bt->charge = 0;
+    //     $bt->transaction_type_id = 9;
+    //     $bt->counterparty = $phone ;
+    //     $bt->confirmations = 3;
+    //     $bt->status = 'pending';
+    //     $bt->save();
 
-        elseif ($body->code == 022){
-            $bt->status ='failed';
-            $bt->save();
-            $new_balance = $bitcoin_wallet->update([
-                "balance" => $balance,
-            ]);
+    //     $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+    //     $url = "https://sandbox.vtpass.com/api/pay";
+    //     $response = $client->request('POST', $url, [
+    //         'json' => [
+    //             // 'request_id' => Str::random(6),
+    //             'request_id' => $request->reference,
+    //             'serviceID' => $request->network,
+    //             'amount' => $request->amount,
+    //             'phone' => $request->phone
+    //         ]
+    //     ]);
+    //     $body = json_decode($response->getBody()->getContents());
+    //     // dd($body);
 
-            return back()->with(['error'=> 'Your account is suspended']);
-        }
 
-        else{
-            $bt->status ='failed';
-            $bt->save();
-            $new_balance = $bitcoin_wallet->update([
-                "balance" => $balance,
-            ]);
+    //     if ($body->code == 000) {
+    //         $bt->status = 'success';
+    //         $bt->save();
+    //         // dd('success');
 
-            return back()->with(['error'=> 'Please Try again later']);
+    //         $naira_charge = $body->content->transactions->commission;
 
-        }
-    }
+    //         $sell = CardCurrency::where([
+    //             'card_id' => 102,
+    //             'currency_id' => $rates->id,
+    //             'buy_sell' => 2])->first()->paymentMediums()->first();
+    //         $trade_rate = json_decode($sell->pivot->payment_range_settings);
+
+    //         $charge_usd= $naira_charge/$trade_rate[0]->rate;
+
+    //         $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
+
+    //         $bt->charge = $charge_usd/$res->data->amount;
+    //         $bt->save();
+
+
+
+    //         $title = 'Recharge card purchase';
+    //         $msg_body = 'Your Dantown wallet has been debited with N' . $request->amount . ' for recharge card purchase';
+
+    //         $not = Notification::create([
+    //             'user_id' => Auth::user()->id,
+    //             'title' => $title,
+    //             'body' => $msg_body,
+    //         ]);
+
+    //         //  Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
+
+    //         $token = env('SMS_TOKEN');
+    //         $to = Auth::user()->phone;
+    //         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
+    //         $snd_sms = $client->request('GET', $sms_url);
+
+    //         return back()->with(['success'=> 'Your recharge is successful']);
+    //     }
+
+    //     elseif($body->code == 016){
+    //         $bt->status ='failed';
+    //         $bt->save();
+    //         $new_balance = $bitcoin_wallet->update([
+    //             "balance" => $balance,
+    //         ]);
+
+    //         return back()->with(['error'=> 'Your recharge failed']);
+    //     }
+
+    //     elseif ($body->code == 021){
+    //         $bt->status ='failed';
+    //         $bt->save();
+    //         $new_balance = $bitcoin_wallet->update([
+    //             "balance" => $balance,
+    //         ]);
+
+    //         return back()->with(['error'=> 'Your account is locked']);
+    //     }
+
+    //     elseif ($body->code == 022){
+    //         $bt->status ='failed';
+    //         $bt->save();
+    //         $new_balance = $bitcoin_wallet->update([
+    //             "balance" => $balance,
+    //         ]);
+
+    //         return back()->with(['error'=> 'Your account is suspended']);
+    //     }
+
+    //     elseif ($body->code == 024) {
+    //         $bt->status ='failed';
+    //         $bt->save();
+    //         $new_balance = $bitcoin_wallet->update([
+    //             "amount" => $balance,
+    //         ]);
+
+    //         return back()->with(['error'=> 'Your account is inactive']);
+    //      }
+
+    //     else{
+    //         $bt->status ='failed';
+    //         $bt->save();
+    //         $new_balance = $bitcoin_wallet->update([
+    //             "balance" => $balance,
+    //         ]);
+
+    //         return back()->with(['error'=> 'Please Try again later']);
+
+    //     }
+    // }
 
 
 

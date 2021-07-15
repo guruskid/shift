@@ -19,7 +19,7 @@
         @endforeach
         <div class="form-group mt-2">
             <label for="amount" style="color: #000070;">Amount</label>
-            <input type="number" class="form-control" name="amount" id="amount">
+            <input type="number" min="1" class="form-control" name="amount" id="amount">
         </div>
         <span class="d-block text-info" style="color:font-weight:600;font-size: 11px;position: relative;top:-11px;">A
             charge

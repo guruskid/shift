@@ -92,6 +92,7 @@
                 this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
             }
         },
+
     }
 
 </script>

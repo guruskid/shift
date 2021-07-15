@@ -56,14 +56,16 @@
             <div class="row">
                  <div class="col-md-3">
                     <div class="card mb-3 widget-content ">
-                        <div class="widget-content-wrapper ">
-                            <div class="widget-content-left">
-                                <div class="widget-heading">
-                                    <h5>Live Balance</h5>
-                                    <span>{{number_format((float)$live_balance, 8) }}BTC</span>
+                        <a href="{{ route('live-balance.transactions') }}">
+                            <div class="widget-content-wrapper ">
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">
+                                        <h5>Live Balance</h5>
+                                        <span>{{number_format((float)$live_balance, 8) }}BTC</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -74,6 +76,20 @@
                                     <div class="widget-heading">
                                         <h5>Charges</h5>
                                         <span>{{number_format((float)$charges, 8) }}BTC</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card mb-3 widget-content">
+                        <a href="{{ route('admin.service-fee') }}">
+                            <div class="widget-content-wrapper ">
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">
+                                        <h5>Service fee</h5>
+                                        <span>{{number_format((float)$service_fee, 8) }}BTC</span>
                                     </div>
                                 </div>
                             </div>

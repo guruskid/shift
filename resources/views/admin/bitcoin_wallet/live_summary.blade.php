@@ -57,7 +57,7 @@
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
-                           <form action="{{ route('admin.bitcoin-summary-txns.sort') }}" method="post">@csrf
+                           <form action="{{ route('live-balance.transactions') }}" method="get">
                                 <div class="form-inline mb-3">
                                     <label class="mr-2">Start</label>
                                     <input type="datetime-local" name="start" class="form-control mr-4">
@@ -70,8 +70,8 @@
                            </form>
                             <ul class="nav nav-tabs nav-justified">
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-0"
-                                        class="active nav-link">Sell Transactions</a></li>
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Buy Transactions</a>
+                                        class="active nav-link">Credit Transactions</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Debit Transactions</a>
                                 </li>
                             </ul>
                             <div class="tab-content">
@@ -85,43 +85,23 @@
                                                     <th>User</th>
                                                     <th>Type</th>
                                                     <th>BTC</th>
-                                                    <th>USD</th>
-                                                    <th>NGN</th>
-                                                    <th>Rate</th>
+                                                    <th>Status</th>
                                                     <th>Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($sell_transactions as $transaction)
+                                                @foreach ($credit_transactions as $transaction)
                                                 <tr>
                                                     <td>{{ $transaction->id }}</td>
                                                     <td>{{ $transaction->user->first_name }}</td>
-                                                    <td>{{ $transaction->type }}</td>
-                                                    <td>{{ number_format((float)$transaction->quantity, 8) }}</td>
-                                                    <td>${{ number_format($transaction->amount) }}</td>
-                                                    <td>₦{{ number_format($transaction->amount_paid) }}</td>
-                                                    <td>${{ number_format($transaction->card_price) }}</td>
+                                                    <td>{{ $transaction->type->name }}</td>
+                                                    <td>{{ number_format((float)$transaction->credit, 8) }}</td>
+                                                    <td>{{ucwords($transaction->status)}}</td>
                                                     <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="10" ></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Total BTC</strong></td>
-                                                    <td>{{ number_format((float)$sell_btc, 8) }} BTC</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Total USD</strong></td>
-                                                    <td>${{ number_format($sell_usd) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Average BTC Price</strong></td>
-                                                    <td>${{ number_format($sell_average) }}</td>
-                                                </tr>
-                                            </tfoot>
+
 
 
                                         </table>
@@ -137,43 +117,23 @@
                                                     <th>User</th>
                                                     <th>Type</th>
                                                     <th>BTC</th>
-                                                    <th>USD</th>
-                                                    <th>NGN</th>
-                                                    <th>Rate</th>
+                                                    <th>Status</th>
                                                     <th>Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($buy_transactions as $transaction)
+                                                @foreach ($debit_transactions as $transaction)
                                                 <tr>
                                                     <td>{{ $transaction->id }}</td>
                                                     <td>{{ $transaction->user->first_name }}</td>
-                                                    <td>{{ $transaction->type }}</td>
-                                                    <td>{{ number_format((float)$transaction->quantity, 8) }}</td>
-                                                    <td>${{ number_format($transaction->amount) }}</td>
-                                                    <td>₦{{ number_format($transaction->amount_paid) }}</td>
-                                                    <td>${{ number_format($transaction->card_price) }}</td>
+                                                    <td>{{ $transaction->type->name }}</td>
+                                                    <td>{{ number_format((float)$transaction->debit, 8) }}</td>
+                                                    <td>{{ucwords($transaction->status)}}</td>
                                                     <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <td colspan="10" ></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Total BTC</strong></td>
-                                                    <td>{{ number_format((float)$buy_btc, 8) }} BTC</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Total USD</strong></td>
-                                                    <td>${{ number_format($buy_usd) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Average BTC Price</strong></td>
-                                                    <td>${{ number_format($buy_average) }}</td>
-                                                </tr>
-                                            </tfoot>
+
 
 
                                         </table>

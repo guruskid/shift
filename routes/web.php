@@ -78,9 +78,9 @@ Route::get('/recharge', function () {
 });
 
 //Mobile and Tab done
-Route::get('/buyairtime', function () {
-    return view('newpages.buyairtime');
-});
+// Route::get('/buyairtime', function () {
+//     return view('newpages.buyairtime');
+// });
 
 //Mobile and tab done
 Route::get('/buydata', function () {
@@ -281,6 +281,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::get('/cards', 'AdminController@cards')->name('admin.cards');
     Route::post('/wallet_id', 'AdminController@walletId' )->name('admin.wallet');
 
+
+
+    Route::get('/verify', 'AdminController@verify')->name('admin.verify');
+    Route::post('/verify', 'AdminController@verifyUser' )->name('admin.verify_user');
+
+
     Route::get('/verified-users', 'AdminController@verifiedUsers')->name('admin.verified-users');
 
     Route::get('/notifications', 'AdminController@notification')->name('admin.notification');
@@ -330,7 +336,3 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
     Route::any('/transfer-charges', 'AdminController@transferCharges')->name('admin.wallet-charges');
     Route::any('/old-transfer-charges', 'AdminController@oldTransferCharges')->name('admin.old-wallet-charges');
 });
-
-
-
-

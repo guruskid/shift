@@ -106,14 +106,16 @@
                                     <div class="tab-content " id="myTabContent">
                                         <div class="text-center text-muted mb-3 mt-3 mt-lg-1"
                                             style="margin-top: -10px;">Buy or sell
-                                            cryptocurrency in less than a minute</div>
+                                            cryptocurrency in less than a minute
+                                            
+                                        </div>
 
                                         {{-- Sell Bitcoin --}}
-                                       <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}" ></bitcoin-sell-component>
+                                       <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time - $tp }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
 
 
                                         {{-- Buy --}}
-                                        <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
+                                        <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time + $tp }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
 
                                     </div>
                                 </div>

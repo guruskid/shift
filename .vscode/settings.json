@@ -1,4 +1,4 @@
 {
-	"intelephense.diagnostics.undefinedTypes": false,
-	"intelephense.diagnostics.undefinedMethods": false
+	"intelephense.diagnostics.undefinedMethods": false,
+	"intelephense.diagnostics.undefinedTypes": false
 }

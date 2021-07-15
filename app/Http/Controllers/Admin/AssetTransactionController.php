@@ -40,9 +40,6 @@ class AssetTransactionController extends Controller
                 $actualFeedback = $r->declinefeedbackstatus;
             }
 
-        // dd($actualFeedback);
-
-        // dd($r->feedbackstatus);
         $t = Transaction::find($r->id);
         $t->card = Card::find($r->card_id)->name;
         $t->card_id = $r->card_id;
