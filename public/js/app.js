@@ -3497,7 +3497,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['rate', 'real_btc', 'card_id'],
   data: function data() {
@@ -3535,10 +3534,12 @@ __webpack_require__.r(__webpack_exports__);
     getRateNgnBuy: function getRateNgnBuy() {
       this.btcBuy = this.nairaBuy / this.btcToNairaBuy;
       this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
-    } // btcPercentage(percentage) {
-    //     console.log(this.percentage);
-    // }
-
+    },
+    btcPercentage: function btcPercentage(percentage) {
+      this.btcBuy = percentage;
+      this.usdBuy = percentage;
+      this.nairaBuy = percentage;
+    }
   }
 });
 
@@ -49075,19 +49076,6 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("div", [
-                _c(
-                  "span",
-                  {
-                    staticClass: "btn btn-sm btn-primary rounded-pill",
-                    on: {
-                      click: function($event) {
-                        return _vm.alert("yes")
-                      }
-                    }
-                  },
-                  [_vm._v(" test ")]
-                ),
-                _vm._v(" "),
                 _c(
                   "span",
                   {

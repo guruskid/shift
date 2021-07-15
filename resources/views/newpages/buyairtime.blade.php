@@ -228,16 +228,16 @@
                                                         value="{{ \Str::random(6) . time() }}">
                                                     <div class="d-flex flex-column align-items-center justify-content-around">
                                                         <div class="d-flex flex-column flex-md-row">
-                                                            <div
+                                                            <div  onclick="toggleOthers('btcBuydata')"
                                                                 class="custom-control custom-radio custom-control-inline my-2 px-1 px-lg-5 py-2 buyairtime_choice_layer">
-                                                                <input type="radio" id="buydata" name="rechargetype"
+                                                                <input  type="radio" id="btcBuydata" name="btcRechargetype"
                                                                     value="self" class="custom-control-input" checked>
                                                                 <label class="custom-control-label rechargemyself_labeltext"
                                                                     for="buydata">Recharging for myself</label>
                                                             </div>
-                                                            <div
+                                                            <div onclick="toggleOthers('btcBuyother')"
                                                                 class="custom-control custom-radio custom-control-inline my-2 px-5 py-2 buyairtime_choice_layer">
-                                                                <input type="radio" id="buyother" name="rechargetype"
+                                                                <input  type="radio" id="btcBuyother" name="btcRechargetype"
                                                                     value="other" class="custom-control-input">
                                                                 <label class="custom-control-label rechargemyself_labeltext"
                                                                     for="buyother">Other</label>
@@ -247,8 +247,7 @@
                                                             style="width: 240px;height:0px;border:1px solid #DBDBEE;">
                                                         </div>
 
-                                                        <div id="otherphonenumber" class="col-12 col-md-11 mt-3"
-                                                            style="display: none;">
+                                                        <div id="btcOtherphonenumber" class="col-12 col-md-11 mt-3 d-none">
                                                             <div class="form-group mb-3">
                                                                 <label for="amount" style="color: #000070;">Phone</label>
                                                                 <input type="text" id="phonenumber" name="phone"
