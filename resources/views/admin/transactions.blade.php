@@ -263,7 +263,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
         </div>
     </div>
 </div>
-
+<!-- MVP -->
 {{-- Edit transactions Modal --}}
 <div class="modal fade  item-badge-rightm" id="edit-transac" role="dialog">
     <div class="modal-dialog" role="document">
@@ -331,9 +331,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                     <div class="row">
                         <div class="col">
+<!-- ///////////// WORK IN PROGRESS ////////////// -->
                             <div class="form-group">
                                 <label for="">Status</label>
-                                <select name="status" class="form-control">
+                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
                                     <option value="" id="e_status"></option>
                                     @if (in_array(Auth::user()->role, [889, 777, 999]))
                                     <option value="success">Success</option>
@@ -356,6 +357,28 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
+<!-- //////////////////////////////////// -->
+                        <div class="d-none col-12" id="yfailed">
+                            <div class="form-group">
+                            <label for="feedback">Feedback</label>
+                                <select name="failfeedbackstatus" class="form-control">
+                                    <option value="Your card was used">Your card was used</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-none col-12" id="ydeclined">
+                            <div class="form-group">
+                            <label for="feedback">Feedback</label>
+                                <select name="declinefeedbackstatus" class="form-control">
+                                    <option value="Your card/code was invalid">Your card/code was invalid</option>
+                                    <option value="The card/code was not clear"> The card/code was not clear  </option>
+                                    <option value="Your card/code needed more info"> Your card/code needed more info </option>
+                                    <option value="Multiple transaction was opened"> Multiple transaction was opened </option>
+                                    <option value="No image was uploaded">No image was uploaded</option>
+                                </select>
+                            </div>
+                        </div>
+<!-- /////////////////////////////////////// -->
                     </div>
                 </div>
                 <div class="modal-footer">

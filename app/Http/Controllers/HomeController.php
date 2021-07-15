@@ -25,6 +25,9 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+
+    
+
     public function test()
     {
         $client = new Client();
