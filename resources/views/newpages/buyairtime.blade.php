@@ -53,7 +53,8 @@
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price realtime-wallet-balance"></span>
+                                    {{-- <span class="d-block price realtime-wallet-balance">{{$balance}}</span> --}}
+                                    <span class="d-block price">₦{{$balance}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -259,7 +260,7 @@
 
                                                             <div class="form-group mt-4 mx-2">
 
-                                                                <label for="amount" style="color: #000070; font-weight: bolder">Amount (btc)</label><br>
+                                                                <label for="amount" style="color: #000070; font-weight: bolder">Amount (₦)</label><br>
                                                                 <span id="btcMsg" class="text-danger"></span>
                                                                 {{-- Hidden form start's here --}}
                                                                 {{-- <input type="hidden" id="currentBtcRate" value="{{ $btc_rate }}">

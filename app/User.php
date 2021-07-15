@@ -108,7 +108,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function agentNairaTrades(): HasMany
     {
-        return $this->hasMany(NairaTrade::class, 'agent_id', 'id');
+        return $this->hasMany(NairaTrade::class, 'agent_id', 'id')->latest();
     }
 
     public function agentLimits(): HasOne
