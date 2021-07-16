@@ -105,8 +105,6 @@
 
             btcPercentage(percentage) {
                 const userFraction = percentage / 100
-                // console.log(userFraction)
-                // return
 
 <<<<<<< HEAD
         },
@@ -128,13 +126,6 @@
                 }
                 ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
                 ajax.send();
-
-
-
-
-                // this.btcBuy = this.usdBuy / this.btcToUsdBuy
-                // this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
-                // this.nairaBuy = this.btcBuy * this.btcToNairaBuy
 
             }
 

@@ -18,8 +18,19 @@
                 </div>
             </div>
             <div class="form-group mb-4">
-                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Bitcoin
+               <div class="d-flex justify-content-between" >
+                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Bitcoin
                     equivalent</label>
+
+                    <div>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(25)"> 25% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(50)"> 50% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(75)"> 75% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(100)"> 100% </span>
+                    </div>
+
+                </div>
+
                 <div class="input-group mb-2 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
                         <div class="input-group-text input_label">
@@ -103,6 +114,28 @@
             getRateNgn(){
                 this.btc = this.naira / this.btcToNaira;
                 this.usd = this.naira / this.usdToNaira;
+            },
+
+            btcPercentage(percentage) {
+                const userFraction = percentage / 100
+
+                const ajax = new XMLHttpRequest;
+                ajax.onload = ()=>{
+                    // console.log(ajax.responseText)
+                    const userWallet = JSON.parse(ajax.responseText)
+                    const balance = userWallet.btcBalance[0].balance
+                     setTimeout(()=>{
+                        // console.log(balance)
+                        this.btc = balance * userFraction
+                        this.usd = this.btcToUsd * this.btc
+                        this.naira = this.btc * this.btcToNaira
+
+                     }, 700)
+
+                }
+                ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
+                ajax.send();
+
             }
         },
 

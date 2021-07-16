@@ -3539,9 +3539,7 @@ __webpack_require__.r(__webpack_exports__);
     btcPercentage: function btcPercentage(percentage) {
       var _this = this;
 
-      var userFraction = percentage / 100; // console.log(userFraction)
-      // return
-
+      var userFraction = percentage / 100;
       var ajax = new XMLHttpRequest();
 
       ajax.onload = function () {
@@ -3557,9 +3555,7 @@ __webpack_require__.r(__webpack_exports__);
       };
 
       ajax.open("GET", "http://localhost:8000/user/user-bitcoin-balance");
-      ajax.send(); // this.btcBuy = this.usdBuy / this.btcToUsdBuy
-      // this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
-      // this.nairaBuy = this.btcBuy * this.btcToNairaBuy
+      ajax.send();
     }
   }
 });
@@ -3575,6 +3571,17 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3666,6 +3673,27 @@ __webpack_require__.r(__webpack_exports__);
     getRateNgn: function getRateNgn() {
       this.btc = this.naira / this.btcToNaira;
       this.usd = this.naira / this.usdToNaira;
+    },
+    btcPercentage: function btcPercentage(percentage) {
+      var _this = this;
+
+      var userFraction = percentage / 100;
+      var ajax = new XMLHttpRequest();
+
+      ajax.onload = function () {
+        // console.log(ajax.responseText)
+        var userWallet = JSON.parse(ajax.responseText);
+        var balance = userWallet.btcBalance[0].balance;
+        setTimeout(function () {
+          // console.log(balance)
+          _this.btc = balance * userFraction;
+          _this.usd = _this.btcToUsd * _this.btc;
+          _this.naira = _this.btc * _this.btcToNaira;
+        }, 700);
+      };
+
+      ajax.open("GET", "http://localhost:8000/user/user-bitcoin-balance");
+      ajax.send();
     }
   }
 });
@@ -49443,14 +49471,70 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "form-group mb-4" }, [
-            _c(
-              "label",
-              {
-                staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
-                attrs: { for: "inlineFormInputGroupUsername2" }
-              },
-              [_vm._v("Bitcoin\n                equivalent")]
-            ),
+            _c("div", { staticClass: "d-flex justify-content-between" }, [
+              _c(
+                "label",
+                {
+                  staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                  attrs: { for: "inlineFormInputGroupUsername2" }
+                },
+                [_vm._v("Bitcoin\n                equivalent")]
+              ),
+              _vm._v(" "),
+              _c("div", [
+                _c(
+                  "span",
+                  {
+                    staticClass: "btn btn-sm btn-primary rounded-pill",
+                    on: {
+                      click: function($event) {
+                        return _vm.btcPercentage(25)
+                      }
+                    }
+                  },
+                  [_vm._v(" 25% ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "btn btn-sm btn-primary rounded-pill",
+                    on: {
+                      click: function($event) {
+                        return _vm.btcPercentage(50)
+                      }
+                    }
+                  },
+                  [_vm._v(" 50% ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "btn btn-sm btn-primary rounded-pill",
+                    on: {
+                      click: function($event) {
+                        return _vm.btcPercentage(75)
+                      }
+                    }
+                  },
+                  [_vm._v(" 75% ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "btn btn-sm btn-primary rounded-pill",
+                    on: {
+                      click: function($event) {
+                        return _vm.btcPercentage(100)
+                      }
+                    }
+                  },
+                  [_vm._v(" 100% ")]
+                )
+              ])
+            ]),
             _vm._v(" "),
             _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
               _vm._m(1),
