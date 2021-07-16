@@ -23,6 +23,9 @@
                     equivalent</label>
 
                     <div>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(25)"> 25% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(50)"> 50% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(75)"> 75% </span>
                         <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(100)"> 100% </span>
                     </div>
 
@@ -60,6 +63,8 @@
     export default {
         props: ['rate', 'real_btc', 'card_id'],
         data() {
+
+
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 //Input fields
@@ -96,14 +101,45 @@
             getRateNgnBuy() {
                 this.btcBuy = this.nairaBuy / this.btcToNairaBuy;
                 this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
-            }
+            },
 
-            // btcPercentage(percentage) {
-            //     console.log(this.percentage);
-            // }
+            btcPercentage(percentage) {
+                const userFraction = percentage / 100
+                // console.log(userFraction)
+                // return
 
+<<<<<<< HEAD
         },
 
+=======
+                const ajax = new XMLHttpRequest;
+                ajax.onload = ()=>{
+                    // console.log(ajax.responseText)
+                    const userWallet = JSON.parse(ajax.responseText)
+                    const balance = userWallet.btcBalance[0].balance
+                     setTimeout(()=>{
+                        // console.log(balance)
+                        this.btcBuy = balance * userFraction
+                        this.usdBuy = this.btcToUsdBuy * this.btcBuy
+                        this.nairaBuy = this.btcBuy * this.btcToNairaBuy
+
+                     }, 700)
+
+                }
+                ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
+                ajax.send();
+
+
+
+
+                // this.btcBuy = this.usdBuy / this.btcToUsdBuy
+                // this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
+                // this.nairaBuy = this.btcBuy * this.btcToNairaBuy
+
+            }
+
+        }
+>>>>>>> 5e74941ce1ade519000aa921630d133f7f65271d
     }
 
 </script>

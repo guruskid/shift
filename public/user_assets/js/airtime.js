@@ -76,6 +76,20 @@ const showRate = (rType) => {
 
 }
 
+const toggleCheck = (option) => {
+   return __james_id(option).toggleAttribute("checked")
+}
+
+const toggleClass = (classname) => {
+    document.getElementById(classname).classList.toggle("d-none")
+}
+
+const toggleOthers = (options) => {
+   toggleCheck("btcBuyother")
+   toggleCheck("btcBuydata")
+   toggleClass("btcOtherphonenumber")
+}
+
 const showFeedback = (feedback) => {
     swal({
         title: "Feedback",

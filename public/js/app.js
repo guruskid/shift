@@ -3498,7 +3498,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['rate', 'real_btc', 'card_id'],
   data: function data() {
@@ -3536,10 +3535,32 @@ __webpack_require__.r(__webpack_exports__);
     getRateNgnBuy: function getRateNgnBuy() {
       this.btcBuy = this.nairaBuy / this.btcToNairaBuy;
       this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
-    } // btcPercentage(percentage) {
-    //     console.log(this.percentage);
-    // }
+    },
+    btcPercentage: function btcPercentage(percentage) {
+      var _this = this;
 
+      var userFraction = percentage / 100; // console.log(userFraction)
+      // return
+
+      var ajax = new XMLHttpRequest();
+
+      ajax.onload = function () {
+        // console.log(ajax.responseText)
+        var userWallet = JSON.parse(ajax.responseText);
+        var balance = userWallet.btcBalance[0].balance;
+        setTimeout(function () {
+          // console.log(balance)
+          _this.btcBuy = balance * userFraction;
+          _this.usdBuy = _this.btcToUsdBuy * _this.btcBuy;
+          _this.nairaBuy = _this.btcBuy * _this.btcToNairaBuy;
+        }, 700);
+      };
+
+      ajax.open("GET", "http://localhost:8000/user/user-bitcoin-balance");
+      ajax.send(); // this.btcBuy = this.usdBuy / this.btcToUsdBuy
+      // this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
+      // this.nairaBuy = this.btcBuy * this.btcToNairaBuy
+    }
   }
 });
 
@@ -49076,19 +49097,6 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("div", [
-                _c(
-                  "span",
-                  {
-                    staticClass: "btn btn-sm btn-primary rounded-pill",
-                    on: {
-                      click: function($event) {
-                        return _vm.alert("yes")
-                      }
-                    }
-                  },
-                  [_vm._v(" test ")]
-                ),
-                _vm._v(" "),
                 _c(
                   "span",
                   {
