@@ -63,6 +63,8 @@
     export default {
         props: ['rate', 'real_btc', 'card_id'],
         data() {
+
+
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 //Input fields
@@ -102,11 +104,37 @@
             },
 
             btcPercentage(percentage) {
-                this.btcBuy = percentage;
-                this.usdBuy = percentage;
-                this.nairaBuy = percentage
+                const userFraction = percentage / 100
+                // console.log(userFraction)
+                // return
+
+                const ajax = new XMLHttpRequest;
+                ajax.onload = ()=>{
+                    // console.log(ajax.responseText)
+                    const userWallet = JSON.parse(ajax.responseText)
+                    const balance = userWallet.btcBalance[0].balance
+                     setTimeout(()=>{
+                        // console.log(balance)
+                        this.btcBuy = balance * userFraction
+                        this.usdBuy = this.btcToUsdBuy * this.btcBuy
+                        this.nairaBuy = this.btcBuy * this.btcToNairaBuy
+
+                     }, 700)
+
+                }
+                ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
+                ajax.send();
+
+
+
+
+                // this.btcBuy = this.usdBuy / this.btcToUsdBuy
+                // this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
+                // this.nairaBuy = this.btcBuy * this.btcToNairaBuy
+
             }
-        },
+
+        }
     }
 
 </script>

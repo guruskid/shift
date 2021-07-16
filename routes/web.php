@@ -236,6 +236,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName', 'verifie
     Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
     Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
     Route::get('/bitcoin-wallet', 'BitcoinWalletController@wallet')->name('user.bitcoin-wallet');
+    Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet');
     Route::post('/send-bitcoin', 'BitcoinWalletController@send')->name('user.send-bitcoin');
 
 });

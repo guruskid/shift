@@ -79,6 +79,29 @@ class BitcoinWalletController extends Controller
         return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'btc_usd', 'btc_rate', 'charge', 'total_fees'));
     }
 
+
+    public function btc_balance(Request $r)
+    {
+        // $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
+        // $fees = $fees_req->payload->recommended;
+        // $charge = Setting::where('name', 'bitcoin_charge')->first();
+        // if (!$charge) {
+        //     $charge = 0;
+        // } else {
+        //     $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
+        // }
+        // $total_fees = $fees + $charge;
+        // $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        // $btc_rate = $res->bitcoin->usd;
+        //$btc_usd = Auth::user()->bitcoinWallet->balance * $btc_rate;
+
+        return response()->json([
+            'success' => true,
+            'btcBalance' => Auth::user()->bitcoinWallet()->get(),
+            // 'btc_to_usd' => $btc_rate,
+        ]);
+    }
+
     public function create(Request $r)
     {
         $data = $r->validate([

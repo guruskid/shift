@@ -3536,9 +3536,29 @@ __webpack_require__.r(__webpack_exports__);
       this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
     },
     btcPercentage: function btcPercentage(percentage) {
-      this.btcBuy = percentage;
-      this.usdBuy = percentage;
-      this.nairaBuy = percentage;
+      var _this = this;
+
+      var userFraction = percentage / 100; // console.log(userFraction)
+      // return
+
+      var ajax = new XMLHttpRequest();
+
+      ajax.onload = function () {
+        // console.log(ajax.responseText)
+        var userWallet = JSON.parse(ajax.responseText);
+        var balance = userWallet.btcBalance[0].balance;
+        setTimeout(function () {
+          // console.log(balance)
+          _this.btcBuy = balance * userFraction;
+          _this.usdBuy = _this.btcToUsdBuy * _this.btcBuy;
+          _this.nairaBuy = _this.btcBuy * _this.btcToNairaBuy;
+        }, 700);
+      };
+
+      ajax.open("GET", "http://localhost:8000/user/user-bitcoin-balance");
+      ajax.send(); // this.btcBuy = this.usdBuy / this.btcToUsdBuy
+      // this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
+      // this.nairaBuy = this.btcBuy * this.btcToNairaBuy
     }
   }
 });
