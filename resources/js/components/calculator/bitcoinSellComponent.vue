@@ -110,15 +110,15 @@
 
                 const ajax = new XMLHttpRequest;
                 ajax.onload = ()=>{
-                    // console.log(ajax.responseText)
+
                     const userWallet = JSON.parse(ajax.responseText)
                     const balance = userWallet.btcBalance[0].balance
                      setTimeout(()=>{
-                        // console.log(balance)
+
                         this.btc = balance * userFraction
                         this.usd = this.btcToUsd * this.btc
                         this.naira = this.btc * this.btcToNaira
-                    }, 700)
+                    }, 200)
                 }
                 ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
                 ajax.send();

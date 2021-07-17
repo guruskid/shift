@@ -117,7 +117,7 @@
                         this.usdBuy = this.btcToUsdBuy * this.btcBuy
                         this.nairaBuy = this.btcBuy * this.btcToNairaBuy
 
-                     }, 700)
+                     }, 200)
 
                 }
                 ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
