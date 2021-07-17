@@ -281,8 +281,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::get('/cards', 'AdminController@cards')->name('admin.cards');
     Route::post('/wallet_id', 'AdminController@walletId' )->name('admin.wallet');
 
+
+
     Route::get('/verify', 'AdminController@verify')->name('admin.verify');
     Route::post('/verify', 'AdminController@verifyUser' )->name('admin.verify_user');
+
 
     Route::get('/verified-users', 'AdminController@verifiedUsers')->name('admin.verified-users');
 

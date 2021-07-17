@@ -1,3 +1,8 @@
+@php
+    $banks = App\Bank::all();
+    $countries = App\Country::orderBy('phonecode', 'asc')->get();
+@endphp
+
 @extends('layouts.user')
 @section('content')
 <div class="app-main">
@@ -148,12 +153,16 @@
                                                 style="position:relative;left:1.7em;width: 14%;">Bank</div>
                                             <div class="" style="width:56%;">
                                                 <div class="d-flex" style="position: relative;left:35px;">
-                                                    {{ Auth::user()->accounts->first()->bank_name ?? 'No account' }}
+                                                    @if (Auth::user()->accounts->count() > 0)
+                                                    {{ Auth::user()->accounts->first()->bank_name }}
                                                     <div class="user_profile_text ml-4" style="font-size: 18px;">
                                                         <div style="font-size:16px;">Acc. No.
-                                                            {{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }}
+                                                            {{ Auth::user()->accounts->first()->account_number }}
                                                         </div>
                                                     </div>
+                                                    @else
+                                                    <button class="btn btn-sm btn-primary">Add Bank</button>
+                                                    @endif
                                                 </div>
                                             </div>
                                             <div class="user_profile_text text-center ml-5"
@@ -169,7 +178,11 @@
                                                 style="position:relative;left:1.7em;width: 14%;">Mobile No.</div>
                                             <div class="" style="width:56%;">
                                                 <div style="position: relative;left:35px;">
-                                                    {{ Auth::user()->phone }}
+                                                    @if (!Auth::user()->phone)
+                                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Phone</button>
+                                                    @else
+                                                        {{ Auth::user()->phone }}
+                                                    @endif
                                                 </div>
                                             </div>
                                             <div class="user_profile_text text-center"
@@ -418,24 +431,7 @@
                                                         {{-- Address verification content --}}
                                                         <div class="accordion_content mt-3 pb-3"
                                                             id="AddressVerification" style="display: none;">
-                                                            <div class="d-flex justify-content-start align-items-end">
-                                                                <div class="d-flex justify-content-center align-items-center px-2 upload_address_photo"
-                                                                    id="uploadAddressVerification">
-                                                                    <input type="file" id="uploadPhotoInput"
-                                                                        style="display: none;" />
-                                                                    <span>
-                                                                        <svg width="28" height="26" viewBox="0 0 20 20"
-                                                                            fill="none"
-                                                                            xmlns="http://www.w3.org/2000/svg">
-                                                                            <path
-                                                                                d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
-                                                                                fill="#A6ACBE" />
-                                                                        </svg>
-                                                                    </span>
-                                                                    <span class="ml-3"
-                                                                        style="font-size: 10px;color: #000070;letter-spacing: 0.01em;line-height: 10px;">Upload
-                                                                        your Bank <br> Statement of Account</span>
-                                                                </div>
+                                                            <div class="d-flex justify-content-center">
                                                                 <button class="btn btn-primary mb-2 ml-2"
                                                                     data-target="#upload-address-modal"
                                                                     data-toggle="modal"
@@ -446,53 +442,6 @@
                                                     </div>
 
                                                     <div class="col-12 col-lg-6 mt-3">
-                                                        {{-- @if (Auth::user()->bvn_verified_at == null)
-                                                        BVN verification card
-                                                        <div
-                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards bvnVerificationCard">
-                                                            <span class="d-block">BVN verification</span>
-                                                            <span
-                                                                class="d-block ml-5 accordion_arrow bvn_verification_arrow">
-                                                                <svg width="20" height="20" viewBox="0 0 20 20"
-                                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path
-                                                                        d="M15.001 8.3332L13.826 7.1582L10.001 10.9749L6.17598 7.1582L5.00098 8.3332L10.001 13.3332L15.001 8.3332Z"
-                                                                        fill="#000070" />
-                                                                </svg>
-                                                            </span>
-                                                        </div> --}}
-
-                                                        {{-- BVN verification content --}}
-                                                        {{-- <div class="accordion_content" id="bvnVerification"
-                                                            style="display: none;">
-                                                            <div class="mt-2">
-                                                                <form>
-                                                                    @csrf
-                                                                    <div class="form-row">
-                                                                        <div class="col-12 mt-1">
-                                                                            <label for="inlineFormInput"
-                                                                                class="bvnConfidenceText">Your
-                                                                                BVN cannot be used to carry out any
-                                                                                other
-                                                                                transaction from your Bank
-                                                                                acount.</label>
-                                                                            <label for="inlineFormInput"
-                                                                                class="needBvnTrx">Dantown
-                                                                                need your BVN to carry out naira
-                                                                                transactions as
-                                                                                required by the CBN</label>
-                                                                        </div>
-                                                                        <div class="col mt-2 mt-lg-0">
-                                                                            <a href="{{ route('user.verify-bvn') }}"><button
-                                                                                    type="button"
-                                                                                    class="btn btn-primary mb-2"
-                                                                                    style="height:40px;width:78px;">Verify</button></a>
-                                                                        </div>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                        @endif--}}
 
                                                         @if (Auth::user()->idcard_verified_at == null)
                                                         {{-- ID verification card --}}
@@ -515,29 +464,10 @@
                                                             <div class="mt-2">
                                                                 <form> @csrf
                                                                     <div class="d-flex justify-content-start">
-                                                                        <div
-                                                                            class="d-flex flex-row flex-wrap flex-lg-nowrap justify-content-center justify-content-lg-start mt-3">
-                                                                            <div id="frontPhotoID"
-                                                                                class="text-center p-3 front_photo_card_box mr-2">
-                                                                                <input type="file"
-                                                                                    id="frontPhotoIdInput"
-                                                                                    name="frontPhotoOfCard" />
-                                                                                <div>
-                                                                                    <svg width="20" height="20"
-                                                                                        viewBox="0 0 20 20" fill="none"
-                                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                                        <path
-                                                                                            d="M17.5947 4.58215H14.7032V4.28509C14.7032 2.95796 13.6261 1.88086 12.299 1.88086H7.70049C6.37282 1.88086 5.29626 2.95796 5.29626 4.28509V4.58215H2.40423C1.07656 4.58215 0 5.65871 0 6.98638V15.7132C0 17.0403 1.07656 18.1174 2.40423 18.1174H17.5958C18.9234 18.1174 20 17.0403 20 15.7132V6.98638C19.9989 5.65817 18.9224 4.58215 17.5947 4.58215ZM9.99893 15.6234C7.49426 15.6234 5.45761 13.5868 5.45761 11.0821C5.45761 8.57798 7.49426 6.54079 9.99893 6.54079C12.5036 6.54079 14.5403 8.57745 14.5403 11.0821C14.5403 13.5868 12.5031 15.6234 9.99893 15.6234ZM12.4032 11.0821C12.4032 12.4066 11.3239 13.4864 9.99893 13.4864C8.67393 13.4864 7.5947 12.4066 7.5947 11.0821C7.5947 9.75712 8.67393 8.67789 9.99893 8.67789C11.3239 8.67789 12.4032 9.75712 12.4032 11.0821Z"
-                                                                                            fill="#A6ACBE" />
-                                                                                    </svg>
-                                                                                </div>
-                                                                                <span
-                                                                                    class="d-block front_photo_card_text">Front
-                                                                                    photo of your card</span>
-                                                                            </div>
+                                                                        <div class="d-flex justify-content-center mx-auto">
                                                                             <button type="button" data-toggle="modal"
                                                                                 data-target="#upload-id-modal"
-                                                                                class="btn btn-primary verifyIdSubmitBtn">Upload</button>
+                                                                                class="btn btn-primary verifyIdSubmitBtn">Verify</button>
                                                                         </div>
                                                                     </div>
                                                                 </form>
@@ -612,12 +542,18 @@
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Bank</div>
                                         <div class="col-9">
-                                            {{ Auth::user()->accounts->first()->account_number ?? 'No bank account' }},
-                                            {{ Auth::user()->accounts->first()->bank_name ?? 'No account' }}</div>
+
+                                            @if (Auth::user()->accounts->count() == 0)
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank</button>
+                                            @else
+                                                {{ Auth::user()->accounts->first()->account_number  }}
+                                                {{ Auth::user()->accounts->first()->bank_name }}
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Mobile No</div>
-                                        <div class="col-9">{{ Auth::user()->phone }}</div>
+                                        <div class="col-9"> {{ Auth::user()->phone }} </div>
                                     </div>
                                     <div class="row py-1 my-1">
                                         <div style="font-size: 14px;" class="col-3 col_name">Status</div>
@@ -801,38 +737,6 @@
                                                             </div>
                                                         </div>
                                                     </a>
-
-
-                                                    <!-- Mobile phone verification content -->
-                                                   {{--  <div id="mobile_phone_verification_card_content"
-                                                        class="d-none flex-column justify-content-center mx-auto mt-3">
-                                                        <div class="col-12">
-                                                            <form action="" method="post">
-                                                                @csrf
-                                                                <div class="form-group mb-0 mb-1">
-                                                                    <label for="phoneNum">Phone number</label>
-                                                                    <input type="tel" name="" id="phoneNum"
-                                                                        class="form-control" />
-                                                                </div>
-                                                                <button type="submit" class="btn text-white"
-                                                                    style="background: #000070;">Verify</button>
-                                                            </form>
-                                                        </div>
-                                                        <div class="col-12 mt-3">
-                                                            <form action="" method="post">
-                                                                @csrf
-                                                                <div class="form-group mb-0 mb-1">
-                                                                    <label for="phoneNum" class="mb-0 pb-0"
-                                                                        style="font-size: 12px;">Enter the OTP sent to
-                                                                        the Phone number your entered</label>
-                                                                    <input type="tel" name="" id="phoneNum"
-                                                                        class="form-control" />
-                                                                </div>
-                                                                <button type="submit" class="btn text-white"
-                                                                    style="background: #000070;">Confirm</button>
-                                                            </form>
-                                                        </div>
-                                                    </div> --}}
                                                     @endif
 
 
@@ -863,51 +767,6 @@
                                                     </div>
                                                     @endif
 
-
-                                                    <!-- BVN verification card mobile -->
-                                                    {{-- @if (Auth::user()->bvn_verified_at == null)
-                                                    <div class="col-8 col-md-8 mx-auto my-2">
-                                                        <div id="mobile_bvn_verification_card"
-                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
-                                                            <span class="d-block">BVN verification</span>
-                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
-                                                                style="position: relative;left: 52px;">
-                                                                <img src="/svg/accordion_arrow.svg" class="img-fluid" />
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-
-                                                    <!-- BVN verification content -->
-                                                    <div id="bvn_verification_card_content"
-                                                        class="d-none flex-column justify-content-center mx-auto mt-3">
-                                                        <div class="col-12 mx-auto"
-                                                            style="position: relative;left: 26px;">
-                                                            <span class="d-block"
-                                                                style="font-size: 9px;width: 92%;color: #000070;">
-                                                                You BVN cannot be used to carry out any other
-                                                                transaction from your Bank account <br><br> Dantown need
-                                                                your BVN to carry out naira transactions as required by
-                                                                the CBN
-                                                            </span>
-                                                            <div class="mt-3">
-                                                                <form action="" method="post">
-                                                                    @csrf
-                                                                    <div class="form-row align-items-center">
-                                                                        <div class="col">
-                                                                            <a href="{{ route('user.verify-bvn') }}"><button
-                                                                                    type="button" class="btn text-white"
-                                                                                    style="background-color: #000070;">verify</button></a>
-                                                                        </div>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    @endif --}}
-
-
-
                                                     <!-- ID verification card mobile -->
                                                     @if (Auth::user()->idcard_verified_at == null)
                                                     <div class="col-8 col-md-8 mx-auto my-2">
@@ -930,68 +789,21 @@
                                                             <div class="container">
                                                                 <div class="row">
                                                                     <div class="col-6">
-                                                                        <div id="mobile_front_photo_click"
-                                                                            class="d-flex flex-column align-items-center px-2 py-2"
-                                                                            style="border: 0.5px dashed #676B87;">
-                                                                            <input type="file" name="mobile_frontOfCard"
-                                                                                id="uploadFrontPhotoInputMobile"
-                                                                                style="display: none;" />
-                                                                            <div>
-                                                                                <svg width="20" height="20"
-                                                                                    viewBox="0 0 21 21" fill="none"
-                                                                                    xmlns="http://www.w3.org/2000/svg">
-                                                                                    <g clip-path="url(#clip0)">
-                                                                                        <path
-                                                                                            d="M17.9697 5.33311H15.0782V5.03605C15.0782 3.70892 14.0011 2.63182 12.674 2.63182H8.07549C6.74782 2.63182 5.67126 3.70892 5.67126 5.03605V5.33311H2.77923C1.45156 5.33311 0.375 6.40967 0.375 7.73734V16.4642C0.375 17.7913 1.45156 18.8684 2.77923 18.8684H17.9708C19.2984 18.8684 20.375 17.7913 20.375 16.4642V7.73734C20.3739 6.40914 19.2974 5.33311 17.9697 5.33311ZM10.3739 16.3744C7.86926 16.3744 5.83261 14.3378 5.83261 11.8331C5.83261 9.32894 7.86926 7.29176 10.3739 7.29176C12.8786 7.29176 14.9153 9.32841 14.9153 11.8331C14.9153 14.3378 12.8781 16.3744 10.3739 16.3744ZM12.7782 11.8331C12.7782 13.1575 11.6989 14.2373 10.3739 14.2373C9.04893 14.2373 7.9697 13.1575 7.9697 11.8331C7.9697 10.5081 9.04893 9.42885 10.3739 9.42885C11.6989 9.42885 12.7782 10.5081 12.7782 11.8331Z"
-                                                                                            fill="#A6ACBE" />
-                                                                                    </g>
-                                                                                    <defs>
-                                                                                        <clipPath id="clip0">
-                                                                                            <rect width="20" height="20"
-                                                                                                fill="white"
-                                                                                                transform="translate(0.375 0.75)" />
-                                                                                        </clipPath>
-                                                                                    </defs>
-                                                                                </svg>
-                                                                            </div>
-                                                                            <span class="d-block text-center"
-                                                                                style="color: #000070;font-size:9px;">Front
-                                                                                photo of your card</span>
-                                                                        </div>
+
                                                                     </div>
                                                                     <div class="col-6">
                                                                         <div id="mobile_back_photo_click"
-                                                                            class="d-flex flex-column align-items-center px-2 py-2"
-                                                                            style="border: 0.5px dashed #676B87;">
+                                                                            class="d-flex flex-column align-items-center px-2 py-0"
+                                                                            style="border: 0px dashed;">
                                                                             <input type="file" name="mobile_backOfCard"
                                                                                 id="uploadBackPhotoInputMobile"
                                                                                 style="display: none;" />
-                                                                            <div>
-                                                                                <svg width="20" height="20"
-                                                                                    viewBox="0 0 21 21" fill="none"
-                                                                                    xmlns="http://www.w3.org/2000/svg">
-                                                                                    <g clip-path="url(#clip0)">
-                                                                                        <path
-                                                                                            d="M17.9697 5.33311H15.0782V5.03605C15.0782 3.70892 14.0011 2.63182 12.674 2.63182H8.07549C6.74782 2.63182 5.67126 3.70892 5.67126 5.03605V5.33311H2.77923C1.45156 5.33311 0.375 6.40967 0.375 7.73734V16.4642C0.375 17.7913 1.45156 18.8684 2.77923 18.8684H17.9708C19.2984 18.8684 20.375 17.7913 20.375 16.4642V7.73734C20.3739 6.40914 19.2974 5.33311 17.9697 5.33311ZM10.3739 16.3744C7.86926 16.3744 5.83261 14.3378 5.83261 11.8331C5.83261 9.32894 7.86926 7.29176 10.3739 7.29176C12.8786 7.29176 14.9153 9.32841 14.9153 11.8331C14.9153 14.3378 12.8781 16.3744 10.3739 16.3744ZM12.7782 11.8331C12.7782 13.1575 11.6989 14.2373 10.3739 14.2373C9.04893 14.2373 7.9697 13.1575 7.9697 11.8331C7.9697 10.5081 9.04893 9.42885 10.3739 9.42885C11.6989 9.42885 12.7782 10.5081 12.7782 11.8331Z"
-                                                                                            fill="#A6ACBE" />
-                                                                                    </g>
-                                                                                    <defs>
-                                                                                        <clipPath id="clip0">
-                                                                                            <rect width="20" height="20"
-                                                                                                fill="white"
-                                                                                                transform="translate(0.375 0.75)" />
-                                                                                        </clipPath>
-                                                                                    </defs>
-                                                                                </svg>
-                                                                            </div>
-                                                                            <span class="d-block text-center"
-                                                                                style="color: #000070;font-size:9px;">Back
-                                                                                photo of your card</span>
+                                                                            <span class="d-block text-center text-white">Back</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button type="button" class="btn text-white w-50 mt-3"
+                                                            <button type="button" class="btn text-white mt-3"
                                                                 data-toggle="modal" data-target="#upload-id-modal"
                                                                 style="background: #000070;margin-left:24%;">Upload</button>
                                                         </form>
@@ -1082,6 +894,7 @@
                 <form method="POST" action="{{route('user.upload-id')}}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="form-group">
+                        <label for="">select ID card image</label>
                         <input type="file" name="id_card" class="form-control" accept="images/*">
                     </div>
                     <button type="submit" class="btn btn-primary">Upload Id Card</button>
@@ -1107,7 +920,8 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="file" name="address" class="form-control" accept="images/*">
+                        <label for="">Bank Statement</label>
+                        <input type="file" name="address" class="form-control" >
                     </div>
                     <button type="submit" class="btn btn-primary">Upload Address Image</button>
                 </form>
@@ -1116,5 +930,83 @@
     </div>
 </div>
 
+{{-- Add bank account --}}
+<div class="modal fade  item-badge-rightm" id="add-bank-modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="user-bank-details" class="mb-4">
+                    {{ csrf_field() }}
+                    <div class="form-row ">
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Bank Name</label>
+                                <select name="bank_code" class="form-control">
+                                    @foreach ($banks as $b)
+                                    <option value="{{$b->code}}">{{$b->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Account Number</label>
+                                <input type="text" required class="form-control" name="account_number">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>Account Name</label>
+                                @if (Auth::user()->accounts->count() == 0)
+                                <input type="text" required class="form-control " name="account_name">
+                                @else
+                                <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="account_name">
+                                @endif
+                            </div>
+                        </div>
+
+                        @if (Auth::user()->phone_verified_at == null)
+                        <div class="col-md-12">
+                            <label for="">Phone Number</label>
+                            <div class="position-relative input-group mb-0 mx-auto mx-md-0" style="">
+                                <div class="input-group-prepend"
+                                    style="border: 1px solid rgba(0, 0, 112, 0.25);border-right:0px;border-top-left-radius:5px;border-bottom-left-radius:5px;">
+                                    <select name="country_id" id="country-id" class="form-control">
+                                        <option value="156">+234</option>
+                                        @foreach ($countries as $country)
+                                        <option value="{{ $country->id }}">+ {{ $country->phonecode }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <input type="tel" id="signup_phonenumber" min="1" maxlength="10" name="phone" value="{{ Auth::user()->phone ?? '' }}"
+                                    placeholder="8141894420" class="form-control col-12" style="border-left: 0px;"
+                                    pattern="[1-9]\d*" title="Number not starting with 0">
+                                <div class="input-group-prepend">
+                                    <button id="otp-text" type="button" onclick="sendOtp()" class="btn btn-outline-primary btn-block">Send OTP</button>
+                                </div>
+                            </div>
+                            <small>Number must not start with '0'.</small>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="position-relative form-group">
+                                <label>OTP Code</label>
+                                <input type="nnumber" required class="form-control " name="otp">
+                            </div>
+                        </div>
+
+                        @endif
+
+
+
+                    </div>
+                    <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
+                        <i class="spinner-border spinner-border-sm" id="s-b" style="display: none;"></i>
+                        Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection

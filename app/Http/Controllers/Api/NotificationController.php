@@ -11,7 +11,7 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        $user_id = 1;
+        $user_id = Auth::user()->id;
         $nots = Notification::where('user_id', 0)->orWhere('user_id', $user_id)->orderBy('created_at', 'desc')->get();
         return response()->json([
             'success' => true,
@@ -37,6 +37,7 @@ class NotificationController extends Controller
             'success' => true,
             'data' => Auth::user()->notificationSetting,
         ]);
+        
     }
 
     public function updateSettings(Request $r)

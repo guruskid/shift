@@ -80,6 +80,14 @@
 
             @if (in_array(Auth::user()->role, [999, 889, 777] ))
             <li class="my-3">
+                <a href="{{route('admin.bitcoin-summary')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.bitcoin-summary' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-wallet"></i>
+                    Bitcoin Summary
+                </a>
+            </li>
+
+            <li class="my-3">
                 <a href="{{route('admin.wallet-transactions')}}"
                     class=" {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-wallet"></i>
@@ -92,23 +100,7 @@
                     <i class="metismenu-icon pe-7s-cash"></i>
                     Bitcoin Wallet
                     <i class="metismenu-state-icon "></i>
-                </a>{{--
-                <ul>
-                    <li>
-                        <a href="{{route('admin.bitcoin-wallets')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.bitcoin-wallets' ? 'mm-active' : '' }} ">
-                            <i class="metismenu-icon"></i>
-                            All Wallets
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{route('admin.bitcoin-wallets-transactions')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'mm-active' : '' }} ">
-                            <i class="metismenu-icon">
-                            </i>All Wallet Transactions
-                        </a>
-                    </li>
-                </ul> --}}
+                </a>
             </li>
             @endif
 
@@ -140,6 +132,16 @@
             </li>
             @endif
 
+            @if (Auth::user()->role == 666)
+            <li class="my-3">
+                <a href="{{route('admin.user-verifications')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.user-verifications' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-user"></i>
+                    Users' Verification
+                </a>
+            </li>
+            @endif
+
             @if (in_array(Auth::user()->role, [999, 889, 777] ))
             <li class="my-3">
                 <a href="{{route('admin.users')}}"
@@ -152,10 +154,6 @@
 
             {{-- for Super Admin Only --}}
             @if (Auth::user()->role == 999 )
-
-
-
-
             <li class="my-3">
                 <a href="{{route('admin.notification')}}"
                     class=" {{ Route::currentRouteName() == 'admin.notification' ? 'mm-active' : '' }} ">
@@ -165,22 +163,20 @@
             </li>
 
             <li class="my-3">
-                <a href="{{route('admin.verify')}}"
-                    class=" {{ Route::currentRouteName() == 'admin.verify' ? 'mm-active' : '' }} ">
+                <a href="{{route('admin.user-verifications')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.user-verifications' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-user"></i>
-                    Verify Users
+                    Users' Verification
                 </a>
             </li>
 
-
-
-                <li class="my-3">
-                    <a href="{{route('admin.accountants')}}"
-                        class=" {{ Route::currentRouteName() == 'admin.accountants' ? 'mm-active' : '' }} ">
-                        <i class="metismenu-icon pe-7s-users"></i>
-                        Accountants
-                    </a>
-                </li>
+            <li class="my-3">
+                <a href="{{route('admin.accountants')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.accountants' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Accountants
+                </a>
+            </li>
             @endif
 
             <li class="my-3">

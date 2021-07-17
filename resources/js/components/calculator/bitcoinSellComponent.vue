@@ -118,13 +118,10 @@
                         this.btc = balance * userFraction
                         this.usd = this.btcToUsd * this.btc
                         this.naira = this.btc * this.btcToNaira
-
-                     }, 700)
-
+                    }, 700)
                 }
                 ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
                 ajax.send();
-
             }
         },
     }
