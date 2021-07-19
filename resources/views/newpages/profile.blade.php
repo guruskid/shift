@@ -443,7 +443,7 @@
 
                                                     <div class="col-12 col-lg-6 mt-3">
 
-                                                        @if (Auth::user()->address_verified_at != null && Auth::user()->address_verified_at != null)
+                                                        @if (Auth::user()->idcard_verified_at == null && Auth::user()->address_verified_at != null)
                                                         {{-- ID verification card --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
@@ -474,6 +474,35 @@
                                                             </div>
                                                         </div>
                                                         @endif
+
+                                                        {{-- /////////////////// --}}
+                                                        @if (Auth::user()->phone_verified_at != null)
+                                                        <div style="cursor: disablenot-allowed" class="d-flex flex-row justify-content-center border border-success align-items-center accordion_cards idVerificationCard mt-2">
+                                                            <span class="d-block">Phone number verification</span>
+                                                            <span class="d-block ml-5 ">
+                                                                <i class="fa fa-check-circle text-success"></i>
+                                                            </span>
+                                                        </div>
+                                                        @endif
+
+                                                        @if (Auth::user()->address_verified_at != null)
+                                                        <div style="cursor: disablenot-allowed" class="d-flex flex-row justify-content-center border border-success align-items-center accordion_cards idVerificationCard mt-2">
+                                                            <span class="d-block">Address verification</span>
+                                                            <span class="d-block ml-5 ">
+                                                                <i class="fa fa-check-circle text-success"></i>
+                                                            </span>
+                                                        </div>
+                                                        @endif
+
+                                                        @if (Auth::user()->idcard_verified_at != null)
+                                                        <div style="cursor: disablenot-allowed" class="d-flex flex-row justify-content-center border border-success align-items-center accordion_cards idVerificationCard mt-2">
+                                                            <span class="d-block">ID verification</span>
+                                                            <span class="d-block ml-5 ">
+                                                                <i class="fa fa-check-circle text-success"></i>
+                                                            </span>
+                                                        </div>
+                                                        @endif
+                                                        {{-- ////////////////// --}}
                                                     </div>
                                                 </div>
                                             </div>
