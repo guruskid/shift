@@ -118,7 +118,7 @@
 
 
                                 {{-- Bitcoin Wallet --}}
-                                @if (!Auth::user()->bitcoinWallet)
+                                @if (!Auth::user()->btcWallet)
                                 <div class="row">
                                     <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
                                         style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
@@ -155,7 +155,7 @@
                                                 </div>
                                                 <div>
                                                     <span
-                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->bitcoinWallet ? sprintf('%0.8f', Auth::user()->bitcoinWallet->balance) : '' }}BTC</span>
+                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->btcWallet ? sprintf('%0.8f', $btc_wallet->balance) : '' }}BTC</span>
                                                     <div>
                                                         <span
                                                             class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Bitcoin

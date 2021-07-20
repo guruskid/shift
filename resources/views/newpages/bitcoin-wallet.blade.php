@@ -115,11 +115,11 @@
                                                 Balance</span>
                                             <span class="d-block">
                                                 <span
-                                                    style="color: #000070;font-size: 30px;">{{ number_format((float) Auth::user()->bitcoinWallet->balance, 8) }}</span>
+                                                    style="color: #000070;font-size: 30px;">{{ number_format((float) $btc_wallet->balance, 8) }}</span>
                                                 <span style="color: #000070;font-size: 30px;">BTC</span>
                                             </span>
                                             <span class="d-block"
-                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$btc_usd, 2) }}
+                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$btc_wallet->usd  , 2) }}
                                         </div>
                                         <div class="d-flex">
                                             <a id="bitcoin_send" class="btn walletpage_menu-active">
@@ -170,22 +170,6 @@
                                     <div class="mb-3 mb-lg-0">
                                         <span class="recent_trx_text">Recent Transactions</span>
                                     </div>
-                                    <form action="{{ route('user.bitcoin-wallet') }}" method="GET">
-                                        <div
-                                        class="d-flex flex-column flex-md-row justify-content-center align-items-center justify-content-lg-between">
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-1" style="color: #000070;font-size: 14px;">Start Date</span>
-                                            <input type="date" required class="col-7 form-control" name="start" id=""
-                                                value="14-05-2020">
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 mt-md-0">
-                                            <span class="mr-1" style="color: #000070;font-size: 14px;">End Date</span>
-                                            <input type="date" required class="col-7 form-control" name="end" id=""
-                                                value="14-05-2020">
-                                        </div>
-                                        <button class="btn btn-primary">Search</button>
-                                    </div>
-                                    </form>
                                 </div>
                                 <div class="table-responsive mt-4 mt-lg-3">
                                     <table class="table table-striped">
@@ -202,7 +186,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($transactions as $key => $transaction)
+                                            {{-- @foreach ($transactions as $key => $transaction)
                                             <tr>
                                                 <th scope="row">{{ $transaction->id }}</th>
                                                 <td>
@@ -217,7 +201,7 @@
                                                         style="font-size: 14px;color: #000000;font-weight: 500;">BTC
                                                         {{ number_format((float) $transaction->debit, 8) }}</span>
                                                     @endif
-                                                    {{-- <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span> --}}
+
                                                 </td>
                                                 <td style="color: #000000;font-size: 14px;">
                                                     {{ $transaction->created_at->format('M, d Y') }}</td>
@@ -248,7 +232,7 @@
                                             </tr>
                                             @endforeach
 
-                                            {{ $transactions->links() }}
+                                            {{ $transactions->links() }} --}}
                                         </tbody>
                                     </table>
                                 </div>

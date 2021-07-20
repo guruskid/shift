@@ -18,11 +18,21 @@ class PortfolioController extends Controller
 
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $btc_rate = $res->bitcoin->usd;
-        $btc_wallet_bal  = Auth::user()->bitcoinWallet->balance ?? 0;
-        $btc_usd = $btc_wallet_bal  * $btc_rate;
 
-        //dd('holla');
-        return view('newpages.choosewallet', compact(['naira', 'btc_usd', 'nw']));
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $btc_wallet = Auth::user()->btcWallet;
+        $btc_wallet->balance = $accounts[0]->balance->availableBalance;
+        $btc_wallet->usd = $btc_wallet->balance  * $btc_rate;
+
+
+        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'nw']));
     }
 
 
