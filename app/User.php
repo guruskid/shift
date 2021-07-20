@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 
@@ -96,5 +97,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function verifications()
     {
         return $this->hasMany('App\Verification');
+    }
+
+
+    public function btcWallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class)->where('currency', 'BTC');
     }
 }
