@@ -51,11 +51,6 @@
                                     <div>
                                         <span class="h3 giftcard-text" style="color: #000070;">Bitcoin Wallet</span>
                                     </div>
-                                    <div class="widget-n" style="justify-content: center; text-align: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price realtime-wallet-balance"></span>
-
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -186,53 +181,40 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- @foreach ($transactions as $key => $transaction)
+                                            @foreach ($transactions as $key => $transaction)
                                             <tr>
-                                                <th scope="row">{{ $transaction->id }}</th>
+                                                <th scope="row">{{ $key++ }}</th>
                                                 <td>
-                                                    {{ $transaction->type->name }}</td>
+                                                    {{ $transaction->transactionType }}</td>
                                                 <td>
-                                                    @if ($transaction->credit != null)
-                                                    <span class="d-block"
+                                                    @if ($transaction->amount > 0)
+                                                    <span class="d-block text-success"
                                                         style="font-size: 14px;color: #000000;font-weight: 500;">BTC
-                                                        {{ number_format((float) $transaction->credit, 8) }}</span>
+                                                        {{ number_format((float) $transaction->amount, 8) }}</span>
                                                     @else
-                                                    <span class="d-block"
+                                                    <span class="d-block text-danger"
                                                         style="font-size: 14px;color: #000000;font-weight: 500;">BTC
-                                                        {{ number_format((float) $transaction->debit, 8) }}</span>
+                                                        {{ number_format((float) $transaction->amount, 8) }}</span>
                                                     @endif
 
                                                 </td>
                                                 <td style="color: #000000;font-size: 14px;">
-                                                    {{ $transaction->created_at->format('M, d Y') }}</td>
+                                                    {{ $transaction->created->format('d M Y') }}</td>
                                                 <td style="font-weight: 500;">
-                                                    {{ $transaction->created_at->format('h:i a') }}</td>
+                                                    {{ $transaction->created->format('h:ia')}}</td>
                                                 <td>
-                                                    @switch($transaction->status)
-                                                    @case('success')
-                                                    <span class="status_success">{{ $transaction->status }}</span>
-                                                    @break
-                                                    @case('unconfirmed')
-                                                    <span class="status_waiting">{{ $transaction->status }}</span>
-                                                    @break
-                                                    @case('pending')
-                                                    <span class="status_inprogress">{{ $transaction->status }}</span>
-                                                    @break
-                                                    @default
-                                                    <span class="status_waiting">{{ $transaction->status }}</span>
-                                                    @endswitch
+                                                    <span class="status_success">Completed</span>
                                                 </td>
-                                                <td class="transaction_content">
-                                                    @if ($transaction->hash != null)
-                                                    <a href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->hash }}" class="btn transaction_view_link">Explorer</a>
+                                                {{-- <td class="transaction_content">
+                                                    @if ($transaction->txid != null)
+                                                    <a href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->txid }}" class="btn transaction_view_link">Explorer</a>
                                                     @else
                                                     - - -
                                                     @endif
-                                                </td>
+                                                </td> --}}
                                             </tr>
                                             @endforeach
 
-                                            {{ $transactions->links() }} --}}
                                         </tbody>
                                     </table>
                                 </div>

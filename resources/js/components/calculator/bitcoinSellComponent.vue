@@ -1,7 +1,7 @@
 <template>
     <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home" role="tabpanel"
         aria-labelledby="home-tab">
-        <form action="/user/trade-bitcoin" class="disable-form" method="post">
+        <form action="/user/sell-bitcoin" class="disable-form" method="post">
             <input type="hidden" name="card_id" v-model="card_id">
             <input type="hidden" name="type" value="sell">
             <input type="hidden" name="_token" :value="csrf">

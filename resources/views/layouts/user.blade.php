@@ -471,7 +471,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                 order: [[0, 'desc'] ],
                 responsive: true
             });
-        }); */ 
+        }); */
 
     </script>
 

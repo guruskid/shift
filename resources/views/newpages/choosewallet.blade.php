@@ -51,10 +51,6 @@
                                     <div>
                                         <span class="h3 giftcard-text" style="color: #000070;">Wallet Portfolio </span>
                                     </div>
-                                    <div class="widget-n" style="justify-content: center; text-align: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">Naira Wallet</span>
-                                        <span class="d-block price realtime-wallet-balance"></span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
