@@ -15,7 +15,7 @@ class CreateHdWalletsTable extends Migration
     {
         Schema::create('hd_wallets', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('currency');
+            $table->string('currency_id');
             $table->string('name');
             $table->string('signature_id');
             $table->longText('xpub');

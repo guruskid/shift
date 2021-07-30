@@ -107,8 +107,8 @@ class RegisterController extends Controller
             'amount_control' => 'VARIABLE',
         ]);
 
-        $external_id = $username . '-test-' . $user->id;
-        $btc_hd = HdWallet::where('currency', 'BTC')->first();
+        $external_id = $username . '-test-' . uniqid();
+        $btc_hd = HdWallet::where('currency_id', 1)->first();
         $btc_xpub = $btc_hd->xpub;
 
         $client = new Client();
@@ -136,7 +136,7 @@ class RegisterController extends Controller
         ]);
 
         $body = json_decode($response->getBody());
-        
+
 
         $btc_account_id = $body[0]->id;
         $user->customer_id = $body[0]->customerId;
@@ -157,7 +157,7 @@ class RegisterController extends Controller
         $user->btcWallet()->create([
             'account_id' => $btc_account_id,
             'name' => $user->username,
-            'currency' => 'BTC',
+            'currency_id' => 1,
             'address' => $address_body[0]->address,
         ]);
 

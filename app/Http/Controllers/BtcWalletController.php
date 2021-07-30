@@ -9,8 +9,10 @@ use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
 use App\Setting;
+use App\Wallet;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use RestApis\Blockchain\Constants;
 
@@ -93,12 +95,12 @@ class BtcWalletController extends Controller
         $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
         $get_txns = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
-            "json" => [ "id" => Auth::user()->btcWallet->account_id ]
+            "json" => ["id" => Auth::user()->btcWallet->account_id]
         ]);
 
         $transactions = json_decode($get_txns->getBody());
-        foreach ($transactions as $t ) {
-            $x = \Str::limit($t->created, 10, '') ;
+        foreach ($transactions as $t) {
+            $x = \Str::limit($t->created, 10, '');
             $time = \Carbon\Carbon::parse((int)$x);
             $t->created = $time->setTimezone('Africa/Lagos');
         }
@@ -212,7 +214,7 @@ class BtcWalletController extends Controller
 
         $reference = \Str::random(5) . Auth::user()->id;
         $url = env('TATUM_URL') . '/ledger/transaction';
-        $hd_wallet = HdWallet::where('currency', 'BTC')->first();
+        $hd_wallet = HdWallet::where('currency_id', 1)->first();
 
         try {
             $send = $client->request('POST', $url, [
@@ -267,5 +269,79 @@ class BtcWalletController extends Controller
         Auth::user()->nairaWallet->save();
 
         return redirect()->route('user.transactions');
+    }
+
+    public function send(Request $r)
+    {
+        $data = $r->validate([
+            'amount' => 'required|min:0',
+            'address' => 'required|string',
+            'pin' => 'required',
+            'fees' => 'required',
+        ]);
+
+        if (!Auth::user()->btcWallet) {
+            return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
+        }
+
+        //Check password
+        /*  if (!Hash::check($data['pin'], $user_wallet->password)) {
+            return back()->with(['error' => 'Incorrect bitcoin wallet pin']);
+        } */
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $user_wallet = Auth::user()->btcWallet;
+        $user_wallet->balance = $accounts[0]->balance->availableBalance;
+
+        $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
+
+        if ($data['amount'] > $user_wallet->balance) {
+            return back()->with(['error' => 'Insufficient balance']);
+        }
+
+        $charge_wallet = Wallet::where(['name' => 'charges', 'currency_id' => 1])->first();
+        $fees = "0.00001"; // get fees
+        $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
+        $total = $data['amount'] /* - $fees - $charge */;
+
+        $send_total = number_format((float)$total, 8);
+        
+        try {
+            $url = env('TATUM_URL') . '/offchain/bitcoin/transfer';
+            $send_btc = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "senderAccountId" => Auth::user()->btcWallet->account_id,
+                    "address" => $data['address'],
+                    "amount" => $send_total,
+                    "compliant" => false,
+                    "fee" => $fees,
+                    "signatureId" => $hd_wallet->signature_id,
+                    "xpub" => $hd_wallet->xpub,
+                    "senderNote" => "Send BTC"
+                ]
+            ]);
+
+            $res = json_decode($send_btc->getBody());
+            
+
+            if (Arr::exists($res, 'signatureId')) {
+                return back()->with(['success' => 'Bitcoin sent successfully']);
+            }else{
+                return back()->with(['error' => $res]);
+            }
+
+        } catch (\Exception $e) {
+            //report($e);
+           \Log::info($e->getResponse()->getBody());
+            return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
+        }
     }
 }

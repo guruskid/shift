@@ -194,7 +194,7 @@
                                                     @else
                                                     <span class="d-block text-danger"
                                                         style="font-size: 14px;color: #000000;font-weight: 500;">BTC
-                                                        {{ number_format((float) $transaction->amount, 8) }}</span>
+                                                        {{ number_format((float) $transaction->amount, 8) }} {{ $transaction->txId }} </span>
                                                     @endif
 
                                                 </td>

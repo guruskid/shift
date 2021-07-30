@@ -60,7 +60,7 @@
                             <input type="password" name="pin" required class="form-control" id="receipientAddress" >
                         </div>
                     </div>
-                    <button disabled type="submit" class="btn walletpage_btn text-white mt-3 mt-lg-5">Continue</button>
+                    <button type="submit" class="btn walletpage_btn text-white mt-3 mt-lg-5">Continue</button>
                 </div>
             </div>
         </div>
