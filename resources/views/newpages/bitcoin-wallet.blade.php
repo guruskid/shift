@@ -194,7 +194,7 @@
                                                     @else
                                                     <span class="d-block text-danger"
                                                         style="font-size: 14px;color: #000000;font-weight: 500;">BTC
-                                                        {{ number_format((float) $transaction->amount, 8) }} {{ $transaction->txId }} </span>
+                                                        {{ number_format((float) $transaction->amount, 8) }}  </span>
                                                     @endif
 
                                                 </td>
@@ -205,13 +205,12 @@
                                                 <td>
                                                     <span class="status_success">Completed</span>
                                                 </td>
-                                                {{-- <td class="transaction_content">
-                                                    @if ($transaction->txid != null)
-                                                    <a href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->txid }}" class="btn transaction_view_link">Explorer</a>
-                                                    @else
-                                                    - - -
+                                                <td class="transaction_content">
+                                                    @if (isset($transaction->txId))
+                                                        <a href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->txId }}" class="btn transaction_view_link">Explorer</a>
+                                                    
                                                     @endif
-                                                </td> --}}
+                                                </td>
                                             </tr>
                                             @endforeach
 

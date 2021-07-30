@@ -335,7 +335,7 @@ class BtcWalletController extends Controller
             if (Arr::exists($res, 'signatureId')) {
                 return back()->with(['success' => 'Bitcoin sent successfully']);
             }else{
-                return back()->with(['error' => $res]);
+                return back()->with(['error' => 'An error occured, please try again']);
             }
 
         } catch (\Exception $e) {
