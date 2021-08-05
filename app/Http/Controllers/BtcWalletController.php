@@ -55,14 +55,7 @@ class BtcWalletController extends Controller
             return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
         }
 
-
-        try {
-            $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
-        } catch (\Throwable $th) {
-            return back()->with(['error' => 'Network busy']);
-        }
-
-        $fees = $fees_req->payload->recommended;
+        $fees = 0;
 
         $charge = Setting::where('name', 'bitcoin_charge')->first();
         if (!$charge) {
