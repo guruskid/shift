@@ -110,6 +110,34 @@ class BtcWalletController extends Controller
         return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees'));
     }
 
+    public function fees($address, $amount)
+    {
+        $client = new Client();
+        $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
+        $amount = number_format((float) $amount, 8);
+
+        $url = env('TATUM_URL') . '/offchain/blockchain/estimate';
+        /* try { */
+            $get_fees = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "senderAccountId" => Auth::user()->btcWallet->account_id,
+                    "address" => $address,
+                    "amount" => $amount,
+                    "xpub" => $hd_wallet->xpub
+                ]
+            ]);
+       /*  } catch (\Exception $e) {
+            //\Log::info($e->getResponse()->getBody());
+        } */
+        $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
+        $res = json_decode($get_fees->getBody());
+        return response()->json([
+            "fee" => $res,
+            "charge" => $charge
+        ]);
+    }
+
 
     public function sell(Request $r)
     {
@@ -189,6 +217,7 @@ class BtcWalletController extends Controller
         $charge_ngn = $charge * $r->current_rate * $trade_rate;
 
         $ngn -= $charge_ngn;
+
         $t = Auth::user()->transactions()->create([
             'card_id' => 102,
             'type' => 'sell',
@@ -214,7 +243,10 @@ class BtcWalletController extends Controller
 
         $reference = \Str::random(5) . Auth::user()->id;
         $url = env('TATUM_URL') . '/ledger/transaction';
+
         $hd_wallet = HdWallet::where('currency_id', 1)->first();
+        $service_wallet = Wallet::where(['name' => 'service', 'user_id' => 1, 'currency_id' => 1])->first();
+        $charges_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
 
         try {
             $send = $client->request('POST', $url, [
@@ -230,13 +262,44 @@ class BtcWalletController extends Controller
                     "baseRate" => 1,
                 ]
             ]);
+
+            $send_charge = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "senderAccountId" => $hd_wallet->account_id,
+                    "recipientAccountId" => $service_wallet->account_id,
+                    "amount" => number_format((float) $charge, 9),
+                    "anonymous" => false,
+                    "compliant" => false,
+                    "transactionCode" => uniqid(),
+                    "paymentId" => uniqid(),
+                    "baseRate" => 1,
+                    "senderNote" => 'hidden'
+                ]
+            ]);
+
+            $send_service = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "senderAccountId" => $hd_wallet->account_id,
+                    "recipientAccountId" => $charges_wallet->account_id,
+                    "amount" => number_format((float) $service_fee, 9),
+                    "anonymous" => false,
+                    "compliant" => false,
+                    "transactionCode" => uniqid(),
+                    "paymentId" => uniqid(),
+                    "baseRate" => 1,
+                    "senderNote" => 'hidden'
+                ]
+            ]);
             $t->status = 'success';
             $t->save();
         } catch (\Exception $e) {
             //set transaction status to failed
             $t->status = 'failed';
             $t->save();
-            report($e);
+            \Log::info($e->getResponse()->getBody());
+            //report($e);
             return back()->with(['error' => 'An error occured, please try again']);
         }
 
@@ -280,8 +343,9 @@ class BtcWalletController extends Controller
             'fees' => 'required',
         ]);
 
+
         if (!Auth::user()->btcWallet) {
-            return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
+            return redirect()->route('user.portfolio')->with(['error' => 'Please create a bitcoin wallet to continue']);
         }
 
         //Check password
@@ -306,13 +370,15 @@ class BtcWalletController extends Controller
             return back()->with(['error' => 'Insufficient balance']);
         }
 
-        $charge_wallet = Wallet::where(['name' => 'charges', 'currency_id' => 1])->first();
-        $fees = "0.00001"; // get fees
+        $charge_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
+
+        $fees = $r->fees; // get fees
         $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
-        $total = $data['amount'] /* - $fees - $charge */;
+        $total = $data['amount'] - $fees - $charge;
 
         $send_total = number_format((float)$total, 8);
-        
+        //dd($send_total, $fees, $data['address']);
+        $fees = number_format((float) $fees, 6);
         try {
             $url = env('TATUM_URL') . '/offchain/bitcoin/transfer';
             $send_btc = $client->request('POST', $url, [
@@ -329,18 +395,34 @@ class BtcWalletController extends Controller
                 ]
             ]);
 
+            $url = env('TATUM_URL') . '/ledger/transaction';
+            $send_charges = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "senderAccountId" => Auth::user()->btcWallet->account_id,
+                    "recipientAccountId" => $charge_wallet->account_id,
+                    "amount" => $charge,
+                    "anonymous" => false,
+                    "compliant" => false,
+                    "transactionCode" => uniqid(),
+                    "paymentId" => uniqid(),
+                    "baseRate" => 1,
+                    "senderNote" => 'hidden'
+                ]
+            ]);
+
             $res = json_decode($send_btc->getBody());
-            
+
 
             if (Arr::exists($res, 'signatureId')) {
                 return back()->with(['success' => 'Bitcoin sent successfully']);
-            }else{
+            } else {
                 return back()->with(['error' => 'An error occured, please try again']);
             }
-
         } catch (\Exception $e) {
             //report($e);
-           \Log::info($e->getResponse()->getBody());
+            \Log::info($e->getResponse()->getBody());
+            dd($e->getResponse()->getBody());
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
     }
