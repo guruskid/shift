@@ -58,6 +58,14 @@
                         class="form-control bitcoin-input-radius"  >
                 </div>
             </div>
+
+            <div class="d-flex justify-content-around mb-2">
+                <span class="text-primary">Charges</span>
+                <span class="text-primary">{{ chargeBtc.toFixed(5) }}</span>
+                <span class="text-primary">{{ charge }}%</span>
+                <span class="text-primary">${{ chargeNgn.toLocaleString() }}</span>
+            </div>
+
             <button class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
         </form>
     </div>
@@ -65,7 +73,7 @@
 
 <script>
     export default {
-        props: ['rate', 'real_btc', 'card_id'],
+        props: ['rate', 'real_btc', 'card_id', 'charge'],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -73,6 +81,9 @@
                 naira: '',
                 usd: '',
                 btc: '',
+
+                chargeBtc: 0,
+                chargeNgn: 0,
 
                 //rates
                 btcToUsd:  this.real_btc,
@@ -123,6 +134,12 @@
                 ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
                 ajax.send();
             }
+        },
+
+
+        updated () {
+            this.chargeBtc = (this.charge/100) * this.btc
+            this.chargeNgn = this.chargeBtc * this.btcToUsd
         },
     }
 

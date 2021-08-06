@@ -27,6 +27,28 @@ class BitcoinWalletController extends Controller
         $this->instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
     }
 
+    public function btcPrice()
+    {
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_rate = $res->bitcoin->usd;
+
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $btc_rate;
+        $btc_rate -= $tp;
+
+        $card = Card::find(102);
+        $rates = $card->currency->first();
+        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        $usd_ngn = $rates->sell[0]->rate;
+
+        return response()->json([
+            'success' => true,
+            'btc_usd' => $btc_rate,
+            'usd_ngn' => $usd_ngn
+        ]);
+    }
+
     public function create(Request $r)
     {
         $validator = Validator::make($r->all(), [
@@ -90,6 +112,12 @@ class BitcoinWalletController extends Controller
         $rates = $card->currency->first();
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $btc_rate = $res->bitcoin->usd;
+
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $btc_rate;
+        $btc_rate -= $tp;
+
+
         $btc_wallet_bal  = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
 
@@ -141,6 +169,13 @@ class BitcoinWalletController extends Controller
 
     public function send(Request $r)
     {
+        if (!Auth::user()->bitcoinWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Currently not available'
+            ]);
+        }
+
         $validator = Validator::make($r->all(), [
             'amount' => 'required|numeric',
             'address' => 'required|string',
@@ -177,7 +212,7 @@ class BitcoinWalletController extends Controller
         }
 
         //Add fees and Check balance
-        if ($total > $user_wallet->balance) {
+        if ($r->amount > $user_wallet->balance) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Insufficient Bitcoin Balance'
@@ -245,8 +280,8 @@ class BitcoinWalletController extends Controller
             $btc_transaction->save();
             //set the transaction status to failed
 
-            $charge_wallet->balance -= $charge;
-            $charge_wallet->save();
+            /* $charge_wallet->balance -= $charge;
+            $charge_wallet->save(); */
 
             return response()->json([
                 'success' => false,
@@ -257,11 +292,6 @@ class BitcoinWalletController extends Controller
 
     public function trade(Request $r)
     {
-       /*  return response()->json([
-            'success' => false,
-            'msg' => 'balance is '. Auth::user()->bitcoinWallet->balance .' and amount is '. $r->quantity
-        ]); */
-
         $validator = Validator::make($r->all(), [
             'card_id' => 'required|integer',
             'type' => 'required|string',
@@ -314,9 +344,9 @@ class BitcoinWalletController extends Controller
 
         }
 
-        /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
-            return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
-        } */
+        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 1 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 1) {
+            return back()->with(['error' => 'You cant initiate a new transaction with more than 1 waiting or processing transactions']);
+        }
 
         //Check if the trade details are correct
 
@@ -355,6 +385,7 @@ class BitcoinWalletController extends Controller
 
         //Convert the charge to naira and subtract it from the amount paid
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+        $charge = ($charge /100) * $r->quantity;
         $charge_ngn = $charge * $r->current_rate * $trade_rate;
 
         if ($r->amount_paid != $trade_ngn || $r->quantity != $trade_btc) {
@@ -383,6 +414,7 @@ class BitcoinWalletController extends Controller
         $data['amount'] = $r->amount;
         $data['amount_paid'] = $r->amount_paid;
         $data['quantity'] = $r->quantity;
+        $data['card_price'] = $r->current_rate;
 
         $t = Transaction::create($data);
 
@@ -404,7 +436,7 @@ class BitcoinWalletController extends Controller
 
         //Call autonated pay function
         if ($t->amount < 49000 && $t->amount > 0) {
-            $this->automatedPayment($t, $data['card_id'], $r->current_rate);
+           // $this->automatedPayment($t, $data['card_id'], $r->current_rate);
         }
 
         return response()->json([
@@ -434,6 +466,7 @@ class BitcoinWalletController extends Controller
 
         if ($transaction->type == 'buy') {
             $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
+            $charge = ($charge /100) * $transaction->quantity;
             /* Cross Check Balance */
             if ($user_naira_wallet->amount < $transaction->amount_paid) {
                 return response()->json([
@@ -475,6 +508,7 @@ class BitcoinWalletController extends Controller
             $primary_wallet->save();
         } elseif ($transaction->type == 'sell') {
             $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+            $charge = ($charge /100) * $transaction->quantity;
             $btc_txn_type = 20;
             if ($user_btc_wallet->balance < ($transaction->quantity )) {
                 return response()->json([
@@ -485,7 +519,7 @@ class BitcoinWalletController extends Controller
             $user_btc_wallet->balance -= ($transaction->quantity );
             $user_btc_wallet->save();
 
-            $primary_wallet->balance += $transaction->quantity;
+            $primary_wallet->balance += $transaction->quantity - $charge;
             $primary_wallet->save();
 
             $user_naira_wallet->amount += $transaction->amount_paid;

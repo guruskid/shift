@@ -50,6 +50,11 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
     Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
 
+
+    Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
+    Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
+
+
     Route::prefix('trade-naira')->group(function () {
         Route::get('/', 'TradeNairaController@index')->name('admin.trade-naira.index');
         Route::get('/agent-transactions/{user}', 'TradeNairaController@agentTransactions')->name('p2p.agent-transactions');
@@ -75,6 +80,11 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
 
     Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
+
+
+
+    Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
+
 
 
     //Trade Naira
