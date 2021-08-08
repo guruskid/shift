@@ -14,9 +14,11 @@ Route::get('/rate/delete/{id}', 'RateController@deleteRate');
 Route::get('/index', 'CurrencyController@index')->name('admin.currency.index');
 
 Route::group(['middleware'=>'manager'], function(){
+
     Route::get('/user-verification', 'UserController@verifications')->name('admin.user-verifications');
     Route::put('/user-verification/{verification}', 'UserController@verify')->name('admin.verify');
     Route::put('/cancel-verification/{verification}', 'UserController@cancelVerification')->name('admin.cancel-verification');
+
 });
 
 Route::group(['middleware' => 'seniorAccountant'], function () {
@@ -39,13 +41,24 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::POST('/set-bitcoin-charge', 'BitcoinWalletController@setCharge')->name('admin.set-bitcoin-charge');
     Route::POST('/send-from-hd-wallet', 'BitcoinWalletController@sendFromHd')->name('admin.btc-hd-wallet.send');
 
+
     Route::get('/bitcoin-summary', 'SummaryController@index')->name('admin.bitcoin-summary');
     Route::get('/bitcoin-summary-txns/{summary}', 'SummaryController@transactions')->name('admin.bitcoin-summary-txns');
     Route::post('/bitcoin-summary-txns/sort', 'SummaryController@sortTransactions')->name('admin.bitcoin-summary-txns.sort');
     Route::get('/bitcoin-users-balance', 'SummaryController@ledgerBalance');
+    Route::view('/bitcoin-new-txn', 'admin.bitcoin_wallet.new_txn');
+    Route::POST('/bitcoin-new-txn', 'BitcoinWalletController@addTxn')->name('admin.bitcoin.add-txn');
+
 
     Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
     Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
+
+
+    Route::prefix('trade-naira')->group(function () {
+        Route::get('/', 'TradeNairaController@index')->name('admin.trade-naira.index');
+        Route::get('/agent-transactions/{user}', 'TradeNairaController@agentTransactions')->name('p2p.agent-transactions');
+    });
+
 
 });
 
@@ -64,5 +77,22 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::get('/bitcoin-charges', 'BitcoinWalletController@charges')->name('admin.bitcoin.charges');
     Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges' )->name('admin.bitcoin.transfer-charges');
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
+
+
     Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
+
+
+
+    //Trade Naira
+    Route::prefix('trade-naira')->group(function () {
+
+        Route::post('/top-up', 'TradeNairaController@topup')->name('admin.trade-naira.topup');
+        Route::post('/deduct', 'TradeNairaController@deduct')->name('admin.trade-naira.deduct');
+
+        Route::get('/transactions', 'TradeNairaController@transactions')->name('admin.naira-p2p');
+        Route::post('/set-limits', 'TradeNairaController@setLimits')->name('admin.naira-p2p.set-limits');
+        Route::put('/confirm/{transaction}', 'TradeNairaController@confirm')->name('admin.naira-p2p.confirm');
+        Route::post('/update-bank-details', 'TradeNairaController@updateBankdetails')->name('agent.update-bank');
+    });
+
 });
