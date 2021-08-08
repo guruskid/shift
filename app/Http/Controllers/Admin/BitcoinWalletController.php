@@ -543,7 +543,7 @@ class BitcoinWalletController extends Controller
             'hash' => 'required',
             'address' => 'required|exists:bitcoin_wallets,address',
             'amount' => 'required|min:0',
-            'email' => 'required',
+            //'email' => 'required',
         ]);
 
         $bitcoin_wallet = BitcoinWallet::where('address', $request->address)->first();
@@ -551,9 +551,9 @@ class BitcoinWalletController extends Controller
 
         $user = $bitcoin_wallet->user;
 
-        if ($user->email != $request->email) {
+        /* if ($user->email != $request->email) {
             return back()->with(['error' => 'Wrong user details']);
-        }
+        } */
 
         $txn = BitcoinTransaction::where(['hash' => $request->hash, 'wallet_id' => $request->address])->get();
         if ($txn->count() > 0) {

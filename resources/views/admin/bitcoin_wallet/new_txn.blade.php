@@ -78,12 +78,12 @@
                                         <input type="text"  name="address" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Email</label>
                                         <input type="email"  name="email" class="form-control">
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             <button class="btn btn-primary">Add</button>
                         </form>
