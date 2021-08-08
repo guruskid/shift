@@ -299,8 +299,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
 
-
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
+    Route::get('/faq', 'FaqController@index')->name('admin.faq');
+    Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
+    Route::get('/edit-faq/{id}/{title}', 'FaqController@editFaqView')->name('admin.edit-faq');
+    Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
+    Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
+
 });
 
 

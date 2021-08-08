@@ -28,7 +28,6 @@
                         <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(75)"> 75% </span>
                         <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(100)"> 100% </span>
                     </div>
-
                 </div>
 
                 <div class="input-group mb-2 mr-sm-2">
@@ -58,14 +57,6 @@
                         class="form-control bitcoin-input-radius"  >
                 </div>
             </div>
-
-            <div class="d-flex justify-content-around mb-2">
-                <span class="text-primary">Charges</span>
-                <span class="text-primary">{{ chargeBtc.toFixed(5) }}</span>
-                <span class="text-primary">{{ charge }}%</span>
-                <span class="text-primary">${{ chargeNgn.toLocaleString() }}</span>
-            </div>
-
             <button class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
         </form>
     </div>
@@ -73,7 +64,7 @@
 
 <script>
     export default {
-        props: ['rate', 'real_btc', 'card_id', 'charge'],
+        props: ['rate', 'real_btc', 'card_id'],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -81,9 +72,6 @@
                 naira: '',
                 usd: '',
                 btc: '',
-
-                chargeBtc: 0,
-                chargeNgn: 0,
 
                 //rates
                 btcToUsd:  this.real_btc,
@@ -125,21 +113,16 @@
                     const userWallet = JSON.parse(ajax.responseText)
                     const balance = userWallet.btcBalance[0].balance
                      setTimeout(()=>{
-
+                        // console.log(balance)
                         this.btc = balance * userFraction
                         this.usd = this.btcToUsd * this.btc
                         this.naira = this.btc * this.btcToNaira
-                    }, 200)
+                    }, 100)
                 }
+
                 ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
                 ajax.send();
             }
-        },
-
-
-        updated () {
-            this.chargeBtc = (this.charge/100) * this.btc
-            this.chargeNgn = this.chargeBtc * this.btcToUsd
         },
     }
 
