@@ -535,4 +535,54 @@ class BitcoinWalletController extends Controller
         return back()->with(['success' => 'Transaction completed successfully ']);
         /* Redirect User Back to where he came from */
     }
+
+
+    public function addTxn(Request $request)
+    {
+        $request->validate([
+            'hash' => 'required',
+            'address' => 'required|exists:bitcoin_wallets,address',
+            'amount' => 'required|min:0',
+            'email' => 'required',
+        ]);
+
+        $bitcoin_wallet = BitcoinWallet::where('address', $request->address)->first();
+
+
+        $user = $bitcoin_wallet->user;
+
+        if ($user->email != $request->email) {
+            return back()->with(['error' => 'Wrong user details']);
+        }
+
+        $txn = BitcoinTransaction::where(['hash' => $request->hash, 'wallet_id' => $request->address])->get();
+        if ($txn->count() > 0) {
+            return back()->with(['error' => 'Transaction already exists']);
+        }
+
+
+
+        $new_txn = new BitcoinTransaction();
+        $new_txn->user_id = $user->id;
+        $new_txn->primary_wallet_id = 1;
+        $new_txn->wallet_id = $request->address;
+        $new_txn->hash = $request->hash;
+        $new_txn->credit = $request->amount;
+        $new_txn->debit = 0;
+        $new_txn->fee = 0;
+        $new_txn->charge = 0;
+        $new_txn->previous_balance = $bitcoin_wallet->balance;
+        $new_txn->current_balance = $bitcoin_wallet->balance + $request->amount;
+        $new_txn->transaction_type_id = 22;
+        $new_txn->counterparty = Auth::user()->email;
+        $new_txn->narration = Auth::user()->first_name;
+        $new_txn->confirmations = 7;
+        $new_txn->status = 'success';
+
+        $new_txn->save();
+
+        $bitcoin_wallet->balance += $request->amount;
+
+        return back()->with(['success' => 'Transaction added']);
+    }
 }
