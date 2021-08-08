@@ -305,6 +305,7 @@ class BillsPaymentController extends Controller
 
     public function nairaRate()
     {
+        return back()->with(['error' => 'Service not available']);
         $naira_wallet = Auth::user()->nairaWallet;
         $balance = $naira_wallet->amount;
         // dd($balance);

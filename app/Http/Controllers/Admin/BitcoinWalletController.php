@@ -579,9 +579,10 @@ class BitcoinWalletController extends Controller
         $new_txn->confirmations = 7;
         $new_txn->status = 'success';
 
-        $new_txn->save();
+        //$new_txn->save();
 
         $bitcoin_wallet->balance += $request->amount;
+        //$bitcoin_wallet->save();
 
         return back()->with(['success' => 'Transaction added']);
     }
