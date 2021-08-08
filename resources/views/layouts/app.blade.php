@@ -52,6 +52,22 @@ $not = $nots->last();
             max-width: 300px;
         }
 
+        .tooltip {
+            max-width: 200px;
+            padding: 3px 8px;
+            color: #fff;
+            text-align: center;
+            background-color: #000070 !important;
+            border-radius: .25rem;
+        }
+
+        .tooltip.bs-tooltip-auto[x-placement^=top] .arrow::before, .tooltip.bs-tooltip-top {
+            margin-left: -3px;
+            content: "";
+            border-width: 5px 5px 0;
+            border-top-color: #000070 !important;
+        }
+
     </style>
     <script>
         window.Laravel = {!! json_encode([
@@ -65,6 +81,8 @@ $not = $nots->last();
                 ]
             ])
         !!};
+
+
     </script>
 
 
@@ -243,21 +261,20 @@ $not = $nots->last();
 
     @auth
     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666] ))
-
-    <script src="{{asset('js/sa.js?v=5')}}"></script>
-
     <script src="{{asset('js/sa.js?v=7')}}"></script>
-    
     @endif
     @endauth
 
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
             $('.transactions-table').DataTable({
                 paging: true,
                 order: [[0, 'desc'] ]
             });
         });
+
+
+
 
     </script>
 
@@ -280,6 +297,45 @@ $not = $nots->last();
 
     </script>
     @endif
+
+    @yield('scripts')
+
+    <script type="text/javascript">
+        const __st_id = (activity) => document.getElementById(activity)
+
+        const hideit = (ide) => {
+            __st_id(ide).classList.remove("d-block")
+            __st_id(ide).classList.add("d-none")
+        }
+
+        const showit = (ide) => {
+            __st_id(ide).classList.remove("d-none")
+            __st_id(ide).classList.add("d-block")
+        }
+
+        const feedback_status = () => {
+             const feedback = __st_id("f_status")
+             if(feedback.value == "failed"){
+                showit("yfailed")
+                hideit("ydeclined")
+             }else if(feedback.value == "declined"){
+                hideit("yfailed")
+                showit("ydeclined")
+             }else{
+                hideit("ydeclined")
+                hideit("yfailed")
+                console.log("this is working")
+             }
+         }
+
+
+    </script>
+
+<script>
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 
 </body>
 

@@ -74,7 +74,7 @@
                                 </div>
                                 <div
                                     class="d-flex flex-row flex-wrap justify-content-between justify-content-lg-center py-3 px-2">
-                                    <a class="mx-1 my-2" href="{{ route('user.recharge') }}">
+                                    <a class="mx-1 my-2" href="{{ route('user.airtime') }}">
                                         <div
                                             class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
                                             <div>
