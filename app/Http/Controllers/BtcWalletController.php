@@ -477,6 +477,10 @@ class BtcWalletController extends Controller
         $total = $data['amount'] - $fees - $charge;
 
         $send_total = number_format((float)$total, 8);
+        
+        if ($send_total < 0) {
+            return back()->with(['error' => 'Insufficient amount']);
+        }
         //dd($send_total, $fees, $data['address']);
         $fees = number_format((float) $fees, 6);
         try {
@@ -522,7 +526,7 @@ class BtcWalletController extends Controller
         } catch (\Exception $e) {
             //report($e);
             \Log::info($e->getResponse()->getBody());
-            
+
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
     }
