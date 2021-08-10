@@ -449,9 +449,9 @@ class BtcWalletController extends Controller
         }
 
         //Check password
-        /*  if (!Hash::check($data['pin'], $user_wallet->password)) {
+         if (!Hash::check($data['pin'], Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect bitcoin wallet pin']);
-        } */
+        }
 
         $client = new Client();
         $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
@@ -477,7 +477,7 @@ class BtcWalletController extends Controller
         $total = $data['amount'] - $fees - $charge;
 
         $send_total = number_format((float)$total, 8);
-        
+
         if ($send_total < 0) {
             return back()->with(['error' => 'Insufficient amount']);
         }
