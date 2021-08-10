@@ -207,7 +207,7 @@
                                                 </td>
                                                 <td class="transaction_content">
                                                     @if (isset($transaction->txId))
-                                                        <a target="_blank" href="https://blockexplorer.one/btc/testnet/tx/{{ $transaction->txId }}" class="btn transaction_view_link">Explorer</a>
+                                                        <a target="_blank" href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->txId }}" class="btn transaction_view_link">Explorer</a>
 
                                                     @endif
                                                 </td>

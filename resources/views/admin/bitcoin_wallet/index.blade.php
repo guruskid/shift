@@ -232,7 +232,7 @@
                                 <td>Completed</td>
                                 <td class="transaction_content">
                                     @if (isset($t->txId))
-                                        <a target="_blank" href="https://blockexplorer.one/btc/testnet/tx/{{ $t->txId }}" class="">Explorer</a>
+                                        <a target="_blank" href="https://blockexplorer.one/btc/mainnet/tx/{{ $t->txId }}" class="">Explorer</a>
 
                                     @endif
                                 </td>
