@@ -84,7 +84,7 @@ class BtcWalletController extends Controller
 
         $address_body = json_decode($res->getBody());
 
-        $user->btcWallet()->create([
+        $btc_wallet = $user->btcWallet()->create([
             'account_id' => $btc_account_id,
             'name' => $user->username,
             'currency_id' => 1,
@@ -107,7 +107,7 @@ class BtcWalletController extends Controller
                     'headers' => ['x-api-key' => env('TATUM_KEY')],
                     'json' =>  [
                         "senderAccountId" => $migration_wallet->account_id,
-                        "recipientAccountId" => Auth::user()->btcWallet->account_id,
+                        "recipientAccountId" => $btc_wallet->account_id,
                         "amount" => $migration->amount,
                         "anonymous" => false,
                         "compliant" => false,
