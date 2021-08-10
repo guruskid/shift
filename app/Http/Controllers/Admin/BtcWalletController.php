@@ -105,10 +105,11 @@ class BtcWalletController extends Controller
         $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
         $url = env('TATUM_URL') . '/offchain/blockchain/estimate';
         /* try { */
+            
         $get_fees = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' =>  [
-                "senderAccountId" => Auth::user()->btcWallet->account_id,
+                "senderAccountId" => $wallet->account_id,
                 "address" => $request->address,
                 "amount" => $request->btc,
                 "xpub" => $hd_wallet->xpub
