@@ -84,12 +84,14 @@ class RegisterController extends Controller
 
 
         $username = \Str::lower($data['username']);
+        $external_id = $username . '-test-' . uniqid();
 
         $user =  User::create([
             'first_name' => ' ',
             'last_name' => ' ',
             'username' => $username,
             'email' => $data['email'],
+            'external_id' => $external_id,
             'password' => Hash::make($data['password']),
         ]);
 
@@ -107,7 +109,7 @@ class RegisterController extends Controller
             'amount_control' => 'VARIABLE',
         ]);
 
-        $external_id = $username . '-test-' . uniqid();
+
         $btc_hd = HdWallet::where('currency_id', 1)->first();
         $btc_xpub = $btc_hd->xpub;
 

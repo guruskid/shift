@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BtcMigration;
 use App\Card;
 use App\CardCurrency;
 use App\HdWallet;
@@ -14,13 +15,119 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use RestApis\Blockchain\Constants;
 
 class BtcWalletController extends Controller
 {
-    public function __construct()
+    /* public function __construct()
     {
         $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
+    } */
+
+    public function create(Request $request)
+    {
+        $request->validate([
+            'pin' => 'required|max:4'
+        ]);
+
+        if (Auth::user()->btcWallet) {
+            return back()->with(['error' => 'New Bitcoin wallet already exists for this account']);
+        }
+
+        $user = Auth::user();
+        $external_id = $user->username . '-' . uniqid();
+        $btc_hd = HdWallet::where('currency_id', 1)->first();
+        $btc_xpub = $btc_hd->xpub;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . "/ledger/account/batch";
+
+        $response = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' => [
+                "accounts" => [
+                    [
+                        "currency" => "BTC",
+                        "xpub" => $btc_xpub,
+                        "customer" => [
+                            "accountingCurrency" => "USD",
+                            "customerCountry" => "NG",
+                            "externalId" => $external_id,
+                            "providerCountry" => "NG"
+                        ],
+                        "compliant" => false,
+                        "accountingCurrency" => "USD"
+                    ]
+                ]
+            ],
+        ]);
+
+        $body = json_decode($response->getBody());
+
+
+        $btc_account_id = $body[0]->id;
+        $user->customer_id = $body[0]->customerId;
+        $user->external_id = $external_id;
+        $user->pin = Hash::make($request->pin);
+        $user->save();
+
+        $address_url = env('TATUM_URL') . "/offchain/account/address/batch";
+        $res = $client->request('POST', $address_url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' => [
+                "addresses" => [
+                    ["accountId" => $btc_account_id]
+                ]
+            ],
+        ]);
+
+        $address_body = json_decode($res->getBody());
+
+        $user->btcWallet()->create([
+            'account_id' => $btc_account_id,
+            'name' => $user->username,
+            'currency_id' => 1,
+            'address' => $address_body[0]->address,
+        ]);
+
+        //Migrate old funds
+        if (Auth::user()->bitcoinWallet) {
+            $migration = BtcMigration::create([
+                'user_id' => Auth::user()->id,
+                'amount' => number_format((float) Auth::user()->bitcoinWallet->balance, 8),
+            ]);
+
+            $reference = \Str::random(5) . Auth::user()->id;
+            $url = env('TATUM_URL') . '/ledger/transaction';
+            $migration_wallet = Wallet::where('name', 'migration')->first();
+
+            try {
+                $send = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $migration_wallet->account_id,
+                        "recipientAccountId" => Auth::user()->btcWallet->account_id,
+                        "amount" => $migration->amount,
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => $reference,
+                        "paymentId" => $reference,
+                        "baseRate" => 1,
+                    ]
+                ]);
+                $migration->status = 'completed';
+                $migration->save();
+
+                $user->bitcoinWallet->balance = 0;
+                $user->bitcoinWallet->save();
+
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+        }
+
+        return back()->with(['success' => 'Bitcoin wallet migrated successfully']);
     }
 
     public function getBitcoinNgn()
@@ -35,7 +142,7 @@ class BtcWalletController extends Controller
         $tp = ($trading_per / 100) * $btc_rate;
         $btc_rate -= $tp;
 
-        $btc_wallet_bal  = Auth::user()->bitcoinWallet->balance ?? 0;
+        $btc_wallet_bal = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
 
         $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
@@ -111,16 +218,16 @@ class BtcWalletController extends Controller
 
         $url = env('TATUM_URL') . '/offchain/blockchain/estimate';
         /* try { */
-            $get_fees = $client->request('POST', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
-                'json' =>  [
-                    "senderAccountId" => Auth::user()->btcWallet->account_id,
-                    "address" => $address,
-                    "amount" => $amount,
-                    "xpub" => $hd_wallet->xpub
-                ]
-            ]);
-       /*  } catch (\Exception $e) {
+        $get_fees = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' =>  [
+                "senderAccountId" => Auth::user()->btcWallet->account_id,
+                "address" => $address,
+                "amount" => $amount,
+                "xpub" => $hd_wallet->xpub
+            ]
+        ]);
+        /*  } catch (\Exception $e) {
             //\Log::info($e->getResponse()->getBody());
         } */
         $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
@@ -216,7 +323,7 @@ class BtcWalletController extends Controller
             'type' => 'sell',
             'amount' => $usd,
             'amount_paid' => $ngn,
-            'quantity' => $r->quantity,
+            'quantity' => number_format((float) $r->quantity, 8),
             'card_price' => $current_btc_rate,
             'status' => 'waiting',
             'uid' => uniqid(),
@@ -247,7 +354,7 @@ class BtcWalletController extends Controller
                 'json' =>  [
                     "senderAccountId" => Auth::user()->btcWallet->account_id,
                     "recipientAccountId" => $hd_wallet->account_id,
-                    "amount" => $r->quantity,
+                    "amount" => number_format((float) $r->quantity, 8),
                     "anonymous" => false,
                     "compliant" => false,
                     "transactionCode" => $reference,
@@ -415,7 +522,7 @@ class BtcWalletController extends Controller
         } catch (\Exception $e) {
             //report($e);
             \Log::info($e->getResponse()->getBody());
-            dd($e->getResponse()->getBody());
+            
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
     }

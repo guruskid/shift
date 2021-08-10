@@ -13,6 +13,9 @@ class PortfolioController extends Controller
 {
     public function view()
     {
+        if (!Auth::user()->btcWallet) {
+            return back()->with(['error' => 'Please create a Bitcoin wallet to continue']);
+        }
         $naira = Auth::user()->nairaWallet()->count();
         $nw = Auth::user()->nairaWallet;
 

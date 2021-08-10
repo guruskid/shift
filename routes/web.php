@@ -221,13 +221,13 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
     Route::post('/trade-crypto', 'TradeController@tradeCrypto')->name('user.trade-crypto');
 
-    /* Bitcooin  */
+    /* Bitcoin  */
     Route::get('/bitcoin-wallet', 'BtcWalletController@wallet')->name('user.bitcoin-wallet');
     Route::post('/sell-bitcoin', 'BtcWalletController@sell')->name('user.sell-bitcoin');
-
     Route::get('/get-bitcoin-ngn', 'BtcWalletController@getbitcoinNgn');
+    Route::post('/bitcoin-wallet-create', 'BtcWalletController@create')->name('user.bitcoin-wallet.create');
+
     Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
-    Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
     Route::post('/send-bitcoin', 'BtcWalletController@send')->name('user.send-bitcoin');
     Route::get('/bitcoin-fees/{address}/{fees}', 'BtcWalletController@fees')->name('user.bitcoin-fees');
 

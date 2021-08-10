@@ -37,7 +37,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::POST('/bitcoin-wallet', 'BitcoinWalletController@createHdWallet')->name('admin.bitcoin-wallet.create');
 
     Route::POST('/set-bitcoin-charge', 'BitcoinWalletController@setCharge')->name('admin.set-bitcoin-charge');
-    Route::POST('/send-from-hd-wallet', 'BitcoinWalletController@sendFromHd')->name('admin.btc-hd-wallet.send');
+    Route::POST('/send-from-hd-wallet', 'BtcWalletController@send')->name('admin.btc.send');
 
     Route::get('/bitcoin-summary', 'SummaryController@index')->name('admin.bitcoin-summary');
     Route::get('/bitcoin-summary-txns/{summary}', 'SummaryController@transactions')->name('admin.bitcoin-summary-txns');
