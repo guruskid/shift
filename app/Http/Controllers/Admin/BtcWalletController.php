@@ -10,6 +10,7 @@ use App\Wallet;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class BtcWalletController extends Controller
 {
@@ -77,9 +78,9 @@ class BtcWalletController extends Controller
             //'fees' => 'required'
         ]);
 
-        if (!Hash::check($data['pin'], Auth::user()->pin)) {
+        /* if (!Hash::check($data['pin'], Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect wallet pin']);
-        }
+        } */
 
         if ($request->wallet == 'hd') {
             $wallet = HdWallet::where('currency_id', 1)->first();
