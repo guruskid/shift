@@ -182,6 +182,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($transactions as $key => $transaction)
+                                            @if ($transaction->senderNote != 'hidden')
                                             <tr>
                                                 <th scope="row">{{ $key++ }}</th>
                                                 <td>
@@ -212,6 +213,7 @@
                                                     @endif
                                                 </td>
                                             </tr>
+                                            @endif
                                             @endforeach
 
                                         </tbody>
