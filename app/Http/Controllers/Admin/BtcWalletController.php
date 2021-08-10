@@ -49,7 +49,19 @@ class BtcWalletController extends Controller
         $res_migration = json_decode($res_migration->getBody());
         $migration_wallet->balance = $res_migration->balance->availableBalance;
 
-        $transactions = [];
+
+        $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+        $get_txns = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            "json" => ["id" => $hd_wallet->account_id]
+        ]);
+
+        $transactions = json_decode($get_txns->getBody());
+        foreach ($transactions as $t) {
+            $x = \Str::limit($t->created, 10, '');
+            $time = \Carbon\Carbon::parse((int)$x);
+            $t->created = $time->setTimezone('Africa/Lagos');
+        }
 
         return view('admin.bitcoin_wallet.index', compact('service_wallet', 'charges_wallet', 'migration_wallet', 'hd_wallet', 'transactions'));
     }

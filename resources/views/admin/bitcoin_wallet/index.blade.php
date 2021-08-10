@@ -193,7 +193,7 @@
             <div class="main-card mb-3 card">
                 <div class="card-header justify-content-between ">
                     All Transactions
-                    <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
+                   {{--  <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
                         method="POST">
                         @csrf
                         <div class="form-group mr-2">
@@ -205,52 +205,37 @@
                             <input type="date" name="end" class="ml-2 form-control">
                         </div>
                         <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
-                    </form>
+                    </form> --}}
                 </div>
                 <div class="table-responsive p-3">
 
                     <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                {{-- <th>Hash</th> --}}
-                                <th>User Name</th>
+                                {{-- <th>ID</th> --}}
                                 <th>Trans. Type</th>
-                                <th>Credit</th>
-                                <th>Debit</th>
-                                <th>Tx Fee</th>
-                                <th>Tx Charge</th>
-                                <th>Prev. Bal </th>
-                                <th>Cur. Bal</th>
-                                <th>Counterparty</th>
-                                <th>Confirmations</th>
+                                <th>Amount</th>
+                                <th>USD</th>
                                 <th>Date</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($transactions as $t)
+                            @foreach ($transactions as $key => $t)
                             <tr>
-                                <td>{{$t->id}} </td>
-                                {{-- <td>{{$t->hash}} </td> --}}
-                                <td>
-                                    <a href="{{route('admin.user', [$t->user->id ?? ' ', $t->user->email ?? ' ' ] )}}">
-                                        {{$t->user->first_name ?? 'A MISSING USER'}}
-                                    </a>
+                                {{-- <td>{{$key += 1}} </td> --}}
+                                <td>{{ $t->transactionType }}</td>
+                                <td>{{ number_format((float) $t->amount, 8) }}</td>
+                                <td>{{ number_format($t->marketValue->amount, 2) }}</td>
+                                <td>{{ $t->created->format('d M Y h:ia') }}</td>
+                                <td>Completed</td>
+                                <td class="transaction_content">
+                                    @if (isset($t->txId))
+                                        <a target="_blank" href="https://blockexplorer.one/btc/testnet/tx/{{ $t->txId }}" class="">Explorer</a>
+
+                                    @endif
                                 </td>
-                                <td>{{$t->type->name}} </td>
-                                <td>{{$t->credit == 0 ? '--' : number_format((float)$t->credit, 8) }} </td>
-                                <td>{{$t->debit == 0 ? '--' : number_format((float)$t->debit, 8) }} </td>
-                                <td>{{number_format((float)$t->fee, 8) }} </td>
-                                <td>{{number_format((float)$t->charge, 8) }} </td>
-                                <td>{{number_format((float)$t->previous_balance, 8) }} </td>
-                                <td>{{number_format((float)$t->current_balance, 8) }} </td>
-                                <td>{{$t->counterparty}} </td>
-                                <td>{{$t->confirmations}} </td>
-                                <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
-                                <td>{{$t->status}} </td>
-                                <td>{{-- <button class="btn btn-primary">View</button> --}} - -</td>
                             </tr>
                             @endforeach
                         </tbody>
