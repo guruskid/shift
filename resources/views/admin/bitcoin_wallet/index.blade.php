@@ -112,7 +112,7 @@
         </div>
         <div class="col-md-3">
             <div class="card mb-3 widget-content">
-                <a href="{{ route('admin.service-fee') }}">
+                <a href="{{ route('admin.btc.migration') }}">
                     <div class="widget-content-wrapper ">
                         <div class="widget-content-left">
                             <div class="widget-heading">

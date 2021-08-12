@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\BtcMigration;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -65,6 +66,38 @@ class BtcWalletController extends Controller
         }
 
         return view('admin.bitcoin_wallet.index', compact('service_wallet', 'charges_wallet', 'migration_wallet', 'hd_wallet', 'transactions'));
+    }
+
+    public function migrationWallet()
+    {
+        $migration_wallet = Wallet::where(['name' => 'migration', 'user_id' => 1, 'currency_id' => 1])->first();
+        $client = new Client();
+
+        $url_migration = env('TATUM_URL') . '/ledger/account/' . $migration_wallet->account_id;
+        $res_migration = $client->request('GET', $url_migration, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+        $res_migration = json_decode($res_migration->getBody());
+        $migration_wallet->balance = $res_migration->balance->availableBalance;
+
+
+        $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+        $get_txns = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            "json" => ["id" => $migration_wallet->account_id]
+        ]);
+
+        $transactions = json_decode($get_txns->getBody());
+        foreach ($transactions as $t) {
+            $x = \Str::limit($t->created, 10, '');
+            $time = \Carbon\Carbon::parse((int)$x);
+            $t->created = $time->setTimezone('Africa/Lagos');
+        }
+
+
+        $pending = BtcMigration::where('status', 'pending')->get();
+
+        return view('admin.bitcoin_wallet.migration', compact('transactions', 'pending'));
     }
 
     public function send(Request $request)
