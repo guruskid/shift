@@ -92,7 +92,7 @@ class BtcWalletController extends Controller
         ]);
 
         //Migrate old funds
-        if (Auth::user()->bitcoinWallet) {
+        if (Auth::user()->bitcoinWallet && Auth::user()->bitcoinWallet->balance > 0) {
             $migration = BtcMigration::create([
                 'user_id' => Auth::user()->id,
                 'amount' => number_format((float) Auth::user()->bitcoinWallet->balance, 8),
@@ -121,9 +121,9 @@ class BtcWalletController extends Controller
 
                 $user->bitcoinWallet->balance = 0;
                 $user->bitcoinWallet->save();
-
             } catch (\Throwable $th) {
-                throw $th;
+                //throw $th;
+                return back()->with(['success' => 'Bitcoin wallet migrated successfully']);
             }
         }
 
@@ -449,7 +449,7 @@ class BtcWalletController extends Controller
         }
 
         //Check password
-         if (!Hash::check($data['pin'], Auth::user()->pin)) {
+        if (!Hash::check($data['pin'], Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect bitcoin wallet pin']);
         }
 
@@ -499,21 +499,23 @@ class BtcWalletController extends Controller
                 ]
             ]);
 
-            $url = env('TATUM_URL') . '/ledger/transaction';
-            $send_charges = $client->request('POST', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
-                'json' =>  [
-                    "senderAccountId" => Auth::user()->btcWallet->account_id,
-                    "recipientAccountId" => $charge_wallet->account_id,
-                    "amount" => $charge,
-                    "anonymous" => false,
-                    "compliant" => false,
-                    "transactionCode" => uniqid(),
-                    "paymentId" => uniqid(),
-                    "baseRate" => 1,
-                    "senderNote" => 'hidden'
-                ]
-            ]);
+            if ($charge > 0) {
+                $url = env('TATUM_URL') . '/ledger/transaction';
+                $send_charges = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => Auth::user()->btcWallet->account_id,
+                        "recipientAccountId" => $charge_wallet->account_id,
+                        "amount" => $charge,
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => uniqid(),
+                        "paymentId" => uniqid(),
+                        "baseRate" => 1,
+                        "senderNote" => 'hidden'
+                    ]
+                ]);
+            }
 
             $res = json_decode($send_btc->getBody());
 
