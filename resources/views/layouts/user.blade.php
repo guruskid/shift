@@ -451,6 +451,28 @@ $naira_balance = Auth::user()->nairaWallet->amount;
         </div>
     </div>
 
+    @if (!Auth::user()->btcWallet)
+    {{-- New BTC wallet --}}
+    <div class="modal fade" id="new-btc-wallet">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content c-rounded">
+                <!-- Modal body -->
+                <div class="modal-body p-4">
+                    <h4>New Wallet Pin</h4>
+                    <p>Please enter a new wallet pin to migrate to the new BTC wallet. Please note that this pin will also be used as your Naira wallet pin</p>
+                   <form action="{{ route('user.bitcoin-wallet.create') }}" method="post">@csrf
+                       <div class="form-group mt-5" >
+                           <label for="">Wallet Pin</label>
+                           <input type="password" name="pin" required maxlength="4" minlength="4" class="form-control">
+                        </div>
+                        <button class="btn btn-block c-rounded bg-custom-gradient" >Save</button>
+                   </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <script src="/js/app.js?v={{ env('APP_STATIC_FILES_VERSION') }}"></script>
     <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
@@ -470,18 +492,11 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"> </script>
 
+    @if (!Auth::user()->btcWallet)
     <script>
-
-       /*  $(document).ready(function () {
-            Data tables
-            $('.transactions-table').DataTable({
-                paging: false,
-                order: [[0, 'desc'] ],
-                responsive: true
-            });
-        }); */ 
-
+        $('#new-btc-wallet').modal('show');
     </script>
+    @endif
 
 
 

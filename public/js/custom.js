@@ -100,8 +100,9 @@ function getWalletBalance() {
     var bitcoin = 0;
     var walletBalance = 0;
 
+    $('.realtime-wallet-balance').text('₦'+naira.toLocaleString());
 
-    $.get('/user/get-bitcoin-ngn')
+    /* $.get('/user/get-bitcoin-ngn')
         .done(function (res) {
             //console.log(res);
             bitcoin = res.data;
@@ -111,7 +112,7 @@ function getWalletBalance() {
         })
     .fail(function (xhr, status, err) {
         console.log(xhr)
-     })
+     }) */
 }
 
 /* Copy Wallet Id */

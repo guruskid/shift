@@ -54,7 +54,7 @@
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Bitcoin Wallet Balance</span>
                                         <span
-                                            class="d-block price">{{ Auth::user()->bitcoinWallet ? number_format((float)Auth::user()->bitcoinWallet->balance, 8) : 'No bitcoin wallet' }}</span>
+                                            class="d-block price">{{ Auth::user()->btcWallet ? number_format((float)Auth::user()->btcWallet->balance, 8) : 'No bitcoin wallet' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                 @foreach ($errors->all() as $err)
                                 <p class="text-danger text-center">{{ $err }}</p>
                                 @endforeach
-                                @if (!Auth::user()->bitcoinWallet)
+                                @if (!Auth::user()->btcWallet)
                                 <p class="text-danger text-center">Please create a Bitcoin wallet before initiating a
                                     trade. <a href="{{ route('user.portfolio') }}">Create wallet</a> </p>
                                 @endif
@@ -107,7 +107,7 @@
                                         <div class="text-center text-muted mb-3 mt-3 mt-lg-1"
                                             style="margin-top: -10px;">Buy or sell
                                             cryptocurrency in less than a minute
-                                            
+
                                         </div>
 
                                         {{-- Sell Bitcoin --}}

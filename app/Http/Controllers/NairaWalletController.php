@@ -129,15 +129,10 @@ class NairaWalletController extends Controller
             return redirect()->back()->with(['error' => 'Your current login password does not match with the password you provided. Please try again.']);
         }
 
-        $n->password = Hash::make($request->new_password);
-        $n->save();
+        Auth::user()->pin = Hash::make($request->new_password);
+        Auth::user()->bitcoinWallet->save();
 
-        if (Auth::user()->bitcoinWallet) {
-            Auth::user()->bitcoinWallet->password = Hash::make($request->new_password);
-            Auth::user()->bitcoinWallet->save();
-        }
-
-        return redirect()->back()->with("success", "Password changed");
+        return redirect()->back()->with("success", "Pin changed");
     }
 
 
@@ -426,14 +421,14 @@ class NairaWalletController extends Controller
 
         $n = Auth::user()->nairaWallet;
 
-        if (Hash::check($r->pin, $n->password) == false) {
+        if (Hash::check($r->pin, Auth::user()->pin) == false) {
             return redirect()->back()->with(['error' => 'Wrong wallet pin entered']);
         }
 
         $amount = $r->amount - $charge;
         //$amount_paid = $r->amount;
 
-        if ($r->amount > $n->amount || $r->amount < 0 ) {
+        if ($r->amount > $n->amount || $r->amount < 0) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
