@@ -55,7 +55,8 @@ $naira_balance = Auth::user()->nairaWallet->amount;
     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> --}}
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
-
+    {{-- <link href=" {{asset('main.css')}} " rel="stylesheet"> --}}
+    {{-- <link href=" {{asset('custom.css')}} " rel="stylesheet"> --}}
 
     <link rel="stylesheet" type="text/css"
         href="https://cdn.datatables.net/v/bs4/dt-1.10.21/fh-3.1.7/r-2.2.5/datatables.min.css" />
@@ -141,6 +142,12 @@ $naira_balance = Auth::user()->nairaWallet->amount;
         .swal-button:not([disabled]):hover {
             background: #31318d;
             color: #fff !important;
+        }
+        .dantown-btn-init{
+            background-color: #f2f2f2;
+            /* border: 2px solid lightgray; */
+            /* box-shadow: 3px 3px 3px #727272; */
+            /* border: 1px solid gray */
         }
     </style>
 
@@ -478,6 +485,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
 
     {{-- Calculator scripts --}}
     <script src="/user_assets/js/calculator.js?v={{ env('APP_STATIC_FILES_VERSION') }}"></script>
+    <script src="/user_assets/js/airtime.js"></script>
     @yield('scripts')
 
 

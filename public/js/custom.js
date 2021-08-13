@@ -707,3 +707,18 @@ $("#filter_month").on("change", function () {
     const selectedvalue = $(this).children("option:selected").val();
     $("#filtermonthForm").trigger('submit')
 })
+
+// const __st_id = (feedback) => document.getElementById(feedback)
+        
+        // function feedback_status  (){
+        //      const feedback = __st_id("feedback_status")
+        //      if(feedback.value == "failed"){
+        //          __st_id("yfailed").classList.remove("d-none")
+        //          __st_id("yfailed").classList.add("d-block")
+        //      }else{
+        //          __st_id("yfailed").classList.remove("d-block")
+        //          __st_id("yfailed").classList.add("d-none")
+        //      }
+        //  }
+
+        //  alert("yes")

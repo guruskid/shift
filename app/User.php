@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -100,8 +101,24 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
+
     public function btcWallet(): HasOne
     {
         return $this->hasOne(Wallet::class)->where('currency_id', 1);
+
+    public function nairaTrades()
+    {
+        return $this->hasMany(NairaTrade::class)->latest();
+    }
+
+    public function agentNairaTrades(): HasMany
+    {
+        return $this->hasMany(NairaTrade::class, 'agent_id', 'id')->latest();
+    }
+
+    public function agentLimits(): HasOne
+    {
+        return $this->hasOne(AgentLimit::class);
+
     }
 }

@@ -599,4 +599,5 @@ class BitcoinWalletController extends Controller
             }
         }
     }
+
 }
