@@ -105,6 +105,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function btcWallet(): HasOne
     {
         return $this->hasOne(Wallet::class)->where('currency_id', 1);
+    }
 
     public function nairaTrades()
     {
