@@ -48,6 +48,8 @@
                             </i>
                         </div>
                         <div>Migration Wallet
+                            <h6>{{ number_format((float) $wallet->balance, 8) }}</h6>
+                            <h6>{{ $wallet->address }}</h6>
                         </div>
                     </div>
                 </div>
@@ -70,9 +72,11 @@
                                                 <tr>
                                                     <th>Id</th>
                                                     <th>User</th>
+                                                    <th>Email</th>
                                                     <th>BTC</th>
                                                     <th>Status</th>
                                                     <th>Date</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -80,9 +84,16 @@
                                                 <tr>
                                                     <td>{{ $transaction->id }}</td>
                                                     <td>{{ $transaction->user->first_name }}</td>
+                                                    <td>{{ $transaction->user->email }}</td>
                                                     <td>{{ number_format((float)$transaction->amount, 8) }}</td>
                                                     <td>{{ $transaction->status }}</td>
-                                                    <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
+                                                    <td>{{ $transaction->created_at->format('d M y, h:ia') }}</td>
+                                                    <td>
+                                                        <form action="{{ route('admin.migration.confirm', $transaction) }}" method="post">
+                                                            @method('put') @csrf
+                                                            <button class="btn btn-primary">Confirm</button>
+                                                        </form>
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
