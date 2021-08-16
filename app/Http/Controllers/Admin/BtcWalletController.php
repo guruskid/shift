@@ -141,6 +141,7 @@ class BtcWalletController extends Controller
                     "transactionCode" => uniqid(),
                     "paymentId" => uniqid(),
                     "baseRate" => 1,
+                    "senderNote" => 'Migration transfer',
                 ]
             ]);
             $migration->status = 'completed';
