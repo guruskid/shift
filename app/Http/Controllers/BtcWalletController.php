@@ -20,11 +20,6 @@ use RestApis\Blockchain\Constants;
 
 class BtcWalletController extends Controller
 {
-    /* public function __construct()
-    {
-        $this->instance = $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
-    } */
-
     public function create(Request $request)
     {
         $request->validate([
@@ -203,6 +198,10 @@ class BtcWalletController extends Controller
             $x = \Str::limit($t->created, 10, '');
             $time = \Carbon\Carbon::parse((int)$x);
             $t->created = $time->setTimezone('Africa/Lagos');
+
+            if (!isset($t->senderNote)) {
+                $t->senderNote = 'Sending BTC';
+            }
         }
 
         //dd(time(), $transactions[0]->created, $time->format('d M Y h:ia') );
