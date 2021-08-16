@@ -149,7 +149,7 @@ class BtcWalletController extends Controller
             $user_wallet->balance = 0;
             $user_wallet->save();
         } catch (\Exception $e) {
-            //report($e);
+            report($e);
             \Log::info($e->getResponse()->getBody());
 
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
