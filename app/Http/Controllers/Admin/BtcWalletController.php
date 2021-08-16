@@ -135,7 +135,7 @@ class BtcWalletController extends Controller
                 'json' =>  [
                     "senderAccountId" => $wallet->account_id,
                     "recipientAccountId" => $user_wallet->account_id,
-                    "amount" => $migration->amount,
+                    "amount" => number_format((float) $migration->amount, 8),
                     "anonymous" => false,
                     "compliant" => false,
                     "transactionCode" => uniqid(),
