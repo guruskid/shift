@@ -81,7 +81,7 @@ class BtcWalletController extends Controller
 
         $btc_wallet = $user->btcWallet()->create([
             'account_id' => $btc_account_id,
-            'name' => $user->username,
+            'name' => $user->email,
             'currency_id' => 1,
             'address' => $address_body[0]->address,
         ]);

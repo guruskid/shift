@@ -130,7 +130,7 @@ class NairaWalletController extends Controller
         }
 
         Auth::user()->pin = Hash::make($request->new_password);
-        Auth::user()->bitcoinWallet->save();
+        Auth::user()->save();
 
         return redirect()->back()->with("success", "Pin changed");
     }
