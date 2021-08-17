@@ -58,6 +58,7 @@
                             <span class="text-custom">
                                 @if ($btc_wallet)
                                 <p>{{ number_format((float)$btc_wallet->balance,8) }} BTC</p>
+                                <p>{{ $btc_wallet->address }}</p>
                                 @else
                                 No Bitcoin wallet
                                 @endif
