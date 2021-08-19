@@ -460,7 +460,7 @@ $naira_balance = Auth::user()->nairaWallet->amount;
                 <div class="modal-body p-4">
                     <h4>New Wallet Pin</h4>
                     <p>Please enter a new wallet pin to migrate to the new BTC wallet. Please note that this pin will also be used as your Naira wallet pin</p>
-                   <form action="{{ route('user.bitcoin-wallet.create') }}" method="post">@csrf
+                   <form action="{{ route('user.bitcoin-wallet.create') }}" class="disable-form" method="post">@csrf
                        <div class="form-group mt-5" >
                            <label for="">Wallet Pin</label>
                            <input type="password" name="pin" required maxlength="4" minlength="4" class="form-control">

@@ -33,7 +33,7 @@ class BitcoinWalletController extends Controller
             'success' => false,
             'msg' => 'Service not available'
         ]);
-        
+
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $btc_rate = $res->bitcoin->usd;
 

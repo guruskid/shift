@@ -85,7 +85,7 @@ class RegisterController extends Controller
 
 
         $username = \Str::lower($data['username']);
-        $external_id = $username . '-test-' . uniqid();
+        $external_id = $username . '-' . uniqid();
 
         $user =  User::create([
             'first_name' => ' ',
