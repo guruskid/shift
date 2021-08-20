@@ -82,7 +82,9 @@ class BitcoinWalletController extends Controller
         $btc_rate = $res->bitcoin->usd;
         $btc_usd = Auth::user()->bitcoinWallet->balance * $btc_rate;
 
-        return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'btc_usd', 'btc_rate', 'charge', 'total_fees'));
+        $btc_withdrawal_setting = GeneralSettings::getSetting('BTC_WITHDRAWALS');
+
+        return view('newpages.bitcoin-wallet', compact('transactions', 'fees', 'btc_usd', 'btc_rate', 'charge', 'total_fees', 'btc_withdrawal_setting'));
     }
 
     public function create(Request $r)

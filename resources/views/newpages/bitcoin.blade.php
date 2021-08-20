@@ -110,12 +110,24 @@
                                             
                                         </div>
 
-                                        {{-- Sell Bitcoin --}}
-                                       <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time - $tp }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
 
+                                        @if($buy_sell == 2)
+                                            {{-- Sell --}}
+                                            @if($sell_btc_setting['settings_value'] == 1)
+                                                <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time - $tp }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
+                                            @else
+                                                <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$sell_btc_setting['notice']}}</h4>
+                                            @endif                                    
+                                        @endif
 
-                                        {{-- Buy --}}
-                                        <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time + $tp }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
+                                        @if($buy_sell == 1)
+                                            @if($buy_btc_settings['settings_value'] == '1')
+                                                {{-- Buy --}}
+                                                <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time + $tp }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
+                                            @else
+                                                <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$buy_btc_settings['notice']}}</h4>
+                                            @endif
+                                        @endif
 
                                     </div>
                                 </div>

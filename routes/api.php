@@ -22,6 +22,8 @@ Route::get('email/verify/{id}', 'VerificationController@verify')->name('verifica
 
 Route::group(['prefix' => 'v1'], function () {
 
+    Route::post('/general-settings/{name}', 'Api\GeneralSettings@getSetting');
+
 
     Route::post('/register', 'Api\AuthController@register');
     Route::post('/login', 'Api\AuthController@login');

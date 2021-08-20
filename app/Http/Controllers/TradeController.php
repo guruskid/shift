@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use \App\Http\Controllers\GeneralSettings;
 
 class TradeController extends Controller
 {
@@ -51,15 +52,19 @@ class TradeController extends Controller
         $card_rates =  new CardResource($card);
         $card_rates = json_encode($card_rates);
         if (\Str::lower($card->name) == 'bitcoins' || \Str::lower($card->name) == 'bitcoin') {
-            return $this->bitcoin($card->id);
+            return $this->bitcoin($card->id,$buy_sell);
         }
         if (\Str::lower($card->name) == 'ether' || \Str::lower($card->name) == 'ethereum') {
             return $this->ethereum($card->id);
         }
-        return view('user.gift_card_calculator', compact(['card_rates', 'buy_sell']));
+
+        $sell_gc_setting = GeneralSettings::getSetting('GIFTCARD_SELL');
+        $buy_gc_setting = GeneralSettings::getSetting('GIFTCARD_BUY');
+
+        return view('user.gift_card_calculator', compact(['card_rates', 'buy_sell','sell_gc_setting','buy_gc_setting']));
     }
 
-    public function bitcoin($card_id)
+    public function bitcoin($card_id,$buy_sell = 1)
     {
         $card = Card::find($card_id);
         $rates = $card->currency->first();
@@ -79,7 +84,11 @@ class TradeController extends Controller
 
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value;
 
-        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp']));
+        $sell_btc_setting = GeneralSettings::getSetting('SELL_BTC');
+
+        $buy_btc_settings = GeneralSettings::getSetting('BUY_BTC');
+
+        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp', 'buy_sell', 'sell_btc_setting', 'buy_btc_settings']));
     }
 
     public function ethereum($card_id)
@@ -92,7 +101,7 @@ class TradeController extends Controller
         $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
-        return view('newpages.ethereum', compact(['rates', 'card']));
+        return view('newpages.ethereum', compact(['rates']));
     }
 
     /* Trade GiftCards */
