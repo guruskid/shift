@@ -20,7 +20,7 @@ class CreateBitcoinWalletsTable extends Migration
             $table->string('address');
             $table->enum('type', ['primary', 'secondary'])->default('secondary');
             $table->string('name');
-            $table->string('password', 193433);
+            $table->text('password', 193433);
             $table->double('balance');
             $table->bigInteger('primary_wallet_id')->nullable();
             $table->timestamps();

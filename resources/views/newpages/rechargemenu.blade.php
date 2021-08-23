@@ -74,16 +74,18 @@
                                 </div>
                                 <div
                                     class="d-flex flex-row flex-wrap justify-content-between justify-content-lg-center py-3 px-2">
-                                    <a class="mx-1 my-2" href="{{ route('user.airtime') }}">
-                                        <div
-                                            class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
-                                            <div>
-                                                <img class="img-fluid rechargemenu_icons"
-                                                    src="{{asset('svg/airtime-icon.svg')}}" alt="" />
+                                    @if($buy_airtime['settings_value'] == 1)
+                                       <a class="mx-1 my-2" href="{{ route('user.airtime') }}">
+                                            <div
+                                                class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
+                                                <div>
+                                                    <img class="img-fluid rechargemenu_icons"
+                                                        src="{{asset('svg/airtime-icon.svg')}}" alt="" />
+                                                </div>
+                                                <span class="d-block bills_type_text">Buy Airtime</span>
                                             </div>
-                                            <span class="d-block bills_type_text">Buy Airtime</span>
-                                        </div>
-                                    </a>
+                                        </a>
+                                    @endif
                                     <a class="mx-1 my-2" href="{{ route('user.data') }}">
                                         <div
                                             class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
@@ -94,16 +96,20 @@
                                             <span class="d-block bills_type_text">Data Subscription</span>
                                         </div>
                                     </a>
-                                    <a class="mx-1 my-2" href="{{ route('user.airtime-to-cash') }}">
-                                        <div
-                                        class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
-                                        <div>
-                                            <img class="img-fluid rechargemenu_icons"
-                                                src="{{asset('svg/airtimetocash-icon.svg')}}" alt="" />
+
+                                    @if($sell_airtime['settings_value'] == 1)
+                                        <a class="mx-1 my-2" href="{{ route('user.airtime-to-cash') }}">
+                                            <div
+                                            class="airtimepage_card d-flex flex-column justify-content-center align-items-center">
+                                            <div>
+                                                <img class="img-fluid rechargemenu_icons"
+                                                    src="{{asset('svg/airtimetocash-icon.svg')}}" alt="" />
+                                            </div>
+                                            <span class="d-block bills_type_text">Airtime to cash</span>
                                         </div>
-                                        <span class="d-block bills_type_text">Airtime to cash</span>
-                                    </div>
-                                    </a>
+                                        </a>
+                                    @endif
+                                    
                                     <a class="mx-1 my-2" href="{{ route('user.discount-airtime') }}">
                                         <div
                                             class="airtimepage_card d-flex flex-column justify-content-center align-items-center">

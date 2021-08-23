@@ -1,6 +1,5 @@
 <template>
-    <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home" role="tabpanel"
-        aria-labelledby="home-tab">
+    <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home" role="tabpanel" aria-labelledby="home-tab">
         <form action="/user/sell-bitcoin" class="disable-form" method="post">
             <input type="hidden" name="card_id" v-model="card_id">
             <input type="hidden" name="type" value="sell">
@@ -70,51 +69,41 @@
                 naira: '',
                 usd: '',
                 btc: '',
-
                 chargeBtc: 0,
                 chargeNgn: 0,
-
                 //rates
                 btcToUsd:  this.real_btc,
                 usdToNaira: this.rate.sell[0].rate, //our rate
                 btcToNaira: '',
-
             }
         },
         mounted () {
             //console.log(this.real_btc);
             this.btcToNaira = this.btcToUsd * this.usdToNaira;
         },
-
         methods: {
             //When USD field is updated
             getRateUsd() {
                 this.naira = this.usd * this.usdToNaira
                 this.btc = this.usd / this.btcToUsd
             },
-
             /* When btc is updated */
             getRateBtc(){
                 this.usd = this.btcToUsd * this.btc
                 this.naira = this.btc * this.btcToNaira
             },
-
             /* When ngn is updated */
             getRateNgn(){
                 this.btc = this.naira / this.btcToNaira;
                 this.usd = this.naira / this.usdToNaira;
             }
         },
-
-
         updated () {
             this.chargeBtc = (this.charge/100) * this.btc
             this.chargeNgn = this.chargeBtc * this.btcToUsd
         },
     }
-
 </script>
 
 <style>
-
 </style>

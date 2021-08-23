@@ -298,6 +298,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
     Route::GET('/delete-notification/{id}', 'AdminController@deleteNotification');
 
     Route::post('/search', 'AdminController@searchUser' )->name('admin.search');
+
+    Route::get('/general-settings', 'GeneralSettings@index')->name('admin.general_settings');
+    Route::post('/general-settings', 'GeneralSettings@updateConfig')->name('admin.general_settings');
+    Route::post('/update-setting', 'GeneralSettings@updateSettings');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {

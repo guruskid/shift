@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
+use \App\Http\Controllers\GeneralSettings;
 
 class PortfolioController extends Controller
 {
@@ -75,6 +76,9 @@ class PortfolioController extends Controller
         $monthly_rem = Auth::user()->monthly_max - $monthly_total;
 
         $ref = \Str::random(2) . time();
-        return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref', 'daily_rem', 'monthly_rem']));
+
+        $setting = GeneralSettings::getSetting('NAIRA_WALLET_WITHDRAWALS');
+
+        return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref', 'daily_rem', 'monthly_rem','setting']));
     }
 }
