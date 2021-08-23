@@ -15,6 +15,30 @@ use Illuminate\Support\Facades\Validator;
 
 class BtcWalletController extends Controller
 {
+    public function btcPrice()
+    {
+
+        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
+        $btc_rate = $res->bitcoin->usd;
+
+        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        $tp = ($trading_per / 100) * $btc_rate;
+        $btc_rate -= $tp;
+
+        $card = Card::find(102);
+        $rates = $card->currency->first();
+        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        $usd_ngn = $rates->sell[0]->rate;
+
+        return response()->json([
+            'success' => true,
+            'btc_usd' => $btc_rate,
+            'usd_ngn' => $usd_ngn
+        ]);
+    }
+
+    
     public function create(Request $r)
     {
         $validator = Validator::make($r->all(), [

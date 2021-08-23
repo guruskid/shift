@@ -3528,9 +3528,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['rate', 'real_btc', 'card_id', 'charge'],
   data: function data() {
@@ -3546,7 +3543,8 @@ __webpack_require__.r(__webpack_exports__);
       btcToUsd: this.real_btc,
       usdToNaira: this.rate.sell[0].rate,
       //our rate
-      btcToNaira: ''
+      btcToNaira: '',
+      loading: false
     };
   },
   mounted: function mounted() {
@@ -3570,6 +3568,31 @@ __webpack_require__.r(__webpack_exports__);
     getRateNgn: function getRateNgn() {
       this.btc = this.naira / this.btcToNaira;
       this.usd = this.naira / this.usdToNaira;
+    },
+    sell: function sell() {
+      var _this = this;
+
+      if (this.btc < 0) {
+        swal('Oops', 'BTC amount should be greater than 0', 'error');
+        return false;
+      }
+
+      this.loading = true;
+      axios.post('/user/sell-bitcoin', {
+        "quantity": this.btc
+      }).then(function (res) {
+        if (res.data.success) {
+          swal('Great!!', 'Bitcoin traded successfully', 'success');
+          window.location = '/user/transactions';
+        } else {
+          swal('oops!!', res.data.msg, 'error');
+        }
+      })["catch"](function (e) {
+        console.log(e);
+        swal('Oops', 'An error occured, please reload and try again', 'error');
+      })["finally"](function () {
+        _this.loading = false;
+      });
     }
   },
   updated: function updated() {
@@ -52764,61 +52787,15 @@ var render = function() {
       _c(
         "form",
         {
-          staticClass: "disable-form",
-          attrs: { action: "/user/sell-bitcoin", method: "post" }
+          attrs: { method: "post" },
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.sell()
+            }
+          }
         },
         [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.card_id,
-                expression: "card_id"
-              }
-            ],
-            attrs: { type: "hidden", name: "card_id" },
-            domProps: { value: _vm.card_id },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.card_id = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("input", {
-            attrs: { type: "hidden", name: "type", value: "sell" }
-          }),
-          _vm._v(" "),
-          _c("input", {
-            attrs: { type: "hidden", name: "_token" },
-            domProps: { value: _vm.csrf }
-          }),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.btcToUsd,
-                expression: "btcToUsd"
-              }
-            ],
-            attrs: { type: "hidden", name: "current_rate" },
-            domProps: { value: _vm.btcToUsd },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.btcToUsd = $event.target.value
-              }
-            }
-          }),
-          _vm._v(" "),
           _c("div", { staticClass: "form-group mb-4" }, [
             _c(
               "label",
@@ -52984,14 +52961,24 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass:
-                "sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn"
-            },
-            [_vm._v("Sell")]
-          )
+          !_vm.loading
+            ? _c(
+                "button",
+                {
+                  staticClass:
+                    "sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn"
+                },
+                [_vm._v("Sell")]
+              )
+            : _c(
+                "button",
+                {
+                  staticClass:
+                    "sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn",
+                  attrs: { disabled: "" }
+                },
+                [_c("i", { staticClass: "spinner-border" })]
+              )
         ]
       )
     ]

@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use RestApis\Blockchain\Constants;
 
 class BtcWalletController extends Controller
@@ -240,14 +241,16 @@ class BtcWalletController extends Controller
 
     public function sell(Request $r)
     {
-        $data = $r->validate([
-            'card_id' => 'required|integer',
-            'type' => 'required|string',
-            'amount' => 'required',
-            'amount_paid' => 'required',
-            'quantity' => 'required',
-
+        $validator = Validator::make($r->all(), [
+            'quantity' => 'required|min:0',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
 
 
         /* if ($data['amount'] < 3) {
@@ -255,11 +258,17 @@ class BtcWalletController extends Controller
         } */
 
         if (!Auth::user()->btcWallet) {
-            return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please a bitcoin wallet to continue'
+            ]);
         }
 
         if (!Auth::user()->nairaWallet) {
-            return back()->with(['error' => 'Please create a Naira wallet to continue']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please a Naira wallet to continue'
+            ]);
         }
 
         /* if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 1) {
@@ -297,11 +306,17 @@ class BtcWalletController extends Controller
             $btc_wallet->balance = $accounts[0]->balance->availableBalance;
         } catch (\Exception $e) {
             report($e);
-            return back()->with(['success' => false, 'message' => 'An error occured, please try again']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'An error occured, please try again'
+            ]);
         }
 
         if ($r->quantity > $btc_wallet->balance) {
-            return back()->with(['error' => 'Insufficient bitcoin wallet balance to initiate trade']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient bitcoin wallet balance to initiate trade'
+            ]);
         }
 
         //Get the other currencies using currnt rate (-tp)
@@ -399,7 +414,11 @@ class BtcWalletController extends Controller
             $t->save();
             \Log::info($e->getResponse()->getBody());
             //report($e);
-            return back()->with(['error' => 'An error occured, please try again']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'An error occured, please try again'
+            ]);
+
         }
 
         $user_naira_wallet = Auth::user()->nairaWallet;
@@ -430,7 +449,11 @@ class BtcWalletController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
-        return redirect()->route('user.transactions');
+        return response()->json([
+            'success' => true,
+            'msg' => 'Bitcoin sold successfully'
+        ]);
+
     }
 
     public function send(Request $r)
