@@ -37,7 +37,7 @@ class BitcoinWalletController extends Controller
             $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_MAINNET, $wallet->name);
             $live_balance += $result->payload->totalBalance;
         }
-        //$live_balance = 30;
+        dd($live_balance);
 
 
         return view('admin.bitcoin_wallet.index', compact('charges', 'service_fee', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));

@@ -28,7 +28,7 @@
             </h1>
 
             <h3 style="font-family: Quicksand; color: #000070">
-                Something went wrong while loading this page
+                Currently under Maintenance, Please check back shortly
             </h3>
             <button style="padding-left: 2%; padding-right: 2%; border: 0px; background-color: #000070; color:white; " onclick="goBack()">Back</button>
 

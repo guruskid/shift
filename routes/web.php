@@ -169,7 +169,7 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 /* Bitcoin Wallet Callback */
 Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName', 'verified'] ], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
 
     /* ajax calls */
     Route::POST('/add_transaction', 'UserController@addTransaction');
@@ -231,12 +231,15 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName', 'verifie
     Route::post('/trade', 'TradeController@trade')->name('user.trade-gift-card');
     Route::post('/trade-crypto', 'TradeController@tradeCrypto')->name('user.trade-crypto');
 
-    /* Bitcooin  */
-    Route::get('/get-bitcoin-ngn', 'BitcoinWalletController@getbitcoinNgn');
+    /* Bitcoin  */
+    Route::get('/bitcoin-wallet', 'BtcWalletController@wallet')->name('user.bitcoin-wallet');
+    Route::post('/sell-bitcoin', 'BtcWalletController@sell')->name('user.sell-bitcoin');
+    Route::get('/get-bitcoin-ngn', 'BtcWalletController@getbitcoinNgn');
+    Route::post('/bitcoin-wallet-create', 'BtcWalletController@create')->name('user.bitcoin-wallet.create');
+
     Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
-    Route::post('/bitcoin-wallet-create', 'BitcoinWalletController@create')->name('user.bitcoin-wallet.create');
-    Route::get('/bitcoin-wallet', 'BitcoinWalletController@wallet')->name('user.bitcoin-wallet');
-    Route::post('/send-bitcoin', 'BitcoinWalletController@send')->name('user.send-bitcoin');
+    Route::post('/send-bitcoin', 'BtcWalletController@send')->name('user.send-bitcoin');
+    Route::get('/bitcoin-fees/{address}/{fees}', 'BtcWalletController@fees')->name('user.bitcoin-fees');
 
 
 });
