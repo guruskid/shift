@@ -305,6 +305,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] 
     Route::get('/edit-faq/{id}/{title}', 'FaqController@editFaqView')->name('admin.edit-faq');
     Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
     Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
+    Route::GET('/download-database', 'AdminController@downloadUserDb')->name('admin.userdb');
+    Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
 
 });
 
