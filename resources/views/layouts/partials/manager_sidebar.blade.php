@@ -45,6 +45,15 @@
     </li>
 
     <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
+        <a href="{{route('admin.userdb')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="download-outline"></ion-icon>
+                <span>Download Users </span>
+            </div>
+        </a>
+    </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
         <a href="{{route('admin.faq')}}" aria-expanded="false" class="dropdown-toggle" >
             <div class="">
                 <ion-icon name="help-outline"></ion-icon>
