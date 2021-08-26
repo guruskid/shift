@@ -205,7 +205,6 @@ class BtcWalletController extends Controller
             }
         }
 
-        //dd(time(), $transactions[0]->created, $time->format('d M Y h:ia') );
 
         return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees'));
     }

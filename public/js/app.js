@@ -3603,6 +3603,98 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['usdBtc'],
+  data: function data() {
+    return {};
+  },
+  mounted: function mounted() {
+    alert(this.usdBtc);
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js& ***!
@@ -53043,6 +53135,262 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "container my-3 mt-lg-5 wallet_trx_tabs",
+      attrs: { id: "bitcoin_wallet_send_tab" }
+    },
+    [
+      _c(
+        "form",
+        {
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.send()
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "row" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("div", { staticClass: "container mt-3m mt-lg-5" }, [
+              _c("div", { staticClass: "row" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _vm._m(2),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-12 col-md-10 mx-auto" }, [
+                  _c("span", { staticClass: "address_input_label" }, [
+                    _vm._v("Address")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "input-group col-12 col-md-7 mx-auto mb-3 mt-4"
+                    },
+                    [
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          id: "receipientAddress",
+                          name: "address",
+                          "aria-label": "Recipient's username",
+                          "aria-describedby": "basic-addon2"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("input", {
+                        attrs: { type: "hidden", name: "fees", value: "" }
+                      }),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "input-group-append" }, [
+                        _c(
+                          "span",
+                          {
+                            staticClass: "input-group-text",
+                            staticStyle: {
+                              cursor: "pointer",
+                              background: "#000070"
+                            },
+                            attrs: {
+                              onclick: "copywalletaddress('receipientAddress')",
+                              id: "basic-addon2"
+                            }
+                          },
+                          [
+                            _c(
+                              "svg",
+                              {
+                                attrs: {
+                                  width: "17",
+                                  height: "19",
+                                  viewBox: "0 0 17 19",
+                                  fill: "none",
+                                  xmlns: "http://www.w3.org/2000/svg"
+                                }
+                              },
+                              [
+                                _c("path", {
+                                  attrs: {
+                                    d:
+                                      "M12.0909 0H1.72727C0.777273 0 0 0.777273 0 1.72727V13.8182H1.72727V1.72727H12.0909V0ZM14.6818 3.45455H5.18182C4.23182 3.45455 3.45455 4.23182 3.45455 5.18182V17.2727C3.45455 18.2227 4.23182 19 5.18182 19H14.6818C15.6318 19 16.4091 18.2227 16.4091 17.2727V5.18182C16.4091 4.23182 15.6318 3.45455 14.6818 3.45455ZM14.6818 17.2727H5.18182V5.18182H14.6818V17.2727Z",
+                                    fill: "white"
+                                  }
+                                })
+                              ]
+                            )
+                          ]
+                        )
+                      ])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(3),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn walletpage_btn text-white mt-3 mt-lg-5",
+                    attrs: { type: "submit" }
+                  },
+                  [_vm._v("Continue")]
+                )
+              ])
+            ])
+          ])
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "col-12 col-md-10 col-lg-8 mx-auto",
+        staticStyle: { border: "1px solid rgba(0, 0, 112, 0.25)" }
+      },
+      [
+        _c("div", { staticClass: "input-group" }, [
+          _c("input", {
+            staticClass: "form-control",
+            staticStyle: { border: "0px" },
+            attrs: {
+              type: "number",
+              step: "any",
+              id: "usd-amount",
+              required: "",
+              placeholder: "0.00"
+            }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "input-group-append" }, [
+            _c("span", { staticClass: "input-group-text usd_bg_text pr-1" }, [
+              _vm._v("USD")
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "input-group-text usd_bg_text" }, [
+              _c("img", {
+                attrs: { src: "/svg/conversion-arrow.svg", alt: "" }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control",
+            staticStyle: { border: "0px", "border-right": "0px" },
+            attrs: {
+              type: "number",
+              step: "any",
+              name: "amount",
+              id: "btc-amount",
+              placeholder: "0"
+            }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "input-group-prepend" }, [
+            _c("span", { staticClass: "input-group-text usd_bg_text" }, [
+              _vm._v("BTC")
+            ])
+          ])
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-6 col-md-4 mx-0 p-0 ml-md-auto" }, [
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", { staticClass: "networkfee_text", attrs: { for: "" } }, [
+          _vm._v("Network fee")
+        ]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            staticClass: "custom-select",
+            staticStyle: { height: "42px", "border-radius": "0px" }
+          },
+          [_c("option", { attrs: { selected: "" } }, [_vm._v("Network fee")])]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-6 col-md-4 mr-md-auto" }, [
+      _c(
+        "div",
+        { staticClass: "d-flex flex-column mx-auto networkfee_container" },
+        [
+          _c("span", { staticClass: "d-block align-self-end btctext" }, [
+            _vm._v("0 BTC")
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "d-block align-self-end customfee" }, [
+            _vm._v("Transaction Fee")
+          ])
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-10 mx-auto" }, [
+      _c("span", { staticClass: "address_input_label" }, [_vm._v("Pin")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "input-group col-7 mx-auto mb-3 mt-4" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: {
+            type: "password",
+            name: "pin",
+            required: "",
+            id: "receipientAddress"
+          }
+        })
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce&":
 /*!*****************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce& ***!
@@ -66703,6 +67051,7 @@ Vue.component('gift-card-component', __webpack_require__(/*! ./components/calcul
 Vue.component('upload-modal-component', __webpack_require__(/*! ./components/calculator/uploadModalComponent.vue */ "./resources/js/components/calculator/uploadModalComponent.vue")["default"]);
 Vue.component('bitcoin-sell-component', __webpack_require__(/*! ./components/calculator/bitcoinSellComponent.vue */ "./resources/js/components/calculator/bitcoinSellComponent.vue")["default"]);
 Vue.component('bitcoin-buy-component', __webpack_require__(/*! ./components/calculator/bitcoinBuyComponent.vue */ "./resources/js/components/calculator/bitcoinBuyComponent.vue")["default"]);
+Vue.component('bitcoin-send-component', __webpack_require__(/*! ./components/calculator/bitcoinSendComponent.vue */ "./resources/js/components/calculator/bitcoinSendComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -67970,6 +68319,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSellComponent_vue_vue_type_template_id_a25e9082___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSellComponent_vue_vue_type_template_id_a25e9082___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/bitcoinSendComponent.vue":
+/*!*********************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinSendComponent.vue ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true& */ "./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true&");
+/* harmony import */ var _bitcoinSendComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bitcoinSendComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _bitcoinSendComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "53993f49",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/calculator/bitcoinSendComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./bitcoinSendComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true&":
+/*!****************************************************************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true& ***!
+  \****************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

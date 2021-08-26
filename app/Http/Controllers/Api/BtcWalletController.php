@@ -52,7 +52,7 @@ class BtcWalletController extends Controller
             ], 401);
         }
 
-        if (Auth::user()->btcWallet->count() > 0) {
+        if (Auth::user()->btcWallet) {
             return response()->json([
                 'success' => false,
                 'msg' => 'A Bitcoin wallet exists for this account'
