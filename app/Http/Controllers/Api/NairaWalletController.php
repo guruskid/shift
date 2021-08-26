@@ -61,14 +61,9 @@ class NairaWalletController extends Controller
                 'message' => 'Your current account does not match with the password you provided. Please try again.',
             ]);
         }
-
-        $n->password = Hash::make($r->new_pin);
-        $n->save();
-
-        if (Auth::user()->bitcoinWallet) {
-            Auth::user()->bitcoinWallet->password = Hash::make($r->new_pin);
-            Auth::user()->bitcoinWallet->save();
-        }
+        
+        Auth::user()->pin = Hash::make($r->new_pin);
+        Auth::user()->save();
 
         return response()->json([
             'success' => true,
@@ -305,7 +300,7 @@ class NairaWalletController extends Controller
 
     public function transfer(Request $r)
     {
-       
+
         //Check If user owns a wallet
         if (Auth::user()->accounts->count() == 0) {
             return response()->json([
