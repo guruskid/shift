@@ -22,7 +22,7 @@ class UserController extends Controller
         $naira_wallet = Auth::user()->nairaWallet;
         $naira_wallet_transactions = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->latest()->with('transactionType')->get();
         $notification = Notification::where('user_id', 0)->latest()->first();
-        $notification = strip_tags($notification);
+        
 
         return response()->json([
             'success' => true,
