@@ -52,11 +52,12 @@
                             <i class="pe-7s-timer icon-gradient bg-warm-flame">
                             </i>
                         </div>
+                        <h2>DOWNLOAD USER DATABASE</h2>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row d-none">
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between">Download Users
@@ -75,7 +76,7 @@
                             </form>
                         </div>
                         <div class="table-responsive p-3">
-                            
+
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>
                                     <tr>
@@ -89,8 +90,8 @@
                                 </thead>
                                 <tbody>
                                     {{-- @php
-                                    $sn = 1; 
-                                    $users;  
+                                    $sn = 1;
+                                    $users;
                                     @endphp
 
                                     @foreach ($users as $user)
@@ -101,15 +102,47 @@
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->phone }}</td>
                                         <td>{{ $user->created_at }}</td>
-                                    </tr> 
+                                    </tr>
                                     @endforeach                                    --}}
                                 </tbody>
                             </table>
-                            
+
                         </div>
                     </div>
                 </div>
             </div>
+
+
+
+
+
+
+
+
+
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="main-card mb-3 card">
+                        <div class="text-center mt-5 mb-5">
+                            <form action="{{route('admin.userdbsearch')}}" method="POST">
+                                @csrf
+                                <button class="btn btn-primary btn-lg">Download Users (Excel) </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
         </div>
     </div>
 </div>

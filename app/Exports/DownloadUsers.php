@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\shouldAutoSize;
 use Illuminate\Contracts\View\View;
 
 
-class DownloadUsers implements FromView, shouldAutoSize
+class DownloadUsers implements FromView
 {
 
 

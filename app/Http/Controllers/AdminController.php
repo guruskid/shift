@@ -505,7 +505,6 @@ class AdminController extends Controller
         return view("admin.userdb");
     }
 
-
     // public function downloadUserDbsearchj(Request $request)
     // {
     //     $request->validate([
@@ -517,7 +516,7 @@ class AdminController extends Controller
 
     //     return view('admin.userdb', compact(['users']));
     // }
-    
+
     // public function exportIntoExcel()
     // {
     //     return Excel::download(new DownloadUsers, 'roxo.csv');
@@ -533,8 +532,4 @@ class AdminController extends Controller
     {
         return Excel::download(new DownloadUsers, 'dantown_users.xlsx');
     }
-
-
-
-
 }

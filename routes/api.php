@@ -26,6 +26,7 @@ Route::get('email/verify/{id}', 'VerificationController@verify')->name('verifica
 Route::group(['prefix' => 'v1'], function () {
 
 
+    Route::post('/engage', 'testController@engage');
     Route::post('/register', 'Api\AuthController@register');
     Route::post('/login', 'Api\AuthController@login');
     Route::get('/banks', 'Api\AuthController@bankList' );

@@ -30,6 +30,10 @@ class AuthController extends Controller
             $success['token'] = $user->createToken('appToken')->accessToken;
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
+
+
+
+
             return response()->json([
                 'success' => true,
                 'token' => $success,
@@ -125,6 +129,8 @@ class AuthController extends Controller
             'title' => $title,
             'body' => $msg_body,
         ]);
+
+
 
 
         return response()->json([
