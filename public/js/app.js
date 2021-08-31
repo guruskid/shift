@@ -110,7 +110,10 @@ module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/axios/li
 var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
 var settle = __webpack_require__(/*! ./../core/settle */ "./node_modules/axios/lib/core/settle.js");
 var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
+<<<<<<< HEAD
 var buildFullPath = __webpack_require__(/*! ../core/buildFullPath */ "./node_modules/axios/lib/core/buildFullPath.js");
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ "./node_modules/axios/lib/helpers/parseHeaders.js");
 var isURLSameOrigin = __webpack_require__(/*! ./../helpers/isURLSameOrigin */ "./node_modules/axios/lib/helpers/isURLSameOrigin.js");
 var createError = __webpack_require__(/*! ../core/createError */ "./node_modules/axios/lib/core/createError.js");
@@ -133,8 +136,12 @@ module.exports = function xhrAdapter(config) {
       requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
     }
 
+<<<<<<< HEAD
     var fullPath = buildFullPath(config.baseURL, config.url);
     request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
+=======
+    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     // Set the request timeout in MS
     request.timeout = config.timeout;
@@ -195,11 +202,15 @@ module.exports = function xhrAdapter(config) {
 
     // Handle timeout
     request.ontimeout = function handleTimeout() {
+<<<<<<< HEAD
       var timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
       if (config.timeoutErrorMessage) {
         timeoutErrorMessage = config.timeoutErrorMessage;
       }
       reject(createError(timeoutErrorMessage, config, 'ECONNABORTED',
+=======
+      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         request));
 
       // Clean up request
@@ -213,7 +224,11 @@ module.exports = function xhrAdapter(config) {
       var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
 
       // Add xsrf header
+<<<<<<< HEAD
       var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
+=======
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         cookies.read(config.xsrfCookieName) :
         undefined;
 
@@ -236,8 +251,13 @@ module.exports = function xhrAdapter(config) {
     }
 
     // Add withCredentials to request if needed
+<<<<<<< HEAD
     if (!utils.isUndefined(config.withCredentials)) {
       request.withCredentials = !!config.withCredentials;
+=======
+    if (config.withCredentials) {
+      request.withCredentials = true;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
 
     // Add responseType to request if needed
@@ -516,6 +536,7 @@ Axios.prototype.request = function request(config) {
   }
 
   config = mergeConfig(this.defaults, config);
+<<<<<<< HEAD
 
   // Set config.method
   if (config.method) {
@@ -525,6 +546,9 @@ Axios.prototype.request = function request(config) {
   } else {
     config.method = 'get';
   }
+=======
+  config.method = config.method ? config.method.toLowerCase() : 'get';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
   // Hook up interceptors middleware
   var chain = [dispatchRequest, undefined];
@@ -641,6 +665,7 @@ module.exports = InterceptorManager;
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./node_modules/axios/lib/core/buildFullPath.js":
 /*!******************************************************!*\
   !*** ./node_modules/axios/lib/core/buildFullPath.js ***!
@@ -673,6 +698,8 @@ module.exports = function buildFullPath(baseURL, requestedURL) {
 
 /***/ }),
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 /***/ "./node_modules/axios/lib/core/createError.js":
 /*!****************************************************!*\
   !*** ./node_modules/axios/lib/core/createError.js ***!
@@ -717,6 +744,11 @@ var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/util
 var transformData = __webpack_require__(/*! ./transformData */ "./node_modules/axios/lib/core/transformData.js");
 var isCancel = __webpack_require__(/*! ../cancel/isCancel */ "./node_modules/axios/lib/cancel/isCancel.js");
 var defaults = __webpack_require__(/*! ../defaults */ "./node_modules/axios/lib/defaults.js");
+<<<<<<< HEAD
+=======
+var isAbsoluteURL = __webpack_require__(/*! ./../helpers/isAbsoluteURL */ "./node_modules/axios/lib/helpers/isAbsoluteURL.js");
+var combineURLs = __webpack_require__(/*! ./../helpers/combineURLs */ "./node_modules/axios/lib/helpers/combineURLs.js");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -736,6 +768,14 @@ function throwIfCancellationRequested(config) {
 module.exports = function dispatchRequest(config) {
   throwIfCancellationRequested(config);
 
+<<<<<<< HEAD
+=======
+  // Support baseURL config
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    config.url = combineURLs(config.baseURL, config.url);
+  }
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   // Ensure headers exist
   config.headers = config.headers || {};
 
@@ -750,7 +790,11 @@ module.exports = function dispatchRequest(config) {
   config.headers = utils.merge(
     config.headers.common || {},
     config.headers[config.method] || {},
+<<<<<<< HEAD
     config.headers
+=======
+    config.headers || {}
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   );
 
   utils.forEach(
@@ -873,6 +917,7 @@ module.exports = function mergeConfig(config1, config2) {
   config2 = config2 || {};
   var config = {};
 
+<<<<<<< HEAD
   var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
   var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
   var defaultToConfig2Keys = [
@@ -884,12 +929,19 @@ module.exports = function mergeConfig(config1, config2) {
   ];
 
   utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
+=======
+  utils.forEach(['url', 'method', 'params', 'data'], function valueFromConfig2(prop) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     if (typeof config2[prop] !== 'undefined') {
       config[prop] = config2[prop];
     }
   });
 
+<<<<<<< HEAD
   utils.forEach(mergeDeepPropertiesKeys, function mergeDeepProperties(prop) {
+=======
+  utils.forEach(['headers', 'auth', 'proxy'], function mergeDeepProperties(prop) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     if (utils.isObject(config2[prop])) {
       config[prop] = utils.deepMerge(config1[prop], config2[prop]);
     } else if (typeof config2[prop] !== 'undefined') {
@@ -901,6 +953,7 @@ module.exports = function mergeConfig(config1, config2) {
     }
   });
 
+<<<<<<< HEAD
   utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
     if (typeof config2[prop] !== 'undefined') {
       config[prop] = config2[prop];
@@ -920,6 +973,15 @@ module.exports = function mergeConfig(config1, config2) {
     });
 
   utils.forEach(otherKeys, function otherKeysDefaultToConfig2(prop) {
+=======
+  utils.forEach([
+    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'maxContentLength',
+    'validateStatus', 'maxRedirects', 'httpAgent', 'httpsAgent', 'cancelToken',
+    'socketPath'
+  ], function defaultToConfig2(prop) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     if (typeof config2[prop] !== 'undefined') {
       config[prop] = config2[prop];
     } else if (typeof config1[prop] !== 'undefined') {
@@ -1027,12 +1089,22 @@ function setContentTypeIfUnset(headers, value) {
 
 function getDefaultAdapter() {
   var adapter;
+<<<<<<< HEAD
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
     adapter = __webpack_require__(/*! ./adapters/xhr */ "./node_modules/axios/lib/adapters/xhr.js");
   } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
     // For node use HTTP adapter
     adapter = __webpack_require__(/*! ./adapters/http */ "./node_modules/axios/lib/adapters/xhr.js");
+=======
+  // Only Node.JS has a process variable that is of [[Class]] process
+  if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(/*! ./adapters/http */ "./node_modules/axios/lib/adapters/xhr.js");
+  } else if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(/*! ./adapters/xhr */ "./node_modules/axios/lib/adapters/xhr.js");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   }
   return adapter;
 }
@@ -1554,6 +1626,10 @@ module.exports = function spread(callback) {
 
 
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
+<<<<<<< HEAD
+=======
+var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 /*global toString:true*/
 
@@ -1572,6 +1648,7 @@ function isArray(val) {
 }
 
 /**
+<<<<<<< HEAD
  * Determine if a value is undefined
  *
  * @param {Object} val The value to test
@@ -1593,6 +1670,8 @@ function isBuffer(val) {
 }
 
 /**
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  * Determine if a value is an ArrayBuffer
  *
  * @param {Object} val The value to test
@@ -1649,6 +1728,19 @@ function isNumber(val) {
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  * Determine if a value is an Object
  *
  * @param {Object} val The value to test
@@ -3598,10 +3690,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+<<<<<<< HEAD
 //
 //
 //
 //
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['rate', 'real_btc', 'card_id', 'charge'],
   data: function data() {
@@ -3617,7 +3712,12 @@ __webpack_require__.r(__webpack_exports__);
       btcToUsd: this.real_btc,
       usdToNaira: this.rate.sell[0].rate,
       //our rate
+<<<<<<< HEAD
       btcToNaira: ''
+=======
+      btcToNaira: '',
+      loading: false
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
   },
   mounted: function mounted() {
@@ -3641,6 +3741,34 @@ __webpack_require__.r(__webpack_exports__);
     getRateNgn: function getRateNgn() {
       this.btc = this.naira / this.btcToNaira;
       this.usd = this.naira / this.usdToNaira;
+<<<<<<< HEAD
+=======
+    },
+    sell: function sell() {
+      var _this = this;
+
+      if (this.btc < 0) {
+        swal('Oops', 'BTC amount should be greater than 0', 'error');
+        return false;
+      }
+
+      this.loading = true;
+      axios.post('/user/sell-bitcoin', {
+        "quantity": this.btc
+      }).then(function (res) {
+        if (res.data.success) {
+          swal('Great!!', 'Bitcoin traded successfully', 'success');
+          window.location = '/user/transactions';
+        } else {
+          swal('oops!!', res.data.msg, 'error');
+        }
+      })["catch"](function (e) {
+        console.log(e);
+        swal('Oops', 'An error occured, please reload and try again', 'error');
+      })["finally"](function () {
+        _this.loading = false;
+      });
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
   },
   updated: function updated() {
@@ -3651,6 +3779,101 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+<<<<<<< HEAD
+=======
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['usdBtc'],
+  data: function data() {
+    return {};
+  },
+  mounted: function mounted() {
+    alert(this.usdBtc);
+  }
+});
+
+/***/ }),
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=script&lang=js& ***!
@@ -4204,6 +4427,173 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+<<<<<<< HEAD
+=======
+/***/ "./node_modules/base64-js/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/base64-js/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+// Support decoding URL-safe base64 strings, as Node.js does.
+// See: https://en.wikipedia.org/wiki/Base64#URL_applications
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function getLens (b64) {
+  var len = b64.length
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
+}
+
+// base64 is 4/3 + up to two characters of the original data
+function byteLength (b64) {
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function toByteArray (b64) {
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
+
+  var i
+  for (i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
+  }
+
+  return parts.join('')
+}
+
+
+/***/ }),
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 /***/ "./node_modules/bootstrap/dist/js/bootstrap.js":
 /*!*****************************************************!*\
   !*** ./node_modules/bootstrap/dist/js/bootstrap.js ***!
@@ -4212,17 +4602,28 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
+<<<<<<< HEAD
   * Bootstrap v4.5.2 (https://getbootstrap.com/)
   * Copyright 2011-2020 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+=======
+  * Bootstrap v4.4.1 (https://getbootstrap.com/)
+  * Copyright 2011-2019 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   */
 (function (global, factory) {
    true ? factory(exports, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"), __webpack_require__(/*! popper.js */ "./node_modules/popper.js/dist/esm/popper.js")) :
   undefined;
 }(this, (function (exports, $, Popper) { 'use strict';
 
+<<<<<<< HEAD
   $ = $ && Object.prototype.hasOwnProperty.call($, 'default') ? $['default'] : $;
   Popper = Popper && Object.prototype.hasOwnProperty.call(Popper, 'default') ? Popper['default'] : Popper;
+=======
+  $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
+  Popper = Popper && Popper.hasOwnProperty('default') ? Popper['default'] : Popper;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
   function _defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
@@ -4240,6 +4641,7 @@ __webpack_require__.r(__webpack_exports__);
     return Constructor;
   }
 
+<<<<<<< HEAD
   function _extends() {
     _extends = Object.assign || function (target) {
       for (var i = 1; i < arguments.length; i++) {
@@ -4256,6 +4658,55 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     return _extends.apply(this, arguments);
+=======
+  function _defineProperty(obj, key, value) {
+    if (key in obj) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key] = value;
+    }
+
+    return obj;
+  }
+
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          _defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   }
 
   function _inheritsLoose(subClass, superClass) {
@@ -4266,8 +4717,13 @@ __webpack_require__.r(__webpack_exports__);
 
   /**
    * --------------------------------------------------------------------------
+<<<<<<< HEAD
    * Bootstrap (v4.5.2): util.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+=======
+   * Bootstrap (v4.4.1): util.js
+   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
    * --------------------------------------------------------------------------
    */
   /**
@@ -4281,10 +4737,13 @@ __webpack_require__.r(__webpack_exports__);
   var MILLISECONDS_MULTIPLIER = 1000; // Shoutout AngusCroll (https://goo.gl/pxwQGp)
 
   function toType(obj) {
+<<<<<<< HEAD
     if (obj === null || typeof obj === 'undefined') {
       return "" + obj;
     }
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     return {}.toString.call(obj).match(/\s([a-z]+)/i)[1].toLowerCase();
   }
 
@@ -4297,7 +4756,11 @@ __webpack_require__.r(__webpack_exports__);
           return event.handleObj.handler.apply(this, arguments); // eslint-disable-line prefer-rest-params
         }
 
+<<<<<<< HEAD
         return undefined;
+=======
+        return undefined; // eslint-disable-line no-undefined
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     };
   }
@@ -4447,11 +4910,16 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME = 'alert';
+<<<<<<< HEAD
   var VERSION = '4.5.2';
+=======
+  var VERSION = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY = 'bs.alert';
   var EVENT_KEY = "." + DATA_KEY;
   var DATA_API_KEY = '.data-api';
   var JQUERY_NO_CONFLICT = $.fn[NAME];
+<<<<<<< HEAD
   var SELECTOR_DISMISS = '[data-dismiss="alert"]';
   var EVENT_CLOSE = "close" + EVENT_KEY;
   var EVENT_CLOSED = "closed" + EVENT_KEY;
@@ -4459,13 +4927,34 @@ __webpack_require__.r(__webpack_exports__);
   var CLASS_NAME_ALERT = 'alert';
   var CLASS_NAME_FADE = 'fade';
   var CLASS_NAME_SHOW = 'show';
+=======
+  var Selector = {
+    DISMISS: '[data-dismiss="alert"]'
+  };
+  var Event = {
+    CLOSE: "close" + EVENT_KEY,
+    CLOSED: "closed" + EVENT_KEY,
+    CLICK_DATA_API: "click" + EVENT_KEY + DATA_API_KEY
+  };
+  var ClassName = {
+    ALERT: 'alert',
+    FADE: 'fade',
+    SHOW: 'show'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * Class Definition
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Alert = /*#__PURE__*/function () {
+=======
+  var Alert =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function Alert(element) {
       this._element = element;
     } // Getters
@@ -4505,14 +4994,22 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (!parent) {
+<<<<<<< HEAD
         parent = $(element).closest("." + CLASS_NAME_ALERT)[0];
+=======
+        parent = $(element).closest("." + ClassName.ALERT)[0];
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
 
       return parent;
     };
 
     _proto._triggerCloseEvent = function _triggerCloseEvent(element) {
+<<<<<<< HEAD
       var closeEvent = $.Event(EVENT_CLOSE);
+=======
+      var closeEvent = $.Event(Event.CLOSE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $(element).trigger(closeEvent);
       return closeEvent;
     };
@@ -4520,9 +5017,15 @@ __webpack_require__.r(__webpack_exports__);
     _proto._removeElement = function _removeElement(element) {
       var _this = this;
 
+<<<<<<< HEAD
       $(element).removeClass(CLASS_NAME_SHOW);
 
       if (!$(element).hasClass(CLASS_NAME_FADE)) {
+=======
+      $(element).removeClass(ClassName.SHOW);
+
+      if (!$(element).hasClass(ClassName.FADE)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this._destroyElement(element);
 
         return;
@@ -4535,7 +5038,11 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._destroyElement = function _destroyElement(element) {
+<<<<<<< HEAD
       $(element).detach().trigger(EVENT_CLOSED).remove();
+=======
+      $(element).detach().trigger(Event.CLOSED).remove();
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     } // Static
     ;
 
@@ -4581,7 +5088,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
 
+<<<<<<< HEAD
   $(document).on(EVENT_CLICK_DATA_API, SELECTOR_DISMISS, Alert._handleDismiss(new Alert()));
+=======
+  $(document).on(Event.CLICK_DATA_API, Selector.DISMISS, Alert._handleDismiss(new Alert()));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * jQuery
@@ -4603,11 +5114,16 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$1 = 'button';
+<<<<<<< HEAD
   var VERSION$1 = '4.5.2';
+=======
+  var VERSION$1 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$1 = 'bs.button';
   var EVENT_KEY$1 = "." + DATA_KEY$1;
   var DATA_API_KEY$1 = '.data-api';
   var JQUERY_NO_CONFLICT$1 = $.fn[NAME$1];
+<<<<<<< HEAD
   var CLASS_NAME_ACTIVE = 'active';
   var CLASS_NAME_BUTTON = 'btn';
   var CLASS_NAME_FOCUS = 'focus';
@@ -4621,13 +5137,40 @@ __webpack_require__.r(__webpack_exports__);
   var EVENT_CLICK_DATA_API$1 = "click" + EVENT_KEY$1 + DATA_API_KEY$1;
   var EVENT_FOCUS_BLUR_DATA_API = "focus" + EVENT_KEY$1 + DATA_API_KEY$1 + " " + ("blur" + EVENT_KEY$1 + DATA_API_KEY$1);
   var EVENT_LOAD_DATA_API = "load" + EVENT_KEY$1 + DATA_API_KEY$1;
+=======
+  var ClassName$1 = {
+    ACTIVE: 'active',
+    BUTTON: 'btn',
+    FOCUS: 'focus'
+  };
+  var Selector$1 = {
+    DATA_TOGGLE_CARROT: '[data-toggle^="button"]',
+    DATA_TOGGLES: '[data-toggle="buttons"]',
+    DATA_TOGGLE: '[data-toggle="button"]',
+    DATA_TOGGLES_BUTTONS: '[data-toggle="buttons"] .btn',
+    INPUT: 'input:not([type="hidden"])',
+    ACTIVE: '.active',
+    BUTTON: '.btn'
+  };
+  var Event$1 = {
+    CLICK_DATA_API: "click" + EVENT_KEY$1 + DATA_API_KEY$1,
+    FOCUS_BLUR_DATA_API: "focus" + EVENT_KEY$1 + DATA_API_KEY$1 + " " + ("blur" + EVENT_KEY$1 + DATA_API_KEY$1),
+    LOAD_DATA_API: "load" + EVENT_KEY$1 + DATA_API_KEY$1
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * Class Definition
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Button = /*#__PURE__*/function () {
+=======
+  var Button =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function Button(element) {
       this._element = element;
     } // Getters
@@ -4639,6 +5182,7 @@ __webpack_require__.r(__webpack_exports__);
     _proto.toggle = function toggle() {
       var triggerChangeEvent = true;
       var addAriaPressed = true;
+<<<<<<< HEAD
       var rootElement = $(this._element).closest(SELECTOR_DATA_TOGGLES)[0];
 
       if (rootElement) {
@@ -4663,6 +5207,35 @@ __webpack_require__.r(__webpack_exports__);
               input.checked = !this._element.classList.contains(CLASS_NAME_ACTIVE);
             }
 
+=======
+      var rootElement = $(this._element).closest(Selector$1.DATA_TOGGLES)[0];
+
+      if (rootElement) {
+        var input = this._element.querySelector(Selector$1.INPUT);
+
+        if (input) {
+          if (input.type === 'radio') {
+            if (input.checked && this._element.classList.contains(ClassName$1.ACTIVE)) {
+              triggerChangeEvent = false;
+            } else {
+              var activeElement = rootElement.querySelector(Selector$1.ACTIVE);
+
+              if (activeElement) {
+                $(activeElement).removeClass(ClassName$1.ACTIVE);
+              }
+            }
+          } else if (input.type === 'checkbox') {
+            if (this._element.tagName === 'LABEL' && input.checked === this._element.classList.contains(ClassName$1.ACTIVE)) {
+              triggerChangeEvent = false;
+            }
+          } else {
+            // if it's not a radio button or checkbox don't add a pointless/invalid checked property to the input
+            triggerChangeEvent = false;
+          }
+
+          if (triggerChangeEvent) {
+            input.checked = !this._element.classList.contains(ClassName$1.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             $(input).trigger('change');
           }
 
@@ -4673,11 +5246,19 @@ __webpack_require__.r(__webpack_exports__);
 
       if (!(this._element.hasAttribute('disabled') || this._element.classList.contains('disabled'))) {
         if (addAriaPressed) {
+<<<<<<< HEAD
           this._element.setAttribute('aria-pressed', !this._element.classList.contains(CLASS_NAME_ACTIVE));
         }
 
         if (triggerChangeEvent) {
           $(this._element).toggleClass(CLASS_NAME_ACTIVE);
+=======
+          this._element.setAttribute('aria-pressed', !this._element.classList.contains(ClassName$1.ACTIVE));
+        }
+
+        if (triggerChangeEvent) {
+          $(this._element).toggleClass(ClassName$1.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
       }
     };
@@ -4719,18 +5300,30 @@ __webpack_require__.r(__webpack_exports__);
    */
 
 
+<<<<<<< HEAD
   $(document).on(EVENT_CLICK_DATA_API$1, SELECTOR_DATA_TOGGLE_CARROT, function (event) {
     var button = event.target;
     var initialButton = button;
 
     if (!$(button).hasClass(CLASS_NAME_BUTTON)) {
       button = $(button).closest(SELECTOR_BUTTON)[0];
+=======
+  $(document).on(Event$1.CLICK_DATA_API, Selector$1.DATA_TOGGLE_CARROT, function (event) {
+    var button = event.target;
+
+    if (!$(button).hasClass(ClassName$1.BUTTON)) {
+      button = $(button).closest(Selector$1.BUTTON)[0];
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
 
     if (!button || button.hasAttribute('disabled') || button.classList.contains('disabled')) {
       event.preventDefault(); // work around Firefox bug #1540995
     } else {
+<<<<<<< HEAD
       var inputBtn = button.querySelector(SELECTOR_INPUT);
+=======
+      var inputBtn = button.querySelector(Selector$1.INPUT);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (inputBtn && (inputBtn.hasAttribute('disabled') || inputBtn.classList.contains('disabled'))) {
         event.preventDefault(); // work around Firefox bug #1540995
@@ -4738,6 +5331,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+<<<<<<< HEAD
       if (initialButton.tagName !== 'LABEL' || inputBtn && inputBtn.type !== 'checkbox') {
         Button._jQueryInterface.call($(button), 'toggle');
       }
@@ -4759,19 +5353,50 @@ __webpack_require__.r(__webpack_exports__);
         button.classList.add(CLASS_NAME_ACTIVE);
       } else {
         button.classList.remove(CLASS_NAME_ACTIVE);
+=======
+      Button._jQueryInterface.call($(button), 'toggle');
+    }
+  }).on(Event$1.FOCUS_BLUR_DATA_API, Selector$1.DATA_TOGGLE_CARROT, function (event) {
+    var button = $(event.target).closest(Selector$1.BUTTON)[0];
+    $(button).toggleClass(ClassName$1.FOCUS, /^focus(in)?$/.test(event.type));
+  });
+  $(window).on(Event$1.LOAD_DATA_API, function () {
+    // ensure correct active class is set to match the controls' actual values/states
+    // find all checkboxes/readio buttons inside data-toggle groups
+    var buttons = [].slice.call(document.querySelectorAll(Selector$1.DATA_TOGGLES_BUTTONS));
+
+    for (var i = 0, len = buttons.length; i < len; i++) {
+      var button = buttons[i];
+      var input = button.querySelector(Selector$1.INPUT);
+
+      if (input.checked || input.hasAttribute('checked')) {
+        button.classList.add(ClassName$1.ACTIVE);
+      } else {
+        button.classList.remove(ClassName$1.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     } // find all button toggles
 
 
+<<<<<<< HEAD
     buttons = [].slice.call(document.querySelectorAll(SELECTOR_DATA_TOGGLE));
+=======
+    buttons = [].slice.call(document.querySelectorAll(Selector$1.DATA_TOGGLE));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     for (var _i = 0, _len = buttons.length; _i < _len; _i++) {
       var _button = buttons[_i];
 
       if (_button.getAttribute('aria-pressed') === 'true') {
+<<<<<<< HEAD
         _button.classList.add(CLASS_NAME_ACTIVE);
       } else {
         _button.classList.remove(CLASS_NAME_ACTIVE);
+=======
+        _button.classList.add(ClassName$1.ACTIVE);
+      } else {
+        _button.classList.remove(ClassName$1.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     }
   });
@@ -4796,7 +5421,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$2 = 'carousel';
+<<<<<<< HEAD
   var VERSION$2 = '4.5.2';
+=======
+  var VERSION$2 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$2 = 'bs.carousel';
   var EVENT_KEY$2 = "." + DATA_KEY$2;
   var DATA_API_KEY$2 = '.data-api';
@@ -4824,6 +5453,7 @@ __webpack_require__.r(__webpack_exports__);
     wrap: 'boolean',
     touch: 'boolean'
   };
+<<<<<<< HEAD
   var DIRECTION_NEXT = 'next';
   var DIRECTION_PREV = 'prev';
   var DIRECTION_LEFT = 'left';
@@ -4857,6 +5487,50 @@ __webpack_require__.r(__webpack_exports__);
   var SELECTOR_INDICATORS = '.carousel-indicators';
   var SELECTOR_DATA_SLIDE = '[data-slide], [data-slide-to]';
   var SELECTOR_DATA_RIDE = '[data-ride="carousel"]';
+=======
+  var Direction = {
+    NEXT: 'next',
+    PREV: 'prev',
+    LEFT: 'left',
+    RIGHT: 'right'
+  };
+  var Event$2 = {
+    SLIDE: "slide" + EVENT_KEY$2,
+    SLID: "slid" + EVENT_KEY$2,
+    KEYDOWN: "keydown" + EVENT_KEY$2,
+    MOUSEENTER: "mouseenter" + EVENT_KEY$2,
+    MOUSELEAVE: "mouseleave" + EVENT_KEY$2,
+    TOUCHSTART: "touchstart" + EVENT_KEY$2,
+    TOUCHMOVE: "touchmove" + EVENT_KEY$2,
+    TOUCHEND: "touchend" + EVENT_KEY$2,
+    POINTERDOWN: "pointerdown" + EVENT_KEY$2,
+    POINTERUP: "pointerup" + EVENT_KEY$2,
+    DRAG_START: "dragstart" + EVENT_KEY$2,
+    LOAD_DATA_API: "load" + EVENT_KEY$2 + DATA_API_KEY$2,
+    CLICK_DATA_API: "click" + EVENT_KEY$2 + DATA_API_KEY$2
+  };
+  var ClassName$2 = {
+    CAROUSEL: 'carousel',
+    ACTIVE: 'active',
+    SLIDE: 'slide',
+    RIGHT: 'carousel-item-right',
+    LEFT: 'carousel-item-left',
+    NEXT: 'carousel-item-next',
+    PREV: 'carousel-item-prev',
+    ITEM: 'carousel-item',
+    POINTER_EVENT: 'pointer-event'
+  };
+  var Selector$2 = {
+    ACTIVE: '.active',
+    ACTIVE_ITEM: '.active.carousel-item',
+    ITEM: '.carousel-item',
+    ITEM_IMG: '.carousel-item img',
+    NEXT_PREV: '.carousel-item-next, .carousel-item-prev',
+    INDICATORS: '.carousel-indicators',
+    DATA_SLIDE: '[data-slide], [data-slide-to]',
+    DATA_RIDE: '[data-ride="carousel"]'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var PointerType = {
     TOUCH: 'touch',
     PEN: 'pen'
@@ -4867,7 +5541,13 @@ __webpack_require__.r(__webpack_exports__);
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Carousel = /*#__PURE__*/function () {
+=======
+  var Carousel =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function Carousel(element, config) {
       this._items = null;
       this._interval = null;
@@ -4879,7 +5559,11 @@ __webpack_require__.r(__webpack_exports__);
       this.touchDeltaX = 0;
       this._config = this._getConfig(config);
       this._element = element;
+<<<<<<< HEAD
       this._indicatorsElement = this._element.querySelector(SELECTOR_INDICATORS);
+=======
+      this._indicatorsElement = this._element.querySelector(Selector$2.INDICATORS);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       this._touchSupported = 'ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0;
       this._pointerEvent = Boolean(window.PointerEvent || window.MSPointerEvent);
 
@@ -4892,7 +5576,11 @@ __webpack_require__.r(__webpack_exports__);
     // Public
     _proto.next = function next() {
       if (!this._isSliding) {
+<<<<<<< HEAD
         this._slide(DIRECTION_NEXT);
+=======
+        this._slide(Direction.NEXT);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     };
 
@@ -4906,7 +5594,11 @@ __webpack_require__.r(__webpack_exports__);
 
     _proto.prev = function prev() {
       if (!this._isSliding) {
+<<<<<<< HEAD
         this._slide(DIRECTION_PREV);
+=======
+        this._slide(Direction.PREV);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     };
 
@@ -4915,7 +5607,11 @@ __webpack_require__.r(__webpack_exports__);
         this._isPaused = true;
       }
 
+<<<<<<< HEAD
       if (this._element.querySelector(SELECTOR_NEXT_PREV)) {
+=======
+      if (this._element.querySelector(Selector$2.NEXT_PREV)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         Util.triggerTransitionEnd(this._element);
         this.cycle(true);
       }
@@ -4942,7 +5638,11 @@ __webpack_require__.r(__webpack_exports__);
     _proto.to = function to(index) {
       var _this = this;
 
+<<<<<<< HEAD
       this._activeElement = this._element.querySelector(SELECTOR_ACTIVE_ITEM);
+=======
+      this._activeElement = this._element.querySelector(Selector$2.ACTIVE_ITEM);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var activeIndex = this._getItemIndex(this._activeElement);
 
@@ -4951,7 +5651,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (this._isSliding) {
+<<<<<<< HEAD
         $(this._element).one(EVENT_SLID, function () {
+=======
+        $(this._element).one(Event$2.SLID, function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           return _this.to(index);
         });
         return;
@@ -4963,7 +5667,11 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+<<<<<<< HEAD
       var direction = index > activeIndex ? DIRECTION_NEXT : DIRECTION_PREV;
+=======
+      var direction = index > activeIndex ? Direction.NEXT : Direction.PREV;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       this._slide(direction, this._items[index]);
     };
@@ -4983,7 +5691,11 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
+<<<<<<< HEAD
       config = _extends({}, Default, config);
+=======
+      config = _objectSpread2({}, Default, {}, config);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       Util.typeCheckConfig(NAME$2, config, DefaultType);
       return config;
     };
@@ -5012,15 +5724,25 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       if (this._config.keyboard) {
+<<<<<<< HEAD
         $(this._element).on(EVENT_KEYDOWN, function (event) {
+=======
+        $(this._element).on(Event$2.KEYDOWN, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           return _this2._keydown(event);
         });
       }
 
       if (this._config.pause === 'hover') {
+<<<<<<< HEAD
         $(this._element).on(EVENT_MOUSEENTER, function (event) {
           return _this2.pause(event);
         }).on(EVENT_MOUSELEAVE, function (event) {
+=======
+        $(this._element).on(Event$2.MOUSEENTER, function (event) {
+          return _this2.pause(event);
+        }).on(Event$2.MOUSELEAVE, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           return _this2.cycle(event);
         });
       }
@@ -5081,11 +5803,16 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
 
+<<<<<<< HEAD
       $(this._element.querySelectorAll(SELECTOR_ITEM_IMG)).on(EVENT_DRAG_START, function (e) {
+=======
+      $(this._element.querySelectorAll(Selector$2.ITEM_IMG)).on(Event$2.DRAG_START, function (e) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return e.preventDefault();
       });
 
       if (this._pointerEvent) {
+<<<<<<< HEAD
         $(this._element).on(EVENT_POINTERDOWN, function (event) {
           return start(event);
         });
@@ -5102,6 +5829,24 @@ __webpack_require__.r(__webpack_exports__);
           return move(event);
         });
         $(this._element).on(EVENT_TOUCHEND, function (event) {
+=======
+        $(this._element).on(Event$2.POINTERDOWN, function (event) {
+          return start(event);
+        });
+        $(this._element).on(Event$2.POINTERUP, function (event) {
+          return end(event);
+        });
+
+        this._element.classList.add(ClassName$2.POINTER_EVENT);
+      } else {
+        $(this._element).on(Event$2.TOUCHSTART, function (event) {
+          return start(event);
+        });
+        $(this._element).on(Event$2.TOUCHMOVE, function (event) {
+          return move(event);
+        });
+        $(this._element).on(Event$2.TOUCHEND, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           return end(event);
         });
       }
@@ -5126,13 +5871,22 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._getItemIndex = function _getItemIndex(element) {
+<<<<<<< HEAD
       this._items = element && element.parentNode ? [].slice.call(element.parentNode.querySelectorAll(SELECTOR_ITEM)) : [];
+=======
+      this._items = element && element.parentNode ? [].slice.call(element.parentNode.querySelectorAll(Selector$2.ITEM)) : [];
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       return this._items.indexOf(element);
     };
 
     _proto._getItemByDirection = function _getItemByDirection(direction, activeElement) {
+<<<<<<< HEAD
       var isNextDirection = direction === DIRECTION_NEXT;
       var isPrevDirection = direction === DIRECTION_PREV;
+=======
+      var isNextDirection = direction === Direction.NEXT;
+      var isPrevDirection = direction === Direction.PREV;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var activeIndex = this._getItemIndex(activeElement);
 
@@ -5143,7 +5897,11 @@ __webpack_require__.r(__webpack_exports__);
         return activeElement;
       }
 
+<<<<<<< HEAD
       var delta = direction === DIRECTION_PREV ? -1 : 1;
+=======
+      var delta = direction === Direction.PREV ? -1 : 1;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       var itemIndex = (activeIndex + delta) % this._items.length;
       return itemIndex === -1 ? this._items[this._items.length - 1] : this._items[itemIndex];
     };
@@ -5151,9 +5909,15 @@ __webpack_require__.r(__webpack_exports__);
     _proto._triggerSlideEvent = function _triggerSlideEvent(relatedTarget, eventDirectionName) {
       var targetIndex = this._getItemIndex(relatedTarget);
 
+<<<<<<< HEAD
       var fromIndex = this._getItemIndex(this._element.querySelector(SELECTOR_ACTIVE_ITEM));
 
       var slideEvent = $.Event(EVENT_SLIDE, {
+=======
+      var fromIndex = this._getItemIndex(this._element.querySelector(Selector$2.ACTIVE_ITEM));
+
+      var slideEvent = $.Event(Event$2.SLIDE, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         relatedTarget: relatedTarget,
         direction: eventDirectionName,
         from: fromIndex,
@@ -5165,13 +5929,22 @@ __webpack_require__.r(__webpack_exports__);
 
     _proto._setActiveIndicatorElement = function _setActiveIndicatorElement(element) {
       if (this._indicatorsElement) {
+<<<<<<< HEAD
         var indicators = [].slice.call(this._indicatorsElement.querySelectorAll(SELECTOR_ACTIVE$1));
         $(indicators).removeClass(CLASS_NAME_ACTIVE$1);
+=======
+        var indicators = [].slice.call(this._indicatorsElement.querySelectorAll(Selector$2.ACTIVE));
+        $(indicators).removeClass(ClassName$2.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
         var nextIndicator = this._indicatorsElement.children[this._getItemIndex(element)];
 
         if (nextIndicator) {
+<<<<<<< HEAD
           $(nextIndicator).addClass(CLASS_NAME_ACTIVE$1);
+=======
+          $(nextIndicator).addClass(ClassName$2.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
       }
     };
@@ -5179,7 +5952,11 @@ __webpack_require__.r(__webpack_exports__);
     _proto._slide = function _slide(direction, element) {
       var _this4 = this;
 
+<<<<<<< HEAD
       var activeElement = this._element.querySelector(SELECTOR_ACTIVE_ITEM);
+=======
+      var activeElement = this._element.querySelector(Selector$2.ACTIVE_ITEM);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var activeElementIndex = this._getItemIndex(activeElement);
 
@@ -5192,6 +5969,7 @@ __webpack_require__.r(__webpack_exports__);
       var orderClassName;
       var eventDirectionName;
 
+<<<<<<< HEAD
       if (direction === DIRECTION_NEXT) {
         directionalClassName = CLASS_NAME_LEFT;
         orderClassName = CLASS_NAME_NEXT;
@@ -5203,6 +5981,19 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (nextElement && $(nextElement).hasClass(CLASS_NAME_ACTIVE$1)) {
+=======
+      if (direction === Direction.NEXT) {
+        directionalClassName = ClassName$2.LEFT;
+        orderClassName = ClassName$2.NEXT;
+        eventDirectionName = Direction.LEFT;
+      } else {
+        directionalClassName = ClassName$2.RIGHT;
+        orderClassName = ClassName$2.PREV;
+        eventDirectionName = Direction.RIGHT;
+      }
+
+      if (nextElement && $(nextElement).hasClass(ClassName$2.ACTIVE)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this._isSliding = false;
         return;
       }
@@ -5226,14 +6017,22 @@ __webpack_require__.r(__webpack_exports__);
 
       this._setActiveIndicatorElement(nextElement);
 
+<<<<<<< HEAD
       var slidEvent = $.Event(EVENT_SLID, {
+=======
+      var slidEvent = $.Event(Event$2.SLID, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         relatedTarget: nextElement,
         direction: eventDirectionName,
         from: activeElementIndex,
         to: nextElementIndex
       });
 
+<<<<<<< HEAD
       if ($(this._element).hasClass(CLASS_NAME_SLIDE)) {
+=======
+      if ($(this._element).hasClass(ClassName$2.SLIDE)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         $(nextElement).addClass(orderClassName);
         Util.reflow(nextElement);
         $(activeElement).addClass(directionalClassName);
@@ -5249,16 +6048,26 @@ __webpack_require__.r(__webpack_exports__);
 
         var transitionDuration = Util.getTransitionDurationFromElement(activeElement);
         $(activeElement).one(Util.TRANSITION_END, function () {
+<<<<<<< HEAD
           $(nextElement).removeClass(directionalClassName + " " + orderClassName).addClass(CLASS_NAME_ACTIVE$1);
           $(activeElement).removeClass(CLASS_NAME_ACTIVE$1 + " " + orderClassName + " " + directionalClassName);
+=======
+          $(nextElement).removeClass(directionalClassName + " " + orderClassName).addClass(ClassName$2.ACTIVE);
+          $(activeElement).removeClass(ClassName$2.ACTIVE + " " + orderClassName + " " + directionalClassName);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           _this4._isSliding = false;
           setTimeout(function () {
             return $(_this4._element).trigger(slidEvent);
           }, 0);
         }).emulateTransitionEnd(transitionDuration);
       } else {
+<<<<<<< HEAD
         $(activeElement).removeClass(CLASS_NAME_ACTIVE$1);
         $(nextElement).addClass(CLASS_NAME_ACTIVE$1);
+=======
+        $(activeElement).removeClass(ClassName$2.ACTIVE);
+        $(nextElement).addClass(ClassName$2.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this._isSliding = false;
         $(this._element).trigger(slidEvent);
       }
@@ -5273,10 +6082,17 @@ __webpack_require__.r(__webpack_exports__);
       return this.each(function () {
         var data = $(this).data(DATA_KEY$2);
 
+<<<<<<< HEAD
         var _config = _extends({}, Default, $(this).data());
 
         if (typeof config === 'object') {
           _config = _extends({}, _config, config);
+=======
+        var _config = _objectSpread2({}, Default, {}, $(this).data());
+
+        if (typeof config === 'object') {
+          _config = _objectSpread2({}, _config, {}, config);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
 
         var action = typeof config === 'string' ? config : _config.slide;
@@ -5310,11 +6126,19 @@ __webpack_require__.r(__webpack_exports__);
 
       var target = $(selector)[0];
 
+<<<<<<< HEAD
       if (!target || !$(target).hasClass(CLASS_NAME_CAROUSEL)) {
         return;
       }
 
       var config = _extends({}, $(target).data(), $(this).data());
+=======
+      if (!target || !$(target).hasClass(ClassName$2.CAROUSEL)) {
+        return;
+      }
+
+      var config = _objectSpread2({}, $(target).data(), {}, $(this).data());
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var slideIndex = this.getAttribute('data-slide-to');
 
@@ -5352,9 +6176,15 @@ __webpack_require__.r(__webpack_exports__);
    */
 
 
+<<<<<<< HEAD
   $(document).on(EVENT_CLICK_DATA_API$2, SELECTOR_DATA_SLIDE, Carousel._dataApiClickHandler);
   $(window).on(EVENT_LOAD_DATA_API$1, function () {
     var carousels = [].slice.call(document.querySelectorAll(SELECTOR_DATA_RIDE));
+=======
+  $(document).on(Event$2.CLICK_DATA_API, Selector$2.DATA_SLIDE, Carousel._dataApiClickHandler);
+  $(window).on(Event$2.LOAD_DATA_API, function () {
+    var carousels = [].slice.call(document.querySelectorAll(Selector$2.DATA_RIDE));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     for (var i = 0, len = carousels.length; i < len; i++) {
       var $carousel = $(carousels[i]);
@@ -5383,7 +6213,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$3 = 'collapse';
+<<<<<<< HEAD
   var VERSION$3 = '4.5.2';
+=======
+  var VERSION$3 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$3 = 'bs.collapse';
   var EVENT_KEY$3 = "." + DATA_KEY$3;
   var DATA_API_KEY$3 = '.data-api';
@@ -5396,6 +6230,7 @@ __webpack_require__.r(__webpack_exports__);
     toggle: 'boolean',
     parent: '(string|element)'
   };
+<<<<<<< HEAD
   var EVENT_SHOW = "show" + EVENT_KEY$3;
   var EVENT_SHOWN = "shown" + EVENT_KEY$3;
   var EVENT_HIDE = "hide" + EVENT_KEY$3;
@@ -5409,19 +6244,52 @@ __webpack_require__.r(__webpack_exports__);
   var DIMENSION_HEIGHT = 'height';
   var SELECTOR_ACTIVES = '.show, .collapsing';
   var SELECTOR_DATA_TOGGLE$1 = '[data-toggle="collapse"]';
+=======
+  var Event$3 = {
+    SHOW: "show" + EVENT_KEY$3,
+    SHOWN: "shown" + EVENT_KEY$3,
+    HIDE: "hide" + EVENT_KEY$3,
+    HIDDEN: "hidden" + EVENT_KEY$3,
+    CLICK_DATA_API: "click" + EVENT_KEY$3 + DATA_API_KEY$3
+  };
+  var ClassName$3 = {
+    SHOW: 'show',
+    COLLAPSE: 'collapse',
+    COLLAPSING: 'collapsing',
+    COLLAPSED: 'collapsed'
+  };
+  var Dimension = {
+    WIDTH: 'width',
+    HEIGHT: 'height'
+  };
+  var Selector$3 = {
+    ACTIVES: '.show, .collapsing',
+    DATA_TOGGLE: '[data-toggle="collapse"]'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * Class Definition
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Collapse = /*#__PURE__*/function () {
+=======
+  var Collapse =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function Collapse(element, config) {
       this._isTransitioning = false;
       this._element = element;
       this._config = this._getConfig(config);
       this._triggerArray = [].slice.call(document.querySelectorAll("[data-toggle=\"collapse\"][href=\"#" + element.id + "\"]," + ("[data-toggle=\"collapse\"][data-target=\"#" + element.id + "\"]")));
+<<<<<<< HEAD
       var toggleList = [].slice.call(document.querySelectorAll(SELECTOR_DATA_TOGGLE$1));
+=======
+      var toggleList = [].slice.call(document.querySelectorAll(Selector$3.DATA_TOGGLE));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       for (var i = 0, len = toggleList.length; i < len; i++) {
         var elem = toggleList[i];
@@ -5453,7 +6321,11 @@ __webpack_require__.r(__webpack_exports__);
 
     // Public
     _proto.toggle = function toggle() {
+<<<<<<< HEAD
       if ($(this._element).hasClass(CLASS_NAME_SHOW$1)) {
+=======
+      if ($(this._element).hasClass(ClassName$3.SHOW)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this.hide();
       } else {
         this.show();
@@ -5463,7 +6335,11 @@ __webpack_require__.r(__webpack_exports__);
     _proto.show = function show() {
       var _this = this;
 
+<<<<<<< HEAD
       if (this._isTransitioning || $(this._element).hasClass(CLASS_NAME_SHOW$1)) {
+=======
+      if (this._isTransitioning || $(this._element).hasClass(ClassName$3.SHOW)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return;
       }
 
@@ -5471,12 +6347,20 @@ __webpack_require__.r(__webpack_exports__);
       var activesData;
 
       if (this._parent) {
+<<<<<<< HEAD
         actives = [].slice.call(this._parent.querySelectorAll(SELECTOR_ACTIVES)).filter(function (elem) {
+=======
+        actives = [].slice.call(this._parent.querySelectorAll(Selector$3.ACTIVES)).filter(function (elem) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           if (typeof _this._config.parent === 'string') {
             return elem.getAttribute('data-parent') === _this._config.parent;
           }
 
+<<<<<<< HEAD
           return elem.classList.contains(CLASS_NAME_COLLAPSE);
+=======
+          return elem.classList.contains(ClassName$3.COLLAPSE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         });
 
         if (actives.length === 0) {
@@ -5492,7 +6376,11 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
 
+<<<<<<< HEAD
       var startEvent = $.Event(EVENT_SHOW);
+=======
+      var startEvent = $.Event(Event$3.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $(this._element).trigger(startEvent);
 
       if (startEvent.isDefaultPrevented()) {
@@ -5509,22 +6397,38 @@ __webpack_require__.r(__webpack_exports__);
 
       var dimension = this._getDimension();
 
+<<<<<<< HEAD
       $(this._element).removeClass(CLASS_NAME_COLLAPSE).addClass(CLASS_NAME_COLLAPSING);
       this._element.style[dimension] = 0;
 
       if (this._triggerArray.length) {
         $(this._triggerArray).removeClass(CLASS_NAME_COLLAPSED).attr('aria-expanded', true);
+=======
+      $(this._element).removeClass(ClassName$3.COLLAPSE).addClass(ClassName$3.COLLAPSING);
+      this._element.style[dimension] = 0;
+
+      if (this._triggerArray.length) {
+        $(this._triggerArray).removeClass(ClassName$3.COLLAPSED).attr('aria-expanded', true);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
 
       this.setTransitioning(true);
 
       var complete = function complete() {
+<<<<<<< HEAD
         $(_this._element).removeClass(CLASS_NAME_COLLAPSING).addClass(CLASS_NAME_COLLAPSE + " " + CLASS_NAME_SHOW$1);
+=======
+        $(_this._element).removeClass(ClassName$3.COLLAPSING).addClass(ClassName$3.COLLAPSE).addClass(ClassName$3.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         _this._element.style[dimension] = '';
 
         _this.setTransitioning(false);
 
+<<<<<<< HEAD
         $(_this._element).trigger(EVENT_SHOWN);
+=======
+        $(_this._element).trigger(Event$3.SHOWN);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       };
 
       var capitalizedDimension = dimension[0].toUpperCase() + dimension.slice(1);
@@ -5537,11 +6441,19 @@ __webpack_require__.r(__webpack_exports__);
     _proto.hide = function hide() {
       var _this2 = this;
 
+<<<<<<< HEAD
       if (this._isTransitioning || !$(this._element).hasClass(CLASS_NAME_SHOW$1)) {
         return;
       }
 
       var startEvent = $.Event(EVENT_HIDE);
+=======
+      if (this._isTransitioning || !$(this._element).hasClass(ClassName$3.SHOW)) {
+        return;
+      }
+
+      var startEvent = $.Event(Event$3.HIDE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $(this._element).trigger(startEvent);
 
       if (startEvent.isDefaultPrevented()) {
@@ -5552,7 +6464,11 @@ __webpack_require__.r(__webpack_exports__);
 
       this._element.style[dimension] = this._element.getBoundingClientRect()[dimension] + "px";
       Util.reflow(this._element);
+<<<<<<< HEAD
       $(this._element).addClass(CLASS_NAME_COLLAPSING).removeClass(CLASS_NAME_COLLAPSE + " " + CLASS_NAME_SHOW$1);
+=======
+      $(this._element).addClass(ClassName$3.COLLAPSING).removeClass(ClassName$3.COLLAPSE).removeClass(ClassName$3.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       var triggerArrayLength = this._triggerArray.length;
 
       if (triggerArrayLength > 0) {
@@ -5563,8 +6479,13 @@ __webpack_require__.r(__webpack_exports__);
           if (selector !== null) {
             var $elem = $([].slice.call(document.querySelectorAll(selector)));
 
+<<<<<<< HEAD
             if (!$elem.hasClass(CLASS_NAME_SHOW$1)) {
               $(trigger).addClass(CLASS_NAME_COLLAPSED).attr('aria-expanded', false);
+=======
+            if (!$elem.hasClass(ClassName$3.SHOW)) {
+              $(trigger).addClass(ClassName$3.COLLAPSED).attr('aria-expanded', false);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             }
           }
         }
@@ -5575,7 +6496,11 @@ __webpack_require__.r(__webpack_exports__);
       var complete = function complete() {
         _this2.setTransitioning(false);
 
+<<<<<<< HEAD
         $(_this2._element).removeClass(CLASS_NAME_COLLAPSING).addClass(CLASS_NAME_COLLAPSE).trigger(EVENT_HIDDEN);
+=======
+        $(_this2._element).removeClass(ClassName$3.COLLAPSING).addClass(ClassName$3.COLLAPSE).trigger(Event$3.HIDDEN);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       };
 
       this._element.style[dimension] = '';
@@ -5598,7 +6523,11 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
+<<<<<<< HEAD
       config = _extends({}, Default$1, config);
+=======
+      config = _objectSpread2({}, Default$1, {}, config);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       config.toggle = Boolean(config.toggle); // Coerce string values
 
       Util.typeCheckConfig(NAME$3, config, DefaultType$1);
@@ -5606,8 +6535,13 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._getDimension = function _getDimension() {
+<<<<<<< HEAD
       var hasWidth = $(this._element).hasClass(DIMENSION_WIDTH);
       return hasWidth ? DIMENSION_WIDTH : DIMENSION_HEIGHT;
+=======
+      var hasWidth = $(this._element).hasClass(Dimension.WIDTH);
+      return hasWidth ? Dimension.WIDTH : Dimension.HEIGHT;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
 
     _proto._getParent = function _getParent() {
@@ -5634,10 +6568,17 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._addAriaAndCollapsedClass = function _addAriaAndCollapsedClass(element, triggerArray) {
+<<<<<<< HEAD
       var isOpen = $(element).hasClass(CLASS_NAME_SHOW$1);
 
       if (triggerArray.length) {
         $(triggerArray).toggleClass(CLASS_NAME_COLLAPSED, !isOpen).attr('aria-expanded', isOpen);
+=======
+      var isOpen = $(element).hasClass(ClassName$3.SHOW);
+
+      if (triggerArray.length) {
+        $(triggerArray).toggleClass(ClassName$3.COLLAPSED, !isOpen).attr('aria-expanded', isOpen);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     } // Static
     ;
@@ -5652,9 +6593,15 @@ __webpack_require__.r(__webpack_exports__);
         var $this = $(this);
         var data = $this.data(DATA_KEY$3);
 
+<<<<<<< HEAD
         var _config = _extends({}, Default$1, $this.data(), typeof config === 'object' && config ? config : {});
 
         if (!data && _config.toggle && typeof config === 'string' && /show|hide/.test(config)) {
+=======
+        var _config = _objectSpread2({}, Default$1, {}, $this.data(), {}, typeof config === 'object' && config ? config : {});
+
+        if (!data && _config.toggle && /show|hide/.test(config)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           _config.toggle = false;
         }
 
@@ -5694,7 +6641,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
 
+<<<<<<< HEAD
   $(document).on(EVENT_CLICK_DATA_API$3, SELECTOR_DATA_TOGGLE$1, function (event) {
+=======
+  $(document).on(Event$3.CLICK_DATA_API, Selector$3.DATA_TOGGLE, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     // preventDefault only for <a> elements (which change the URL) not inside the collapsible element
     if (event.currentTarget.tagName === 'A') {
       event.preventDefault();
@@ -5732,7 +6683,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$4 = 'dropdown';
+<<<<<<< HEAD
   var VERSION$4 = '4.5.2';
+=======
+  var VERSION$4 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$4 = 'bs.dropdown';
   var EVENT_KEY$4 = "." + DATA_KEY$4;
   var DATA_API_KEY$4 = '.data-api';
@@ -5750,6 +6705,7 @@ __webpack_require__.r(__webpack_exports__);
   var RIGHT_MOUSE_BUTTON_WHICH = 3; // MouseEvent.which value for the right button (assuming a right-handed mouse)
 
   var REGEXP_KEYDOWN = new RegExp(ARROW_UP_KEYCODE + "|" + ARROW_DOWN_KEYCODE + "|" + ESCAPE_KEYCODE);
+<<<<<<< HEAD
   var EVENT_HIDE$1 = "hide" + EVENT_KEY$4;
   var EVENT_HIDDEN$1 = "hidden" + EVENT_KEY$4;
   var EVENT_SHOW$1 = "show" + EVENT_KEY$4;
@@ -5776,6 +6732,45 @@ __webpack_require__.r(__webpack_exports__);
   var PLACEMENT_BOTTOMEND = 'bottom-end';
   var PLACEMENT_RIGHT = 'right-start';
   var PLACEMENT_LEFT = 'left-start';
+=======
+  var Event$4 = {
+    HIDE: "hide" + EVENT_KEY$4,
+    HIDDEN: "hidden" + EVENT_KEY$4,
+    SHOW: "show" + EVENT_KEY$4,
+    SHOWN: "shown" + EVENT_KEY$4,
+    CLICK: "click" + EVENT_KEY$4,
+    CLICK_DATA_API: "click" + EVENT_KEY$4 + DATA_API_KEY$4,
+    KEYDOWN_DATA_API: "keydown" + EVENT_KEY$4 + DATA_API_KEY$4,
+    KEYUP_DATA_API: "keyup" + EVENT_KEY$4 + DATA_API_KEY$4
+  };
+  var ClassName$4 = {
+    DISABLED: 'disabled',
+    SHOW: 'show',
+    DROPUP: 'dropup',
+    DROPRIGHT: 'dropright',
+    DROPLEFT: 'dropleft',
+    MENURIGHT: 'dropdown-menu-right',
+    MENULEFT: 'dropdown-menu-left',
+    POSITION_STATIC: 'position-static'
+  };
+  var Selector$4 = {
+    DATA_TOGGLE: '[data-toggle="dropdown"]',
+    FORM_CHILD: '.dropdown form',
+    MENU: '.dropdown-menu',
+    NAVBAR_NAV: '.navbar-nav',
+    VISIBLE_ITEMS: '.dropdown-menu .dropdown-item:not(.disabled):not(:disabled)'
+  };
+  var AttachmentMap = {
+    TOP: 'top-start',
+    TOPEND: 'top-end',
+    BOTTOM: 'bottom-start',
+    BOTTOMEND: 'bottom-end',
+    RIGHT: 'right-start',
+    RIGHTEND: 'right-end',
+    LEFT: 'left-start',
+    LEFTEND: 'left-end'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var Default$2 = {
     offset: 0,
     flip: true,
@@ -5798,7 +6793,13 @@ __webpack_require__.r(__webpack_exports__);
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Dropdown = /*#__PURE__*/function () {
+=======
+  var Dropdown =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function Dropdown(element, config) {
       this._element = element;
       this._popper = null;
@@ -5814,11 +6815,19 @@ __webpack_require__.r(__webpack_exports__);
 
     // Public
     _proto.toggle = function toggle() {
+<<<<<<< HEAD
       if (this._element.disabled || $(this._element).hasClass(CLASS_NAME_DISABLED)) {
         return;
       }
 
       var isActive = $(this._menu).hasClass(CLASS_NAME_SHOW$2);
+=======
+      if (this._element.disabled || $(this._element).hasClass(ClassName$4.DISABLED)) {
+        return;
+      }
+
+      var isActive = $(this._menu).hasClass(ClassName$4.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       Dropdown._clearMenus();
 
@@ -5834,14 +6843,22 @@ __webpack_require__.r(__webpack_exports__);
         usePopper = false;
       }
 
+<<<<<<< HEAD
       if (this._element.disabled || $(this._element).hasClass(CLASS_NAME_DISABLED) || $(this._menu).hasClass(CLASS_NAME_SHOW$2)) {
+=======
+      if (this._element.disabled || $(this._element).hasClass(ClassName$4.DISABLED) || $(this._menu).hasClass(ClassName$4.SHOW)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return;
       }
 
       var relatedTarget = {
         relatedTarget: this._element
       };
+<<<<<<< HEAD
       var showEvent = $.Event(EVENT_SHOW$1, relatedTarget);
+=======
+      var showEvent = $.Event(Event$4.SHOW, relatedTarget);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var parent = Dropdown._getParentFromElement(this._element);
 
@@ -5877,7 +6894,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
         if (this._config.boundary !== 'scrollParent') {
+<<<<<<< HEAD
           $(parent).addClass(CLASS_NAME_POSITION_STATIC);
+=======
+          $(parent).addClass(ClassName$4.POSITION_STATIC);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
 
         this._popper = new Popper(referenceElement, this._menu, this._getPopperConfig());
@@ -5887,7 +6908,11 @@ __webpack_require__.r(__webpack_exports__);
       // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
 
 
+<<<<<<< HEAD
       if ('ontouchstart' in document.documentElement && $(parent).closest(SELECTOR_NAVBAR_NAV).length === 0) {
+=======
+      if ('ontouchstart' in document.documentElement && $(parent).closest(Selector$4.NAVBAR_NAV).length === 0) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         $(document.body).children().on('mouseover', null, $.noop);
       }
 
@@ -5895,19 +6920,32 @@ __webpack_require__.r(__webpack_exports__);
 
       this._element.setAttribute('aria-expanded', true);
 
+<<<<<<< HEAD
       $(this._menu).toggleClass(CLASS_NAME_SHOW$2);
       $(parent).toggleClass(CLASS_NAME_SHOW$2).trigger($.Event(EVENT_SHOWN$1, relatedTarget));
     };
 
     _proto.hide = function hide() {
       if (this._element.disabled || $(this._element).hasClass(CLASS_NAME_DISABLED) || !$(this._menu).hasClass(CLASS_NAME_SHOW$2)) {
+=======
+      $(this._menu).toggleClass(ClassName$4.SHOW);
+      $(parent).toggleClass(ClassName$4.SHOW).trigger($.Event(Event$4.SHOWN, relatedTarget));
+    };
+
+    _proto.hide = function hide() {
+      if (this._element.disabled || $(this._element).hasClass(ClassName$4.DISABLED) || !$(this._menu).hasClass(ClassName$4.SHOW)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return;
       }
 
       var relatedTarget = {
         relatedTarget: this._element
       };
+<<<<<<< HEAD
       var hideEvent = $.Event(EVENT_HIDE$1, relatedTarget);
+=======
+      var hideEvent = $.Event(Event$4.HIDE, relatedTarget);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var parent = Dropdown._getParentFromElement(this._element);
 
@@ -5921,8 +6959,13 @@ __webpack_require__.r(__webpack_exports__);
         this._popper.destroy();
       }
 
+<<<<<<< HEAD
       $(this._menu).toggleClass(CLASS_NAME_SHOW$2);
       $(parent).toggleClass(CLASS_NAME_SHOW$2).trigger($.Event(EVENT_HIDDEN$1, relatedTarget));
+=======
+      $(this._menu).toggleClass(ClassName$4.SHOW);
+      $(parent).toggleClass(ClassName$4.SHOW).trigger($.Event(Event$4.HIDDEN, relatedTarget));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
 
     _proto.dispose = function dispose() {
@@ -5950,7 +6993,11 @@ __webpack_require__.r(__webpack_exports__);
     _proto._addEventListeners = function _addEventListeners() {
       var _this = this;
 
+<<<<<<< HEAD
       $(this._element).on(EVENT_CLICK, function (event) {
+=======
+      $(this._element).on(Event$4.CLICK, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         event.preventDefault();
         event.stopPropagation();
 
@@ -5959,7 +7006,11 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._getConfig = function _getConfig(config) {
+<<<<<<< HEAD
       config = _extends({}, this.constructor.Default, $(this._element).data(), config);
+=======
+      config = _objectSpread2({}, this.constructor.Default, {}, $(this._element).data(), {}, config);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       Util.typeCheckConfig(NAME$4, config, this.constructor.DefaultType);
       return config;
     };
@@ -5969,7 +7020,11 @@ __webpack_require__.r(__webpack_exports__);
         var parent = Dropdown._getParentFromElement(this._element);
 
         if (parent) {
+<<<<<<< HEAD
           this._menu = parent.querySelector(SELECTOR_MENU);
+=======
+          this._menu = parent.querySelector(Selector$4.MENU);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
       }
 
@@ -5978,6 +7033,7 @@ __webpack_require__.r(__webpack_exports__);
 
     _proto._getPlacement = function _getPlacement() {
       var $parentDropdown = $(this._element.parentNode);
+<<<<<<< HEAD
       var placement = PLACEMENT_BOTTOM; // Handle dropup
 
       if ($parentDropdown.hasClass(CLASS_NAME_DROPUP)) {
@@ -5988,6 +7044,22 @@ __webpack_require__.r(__webpack_exports__);
         placement = PLACEMENT_LEFT;
       } else if ($(this._menu).hasClass(CLASS_NAME_MENURIGHT)) {
         placement = PLACEMENT_BOTTOMEND;
+=======
+      var placement = AttachmentMap.BOTTOM; // Handle dropup
+
+      if ($parentDropdown.hasClass(ClassName$4.DROPUP)) {
+        placement = AttachmentMap.TOP;
+
+        if ($(this._menu).hasClass(ClassName$4.MENURIGHT)) {
+          placement = AttachmentMap.TOPEND;
+        }
+      } else if ($parentDropdown.hasClass(ClassName$4.DROPRIGHT)) {
+        placement = AttachmentMap.RIGHT;
+      } else if ($parentDropdown.hasClass(ClassName$4.DROPLEFT)) {
+        placement = AttachmentMap.LEFT;
+      } else if ($(this._menu).hasClass(ClassName$4.MENURIGHT)) {
+        placement = AttachmentMap.BOTTOMEND;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
 
       return placement;
@@ -6004,7 +7076,11 @@ __webpack_require__.r(__webpack_exports__);
 
       if (typeof this._config.offset === 'function') {
         offset.fn = function (data) {
+<<<<<<< HEAD
           data.offsets = _extends({}, data.offsets, _this2._config.offset(data.offsets, _this2._element) || {});
+=======
+          data.offsets = _objectSpread2({}, data.offsets, {}, _this2._config.offset(data.offsets, _this2._element) || {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           return data;
         };
       } else {
@@ -6034,7 +7110,11 @@ __webpack_require__.r(__webpack_exports__);
         };
       }
 
+<<<<<<< HEAD
       return _extends({}, popperConfig, this._config.popperConfig);
+=======
+      return _objectSpread2({}, popperConfig, {}, this._config.popperConfig);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     } // Static
     ;
 
@@ -6064,7 +7144,11 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+<<<<<<< HEAD
       var toggles = [].slice.call(document.querySelectorAll(SELECTOR_DATA_TOGGLE$2));
+=======
+      var toggles = [].slice.call(document.querySelectorAll(Selector$4.DATA_TOGGLE));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       for (var i = 0, len = toggles.length; i < len; i++) {
         var parent = Dropdown._getParentFromElement(toggles[i]);
@@ -6084,7 +7168,11 @@ __webpack_require__.r(__webpack_exports__);
 
         var dropdownMenu = context._menu;
 
+<<<<<<< HEAD
         if (!$(parent).hasClass(CLASS_NAME_SHOW$2)) {
+=======
+        if (!$(parent).hasClass(ClassName$4.SHOW)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           continue;
         }
 
@@ -6092,7 +7180,11 @@ __webpack_require__.r(__webpack_exports__);
           continue;
         }
 
+<<<<<<< HEAD
         var hideEvent = $.Event(EVENT_HIDE$1, relatedTarget);
+=======
+        var hideEvent = $.Event(Event$4.HIDE, relatedTarget);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         $(parent).trigger(hideEvent);
 
         if (hideEvent.isDefaultPrevented()) {
@@ -6111,8 +7203,13 @@ __webpack_require__.r(__webpack_exports__);
           context._popper.destroy();
         }
 
+<<<<<<< HEAD
         $(dropdownMenu).removeClass(CLASS_NAME_SHOW$2);
         $(parent).removeClass(CLASS_NAME_SHOW$2).trigger($.Event(EVENT_HIDDEN$1, relatedTarget));
+=======
+        $(dropdownMenu).removeClass(ClassName$4.SHOW);
+        $(parent).removeClass(ClassName$4.SHOW).trigger($.Event(Event$4.HIDDEN, relatedTarget));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     };
 
@@ -6136,35 +7233,61 @@ __webpack_require__.r(__webpack_exports__);
       //  - If key is other than escape
       //    - If key is not up or down => not a dropdown command
       //    - If trigger inside the menu => not a dropdown command
+<<<<<<< HEAD
       if (/input|textarea/i.test(event.target.tagName) ? event.which === SPACE_KEYCODE || event.which !== ESCAPE_KEYCODE && (event.which !== ARROW_DOWN_KEYCODE && event.which !== ARROW_UP_KEYCODE || $(event.target).closest(SELECTOR_MENU).length) : !REGEXP_KEYDOWN.test(event.which)) {
         return;
       }
 
       if (this.disabled || $(this).hasClass(CLASS_NAME_DISABLED)) {
-        return;
-      }
-
-      var parent = Dropdown._getParentFromElement(this);
-
-      var isActive = $(parent).hasClass(CLASS_NAME_SHOW$2);
-
-      if (!isActive && event.which === ESCAPE_KEYCODE) {
+=======
+      if (/input|textarea/i.test(event.target.tagName) ? event.which === SPACE_KEYCODE || event.which !== ESCAPE_KEYCODE && (event.which !== ARROW_DOWN_KEYCODE && event.which !== ARROW_UP_KEYCODE || $(event.target).closest(Selector$4.MENU).length) : !REGEXP_KEYDOWN.test(event.which)) {
         return;
       }
 
       event.preventDefault();
       event.stopPropagation();
 
+      if (this.disabled || $(this).hasClass(ClassName$4.DISABLED)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
+        return;
+      }
+
+      var parent = Dropdown._getParentFromElement(this);
+
+<<<<<<< HEAD
+      var isActive = $(parent).hasClass(CLASS_NAME_SHOW$2);
+=======
+      var isActive = $(parent).hasClass(ClassName$4.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
+
+      if (!isActive && event.which === ESCAPE_KEYCODE) {
+        return;
+      }
+
+<<<<<<< HEAD
+      event.preventDefault();
+      event.stopPropagation();
+
       if (!isActive || isActive && (event.which === ESCAPE_KEYCODE || event.which === SPACE_KEYCODE)) {
         if (event.which === ESCAPE_KEYCODE) {
           $(parent.querySelector(SELECTOR_DATA_TOGGLE$2)).trigger('focus');
+=======
+      if (!isActive || isActive && (event.which === ESCAPE_KEYCODE || event.which === SPACE_KEYCODE)) {
+        if (event.which === ESCAPE_KEYCODE) {
+          var toggle = parent.querySelector(Selector$4.DATA_TOGGLE);
+          $(toggle).trigger('focus');
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
 
         $(this).trigger('click');
         return;
       }
 
+<<<<<<< HEAD
       var items = [].slice.call(parent.querySelectorAll(SELECTOR_VISIBLE_ITEMS)).filter(function (item) {
+=======
+      var items = [].slice.call(parent.querySelectorAll(Selector$4.VISIBLE_ITEMS)).filter(function (item) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return $(item).is(':visible');
       });
 
@@ -6217,12 +7340,20 @@ __webpack_require__.r(__webpack_exports__);
    */
 
 
+<<<<<<< HEAD
   $(document).on(EVENT_KEYDOWN_DATA_API, SELECTOR_DATA_TOGGLE$2, Dropdown._dataApiKeydownHandler).on(EVENT_KEYDOWN_DATA_API, SELECTOR_MENU, Dropdown._dataApiKeydownHandler).on(EVENT_CLICK_DATA_API$4 + " " + EVENT_KEYUP_DATA_API, Dropdown._clearMenus).on(EVENT_CLICK_DATA_API$4, SELECTOR_DATA_TOGGLE$2, function (event) {
+=======
+  $(document).on(Event$4.KEYDOWN_DATA_API, Selector$4.DATA_TOGGLE, Dropdown._dataApiKeydownHandler).on(Event$4.KEYDOWN_DATA_API, Selector$4.MENU, Dropdown._dataApiKeydownHandler).on(Event$4.CLICK_DATA_API + " " + Event$4.KEYUP_DATA_API, Dropdown._clearMenus).on(Event$4.CLICK_DATA_API, Selector$4.DATA_TOGGLE, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     event.preventDefault();
     event.stopPropagation();
 
     Dropdown._jQueryInterface.call($(this), 'toggle');
+<<<<<<< HEAD
   }).on(EVENT_CLICK_DATA_API$4, SELECTOR_FORM_CHILD, function (e) {
+=======
+  }).on(Event$4.CLICK_DATA_API, Selector$4.FORM_CHILD, function (e) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     e.stopPropagation();
   });
   /**
@@ -6246,7 +7377,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$5 = 'modal';
+<<<<<<< HEAD
   var VERSION$5 = '4.5.2';
+=======
+  var VERSION$5 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$5 = 'bs.modal';
   var EVENT_KEY$5 = "." + DATA_KEY$5;
   var DATA_API_KEY$5 = '.data-api';
@@ -6265,6 +7400,7 @@ __webpack_require__.r(__webpack_exports__);
     focus: 'boolean',
     show: 'boolean'
   };
+<<<<<<< HEAD
   var EVENT_HIDE$2 = "hide" + EVENT_KEY$5;
   var EVENT_HIDE_PREVENTED = "hidePrevented" + EVENT_KEY$5;
   var EVENT_HIDDEN$2 = "hidden" + EVENT_KEY$5;
@@ -6290,17 +7426,60 @@ __webpack_require__.r(__webpack_exports__);
   var SELECTOR_DATA_DISMISS = '[data-dismiss="modal"]';
   var SELECTOR_FIXED_CONTENT = '.fixed-top, .fixed-bottom, .is-fixed, .sticky-top';
   var SELECTOR_STICKY_CONTENT = '.sticky-top';
+=======
+  var Event$5 = {
+    HIDE: "hide" + EVENT_KEY$5,
+    HIDE_PREVENTED: "hidePrevented" + EVENT_KEY$5,
+    HIDDEN: "hidden" + EVENT_KEY$5,
+    SHOW: "show" + EVENT_KEY$5,
+    SHOWN: "shown" + EVENT_KEY$5,
+    FOCUSIN: "focusin" + EVENT_KEY$5,
+    RESIZE: "resize" + EVENT_KEY$5,
+    CLICK_DISMISS: "click.dismiss" + EVENT_KEY$5,
+    KEYDOWN_DISMISS: "keydown.dismiss" + EVENT_KEY$5,
+    MOUSEUP_DISMISS: "mouseup.dismiss" + EVENT_KEY$5,
+    MOUSEDOWN_DISMISS: "mousedown.dismiss" + EVENT_KEY$5,
+    CLICK_DATA_API: "click" + EVENT_KEY$5 + DATA_API_KEY$5
+  };
+  var ClassName$5 = {
+    SCROLLABLE: 'modal-dialog-scrollable',
+    SCROLLBAR_MEASURER: 'modal-scrollbar-measure',
+    BACKDROP: 'modal-backdrop',
+    OPEN: 'modal-open',
+    FADE: 'fade',
+    SHOW: 'show',
+    STATIC: 'modal-static'
+  };
+  var Selector$5 = {
+    DIALOG: '.modal-dialog',
+    MODAL_BODY: '.modal-body',
+    DATA_TOGGLE: '[data-toggle="modal"]',
+    DATA_DISMISS: '[data-dismiss="modal"]',
+    FIXED_CONTENT: '.fixed-top, .fixed-bottom, .is-fixed, .sticky-top',
+    STICKY_CONTENT: '.sticky-top'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * Class Definition
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Modal = /*#__PURE__*/function () {
     function Modal(element, config) {
       this._config = this._getConfig(config);
       this._element = element;
       this._dialog = element.querySelector(SELECTOR_DIALOG);
+=======
+  var Modal =
+  /*#__PURE__*/
+  function () {
+    function Modal(element, config) {
+      this._config = this._getConfig(config);
+      this._element = element;
+      this._dialog = element.querySelector(Selector$5.DIALOG);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       this._backdrop = null;
       this._isShown = false;
       this._isBodyOverflowing = false;
@@ -6324,11 +7503,19 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+<<<<<<< HEAD
       if ($(this._element).hasClass(CLASS_NAME_FADE$1)) {
         this._isTransitioning = true;
       }
 
       var showEvent = $.Event(EVENT_SHOW$2, {
+=======
+      if ($(this._element).hasClass(ClassName$5.FADE)) {
+        this._isTransitioning = true;
+      }
+
+      var showEvent = $.Event(Event$5.SHOW, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         relatedTarget: relatedTarget
       });
       $(this._element).trigger(showEvent);
@@ -6349,11 +7536,19 @@ __webpack_require__.r(__webpack_exports__);
 
       this._setResizeEvent();
 
+<<<<<<< HEAD
       $(this._element).on(EVENT_CLICK_DISMISS, SELECTOR_DATA_DISMISS, function (event) {
         return _this.hide(event);
       });
       $(this._dialog).on(EVENT_MOUSEDOWN_DISMISS, function () {
         $(_this._element).one(EVENT_MOUSEUP_DISMISS, function (event) {
+=======
+      $(this._element).on(Event$5.CLICK_DISMISS, Selector$5.DATA_DISMISS, function (event) {
+        return _this.hide(event);
+      });
+      $(this._dialog).on(Event$5.MOUSEDOWN_DISMISS, function () {
+        $(_this._element).one(Event$5.MOUSEUP_DISMISS, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           if ($(event.target).is(_this._element)) {
             _this._ignoreBackdropClick = true;
           }
@@ -6376,7 +7571,11 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+<<<<<<< HEAD
       var hideEvent = $.Event(EVENT_HIDE$2);
+=======
+      var hideEvent = $.Event(Event$5.HIDE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $(this._element).trigger(hideEvent);
 
       if (!this._isShown || hideEvent.isDefaultPrevented()) {
@@ -6384,7 +7583,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this._isShown = false;
+<<<<<<< HEAD
       var transition = $(this._element).hasClass(CLASS_NAME_FADE$1);
+=======
+      var transition = $(this._element).hasClass(ClassName$5.FADE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (transition) {
         this._isTransitioning = true;
@@ -6394,10 +7597,17 @@ __webpack_require__.r(__webpack_exports__);
 
       this._setResizeEvent();
 
+<<<<<<< HEAD
       $(document).off(EVENT_FOCUSIN);
       $(this._element).removeClass(CLASS_NAME_SHOW$3);
       $(this._element).off(EVENT_CLICK_DISMISS);
       $(this._dialog).off(EVENT_MOUSEDOWN_DISMISS);
+=======
+      $(document).off(Event$5.FOCUSIN);
+      $(this._element).removeClass(ClassName$5.SHOW);
+      $(this._element).off(Event$5.CLICK_DISMISS);
+      $(this._dialog).off(Event$5.MOUSEDOWN_DISMISS);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (transition) {
         var transitionDuration = Util.getTransitionDurationFromElement(this._element);
@@ -6414,12 +7624,21 @@ __webpack_require__.r(__webpack_exports__);
         return $(htmlElement).off(EVENT_KEY$5);
       });
       /**
+<<<<<<< HEAD
        * `document` has 2 events `EVENT_FOCUSIN` and `EVENT_CLICK_DATA_API`
        * Do not move `document` in `htmlElements` array
        * It will remove `EVENT_CLICK_DATA_API` event that should remain
        */
 
       $(document).off(EVENT_FOCUSIN);
+=======
+       * `document` has 2 events `Event.FOCUSIN` and `Event.CLICK_DATA_API`
+       * Do not move `document` in `htmlElements` array
+       * It will remove `Event.CLICK_DATA_API` event that should remain
+       */
+
+      $(document).off(Event$5.FOCUSIN);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $.removeData(this._element, DATA_KEY$5);
       this._config = null;
       this._element = null;
@@ -6438,7 +7657,11 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
+<<<<<<< HEAD
       config = _extends({}, Default$3, config);
+=======
+      config = _objectSpread2({}, Default$3, {}, config);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       Util.typeCheckConfig(NAME$5, config, DefaultType$3);
       return config;
     };
@@ -6447,13 +7670,18 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       if (this._config.backdrop === 'static') {
+<<<<<<< HEAD
         var hideEventPrevented = $.Event(EVENT_HIDE_PREVENTED);
+=======
+        var hideEventPrevented = $.Event(Event$5.HIDE_PREVENTED);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         $(this._element).trigger(hideEventPrevented);
 
         if (hideEventPrevented.defaultPrevented) {
           return;
         }
 
+<<<<<<< HEAD
         var isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight;
 
         if (!isModalOverflowing) {
@@ -6472,6 +7700,13 @@ __webpack_require__.r(__webpack_exports__);
               _this3._element.style.overflowY = '';
             }).emulateTransitionEnd(_this3._element, modalTransitionDuration);
           }
+=======
+        this._element.classList.add(ClassName$5.STATIC);
+
+        var modalTransitionDuration = Util.getTransitionDurationFromElement(this._element);
+        $(this._element).one(Util.TRANSITION_END, function () {
+          _this3._element.classList.remove(ClassName$5.STATIC);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }).emulateTransitionEnd(modalTransitionDuration);
 
         this._element.focus();
@@ -6483,8 +7718,13 @@ __webpack_require__.r(__webpack_exports__);
     _proto._showElement = function _showElement(relatedTarget) {
       var _this4 = this;
 
+<<<<<<< HEAD
       var transition = $(this._element).hasClass(CLASS_NAME_FADE$1);
       var modalBody = this._dialog ? this._dialog.querySelector(SELECTOR_MODAL_BODY) : null;
+=======
+      var transition = $(this._element).hasClass(ClassName$5.FADE);
+      var modalBody = this._dialog ? this._dialog.querySelector(Selector$5.MODAL_BODY) : null;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (!this._element.parentNode || this._element.parentNode.nodeType !== Node.ELEMENT_NODE) {
         // Don't move modal's DOM position
@@ -6497,9 +7737,13 @@ __webpack_require__.r(__webpack_exports__);
 
       this._element.setAttribute('aria-modal', true);
 
+<<<<<<< HEAD
       this._element.setAttribute('role', 'dialog');
 
       if ($(this._dialog).hasClass(CLASS_NAME_SCROLLABLE) && modalBody) {
+=======
+      if ($(this._dialog).hasClass(ClassName$5.SCROLLABLE) && modalBody) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         modalBody.scrollTop = 0;
       } else {
         this._element.scrollTop = 0;
@@ -6509,13 +7753,21 @@ __webpack_require__.r(__webpack_exports__);
         Util.reflow(this._element);
       }
 
+<<<<<<< HEAD
       $(this._element).addClass(CLASS_NAME_SHOW$3);
+=======
+      $(this._element).addClass(ClassName$5.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (this._config.focus) {
         this._enforceFocus();
       }
 
+<<<<<<< HEAD
       var shownEvent = $.Event(EVENT_SHOWN$2, {
+=======
+      var shownEvent = $.Event(Event$5.SHOWN, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         relatedTarget: relatedTarget
       });
 
@@ -6539,8 +7791,13 @@ __webpack_require__.r(__webpack_exports__);
     _proto._enforceFocus = function _enforceFocus() {
       var _this5 = this;
 
+<<<<<<< HEAD
       $(document).off(EVENT_FOCUSIN) // Guard against infinite focus loop
       .on(EVENT_FOCUSIN, function (event) {
+=======
+      $(document).off(Event$5.FOCUSIN) // Guard against infinite focus loop
+      .on(Event$5.FOCUSIN, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         if (document !== event.target && _this5._element !== event.target && $(_this5._element).has(event.target).length === 0) {
           _this5._element.focus();
         }
@@ -6550,6 +7807,7 @@ __webpack_require__.r(__webpack_exports__);
     _proto._setEscapeEvent = function _setEscapeEvent() {
       var _this6 = this;
 
+<<<<<<< HEAD
       if (this._isShown) {
         $(this._element).on(EVENT_KEYDOWN_DISMISS, function (event) {
           if (_this6._config.keyboard && event.which === ESCAPE_KEYCODE$1) {
@@ -6557,11 +7815,20 @@ __webpack_require__.r(__webpack_exports__);
 
             _this6.hide();
           } else if (!_this6._config.keyboard && event.which === ESCAPE_KEYCODE$1) {
+=======
+      if (this._isShown && this._config.keyboard) {
+        $(this._element).on(Event$5.KEYDOWN_DISMISS, function (event) {
+          if (event.which === ESCAPE_KEYCODE$1) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             _this6._triggerBackdropTransition();
           }
         });
       } else if (!this._isShown) {
+<<<<<<< HEAD
         $(this._element).off(EVENT_KEYDOWN_DISMISS);
+=======
+        $(this._element).off(Event$5.KEYDOWN_DISMISS);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     };
 
@@ -6569,11 +7836,19 @@ __webpack_require__.r(__webpack_exports__);
       var _this7 = this;
 
       if (this._isShown) {
+<<<<<<< HEAD
         $(window).on(EVENT_RESIZE, function (event) {
           return _this7.handleUpdate(event);
         });
       } else {
         $(window).off(EVENT_RESIZE);
+=======
+        $(window).on(Event$5.RESIZE, function (event) {
+          return _this7.handleUpdate(event);
+        });
+      } else {
+        $(window).off(Event$5.RESIZE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     };
 
@@ -6586,18 +7861,29 @@ __webpack_require__.r(__webpack_exports__);
 
       this._element.removeAttribute('aria-modal');
 
+<<<<<<< HEAD
       this._element.removeAttribute('role');
 
       this._isTransitioning = false;
 
       this._showBackdrop(function () {
         $(document.body).removeClass(CLASS_NAME_OPEN);
+=======
+      this._isTransitioning = false;
+
+      this._showBackdrop(function () {
+        $(document.body).removeClass(ClassName$5.OPEN);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
         _this8._resetAdjustments();
 
         _this8._resetScrollbar();
 
+<<<<<<< HEAD
         $(_this8._element).trigger(EVENT_HIDDEN$2);
+=======
+        $(_this8._element).trigger(Event$5.HIDDEN);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       });
     };
 
@@ -6611,18 +7897,30 @@ __webpack_require__.r(__webpack_exports__);
     _proto._showBackdrop = function _showBackdrop(callback) {
       var _this9 = this;
 
+<<<<<<< HEAD
       var animate = $(this._element).hasClass(CLASS_NAME_FADE$1) ? CLASS_NAME_FADE$1 : '';
 
       if (this._isShown && this._config.backdrop) {
         this._backdrop = document.createElement('div');
         this._backdrop.className = CLASS_NAME_BACKDROP;
+=======
+      var animate = $(this._element).hasClass(ClassName$5.FADE) ? ClassName$5.FADE : '';
+
+      if (this._isShown && this._config.backdrop) {
+        this._backdrop = document.createElement('div');
+        this._backdrop.className = ClassName$5.BACKDROP;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
         if (animate) {
           this._backdrop.classList.add(animate);
         }
 
         $(this._backdrop).appendTo(document.body);
+<<<<<<< HEAD
         $(this._element).on(EVENT_CLICK_DISMISS, function (event) {
+=======
+        $(this._element).on(Event$5.CLICK_DISMISS, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           if (_this9._ignoreBackdropClick) {
             _this9._ignoreBackdropClick = false;
             return;
@@ -6639,7 +7937,11 @@ __webpack_require__.r(__webpack_exports__);
           Util.reflow(this._backdrop);
         }
 
+<<<<<<< HEAD
         $(this._backdrop).addClass(CLASS_NAME_SHOW$3);
+=======
+        $(this._backdrop).addClass(ClassName$5.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
         if (!callback) {
           return;
@@ -6653,7 +7955,11 @@ __webpack_require__.r(__webpack_exports__);
         var backdropTransitionDuration = Util.getTransitionDurationFromElement(this._backdrop);
         $(this._backdrop).one(Util.TRANSITION_END, callback).emulateTransitionEnd(backdropTransitionDuration);
       } else if (!this._isShown && this._backdrop) {
+<<<<<<< HEAD
         $(this._backdrop).removeClass(CLASS_NAME_SHOW$3);
+=======
+        $(this._backdrop).removeClass(ClassName$5.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
         var callbackRemove = function callbackRemove() {
           _this9._removeBackdrop();
@@ -6663,7 +7969,11 @@ __webpack_require__.r(__webpack_exports__);
           }
         };
 
+<<<<<<< HEAD
         if ($(this._element).hasClass(CLASS_NAME_FADE$1)) {
+=======
+        if ($(this._element).hasClass(ClassName$5.FADE)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           var _backdropTransitionDuration = Util.getTransitionDurationFromElement(this._backdrop);
 
           $(this._backdrop).one(Util.TRANSITION_END, callbackRemove).emulateTransitionEnd(_backdropTransitionDuration);
@@ -6698,7 +8008,11 @@ __webpack_require__.r(__webpack_exports__);
 
     _proto._checkScrollbar = function _checkScrollbar() {
       var rect = document.body.getBoundingClientRect();
+<<<<<<< HEAD
       this._isBodyOverflowing = Math.round(rect.left + rect.right) < window.innerWidth;
+=======
+      this._isBodyOverflowing = rect.left + rect.right < window.innerWidth;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       this._scrollbarWidth = this._getScrollbarWidth();
     };
 
@@ -6708,8 +8022,13 @@ __webpack_require__.r(__webpack_exports__);
       if (this._isBodyOverflowing) {
         // Note: DOMNode.style.paddingRight returns the actual value or '' if not set
         //   while $(DOMNode).css('padding-right') returns the calculated value or 0 if not set
+<<<<<<< HEAD
         var fixedContent = [].slice.call(document.querySelectorAll(SELECTOR_FIXED_CONTENT));
         var stickyContent = [].slice.call(document.querySelectorAll(SELECTOR_STICKY_CONTENT)); // Adjust fixed content padding
+=======
+        var fixedContent = [].slice.call(document.querySelectorAll(Selector$5.FIXED_CONTENT));
+        var stickyContent = [].slice.call(document.querySelectorAll(Selector$5.STICKY_CONTENT)); // Adjust fixed content padding
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
         $(fixedContent).each(function (index, element) {
           var actualPadding = element.style.paddingRight;
@@ -6728,19 +8047,31 @@ __webpack_require__.r(__webpack_exports__);
         $(document.body).data('padding-right', actualPadding).css('padding-right', parseFloat(calculatedPadding) + this._scrollbarWidth + "px");
       }
 
+<<<<<<< HEAD
       $(document.body).addClass(CLASS_NAME_OPEN);
+=======
+      $(document.body).addClass(ClassName$5.OPEN);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
 
     _proto._resetScrollbar = function _resetScrollbar() {
       // Restore fixed content padding
+<<<<<<< HEAD
       var fixedContent = [].slice.call(document.querySelectorAll(SELECTOR_FIXED_CONTENT));
+=======
+      var fixedContent = [].slice.call(document.querySelectorAll(Selector$5.FIXED_CONTENT));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $(fixedContent).each(function (index, element) {
         var padding = $(element).data('padding-right');
         $(element).removeData('padding-right');
         element.style.paddingRight = padding ? padding : '';
       }); // Restore sticky content
 
+<<<<<<< HEAD
       var elements = [].slice.call(document.querySelectorAll("" + SELECTOR_STICKY_CONTENT));
+=======
+      var elements = [].slice.call(document.querySelectorAll("" + Selector$5.STICKY_CONTENT));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $(elements).each(function (index, element) {
         var margin = $(element).data('margin-right');
 
@@ -6757,7 +8088,11 @@ __webpack_require__.r(__webpack_exports__);
     _proto._getScrollbarWidth = function _getScrollbarWidth() {
       // thx d.walsh
       var scrollDiv = document.createElement('div');
+<<<<<<< HEAD
       scrollDiv.className = CLASS_NAME_SCROLLBAR_MEASURER;
+=======
+      scrollDiv.className = ClassName$5.SCROLLBAR_MEASURER;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       document.body.appendChild(scrollDiv);
       var scrollbarWidth = scrollDiv.getBoundingClientRect().width - scrollDiv.clientWidth;
       document.body.removeChild(scrollDiv);
@@ -6769,7 +8104,11 @@ __webpack_require__.r(__webpack_exports__);
       return this.each(function () {
         var data = $(this).data(DATA_KEY$5);
 
+<<<<<<< HEAD
         var _config = _extends({}, Default$3, $(this).data(), typeof config === 'object' && config ? config : {});
+=======
+        var _config = _objectSpread2({}, Default$3, {}, $(this).data(), {}, typeof config === 'object' && config ? config : {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
         if (!data) {
           data = new Modal(this, _config);
@@ -6809,7 +8148,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
 
+<<<<<<< HEAD
   $(document).on(EVENT_CLICK_DATA_API$5, SELECTOR_DATA_TOGGLE$3, function (event) {
+=======
+  $(document).on(Event$5.CLICK_DATA_API, Selector$5.DATA_TOGGLE, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     var _this11 = this;
 
     var target;
@@ -6819,19 +8162,31 @@ __webpack_require__.r(__webpack_exports__);
       target = document.querySelector(selector);
     }
 
+<<<<<<< HEAD
     var config = $(target).data(DATA_KEY$5) ? 'toggle' : _extends({}, $(target).data(), $(this).data());
+=======
+    var config = $(target).data(DATA_KEY$5) ? 'toggle' : _objectSpread2({}, $(target).data(), {}, $(this).data());
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     if (this.tagName === 'A' || this.tagName === 'AREA') {
       event.preventDefault();
     }
 
+<<<<<<< HEAD
     var $target = $(target).one(EVENT_SHOW$2, function (showEvent) {
+=======
+    var $target = $(target).one(Event$5.SHOW, function (showEvent) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       if (showEvent.isDefaultPrevented()) {
         // Only register focus restorer if modal will actually get shown
         return;
       }
 
+<<<<<<< HEAD
       $target.one(EVENT_HIDDEN$2, function () {
+=======
+      $target.one(Event$5.HIDDEN, function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         if ($(_this11).is(':visible')) {
           _this11.focus();
         }
@@ -6856,8 +8211,13 @@ __webpack_require__.r(__webpack_exports__);
 
   /**
    * --------------------------------------------------------------------------
+<<<<<<< HEAD
    * Bootstrap (v4.5.2): tools/sanitizer.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+=======
+   * Bootstrap (v4.4.1): tools/sanitizer.js
+   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
    * --------------------------------------------------------------------------
    */
   var uriAttrs = ['background', 'cite', 'href', 'itemtype', 'longdesc', 'poster', 'src', 'xlink:href'];
@@ -6881,7 +8241,11 @@ __webpack_require__.r(__webpack_exports__);
     h5: [],
     h6: [],
     i: [],
+<<<<<<< HEAD
     img: ['src', 'srcset', 'alt', 'title', 'width', 'height'],
+=======
+    img: ['src', 'alt', 'title', 'width', 'height'],
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     li: [],
     ol: [],
     p: [],
@@ -6901,14 +8265,22 @@ __webpack_require__.r(__webpack_exports__);
    * Shoutout to Angular 7 https://github.com/angular/angular/blob/7.2.4/packages/core/src/sanitization/url_sanitizer.ts
    */
 
+<<<<<<< HEAD
   var SAFE_URL_PATTERN = /^(?:(?:https?|mailto|ftp|tel|file):|[^#&/:?]*(?:[#/?]|$))/gi;
+=======
+  var SAFE_URL_PATTERN = /^(?:(?:https?|mailto|ftp|tel|file):|[^&:/?#]*(?:[/?#]|$))/gi;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * A pattern that matches safe data URLs. Only matches image, video and audio types.
    *
    * Shoutout to Angular 7 https://github.com/angular/angular/blob/7.2.4/packages/core/src/sanitization/url_sanitizer.ts
    */
 
+<<<<<<< HEAD
   var DATA_URL_PATTERN = /^data:(?:image\/(?:bmp|gif|jpeg|jpg|png|tiff|webp)|video\/(?:mpeg|mp4|ogg|webm)|audio\/(?:mp3|oga|ogg|opus));base64,[\d+/a-z]+=*$/i;
+=======
+  var DATA_URL_PATTERN = /^data:(?:image\/(?:bmp|gif|jpeg|jpg|png|tiff|webp)|video\/(?:mpeg|mp4|ogg|webm)|audio\/(?:mp3|oga|ogg|opus));base64,[a-z0-9+/]+=*$/i;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
   function allowedAttribute(attr, allowedAttributeList) {
     var attrName = attr.nodeName.toLowerCase();
@@ -6925,7 +8297,11 @@ __webpack_require__.r(__webpack_exports__);
       return attrRegex instanceof RegExp;
     }); // Check if a regular expression validates the attribute.
 
+<<<<<<< HEAD
     for (var i = 0, len = regExp.length; i < len; i++) {
+=======
+    for (var i = 0, l = regExp.length; i < l; i++) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       if (attrName.match(regExp[i])) {
         return true;
       }
@@ -6982,7 +8358,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$6 = 'tooltip';
+<<<<<<< HEAD
   var VERSION$6 = '4.5.2';
+=======
+  var VERSION$6 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$6 = 'bs.tooltip';
   var EVENT_KEY$6 = "." + DATA_KEY$6;
   var JQUERY_NO_CONFLICT$6 = $.fn[NAME$6];
@@ -7007,7 +8387,11 @@ __webpack_require__.r(__webpack_exports__);
     whiteList: 'object',
     popperConfig: '(null|object)'
   };
+<<<<<<< HEAD
   var AttachmentMap = {
+=======
+  var AttachmentMap$1 = {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     AUTO: 'auto',
     TOP: 'top',
     RIGHT: 'right',
@@ -7032,9 +8416,17 @@ __webpack_require__.r(__webpack_exports__);
     whiteList: DefaultWhitelist,
     popperConfig: null
   };
+<<<<<<< HEAD
   var HOVER_STATE_SHOW = 'show';
   var HOVER_STATE_OUT = 'out';
   var Event = {
+=======
+  var HoverState = {
+    SHOW: 'show',
+    OUT: 'out'
+  };
+  var Event$6 = {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     HIDE: "hide" + EVENT_KEY$6,
     HIDDEN: "hidden" + EVENT_KEY$6,
     SHOW: "show" + EVENT_KEY$6,
@@ -7046,6 +8438,7 @@ __webpack_require__.r(__webpack_exports__);
     MOUSEENTER: "mouseenter" + EVENT_KEY$6,
     MOUSELEAVE: "mouseleave" + EVENT_KEY$6
   };
+<<<<<<< HEAD
   var CLASS_NAME_FADE$2 = 'fade';
   var CLASS_NAME_SHOW$4 = 'show';
   var SELECTOR_TOOLTIP_INNER = '.tooltip-inner';
@@ -7054,13 +8447,36 @@ __webpack_require__.r(__webpack_exports__);
   var TRIGGER_FOCUS = 'focus';
   var TRIGGER_CLICK = 'click';
   var TRIGGER_MANUAL = 'manual';
+=======
+  var ClassName$6 = {
+    FADE: 'fade',
+    SHOW: 'show'
+  };
+  var Selector$6 = {
+    TOOLTIP: '.tooltip',
+    TOOLTIP_INNER: '.tooltip-inner',
+    ARROW: '.arrow'
+  };
+  var Trigger = {
+    HOVER: 'hover',
+    FOCUS: 'focus',
+    CLICK: 'click',
+    MANUAL: 'manual'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * Class Definition
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Tooltip = /*#__PURE__*/function () {
+=======
+  var Tooltip =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function Tooltip(element, config) {
       if (typeof Popper === 'undefined') {
         throw new TypeError('Bootstrap\'s tooltips require Popper.js (https://popper.js.org/)');
@@ -7118,7 +8534,11 @@ __webpack_require__.r(__webpack_exports__);
           context._leave(null, context);
         }
       } else {
+<<<<<<< HEAD
         if ($(this.getTipElement()).hasClass(CLASS_NAME_SHOW$4)) {
+=======
+        if ($(this.getTipElement()).hasClass(ClassName$6.SHOW)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           this._leave(null, this);
 
           return;
@@ -7178,7 +8598,11 @@ __webpack_require__.r(__webpack_exports__);
         this.setContent();
 
         if (this.config.animation) {
+<<<<<<< HEAD
           $(tip).addClass(CLASS_NAME_FADE$2);
+=======
+          $(tip).addClass(ClassName$6.FADE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
 
         var placement = typeof this.config.placement === 'function' ? this.config.placement.call(this, tip, this.element) : this.config.placement;
@@ -7197,7 +8621,11 @@ __webpack_require__.r(__webpack_exports__);
 
         $(this.element).trigger(this.constructor.Event.INSERTED);
         this._popper = new Popper(this.element, tip, this._getPopperConfig(attachment));
+<<<<<<< HEAD
         $(tip).addClass(CLASS_NAME_SHOW$4); // If this is a touch-enabled device we add extra
+=======
+        $(tip).addClass(ClassName$6.SHOW); // If this is a touch-enabled device we add extra
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         // empty mouseover listeners to the body's immediate children;
         // only needed because of broken event delegation on iOS
         // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
@@ -7215,12 +8643,20 @@ __webpack_require__.r(__webpack_exports__);
           _this._hoverState = null;
           $(_this.element).trigger(_this.constructor.Event.SHOWN);
 
+<<<<<<< HEAD
           if (prevHoverState === HOVER_STATE_OUT) {
+=======
+          if (prevHoverState === HoverState.OUT) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             _this._leave(null, _this);
           }
         };
 
+<<<<<<< HEAD
         if ($(this.tip).hasClass(CLASS_NAME_FADE$2)) {
+=======
+        if ($(this.tip).hasClass(ClassName$6.FADE)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           var transitionDuration = Util.getTransitionDurationFromElement(this.tip);
           $(this.tip).one(Util.TRANSITION_END, complete).emulateTransitionEnd(transitionDuration);
         } else {
@@ -7236,7 +8672,11 @@ __webpack_require__.r(__webpack_exports__);
       var hideEvent = $.Event(this.constructor.Event.HIDE);
 
       var complete = function complete() {
+<<<<<<< HEAD
         if (_this2._hoverState !== HOVER_STATE_SHOW && tip.parentNode) {
+=======
+        if (_this2._hoverState !== HoverState.SHOW && tip.parentNode) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           tip.parentNode.removeChild(tip);
         }
 
@@ -7261,18 +8701,30 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+<<<<<<< HEAD
       $(tip).removeClass(CLASS_NAME_SHOW$4); // If this is a touch-enabled device we remove the extra
+=======
+      $(tip).removeClass(ClassName$6.SHOW); // If this is a touch-enabled device we remove the extra
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       // empty mouseover listeners we added for iOS support
 
       if ('ontouchstart' in document.documentElement) {
         $(document.body).children().off('mouseover', null, $.noop);
       }
 
+<<<<<<< HEAD
       this._activeTrigger[TRIGGER_CLICK] = false;
       this._activeTrigger[TRIGGER_FOCUS] = false;
       this._activeTrigger[TRIGGER_HOVER] = false;
 
       if ($(this.tip).hasClass(CLASS_NAME_FADE$2)) {
+=======
+      this._activeTrigger[Trigger.CLICK] = false;
+      this._activeTrigger[Trigger.FOCUS] = false;
+      this._activeTrigger[Trigger.HOVER] = false;
+
+      if ($(this.tip).hasClass(ClassName$6.FADE)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         var transitionDuration = Util.getTransitionDurationFromElement(tip);
         $(tip).one(Util.TRANSITION_END, complete).emulateTransitionEnd(transitionDuration);
       } else {
@@ -7304,8 +8756,13 @@ __webpack_require__.r(__webpack_exports__);
 
     _proto.setContent = function setContent() {
       var tip = this.getTipElement();
+<<<<<<< HEAD
       this.setElementContent($(tip.querySelectorAll(SELECTOR_TOOLTIP_INNER)), this.getTitle());
       $(tip).removeClass(CLASS_NAME_FADE$2 + " " + CLASS_NAME_SHOW$4);
+=======
+      this.setElementContent($(tip.querySelectorAll(Selector$6.TOOLTIP_INNER)), this.getTitle());
+      $(tip).removeClass(ClassName$6.FADE + " " + ClassName$6.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
 
     _proto.setElementContent = function setElementContent($element, content) {
@@ -7355,7 +8812,11 @@ __webpack_require__.r(__webpack_exports__);
             behavior: this.config.fallbackPlacement
           },
           arrow: {
+<<<<<<< HEAD
             element: SELECTOR_ARROW
+=======
+            element: Selector$6.ARROW
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           },
           preventOverflow: {
             boundariesElement: this.config.boundary
@@ -7370,7 +8831,11 @@ __webpack_require__.r(__webpack_exports__);
           return _this3._handlePopperPlacementChange(data);
         }
       };
+<<<<<<< HEAD
       return _extends({}, defaultBsConfig, this.config.popperConfig);
+=======
+      return _objectSpread2({}, defaultBsConfig, {}, this.config.popperConfig);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
 
     _proto._getOffset = function _getOffset() {
@@ -7380,7 +8845,11 @@ __webpack_require__.r(__webpack_exports__);
 
       if (typeof this.config.offset === 'function') {
         offset.fn = function (data) {
+<<<<<<< HEAD
           data.offsets = _extends({}, data.offsets, _this4.config.offset(data.offsets, _this4.element) || {});
+=======
+          data.offsets = _objectSpread2({}, data.offsets, {}, _this4.config.offset(data.offsets, _this4.element) || {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           return data;
         };
       } else {
@@ -7403,7 +8872,11 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._getAttachment = function _getAttachment(placement) {
+<<<<<<< HEAD
       return AttachmentMap[placement.toUpperCase()];
+=======
+      return AttachmentMap$1[placement.toUpperCase()];
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
 
     _proto._setListeners = function _setListeners() {
@@ -7415,9 +8888,15 @@ __webpack_require__.r(__webpack_exports__);
           $(_this5.element).on(_this5.constructor.Event.CLICK, _this5.config.selector, function (event) {
             return _this5.toggle(event);
           });
+<<<<<<< HEAD
         } else if (trigger !== TRIGGER_MANUAL) {
           var eventIn = trigger === TRIGGER_HOVER ? _this5.constructor.Event.MOUSEENTER : _this5.constructor.Event.FOCUSIN;
           var eventOut = trigger === TRIGGER_HOVER ? _this5.constructor.Event.MOUSELEAVE : _this5.constructor.Event.FOCUSOUT;
+=======
+        } else if (trigger !== Trigger.MANUAL) {
+          var eventIn = trigger === Trigger.HOVER ? _this5.constructor.Event.MOUSEENTER : _this5.constructor.Event.FOCUSIN;
+          var eventOut = trigger === Trigger.HOVER ? _this5.constructor.Event.MOUSELEAVE : _this5.constructor.Event.FOCUSOUT;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           $(_this5.element).on(eventIn, _this5.config.selector, function (event) {
             return _this5._enter(event);
           }).on(eventOut, _this5.config.selector, function (event) {
@@ -7435,7 +8914,11 @@ __webpack_require__.r(__webpack_exports__);
       $(this.element).closest('.modal').on('hide.bs.modal', this._hideModalHandler);
 
       if (this.config.selector) {
+<<<<<<< HEAD
         this.config = _extends({}, this.config, {
+=======
+        this.config = _objectSpread2({}, this.config, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           trigger: 'manual',
           selector: ''
         });
@@ -7463,16 +8946,28 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (event) {
+<<<<<<< HEAD
         context._activeTrigger[event.type === 'focusin' ? TRIGGER_FOCUS : TRIGGER_HOVER] = true;
       }
 
       if ($(context.getTipElement()).hasClass(CLASS_NAME_SHOW$4) || context._hoverState === HOVER_STATE_SHOW) {
         context._hoverState = HOVER_STATE_SHOW;
+=======
+        context._activeTrigger[event.type === 'focusin' ? Trigger.FOCUS : Trigger.HOVER] = true;
+      }
+
+      if ($(context.getTipElement()).hasClass(ClassName$6.SHOW) || context._hoverState === HoverState.SHOW) {
+        context._hoverState = HoverState.SHOW;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return;
       }
 
       clearTimeout(context._timeout);
+<<<<<<< HEAD
       context._hoverState = HOVER_STATE_SHOW;
+=======
+      context._hoverState = HoverState.SHOW;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (!context.config.delay || !context.config.delay.show) {
         context.show();
@@ -7480,7 +8975,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       context._timeout = setTimeout(function () {
+<<<<<<< HEAD
         if (context._hoverState === HOVER_STATE_SHOW) {
+=======
+        if (context._hoverState === HoverState.SHOW) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           context.show();
         }
       }, context.config.delay.show);
@@ -7496,7 +8995,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       if (event) {
+<<<<<<< HEAD
         context._activeTrigger[event.type === 'focusout' ? TRIGGER_FOCUS : TRIGGER_HOVER] = false;
+=======
+        context._activeTrigger[event.type === 'focusout' ? Trigger.FOCUS : Trigger.HOVER] = false;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
 
       if (context._isWithActiveTrigger()) {
@@ -7504,7 +9007,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       clearTimeout(context._timeout);
+<<<<<<< HEAD
       context._hoverState = HOVER_STATE_OUT;
+=======
+      context._hoverState = HoverState.OUT;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (!context.config.delay || !context.config.delay.hide) {
         context.hide();
@@ -7512,7 +9019,11 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       context._timeout = setTimeout(function () {
+<<<<<<< HEAD
         if (context._hoverState === HOVER_STATE_OUT) {
+=======
+        if (context._hoverState === HoverState.OUT) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           context.hide();
         }
       }, context.config.delay.hide);
@@ -7535,7 +9046,11 @@ __webpack_require__.r(__webpack_exports__);
           delete dataAttributes[dataAttr];
         }
       });
+<<<<<<< HEAD
       config = _extends({}, this.constructor.Default, dataAttributes, typeof config === 'object' && config ? config : {});
+=======
+      config = _objectSpread2({}, this.constructor.Default, {}, dataAttributes, {}, typeof config === 'object' && config ? config : {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (typeof config.delay === 'number') {
         config.delay = {
@@ -7585,7 +9100,12 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto._handlePopperPlacementChange = function _handlePopperPlacementChange(popperData) {
+<<<<<<< HEAD
       this.tip = popperData.instance.popper;
+=======
+      var popperInstance = popperData.instance;
+      this.tip = popperInstance.popper;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       this._cleanTipClass();
 
@@ -7600,7 +9120,11 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+<<<<<<< HEAD
       $(tip).removeClass(CLASS_NAME_FADE$2);
+=======
+      $(tip).removeClass(ClassName$6.FADE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       this.config.animation = false;
       this.hide();
       this.show();
@@ -7656,7 +9180,11 @@ __webpack_require__.r(__webpack_exports__);
     }, {
       key: "Event",
       get: function get() {
+<<<<<<< HEAD
         return Event;
+=======
+        return Event$6;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     }, {
       key: "EVENT_KEY",
@@ -7694,20 +9222,29 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$7 = 'popover';
+<<<<<<< HEAD
   var VERSION$7 = '4.5.2';
+=======
+  var VERSION$7 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$7 = 'bs.popover';
   var EVENT_KEY$7 = "." + DATA_KEY$7;
   var JQUERY_NO_CONFLICT$7 = $.fn[NAME$7];
   var CLASS_PREFIX$1 = 'bs-popover';
   var BSCLS_PREFIX_REGEX$1 = new RegExp("(^|\\s)" + CLASS_PREFIX$1 + "\\S+", 'g');
 
+<<<<<<< HEAD
   var Default$5 = _extends({}, Tooltip.Default, {
+=======
+  var Default$5 = _objectSpread2({}, Tooltip.Default, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     placement: 'right',
     trigger: 'click',
     content: '',
     template: '<div class="popover" role="tooltip">' + '<div class="arrow"></div>' + '<h3 class="popover-header"></h3>' + '<div class="popover-body"></div></div>'
   });
 
+<<<<<<< HEAD
   var DefaultType$5 = _extends({}, Tooltip.DefaultType, {
     content: '(string|element|function)'
   });
@@ -7717,6 +9254,21 @@ __webpack_require__.r(__webpack_exports__);
   var SELECTOR_TITLE = '.popover-header';
   var SELECTOR_CONTENT = '.popover-body';
   var Event$1 = {
+=======
+  var DefaultType$5 = _objectSpread2({}, Tooltip.DefaultType, {
+    content: '(string|element|function)'
+  });
+
+  var ClassName$7 = {
+    FADE: 'fade',
+    SHOW: 'show'
+  };
+  var Selector$7 = {
+    TITLE: '.popover-header',
+    CONTENT: '.popover-body'
+  };
+  var Event$7 = {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     HIDE: "hide" + EVENT_KEY$7,
     HIDDEN: "hidden" + EVENT_KEY$7,
     SHOW: "show" + EVENT_KEY$7,
@@ -7734,7 +9286,13 @@ __webpack_require__.r(__webpack_exports__);
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Popover = /*#__PURE__*/function (_Tooltip) {
+=======
+  var Popover =
+  /*#__PURE__*/
+  function (_Tooltip) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     _inheritsLoose(Popover, _Tooltip);
 
     function Popover() {
@@ -7760,7 +9318,11 @@ __webpack_require__.r(__webpack_exports__);
     _proto.setContent = function setContent() {
       var $tip = $(this.getTipElement()); // We use append for html objects to maintain js events
 
+<<<<<<< HEAD
       this.setElementContent($tip.find(SELECTOR_TITLE), this.getTitle());
+=======
+      this.setElementContent($tip.find(Selector$7.TITLE), this.getTitle());
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var content = this._getContent();
 
@@ -7768,8 +9330,13 @@ __webpack_require__.r(__webpack_exports__);
         content = content.call(this.element);
       }
 
+<<<<<<< HEAD
       this.setElementContent($tip.find(SELECTOR_CONTENT), content);
       $tip.removeClass(CLASS_NAME_FADE$3 + " " + CLASS_NAME_SHOW$5);
+=======
+      this.setElementContent($tip.find(Selector$7.CONTENT), content);
+      $tip.removeClass(ClassName$7.FADE + " " + ClassName$7.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     } // Private
     ;
 
@@ -7836,7 +9403,11 @@ __webpack_require__.r(__webpack_exports__);
     }, {
       key: "Event",
       get: function get() {
+<<<<<<< HEAD
         return Event$1;
+=======
+        return Event$7;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
     }, {
       key: "EVENT_KEY",
@@ -7874,7 +9445,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$8 = 'scrollspy';
+<<<<<<< HEAD
   var VERSION$8 = '4.5.2';
+=======
+  var VERSION$8 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$8 = 'bs.scrollspy';
   var EVENT_KEY$8 = "." + DATA_KEY$8;
   var DATA_API_KEY$6 = '.data-api';
@@ -7889,6 +9464,7 @@ __webpack_require__.r(__webpack_exports__);
     method: 'string',
     target: '(string|element)'
   };
+<<<<<<< HEAD
   var EVENT_ACTIVATE = "activate" + EVENT_KEY$8;
   var EVENT_SCROLL = "scroll" + EVENT_KEY$8;
   var EVENT_LOAD_DATA_API$2 = "load" + EVENT_KEY$8 + DATA_API_KEY$6;
@@ -7904,25 +9480,66 @@ __webpack_require__.r(__webpack_exports__);
   var SELECTOR_DROPDOWN_TOGGLE = '.dropdown-toggle';
   var METHOD_OFFSET = 'offset';
   var METHOD_POSITION = 'position';
+=======
+  var Event$8 = {
+    ACTIVATE: "activate" + EVENT_KEY$8,
+    SCROLL: "scroll" + EVENT_KEY$8,
+    LOAD_DATA_API: "load" + EVENT_KEY$8 + DATA_API_KEY$6
+  };
+  var ClassName$8 = {
+    DROPDOWN_ITEM: 'dropdown-item',
+    DROPDOWN_MENU: 'dropdown-menu',
+    ACTIVE: 'active'
+  };
+  var Selector$8 = {
+    DATA_SPY: '[data-spy="scroll"]',
+    ACTIVE: '.active',
+    NAV_LIST_GROUP: '.nav, .list-group',
+    NAV_LINKS: '.nav-link',
+    NAV_ITEMS: '.nav-item',
+    LIST_ITEMS: '.list-group-item',
+    DROPDOWN: '.dropdown',
+    DROPDOWN_ITEMS: '.dropdown-item',
+    DROPDOWN_TOGGLE: '.dropdown-toggle'
+  };
+  var OffsetMethod = {
+    OFFSET: 'offset',
+    POSITION: 'position'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * Class Definition
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var ScrollSpy = /*#__PURE__*/function () {
+=======
+  var ScrollSpy =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function ScrollSpy(element, config) {
       var _this = this;
 
       this._element = element;
       this._scrollElement = element.tagName === 'BODY' ? window : element;
       this._config = this._getConfig(config);
+<<<<<<< HEAD
       this._selector = this._config.target + " " + SELECTOR_NAV_LINKS + "," + (this._config.target + " " + SELECTOR_LIST_ITEMS + ",") + (this._config.target + " " + SELECTOR_DROPDOWN_ITEMS);
+=======
+      this._selector = this._config.target + " " + Selector$8.NAV_LINKS + "," + (this._config.target + " " + Selector$8.LIST_ITEMS + ",") + (this._config.target + " " + Selector$8.DROPDOWN_ITEMS);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       this._offsets = [];
       this._targets = [];
       this._activeTarget = null;
       this._scrollHeight = 0;
+<<<<<<< HEAD
       $(this._scrollElement).on(EVENT_SCROLL, function (event) {
+=======
+      $(this._scrollElement).on(Event$8.SCROLL, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return _this._process(event);
       });
       this.refresh();
@@ -7937,9 +9554,15 @@ __webpack_require__.r(__webpack_exports__);
     _proto.refresh = function refresh() {
       var _this2 = this;
 
+<<<<<<< HEAD
       var autoMethod = this._scrollElement === this._scrollElement.window ? METHOD_OFFSET : METHOD_POSITION;
       var offsetMethod = this._config.method === 'auto' ? autoMethod : this._config.method;
       var offsetBase = offsetMethod === METHOD_POSITION ? this._getScrollTop() : 0;
+=======
+      var autoMethod = this._scrollElement === this._scrollElement.window ? OffsetMethod.OFFSET : OffsetMethod.POSITION;
+      var offsetMethod = this._config.method === 'auto' ? autoMethod : this._config.method;
+      var offsetBase = offsetMethod === OffsetMethod.POSITION ? this._getScrollTop() : 0;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       this._offsets = [];
       this._targets = [];
       this._scrollHeight = this._getScrollHeight();
@@ -7988,9 +9611,15 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
+<<<<<<< HEAD
       config = _extends({}, Default$6, typeof config === 'object' && config ? config : {});
 
       if (typeof config.target !== 'string' && Util.isElement(config.target)) {
+=======
+      config = _objectSpread2({}, Default$6, {}, typeof config === 'object' && config ? config : {});
+
+      if (typeof config.target !== 'string') {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         var id = $(config.target).attr('id');
 
         if (!id) {
@@ -8046,7 +9675,13 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
+<<<<<<< HEAD
       for (var i = this._offsets.length; i--;) {
+=======
+      var offsetLength = this._offsets.length;
+
+      for (var i = offsetLength; i--;) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         var isActiveTarget = this._activeTarget !== this._targets[i] && scrollTop >= this._offsets[i] && (typeof this._offsets[i + 1] === 'undefined' || scrollTop < this._offsets[i + 1]);
 
         if (isActiveTarget) {
@@ -8066,6 +9701,7 @@ __webpack_require__.r(__webpack_exports__);
 
       var $link = $([].slice.call(document.querySelectorAll(queries.join(','))));
 
+<<<<<<< HEAD
       if ($link.hasClass(CLASS_NAME_DROPDOWN_ITEM)) {
         $link.closest(SELECTOR_DROPDOWN).find(SELECTOR_DROPDOWN_TOGGLE).addClass(CLASS_NAME_ACTIVE$2);
         $link.addClass(CLASS_NAME_ACTIVE$2);
@@ -8080,15 +9716,37 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       $(this._scrollElement).trigger(EVENT_ACTIVATE, {
+=======
+      if ($link.hasClass(ClassName$8.DROPDOWN_ITEM)) {
+        $link.closest(Selector$8.DROPDOWN).find(Selector$8.DROPDOWN_TOGGLE).addClass(ClassName$8.ACTIVE);
+        $link.addClass(ClassName$8.ACTIVE);
+      } else {
+        // Set triggered link as active
+        $link.addClass(ClassName$8.ACTIVE); // Set triggered links parents as active
+        // With both <ul> and <nav> markup a parent is the previous sibling of any nav ancestor
+
+        $link.parents(Selector$8.NAV_LIST_GROUP).prev(Selector$8.NAV_LINKS + ", " + Selector$8.LIST_ITEMS).addClass(ClassName$8.ACTIVE); // Handle special case when .nav-link is inside .nav-item
+
+        $link.parents(Selector$8.NAV_LIST_GROUP).prev(Selector$8.NAV_ITEMS).children(Selector$8.NAV_LINKS).addClass(ClassName$8.ACTIVE);
+      }
+
+      $(this._scrollElement).trigger(Event$8.ACTIVATE, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         relatedTarget: target
       });
     };
 
     _proto._clear = function _clear() {
       [].slice.call(document.querySelectorAll(this._selector)).filter(function (node) {
+<<<<<<< HEAD
         return node.classList.contains(CLASS_NAME_ACTIVE$2);
       }).forEach(function (node) {
         return node.classList.remove(CLASS_NAME_ACTIVE$2);
+=======
+        return node.classList.contains(ClassName$8.ACTIVE);
+      }).forEach(function (node) {
+        return node.classList.remove(ClassName$8.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       });
     } // Static
     ;
@@ -8135,8 +9793,13 @@ __webpack_require__.r(__webpack_exports__);
    */
 
 
+<<<<<<< HEAD
   $(window).on(EVENT_LOAD_DATA_API$2, function () {
     var scrollSpys = [].slice.call(document.querySelectorAll(SELECTOR_DATA_SPY));
+=======
+  $(window).on(Event$8.LOAD_DATA_API, function () {
+    var scrollSpys = [].slice.call(document.querySelectorAll(Selector$8.DATA_SPY));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     var scrollSpysLength = scrollSpys.length;
 
     for (var i = scrollSpysLength; i--;) {
@@ -8166,11 +9829,16 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$9 = 'tab';
+<<<<<<< HEAD
   var VERSION$9 = '4.5.2';
+=======
+  var VERSION$9 = '4.4.1';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DATA_KEY$9 = 'bs.tab';
   var EVENT_KEY$9 = "." + DATA_KEY$9;
   var DATA_API_KEY$7 = '.data-api';
   var JQUERY_NO_CONFLICT$9 = $.fn[NAME$9];
+<<<<<<< HEAD
   var EVENT_HIDE$3 = "hide" + EVENT_KEY$9;
   var EVENT_HIDDEN$3 = "hidden" + EVENT_KEY$9;
   var EVENT_SHOW$3 = "show" + EVENT_KEY$9;
@@ -8188,13 +9856,44 @@ __webpack_require__.r(__webpack_exports__);
   var SELECTOR_DATA_TOGGLE$4 = '[data-toggle="tab"], [data-toggle="pill"], [data-toggle="list"]';
   var SELECTOR_DROPDOWN_TOGGLE$1 = '.dropdown-toggle';
   var SELECTOR_DROPDOWN_ACTIVE_CHILD = '> .dropdown-menu .active';
+=======
+  var Event$9 = {
+    HIDE: "hide" + EVENT_KEY$9,
+    HIDDEN: "hidden" + EVENT_KEY$9,
+    SHOW: "show" + EVENT_KEY$9,
+    SHOWN: "shown" + EVENT_KEY$9,
+    CLICK_DATA_API: "click" + EVENT_KEY$9 + DATA_API_KEY$7
+  };
+  var ClassName$9 = {
+    DROPDOWN_MENU: 'dropdown-menu',
+    ACTIVE: 'active',
+    DISABLED: 'disabled',
+    FADE: 'fade',
+    SHOW: 'show'
+  };
+  var Selector$9 = {
+    DROPDOWN: '.dropdown',
+    NAV_LIST_GROUP: '.nav, .list-group',
+    ACTIVE: '.active',
+    ACTIVE_UL: '> li > .active',
+    DATA_TOGGLE: '[data-toggle="tab"], [data-toggle="pill"], [data-toggle="list"]',
+    DROPDOWN_TOGGLE: '.dropdown-toggle',
+    DROPDOWN_ACTIVE_CHILD: '> .dropdown-menu .active'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * Class Definition
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Tab = /*#__PURE__*/function () {
+=======
+  var Tab =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function Tab(element) {
       this._element = element;
     } // Getters
@@ -8206,25 +9905,44 @@ __webpack_require__.r(__webpack_exports__);
     _proto.show = function show() {
       var _this = this;
 
+<<<<<<< HEAD
       if (this._element.parentNode && this._element.parentNode.nodeType === Node.ELEMENT_NODE && $(this._element).hasClass(CLASS_NAME_ACTIVE$3) || $(this._element).hasClass(CLASS_NAME_DISABLED$1)) {
+=======
+      if (this._element.parentNode && this._element.parentNode.nodeType === Node.ELEMENT_NODE && $(this._element).hasClass(ClassName$9.ACTIVE) || $(this._element).hasClass(ClassName$9.DISABLED)) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return;
       }
 
       var target;
       var previous;
+<<<<<<< HEAD
       var listElement = $(this._element).closest(SELECTOR_NAV_LIST_GROUP$1)[0];
       var selector = Util.getSelectorFromElement(this._element);
 
       if (listElement) {
         var itemSelector = listElement.nodeName === 'UL' || listElement.nodeName === 'OL' ? SELECTOR_ACTIVE_UL : SELECTOR_ACTIVE$2;
+=======
+      var listElement = $(this._element).closest(Selector$9.NAV_LIST_GROUP)[0];
+      var selector = Util.getSelectorFromElement(this._element);
+
+      if (listElement) {
+        var itemSelector = listElement.nodeName === 'UL' || listElement.nodeName === 'OL' ? Selector$9.ACTIVE_UL : Selector$9.ACTIVE;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         previous = $.makeArray($(listElement).find(itemSelector));
         previous = previous[previous.length - 1];
       }
 
+<<<<<<< HEAD
       var hideEvent = $.Event(EVENT_HIDE$3, {
         relatedTarget: this._element
       });
       var showEvent = $.Event(EVENT_SHOW$3, {
+=======
+      var hideEvent = $.Event(Event$9.HIDE, {
+        relatedTarget: this._element
+      });
+      var showEvent = $.Event(Event$9.SHOW, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         relatedTarget: previous
       });
 
@@ -8245,10 +9963,17 @@ __webpack_require__.r(__webpack_exports__);
       this._activate(this._element, listElement);
 
       var complete = function complete() {
+<<<<<<< HEAD
         var hiddenEvent = $.Event(EVENT_HIDDEN$3, {
           relatedTarget: _this._element
         });
         var shownEvent = $.Event(EVENT_SHOWN$3, {
+=======
+        var hiddenEvent = $.Event(Event$9.HIDDEN, {
+          relatedTarget: _this._element
+        });
+        var shownEvent = $.Event(Event$9.SHOWN, {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           relatedTarget: previous
         });
         $(previous).trigger(hiddenEvent);
@@ -8271,9 +9996,15 @@ __webpack_require__.r(__webpack_exports__);
     _proto._activate = function _activate(element, container, callback) {
       var _this2 = this;
 
+<<<<<<< HEAD
       var activeElements = container && (container.nodeName === 'UL' || container.nodeName === 'OL') ? $(container).find(SELECTOR_ACTIVE_UL) : $(container).children(SELECTOR_ACTIVE$2);
       var active = activeElements[0];
       var isTransitioning = callback && active && $(active).hasClass(CLASS_NAME_FADE$4);
+=======
+      var activeElements = container && (container.nodeName === 'UL' || container.nodeName === 'OL') ? $(container).find(Selector$9.ACTIVE_UL) : $(container).children(Selector$9.ACTIVE);
+      var active = activeElements[0];
+      var isTransitioning = callback && active && $(active).hasClass(ClassName$9.FADE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var complete = function complete() {
         return _this2._transitionComplete(element, active, callback);
@@ -8281,7 +10012,11 @@ __webpack_require__.r(__webpack_exports__);
 
       if (active && isTransitioning) {
         var transitionDuration = Util.getTransitionDurationFromElement(active);
+<<<<<<< HEAD
         $(active).removeClass(CLASS_NAME_SHOW$6).one(Util.TRANSITION_END, complete).emulateTransitionEnd(transitionDuration);
+=======
+        $(active).removeClass(ClassName$9.SHOW).one(Util.TRANSITION_END, complete).emulateTransitionEnd(transitionDuration);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       } else {
         complete();
       }
@@ -8289,11 +10024,19 @@ __webpack_require__.r(__webpack_exports__);
 
     _proto._transitionComplete = function _transitionComplete(element, active, callback) {
       if (active) {
+<<<<<<< HEAD
         $(active).removeClass(CLASS_NAME_ACTIVE$3);
         var dropdownChild = $(active.parentNode).find(SELECTOR_DROPDOWN_ACTIVE_CHILD)[0];
 
         if (dropdownChild) {
           $(dropdownChild).removeClass(CLASS_NAME_ACTIVE$3);
+=======
+        $(active).removeClass(ClassName$9.ACTIVE);
+        var dropdownChild = $(active.parentNode).find(Selector$9.DROPDOWN_ACTIVE_CHILD)[0];
+
+        if (dropdownChild) {
+          $(dropdownChild).removeClass(ClassName$9.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
 
         if (active.getAttribute('role') === 'tab') {
@@ -8301,7 +10044,11 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
 
+<<<<<<< HEAD
       $(element).addClass(CLASS_NAME_ACTIVE$3);
+=======
+      $(element).addClass(ClassName$9.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (element.getAttribute('role') === 'tab') {
         element.setAttribute('aria-selected', true);
@@ -8309,6 +10056,7 @@ __webpack_require__.r(__webpack_exports__);
 
       Util.reflow(element);
 
+<<<<<<< HEAD
       if (element.classList.contains(CLASS_NAME_FADE$4)) {
         element.classList.add(CLASS_NAME_SHOW$6);
       }
@@ -8319,6 +10067,18 @@ __webpack_require__.r(__webpack_exports__);
         if (dropdownElement) {
           var dropdownToggleList = [].slice.call(dropdownElement.querySelectorAll(SELECTOR_DROPDOWN_TOGGLE$1));
           $(dropdownToggleList).addClass(CLASS_NAME_ACTIVE$3);
+=======
+      if (element.classList.contains(ClassName$9.FADE)) {
+        element.classList.add(ClassName$9.SHOW);
+      }
+
+      if (element.parentNode && $(element.parentNode).hasClass(ClassName$9.DROPDOWN_MENU)) {
+        var dropdownElement = $(element).closest(Selector$9.DROPDOWN)[0];
+
+        if (dropdownElement) {
+          var dropdownToggleList = [].slice.call(dropdownElement.querySelectorAll(Selector$9.DROPDOWN_TOGGLE));
+          $(dropdownToggleList).addClass(ClassName$9.ACTIVE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
 
         element.setAttribute('aria-expanded', true);
@@ -8366,7 +10126,11 @@ __webpack_require__.r(__webpack_exports__);
    */
 
 
+<<<<<<< HEAD
   $(document).on(EVENT_CLICK_DATA_API$6, SELECTOR_DATA_TOGGLE$4, function (event) {
+=======
+  $(document).on(Event$9.CLICK_DATA_API, Selector$9.DATA_TOGGLE, function (event) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     event.preventDefault();
 
     Tab._jQueryInterface.call($(this), 'show');
@@ -8392,6 +10156,7 @@ __webpack_require__.r(__webpack_exports__);
    */
 
   var NAME$a = 'toast';
+<<<<<<< HEAD
   var VERSION$a = '4.5.2';
   var DATA_KEY$a = 'bs.toast';
   var EVENT_KEY$a = "." + DATA_KEY$a;
@@ -8405,6 +10170,25 @@ __webpack_require__.r(__webpack_exports__);
   var CLASS_NAME_HIDE = 'hide';
   var CLASS_NAME_SHOW$7 = 'show';
   var CLASS_NAME_SHOWING = 'showing';
+=======
+  var VERSION$a = '4.4.1';
+  var DATA_KEY$a = 'bs.toast';
+  var EVENT_KEY$a = "." + DATA_KEY$a;
+  var JQUERY_NO_CONFLICT$a = $.fn[NAME$a];
+  var Event$a = {
+    CLICK_DISMISS: "click.dismiss" + EVENT_KEY$a,
+    HIDE: "hide" + EVENT_KEY$a,
+    HIDDEN: "hidden" + EVENT_KEY$a,
+    SHOW: "show" + EVENT_KEY$a,
+    SHOWN: "shown" + EVENT_KEY$a
+  };
+  var ClassName$a = {
+    FADE: 'fade',
+    HIDE: 'hide',
+    SHOW: 'show',
+    SHOWING: 'showing'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var DefaultType$7 = {
     animation: 'boolean',
     autohide: 'boolean',
@@ -8415,14 +10199,26 @@ __webpack_require__.r(__webpack_exports__);
     autohide: true,
     delay: 500
   };
+<<<<<<< HEAD
   var SELECTOR_DATA_DISMISS$1 = '[data-dismiss="toast"]';
+=======
+  var Selector$a = {
+    DATA_DISMISS: '[data-dismiss="toast"]'
+  };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   /**
    * ------------------------------------------------------------------------
    * Class Definition
    * ------------------------------------------------------------------------
    */
 
+<<<<<<< HEAD
   var Toast = /*#__PURE__*/function () {
+=======
+  var Toast =
+  /*#__PURE__*/
+  function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function Toast(element, config) {
       this._element = element;
       this._config = this._getConfig(config);
@@ -8438,13 +10234,18 @@ __webpack_require__.r(__webpack_exports__);
     _proto.show = function show() {
       var _this = this;
 
+<<<<<<< HEAD
       var showEvent = $.Event(EVENT_SHOW$4);
+=======
+      var showEvent = $.Event(Event$a.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $(this._element).trigger(showEvent);
 
       if (showEvent.isDefaultPrevented()) {
         return;
       }
 
+<<<<<<< HEAD
       this._clearTimeout();
 
       if (this._config.animation) {
@@ -8457,6 +10258,18 @@ __webpack_require__.r(__webpack_exports__);
         _this._element.classList.add(CLASS_NAME_SHOW$7);
 
         $(_this._element).trigger(EVENT_SHOWN$4);
+=======
+      if (this._config.animation) {
+        this._element.classList.add(ClassName$a.FADE);
+      }
+
+      var complete = function complete() {
+        _this._element.classList.remove(ClassName$a.SHOWING);
+
+        _this._element.classList.add(ClassName$a.SHOW);
+
+        $(_this._element).trigger(Event$a.SHOWN);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
         if (_this._config.autohide) {
           _this._timeout = setTimeout(function () {
@@ -8465,11 +10278,19 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
 
+<<<<<<< HEAD
       this._element.classList.remove(CLASS_NAME_HIDE);
 
       Util.reflow(this._element);
 
       this._element.classList.add(CLASS_NAME_SHOWING);
+=======
+      this._element.classList.remove(ClassName$a.HIDE);
+
+      Util.reflow(this._element);
+
+      this._element.classList.add(ClassName$a.SHOWING);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (this._config.animation) {
         var transitionDuration = Util.getTransitionDurationFromElement(this._element);
@@ -8480,11 +10301,19 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto.hide = function hide() {
+<<<<<<< HEAD
       if (!this._element.classList.contains(CLASS_NAME_SHOW$7)) {
         return;
       }
 
       var hideEvent = $.Event(EVENT_HIDE$4);
+=======
+      if (!this._element.classList.contains(ClassName$a.SHOW)) {
+        return;
+      }
+
+      var hideEvent = $.Event(Event$a.HIDE);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $(this._element).trigger(hideEvent);
 
       if (hideEvent.isDefaultPrevented()) {
@@ -8495,6 +10324,7 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     _proto.dispose = function dispose() {
+<<<<<<< HEAD
       this._clearTimeout();
 
       if (this._element.classList.contains(CLASS_NAME_SHOW$7)) {
@@ -8502,6 +10332,16 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       $(this._element).off(EVENT_CLICK_DISMISS$1);
+=======
+      clearTimeout(this._timeout);
+      this._timeout = null;
+
+      if (this._element.classList.contains(ClassName$a.SHOW)) {
+        this._element.classList.remove(ClassName$a.SHOW);
+      }
+
+      $(this._element).off(Event$a.CLICK_DISMISS);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       $.removeData(this._element, DATA_KEY$a);
       this._element = null;
       this._config = null;
@@ -8509,7 +10349,11 @@ __webpack_require__.r(__webpack_exports__);
     ;
 
     _proto._getConfig = function _getConfig(config) {
+<<<<<<< HEAD
       config = _extends({}, Default$7, $(this._element).data(), typeof config === 'object' && config ? config : {});
+=======
+      config = _objectSpread2({}, Default$7, {}, $(this._element).data(), {}, typeof config === 'object' && config ? config : {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       Util.typeCheckConfig(NAME$a, config, this.constructor.DefaultType);
       return config;
     };
@@ -8517,7 +10361,11 @@ __webpack_require__.r(__webpack_exports__);
     _proto._setListeners = function _setListeners() {
       var _this2 = this;
 
+<<<<<<< HEAD
       $(this._element).on(EVENT_CLICK_DISMISS$1, SELECTOR_DATA_DISMISS$1, function () {
+=======
+      $(this._element).on(Event$a.CLICK_DISMISS, Selector$a.DATA_DISMISS, function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return _this2.hide();
       });
     };
@@ -8526,12 +10374,21 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       var complete = function complete() {
+<<<<<<< HEAD
         _this3._element.classList.add(CLASS_NAME_HIDE);
 
         $(_this3._element).trigger(EVENT_HIDDEN$4);
       };
 
       this._element.classList.remove(CLASS_NAME_SHOW$7);
+=======
+        _this3._element.classList.add(ClassName$a.HIDE);
+
+        $(_this3._element).trigger(Event$a.HIDDEN);
+      };
+
+      this._element.classList.remove(ClassName$a.SHOW);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       if (this._config.animation) {
         var transitionDuration = Util.getTransitionDurationFromElement(this._element);
@@ -8539,11 +10396,14 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         complete();
       }
+<<<<<<< HEAD
     };
 
     _proto._clearTimeout = function _clearTimeout() {
       clearTimeout(this._timeout);
       this._timeout = null;
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     } // Static
     ;
 
@@ -8624,6 +10484,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vue2-dropzone/dist/vue2Dropzone.min.css":
 /*!**********************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue2-dropzone/dist/vue2Dropzone.min.css ***!
@@ -9038,6 +10899,2344 @@ jQuery.fn = jQuery.prototype = {
 	end: function() {
 		return this.prevObject || this.constructor();
 	},
+=======
+/***/ "./node_modules/buffer/index.js":
+/*!**************************************!*\
+  !*** ./node_modules/buffer/index.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <http://feross.org>
+ * @license  MIT
+ */
+/* eslint-disable no-proto */
+
+
+
+var base64 = __webpack_require__(/*! base64-js */ "./node_modules/base64-js/index.js")
+var ieee754 = __webpack_require__(/*! ieee754 */ "./node_modules/ieee754/index.js")
+var isArray = __webpack_require__(/*! isarray */ "./node_modules/isarray/index.js")
+
+exports.Buffer = Buffer
+exports.SlowBuffer = SlowBuffer
+exports.INSPECT_MAX_BYTES = 50
+
+/**
+ * If `Buffer.TYPED_ARRAY_SUPPORT`:
+ *   === true    Use Uint8Array implementation (fastest)
+ *   === false   Use Object implementation (most compatible, even IE6)
+ *
+ * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+ * Opera 11.6+, iOS 4.2+.
+ *
+ * Due to various browser bugs, sometimes the Object implementation will be used even
+ * when the browser supports typed arrays.
+ *
+ * Note:
+ *
+ *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
+ *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+ *
+ *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+ *
+ *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+ *     incorrect length in some situations.
+
+ * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
+ * get the Object implementation, which is slower but behaves correctly.
+ */
+Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
+  ? global.TYPED_ARRAY_SUPPORT
+  : typedArraySupport()
+
+/*
+ * Export kMaxLength after typed array support is determined.
+ */
+exports.kMaxLength = kMaxLength()
+
+function typedArraySupport () {
+  try {
+    var arr = new Uint8Array(1)
+    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
+    return arr.foo() === 42 && // typed array instances can be augmented
+        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
+        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
+  } catch (e) {
+    return false
+  }
+}
+
+function kMaxLength () {
+  return Buffer.TYPED_ARRAY_SUPPORT
+    ? 0x7fffffff
+    : 0x3fffffff
+}
+
+function createBuffer (that, length) {
+  if (kMaxLength() < length) {
+    throw new RangeError('Invalid typed array length')
+  }
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = new Uint8Array(length)
+    that.__proto__ = Buffer.prototype
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    if (that === null) {
+      that = new Buffer(length)
+    }
+    that.length = length
+  }
+
+  return that
+}
+
+/**
+ * The Buffer constructor returns instances of `Uint8Array` that have their
+ * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
+ * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
+ * and the `Uint8Array` methods. Square bracket notation works as expected -- it
+ * returns a single octet.
+ *
+ * The `Uint8Array` prototype remains unmodified.
+ */
+
+function Buffer (arg, encodingOrOffset, length) {
+  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
+    return new Buffer(arg, encodingOrOffset, length)
+  }
+
+  // Common case.
+  if (typeof arg === 'number') {
+    if (typeof encodingOrOffset === 'string') {
+      throw new Error(
+        'If encoding is specified then the first argument must be a string'
+      )
+    }
+    return allocUnsafe(this, arg)
+  }
+  return from(this, arg, encodingOrOffset, length)
+}
+
+Buffer.poolSize = 8192 // not used by this implementation
+
+// TODO: Legacy, not needed anymore. Remove in next major version.
+Buffer._augment = function (arr) {
+  arr.__proto__ = Buffer.prototype
+  return arr
+}
+
+function from (that, value, encodingOrOffset, length) {
+  if (typeof value === 'number') {
+    throw new TypeError('"value" argument must not be a number')
+  }
+
+  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
+    return fromArrayBuffer(that, value, encodingOrOffset, length)
+  }
+
+  if (typeof value === 'string') {
+    return fromString(that, value, encodingOrOffset)
+  }
+
+  return fromObject(that, value)
+}
+
+/**
+ * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
+ * if value is a number.
+ * Buffer.from(str[, encoding])
+ * Buffer.from(array)
+ * Buffer.from(buffer)
+ * Buffer.from(arrayBuffer[, byteOffset[, length]])
+ **/
+Buffer.from = function (value, encodingOrOffset, length) {
+  return from(null, value, encodingOrOffset, length)
+}
+
+if (Buffer.TYPED_ARRAY_SUPPORT) {
+  Buffer.prototype.__proto__ = Uint8Array.prototype
+  Buffer.__proto__ = Uint8Array
+  if (typeof Symbol !== 'undefined' && Symbol.species &&
+      Buffer[Symbol.species] === Buffer) {
+    // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
+    Object.defineProperty(Buffer, Symbol.species, {
+      value: null,
+      configurable: true
+    })
+  }
+}
+
+function assertSize (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
+  }
+}
+
+function alloc (that, size, fill, encoding) {
+  assertSize(size)
+  if (size <= 0) {
+    return createBuffer(that, size)
+  }
+  if (fill !== undefined) {
+    // Only pay attention to encoding if it's a string. This
+    // prevents accidentally sending in a number that would
+    // be interpretted as a start offset.
+    return typeof encoding === 'string'
+      ? createBuffer(that, size).fill(fill, encoding)
+      : createBuffer(that, size).fill(fill)
+  }
+  return createBuffer(that, size)
+}
+
+/**
+ * Creates a new filled Buffer instance.
+ * alloc(size[, fill[, encoding]])
+ **/
+Buffer.alloc = function (size, fill, encoding) {
+  return alloc(null, size, fill, encoding)
+}
+
+function allocUnsafe (that, size) {
+  assertSize(size)
+  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+    for (var i = 0; i < size; ++i) {
+      that[i] = 0
+    }
+  }
+  return that
+}
+
+/**
+ * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
+ * */
+Buffer.allocUnsafe = function (size) {
+  return allocUnsafe(null, size)
+}
+/**
+ * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
+ */
+Buffer.allocUnsafeSlow = function (size) {
+  return allocUnsafe(null, size)
+}
+
+function fromString (that, string, encoding) {
+  if (typeof encoding !== 'string' || encoding === '') {
+    encoding = 'utf8'
+  }
+
+  if (!Buffer.isEncoding(encoding)) {
+    throw new TypeError('"encoding" must be a valid string encoding')
+  }
+
+  var length = byteLength(string, encoding) | 0
+  that = createBuffer(that, length)
+
+  var actual = that.write(string, encoding)
+
+  if (actual !== length) {
+    // Writing a hex string, for example, that contains invalid characters will
+    // cause everything after the first invalid character to be ignored. (e.g.
+    // 'abxxcd' will be treated as 'ab')
+    that = that.slice(0, actual)
+  }
+
+  return that
+}
+
+function fromArrayLike (that, array) {
+  var length = array.length < 0 ? 0 : checked(array.length) | 0
+  that = createBuffer(that, length)
+  for (var i = 0; i < length; i += 1) {
+    that[i] = array[i] & 255
+  }
+  return that
+}
+
+function fromArrayBuffer (that, array, byteOffset, length) {
+  array.byteLength // this throws if `array` is not a valid ArrayBuffer
+
+  if (byteOffset < 0 || array.byteLength < byteOffset) {
+    throw new RangeError('\'offset\' is out of bounds')
+  }
+
+  if (array.byteLength < byteOffset + (length || 0)) {
+    throw new RangeError('\'length\' is out of bounds')
+  }
+
+  if (byteOffset === undefined && length === undefined) {
+    array = new Uint8Array(array)
+  } else if (length === undefined) {
+    array = new Uint8Array(array, byteOffset)
+  } else {
+    array = new Uint8Array(array, byteOffset, length)
+  }
+
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = array
+    that.__proto__ = Buffer.prototype
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    that = fromArrayLike(that, array)
+  }
+  return that
+}
+
+function fromObject (that, obj) {
+  if (Buffer.isBuffer(obj)) {
+    var len = checked(obj.length) | 0
+    that = createBuffer(that, len)
+
+    if (that.length === 0) {
+      return that
+    }
+
+    obj.copy(that, 0, 0, len)
+    return that
+  }
+
+  if (obj) {
+    if ((typeof ArrayBuffer !== 'undefined' &&
+        obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
+      if (typeof obj.length !== 'number' || isnan(obj.length)) {
+        return createBuffer(that, 0)
+      }
+      return fromArrayLike(that, obj)
+    }
+
+    if (obj.type === 'Buffer' && isArray(obj.data)) {
+      return fromArrayLike(that, obj.data)
+    }
+  }
+
+  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
+}
+
+function checked (length) {
+  // Note: cannot use `length < kMaxLength()` here because that fails when
+  // length is NaN (which is otherwise coerced to zero.)
+  if (length >= kMaxLength()) {
+    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
+  }
+  return length | 0
+}
+
+function SlowBuffer (length) {
+  if (+length != length) { // eslint-disable-line eqeqeq
+    length = 0
+  }
+  return Buffer.alloc(+length)
+}
+
+Buffer.isBuffer = function isBuffer (b) {
+  return !!(b != null && b._isBuffer)
+}
+
+Buffer.compare = function compare (a, b) {
+  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+    throw new TypeError('Arguments must be Buffers')
+  }
+
+  if (a === b) return 0
+
+  var x = a.length
+  var y = b.length
+
+  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+    if (a[i] !== b[i]) {
+      x = a[i]
+      y = b[i]
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+Buffer.isEncoding = function isEncoding (encoding) {
+  switch (String(encoding).toLowerCase()) {
+    case 'hex':
+    case 'utf8':
+    case 'utf-8':
+    case 'ascii':
+    case 'latin1':
+    case 'binary':
+    case 'base64':
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      return true
+    default:
+      return false
+  }
+}
+
+Buffer.concat = function concat (list, length) {
+  if (!isArray(list)) {
+    throw new TypeError('"list" argument must be an Array of Buffers')
+  }
+
+  if (list.length === 0) {
+    return Buffer.alloc(0)
+  }
+
+  var i
+  if (length === undefined) {
+    length = 0
+    for (i = 0; i < list.length; ++i) {
+      length += list[i].length
+    }
+  }
+
+  var buffer = Buffer.allocUnsafe(length)
+  var pos = 0
+  for (i = 0; i < list.length; ++i) {
+    var buf = list[i]
+    if (!Buffer.isBuffer(buf)) {
+      throw new TypeError('"list" argument must be an Array of Buffers')
+    }
+    buf.copy(buffer, pos)
+    pos += buf.length
+  }
+  return buffer
+}
+
+function byteLength (string, encoding) {
+  if (Buffer.isBuffer(string)) {
+    return string.length
+  }
+  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
+      (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
+    return string.byteLength
+  }
+  if (typeof string !== 'string') {
+    string = '' + string
+  }
+
+  var len = string.length
+  if (len === 0) return 0
+
+  // Use a for loop to avoid recursion
+  var loweredCase = false
+  for (;;) {
+    switch (encoding) {
+      case 'ascii':
+      case 'latin1':
+      case 'binary':
+        return len
+      case 'utf8':
+      case 'utf-8':
+      case undefined:
+        return utf8ToBytes(string).length
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return len * 2
+      case 'hex':
+        return len >>> 1
+      case 'base64':
+        return base64ToBytes(string).length
+      default:
+        if (loweredCase) return utf8ToBytes(string).length // assume utf8
+        encoding = ('' + encoding).toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+Buffer.byteLength = byteLength
+
+function slowToString (encoding, start, end) {
+  var loweredCase = false
+
+  // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
+  // property of a typed array.
+
+  // This behaves neither like String nor Uint8Array in that we set start/end
+  // to their upper/lower bounds if the value passed is out of range.
+  // undefined is handled specially as per ECMA-262 6th Edition,
+  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
+  if (start === undefined || start < 0) {
+    start = 0
+  }
+  // Return early if start > this.length. Done here to prevent potential uint32
+  // coercion fail below.
+  if (start > this.length) {
+    return ''
+  }
+
+  if (end === undefined || end > this.length) {
+    end = this.length
+  }
+
+  if (end <= 0) {
+    return ''
+  }
+
+  // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
+  end >>>= 0
+  start >>>= 0
+
+  if (end <= start) {
+    return ''
+  }
+
+  if (!encoding) encoding = 'utf8'
+
+  while (true) {
+    switch (encoding) {
+      case 'hex':
+        return hexSlice(this, start, end)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Slice(this, start, end)
+
+      case 'ascii':
+        return asciiSlice(this, start, end)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Slice(this, start, end)
+
+      case 'base64':
+        return base64Slice(this, start, end)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return utf16leSlice(this, start, end)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = (encoding + '').toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+// The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
+// Buffer instances.
+Buffer.prototype._isBuffer = true
+
+function swap (b, n, m) {
+  var i = b[n]
+  b[n] = b[m]
+  b[m] = i
+}
+
+Buffer.prototype.swap16 = function swap16 () {
+  var len = this.length
+  if (len % 2 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 16-bits')
+  }
+  for (var i = 0; i < len; i += 2) {
+    swap(this, i, i + 1)
+  }
+  return this
+}
+
+Buffer.prototype.swap32 = function swap32 () {
+  var len = this.length
+  if (len % 4 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 32-bits')
+  }
+  for (var i = 0; i < len; i += 4) {
+    swap(this, i, i + 3)
+    swap(this, i + 1, i + 2)
+  }
+  return this
+}
+
+Buffer.prototype.swap64 = function swap64 () {
+  var len = this.length
+  if (len % 8 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 64-bits')
+  }
+  for (var i = 0; i < len; i += 8) {
+    swap(this, i, i + 7)
+    swap(this, i + 1, i + 6)
+    swap(this, i + 2, i + 5)
+    swap(this, i + 3, i + 4)
+  }
+  return this
+}
+
+Buffer.prototype.toString = function toString () {
+  var length = this.length | 0
+  if (length === 0) return ''
+  if (arguments.length === 0) return utf8Slice(this, 0, length)
+  return slowToString.apply(this, arguments)
+}
+
+Buffer.prototype.equals = function equals (b) {
+  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  if (this === b) return true
+  return Buffer.compare(this, b) === 0
+}
+
+Buffer.prototype.inspect = function inspect () {
+  var str = ''
+  var max = exports.INSPECT_MAX_BYTES
+  if (this.length > 0) {
+    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
+    if (this.length > max) str += ' ... '
+  }
+  return '<Buffer ' + str + '>'
+}
+
+Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+  if (!Buffer.isBuffer(target)) {
+    throw new TypeError('Argument must be a Buffer')
+  }
+
+  if (start === undefined) {
+    start = 0
+  }
+  if (end === undefined) {
+    end = target ? target.length : 0
+  }
+  if (thisStart === undefined) {
+    thisStart = 0
+  }
+  if (thisEnd === undefined) {
+    thisEnd = this.length
+  }
+
+  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
+    throw new RangeError('out of range index')
+  }
+
+  if (thisStart >= thisEnd && start >= end) {
+    return 0
+  }
+  if (thisStart >= thisEnd) {
+    return -1
+  }
+  if (start >= end) {
+    return 1
+  }
+
+  start >>>= 0
+  end >>>= 0
+  thisStart >>>= 0
+  thisEnd >>>= 0
+
+  if (this === target) return 0
+
+  var x = thisEnd - thisStart
+  var y = end - start
+  var len = Math.min(x, y)
+
+  var thisCopy = this.slice(thisStart, thisEnd)
+  var targetCopy = target.slice(start, end)
+
+  for (var i = 0; i < len; ++i) {
+    if (thisCopy[i] !== targetCopy[i]) {
+      x = thisCopy[i]
+      y = targetCopy[i]
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+//
+// Arguments:
+// - buffer - a Buffer to search
+// - val - a string, Buffer, or number
+// - byteOffset - an index into `buffer`; will be clamped to an int32
+// - encoding - an optional encoding, relevant is val is a string
+// - dir - true for indexOf, false for lastIndexOf
+function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+  // Empty buffer means no match
+  if (buffer.length === 0) return -1
+
+  // Normalize byteOffset
+  if (typeof byteOffset === 'string') {
+    encoding = byteOffset
+    byteOffset = 0
+  } else if (byteOffset > 0x7fffffff) {
+    byteOffset = 0x7fffffff
+  } else if (byteOffset < -0x80000000) {
+    byteOffset = -0x80000000
+  }
+  byteOffset = +byteOffset  // Coerce to Number.
+  if (isNaN(byteOffset)) {
+    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+    byteOffset = dir ? 0 : (buffer.length - 1)
+  }
+
+  // Normalize byteOffset: negative offsets start from the end of the buffer
+  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
+  if (byteOffset >= buffer.length) {
+    if (dir) return -1
+    else byteOffset = buffer.length - 1
+  } else if (byteOffset < 0) {
+    if (dir) byteOffset = 0
+    else return -1
+  }
+
+  // Normalize val
+  if (typeof val === 'string') {
+    val = Buffer.from(val, encoding)
+  }
+
+  // Finally, search either indexOf (if dir is true) or lastIndexOf
+  if (Buffer.isBuffer(val)) {
+    // Special case: looking for empty string/buffer always fails
+    if (val.length === 0) {
+      return -1
+    }
+    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+  } else if (typeof val === 'number') {
+    val = val & 0xFF // Search for a byte value [0-255]
+    if (Buffer.TYPED_ARRAY_SUPPORT &&
+        typeof Uint8Array.prototype.indexOf === 'function') {
+      if (dir) {
+        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+      } else {
+        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+      }
+    }
+    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+  }
+
+  throw new TypeError('val must be string, number or Buffer')
+}
+
+function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
+  var indexSize = 1
+  var arrLength = arr.length
+  var valLength = val.length
+
+  if (encoding !== undefined) {
+    encoding = String(encoding).toLowerCase()
+    if (encoding === 'ucs2' || encoding === 'ucs-2' ||
+        encoding === 'utf16le' || encoding === 'utf-16le') {
+      if (arr.length < 2 || val.length < 2) {
+        return -1
+      }
+      indexSize = 2
+      arrLength /= 2
+      valLength /= 2
+      byteOffset /= 2
+    }
+  }
+
+  function read (buf, i) {
+    if (indexSize === 1) {
+      return buf[i]
+    } else {
+      return buf.readUInt16BE(i * indexSize)
+    }
+  }
+
+  var i
+  if (dir) {
+    var foundIndex = -1
+    for (i = byteOffset; i < arrLength; i++) {
+      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+        if (foundIndex === -1) foundIndex = i
+        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+      } else {
+        if (foundIndex !== -1) i -= i - foundIndex
+        foundIndex = -1
+      }
+    }
+  } else {
+    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
+    for (i = byteOffset; i >= 0; i--) {
+      var found = true
+      for (var j = 0; j < valLength; j++) {
+        if (read(arr, i + j) !== read(val, j)) {
+          found = false
+          break
+        }
+      }
+      if (found) return i
+    }
+  }
+
+  return -1
+}
+
+Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
+  return this.indexOf(val, byteOffset, encoding) !== -1
+}
+
+Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+}
+
+Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
+}
+
+function hexWrite (buf, string, offset, length) {
+  offset = Number(offset) || 0
+  var remaining = buf.length - offset
+  if (!length) {
+    length = remaining
+  } else {
+    length = Number(length)
+    if (length > remaining) {
+      length = remaining
+    }
+  }
+
+  // must be an even number of digits
+  var strLen = string.length
+  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
+
+  if (length > strLen / 2) {
+    length = strLen / 2
+  }
+  for (var i = 0; i < length; ++i) {
+    var parsed = parseInt(string.substr(i * 2, 2), 16)
+    if (isNaN(parsed)) return i
+    buf[offset + i] = parsed
+  }
+  return i
+}
+
+function utf8Write (buf, string, offset, length) {
+  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+function asciiWrite (buf, string, offset, length) {
+  return blitBuffer(asciiToBytes(string), buf, offset, length)
+}
+
+function latin1Write (buf, string, offset, length) {
+  return asciiWrite(buf, string, offset, length)
+}
+
+function base64Write (buf, string, offset, length) {
+  return blitBuffer(base64ToBytes(string), buf, offset, length)
+}
+
+function ucs2Write (buf, string, offset, length) {
+  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+Buffer.prototype.write = function write (string, offset, length, encoding) {
+  // Buffer#write(string)
+  if (offset === undefined) {
+    encoding = 'utf8'
+    length = this.length
+    offset = 0
+  // Buffer#write(string, encoding)
+  } else if (length === undefined && typeof offset === 'string') {
+    encoding = offset
+    length = this.length
+    offset = 0
+  // Buffer#write(string, offset[, length][, encoding])
+  } else if (isFinite(offset)) {
+    offset = offset | 0
+    if (isFinite(length)) {
+      length = length | 0
+      if (encoding === undefined) encoding = 'utf8'
+    } else {
+      encoding = length
+      length = undefined
+    }
+  // legacy write(string, encoding, offset, length) - remove in v0.13
+  } else {
+    throw new Error(
+      'Buffer.write(string, encoding, offset[, length]) is no longer supported'
+    )
+  }
+
+  var remaining = this.length - offset
+  if (length === undefined || length > remaining) length = remaining
+
+  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+    throw new RangeError('Attempt to write outside buffer bounds')
+  }
+
+  if (!encoding) encoding = 'utf8'
+
+  var loweredCase = false
+  for (;;) {
+    switch (encoding) {
+      case 'hex':
+        return hexWrite(this, string, offset, length)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Write(this, string, offset, length)
+
+      case 'ascii':
+        return asciiWrite(this, string, offset, length)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Write(this, string, offset, length)
+
+      case 'base64':
+        // Warning: maxLength not taken into account in base64Write
+        return base64Write(this, string, offset, length)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return ucs2Write(this, string, offset, length)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = ('' + encoding).toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+Buffer.prototype.toJSON = function toJSON () {
+  return {
+    type: 'Buffer',
+    data: Array.prototype.slice.call(this._arr || this, 0)
+  }
+}
+
+function base64Slice (buf, start, end) {
+  if (start === 0 && end === buf.length) {
+    return base64.fromByteArray(buf)
+  } else {
+    return base64.fromByteArray(buf.slice(start, end))
+  }
+}
+
+function utf8Slice (buf, start, end) {
+  end = Math.min(buf.length, end)
+  var res = []
+
+  var i = start
+  while (i < end) {
+    var firstByte = buf[i]
+    var codePoint = null
+    var bytesPerSequence = (firstByte > 0xEF) ? 4
+      : (firstByte > 0xDF) ? 3
+      : (firstByte > 0xBF) ? 2
+      : 1
+
+    if (i + bytesPerSequence <= end) {
+      var secondByte, thirdByte, fourthByte, tempCodePoint
+
+      switch (bytesPerSequence) {
+        case 1:
+          if (firstByte < 0x80) {
+            codePoint = firstByte
+          }
+          break
+        case 2:
+          secondByte = buf[i + 1]
+          if ((secondByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F)
+            if (tempCodePoint > 0x7F) {
+              codePoint = tempCodePoint
+            }
+          }
+          break
+        case 3:
+          secondByte = buf[i + 1]
+          thirdByte = buf[i + 2]
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F)
+            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
+              codePoint = tempCodePoint
+            }
+          }
+          break
+        case 4:
+          secondByte = buf[i + 1]
+          thirdByte = buf[i + 2]
+          fourthByte = buf[i + 3]
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F)
+            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
+              codePoint = tempCodePoint
+            }
+          }
+      }
+    }
+
+    if (codePoint === null) {
+      // we did not generate a valid codePoint so insert a
+      // replacement char (U+FFFD) and advance only 1 byte
+      codePoint = 0xFFFD
+      bytesPerSequence = 1
+    } else if (codePoint > 0xFFFF) {
+      // encode to utf16 (surrogate pair dance)
+      codePoint -= 0x10000
+      res.push(codePoint >>> 10 & 0x3FF | 0xD800)
+      codePoint = 0xDC00 | codePoint & 0x3FF
+    }
+
+    res.push(codePoint)
+    i += bytesPerSequence
+  }
+
+  return decodeCodePointsArray(res)
+}
+
+// Based on http://stackoverflow.com/a/22747272/680742, the browser with
+// the lowest limit is Chrome, with 0x10000 args.
+// We go 1 magnitude less, for safety
+var MAX_ARGUMENTS_LENGTH = 0x1000
+
+function decodeCodePointsArray (codePoints) {
+  var len = codePoints.length
+  if (len <= MAX_ARGUMENTS_LENGTH) {
+    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
+  }
+
+  // Decode in chunks to avoid "call stack size exceeded".
+  var res = ''
+  var i = 0
+  while (i < len) {
+    res += String.fromCharCode.apply(
+      String,
+      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+    )
+  }
+  return res
+}
+
+function asciiSlice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i] & 0x7F)
+  }
+  return ret
+}
+
+function latin1Slice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i])
+  }
+  return ret
+}
+
+function hexSlice (buf, start, end) {
+  var len = buf.length
+
+  if (!start || start < 0) start = 0
+  if (!end || end < 0 || end > len) end = len
+
+  var out = ''
+  for (var i = start; i < end; ++i) {
+    out += toHex(buf[i])
+  }
+  return out
+}
+
+function utf16leSlice (buf, start, end) {
+  var bytes = buf.slice(start, end)
+  var res = ''
+  for (var i = 0; i < bytes.length; i += 2) {
+    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
+  }
+  return res
+}
+
+Buffer.prototype.slice = function slice (start, end) {
+  var len = this.length
+  start = ~~start
+  end = end === undefined ? len : ~~end
+
+  if (start < 0) {
+    start += len
+    if (start < 0) start = 0
+  } else if (start > len) {
+    start = len
+  }
+
+  if (end < 0) {
+    end += len
+    if (end < 0) end = 0
+  } else if (end > len) {
+    end = len
+  }
+
+  if (end < start) end = start
+
+  var newBuf
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    newBuf = this.subarray(start, end)
+    newBuf.__proto__ = Buffer.prototype
+  } else {
+    var sliceLen = end - start
+    newBuf = new Buffer(sliceLen, undefined)
+    for (var i = 0; i < sliceLen; ++i) {
+      newBuf[i] = this[i + start]
+    }
+  }
+
+  return newBuf
+}
+
+/*
+ * Need to make sure that buffer isn't trying to write out of bounds.
+ */
+function checkOffset (offset, ext, length) {
+  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
+  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+}
+
+Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var val = this[offset]
+  var mul = 1
+  var i = 0
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul
+  }
+
+  return val
+}
+
+Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    checkOffset(offset, byteLength, this.length)
+  }
+
+  var val = this[offset + --byteLength]
+  var mul = 1
+  while (byteLength > 0 && (mul *= 0x100)) {
+    val += this[offset + --byteLength] * mul
+  }
+
+  return val
+}
+
+Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length)
+  return this[offset]
+}
+
+Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  return this[offset] | (this[offset + 1] << 8)
+}
+
+Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  return (this[offset] << 8) | this[offset + 1]
+}
+
+Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return ((this[offset]) |
+      (this[offset + 1] << 8) |
+      (this[offset + 2] << 16)) +
+      (this[offset + 3] * 0x1000000)
+}
+
+Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset] * 0x1000000) +
+    ((this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    this[offset + 3])
+}
+
+Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var val = this[offset]
+  var mul = 1
+  var i = 0
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul
+  }
+  mul *= 0x80
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+  return val
+}
+
+Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var i = byteLength
+  var mul = 1
+  var val = this[offset + --i]
+  while (i > 0 && (mul *= 0x100)) {
+    val += this[offset + --i] * mul
+  }
+  mul *= 0x80
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+  return val
+}
+
+Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length)
+  if (!(this[offset] & 0x80)) return (this[offset])
+  return ((0xff - this[offset] + 1) * -1)
+}
+
+Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  var val = this[offset] | (this[offset + 1] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  var val = this[offset + 1] | (this[offset] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset]) |
+    (this[offset + 1] << 8) |
+    (this[offset + 2] << 16) |
+    (this[offset + 3] << 24)
+}
+
+Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset] << 24) |
+    (this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    (this[offset + 3])
+}
+
+Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, true, 23, 4)
+}
+
+Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, false, 23, 4)
+}
+
+Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, true, 52, 8)
+}
+
+Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, false, 52, 8)
+}
+
+function checkInt (buf, value, offset, ext, max, min) {
+  if (!Buffer.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
+  if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+}
+
+Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+    checkInt(this, value, offset, byteLength, maxBytes, 0)
+  }
+
+  var mul = 1
+  var i = 0
+  this[offset] = value & 0xFF
+  while (++i < byteLength && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+    checkInt(this, value, offset, byteLength, maxBytes, 0)
+  }
+
+  var i = byteLength - 1
+  var mul = 1
+  this[offset + i] = value & 0xFF
+  while (--i >= 0 && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  this[offset] = (value & 0xff)
+  return offset + 1
+}
+
+function objectWriteUInt16 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
+    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+      (littleEndian ? i : 1 - i) * 8
+  }
+}
+
+Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+  } else {
+    objectWriteUInt16(this, value, offset, true)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = (value & 0xff)
+  } else {
+    objectWriteUInt16(this, value, offset, false)
+  }
+  return offset + 2
+}
+
+function objectWriteUInt32 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffffffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
+    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
+  }
+}
+
+Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset + 3] = (value >>> 24)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 1] = (value >>> 8)
+    this[offset] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, true)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, false)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1)
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+  }
+
+  var i = 0
+  var mul = 1
+  var sub = 0
+  this[offset] = value & 0xFF
+  while (++i < byteLength && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
+      sub = 1
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1)
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+  }
+
+  var i = byteLength - 1
+  var mul = 1
+  var sub = 0
+  this[offset + i] = value & 0xFF
+  while (--i >= 0 && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
+      sub = 1
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  if (value < 0) value = 0xff + value + 1
+  this[offset] = (value & 0xff)
+  return offset + 1
+}
+
+Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+  } else {
+    objectWriteUInt16(this, value, offset, true)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = (value & 0xff)
+  } else {
+    objectWriteUInt16(this, value, offset, false)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 3] = (value >>> 24)
+  } else {
+    objectWriteUInt32(this, value, offset, true)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (value < 0) value = 0xffffffff + value + 1
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, false)
+  }
+  return offset + 4
+}
+
+function checkIEEE754 (buf, value, offset, ext, max, min) {
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+  if (offset < 0) throw new RangeError('Index out of range')
+}
+
+function writeFloat (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
+  }
+  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+  return offset + 4
+}
+
+Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, false, noAssert)
+}
+
+function writeDouble (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
+  }
+  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+  return offset + 8
+}
+
+Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, false, noAssert)
+}
+
+// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+  if (!start) start = 0
+  if (!end && end !== 0) end = this.length
+  if (targetStart >= target.length) targetStart = target.length
+  if (!targetStart) targetStart = 0
+  if (end > 0 && end < start) end = start
+
+  // Copy 0 bytes; we're done
+  if (end === start) return 0
+  if (target.length === 0 || this.length === 0) return 0
+
+  // Fatal error conditions
+  if (targetStart < 0) {
+    throw new RangeError('targetStart out of bounds')
+  }
+  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+  if (end < 0) throw new RangeError('sourceEnd out of bounds')
+
+  // Are we oob?
+  if (end > this.length) end = this.length
+  if (target.length - targetStart < end - start) {
+    end = target.length - targetStart + start
+  }
+
+  var len = end - start
+  var i
+
+  if (this === target && start < targetStart && targetStart < end) {
+    // descending copy from end
+    for (i = len - 1; i >= 0; --i) {
+      target[i + targetStart] = this[i + start]
+    }
+  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+    // ascending copy from start
+    for (i = 0; i < len; ++i) {
+      target[i + targetStart] = this[i + start]
+    }
+  } else {
+    Uint8Array.prototype.set.call(
+      target,
+      this.subarray(start, start + len),
+      targetStart
+    )
+  }
+
+  return len
+}
+
+// Usage:
+//    buffer.fill(number[, offset[, end]])
+//    buffer.fill(buffer[, offset[, end]])
+//    buffer.fill(string[, offset[, end]][, encoding])
+Buffer.prototype.fill = function fill (val, start, end, encoding) {
+  // Handle string cases:
+  if (typeof val === 'string') {
+    if (typeof start === 'string') {
+      encoding = start
+      start = 0
+      end = this.length
+    } else if (typeof end === 'string') {
+      encoding = end
+      end = this.length
+    }
+    if (val.length === 1) {
+      var code = val.charCodeAt(0)
+      if (code < 256) {
+        val = code
+      }
+    }
+    if (encoding !== undefined && typeof encoding !== 'string') {
+      throw new TypeError('encoding must be a string')
+    }
+    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
+      throw new TypeError('Unknown encoding: ' + encoding)
+    }
+  } else if (typeof val === 'number') {
+    val = val & 255
+  }
+
+  // Invalid ranges are not set to a default, so can range check early.
+  if (start < 0 || this.length < start || this.length < end) {
+    throw new RangeError('Out of range index')
+  }
+
+  if (end <= start) {
+    return this
+  }
+
+  start = start >>> 0
+  end = end === undefined ? this.length : end >>> 0
+
+  if (!val) val = 0
+
+  var i
+  if (typeof val === 'number') {
+    for (i = start; i < end; ++i) {
+      this[i] = val
+    }
+  } else {
+    var bytes = Buffer.isBuffer(val)
+      ? val
+      : utf8ToBytes(new Buffer(val, encoding).toString())
+    var len = bytes.length
+    for (i = 0; i < end - start; ++i) {
+      this[i + start] = bytes[i % len]
+    }
+  }
+
+  return this
+}
+
+// HELPER FUNCTIONS
+// ================
+
+var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g
+
+function base64clean (str) {
+  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
+  // Node converts strings with length < 2 to ''
+  if (str.length < 2) return ''
+  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+  while (str.length % 4 !== 0) {
+    str = str + '='
+  }
+  return str
+}
+
+function stringtrim (str) {
+  if (str.trim) return str.trim()
+  return str.replace(/^\s+|\s+$/g, '')
+}
+
+function toHex (n) {
+  if (n < 16) return '0' + n.toString(16)
+  return n.toString(16)
+}
+
+function utf8ToBytes (string, units) {
+  units = units || Infinity
+  var codePoint
+  var length = string.length
+  var leadSurrogate = null
+  var bytes = []
+
+  for (var i = 0; i < length; ++i) {
+    codePoint = string.charCodeAt(i)
+
+    // is surrogate component
+    if (codePoint > 0xD7FF && codePoint < 0xE000) {
+      // last char was a lead
+      if (!leadSurrogate) {
+        // no lead yet
+        if (codePoint > 0xDBFF) {
+          // unexpected trail
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+          continue
+        } else if (i + 1 === length) {
+          // unpaired lead
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+          continue
+        }
+
+        // valid lead
+        leadSurrogate = codePoint
+
+        continue
+      }
+
+      // 2 leads in a row
+      if (codePoint < 0xDC00) {
+        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+        leadSurrogate = codePoint
+        continue
+      }
+
+      // valid surrogate pair
+      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
+    } else if (leadSurrogate) {
+      // valid bmp char, but last char was a lead
+      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+    }
+
+    leadSurrogate = null
+
+    // encode utf8
+    if (codePoint < 0x80) {
+      if ((units -= 1) < 0) break
+      bytes.push(codePoint)
+    } else if (codePoint < 0x800) {
+      if ((units -= 2) < 0) break
+      bytes.push(
+        codePoint >> 0x6 | 0xC0,
+        codePoint & 0x3F | 0x80
+      )
+    } else if (codePoint < 0x10000) {
+      if ((units -= 3) < 0) break
+      bytes.push(
+        codePoint >> 0xC | 0xE0,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      )
+    } else if (codePoint < 0x110000) {
+      if ((units -= 4) < 0) break
+      bytes.push(
+        codePoint >> 0x12 | 0xF0,
+        codePoint >> 0xC & 0x3F | 0x80,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      )
+    } else {
+      throw new Error('Invalid code point')
+    }
+  }
+
+  return bytes
+}
+
+function asciiToBytes (str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; ++i) {
+    // Node's code seems to be doing this and not & 0x7F..
+    byteArray.push(str.charCodeAt(i) & 0xFF)
+  }
+  return byteArray
+}
+
+function utf16leToBytes (str, units) {
+  var c, hi, lo
+  var byteArray = []
+  for (var i = 0; i < str.length; ++i) {
+    if ((units -= 2) < 0) break
+
+    c = str.charCodeAt(i)
+    hi = c >> 8
+    lo = c % 256
+    byteArray.push(lo)
+    byteArray.push(hi)
+  }
+
+  return byteArray
+}
+
+function base64ToBytes (str) {
+  return base64.toByteArray(base64clean(str))
+}
+
+function blitBuffer (src, dst, offset, length) {
+  for (var i = 0; i < length; ++i) {
+    if ((i + offset >= dst.length) || (i >= src.length)) break
+    dst[i + offset] = src[i]
+  }
+  return i
+}
+
+function isnan (val) {
+  return val !== val // eslint-disable-line no-self-compare
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vue2-dropzone/dist/vue2Dropzone.min.css":
+/*!**********************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue2-dropzone/dist/vue2Dropzone.min.css ***!
+  \**********************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "/*\n * The MIT License\n * Copyright (c) 2012 Matias Meno <m@tias.me>\n */\n@-webkit-keyframes passing-through {\n  0% {\n    opacity: 0;\n    -webkit-transform: translateY(40px);\n    transform: translateY(40px); }\n  30%, 70% {\n    opacity: 1;\n    -webkit-transform: translateY(0px);\n    transform: translateY(0px); }\n  100% {\n    opacity: 0;\n    -webkit-transform: translateY(-40px);\n    transform: translateY(-40px); } }\n@keyframes passing-through {\n  0% {\n    opacity: 0;\n    -webkit-transform: translateY(40px);\n    transform: translateY(40px); }\n  30%, 70% {\n    opacity: 1;\n    -webkit-transform: translateY(0px);\n    transform: translateY(0px); }\n  100% {\n    opacity: 0;\n    -webkit-transform: translateY(-40px);\n    transform: translateY(-40px); } }\n@-webkit-keyframes slide-in {\n  0% {\n    opacity: 0;\n    -webkit-transform: translateY(40px);\n    transform: translateY(40px); }\n  30% {\n    opacity: 1;\n    -webkit-transform: translateY(0px);\n    transform: translateY(0px); } }\n@keyframes slide-in {\n  0% {\n    opacity: 0;\n    -webkit-transform: translateY(40px);\n    transform: translateY(40px); }\n  30% {\n    opacity: 1;\n    -webkit-transform: translateY(0px);\n    transform: translateY(0px); } }\n@-webkit-keyframes pulse {\n  0% {\n    -webkit-transform: scale(1);\n    transform: scale(1); }\n  10% {\n    -webkit-transform: scale(1.1);\n    transform: scale(1.1); }\n  20% {\n    -webkit-transform: scale(1);\n    transform: scale(1); } }\n@keyframes pulse {\n  0% {\n    -webkit-transform: scale(1);\n    transform: scale(1); }\n  10% {\n    -webkit-transform: scale(1.1);\n    transform: scale(1.1); }\n  20% {\n    -webkit-transform: scale(1);\n    transform: scale(1); } }\n.dropzone, .dropzone * {\n  box-sizing: border-box; }\n\n.dropzone {\n  min-height: 150px;\n  border: 2px solid rgba(0, 0, 0, 0.3);\n  background: white;\n  padding: 20px 20px; }\n  .dropzone.dz-clickable {\n    cursor: pointer; }\n    .dropzone.dz-clickable * {\n      cursor: default; }\n    .dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message * {\n      cursor: pointer; }\n  .dropzone.dz-started .dz-message {\n    display: none; }\n  .dropzone.dz-drag-hover {\n    border-style: solid; }\n    .dropzone.dz-drag-hover .dz-message {\n      opacity: 0.5; }\n  .dropzone .dz-message {\n    text-align: center;\n    margin: 2em 0; }\n  .dropzone .dz-preview {\n    position: relative;\n    display: inline-block;\n    vertical-align: top;\n    margin: 16px;\n    min-height: 100px; }\n    .dropzone .dz-preview:hover {\n      z-index: 1000; }\n      .dropzone .dz-preview:hover .dz-details {\n        opacity: 1; }\n    .dropzone .dz-preview.dz-file-preview .dz-image {\n      border-radius: 20px;\n      background: #999;\n      background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#ddd));\n      background: linear-gradient(to bottom, #eee, #ddd); }\n    .dropzone .dz-preview.dz-file-preview .dz-details {\n      opacity: 1; }\n    .dropzone .dz-preview.dz-image-preview {\n      background: white; }\n      .dropzone .dz-preview.dz-image-preview .dz-details {\n        -webkit-transition: opacity 0.2s linear;\n        transition: opacity 0.2s linear; }\n    .dropzone .dz-preview .dz-remove {\n      font-size: 14px;\n      text-align: center;\n      display: block;\n      cursor: pointer;\n      border: none; }\n      .dropzone .dz-preview .dz-remove:hover {\n        text-decoration: underline; }\n    .dropzone .dz-preview:hover .dz-details {\n      opacity: 1; }\n    .dropzone .dz-preview .dz-details {\n      z-index: 20;\n      position: absolute;\n      top: 0;\n      left: 0;\n      opacity: 0;\n      font-size: 13px;\n      min-width: 100%;\n      max-width: 100%;\n      padding: 2em 1em;\n      text-align: center;\n      color: rgba(0, 0, 0, 0.9);\n      line-height: 150%; }\n      .dropzone .dz-preview .dz-details .dz-size {\n        margin-bottom: 1em;\n        font-size: 16px; }\n      .dropzone .dz-preview .dz-details .dz-filename {\n        white-space: nowrap; }\n        .dropzone .dz-preview .dz-details .dz-filename:hover span {\n          border: 1px solid rgba(200, 200, 200, 0.8);\n          background-color: rgba(255, 255, 255, 0.8); }\n        .dropzone .dz-preview .dz-details .dz-filename:not(:hover) {\n          overflow: hidden;\n          text-overflow: ellipsis; }\n          .dropzone .dz-preview .dz-details .dz-filename:not(:hover) span {\n            border: 1px solid transparent; }\n      .dropzone .dz-preview .dz-details .dz-filename span, .dropzone .dz-preview .dz-details .dz-size span {\n        background-color: rgba(255, 255, 255, 0.4);\n        padding: 0 0.4em;\n        border-radius: 3px; }\n    .dropzone .dz-preview:hover .dz-image img {\n      -webkit-transform: scale(1.05, 1.05);\n      transform: scale(1.05, 1.05);\n      -webkit-filter: blur(8px);\n      filter: blur(8px); }\n    .dropzone .dz-preview .dz-image {\n      border-radius: 20px;\n      overflow: hidden;\n      width: 120px;\n      height: 120px;\n      position: relative;\n      display: block;\n      z-index: 10; }\n      .dropzone .dz-preview .dz-image img {\n        display: block; }\n    .dropzone .dz-preview.dz-success .dz-success-mark {\n      -webkit-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);\n      animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1); }\n    .dropzone .dz-preview.dz-error .dz-error-mark {\n      opacity: 1;\n      -webkit-animation: slide-in 3s cubic-bezier(0.77, 0, 0.175, 1);\n      animation: slide-in 3s cubic-bezier(0.77, 0, 0.175, 1); }\n    .dropzone .dz-preview .dz-success-mark, .dropzone .dz-preview .dz-error-mark {\n      pointer-events: none;\n      opacity: 0;\n      z-index: 500;\n      position: absolute;\n      display: block;\n      top: 50%;\n      left: 50%;\n      margin-left: -27px;\n      margin-top: -27px; }\n      .dropzone .dz-preview .dz-success-mark svg, .dropzone .dz-preview .dz-error-mark svg {\n        display: block;\n        width: 54px;\n        height: 54px; }\n    .dropzone .dz-preview.dz-processing .dz-progress {\n      opacity: 1;\n      -webkit-transition: all 0.2s linear;\n      transition: all 0.2s linear; }\n    .dropzone .dz-preview.dz-complete .dz-progress {\n      opacity: 0;\n      -webkit-transition: opacity 0.4s ease-in;\n      transition: opacity 0.4s ease-in; }\n    .dropzone .dz-preview:not(.dz-processing) .dz-progress {\n      -webkit-animation: pulse 6s ease infinite;\n      animation: pulse 6s ease infinite; }\n    .dropzone .dz-preview .dz-progress {\n      opacity: 1;\n      z-index: 1000;\n      pointer-events: none;\n      position: absolute;\n      height: 16px;\n      left: 50%;\n      top: 50%;\n      margin-top: -8px;\n      width: 80px;\n      margin-left: -40px;\n      background: rgba(255, 255, 255, 0.9);\n      -webkit-transform: scale(1);\n      border-radius: 8px;\n      overflow: hidden; }\n      .dropzone .dz-preview .dz-progress .dz-upload {\n        background: #333;\n        background: -webkit-gradient(linear, left top, left bottom, from(#666), to(#444));\n        background: linear-gradient(to bottom, #666, #444);\n        position: absolute;\n        top: 0;\n        left: 0;\n        bottom: 0;\n        width: 0;\n        -webkit-transition: width 300ms ease-in-out;\n        transition: width 300ms ease-in-out; }\n    .dropzone .dz-preview.dz-error .dz-error-message {\n      display: block; }\n    .dropzone .dz-preview.dz-error:hover .dz-error-message {\n      opacity: 1;\n      pointer-events: auto; }\n    .dropzone .dz-preview .dz-error-message {\n      pointer-events: none;\n      z-index: 1000;\n      position: absolute;\n      display: block;\n      display: none;\n      opacity: 0;\n      -webkit-transition: opacity 0.3s ease;\n      transition: opacity 0.3s ease;\n      border-radius: 8px;\n      font-size: 13px;\n      top: 130px;\n      left: -10px;\n      width: 140px;\n      background: #be2626;\n      background: -webkit-gradient(linear, left top, left bottom, from(#be2626), to(#a92222));\n      background: linear-gradient(to bottom, #be2626, #a92222);\n      padding: 0.5em 1.2em;\n      color: white; }\n      .dropzone .dz-preview .dz-error-message:after {\n        content: '';\n        position: absolute;\n        top: -6px;\n        left: 64px;\n        width: 0;\n        height: 0;\n        border-left: 6px solid transparent;\n        border-right: 6px solid transparent;\n        border-bottom: 6px solid #be2626; }\n.vue-dropzone{border:2px solid #e5e5e5;font-family:Arial,sans-serif;letter-spacing:.2px;color:#777;-webkit-transition:.2s linear;transition:.2s linear}.vue-dropzone:hover{background-color:#f6f6f6}.vue-dropzone>i{color:#ccc}.vue-dropzone>.dz-preview .dz-image{border-radius:0;width:100%;height:100%}.vue-dropzone>.dz-preview .dz-image img:not([src]){width:200px;height:200px}.vue-dropzone>.dz-preview .dz-image:hover img{-webkit-transform:none;transform:none;-webkit-filter:none}.vue-dropzone>.dz-preview .dz-details{bottom:0;top:0;color:#fff;background-color:rgba(33,150,243,.8);-webkit-transition:opacity .2s linear;transition:opacity .2s linear;text-align:left}.vue-dropzone>.dz-preview .dz-details .dz-filename{overflow:hidden}.vue-dropzone>.dz-preview .dz-details .dz-filename span,.vue-dropzone>.dz-preview .dz-details .dz-size span{background-color:transparent}.vue-dropzone>.dz-preview .dz-details .dz-filename:not(:hover) span{border:none}.vue-dropzone>.dz-preview .dz-details .dz-filename:hover span{background-color:transparent;border:none}.vue-dropzone>.dz-preview .dz-progress .dz-upload{background:#ccc}.vue-dropzone>.dz-preview .dz-remove{position:absolute;z-index:30;color:#fff;margin-left:15px;padding:10px;top:inherit;bottom:15px;border:2px #fff solid;text-decoration:none;text-transform:uppercase;font-size:.8rem;font-weight:800;letter-spacing:1.1px;opacity:0}.vue-dropzone>.dz-preview:hover .dz-remove{opacity:1}.vue-dropzone>.dz-preview .dz-error-mark,.vue-dropzone>.dz-preview .dz-success-mark{margin-left:auto;margin-top:auto;width:100%;top:35%;left:0}.vue-dropzone>.dz-preview .dz-error-mark svg,.vue-dropzone>.dz-preview .dz-success-mark svg{margin-left:auto;margin-right:auto}.vue-dropzone>.dz-preview .dz-error-message{margin-left:auto;margin-right:auto;left:0;width:100%;text-align:center}.vue-dropzone>.dz-preview .dz-error-message:after{display:none}", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ChatFormComponent.vue?vue&type=style&index=0&lang=css&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ChatFormComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.form {\n    padding: 8px;\n}\n.form-input {\n    width: 100%;\n    border: 1px solid #d3e0e9;\n    padding: 5px 10px;\n    outline: none;\n}\n.notice {\n    color: #aaa;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MessageComponent.vue?vue&type=style&index=0&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MessageComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.image {\n    min-height: 350px;\n}\n/* Small devices (portrait tablets and large phones, 600px and up) */\n@media only screen and (min-width: 600px) {\n.image {\n        min-height: 300px;\n}\n}\n.view-badge{\n    position: absolute;\n    bottom: 0;\n    left: 5;\n    margin-bottom: 10px;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/chat/FormComponent.vue?vue&type=style&index=0&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/chat/FormComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.input-round {\n    border-radius: 20px 0px 0px 20px !important;\n}\n.btn-round {\n    border-radius: 0px 20px 20px 0px !important;\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/lib/css-base.js":
+/*!*************************************************!*\
+  !*** ./node_modules/css-loader/lib/css-base.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/ieee754/index.js":
+/*!***************************************!*\
+  !*** ./node_modules/ieee754/index.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = ((value * c) - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/is-buffer/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/is-buffer/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/isarray/index.js":
+/*!***************************************!*\
+  !*** ./node_modules/isarray/index.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/jquery/dist/jquery.js":
+/*!********************************************!*\
+  !*** ./node_modules/jquery/dist/jquery.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * jQuery JavaScript Library v3.4.1
+ * https://jquery.com/
+ *
+ * Includes Sizzle.js
+ * https://sizzlejs.com/
+ *
+ * Copyright JS Foundation and other contributors
+ * Released under the MIT license
+ * https://jquery.org/license
+ *
+ * Date: 2019-05-01T21:04Z
+ */
+( function( global, factory ) {
+
+	"use strict";
+
+	if (  true && typeof module.exports === "object" ) {
+
+		// For CommonJS and CommonJS-like environments where a proper `window`
+		// is present, execute the factory and get jQuery.
+		// For environments that do not have a `window` with a `document`
+		// (such as Node.js), expose a factory as module.exports.
+		// This accentuates the need for the creation of a real `window`.
+		// e.g. var jQuery = require("jquery")(window);
+		// See ticket #14549 for more info.
+		module.exports = global.document ?
+			factory( global, true ) :
+			function( w ) {
+				if ( !w.document ) {
+					throw new Error( "jQuery requires a window with a document" );
+				}
+				return factory( w );
+			};
+	} else {
+		factory( global );
+	}
+
+// Pass this if window is not defined yet
+} )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
+
+// Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
+// throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
+// arguments.callee.caller (trac-13335). But as of jQuery 3.0 (2016), strict mode should be common
+// enough that all such attempts are guarded in a try block.
+"use strict";
+
+var arr = [];
+
+var document = window.document;
+
+var getProto = Object.getPrototypeOf;
+
+var slice = arr.slice;
+
+var concat = arr.concat;
+
+var push = arr.push;
+
+var indexOf = arr.indexOf;
+
+var class2type = {};
+
+var toString = class2type.toString;
+
+var hasOwn = class2type.hasOwnProperty;
+
+var fnToString = hasOwn.toString;
+
+var ObjectFunctionString = fnToString.call( Object );
+
+var support = {};
+
+var isFunction = function isFunction( obj ) {
+
+      // Support: Chrome <=57, Firefox <=52
+      // In some browsers, typeof returns "function" for HTML <object> elements
+      // (i.e., `typeof document.createElement( "object" ) === "function"`).
+      // We don't want to classify *any* DOM node as a function.
+      return typeof obj === "function" && typeof obj.nodeType !== "number";
+  };
+
+
+var isWindow = function isWindow( obj ) {
+		return obj != null && obj === obj.window;
+	};
+
+
+
+
+	var preservedScriptAttributes = {
+		type: true,
+		src: true,
+		nonce: true,
+		noModule: true
+	};
+
+	function DOMEval( code, node, doc ) {
+		doc = doc || document;
+
+		var i, val,
+			script = doc.createElement( "script" );
+
+		script.text = code;
+		if ( node ) {
+			for ( i in preservedScriptAttributes ) {
+
+				// Support: Firefox 64+, Edge 18+
+				// Some browsers don't support the "nonce" property on scripts.
+				// On the other hand, just using `getAttribute` is not enough as
+				// the `nonce` attribute is reset to an empty string whenever it
+				// becomes browsing-context connected.
+				// See https://github.com/whatwg/html/issues/2369
+				// See https://html.spec.whatwg.org/#nonce-attributes
+				// The `node.getAttribute` check was added for the sake of
+				// `jQuery.globalEval` so that it can fake a nonce-containing node
+				// via an object.
+				val = node[ i ] || node.getAttribute && node.getAttribute( i );
+				if ( val ) {
+					script.setAttribute( i, val );
+				}
+			}
+		}
+		doc.head.appendChild( script ).parentNode.removeChild( script );
+	}
+
+
+function toType( obj ) {
+	if ( obj == null ) {
+		return obj + "";
+	}
+
+	// Support: Android <=2.3 only (functionish RegExp)
+	return typeof obj === "object" || typeof obj === "function" ?
+		class2type[ toString.call( obj ) ] || "object" :
+		typeof obj;
+}
+/* global Symbol */
+// Defining this global in .eslintrc.json would create a danger of using the global
+// unguarded in another place, it seems safer to define global only for this module
+
+
+
+var
+	version = "3.4.1",
+
+	// Define a local copy of jQuery
+	jQuery = function( selector, context ) {
+
+		// The jQuery object is actually just the init constructor 'enhanced'
+		// Need init if jQuery is called (just allow error to be thrown if not included)
+		return new jQuery.fn.init( selector, context );
+	},
+
+	// Support: Android <=4.0 only
+	// Make sure we trim BOM and NBSP
+	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+
+jQuery.fn = jQuery.prototype = {
+
+	// The current version of jQuery being used
+	jquery: version,
+
+	constructor: jQuery,
+
+	// The default length of a jQuery object is 0
+	length: 0,
+
+	toArray: function() {
+		return slice.call( this );
+	},
+
+	// Get the Nth element in the matched element set OR
+	// Get the whole matched element set as a clean array
+	get: function( num ) {
+
+		// Return all the elements in a clean array
+		if ( num == null ) {
+			return slice.call( this );
+		}
+
+		// Return just the one element from the set
+		return num < 0 ? this[ num + this.length ] : this[ num ];
+	},
+
+	// Take an array of elements and push it onto the stack
+	// (returning the new matched element set)
+	pushStack: function( elems ) {
+
+		// Build a new jQuery matched element set
+		var ret = jQuery.merge( this.constructor(), elems );
+
+		// Add the old object onto the stack (as a reference)
+		ret.prevObject = this;
+
+		// Return the newly-formed element set
+		return ret;
+	},
+
+	// Execute a callback for every element in the matched set.
+	each: function( callback ) {
+		return jQuery.each( this, callback );
+	},
+
+	map: function( callback ) {
+		return this.pushStack( jQuery.map( this, function( elem, i ) {
+			return callback.call( elem, i, elem );
+		} ) );
+	},
+
+	slice: function() {
+		return this.pushStack( slice.apply( this, arguments ) );
+	},
+
+	first: function() {
+		return this.eq( 0 );
+	},
+
+	last: function() {
+		return this.eq( -1 );
+	},
+
+	eq: function( i ) {
+		var len = this.length,
+			j = +i + ( i < 0 ? len : 0 );
+		return this.pushStack( j >= 0 && j < len ? [ this[ j ] ] : [] );
+	},
+
+	end: function() {
+		return this.prevObject || this.constructor();
+	},
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	// For internal use only.
 	// Behaves like an Array's method, not like a jQuery method.
@@ -9162,10 +13361,16 @@ jQuery.extend( {
 		return true;
 	},
 
+<<<<<<< HEAD
 	// Evaluates a script in a provided context; falls back to the global one
 	// if not specified.
 	globalEval: function( code, options, doc ) {
 		DOMEval( code, { nonce: options && options.nonce }, doc );
+=======
+	// Evaluates a script in a global context
+	globalEval: function( code, options ) {
+		DOMEval( code, { nonce: options && options.nonce } );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	},
 
 	each: function( obj, callback ) {
@@ -9189,6 +13394,16 @@ jQuery.extend( {
 		return obj;
 	},
 
+<<<<<<< HEAD
+=======
+	// Support: Android <=4.0 only
+	trim: function( text ) {
+		return text == null ?
+			"" :
+			( text + "" ).replace( rtrim, "" );
+	},
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	// results is for internal usage only
 	makeArray: function( arr, results ) {
 		var ret = results || [];
@@ -9275,7 +13490,11 @@ jQuery.extend( {
 		}
 
 		// Flatten any nested arrays
+<<<<<<< HEAD
 		return flat( ret );
+=======
+		return concat.apply( [], ret );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	},
 
 	// A global GUID counter for objects
@@ -9292,7 +13511,11 @@ if ( typeof Symbol === "function" ) {
 
 // Populate the class2type map
 jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
+<<<<<<< HEAD
 function( _i, name ) {
+=======
+function( i, name ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 } );
 
@@ -9314,16 +13537,27 @@ function isArrayLike( obj ) {
 }
 var Sizzle =
 /*!
+<<<<<<< HEAD
  * Sizzle CSS Selector Engine v2.3.5
+=======
+ * Sizzle CSS Selector Engine v2.3.4
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  * https://sizzlejs.com/
  *
  * Copyright JS Foundation and other contributors
  * Released under the MIT license
  * https://js.foundation/
  *
+<<<<<<< HEAD
  * Date: 2020-03-14
  */
 ( function( window ) {
+=======
+ * Date: 2019-04-08
+ */
+(function( window ) {
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var i,
 	support,
 	Expr,
@@ -9363,6 +13597,7 @@ var i,
 	},
 
 	// Instance methods
+<<<<<<< HEAD
 	hasOwn = ( {} ).hasOwnProperty,
 	arr = [],
 	pop = arr.pop,
@@ -9370,27 +13605,44 @@ var i,
 	push = arr.push,
 	slice = arr.slice,
 
+=======
+	hasOwn = ({}).hasOwnProperty,
+	arr = [],
+	pop = arr.pop,
+	push_native = arr.push,
+	push = arr.push,
+	slice = arr.slice,
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	// Use a stripped-down indexOf as it's faster than native
 	// https://jsperf.com/thor-indexof-vs-for/5
 	indexOf = function( list, elem ) {
 		var i = 0,
 			len = list.length;
 		for ( ; i < len; i++ ) {
+<<<<<<< HEAD
 			if ( list[ i ] === elem ) {
+=======
+			if ( list[i] === elem ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				return i;
 			}
 		}
 		return -1;
 	},
 
+<<<<<<< HEAD
 	booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|" +
 		"ismap|loop|multiple|open|readonly|required|scoped",
+=======
+	booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	// Regular expressions
 
 	// http://www.w3.org/TR/css3-selectors/#whitespace
 	whitespace = "[\\x20\\t\\r\\n\\f]",
 
+<<<<<<< HEAD
 	// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
 	identifier = "(?:\\\\[\\da-fA-F]{1,6}" + whitespace +
 		"?|\\\\[^\\r\\n\\f]|[\\w-]|[^\0-\\x7f])+",
@@ -9415,18 +13667,44 @@ var i,
 		// 2. simple (capture 6)
 		"((?:\\\\.|[^\\\\()[\\]]|" + attributes + ")*)|" +
 
+=======
+	// http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
+	identifier = "(?:\\\\.|[\\w-]|[^\0-\\xa0])+",
+
+	// Attribute selectors: http://www.w3.org/TR/selectors/#attribute-selectors
+	attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
+		// Operator (capture 2)
+		"*([*^$|!~]?=)" + whitespace +
+		// "Attribute values must be CSS identifiers [capture 5] or strings [capture 3 or capture 4]"
+		"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + identifier + "))|)" + whitespace +
+		"*\\]",
+
+	pseudos = ":(" + identifier + ")(?:\\((" +
+		// To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
+		// 1. quoted (capture 3; capture 4 or capture 5)
+		"('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
+		// 2. simple (capture 6)
+		"((?:\\\\.|[^\\\\()[\\]]|" + attributes + ")*)|" +
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		// 3. anything else (capture 2)
 		".*" +
 		")\\)|)",
 
 	// Leading and non-escaped trailing whitespace, capturing some non-whitespace characters preceding the latter
 	rwhitespace = new RegExp( whitespace + "+", "g" ),
+<<<<<<< HEAD
 	rtrim = new RegExp( "^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" +
 		whitespace + "+$", "g" ),
 
 	rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" ),
 	rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace +
 		"*" ),
+=======
+	rtrim = new RegExp( "^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g" ),
+
+	rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" ),
+	rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace + "*" ),
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	rdescend = new RegExp( whitespace + "|>" ),
 
 	rpseudo = new RegExp( pseudos ),
@@ -9438,6 +13716,7 @@ var i,
 		"TAG": new RegExp( "^(" + identifier + "|[*])" ),
 		"ATTR": new RegExp( "^" + attributes ),
 		"PSEUDO": new RegExp( "^" + pseudos ),
+<<<<<<< HEAD
 		"CHILD": new RegExp( "^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" +
 			whitespace + "*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" +
 			whitespace + "*(\\d+)|))" + whitespace + "*\\)|)", "i" ),
@@ -9448,6 +13727,16 @@ var i,
 		"needsContext": new RegExp( "^" + whitespace +
 			"*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" + whitespace +
 			"*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
+=======
+		"CHILD": new RegExp( "^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" + whitespace +
+			"*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" + whitespace +
+			"*(\\d+)|))" + whitespace + "*\\)|)", "i" ),
+		"bool": new RegExp( "^(?:" + booleans + ")$", "i" ),
+		// For use in libraries implementing .is()
+		// We use this for POS matching in `select`
+		"needsContext": new RegExp( "^" + whitespace + "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" +
+			whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	},
 
 	rhtml = /HTML$/i,
@@ -9463,6 +13752,7 @@ var i,
 
 	// CSS escapes
 	// http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
+<<<<<<< HEAD
 	runescape = new RegExp( "\\\\[\\da-fA-F]{1,6}" + whitespace + "?|\\\\([^\\r\\n\\f])", "g" ),
 	funescape = function( escape, nonHex ) {
 		var high = "0x" + escape.slice( 1 ) - 0x10000;
@@ -9478,6 +13768,20 @@ var i,
 			// surrogate pair
 			high < 0 ?
 				String.fromCharCode( high + 0x10000 ) :
+=======
+	runescape = new RegExp( "\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", "ig" ),
+	funescape = function( _, escaped, escapedWhitespace ) {
+		var high = "0x" + escaped - 0x10000;
+		// NaN means non-codepoint
+		// Support: Firefox<24
+		// Workaround erroneous numeric interpretation of +"0x"
+		return high !== high || escapedWhitespace ?
+			escaped :
+			high < 0 ?
+				// BMP codepoint
+				String.fromCharCode( high + 0x10000 ) :
+				// Supplemental Plane codepoint (surrogate pair)
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				String.fromCharCode( high >> 10 | 0xD800, high & 0x3FF | 0xDC00 );
 	},
 
@@ -9493,8 +13797,12 @@ var i,
 			}
 
 			// Control characters and (dependent upon position) numbers get escaped as code points
+<<<<<<< HEAD
 			return ch.slice( 0, -1 ) + "\\" +
 				ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
+=======
+			return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		}
 
 		// Other potentially-special ASCII characters get backslash-escaped
@@ -9519,6 +13827,7 @@ var i,
 // Optimize for push.apply( _, NodeList )
 try {
 	push.apply(
+<<<<<<< HEAD
 		( arr = slice.call( preferredDoc.childNodes ) ),
 		preferredDoc.childNodes
 	);
@@ -9526,13 +13835,24 @@ try {
 	// Support: Android<4.0
 	// Detect silently failing push.apply
 	// eslint-disable-next-line no-unused-expressions
+=======
+		(arr = slice.call( preferredDoc.childNodes )),
+		preferredDoc.childNodes
+	);
+	// Support: Android<4.0
+	// Detect silently failing push.apply
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	arr[ preferredDoc.childNodes.length ].nodeType;
 } catch ( e ) {
 	push = { apply: arr.length ?
 
 		// Leverage slice if possible
 		function( target, els ) {
+<<<<<<< HEAD
 			pushNative.apply( target, slice.call( els ) );
+=======
+			push_native.apply( target, slice.call(els) );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		} :
 
 		// Support: IE<9
@@ -9540,9 +13860,14 @@ try {
 		function( target, els ) {
 			var j = target.length,
 				i = 0;
+<<<<<<< HEAD
 
 			// Can't trust NodeList.length
 			while ( ( target[ j++ ] = els[ i++ ] ) ) {}
+=======
+			// Can't trust NodeList.length
+			while ( (target[j++] = els[i++]) ) {}
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			target.length = j - 1;
 		}
 	};
@@ -9566,13 +13891,21 @@ function Sizzle( selector, context, results, seed ) {
 
 	// Try to shortcut find operations (as opposed to filters) in HTML documents
 	if ( !seed ) {
+<<<<<<< HEAD
 		setDocument( context );
+=======
+
+		if ( ( context ? context.ownerDocument || context : preferredDoc ) !== document ) {
+			setDocument( context );
+		}
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		context = context || document;
 
 		if ( documentIsHTML ) {
 
 			// If the selector is sufficiently simple, try using a "get*By*" DOM method
 			// (excepting DocumentFragment context, where the methods don't exist)
+<<<<<<< HEAD
 			if ( nodeType !== 11 && ( match = rquickExpr.exec( selector ) ) ) {
 
 				// ID selector
@@ -9581,6 +13914,16 @@ function Sizzle( selector, context, results, seed ) {
 					// Document context
 					if ( nodeType === 9 ) {
 						if ( ( elem = context.getElementById( m ) ) ) {
+=======
+			if ( nodeType !== 11 && (match = rquickExpr.exec( selector )) ) {
+
+				// ID selector
+				if ( (m = match[1]) ) {
+
+					// Document context
+					if ( nodeType === 9 ) {
+						if ( (elem = context.getElementById( m )) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 							// Support: IE, Opera, Webkit
 							// TODO: identify versions
@@ -9599,7 +13942,11 @@ function Sizzle( selector, context, results, seed ) {
 						// Support: IE, Opera, Webkit
 						// TODO: identify versions
 						// getElementById can match elements by name instead of ID
+<<<<<<< HEAD
 						if ( newContext && ( elem = newContext.getElementById( m ) ) &&
+=======
+						if ( newContext && (elem = newContext.getElementById( m )) &&
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 							contains( context, elem ) &&
 							elem.id === m ) {
 
@@ -9609,12 +13956,20 @@ function Sizzle( selector, context, results, seed ) {
 					}
 
 				// Type selector
+<<<<<<< HEAD
 				} else if ( match[ 2 ] ) {
+=======
+				} else if ( match[2] ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					push.apply( results, context.getElementsByTagName( selector ) );
 					return results;
 
 				// Class selector
+<<<<<<< HEAD
 				} else if ( ( m = match[ 3 ] ) && support.getElementsByClassName &&
+=======
+				} else if ( (m = match[3]) && support.getElementsByClassName &&
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					context.getElementsByClassName ) {
 
 					push.apply( results, context.getElementsByClassName( m ) );
@@ -9625,11 +13980,19 @@ function Sizzle( selector, context, results, seed ) {
 			// Take advantage of querySelectorAll
 			if ( support.qsa &&
 				!nonnativeSelectorCache[ selector + " " ] &&
+<<<<<<< HEAD
 				( !rbuggyQSA || !rbuggyQSA.test( selector ) ) &&
 
 				// Support: IE 8 only
 				// Exclude object elements
 				( nodeType !== 1 || context.nodeName.toLowerCase() !== "object" ) ) {
+=======
+				(!rbuggyQSA || !rbuggyQSA.test( selector )) &&
+
+				// Support: IE 8 only
+				// Exclude object elements
+				(nodeType !== 1 || context.nodeName.toLowerCase() !== "object") ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 				newSelector = selector;
 				newContext = context;
@@ -9638,6 +14001,7 @@ function Sizzle( selector, context, results, seed ) {
 				// descendant combinators, which is not what we want.
 				// In such cases, we work around the behavior by prefixing every selector in the
 				// list with an ID selector referencing the scope context.
+<<<<<<< HEAD
 				// The technique has to be used as well when a leading combinator is used
 				// as such selectors are not recognized by querySelectorAll.
 				// Thanks to Andrew Dupont for this technique.
@@ -9658,16 +14022,36 @@ function Sizzle( selector, context, results, seed ) {
 						} else {
 							context.setAttribute( "id", ( nid = expando ) );
 						}
+=======
+				// Thanks to Andrew Dupont for this technique.
+				if ( nodeType === 1 && rdescend.test( selector ) ) {
+
+					// Capture the context ID, setting it first if necessary
+					if ( (nid = context.getAttribute( "id" )) ) {
+						nid = nid.replace( rcssescape, fcssescape );
+					} else {
+						context.setAttribute( "id", (nid = expando) );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					}
 
 					// Prefix every selector in the list
 					groups = tokenize( selector );
 					i = groups.length;
 					while ( i-- ) {
+<<<<<<< HEAD
 						groups[ i ] = ( nid ? "#" + nid : ":scope" ) + " " +
 							toSelector( groups[ i ] );
 					}
 					newSelector = groups.join( "," );
+=======
+						groups[i] = "#" + nid + " " + toSelector( groups[i] );
+					}
+					newSelector = groups.join( "," );
+
+					// Expand context for sibling selectors
+					newContext = rsibling.test( selector ) && testContext( context.parentNode ) ||
+						context;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				}
 
 				try {
@@ -9700,6 +14084,7 @@ function createCache() {
 	var keys = [];
 
 	function cache( key, value ) {
+<<<<<<< HEAD
 
 		// Use (key + " ") to avoid collision with native prototype properties (see Issue #157)
 		if ( keys.push( key + " " ) > Expr.cacheLength ) {
@@ -9708,6 +14093,14 @@ function createCache() {
 			delete cache[ keys.shift() ];
 		}
 		return ( cache[ key + " " ] = value );
+=======
+		// Use (key + " ") to avoid collision with native prototype properties (see Issue #157)
+		if ( keys.push( key + " " ) > Expr.cacheLength ) {
+			// Only keep the most recent entries
+			delete cache[ keys.shift() ];
+		}
+		return (cache[ key + " " ] = value);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	}
 	return cache;
 }
@@ -9726,6 +14119,7 @@ function markFunction( fn ) {
  * @param {Function} fn Passed the created element and returns a boolean result
  */
 function assert( fn ) {
+<<<<<<< HEAD
 	var el = document.createElement( "fieldset" );
 
 	try {
@@ -9734,11 +14128,23 @@ function assert( fn ) {
 		return false;
 	} finally {
 
+=======
+	var el = document.createElement("fieldset");
+
+	try {
+		return !!fn( el );
+	} catch (e) {
+		return false;
+	} finally {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		// Remove from its parent by default
 		if ( el.parentNode ) {
 			el.parentNode.removeChild( el );
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		// release memory in IE
 		el = null;
 	}
@@ -9750,11 +14156,19 @@ function assert( fn ) {
  * @param {Function} handler The method that will be applied
  */
 function addHandle( attrs, handler ) {
+<<<<<<< HEAD
 	var arr = attrs.split( "|" ),
 		i = arr.length;
 
 	while ( i-- ) {
 		Expr.attrHandle[ arr[ i ] ] = handler;
+=======
+	var arr = attrs.split("|"),
+		i = arr.length;
+
+	while ( i-- ) {
+		Expr.attrHandle[ arr[i] ] = handler;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	}
 }
 
@@ -9776,7 +14190,11 @@ function siblingCheck( a, b ) {
 
 	// Check if b follows a
 	if ( cur ) {
+<<<<<<< HEAD
 		while ( ( cur = cur.nextSibling ) ) {
+=======
+		while ( (cur = cur.nextSibling) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			if ( cur === b ) {
 				return -1;
 			}
@@ -9804,7 +14222,11 @@ function createInputPseudo( type ) {
 function createButtonPseudo( type ) {
 	return function( elem ) {
 		var name = elem.nodeName.toLowerCase();
+<<<<<<< HEAD
 		return ( name === "input" || name === "button" ) && elem.type === type;
+=======
+		return (name === "input" || name === "button") && elem.type === type;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	};
 }
 
@@ -9847,7 +14269,11 @@ function createDisabledPseudo( disabled ) {
 					// Where there is no isDisabled, check manually
 					/* jshint -W018 */
 					elem.isDisabled !== !disabled &&
+<<<<<<< HEAD
 					inDisabledFieldset( elem ) === disabled;
+=======
+						inDisabledFieldset( elem ) === disabled;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			}
 
 			return elem.disabled === disabled;
@@ -9869,21 +14295,36 @@ function createDisabledPseudo( disabled ) {
  * @param {Function} fn
  */
 function createPositionalPseudo( fn ) {
+<<<<<<< HEAD
 	return markFunction( function( argument ) {
 		argument = +argument;
 		return markFunction( function( seed, matches ) {
+=======
+	return markFunction(function( argument ) {
+		argument = +argument;
+		return markFunction(function( seed, matches ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			var j,
 				matchIndexes = fn( [], seed.length, argument ),
 				i = matchIndexes.length;
 
 			// Match elements found at the specified indexes
 			while ( i-- ) {
+<<<<<<< HEAD
 				if ( seed[ ( j = matchIndexes[ i ] ) ] ) {
 					seed[ j ] = !( matches[ j ] = seed[ j ] );
 				}
 			}
 		} );
 	} );
+=======
+				if ( seed[ (j = matchIndexes[i]) ] ) {
+					seed[j] = !(matches[j] = seed[j]);
+				}
+			}
+		});
+	});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 
 /**
@@ -9905,7 +14346,11 @@ support = Sizzle.support = {};
  */
 isXML = Sizzle.isXML = function( elem ) {
 	var namespace = elem.namespaceURI,
+<<<<<<< HEAD
 		docElem = ( elem.ownerDocument || elem ).documentElement;
+=======
+		docElem = (elem.ownerDocument || elem).documentElement;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	// Support: IE <=8
 	// Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
@@ -9923,11 +14368,15 @@ setDocument = Sizzle.setDocument = function( node ) {
 		doc = node ? node.ownerDocument || node : preferredDoc;
 
 	// Return early if doc is invalid or already selected
+<<<<<<< HEAD
 	// Support: IE 11+, Edge 17 - 18+
 	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
 	// two documents; shallow comparisons work.
 	// eslint-disable-next-line eqeqeq
 	if ( doc == document || doc.nodeType !== 9 || !doc.documentElement ) {
+=======
+	if ( doc === document || doc.nodeType !== 9 || !doc.documentElement ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		return document;
 	}
 
@@ -9936,6 +14385,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	docElem = document.documentElement;
 	documentIsHTML = !isXML( document );
 
+<<<<<<< HEAD
 	// Support: IE 9 - 11+, Edge 12 - 18+
 	// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
 	// Support: IE 11+, Edge 17 - 18+
@@ -9944,6 +14394,12 @@ setDocument = Sizzle.setDocument = function( node ) {
 	// eslint-disable-next-line eqeqeq
 	if ( preferredDoc != document &&
 		( subWindow = document.defaultView ) && subWindow.top !== subWindow ) {
+=======
+	// Support: IE 9-11, Edge
+	// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
+	if ( preferredDoc !== document &&
+		(subWindow = document.defaultView) && subWindow.top !== subWindow ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 		// Support: IE 11, Edge
 		if ( subWindow.addEventListener ) {
@@ -9955,6 +14411,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		}
 	}
 
+<<<<<<< HEAD
 	// Support: IE 8 - 11+, Edge 12 - 18+, Chrome <=16 - 25 only, Firefox <=3.6 - 31 only,
 	// Safari 4 - 5 only, Opera <=11.6 - 12.x only
 	// IE/Edge & older browsers don't support the :scope pseudo-class.
@@ -9966,25 +14423,41 @@ setDocument = Sizzle.setDocument = function( node ) {
 			!el.querySelectorAll( ":scope fieldset div" ).length;
 	} );
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	/* Attributes
 	---------------------------------------------------------------------- */
 
 	// Support: IE<8
 	// Verify that getAttribute really returns attributes and not properties
 	// (excepting IE8 booleans)
+<<<<<<< HEAD
 	support.attributes = assert( function( el ) {
 		el.className = "i";
 		return !el.getAttribute( "className" );
 	} );
+=======
+	support.attributes = assert(function( el ) {
+		el.className = "i";
+		return !el.getAttribute("className");
+	});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	/* getElement(s)By*
 	---------------------------------------------------------------------- */
 
 	// Check if getElementsByTagName("*") returns only elements
+<<<<<<< HEAD
 	support.getElementsByTagName = assert( function( el ) {
 		el.appendChild( document.createComment( "" ) );
 		return !el.getElementsByTagName( "*" ).length;
 	} );
+=======
+	support.getElementsByTagName = assert(function( el ) {
+		el.appendChild( document.createComment("") );
+		return !el.getElementsByTagName("*").length;
+	});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	// Support: IE<9
 	support.getElementsByClassName = rnative.test( document.getElementsByClassName );
@@ -9993,6 +14466,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	// Check if getElementById returns elements by name
 	// The broken getElementById methods don't pick up programmatically-set names,
 	// so use a roundabout getElementsByName test
+<<<<<<< HEAD
 	support.getById = assert( function( el ) {
 		docElem.appendChild( el ).id = expando;
 		return !document.getElementsByName || !document.getElementsByName( expando ).length;
@@ -10007,24 +14481,52 @@ setDocument = Sizzle.setDocument = function( node ) {
 			};
 		};
 		Expr.find[ "ID" ] = function( id, context ) {
+=======
+	support.getById = assert(function( el ) {
+		docElem.appendChild( el ).id = expando;
+		return !document.getElementsByName || !document.getElementsByName( expando ).length;
+	});
+
+	// ID filter and find
+	if ( support.getById ) {
+		Expr.filter["ID"] = function( id ) {
+			var attrId = id.replace( runescape, funescape );
+			return function( elem ) {
+				return elem.getAttribute("id") === attrId;
+			};
+		};
+		Expr.find["ID"] = function( id, context ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
 				var elem = context.getElementById( id );
 				return elem ? [ elem ] : [];
 			}
 		};
 	} else {
+<<<<<<< HEAD
 		Expr.filter[ "ID" ] =  function( id ) {
 			var attrId = id.replace( runescape, funescape );
 			return function( elem ) {
 				var node = typeof elem.getAttributeNode !== "undefined" &&
 					elem.getAttributeNode( "id" );
+=======
+		Expr.filter["ID"] =  function( id ) {
+			var attrId = id.replace( runescape, funescape );
+			return function( elem ) {
+				var node = typeof elem.getAttributeNode !== "undefined" &&
+					elem.getAttributeNode("id");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				return node && node.value === attrId;
 			};
 		};
 
 		// Support: IE 6 - 7 only
 		// getElementById is not reliable as a find shortcut
+<<<<<<< HEAD
 		Expr.find[ "ID" ] = function( id, context ) {
+=======
+		Expr.find["ID"] = function( id, context ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
 				var node, i, elems,
 					elem = context.getElementById( id );
@@ -10032,7 +14534,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 				if ( elem ) {
 
 					// Verify the id attribute
+<<<<<<< HEAD
 					node = elem.getAttributeNode( "id" );
+=======
+					node = elem.getAttributeNode("id");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					if ( node && node.value === id ) {
 						return [ elem ];
 					}
@@ -10040,8 +14546,13 @@ setDocument = Sizzle.setDocument = function( node ) {
 					// Fall back on getElementsByName
 					elems = context.getElementsByName( id );
 					i = 0;
+<<<<<<< HEAD
 					while ( ( elem = elems[ i++ ] ) ) {
 						node = elem.getAttributeNode( "id" );
+=======
+					while ( (elem = elems[i++]) ) {
+						node = elem.getAttributeNode("id");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 						if ( node && node.value === id ) {
 							return [ elem ];
 						}
@@ -10054,7 +14565,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 	}
 
 	// Tag
+<<<<<<< HEAD
 	Expr.find[ "TAG" ] = support.getElementsByTagName ?
+=======
+	Expr.find["TAG"] = support.getElementsByTagName ?
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		function( tag, context ) {
 			if ( typeof context.getElementsByTagName !== "undefined" ) {
 				return context.getElementsByTagName( tag );
@@ -10069,13 +14584,20 @@ setDocument = Sizzle.setDocument = function( node ) {
 			var elem,
 				tmp = [],
 				i = 0,
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				// By happy coincidence, a (broken) gEBTN appears on DocumentFragment nodes too
 				results = context.getElementsByTagName( tag );
 
 			// Filter out possible comments
 			if ( tag === "*" ) {
+<<<<<<< HEAD
 				while ( ( elem = results[ i++ ] ) ) {
+=======
+				while ( (elem = results[i++]) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					if ( elem.nodeType === 1 ) {
 						tmp.push( elem );
 					}
@@ -10087,7 +14609,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 		};
 
 	// Class
+<<<<<<< HEAD
 	Expr.find[ "CLASS" ] = support.getElementsByClassName && function( className, context ) {
+=======
+	Expr.find["CLASS"] = support.getElementsByClassName && function( className, context ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		if ( typeof context.getElementsByClassName !== "undefined" && documentIsHTML ) {
 			return context.getElementsByClassName( className );
 		}
@@ -10108,6 +14634,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	// See https://bugs.jquery.com/ticket/13378
 	rbuggyQSA = [];
 
+<<<<<<< HEAD
 	if ( ( support.qsa = rnative.test( document.querySelectorAll ) ) ) {
 
 		// Build QSA regex
@@ -10116,6 +14643,12 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 			var input;
 
+=======
+	if ( (support.qsa = rnative.test( document.querySelectorAll )) ) {
+		// Build QSA regex
+		// Regex strategy adopted from Diego Perini
+		assert(function( el ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// Select is set to empty string on purpose
 			// This is to test IE's treatment of not explicitly
 			// setting a boolean content attribute,
@@ -10129,18 +14662,27 @@ setDocument = Sizzle.setDocument = function( node ) {
 			// Nothing should be selected when empty strings follow ^= or $= or *=
 			// The test attribute must be unknown in Opera but "safe" for WinRT
 			// https://msdn.microsoft.com/en-us/library/ie/hh465388.aspx#attribute_section
+<<<<<<< HEAD
 			if ( el.querySelectorAll( "[msallowcapture^='']" ).length ) {
+=======
+			if ( el.querySelectorAll("[msallowcapture^='']").length ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				rbuggyQSA.push( "[*^$]=" + whitespace + "*(?:''|\"\")" );
 			}
 
 			// Support: IE8
 			// Boolean attributes and "value" are not treated correctly
+<<<<<<< HEAD
 			if ( !el.querySelectorAll( "[selected]" ).length ) {
+=======
+			if ( !el.querySelectorAll("[selected]").length ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				rbuggyQSA.push( "\\[" + whitespace + "*(?:value|" + booleans + ")" );
 			}
 
 			// Support: Chrome<29, Android<4.4, Safari<7.0+, iOS<7.0+, PhantomJS<1.9.8+
 			if ( !el.querySelectorAll( "[id~=" + expando + "-]" ).length ) {
+<<<<<<< HEAD
 				rbuggyQSA.push( "~=" );
 			}
 
@@ -10155,19 +14697,28 @@ setDocument = Sizzle.setDocument = function( node ) {
 			if ( !el.querySelectorAll( "[name='']" ).length ) {
 				rbuggyQSA.push( "\\[" + whitespace + "*name" + whitespace + "*=" +
 					whitespace + "*(?:''|\"\")" );
+=======
+				rbuggyQSA.push("~=");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			}
 
 			// Webkit/Opera - :checked should return selected option elements
 			// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
 			// IE8 throws error here and will not see later tests
+<<<<<<< HEAD
 			if ( !el.querySelectorAll( ":checked" ).length ) {
 				rbuggyQSA.push( ":checked" );
+=======
+			if ( !el.querySelectorAll(":checked").length ) {
+				rbuggyQSA.push(":checked");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			}
 
 			// Support: Safari 8+, iOS 8+
 			// https://bugs.webkit.org/show_bug.cgi?id=136851
 			// In-page `selector#id sibling-combinator selector` fails
 			if ( !el.querySelectorAll( "a#" + expando + "+*" ).length ) {
+<<<<<<< HEAD
 				rbuggyQSA.push( ".#.+[+~]" );
 			}
 
@@ -10178,30 +14729,50 @@ setDocument = Sizzle.setDocument = function( node ) {
 		} );
 
 		assert( function( el ) {
+=======
+				rbuggyQSA.push(".#.+[+~]");
+			}
+		});
+
+		assert(function( el ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			el.innerHTML = "<a href='' disabled='disabled'></a>" +
 				"<select disabled='disabled'><option/></select>";
 
 			// Support: Windows 8 Native Apps
 			// The type and name attributes are restricted during .innerHTML assignment
+<<<<<<< HEAD
 			var input = document.createElement( "input" );
+=======
+			var input = document.createElement("input");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			input.setAttribute( "type", "hidden" );
 			el.appendChild( input ).setAttribute( "name", "D" );
 
 			// Support: IE8
 			// Enforce case-sensitivity of name attribute
+<<<<<<< HEAD
 			if ( el.querySelectorAll( "[name=d]" ).length ) {
+=======
+			if ( el.querySelectorAll("[name=d]").length ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				rbuggyQSA.push( "name" + whitespace + "*[*^$|!~]?=" );
 			}
 
 			// FF 3.5 - :enabled/:disabled and hidden elements (hidden elements are still enabled)
 			// IE8 throws error here and will not see later tests
+<<<<<<< HEAD
 			if ( el.querySelectorAll( ":enabled" ).length !== 2 ) {
+=======
+			if ( el.querySelectorAll(":enabled").length !== 2 ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				rbuggyQSA.push( ":enabled", ":disabled" );
 			}
 
 			// Support: IE9-11+
 			// IE's :disabled selector does not pick up the children of disabled fieldsets
 			docElem.appendChild( el ).disabled = true;
+<<<<<<< HEAD
 			if ( el.querySelectorAll( ":disabled" ).length !== 2 ) {
 				rbuggyQSA.push( ":enabled", ":disabled" );
 			}
@@ -10221,6 +14792,25 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 		assert( function( el ) {
 
+=======
+			if ( el.querySelectorAll(":disabled").length !== 2 ) {
+				rbuggyQSA.push( ":enabled", ":disabled" );
+			}
+
+			// Opera 10-11 does not throw on post-comma invalid pseudos
+			el.querySelectorAll("*,:x");
+			rbuggyQSA.push(",.*:");
+		});
+	}
+
+	if ( (support.matchesSelector = rnative.test( (matches = docElem.matches ||
+		docElem.webkitMatchesSelector ||
+		docElem.mozMatchesSelector ||
+		docElem.oMatchesSelector ||
+		docElem.msMatchesSelector) )) ) {
+
+		assert(function( el ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// Check to see if it's possible to do matchesSelector
 			// on a disconnected node (IE 9)
 			support.disconnectedMatch = matches.call( el, "*" );
@@ -10229,11 +14819,19 @@ setDocument = Sizzle.setDocument = function( node ) {
 			// Gecko does not error, returns false instead
 			matches.call( el, "[s!='']:x" );
 			rbuggyMatches.push( "!=", pseudos );
+<<<<<<< HEAD
 		} );
 	}
 
 	rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join( "|" ) );
 	rbuggyMatches = rbuggyMatches.length && new RegExp( rbuggyMatches.join( "|" ) );
+=======
+		});
+	}
+
+	rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join("|") );
+	rbuggyMatches = rbuggyMatches.length && new RegExp( rbuggyMatches.join("|") );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	/* Contains
 	---------------------------------------------------------------------- */
@@ -10250,11 +14848,19 @@ setDocument = Sizzle.setDocument = function( node ) {
 				adown.contains ?
 					adown.contains( bup ) :
 					a.compareDocumentPosition && a.compareDocumentPosition( bup ) & 16
+<<<<<<< HEAD
 			) );
 		} :
 		function( a, b ) {
 			if ( b ) {
 				while ( ( b = b.parentNode ) ) {
+=======
+			));
+		} :
+		function( a, b ) {
+			if ( b ) {
+				while ( (b = b.parentNode) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					if ( b === a ) {
 						return true;
 					}
@@ -10283,11 +14889,15 @@ setDocument = Sizzle.setDocument = function( node ) {
 		}
 
 		// Calculate position if both inputs belong to the same document
+<<<<<<< HEAD
 		// Support: IE 11+, Edge 17 - 18+
 		// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
 		// two documents; shallow comparisons work.
 		// eslint-disable-next-line eqeqeq
 		compare = ( a.ownerDocument || a ) == ( b.ownerDocument || b ) ?
+=======
+		compare = ( a.ownerDocument || a ) === ( b.ownerDocument || b ) ?
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			a.compareDocumentPosition( b ) :
 
 			// Otherwise we know they are disconnected
@@ -10295,6 +14905,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 		// Disconnected nodes
 		if ( compare & 1 ||
+<<<<<<< HEAD
 			( !support.sortDetached && b.compareDocumentPosition( a ) === compare ) ) {
 
 			// Choose the first element that is related to our preferred document
@@ -10313,6 +14924,15 @@ setDocument = Sizzle.setDocument = function( node ) {
 			// eslint-disable-next-line eqeqeq
 			if ( b == document || b.ownerDocument == preferredDoc &&
 				contains( preferredDoc, b ) ) {
+=======
+			(!support.sortDetached && b.compareDocumentPosition( a ) === compare) ) {
+
+			// Choose the first element that is related to our preferred document
+			if ( a === document || a.ownerDocument === preferredDoc && contains(preferredDoc, a) ) {
+				return -1;
+			}
+			if ( b === document || b.ownerDocument === preferredDoc && contains(preferredDoc, b) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				return 1;
 			}
 
@@ -10325,7 +14945,10 @@ setDocument = Sizzle.setDocument = function( node ) {
 		return compare & 4 ? -1 : 1;
 	} :
 	function( a, b ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		// Exit early if the nodes are identical
 		if ( a === b ) {
 			hasDuplicate = true;
@@ -10341,6 +14964,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 		// Parentless nodes are either documents or disconnected
 		if ( !aup || !bup ) {
+<<<<<<< HEAD
 
 			// Support: IE 11+, Edge 17 - 18+
 			// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
@@ -10349,6 +14973,10 @@ setDocument = Sizzle.setDocument = function( node ) {
 			return a == document ? -1 :
 				b == document ? 1 :
 				/* eslint-enable eqeqeq */
+=======
+			return a === document ? -1 :
+				b === document ? 1 :
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				aup ? -1 :
 				bup ? 1 :
 				sortInput ?
@@ -10362,20 +14990,33 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 		// Otherwise we need full lists of their ancestors for comparison
 		cur = a;
+<<<<<<< HEAD
 		while ( ( cur = cur.parentNode ) ) {
 			ap.unshift( cur );
 		}
 		cur = b;
 		while ( ( cur = cur.parentNode ) ) {
+=======
+		while ( (cur = cur.parentNode) ) {
+			ap.unshift( cur );
+		}
+		cur = b;
+		while ( (cur = cur.parentNode) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			bp.unshift( cur );
 		}
 
 		// Walk down the tree looking for a discrepancy
+<<<<<<< HEAD
 		while ( ap[ i ] === bp[ i ] ) {
+=======
+		while ( ap[i] === bp[i] ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			i++;
 		}
 
 		return i ?
+<<<<<<< HEAD
 
 			// Do a sibling check if the nodes have a common ancestor
 			siblingCheck( ap[ i ], bp[ i ] ) :
@@ -10388,6 +15029,14 @@ setDocument = Sizzle.setDocument = function( node ) {
 			ap[ i ] == preferredDoc ? -1 :
 			bp[ i ] == preferredDoc ? 1 :
 			/* eslint-enable eqeqeq */
+=======
+			// Do a sibling check if the nodes have a common ancestor
+			siblingCheck( ap[i], bp[i] ) :
+
+			// Otherwise nodes in our document sort first
+			ap[i] === preferredDoc ? -1 :
+			bp[i] === preferredDoc ? 1 :
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			0;
 	};
 
@@ -10399,7 +15048,14 @@ Sizzle.matches = function( expr, elements ) {
 };
 
 Sizzle.matchesSelector = function( elem, expr ) {
+<<<<<<< HEAD
 	setDocument( elem );
+=======
+	// Set document vars if needed
+	if ( ( elem.ownerDocument || elem ) !== document ) {
+		setDocument( elem );
+	}
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	if ( support.matchesSelector && documentIsHTML &&
 		!nonnativeSelectorCache[ expr + " " ] &&
@@ -10411,6 +15067,7 @@ Sizzle.matchesSelector = function( elem, expr ) {
 
 			// IE 9's matchesSelector returns false on disconnected nodes
 			if ( ret || support.disconnectedMatch ||
+<<<<<<< HEAD
 
 				// As well, disconnected nodes are said to be in a document
 				// fragment in IE 9
@@ -10418,6 +15075,14 @@ Sizzle.matchesSelector = function( elem, expr ) {
 				return ret;
 			}
 		} catch ( e ) {
+=======
+					// As well, disconnected nodes are said to be in a document
+					// fragment in IE 9
+					elem.document && elem.document.nodeType !== 11 ) {
+				return ret;
+			}
+		} catch (e) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			nonnativeSelectorCache( expr, true );
 		}
 	}
@@ -10426,6 +15091,7 @@ Sizzle.matchesSelector = function( elem, expr ) {
 };
 
 Sizzle.contains = function( context, elem ) {
+<<<<<<< HEAD
 
 	// Set document vars if needed
 	// Support: IE 11+, Edge 17 - 18+
@@ -10433,12 +15099,17 @@ Sizzle.contains = function( context, elem ) {
 	// two documents; shallow comparisons work.
 	// eslint-disable-next-line eqeqeq
 	if ( ( context.ownerDocument || context ) != document ) {
+=======
+	// Set document vars if needed
+	if ( ( context.ownerDocument || context ) !== document ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		setDocument( context );
 	}
 	return contains( context, elem );
 };
 
 Sizzle.attr = function( elem, name ) {
+<<<<<<< HEAD
 
 	// Set document vars if needed
 	// Support: IE 11+, Edge 17 - 18+
@@ -10446,11 +15117,18 @@ Sizzle.attr = function( elem, name ) {
 	// two documents; shallow comparisons work.
 	// eslint-disable-next-line eqeqeq
 	if ( ( elem.ownerDocument || elem ) != document ) {
+=======
+	// Set document vars if needed
+	if ( ( elem.ownerDocument || elem ) !== document ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		setDocument( elem );
 	}
 
 	var fn = Expr.attrHandle[ name.toLowerCase() ],
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		// Don't get fooled by Object.prototype properties (jQuery #13807)
 		val = fn && hasOwn.call( Expr.attrHandle, name.toLowerCase() ) ?
 			fn( elem, name, !documentIsHTML ) :
@@ -10460,13 +15138,21 @@ Sizzle.attr = function( elem, name ) {
 		val :
 		support.attributes || !documentIsHTML ?
 			elem.getAttribute( name ) :
+<<<<<<< HEAD
 			( val = elem.getAttributeNode( name ) ) && val.specified ?
+=======
+			(val = elem.getAttributeNode(name)) && val.specified ?
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				val.value :
 				null;
 };
 
 Sizzle.escape = function( sel ) {
+<<<<<<< HEAD
 	return ( sel + "" ).replace( rcssescape, fcssescape );
+=======
+	return (sel + "").replace( rcssescape, fcssescape );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 };
 
 Sizzle.error = function( msg ) {
@@ -10489,7 +15175,11 @@ Sizzle.uniqueSort = function( results ) {
 	results.sort( sortOrder );
 
 	if ( hasDuplicate ) {
+<<<<<<< HEAD
 		while ( ( elem = results[ i++ ] ) ) {
+=======
+		while ( (elem = results[i++]) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			if ( elem === results[ i ] ) {
 				j = duplicates.push( i );
 			}
@@ -10517,21 +15207,32 @@ getText = Sizzle.getText = function( elem ) {
 		nodeType = elem.nodeType;
 
 	if ( !nodeType ) {
+<<<<<<< HEAD
 
 		// If no nodeType, this is expected to be an array
 		while ( ( node = elem[ i++ ] ) ) {
 
+=======
+		// If no nodeType, this is expected to be an array
+		while ( (node = elem[i++]) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// Do not traverse comment nodes
 			ret += getText( node );
 		}
 	} else if ( nodeType === 1 || nodeType === 9 || nodeType === 11 ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		// Use textContent for elements
 		// innerText usage removed for consistency of new lines (jQuery #11153)
 		if ( typeof elem.textContent === "string" ) {
 			return elem.textContent;
 		} else {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// Traverse its children
 			for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
 				ret += getText( elem );
@@ -10540,7 +15241,10 @@ getText = Sizzle.getText = function( elem ) {
 	} else if ( nodeType === 3 || nodeType === 4 ) {
 		return elem.nodeValue;
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	// Do not include comment or processing instruction nodes
 
 	return ret;
@@ -10568,6 +15272,7 @@ Expr = Sizzle.selectors = {
 
 	preFilter: {
 		"ATTR": function( match ) {
+<<<<<<< HEAD
 			match[ 1 ] = match[ 1 ].replace( runescape, funescape );
 
 			// Move the given value to match[3] whether quoted or unquoted
@@ -10576,13 +15281,25 @@ Expr = Sizzle.selectors = {
 
 			if ( match[ 2 ] === "~=" ) {
 				match[ 3 ] = " " + match[ 3 ] + " ";
+=======
+			match[1] = match[1].replace( runescape, funescape );
+
+			// Move the given value to match[3] whether quoted or unquoted
+			match[3] = ( match[3] || match[4] || match[5] || "" ).replace( runescape, funescape );
+
+			if ( match[2] === "~=" ) {
+				match[3] = " " + match[3] + " ";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			}
 
 			return match.slice( 0, 4 );
 		},
 
 		"CHILD": function( match ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			/* matches from matchExpr["CHILD"]
 				1 type (only|nth|...)
 				2 what (child|of-type)
@@ -10593,6 +15310,7 @@ Expr = Sizzle.selectors = {
 				7 sign of y-component
 				8 y of y-component
 			*/
+<<<<<<< HEAD
 			match[ 1 ] = match[ 1 ].toLowerCase();
 
 			if ( match[ 1 ].slice( 0, 3 ) === "nth" ) {
@@ -10600,10 +15318,19 @@ Expr = Sizzle.selectors = {
 				// nth-* requires argument
 				if ( !match[ 3 ] ) {
 					Sizzle.error( match[ 0 ] );
+=======
+			match[1] = match[1].toLowerCase();
+
+			if ( match[1].slice( 0, 3 ) === "nth" ) {
+				// nth-* requires argument
+				if ( !match[3] ) {
+					Sizzle.error( match[0] );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				}
 
 				// numeric x and y parameters for Expr.filter.CHILD
 				// remember that false/true cast respectively to 0/1
+<<<<<<< HEAD
 				match[ 4 ] = +( match[ 4 ] ?
 					match[ 5 ] + ( match[ 6 ] || 1 ) :
 					2 * ( match[ 3 ] === "even" || match[ 3 ] === "odd" ) );
@@ -10612,6 +15339,14 @@ Expr = Sizzle.selectors = {
 				// other types prohibit arguments
 			} else if ( match[ 3 ] ) {
 				Sizzle.error( match[ 0 ] );
+=======
+				match[4] = +( match[4] ? match[5] + (match[6] || 1) : 2 * ( match[3] === "even" || match[3] === "odd" ) );
+				match[5] = +( ( match[7] + match[8] ) || match[3] === "odd" );
+
+			// other types prohibit arguments
+			} else if ( match[3] ) {
+				Sizzle.error( match[0] );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			}
 
 			return match;
@@ -10619,13 +15354,20 @@ Expr = Sizzle.selectors = {
 
 		"PSEUDO": function( match ) {
 			var excess,
+<<<<<<< HEAD
 				unquoted = !match[ 6 ] && match[ 2 ];
 
 			if ( matchExpr[ "CHILD" ].test( match[ 0 ] ) ) {
+=======
+				unquoted = !match[6] && match[2];
+
+			if ( matchExpr["CHILD"].test( match[0] ) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				return null;
 			}
 
 			// Accept quoted arguments as-is
+<<<<<<< HEAD
 			if ( match[ 3 ] ) {
 				match[ 2 ] = match[ 4 ] || match[ 5 ] || "";
 
@@ -10641,6 +15383,21 @@ Expr = Sizzle.selectors = {
 				// excess is a negative index
 				match[ 0 ] = match[ 0 ].slice( 0, excess );
 				match[ 2 ] = unquoted.slice( 0, excess );
+=======
+			if ( match[3] ) {
+				match[2] = match[4] || match[5] || "";
+
+			// Strip excess characters from unquoted arguments
+			} else if ( unquoted && rpseudo.test( unquoted ) &&
+				// Get excess from tokenize (recursively)
+				(excess = tokenize( unquoted, true )) &&
+				// advance to the next closing parenthesis
+				(excess = unquoted.indexOf( ")", unquoted.length - excess ) - unquoted.length) ) {
+
+				// excess is a negative index
+				match[0] = match[0].slice( 0, excess );
+				match[2] = unquoted.slice( 0, excess );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			}
 
 			// Return only captures needed by the pseudo filter method (type and argument)
@@ -10653,9 +15410,13 @@ Expr = Sizzle.selectors = {
 		"TAG": function( nodeNameSelector ) {
 			var nodeName = nodeNameSelector.replace( runescape, funescape ).toLowerCase();
 			return nodeNameSelector === "*" ?
+<<<<<<< HEAD
 				function() {
 					return true;
 				} :
+=======
+				function() { return true; } :
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				function( elem ) {
 					return elem.nodeName && elem.nodeName.toLowerCase() === nodeName;
 				};
@@ -10665,6 +15426,7 @@ Expr = Sizzle.selectors = {
 			var pattern = classCache[ className + " " ];
 
 			return pattern ||
+<<<<<<< HEAD
 				( pattern = new RegExp( "(^|" + whitespace +
 					")" + className + "(" + whitespace + "|$)" ) ) && classCache(
 						className, function( elem ) {
@@ -10675,6 +15437,12 @@ Expr = Sizzle.selectors = {
 								""
 							);
 				} );
+=======
+				(pattern = new RegExp( "(^|" + whitespace + ")" + className + "(" + whitespace + "|$)" )) &&
+				classCache( className, function( elem ) {
+					return pattern.test( typeof elem.className === "string" && elem.className || typeof elem.getAttribute !== "undefined" && elem.getAttribute("class") || "" );
+				});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		},
 
 		"ATTR": function( name, operator, check ) {
@@ -10690,8 +15458,11 @@ Expr = Sizzle.selectors = {
 
 				result += "";
 
+<<<<<<< HEAD
 				/* eslint-disable max-len */
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				return operator === "=" ? result === check :
 					operator === "!=" ? result !== check :
 					operator === "^=" ? check && result.indexOf( check ) === 0 :
@@ -10700,12 +15471,19 @@ Expr = Sizzle.selectors = {
 					operator === "~=" ? ( " " + result.replace( rwhitespace, " " ) + " " ).indexOf( check ) > -1 :
 					operator === "|=" ? result === check || result.slice( 0, check.length + 1 ) === check + "-" :
 					false;
+<<<<<<< HEAD
 				/* eslint-enable max-len */
 
 			};
 		},
 
 		"CHILD": function( type, what, _argument, first, last ) {
+=======
+			};
+		},
+
+		"CHILD": function( type, what, argument, first, last ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			var simple = type.slice( 0, 3 ) !== "nth",
 				forward = type.slice( -4 ) !== "last",
 				ofType = what === "of-type";
@@ -10717,7 +15495,11 @@ Expr = Sizzle.selectors = {
 					return !!elem.parentNode;
 				} :
 
+<<<<<<< HEAD
 				function( elem, _context, xml ) {
+=======
+				function( elem, context, xml ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					var cache, uniqueCache, outerCache, node, nodeIndex, start,
 						dir = simple !== forward ? "nextSibling" : "previousSibling",
 						parent = elem.parentNode,
@@ -10731,7 +15513,11 @@ Expr = Sizzle.selectors = {
 						if ( simple ) {
 							while ( dir ) {
 								node = elem;
+<<<<<<< HEAD
 								while ( ( node = node[ dir ] ) ) {
+=======
+								while ( (node = node[ dir ]) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 									if ( ofType ?
 										node.nodeName.toLowerCase() === name :
 										node.nodeType === 1 ) {
@@ -10739,7 +15525,10 @@ Expr = Sizzle.selectors = {
 										return false;
 									}
 								}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 								// Reverse direction for :only-* (if we haven't yet done so)
 								start = dir = type === "only" && !start && "nextSibling";
 							}
@@ -10755,22 +15544,37 @@ Expr = Sizzle.selectors = {
 
 							// ...in a gzip-friendly way
 							node = parent;
+<<<<<<< HEAD
 							outerCache = node[ expando ] || ( node[ expando ] = {} );
+=======
+							outerCache = node[ expando ] || (node[ expando ] = {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 							// Support: IE <9 only
 							// Defend against cloned attroperties (jQuery gh-1709)
 							uniqueCache = outerCache[ node.uniqueID ] ||
+<<<<<<< HEAD
 								( outerCache[ node.uniqueID ] = {} );
+=======
+								(outerCache[ node.uniqueID ] = {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 							cache = uniqueCache[ type ] || [];
 							nodeIndex = cache[ 0 ] === dirruns && cache[ 1 ];
 							diff = nodeIndex && cache[ 2 ];
 							node = nodeIndex && parent.childNodes[ nodeIndex ];
 
+<<<<<<< HEAD
 							while ( ( node = ++nodeIndex && node && node[ dir ] ||
 
 								// Fallback to seeking `elem` from the start
 								( diff = nodeIndex = 0 ) || start.pop() ) ) {
+=======
+							while ( (node = ++nodeIndex && node && node[ dir ] ||
+
+								// Fallback to seeking `elem` from the start
+								(diff = nodeIndex = 0) || start.pop()) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 								// When found, cache indexes on `parent` and break
 								if ( node.nodeType === 1 && ++diff && node === elem ) {
@@ -10780,6 +15584,7 @@ Expr = Sizzle.selectors = {
 							}
 
 						} else {
+<<<<<<< HEAD
 
 							// Use previously-cached element index if available
 							if ( useCache ) {
@@ -10787,11 +15592,22 @@ Expr = Sizzle.selectors = {
 								// ...in a gzip-friendly way
 								node = elem;
 								outerCache = node[ expando ] || ( node[ expando ] = {} );
+=======
+							// Use previously-cached element index if available
+							if ( useCache ) {
+								// ...in a gzip-friendly way
+								node = elem;
+								outerCache = node[ expando ] || (node[ expando ] = {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 								// Support: IE <9 only
 								// Defend against cloned attroperties (jQuery gh-1709)
 								uniqueCache = outerCache[ node.uniqueID ] ||
+<<<<<<< HEAD
 									( outerCache[ node.uniqueID ] = {} );
+=======
+									(outerCache[ node.uniqueID ] = {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 								cache = uniqueCache[ type ] || [];
 								nodeIndex = cache[ 0 ] === dirruns && cache[ 1 ];
@@ -10801,10 +15617,16 @@ Expr = Sizzle.selectors = {
 							// xml :nth-child(...)
 							// or :nth-last-child(...) or :nth(-last)?-of-type(...)
 							if ( diff === false ) {
+<<<<<<< HEAD
 
 								// Use the same loop as above to seek `elem` from the start
 								while ( ( node = ++nodeIndex && node && node[ dir ] ||
 									( diff = nodeIndex = 0 ) || start.pop() ) ) {
+=======
+								// Use the same loop as above to seek `elem` from the start
+								while ( (node = ++nodeIndex && node && node[ dir ] ||
+									(diff = nodeIndex = 0) || start.pop()) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 									if ( ( ofType ?
 										node.nodeName.toLowerCase() === name :
@@ -10813,13 +15635,21 @@ Expr = Sizzle.selectors = {
 
 										// Cache the index of each encountered element
 										if ( useCache ) {
+<<<<<<< HEAD
 											outerCache = node[ expando ] ||
 												( node[ expando ] = {} );
+=======
+											outerCache = node[ expando ] || (node[ expando ] = {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 											// Support: IE <9 only
 											// Defend against cloned attroperties (jQuery gh-1709)
 											uniqueCache = outerCache[ node.uniqueID ] ||
+<<<<<<< HEAD
 												( outerCache[ node.uniqueID ] = {} );
+=======
+												(outerCache[ node.uniqueID ] = {});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 											uniqueCache[ type ] = [ dirruns, diff ];
 										}
@@ -10840,7 +15670,10 @@ Expr = Sizzle.selectors = {
 		},
 
 		"PSEUDO": function( pseudo, argument ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// pseudo-class names are case-insensitive
 			// http://www.w3.org/TR/selectors/#pseudo-classes
 			// Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
@@ -10860,15 +15693,26 @@ Expr = Sizzle.selectors = {
 			if ( fn.length > 1 ) {
 				args = [ pseudo, pseudo, "", argument ];
 				return Expr.setFilters.hasOwnProperty( pseudo.toLowerCase() ) ?
+<<<<<<< HEAD
 					markFunction( function( seed, matches ) {
+=======
+					markFunction(function( seed, matches ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 						var idx,
 							matched = fn( seed, argument ),
 							i = matched.length;
 						while ( i-- ) {
+<<<<<<< HEAD
 							idx = indexOf( seed, matched[ i ] );
 							seed[ idx ] = !( matches[ idx ] = matched[ i ] );
 						}
 					} ) :
+=======
+							idx = indexOf( seed, matched[i] );
+							seed[ idx ] = !( matches[ idx ] = matched[i] );
+						}
+					}) :
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					function( elem ) {
 						return fn( elem, 0, args );
 					};
@@ -10879,10 +15723,15 @@ Expr = Sizzle.selectors = {
 	},
 
 	pseudos: {
+<<<<<<< HEAD
 
 		// Potentially complex pseudos
 		"not": markFunction( function( selector ) {
 
+=======
+		// Potentially complex pseudos
+		"not": markFunction(function( selector ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// Trim the selector passed to compile
 			// to avoid treating leading and trailing
 			// spaces as combinators
@@ -10891,13 +15740,18 @@ Expr = Sizzle.selectors = {
 				matcher = compile( selector.replace( rtrim, "$1" ) );
 
 			return matcher[ expando ] ?
+<<<<<<< HEAD
 				markFunction( function( seed, matches, _context, xml ) {
+=======
+				markFunction(function( seed, matches, context, xml ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					var elem,
 						unmatched = matcher( seed, null, xml, [] ),
 						i = seed.length;
 
 					// Match elements unmatched by `matcher`
 					while ( i-- ) {
+<<<<<<< HEAD
 						if ( ( elem = unmatched[ i ] ) ) {
 							seed[ i ] = !( matches[ i ] = elem );
 						}
@@ -10920,11 +15774,38 @@ Expr = Sizzle.selectors = {
 		} ),
 
 		"contains": markFunction( function( text ) {
+=======
+						if ( (elem = unmatched[i]) ) {
+							seed[i] = !(matches[i] = elem);
+						}
+					}
+				}) :
+				function( elem, context, xml ) {
+					input[0] = elem;
+					matcher( input, null, xml, results );
+					// Don't keep the element (issue #299)
+					input[0] = null;
+					return !results.pop();
+				};
+		}),
+
+		"has": markFunction(function( selector ) {
+			return function( elem ) {
+				return Sizzle( selector, elem ).length > 0;
+			};
+		}),
+
+		"contains": markFunction(function( text ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			text = text.replace( runescape, funescape );
 			return function( elem ) {
 				return ( elem.textContent || getText( elem ) ).indexOf( text ) > -1;
 			};
+<<<<<<< HEAD
 		} ),
+=======
+		}),
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 		// "Whether an element is represented by a :lang() selector
 		// is based solely on the element's language value
@@ -10934,26 +15815,44 @@ Expr = Sizzle.selectors = {
 		// The identifier C does not have to be a valid language name."
 		// http://www.w3.org/TR/selectors/#lang-pseudo
 		"lang": markFunction( function( lang ) {
+<<<<<<< HEAD
 
 			// lang value must be a valid identifier
 			if ( !ridentifier.test( lang || "" ) ) {
+=======
+			// lang value must be a valid identifier
+			if ( !ridentifier.test(lang || "") ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				Sizzle.error( "unsupported lang: " + lang );
 			}
 			lang = lang.replace( runescape, funescape ).toLowerCase();
 			return function( elem ) {
 				var elemLang;
 				do {
+<<<<<<< HEAD
 					if ( ( elemLang = documentIsHTML ?
 						elem.lang :
 						elem.getAttribute( "xml:lang" ) || elem.getAttribute( "lang" ) ) ) {
+=======
+					if ( (elemLang = documentIsHTML ?
+						elem.lang :
+						elem.getAttribute("xml:lang") || elem.getAttribute("lang")) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 						elemLang = elemLang.toLowerCase();
 						return elemLang === lang || elemLang.indexOf( lang + "-" ) === 0;
 					}
+<<<<<<< HEAD
 				} while ( ( elem = elem.parentNode ) && elem.nodeType === 1 );
 				return false;
 			};
 		} ),
+=======
+				} while ( (elem = elem.parentNode) && elem.nodeType === 1 );
+				return false;
+			};
+		}),
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 		// Miscellaneous
 		"target": function( elem ) {
@@ -10966,9 +15865,13 @@ Expr = Sizzle.selectors = {
 		},
 
 		"focus": function( elem ) {
+<<<<<<< HEAD
 			return elem === document.activeElement &&
 				( !document.hasFocus || document.hasFocus() ) &&
 				!!( elem.type || elem.href || ~elem.tabIndex );
+=======
+			return elem === document.activeElement && (!document.hasFocus || document.hasFocus()) && !!(elem.type || elem.href || ~elem.tabIndex);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		},
 
 		// Boolean properties
@@ -10976,6 +15879,7 @@ Expr = Sizzle.selectors = {
 		"disabled": createDisabledPseudo( true ),
 
 		"checked": function( elem ) {
+<<<<<<< HEAD
 
 			// In CSS3, :checked should return both checked and selected elements
 			// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
@@ -10990,6 +15894,18 @@ Expr = Sizzle.selectors = {
 			// options in Safari work properly
 			if ( elem.parentNode ) {
 				// eslint-disable-next-line no-unused-expressions
+=======
+			// In CSS3, :checked should return both checked and selected elements
+			// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
+			var nodeName = elem.nodeName.toLowerCase();
+			return (nodeName === "input" && !!elem.checked) || (nodeName === "option" && !!elem.selected);
+		},
+
+		"selected": function( elem ) {
+			// Accessing this property makes selected-by-default
+			// options in Safari work properly
+			if ( elem.parentNode ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				elem.parentNode.selectedIndex;
 			}
 
@@ -10998,7 +15914,10 @@ Expr = Sizzle.selectors = {
 
 		// Contents
 		"empty": function( elem ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// http://www.w3.org/TR/selectors/#empty-pseudo
 			// :empty is negated by element (1) or content nodes (text: 3; cdata: 4; entity ref: 5),
 			//   but not by others (comment: 8; processing instruction: 7; etc.)
@@ -11012,7 +15931,11 @@ Expr = Sizzle.selectors = {
 		},
 
 		"parent": function( elem ) {
+<<<<<<< HEAD
 			return !Expr.pseudos[ "empty" ]( elem );
+=======
+			return !Expr.pseudos["empty"]( elem );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		},
 
 		// Element/input types
@@ -11036,6 +15959,7 @@ Expr = Sizzle.selectors = {
 
 				// Support: IE<8
 				// New HTML5 attribute values (e.g., "search") appear with elem.type === "text"
+<<<<<<< HEAD
 				( ( attr = elem.getAttribute( "type" ) ) == null ||
 					attr.toLowerCase() === "text" );
 		},
@@ -11054,22 +15978,53 @@ Expr = Sizzle.selectors = {
 		} ),
 
 		"even": createPositionalPseudo( function( matchIndexes, length ) {
+=======
+				( (attr = elem.getAttribute("type")) == null || attr.toLowerCase() === "text" );
+		},
+
+		// Position-in-collection
+		"first": createPositionalPseudo(function() {
+			return [ 0 ];
+		}),
+
+		"last": createPositionalPseudo(function( matchIndexes, length ) {
+			return [ length - 1 ];
+		}),
+
+		"eq": createPositionalPseudo(function( matchIndexes, length, argument ) {
+			return [ argument < 0 ? argument + length : argument ];
+		}),
+
+		"even": createPositionalPseudo(function( matchIndexes, length ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			var i = 0;
 			for ( ; i < length; i += 2 ) {
 				matchIndexes.push( i );
 			}
 			return matchIndexes;
+<<<<<<< HEAD
 		} ),
 
 		"odd": createPositionalPseudo( function( matchIndexes, length ) {
+=======
+		}),
+
+		"odd": createPositionalPseudo(function( matchIndexes, length ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			var i = 1;
 			for ( ; i < length; i += 2 ) {
 				matchIndexes.push( i );
 			}
 			return matchIndexes;
+<<<<<<< HEAD
 		} ),
 
 		"lt": createPositionalPseudo( function( matchIndexes, length, argument ) {
+=======
+		}),
+
+		"lt": createPositionalPseudo(function( matchIndexes, length, argument ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			var i = argument < 0 ?
 				argument + length :
 				argument > length ?
@@ -11079,19 +16034,33 @@ Expr = Sizzle.selectors = {
 				matchIndexes.push( i );
 			}
 			return matchIndexes;
+<<<<<<< HEAD
 		} ),
 
 		"gt": createPositionalPseudo( function( matchIndexes, length, argument ) {
+=======
+		}),
+
+		"gt": createPositionalPseudo(function( matchIndexes, length, argument ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			var i = argument < 0 ? argument + length : argument;
 			for ( ; ++i < length; ) {
 				matchIndexes.push( i );
 			}
 			return matchIndexes;
+<<<<<<< HEAD
 		} )
 	}
 };
 
 Expr.pseudos[ "nth" ] = Expr.pseudos[ "eq" ];
+=======
+		})
+	}
+};
+
+Expr.pseudos["nth"] = Expr.pseudos["eq"];
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 // Add button/input type pseudos
 for ( i in { radio: true, checkbox: true, file: true, password: true, image: true } ) {
@@ -11122,6 +16091,7 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 	while ( soFar ) {
 
 		// Comma and first run
+<<<<<<< HEAD
 		if ( !matched || ( match = rcomma.exec( soFar ) ) ) {
 			if ( match ) {
 
@@ -11129,11 +16099,20 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 				soFar = soFar.slice( match[ 0 ].length ) || soFar;
 			}
 			groups.push( ( tokens = [] ) );
+=======
+		if ( !matched || (match = rcomma.exec( soFar )) ) {
+			if ( match ) {
+				// Don't consume trailing commas as valid
+				soFar = soFar.slice( match[0].length ) || soFar;
+			}
+			groups.push( (tokens = []) );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		}
 
 		matched = false;
 
 		// Combinators
+<<<<<<< HEAD
 		if ( ( match = rcombinators.exec( soFar ) ) ) {
 			matched = match.shift();
 			tokens.push( {
@@ -11142,11 +16121,21 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 				// Cast descendant combinators to space
 				type: match[ 0 ].replace( rtrim, " " )
 			} );
+=======
+		if ( (match = rcombinators.exec( soFar )) ) {
+			matched = match.shift();
+			tokens.push({
+				value: matched,
+				// Cast descendant combinators to space
+				type: match[0].replace( rtrim, " " )
+			});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			soFar = soFar.slice( matched.length );
 		}
 
 		// Filters
 		for ( type in Expr.filter ) {
+<<<<<<< HEAD
 			if ( ( match = matchExpr[ type ].exec( soFar ) ) && ( !preFilters[ type ] ||
 				( match = preFilters[ type ]( match ) ) ) ) {
 				matched = match.shift();
@@ -11155,6 +16144,16 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 					type: type,
 					matches: match
 				} );
+=======
+			if ( (match = matchExpr[ type ].exec( soFar )) && (!preFilters[ type ] ||
+				(match = preFilters[ type ]( match ))) ) {
+				matched = match.shift();
+				tokens.push({
+					value: matched,
+					type: type,
+					matches: match
+				});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				soFar = soFar.slice( matched.length );
 			}
 		}
@@ -11171,7 +16170,10 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 		soFar.length :
 		soFar ?
 			Sizzle.error( selector ) :
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// Cache the tokens
 			tokenCache( selector, groups ).slice( 0 );
 };
@@ -11181,7 +16183,11 @@ function toSelector( tokens ) {
 		len = tokens.length,
 		selector = "";
 	for ( ; i < len; i++ ) {
+<<<<<<< HEAD
 		selector += tokens[ i ].value;
+=======
+		selector += tokens[i].value;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	}
 	return selector;
 }
@@ -11194,10 +16200,16 @@ function addCombinator( matcher, combinator, base ) {
 		doneName = done++;
 
 	return combinator.first ?
+<<<<<<< HEAD
 
 		// Check against closest ancestor/preceding element
 		function( elem, context, xml ) {
 			while ( ( elem = elem[ dir ] ) ) {
+=======
+		// Check against closest ancestor/preceding element
+		function( elem, context, xml ) {
+			while ( (elem = elem[ dir ]) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				if ( elem.nodeType === 1 || checkNonElements ) {
 					return matcher( elem, context, xml );
 				}
@@ -11212,7 +16224,11 @@ function addCombinator( matcher, combinator, base ) {
 
 			// We can't set arbitrary data on XML nodes, so they don't benefit from combinator caching
 			if ( xml ) {
+<<<<<<< HEAD
 				while ( ( elem = elem[ dir ] ) ) {
+=======
+				while ( (elem = elem[ dir ]) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					if ( elem.nodeType === 1 || checkNonElements ) {
 						if ( matcher( elem, context, xml ) ) {
 							return true;
@@ -11220,6 +16236,7 @@ function addCombinator( matcher, combinator, base ) {
 					}
 				}
 			} else {
+<<<<<<< HEAD
 				while ( ( elem = elem[ dir ] ) ) {
 					if ( elem.nodeType === 1 || checkNonElements ) {
 						outerCache = elem[ expando ] || ( elem[ expando ] = {} );
@@ -11238,11 +16255,33 @@ function addCombinator( matcher, combinator, base ) {
 							return ( newCache[ 2 ] = oldCache[ 2 ] );
 						} else {
 
+=======
+				while ( (elem = elem[ dir ]) ) {
+					if ( elem.nodeType === 1 || checkNonElements ) {
+						outerCache = elem[ expando ] || (elem[ expando ] = {});
+
+						// Support: IE <9 only
+						// Defend against cloned attroperties (jQuery gh-1709)
+						uniqueCache = outerCache[ elem.uniqueID ] || (outerCache[ elem.uniqueID ] = {});
+
+						if ( skip && skip === elem.nodeName.toLowerCase() ) {
+							elem = elem[ dir ] || elem;
+						} else if ( (oldCache = uniqueCache[ key ]) &&
+							oldCache[ 0 ] === dirruns && oldCache[ 1 ] === doneName ) {
+
+							// Assign to newCache so results back-propagate to previous elements
+							return (newCache[ 2 ] = oldCache[ 2 ]);
+						} else {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 							// Reuse newcache so results back-propagate to previous elements
 							uniqueCache[ key ] = newCache;
 
 							// A match means we're done; a fail means we have to keep checking
+<<<<<<< HEAD
 							if ( ( newCache[ 2 ] = matcher( elem, context, xml ) ) ) {
+=======
+							if ( (newCache[ 2 ] = matcher( elem, context, xml )) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 								return true;
 							}
 						}
@@ -11258,20 +16297,32 @@ function elementMatcher( matchers ) {
 		function( elem, context, xml ) {
 			var i = matchers.length;
 			while ( i-- ) {
+<<<<<<< HEAD
 				if ( !matchers[ i ]( elem, context, xml ) ) {
+=======
+				if ( !matchers[i]( elem, context, xml ) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					return false;
 				}
 			}
 			return true;
 		} :
+<<<<<<< HEAD
 		matchers[ 0 ];
+=======
+		matchers[0];
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 
 function multipleContexts( selector, contexts, results ) {
 	var i = 0,
 		len = contexts.length;
 	for ( ; i < len; i++ ) {
+<<<<<<< HEAD
 		Sizzle( selector, contexts[ i ], results );
+=======
+		Sizzle( selector, contexts[i], results );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	}
 	return results;
 }
@@ -11284,7 +16335,11 @@ function condense( unmatched, map, filter, context, xml ) {
 		mapped = map != null;
 
 	for ( ; i < len; i++ ) {
+<<<<<<< HEAD
 		if ( ( elem = unmatched[ i ] ) ) {
+=======
+		if ( (elem = unmatched[i]) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			if ( !filter || filter( elem, context, xml ) ) {
 				newUnmatched.push( elem );
 				if ( mapped ) {
@@ -11304,18 +16359,26 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 	if ( postFinder && !postFinder[ expando ] ) {
 		postFinder = setMatcher( postFinder, postSelector );
 	}
+<<<<<<< HEAD
 	return markFunction( function( seed, results, context, xml ) {
+=======
+	return markFunction(function( seed, results, context, xml ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		var temp, i, elem,
 			preMap = [],
 			postMap = [],
 			preexisting = results.length,
 
 			// Get initial elements from seed or context
+<<<<<<< HEAD
 			elems = seed || multipleContexts(
 				selector || "*",
 				context.nodeType ? [ context ] : context,
 				[]
 			),
+=======
+			elems = seed || multipleContexts( selector || "*", context.nodeType ? [ context ] : context, [] ),
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 			// Prefilter to get matcher input, preserving a map for seed-results synchronization
 			matcherIn = preFilter && ( seed || !selector ) ?
@@ -11323,7 +16386,10 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 				elems,
 
 			matcherOut = matcher ?
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				// If we have a postFinder, or filtered seed, or non-seed postFilter or preexisting results,
 				postFinder || ( seed ? preFilter : preexisting || postFilter ) ?
 
@@ -11347,8 +16413,13 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 			// Un-match failing elements by moving them back to matcherIn
 			i = temp.length;
 			while ( i-- ) {
+<<<<<<< HEAD
 				if ( ( elem = temp[ i ] ) ) {
 					matcherOut[ postMap[ i ] ] = !( matcherIn[ postMap[ i ] ] = elem );
+=======
+				if ( (elem = temp[i]) ) {
+					matcherOut[ postMap[i] ] = !(matcherIn[ postMap[i] ] = elem);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				}
 			}
 		}
@@ -11356,11 +16427,15 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 		if ( seed ) {
 			if ( postFinder || preFilter ) {
 				if ( postFinder ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					// Get the final matcherOut by condensing this intermediate into postFinder contexts
 					temp = [];
 					i = matcherOut.length;
 					while ( i-- ) {
+<<<<<<< HEAD
 						if ( ( elem = matcherOut[ i ] ) ) {
 
 							// Restore matcherIn since elem is not yet a final match
@@ -11368,15 +16443,30 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 						}
 					}
 					postFinder( null, ( matcherOut = [] ), temp, xml );
+=======
+						if ( (elem = matcherOut[i]) ) {
+							// Restore matcherIn since elem is not yet a final match
+							temp.push( (matcherIn[i] = elem) );
+						}
+					}
+					postFinder( null, (matcherOut = []), temp, xml );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				}
 
 				// Move matched elements from seed to results to keep them synchronized
 				i = matcherOut.length;
 				while ( i-- ) {
+<<<<<<< HEAD
 					if ( ( elem = matcherOut[ i ] ) &&
 						( temp = postFinder ? indexOf( seed, elem ) : preMap[ i ] ) > -1 ) {
 
 						seed[ temp ] = !( results[ temp ] = elem );
+=======
+					if ( (elem = matcherOut[i]) &&
+						(temp = postFinder ? indexOf( seed, elem ) : preMap[i]) > -1 ) {
+
+						seed[temp] = !(results[temp] = elem);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					}
 				}
 			}
@@ -11394,14 +16484,23 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 				push.apply( results, matcherOut );
 			}
 		}
+<<<<<<< HEAD
 	} );
+=======
+	});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 
 function matcherFromTokens( tokens ) {
 	var checkContext, matcher, j,
 		len = tokens.length,
+<<<<<<< HEAD
 		leadingRelative = Expr.relative[ tokens[ 0 ].type ],
 		implicitRelative = leadingRelative || Expr.relative[ " " ],
+=======
+		leadingRelative = Expr.relative[ tokens[0].type ],
+		implicitRelative = leadingRelative || Expr.relative[" "],
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		i = leadingRelative ? 1 : 0,
 
 		// The foundational matcher ensures that elements are reachable from top-level context(s)
@@ -11413,16 +16512,23 @@ function matcherFromTokens( tokens ) {
 		}, implicitRelative, true ),
 		matchers = [ function( elem, context, xml ) {
 			var ret = ( !leadingRelative && ( xml || context !== outermostContext ) ) || (
+<<<<<<< HEAD
 				( checkContext = context ).nodeType ?
 					matchContext( elem, context, xml ) :
 					matchAnyContext( elem, context, xml ) );
 
+=======
+				(checkContext = context).nodeType ?
+					matchContext( elem, context, xml ) :
+					matchAnyContext( elem, context, xml ) );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// Avoid hanging onto element (issue #299)
 			checkContext = null;
 			return ret;
 		} ];
 
 	for ( ; i < len; i++ ) {
+<<<<<<< HEAD
 		if ( ( matcher = Expr.relative[ tokens[ i ].type ] ) ) {
 			matchers = [ addCombinator( elementMatcher( matchers ), matcher ) ];
 		} else {
@@ -11435,12 +16541,26 @@ function matcherFromTokens( tokens ) {
 				j = ++i;
 				for ( ; j < len; j++ ) {
 					if ( Expr.relative[ tokens[ j ].type ] ) {
+=======
+		if ( (matcher = Expr.relative[ tokens[i].type ]) ) {
+			matchers = [ addCombinator(elementMatcher( matchers ), matcher) ];
+		} else {
+			matcher = Expr.filter[ tokens[i].type ].apply( null, tokens[i].matches );
+
+			// Return special upon seeing a positional matcher
+			if ( matcher[ expando ] ) {
+				// Find the next relative operator (if any) for proper handling
+				j = ++i;
+				for ( ; j < len; j++ ) {
+					if ( Expr.relative[ tokens[j].type ] ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 						break;
 					}
 				}
 				return setMatcher(
 					i > 1 && elementMatcher( matchers ),
 					i > 1 && toSelector(
+<<<<<<< HEAD
 
 					// If the preceding token was a descendant combinator, insert an implicit any-element `*`
 					tokens
@@ -11450,6 +16570,14 @@ function matcherFromTokens( tokens ) {
 					matcher,
 					i < j && matcherFromTokens( tokens.slice( i, j ) ),
 					j < len && matcherFromTokens( ( tokens = tokens.slice( j ) ) ),
+=======
+						// If the preceding token was a descendant combinator, insert an implicit any-element `*`
+						tokens.slice( 0, i - 1 ).concat({ value: tokens[ i - 2 ].type === " " ? "*" : "" })
+					).replace( rtrim, "$1" ),
+					matcher,
+					i < j && matcherFromTokens( tokens.slice( i, j ) ),
+					j < len && matcherFromTokens( (tokens = tokens.slice( j )) ),
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					j < len && toSelector( tokens )
 				);
 			}
@@ -11470,6 +16598,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 				unmatched = seed && [],
 				setMatched = [],
 				contextBackup = outermostContext,
+<<<<<<< HEAD
 
 				// We must always have either seed elements or outermost context
 				elems = seed || byElement && Expr.find[ "TAG" ]( "*", outermost ),
@@ -11485,11 +16614,22 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 				// two documents; shallow comparisons work.
 				// eslint-disable-next-line eqeqeq
 				outermostContext = context == document || context || outermost;
+=======
+				// We must always have either seed elements or outermost context
+				elems = seed || byElement && Expr.find["TAG"]( "*", outermost ),
+				// Use integer dirruns iff this is the outermost matcher
+				dirrunsUnique = (dirruns += contextBackup == null ? 1 : Math.random() || 0.1),
+				len = elems.length;
+
+			if ( outermost ) {
+				outermostContext = context === document || context || outermost;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			}
 
 			// Add elements passing elementMatchers directly to results
 			// Support: IE<9, Safari
 			// Tolerate NodeList properties (IE: "length"; Safari: <number>) matching elements by id
+<<<<<<< HEAD
 			for ( ; i !== len && ( elem = elems[ i ] ) != null; i++ ) {
 				if ( byElement && elem ) {
 					j = 0;
@@ -11504,6 +16644,17 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 					}
 					while ( ( matcher = elementMatchers[ j++ ] ) ) {
 						if ( matcher( elem, context || document, xml ) ) {
+=======
+			for ( ; i !== len && (elem = elems[i]) != null; i++ ) {
+				if ( byElement && elem ) {
+					j = 0;
+					if ( !context && elem.ownerDocument !== document ) {
+						setDocument( elem );
+						xml = !documentIsHTML;
+					}
+					while ( (matcher = elementMatchers[j++]) ) {
+						if ( matcher( elem, context || document, xml) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 							results.push( elem );
 							break;
 						}
@@ -11515,9 +16666,14 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 
 				// Track unmatched elements for set filters
 				if ( bySet ) {
+<<<<<<< HEAD
 
 					// They will have gone through all possible matchers
 					if ( ( elem = !matcher && elem ) ) {
+=======
+					// They will have gone through all possible matchers
+					if ( (elem = !matcher && elem) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 						matchedCount--;
 					}
 
@@ -11541,17 +16697,29 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 			// numerically zero.
 			if ( bySet && i !== matchedCount ) {
 				j = 0;
+<<<<<<< HEAD
 				while ( ( matcher = setMatchers[ j++ ] ) ) {
+=======
+				while ( (matcher = setMatchers[j++]) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					matcher( unmatched, setMatched, context, xml );
 				}
 
 				if ( seed ) {
+<<<<<<< HEAD
 
 					// Reintegrate element matches to eliminate the need for sorting
 					if ( matchedCount > 0 ) {
 						while ( i-- ) {
 							if ( !( unmatched[ i ] || setMatched[ i ] ) ) {
 								setMatched[ i ] = pop.call( results );
+=======
+					// Reintegrate element matches to eliminate the need for sorting
+					if ( matchedCount > 0 ) {
+						while ( i-- ) {
+							if ( !(unmatched[i] || setMatched[i]) ) {
+								setMatched[i] = pop.call( results );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 							}
 						}
 					}
@@ -11592,14 +16760,21 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 		cached = compilerCache[ selector + " " ];
 
 	if ( !cached ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		// Generate a function of recursive functions that can be used to check each element
 		if ( !match ) {
 			match = tokenize( selector );
 		}
 		i = match.length;
 		while ( i-- ) {
+<<<<<<< HEAD
 			cached = matcherFromTokens( match[ i ] );
+=======
+			cached = matcherFromTokens( match[i] );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			if ( cached[ expando ] ) {
 				setMatchers.push( cached );
 			} else {
@@ -11608,10 +16783,14 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 		}
 
 		// Cache the compiled function
+<<<<<<< HEAD
 		cached = compilerCache(
 			selector,
 			matcherFromGroupMatchers( elementMatchers, setMatchers )
 		);
+=======
+		cached = compilerCache( selector, matcherFromGroupMatchers( elementMatchers, setMatchers ) );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 		// Save selector and tokenization
 		cached.selector = selector;
@@ -11631,7 +16810,11 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 select = Sizzle.select = function( selector, context, results, seed ) {
 	var i, tokens, token, type, find,
 		compiled = typeof selector === "function" && selector,
+<<<<<<< HEAD
 		match = !seed && tokenize( ( selector = compiled.selector || selector ) );
+=======
+		match = !seed && tokenize( (selector = compiled.selector || selector) );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	results = results || [];
 
@@ -11640,12 +16823,20 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 	if ( match.length === 1 ) {
 
 		// Reduce context if the leading compound selector is an ID
+<<<<<<< HEAD
 		tokens = match[ 0 ] = match[ 0 ].slice( 0 );
 		if ( tokens.length > 2 && ( token = tokens[ 0 ] ).type === "ID" &&
 			context.nodeType === 9 && documentIsHTML && Expr.relative[ tokens[ 1 ].type ] ) {
 
 			context = ( Expr.find[ "ID" ]( token.matches[ 0 ]
 				.replace( runescape, funescape ), context ) || [] )[ 0 ];
+=======
+		tokens = match[0] = match[0].slice( 0 );
+		if ( tokens.length > 2 && (token = tokens[0]).type === "ID" &&
+				context.nodeType === 9 && documentIsHTML && Expr.relative[ tokens[1].type ] ) {
+
+			context = ( Expr.find["ID"]( token.matches[0].replace(runescape, funescape), context ) || [] )[0];
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			if ( !context ) {
 				return results;
 
@@ -11658,6 +16849,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 		}
 
 		// Fetch a seed set for right-to-left matching
+<<<<<<< HEAD
 		i = matchExpr[ "needsContext" ].test( selector ) ? 0 : tokens.length;
 		while ( i-- ) {
 			token = tokens[ i ];
@@ -11674,6 +16866,22 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 					rsibling.test( tokens[ 0 ].type ) && testContext( context.parentNode ) ||
 						context
 				) ) ) {
+=======
+		i = matchExpr["needsContext"].test( selector ) ? 0 : tokens.length;
+		while ( i-- ) {
+			token = tokens[i];
+
+			// Abort if we hit a combinator
+			if ( Expr.relative[ (type = token.type) ] ) {
+				break;
+			}
+			if ( (find = Expr.find[ type ]) ) {
+				// Search, expanding context for leading sibling combinators
+				if ( (seed = find(
+					token.matches[0].replace( runescape, funescape ),
+					rsibling.test( tokens[0].type ) && testContext( context.parentNode ) || context
+				)) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 					// If seed is empty or no tokens remain, we can return early
 					tokens.splice( i, 1 );
@@ -11704,7 +16912,11 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 // One-time assignments
 
 // Sort stability
+<<<<<<< HEAD
 support.sortStable = expando.split( "" ).sort( sortOrder ).join( "" ) === expando;
+=======
+support.sortStable = expando.split("").sort( sortOrder ).join("") === expando;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 // Support: Chrome 14-35+
 // Always assume duplicates if they aren't passed to the comparison function
@@ -11715,28 +16927,47 @@ setDocument();
 
 // Support: Webkit<537.32 - Safari 6.0.3/Chrome 25 (fixed in Chrome 27)
 // Detached nodes confoundingly follow *each other*
+<<<<<<< HEAD
 support.sortDetached = assert( function( el ) {
 
 	// Should return 1, but returns 4 (following)
 	return el.compareDocumentPosition( document.createElement( "fieldset" ) ) & 1;
 } );
+=======
+support.sortDetached = assert(function( el ) {
+	// Should return 1, but returns 4 (following)
+	return el.compareDocumentPosition( document.createElement("fieldset") ) & 1;
+});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 // Support: IE<8
 // Prevent attribute/property "interpolation"
 // https://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
+<<<<<<< HEAD
 if ( !assert( function( el ) {
 	el.innerHTML = "<a href='#'></a>";
 	return el.firstChild.getAttribute( "href" ) === "#";
 } ) ) {
+=======
+if ( !assert(function( el ) {
+	el.innerHTML = "<a href='#'></a>";
+	return el.firstChild.getAttribute("href") === "#" ;
+}) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	addHandle( "type|href|height|width", function( elem, name, isXML ) {
 		if ( !isXML ) {
 			return elem.getAttribute( name, name.toLowerCase() === "type" ? 1 : 2 );
 		}
+<<<<<<< HEAD
 	} );
+=======
+	});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 
 // Support: IE<9
 // Use defaultValue in place of getAttribute("value")
+<<<<<<< HEAD
 if ( !support.attributes || !assert( function( el ) {
 	el.innerHTML = "<input/>";
 	el.firstChild.setAttribute( "value", "" );
@@ -11747,27 +16978,57 @@ if ( !support.attributes || !assert( function( el ) {
 			return elem.defaultValue;
 		}
 	} );
+=======
+if ( !support.attributes || !assert(function( el ) {
+	el.innerHTML = "<input/>";
+	el.firstChild.setAttribute( "value", "" );
+	return el.firstChild.getAttribute( "value" ) === "";
+}) ) {
+	addHandle( "value", function( elem, name, isXML ) {
+		if ( !isXML && elem.nodeName.toLowerCase() === "input" ) {
+			return elem.defaultValue;
+		}
+	});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 
 // Support: IE<9
 // Use getAttributeNode to fetch booleans when getAttribute lies
+<<<<<<< HEAD
 if ( !assert( function( el ) {
 	return el.getAttribute( "disabled" ) == null;
 } ) ) {
+=======
+if ( !assert(function( el ) {
+	return el.getAttribute("disabled") == null;
+}) ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	addHandle( booleans, function( elem, name, isXML ) {
 		var val;
 		if ( !isXML ) {
 			return elem[ name ] === true ? name.toLowerCase() :
+<<<<<<< HEAD
 				( val = elem.getAttributeNode( name ) ) && val.specified ?
 					val.value :
 					null;
 		}
 	} );
+=======
+					(val = elem.getAttributeNode( name )) && val.specified ?
+					val.value :
+				null;
+		}
+	});
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 
 return Sizzle;
 
+<<<<<<< HEAD
 } )( window );
+=======
+})( window );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 
 
@@ -12136,7 +17397,11 @@ jQuery.each( {
 	parents: function( elem ) {
 		return dir( elem, "parentNode" );
 	},
+<<<<<<< HEAD
 	parentsUntil: function( elem, _i, until ) {
+=======
+	parentsUntil: function( elem, i, until ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		return dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
@@ -12151,10 +17416,17 @@ jQuery.each( {
 	prevAll: function( elem ) {
 		return dir( elem, "previousSibling" );
 	},
+<<<<<<< HEAD
 	nextUntil: function( elem, _i, until ) {
 		return dir( elem, "nextSibling", until );
 	},
 	prevUntil: function( elem, _i, until ) {
+=======
+	nextUntil: function( elem, i, until ) {
+		return dir( elem, "nextSibling", until );
+	},
+	prevUntil: function( elem, i, until ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		return dir( elem, "previousSibling", until );
 	},
 	siblings: function( elem ) {
@@ -12164,6 +17436,7 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
+<<<<<<< HEAD
 		if ( elem.contentDocument != null &&
 
 			// Support: IE 11+
@@ -12171,6 +17444,9 @@ jQuery.each( {
 			// `contentDocument` with a `null` prototype.
 			getProto( elem.contentDocument ) ) {
 
+=======
+		if ( typeof elem.contentDocument !== "undefined" ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			return elem.contentDocument;
 		}
 
@@ -12513,7 +17789,11 @@ jQuery.extend( {
 					var fns = arguments;
 
 					return jQuery.Deferred( function( newDefer ) {
+<<<<<<< HEAD
 						jQuery.each( tuples, function( _i, tuple ) {
+=======
+						jQuery.each( tuples, function( i, tuple ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 							// Map tuples (progress, done, fail) to arguments (done, fail, progress)
 							var fn = isFunction( fns[ tuple[ 4 ] ] ) && fns[ tuple[ 4 ] ];
@@ -12966,7 +18246,11 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 			// ...except when executing function values
 			} else {
 				bulk = fn;
+<<<<<<< HEAD
 				fn = function( elem, _key, value ) {
+=======
+				fn = function( elem, key, value ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					return bulk.call( jQuery( elem ), value );
 				};
 			}
@@ -13001,7 +18285,11 @@ var rmsPrefix = /^-ms-/,
 	rdashAlpha = /-([a-z])/g;
 
 // Used by camelCase as callback to replace()
+<<<<<<< HEAD
 function fcamelCase( _all, letter ) {
+=======
+function fcamelCase( all, letter ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	return letter.toUpperCase();
 }
 
@@ -13529,6 +18817,30 @@ var isHiddenWithinTree = function( elem, el ) {
 			jQuery.css( elem, "display" ) === "none";
 	};
 
+<<<<<<< HEAD
+=======
+var swap = function( elem, options, callback, args ) {
+	var ret, name,
+		old = {};
+
+	// Remember the old values, and insert the new ones
+	for ( name in options ) {
+		old[ name ] = elem.style[ name ];
+		elem.style[ name ] = options[ name ];
+	}
+
+	ret = callback.apply( elem, args || [] );
+
+	// Revert the old values
+	for ( name in options ) {
+		elem.style[ name ] = old[ name ];
+	}
+
+	return ret;
+};
+
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 
 function adjustCSS( elem, prop, valueParts, tween ) {
@@ -13699,6 +19011,7 @@ var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
 
 
 
+<<<<<<< HEAD
 ( function() {
 	var fragment = document.createDocumentFragment(),
 		div = fragment.appendChild( document.createElement( "div" ) ),
@@ -13734,6 +19047,14 @@ var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
 // We have to close these tags to support XHTML (#13200)
 var wrapMap = {
 
+=======
+// We have to close these tags to support XHTML (#13200)
+var wrapMap = {
+
+	// Support: IE <=9 only
+	option: [ 1, "<select multiple='multiple'>", "</select>" ],
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	// XHTML parsers do not magically insert elements in the
 	// same way that tag soup parsers do. So we cannot shorten
 	// this by omitting <tbody> or other required elements.
@@ -13745,6 +19066,7 @@ var wrapMap = {
 	_default: [ 0, "", "" ]
 };
 
+<<<<<<< HEAD
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
@@ -13753,6 +19075,14 @@ if ( !support.option ) {
 	wrapMap.optgroup = wrapMap.option = [ 1, "<select multiple='multiple'>", "</select>" ];
 }
 
+=======
+// Support: IE <=9 only
+wrapMap.optgroup = wrapMap.option;
+
+wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+wrapMap.th = wrapMap.td;
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 function getAll( context, tag ) {
 
@@ -13885,6 +19215,35 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 }
 
 
+<<<<<<< HEAD
+=======
+( function() {
+	var fragment = document.createDocumentFragment(),
+		div = fragment.appendChild( document.createElement( "div" ) ),
+		input = document.createElement( "input" );
+
+	// Support: Android 4.0 - 4.3 only
+	// Check state lost if the name is set (#11217)
+	// Support: Windows Web Apps (WWA)
+	// `name` and `type` must use .setAttribute for WWA (#14901)
+	input.setAttribute( "type", "radio" );
+	input.setAttribute( "checked", "checked" );
+	input.setAttribute( "name", "t" );
+
+	div.appendChild( input );
+
+	// Support: Android <=4.1 only
+	// Older WebKit doesn't clone checked state correctly in fragments
+	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
+
+	// Support: IE <=11 only
+	// Make sure textarea (and checkbox) defaultValue is properly cloned
+	div.innerHTML = "<textarea>x</textarea>";
+	support.noCloneChecked = !!div.cloneNode( true ).lastChild.defaultValue;
+} )();
+
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
@@ -13993,8 +19352,13 @@ jQuery.event = {
 			special, handlers, type, namespaces, origType,
 			elemData = dataPriv.get( elem );
 
+<<<<<<< HEAD
 		// Only attach events to objects that accept data
 		if ( !acceptData( elem ) ) {
+=======
+		// Don't attach events to noData or text/comment nodes (but allow plain objects)
+		if ( !elemData ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			return;
 		}
 
@@ -14018,7 +19382,11 @@ jQuery.event = {
 
 		// Init the element's event structure and main handler, if this is the first
 		if ( !( events = elemData.events ) ) {
+<<<<<<< HEAD
 			events = elemData.events = Object.create( null );
+=======
+			events = elemData.events = {};
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		}
 		if ( !( eventHandle = elemData.handle ) ) {
 			eventHandle = elemData.handle = function( e ) {
@@ -14176,6 +19544,7 @@ jQuery.event = {
 
 	dispatch: function( nativeEvent ) {
 
+<<<<<<< HEAD
 		var i, j, ret, matched, handleObj, handlerQueue,
 			args = new Array( arguments.length ),
 
@@ -14185,6 +19554,14 @@ jQuery.event = {
 			handlers = (
 					dataPriv.get( this, "events" ) || Object.create( null )
 				)[ event.type ] || [],
+=======
+		// Make a writable jQuery.Event from the native event object
+		var event = jQuery.event.fix( nativeEvent );
+
+		var i, j, ret, matched, handleObj, handlerQueue,
+			args = new Array( arguments.length ),
+			handlers = ( dataPriv.get( this, "events" ) || {} )[ event.type ] || [],
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			special = jQuery.event.special[ event.type ] || {};
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
@@ -14759,6 +20136,16 @@ jQuery.fn.extend( {
 
 var
 
+<<<<<<< HEAD
+=======
+	/* eslint-disable max-len */
+
+	// See https://github.com/eslint/eslint/issues/3229
+	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([a-z][^\/\0>\x20\t\r\n\f]*)[^>]*)\/>/gi,
+
+	/* eslint-enable */
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	// Support: IE <=10 - 11, Edge 12 - 13 only
 	// In IE/Edge using regex groups here causes severe slowdowns.
 	// See https://connect.microsoft.com/IE/feedback/details/1736512/
@@ -14795,7 +20182,11 @@ function restoreScript( elem ) {
 }
 
 function cloneCopyEvent( src, dest ) {
+<<<<<<< HEAD
 	var i, l, type, pdataOld, udataOld, udataCur, events;
+=======
+	var i, l, type, pdataOld, pdataCur, udataOld, udataCur, events;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	if ( dest.nodeType !== 1 ) {
 		return;
@@ -14803,11 +20194,21 @@ function cloneCopyEvent( src, dest ) {
 
 	// 1. Copy private data: events, handlers, etc.
 	if ( dataPriv.hasData( src ) ) {
+<<<<<<< HEAD
 		pdataOld = dataPriv.get( src );
 		events = pdataOld.events;
 
 		if ( events ) {
 			dataPriv.remove( dest, "handle events" );
+=======
+		pdataOld = dataPriv.access( src );
+		pdataCur = dataPriv.set( dest, pdataOld );
+		events = pdataOld.events;
+
+		if ( events ) {
+			delete pdataCur.handle;
+			pdataCur.events = {};
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 			for ( type in events ) {
 				for ( i = 0, l = events[ type ].length; i < l; i++ ) {
@@ -14843,7 +20244,11 @@ function fixInput( src, dest ) {
 function domManip( collection, args, callback, ignored ) {
 
 	// Flatten any nested arrays
+<<<<<<< HEAD
 	args = flat( args );
+=======
+	args = concat.apply( [], args );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	var fragment, first, scripts, hasScripts, node, doc,
 		i = 0,
@@ -14918,7 +20323,11 @@ function domManip( collection, args, callback, ignored ) {
 							if ( jQuery._evalUrl && !node.noModule ) {
 								jQuery._evalUrl( node.src, {
 									nonce: node.nonce || node.getAttribute( "nonce" )
+<<<<<<< HEAD
 								}, doc );
+=======
+								} );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 							}
 						} else {
 							DOMEval( node.textContent.replace( rcleanScript, "" ), node, doc );
@@ -14955,7 +20364,11 @@ function remove( elem, selector, keepData ) {
 
 jQuery.extend( {
 	htmlPrefilter: function( html ) {
+<<<<<<< HEAD
 		return html;
+=======
+		return html.replace( rxhtmlTag, "<$1></$2>" );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	},
 
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
@@ -15217,6 +20630,7 @@ var getStyles = function( elem ) {
 		return view.getComputedStyle( elem );
 	};
 
+<<<<<<< HEAD
 var swap = function( elem, options, callback ) {
 	var ret, name,
 		old = {};
@@ -15238,6 +20652,8 @@ var swap = function( elem, options, callback ) {
 };
 
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 
 
@@ -15295,7 +20711,11 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 	}
 
 	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal,
+<<<<<<< HEAD
 		reliableTrDimensionsVal, reliableMarginLeftVal,
+=======
+		reliableMarginLeftVal,
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -15330,6 +20750,7 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 		scrollboxSize: function() {
 			computeStyleTests();
 			return scrollboxSizeVal;
+<<<<<<< HEAD
 		},
 
 		// Support: IE 9 - 11+, Edge 15 - 18+
@@ -15359,6 +20780,8 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 				documentElement.removeChild( table );
 			}
 			return reliableTrDimensionsVal;
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		}
 	} );
 } )();
@@ -15483,7 +20906,11 @@ var
 		fontWeight: "400"
 	};
 
+<<<<<<< HEAD
 function setPositiveNumber( _elem, value, subtract ) {
+=======
+function setPositiveNumber( elem, value, subtract ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 	// Any relative (+/-) values have already been
 	// normalized at this point
@@ -15588,6 +21015,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	}
 
 
+<<<<<<< HEAD
 	// Support: IE 9 - 11 only
 	// Use offsetWidth/offsetHeight for when box sizing is unreliable.
 	// In those cases, the computed value can be trusted to be border-box.
@@ -15608,6 +21036,19 @@ function getWidthOrHeight( elem, dimension, extra ) {
 		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
 
 		// Make sure the element is visible & connected
+=======
+	// Fall back to offsetWidth/offsetHeight when value is "auto"
+	// This happens for inline elements with no explicit setting (gh-3571)
+	// Support: Android <=4.1 - 4.3 only
+	// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
+	// Support: IE 9-11 only
+	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
+	// We use getClientRects() to check for hidden/disconnected.
+	// In those cases, the computed value can be trusted to be border-box
+	if ( ( !support.boxSizingReliable() && isBorderBox ||
+		val === "auto" ||
+		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		elem.getClientRects().length ) {
 
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
@@ -15802,7 +21243,11 @@ jQuery.extend( {
 	}
 } );
 
+<<<<<<< HEAD
 jQuery.each( [ "height", "width" ], function( _i, dimension ) {
+=======
+jQuery.each( [ "height", "width" ], function( i, dimension ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	jQuery.cssHooks[ dimension ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
@@ -16575,7 +22020,11 @@ jQuery.fn.extend( {
 			clearQueue = type;
 			type = undefined;
 		}
+<<<<<<< HEAD
 		if ( clearQueue ) {
+=======
+		if ( clearQueue && type !== false ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			this.queue( type || "fx", [] );
 		}
 
@@ -16658,7 +22107,11 @@ jQuery.fn.extend( {
 	}
 } );
 
+<<<<<<< HEAD
 jQuery.each( [ "toggle", "show", "hide" ], function( _i, name ) {
+=======
+jQuery.each( [ "toggle", "show", "hide" ], function( i, name ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	var cssFn = jQuery.fn[ name ];
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
 		return speed == null || typeof speed === "boolean" ?
@@ -16879,7 +22332,11 @@ boolHook = {
 	}
 };
 
+<<<<<<< HEAD
 jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( _i, name ) {
+=======
+jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	var getter = attrHandle[ name ] || jQuery.find.attr;
 
 	attrHandle[ name ] = function( elem, name, isXML ) {
@@ -17503,9 +22960,13 @@ jQuery.extend( jQuery.event, {
 				special.bindType || type;
 
 			// jQuery handler
+<<<<<<< HEAD
 			handle = (
 					dataPriv.get( cur, "events" ) || Object.create( null )
 				)[ event.type ] &&
+=======
+			handle = ( dataPriv.get( cur, "events" ) || {} )[ event.type ] &&
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 				dataPriv.get( cur, "handle" );
 			if ( handle ) {
 				handle.apply( cur, data );
@@ -17616,10 +23077,14 @@ if ( !support.focusin ) {
 
 		jQuery.event.special[ fix ] = {
 			setup: function() {
+<<<<<<< HEAD
 
 				// Handle: regular nodes (via `this.ownerDocument`), window
 				// (via `this.document`) & document (via `this`).
 				var doc = this.ownerDocument || this.document || this,
+=======
+				var doc = this.ownerDocument || this,
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					attaches = dataPriv.access( doc, fix );
 
 				if ( !attaches ) {
@@ -17628,7 +23093,11 @@ if ( !support.focusin ) {
 				dataPriv.access( doc, fix, ( attaches || 0 ) + 1 );
 			},
 			teardown: function() {
+<<<<<<< HEAD
 				var doc = this.ownerDocument || this.document || this,
+=======
+				var doc = this.ownerDocument || this,
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 					attaches = dataPriv.access( doc, fix ) - 1;
 
 				if ( !attaches ) {
@@ -17644,7 +23113,11 @@ if ( !support.focusin ) {
 }
 var location = window.location;
 
+<<<<<<< HEAD
 var nonce = { guid: Date.now() };
+=======
+var nonce = Date.now();
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 var rquery = ( /\?/ );
 
@@ -17776,7 +23249,11 @@ jQuery.fn.extend( {
 				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
 				( this.checked || !rcheckableType.test( type ) );
 		} )
+<<<<<<< HEAD
 		.map( function( _i, elem ) {
+=======
+		.map( function( i, elem ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			var val = jQuery( this ).val();
 
 			if ( val == null ) {
@@ -18389,8 +23866,12 @@ jQuery.extend( {
 			// Add or update anti-cache param if needed
 			if ( s.cache === false ) {
 				cacheURL = cacheURL.replace( rantiCache, "$1" );
+<<<<<<< HEAD
 				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce.guid++ ) +
 					uncached;
+=======
+				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			}
 
 			// Put hash and anti-cache on the URL that will be requested (gh-1732)
@@ -18523,11 +24004,14 @@ jQuery.extend( {
 				response = ajaxHandleResponses( s, jqXHR, responses );
 			}
 
+<<<<<<< HEAD
 			// Use a noop converter for missing script
 			if ( !isSuccess && jQuery.inArray( "script", s.dataTypes ) > -1 ) {
 				s.converters[ "text script" ] = function() {};
 			}
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			// Convert no matter what (that way responseXXX fields are always set)
 			response = ajaxConvert( s, response, jqXHR, isSuccess );
 
@@ -18618,7 +24102,11 @@ jQuery.extend( {
 	}
 } );
 
+<<<<<<< HEAD
 jQuery.each( [ "get", "post" ], function( _i, method ) {
+=======
+jQuery.each( [ "get", "post" ], function( i, method ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	jQuery[ method ] = function( url, data, callback, type ) {
 
 		// Shift arguments if data argument was omitted
@@ -18639,6 +24127,7 @@ jQuery.each( [ "get", "post" ], function( _i, method ) {
 	};
 } );
 
+<<<<<<< HEAD
 jQuery.ajaxPrefilter( function( s ) {
 	var i;
 	for ( i in s.headers ) {
@@ -18650,6 +24139,10 @@ jQuery.ajaxPrefilter( function( s ) {
 
 
 jQuery._evalUrl = function( url, options, doc ) {
+=======
+
+jQuery._evalUrl = function( url, options ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	return jQuery.ajax( {
 		url: url,
 
@@ -18667,7 +24160,11 @@ jQuery._evalUrl = function( url, options, doc ) {
 			"text script": function() {}
 		},
 		dataFilter: function( response ) {
+<<<<<<< HEAD
 			jQuery.globalEval( response, options, doc );
+=======
+			jQuery.globalEval( response, options );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		}
 	} );
 };
@@ -18989,7 +24486,11 @@ var oldCallbacks = [],
 jQuery.ajaxSetup( {
 	jsonp: "callback",
 	jsonpCallback: function() {
+<<<<<<< HEAD
 		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce.guid++ ) );
+=======
+		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce++ ) );
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 		this[ callback ] = true;
 		return callback;
 	}
@@ -19206,6 +24707,26 @@ jQuery.fn.load = function( url, params, callback ) {
 
 
 
+<<<<<<< HEAD
+=======
+// Attach a bunch of functions for handling common AJAX events
+jQuery.each( [
+	"ajaxStart",
+	"ajaxStop",
+	"ajaxComplete",
+	"ajaxError",
+	"ajaxSuccess",
+	"ajaxSend"
+], function( i, type ) {
+	jQuery.fn[ type ] = function( fn ) {
+		return this.on( type, fn );
+	};
+} );
+
+
+
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 jQuery.expr.pseudos.animated = function( elem ) {
 	return jQuery.grep( jQuery.timers, function( fn ) {
 		return elem === fn.elem;
@@ -19262,12 +24783,15 @@ jQuery.offset = {
 			options.using.call( elem, props );
 
 		} else {
+<<<<<<< HEAD
 			if ( typeof props.top === "number" ) {
 				props.top += "px";
 			}
 			if ( typeof props.left === "number" ) {
 				props.left += "px";
 			}
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 			curElem.css( props );
 		}
 	}
@@ -19418,7 +24942,11 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 // Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
 // getComputedStyle returns percent when specified for top/left/bottom/right;
 // rather than make the css module depend on the offset module, just check for it here
+<<<<<<< HEAD
 jQuery.each( [ "top", "left" ], function( _i, prop ) {
+=======
+jQuery.each( [ "top", "left" ], function( i, prop ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
 		function( elem, computed ) {
 			if ( computed ) {
@@ -19481,6 +25009,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 } );
 
 
+<<<<<<< HEAD
 jQuery.each( [
 	"ajaxStart",
 	"ajaxStop",
@@ -19494,6 +25023,27 @@ jQuery.each( [
 	};
 } );
 
+=======
+jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
+	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
+	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
+	function( i, name ) {
+
+	// Handle event binding
+	jQuery.fn[ name ] = function( data, fn ) {
+		return arguments.length > 0 ?
+			this.on( name, null, data, fn ) :
+			this.trigger( name );
+	};
+} );
+
+jQuery.fn.extend( {
+	hover: function( fnOver, fnOut ) {
+		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
+	}
+} );
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 
 
@@ -19515,6 +25065,7 @@ jQuery.fn.extend( {
 		return arguments.length === 1 ?
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
+<<<<<<< HEAD
 	},
 
 	hover: function( fnOver, fnOut ) {
@@ -19542,6 +25093,11 @@ jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
 // Make sure we trim BOM and NBSP
 var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
+=======
+	}
+} );
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 // Bind a function to a context, optionally partially applying any
 // arguments.
 // jQuery.proxy is deprecated to promote standards (specifically Function#bind)
@@ -19604,11 +25160,14 @@ jQuery.isNumeric = function( obj ) {
 		!isNaN( obj - parseFloat( obj ) );
 };
 
+<<<<<<< HEAD
 jQuery.trim = function( text ) {
 	return text == null ?
 		"" :
 		( text + "" ).replace( rtrim, "" );
 };
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 
 
@@ -19658,7 +25217,11 @@ jQuery.noConflict = function( deep ) {
 // Expose jQuery and $ identifiers, even in AMD
 // (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
 // and CommonJS for browser emulators (#13566)
+<<<<<<< HEAD
 if ( typeof noGlobal === "undefined" ) {
+=======
+if ( !noGlobal ) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 	window.jQuery = window.$ = jQuery;
 }
 
@@ -19680,6 +25243,7 @@ return jQuery;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+<<<<<<< HEAD
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -19723,15 +25287,63 @@ function _extends() {
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function");
+=======
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   }
 
   subClass.prototype = Object.create(superClass && superClass.prototype, {
     constructor: {
       value: subClass,
+<<<<<<< HEAD
+=======
+      enumerable: false,
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       writable: true,
       configurable: true
     }
   });
+<<<<<<< HEAD
   if (superClass) _setPrototypeOf(subClass, superClass);
 }
 
@@ -19861,11 +25473,82 @@ var Connector = /*#__PURE__*/function () {
   }]);
 
   return Connector;
+=======
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
+
+var Connector = function () {
+    /**
+     * Create a new class instance.
+     */
+    function Connector(options) {
+        classCallCheck(this, Connector);
+
+        /**
+         * Default connector options.
+         */
+        this._defaultOptions = {
+            auth: {
+                headers: {}
+            },
+            authEndpoint: '/broadcasting/auth',
+            broadcaster: 'pusher',
+            csrfToken: null,
+            host: null,
+            key: null,
+            namespace: 'App.Events'
+        };
+        this.setOptions(options);
+        this.connect();
+    }
+    /**
+     * Merge the custom options with the defaults.
+     */
+
+
+    createClass(Connector, [{
+        key: 'setOptions',
+        value: function setOptions(options) {
+            this.options = _extends(this._defaultOptions, options);
+            if (this.csrfToken()) {
+                this.options.auth.headers['X-CSRF-TOKEN'] = this.csrfToken();
+            }
+            return options;
+        }
+        /**
+         * Extract the CSRF token from the page.
+         */
+
+    }, {
+        key: 'csrfToken',
+        value: function csrfToken() {
+            var selector = void 0;
+            if (typeof window !== 'undefined' && window['Laravel'] && window['Laravel'].csrfToken) {
+                return window['Laravel'].csrfToken;
+            } else if (this.options.csrfToken) {
+                return this.options.csrfToken;
+            } else if (typeof document !== 'undefined' && typeof document.querySelector === 'function' && (selector = document.querySelector('meta[name="csrf-token"]'))) {
+                return selector.getAttribute('content');
+            }
+            return null;
+        }
+    }]);
+    return Connector;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }();
 
 /**
  * This class represents a basic channel.
  */
+<<<<<<< HEAD
 var Channel = /*#__PURE__*/function () {
   function Channel() {
     _classCallCheck(this, Channel);
@@ -19873,6 +25556,15 @@ var Channel = /*#__PURE__*/function () {
 
   _createClass(Channel, [{
     key: "listenForWhisper",
+=======
+var Channel = function () {
+  function Channel() {
+    classCallCheck(this, Channel);
+  }
+
+  createClass(Channel, [{
+    key: 'listenForWhisper',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Listen for a whisper event on the channel instance.
@@ -19885,27 +25577,43 @@ var Channel = /*#__PURE__*/function () {
      */
 
   }, {
+<<<<<<< HEAD
     key: "notification",
+=======
+    key: 'notification',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function notification(callback) {
       return this.listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', callback);
     }
     /**
+<<<<<<< HEAD
      * Stop listening for a whisper event on the channel instance.
      */
 
   }, {
     key: "stopListeningForWhisper",
+=======
+     * Stop listening for a whispser event on the channel instance.
+     */
+
+  }, {
+    key: 'stopListeningForWhisper',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function stopListeningForWhisper(event) {
       return this.stopListening('.client-' + event);
     }
   }]);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   return Channel;
 }();
 
 /**
  * Event name formatter
  */
+<<<<<<< HEAD
 var EventFormatter = /*#__PURE__*/function () {
   /**
    * Create a new class instance.
@@ -19943,11 +25651,49 @@ var EventFormatter = /*#__PURE__*/function () {
   }]);
 
   return EventFormatter;
+=======
+var EventFormatter = function () {
+    /**
+     * Create a new class instance.
+     */
+    function EventFormatter(namespace) {
+        classCallCheck(this, EventFormatter);
+
+        this.setNamespace(namespace);
+    }
+    /**
+     * Format the given event name.
+     */
+
+
+    createClass(EventFormatter, [{
+        key: 'format',
+        value: function format(event) {
+            if (event.charAt(0) === '.' || event.charAt(0) === '\\') {
+                return event.substr(1);
+            } else if (this.namespace) {
+                event = this.namespace + '.' + event;
+            }
+            return event.replace(/\./g, '\\');
+        }
+        /**
+         * Set the event namespace.
+         */
+
+    }, {
+        key: 'setNamespace',
+        value: function setNamespace(value) {
+            this.namespace = value;
+        }
+    }]);
+    return EventFormatter;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }();
 
 /**
  * This class represents a Pusher channel.
  */
+<<<<<<< HEAD
 
 var PusherChannel = /*#__PURE__*/function (_Channel) {
   _inherits(PusherChannel, _Channel);
@@ -20048,11 +25794,83 @@ var PusherChannel = /*#__PURE__*/function (_Channel) {
   }]);
 
   return PusherChannel;
+=======
+var PusherChannel = function (_Channel) {
+    inherits(PusherChannel, _Channel);
+
+    /**
+     * Create a new class instance.
+     */
+    function PusherChannel(pusher, name, options) {
+        classCallCheck(this, PusherChannel);
+
+        var _this = possibleConstructorReturn(this, (PusherChannel.__proto__ || Object.getPrototypeOf(PusherChannel)).call(this));
+
+        _this.name = name;
+        _this.pusher = pusher;
+        _this.options = options;
+        _this.eventFormatter = new EventFormatter(_this.options.namespace);
+        _this.subscribe();
+        return _this;
+    }
+    /**
+     * Subscribe to a Pusher channel.
+     */
+
+
+    createClass(PusherChannel, [{
+        key: 'subscribe',
+        value: function subscribe() {
+            this.subscription = this.pusher.subscribe(this.name);
+        }
+        /**
+         * Unsubscribe from a Pusher channel.
+         */
+
+    }, {
+        key: 'unsubscribe',
+        value: function unsubscribe() {
+            this.pusher.unsubscribe(this.name);
+        }
+        /**
+         * Listen for an event on the channel instance.
+         */
+
+    }, {
+        key: 'listen',
+        value: function listen(event, callback) {
+            this.on(this.eventFormatter.format(event), callback);
+            return this;
+        }
+        /**
+         * Stop listening for an event on the channel instance.
+         */
+
+    }, {
+        key: 'stopListening',
+        value: function stopListening(event) {
+            this.subscription.unbind(this.eventFormatter.format(event));
+            return this;
+        }
+        /**
+         * Bind a channel to an event.
+         */
+
+    }, {
+        key: 'on',
+        value: function on(event, callback) {
+            this.subscription.bind(event, callback);
+            return this;
+        }
+    }]);
+    return PusherChannel;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }(Channel);
 
 /**
  * This class represents a Pusher private channel.
  */
+<<<<<<< HEAD
 
 var PusherPrivateChannel = /*#__PURE__*/function (_PusherChannel) {
   _inherits(PusherPrivateChannel, _PusherChannel);
@@ -20067,20 +25885,40 @@ var PusherPrivateChannel = /*#__PURE__*/function (_PusherChannel) {
 
   _createClass(PusherPrivateChannel, [{
     key: "whisper",
+=======
+var PusherPrivateChannel = function (_PusherChannel) {
+  inherits(PusherPrivateChannel, _PusherChannel);
+
+  function PusherPrivateChannel() {
+    classCallCheck(this, PusherPrivateChannel);
+    return possibleConstructorReturn(this, (PusherPrivateChannel.__proto__ || Object.getPrototypeOf(PusherPrivateChannel)).apply(this, arguments));
+  }
+
+  createClass(PusherPrivateChannel, [{
+    key: 'whisper',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Trigger client event on the channel.
      */
     value: function whisper(eventName, data) {
+<<<<<<< HEAD
       this.pusher.channels.channels[this.name].trigger("client-".concat(eventName), data);
       return this;
     }
   }]);
 
+=======
+      this.pusher.channels.channels[this.name].trigger('client-' + eventName, data);
+      return this;
+    }
+  }]);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   return PusherPrivateChannel;
 }(PusherChannel);
 
 /**
+<<<<<<< HEAD
  * This class represents a Pusher private channel.
  */
 
@@ -20176,11 +26014,74 @@ var PusherPresenceChannel = /*#__PURE__*/function (_PusherChannel) {
   }]);
 
   return PusherPresenceChannel;
+=======
+ * This class represents a Pusher presence channel.
+ */
+var PusherPresenceChannel = function (_PusherChannel) {
+    inherits(PusherPresenceChannel, _PusherChannel);
+
+    function PusherPresenceChannel() {
+        classCallCheck(this, PusherPresenceChannel);
+        return possibleConstructorReturn(this, (PusherPresenceChannel.__proto__ || Object.getPrototypeOf(PusherPresenceChannel)).apply(this, arguments));
+    }
+
+    createClass(PusherPresenceChannel, [{
+        key: 'here',
+
+        /**
+         * Register a callback to be called anytime the member list changes.
+         */
+        value: function here(callback) {
+            this.on('pusher:subscription_succeeded', function (data) {
+                callback(Object.keys(data.members).map(function (k) {
+                    return data.members[k];
+                }));
+            });
+            return this;
+        }
+        /**
+         * Listen for someone joining the channel.
+         */
+
+    }, {
+        key: 'joining',
+        value: function joining(callback) {
+            this.on('pusher:member_added', function (member) {
+                callback(member.info);
+            });
+            return this;
+        }
+        /**
+         * Listen for someone leaving the channel.
+         */
+
+    }, {
+        key: 'leaving',
+        value: function leaving(callback) {
+            this.on('pusher:member_removed', function (member) {
+                callback(member.info);
+            });
+            return this;
+        }
+        /**
+         * Trigger client event on the channel.
+         */
+
+    }, {
+        key: 'whisper',
+        value: function whisper(eventName, data) {
+            this.pusher.channels.channels[this.name].trigger('client-' + eventName, data);
+            return this;
+        }
+    }]);
+    return PusherPresenceChannel;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }(PusherChannel);
 
 /**
  * This class represents a Socket.io channel.
  */
+<<<<<<< HEAD
 
 var SocketIoChannel = /*#__PURE__*/function (_Channel) {
   _inherits(SocketIoChannel, _Channel);
@@ -20345,11 +26246,145 @@ var SocketIoChannel = /*#__PURE__*/function (_Channel) {
   }]);
 
   return SocketIoChannel;
+=======
+var SocketIoChannel = function (_Channel) {
+    inherits(SocketIoChannel, _Channel);
+
+    /**
+     * Create a new class instance.
+     */
+    function SocketIoChannel(socket, name, options) {
+        classCallCheck(this, SocketIoChannel);
+
+        /**
+         * The event callbacks applied to the channel.
+         */
+        var _this = possibleConstructorReturn(this, (SocketIoChannel.__proto__ || Object.getPrototypeOf(SocketIoChannel)).call(this));
+
+        _this.events = {};
+        _this.name = name;
+        _this.socket = socket;
+        _this.options = options;
+        _this.eventFormatter = new EventFormatter(_this.options.namespace);
+        _this.subscribe();
+        _this.configureReconnector();
+        return _this;
+    }
+    /**
+     * Subscribe to a Socket.io channel.
+     */
+
+
+    createClass(SocketIoChannel, [{
+        key: 'subscribe',
+        value: function subscribe() {
+            this.socket.emit('subscribe', {
+                channel: this.name,
+                auth: this.options.auth || {}
+            });
+        }
+        /**
+         * Unsubscribe from channel and ubind event callbacks.
+         */
+
+    }, {
+        key: 'unsubscribe',
+        value: function unsubscribe() {
+            this.unbind();
+            this.socket.emit('unsubscribe', {
+                channel: this.name,
+                auth: this.options.auth || {}
+            });
+        }
+        /**
+         * Listen for an event on the channel instance.
+         */
+
+    }, {
+        key: 'listen',
+        value: function listen(event, callback) {
+            this.on(this.eventFormatter.format(event), callback);
+            return this;
+        }
+        /**
+         * Stop listening for an event on the channel instance.
+         */
+
+    }, {
+        key: 'stopListening',
+        value: function stopListening(event) {
+            var name = this.eventFormatter.format(event);
+            this.socket.removeListener(name);
+            delete this.events[name];
+            return this;
+        }
+        /**
+         * Bind the channel's socket to an event and store the callback.
+         */
+
+    }, {
+        key: 'on',
+        value: function on(event, callback) {
+            var _this2 = this;
+
+            var listener = function listener(channel, data) {
+                if (_this2.name == channel) {
+                    callback(data);
+                }
+            };
+            this.socket.on(event, listener);
+            this.bind(event, listener);
+        }
+        /**
+         * Attach a 'reconnect' listener and bind the event.
+         */
+
+    }, {
+        key: 'configureReconnector',
+        value: function configureReconnector() {
+            var _this3 = this;
+
+            var listener = function listener() {
+                _this3.subscribe();
+            };
+            this.socket.on('reconnect', listener);
+            this.bind('reconnect', listener);
+        }
+        /**
+         * Bind the channel's socket to an event and store the callback.
+         */
+
+    }, {
+        key: 'bind',
+        value: function bind(event, callback) {
+            this.events[event] = this.events[event] || [];
+            this.events[event].push(callback);
+        }
+        /**
+         * Unbind the channel's socket from all stored event callbacks.
+         */
+
+    }, {
+        key: 'unbind',
+        value: function unbind() {
+            var _this4 = this;
+
+            Object.keys(this.events).forEach(function (event) {
+                _this4.events[event].forEach(function (callback) {
+                    _this4.socket.removeListener(event, callback);
+                });
+                delete _this4.events[event];
+            });
+        }
+    }]);
+    return SocketIoChannel;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }(Channel);
 
 /**
  * This class represents a Socket.io presence channel.
  */
+<<<<<<< HEAD
 
 var SocketIoPrivateChannel = /*#__PURE__*/function (_SocketIoChannel) {
   _inherits(SocketIoPrivateChannel, _SocketIoChannel);
@@ -20379,11 +26414,38 @@ var SocketIoPrivateChannel = /*#__PURE__*/function (_SocketIoChannel) {
   }]);
 
   return SocketIoPrivateChannel;
+=======
+var SocketIoPrivateChannel = function (_SocketIoChannel) {
+    inherits(SocketIoPrivateChannel, _SocketIoChannel);
+
+    function SocketIoPrivateChannel() {
+        classCallCheck(this, SocketIoPrivateChannel);
+        return possibleConstructorReturn(this, (SocketIoPrivateChannel.__proto__ || Object.getPrototypeOf(SocketIoPrivateChannel)).apply(this, arguments));
+    }
+
+    createClass(SocketIoPrivateChannel, [{
+        key: 'whisper',
+
+        /**
+         * Trigger client event on the channel.
+         */
+        value: function whisper(eventName, data) {
+            this.socket.emit('client event', {
+                channel: this.name,
+                event: 'client-' + eventName,
+                data: data
+            });
+            return this;
+        }
+    }]);
+    return SocketIoPrivateChannel;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }(SocketIoChannel);
 
 /**
  * This class represents a Socket.io presence channel.
  */
+<<<<<<< HEAD
 
 var SocketIoPresenceChannel = /*#__PURE__*/function (_SocketIoPrivateChann) {
   _inherits(SocketIoPresenceChannel, _SocketIoPrivateChann);
@@ -20437,11 +26499,62 @@ var SocketIoPresenceChannel = /*#__PURE__*/function (_SocketIoPrivateChann) {
   }]);
 
   return SocketIoPresenceChannel;
+=======
+var SocketIoPresenceChannel = function (_SocketIoPrivateChann) {
+    inherits(SocketIoPresenceChannel, _SocketIoPrivateChann);
+
+    function SocketIoPresenceChannel() {
+        classCallCheck(this, SocketIoPresenceChannel);
+        return possibleConstructorReturn(this, (SocketIoPresenceChannel.__proto__ || Object.getPrototypeOf(SocketIoPresenceChannel)).apply(this, arguments));
+    }
+
+    createClass(SocketIoPresenceChannel, [{
+        key: 'here',
+
+        /**
+         * Register a callback to be called anytime the member list changes.
+         */
+        value: function here(callback) {
+            this.on('presence:subscribed', function (members) {
+                callback(members.map(function (m) {
+                    return m.user_info;
+                }));
+            });
+            return this;
+        }
+        /**
+         * Listen for someone joining the channel.
+         */
+
+    }, {
+        key: 'joining',
+        value: function joining(callback) {
+            this.on('presence:joining', function (member) {
+                return callback(member.user_info);
+            });
+            return this;
+        }
+        /**
+         * Listen for someone leaving the channel.
+         */
+
+    }, {
+        key: 'leaving',
+        value: function leaving(callback) {
+            this.on('presence:leaving', function (member) {
+                return callback(member.user_info);
+            });
+            return this;
+        }
+    }]);
+    return SocketIoPresenceChannel;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }(SocketIoPrivateChannel);
 
 /**
  * This class represents a null channel.
  */
+<<<<<<< HEAD
 
 var NullChannel = /*#__PURE__*/function (_Channel) {
   _inherits(NullChannel, _Channel);
@@ -20456,26 +26569,53 @@ var NullChannel = /*#__PURE__*/function (_Channel) {
 
   _createClass(NullChannel, [{
     key: "subscribe",
+=======
+var NullChannel = function (_Channel) {
+  inherits(NullChannel, _Channel);
+
+  function NullChannel() {
+    classCallCheck(this, NullChannel);
+    return possibleConstructorReturn(this, (NullChannel.__proto__ || Object.getPrototypeOf(NullChannel)).apply(this, arguments));
+  }
+
+  createClass(NullChannel, [{
+    key: 'subscribe',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Subscribe to a channel.
      */
+<<<<<<< HEAD
     value: function subscribe() {} //
+=======
+    value: function subscribe() {}
+    //
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Unsubscribe from a channel.
      */
 
   }, {
+<<<<<<< HEAD
     key: "unsubscribe",
     value: function unsubscribe() {} //
+=======
+    key: 'unsubscribe',
+    value: function unsubscribe() {}
+    //
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Listen for an event on the channel instance.
      */
 
   }, {
+<<<<<<< HEAD
     key: "listen",
+=======
+    key: 'listen',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function listen(event, callback) {
       return this;
     }
@@ -20484,11 +26624,16 @@ var NullChannel = /*#__PURE__*/function (_Channel) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "stopListening",
+=======
+    key: 'stopListening',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function stopListening(event) {
       return this;
     }
     /**
+<<<<<<< HEAD
      * Register a callback to be called anytime a subscription succeeds.
      */
 
@@ -20507,22 +26652,32 @@ var NullChannel = /*#__PURE__*/function (_Channel) {
       return this;
     }
     /**
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      * Bind a channel to an event.
      */
 
   }, {
+<<<<<<< HEAD
     key: "on",
+=======
+    key: 'on',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function on(event, callback) {
       return this;
     }
   }]);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   return NullChannel;
 }(Channel);
 
 /**
  * This class represents a null private channel.
  */
+<<<<<<< HEAD
 
 var NullPrivateChannel = /*#__PURE__*/function (_NullChannel) {
   _inherits(NullPrivateChannel, _NullChannel);
@@ -20537,6 +26692,18 @@ var NullPrivateChannel = /*#__PURE__*/function (_NullChannel) {
 
   _createClass(NullPrivateChannel, [{
     key: "whisper",
+=======
+var NullPrivateChannel = function (_NullChannel) {
+  inherits(NullPrivateChannel, _NullChannel);
+
+  function NullPrivateChannel() {
+    classCallCheck(this, NullPrivateChannel);
+    return possibleConstructorReturn(this, (NullPrivateChannel.__proto__ || Object.getPrototypeOf(NullPrivateChannel)).apply(this, arguments));
+  }
+
+  createClass(NullPrivateChannel, [{
+    key: 'whisper',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Trigger client event on the channel.
@@ -20545,13 +26712,17 @@ var NullPrivateChannel = /*#__PURE__*/function (_NullChannel) {
       return this;
     }
   }]);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   return NullPrivateChannel;
 }(NullChannel);
 
 /**
  * This class represents a null presence channel.
  */
+<<<<<<< HEAD
 
 var NullPresenceChannel = /*#__PURE__*/function (_NullChannel) {
   _inherits(NullPresenceChannel, _NullChannel);
@@ -20566,6 +26737,18 @@ var NullPresenceChannel = /*#__PURE__*/function (_NullChannel) {
 
   _createClass(NullPresenceChannel, [{
     key: "here",
+=======
+var NullPresenceChannel = function (_NullChannel) {
+  inherits(NullPresenceChannel, _NullChannel);
+
+  function NullPresenceChannel() {
+    classCallCheck(this, NullPresenceChannel);
+    return possibleConstructorReturn(this, (NullPresenceChannel.__proto__ || Object.getPrototypeOf(NullPresenceChannel)).apply(this, arguments));
+  }
+
+  createClass(NullPresenceChannel, [{
+    key: 'here',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Register a callback to be called anytime the member list changes.
@@ -20578,7 +26761,11 @@ var NullPresenceChannel = /*#__PURE__*/function (_NullChannel) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "joining",
+=======
+    key: 'joining',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function joining(callback) {
       return this;
     }
@@ -20587,7 +26774,11 @@ var NullPresenceChannel = /*#__PURE__*/function (_NullChannel) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "leaving",
+=======
+    key: 'leaving',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function leaving(callback) {
       return this;
     }
@@ -20596,18 +26787,26 @@ var NullPresenceChannel = /*#__PURE__*/function (_NullChannel) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "whisper",
+=======
+    key: 'whisper',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function whisper(eventName, data) {
       return this;
     }
   }]);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   return NullPresenceChannel;
 }(NullChannel);
 
 /**
  * This class creates a connector to Pusher.
  */
+<<<<<<< HEAD
 
 var PusherConnector = /*#__PURE__*/function (_Connector) {
   _inherits(PusherConnector, _Connector);
@@ -20749,11 +26948,133 @@ var PusherConnector = /*#__PURE__*/function (_Connector) {
   }]);
 
   return PusherConnector;
+=======
+var PusherConnector = function (_Connector) {
+    inherits(PusherConnector, _Connector);
+
+    function PusherConnector() {
+        classCallCheck(this, PusherConnector);
+
+        /**
+         * All of the subscribed channel names.
+         */
+        var _this = possibleConstructorReturn(this, (PusherConnector.__proto__ || Object.getPrototypeOf(PusherConnector)).apply(this, arguments));
+
+        _this.channels = {};
+        return _this;
+    }
+    /**
+     * Create a fresh Pusher connection.
+     */
+
+
+    createClass(PusherConnector, [{
+        key: 'connect',
+        value: function connect() {
+            if (typeof this.options.client !== 'undefined') {
+                this.pusher = this.options.client;
+            } else {
+                this.pusher = new Pusher(this.options.key, this.options);
+            }
+        }
+        /**
+         * Listen for an event on a channel instance.
+         */
+
+    }, {
+        key: 'listen',
+        value: function listen(name, event, callback) {
+            return this.channel(name).listen(event, callback);
+        }
+        /**
+         * Get a channel instance by name.
+         */
+
+    }, {
+        key: 'channel',
+        value: function channel(name) {
+            if (!this.channels[name]) {
+                this.channels[name] = new PusherChannel(this.pusher, name, this.options);
+            }
+            return this.channels[name];
+        }
+        /**
+         * Get a private channel instance by name.
+         */
+
+    }, {
+        key: 'privateChannel',
+        value: function privateChannel(name) {
+            if (!this.channels['private-' + name]) {
+                this.channels['private-' + name] = new PusherPrivateChannel(this.pusher, 'private-' + name, this.options);
+            }
+            return this.channels['private-' + name];
+        }
+        /**
+         * Get a presence channel instance by name.
+         */
+
+    }, {
+        key: 'presenceChannel',
+        value: function presenceChannel(name) {
+            if (!this.channels['presence-' + name]) {
+                this.channels['presence-' + name] = new PusherPresenceChannel(this.pusher, 'presence-' + name, this.options);
+            }
+            return this.channels['presence-' + name];
+        }
+        /**
+         * Leave the given channel, as well as its private and presence variants.
+         */
+
+    }, {
+        key: 'leave',
+        value: function leave(name) {
+            var _this2 = this;
+
+            var channels = [name, 'private-' + name, 'presence-' + name];
+            channels.forEach(function (name, index) {
+                _this2.leaveChannel(name);
+            });
+        }
+        /**
+         * Leave the given channel.
+         */
+
+    }, {
+        key: 'leaveChannel',
+        value: function leaveChannel(name) {
+            if (this.channels[name]) {
+                this.channels[name].unsubscribe();
+                delete this.channels[name];
+            }
+        }
+        /**
+         * Get the socket ID for the connection.
+         */
+
+    }, {
+        key: 'socketId',
+        value: function socketId() {
+            return this.pusher.connection.socket_id;
+        }
+        /**
+         * Disconnect Pusher connection.
+         */
+
+    }, {
+        key: 'disconnect',
+        value: function disconnect() {
+            this.pusher.disconnect();
+        }
+    }]);
+    return PusherConnector;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }(Connector);
 
 /**
  * This class creates a connnector to a Socket.io server.
  */
+<<<<<<< HEAD
 
 var SocketIoConnector = /*#__PURE__*/function (_Connector) {
   _inherits(SocketIoConnector, _Connector);
@@ -20897,11 +27218,146 @@ var SocketIoConnector = /*#__PURE__*/function (_Connector) {
   }]);
 
   return SocketIoConnector;
+=======
+var SocketIoConnector = function (_Connector) {
+    inherits(SocketIoConnector, _Connector);
+
+    function SocketIoConnector() {
+        classCallCheck(this, SocketIoConnector);
+
+        /**
+         * All of the subscribed channel names.
+         */
+        var _this = possibleConstructorReturn(this, (SocketIoConnector.__proto__ || Object.getPrototypeOf(SocketIoConnector)).apply(this, arguments));
+
+        _this.channels = {};
+        return _this;
+    }
+    /**
+     * Create a fresh Socket.io connection.
+     */
+
+
+    createClass(SocketIoConnector, [{
+        key: 'connect',
+        value: function connect() {
+            var io = this.getSocketIO();
+            this.socket = io(this.options.host, this.options);
+            return this.socket;
+        }
+        /**
+         * Get socket.io module from global scope or options.
+         */
+
+    }, {
+        key: 'getSocketIO',
+        value: function getSocketIO() {
+            if (typeof this.options.client !== 'undefined') {
+                return this.options.client;
+            }
+            if (typeof io !== 'undefined') {
+                return io;
+            }
+            throw new Error('Socket.io client not found. Should be globally available or passed via options.client');
+        }
+        /**
+         * Listen for an event on a channel instance.
+         */
+
+    }, {
+        key: 'listen',
+        value: function listen(name, event, callback) {
+            return this.channel(name).listen(event, callback);
+        }
+        /**
+         * Get a channel instance by name.
+         */
+
+    }, {
+        key: 'channel',
+        value: function channel(name) {
+            if (!this.channels[name]) {
+                this.channels[name] = new SocketIoChannel(this.socket, name, this.options);
+            }
+            return this.channels[name];
+        }
+        /**
+         * Get a private channel instance by name.
+         */
+
+    }, {
+        key: 'privateChannel',
+        value: function privateChannel(name) {
+            if (!this.channels['private-' + name]) {
+                this.channels['private-' + name] = new SocketIoPrivateChannel(this.socket, 'private-' + name, this.options);
+            }
+            return this.channels['private-' + name];
+        }
+        /**
+         * Get a presence channel instance by name.
+         */
+
+    }, {
+        key: 'presenceChannel',
+        value: function presenceChannel(name) {
+            if (!this.channels['presence-' + name]) {
+                this.channels['presence-' + name] = new SocketIoPresenceChannel(this.socket, 'presence-' + name, this.options);
+            }
+            return this.channels['presence-' + name];
+        }
+        /**
+         * Leave the given channel, as well as its private and presence variants.
+         */
+
+    }, {
+        key: 'leave',
+        value: function leave(name) {
+            var _this2 = this;
+
+            var channels = [name, 'private-' + name, 'presence-' + name];
+            channels.forEach(function (name) {
+                _this2.leaveChannel(name);
+            });
+        }
+        /**
+         * Leave the given channel.
+         */
+
+    }, {
+        key: 'leaveChannel',
+        value: function leaveChannel(name) {
+            if (this.channels[name]) {
+                this.channels[name].unsubscribe();
+                delete this.channels[name];
+            }
+        }
+        /**
+         * Get the socket ID for the connection.
+         */
+
+    }, {
+        key: 'socketId',
+        value: function socketId() {
+            return this.socket.id;
+        }
+        /**
+         * Disconnect Socketio connection.
+         */
+
+    }, {
+        key: 'disconnect',
+        value: function disconnect() {
+            this.socket.disconnect();
+        }
+    }]);
+    return SocketIoConnector;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }(Connector);
 
 /**
  * This class creates a null connector.
  */
+<<<<<<< HEAD
 
 var NullConnector = /*#__PURE__*/function (_Connector) {
   _inherits(NullConnector, _Connector);
@@ -20917,6 +27373,18 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
     /**
      * All of the subscribed channel names.
      */
+=======
+var NullConnector = function (_Connector) {
+  inherits(NullConnector, _Connector);
+
+  function NullConnector() {
+    classCallCheck(this, NullConnector);
+
+    /**
+     * All of the subscribed channel names.
+     */
+    var _this = possibleConstructorReturn(this, (NullConnector.__proto__ || Object.getPrototypeOf(NullConnector)).apply(this, arguments));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     _this.channels = {};
     return _this;
@@ -20926,16 +27394,27 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
    */
 
 
+<<<<<<< HEAD
   _createClass(NullConnector, [{
     key: "connect",
     value: function connect() {} //
+=======
+  createClass(NullConnector, [{
+    key: 'connect',
+    value: function connect() {}
+    //
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Listen for an event on a channel instance.
      */
 
   }, {
+<<<<<<< HEAD
     key: "listen",
+=======
+    key: 'listen',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function listen(name, event, callback) {
       return new NullChannel();
     }
@@ -20944,7 +27423,11 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "channel",
+=======
+    key: 'channel',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function channel(name) {
       return new NullChannel();
     }
@@ -20953,7 +27436,11 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "privateChannel",
+=======
+    key: 'privateChannel',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function privateChannel(name) {
       return new NullPrivateChannel();
     }
@@ -20962,7 +27449,11 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "presenceChannel",
+=======
+    key: 'presenceChannel',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function presenceChannel(name) {
       return new NullPresenceChannel();
     }
@@ -20971,23 +27462,39 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "leave",
     value: function leave(name) {} //
+=======
+    key: 'leave',
+    value: function leave(name) {}
+    //
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Leave the given channel.
      */
 
   }, {
+<<<<<<< HEAD
     key: "leaveChannel",
     value: function leaveChannel(name) {} //
+=======
+    key: 'leaveChannel',
+    value: function leaveChannel(name) {}
+    //
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     /**
      * Get the socket ID for the connection.
      */
 
   }, {
+<<<<<<< HEAD
     key: "socketId",
+=======
+    key: 'socketId',
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     value: function socketId() {
       return 'fake-socket-id';
     }
@@ -20996,11 +27503,19 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
      */
 
   }, {
+<<<<<<< HEAD
     key: "disconnect",
     value: function disconnect() {//
     }
   }]);
 
+=======
+    key: 'disconnect',
+    value: function disconnect() {
+      //
+    }
+  }]);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   return NullConnector;
 }(Connector);
 
@@ -21008,6 +27523,7 @@ var NullConnector = /*#__PURE__*/function (_Connector) {
  * This class is the primary API for interacting with broadcasting.
  */
 
+<<<<<<< HEAD
 var Echo = /*#__PURE__*/function () {
   /**
    * Create a new class instance.
@@ -21195,6 +27711,180 @@ var Echo = /*#__PURE__*/function () {
   }]);
 
   return Echo;
+=======
+var Echo = function () {
+    /**
+     * Create a new class instance.
+     */
+    function Echo(options) {
+        classCallCheck(this, Echo);
+
+        this.options = options;
+        this.connect();
+        if (!this.options.withoutInterceptors) {
+            this.registerInterceptors();
+        }
+    }
+    /**
+     * Get a channel instance by name.
+     */
+
+
+    createClass(Echo, [{
+        key: 'channel',
+        value: function channel(_channel) {
+            return this.connector.channel(_channel);
+        }
+        /**
+         * Create a new connection.
+         */
+
+    }, {
+        key: 'connect',
+        value: function connect() {
+            if (this.options.broadcaster == 'pusher') {
+                this.connector = new PusherConnector(this.options);
+            } else if (this.options.broadcaster == 'socket.io') {
+                this.connector = new SocketIoConnector(this.options);
+            } else if (this.options.broadcaster == 'null') {
+                this.connector = new NullConnector(this.options);
+            } else if (typeof this.options.broadcaster == 'function') {
+                this.connector = new this.options.broadcaster(this.options);
+            }
+        }
+        /**
+         * Disconnect from the Echo server.
+         */
+
+    }, {
+        key: 'disconnect',
+        value: function disconnect() {
+            this.connector.disconnect();
+        }
+        /**
+         * Get a presence channel instance by name.
+         */
+
+    }, {
+        key: 'join',
+        value: function join(channel) {
+            return this.connector.presenceChannel(channel);
+        }
+        /**
+         * Leave the given channel, as well as its private and presence variants.
+         */
+
+    }, {
+        key: 'leave',
+        value: function leave(channel) {
+            this.connector.leave(channel);
+        }
+        /**
+         * Leave the given channel.
+         */
+
+    }, {
+        key: 'leaveChannel',
+        value: function leaveChannel(channel) {
+            this.connector.leaveChannel(channel);
+        }
+        /**
+         * Listen for an event on a channel instance.
+         */
+
+    }, {
+        key: 'listen',
+        value: function listen(channel, event, callback) {
+            return this.connector.listen(channel, event, callback);
+        }
+        /**
+         * Get a private channel instance by name.
+         */
+
+    }, {
+        key: 'private',
+        value: function _private(channel) {
+            return this.connector.privateChannel(channel);
+        }
+        /**
+         * Get the Socket ID for the connection.
+         */
+
+    }, {
+        key: 'socketId',
+        value: function socketId() {
+            return this.connector.socketId();
+        }
+        /**
+         * Register 3rd party request interceptiors. These are used to automatically
+         * send a connections socket id to a Laravel app with a X-Socket-Id header.
+         */
+
+    }, {
+        key: 'registerInterceptors',
+        value: function registerInterceptors() {
+            if (typeof Vue === 'function' && Vue.http) {
+                this.registerVueRequestInterceptor();
+            }
+            if (typeof axios === 'function') {
+                this.registerAxiosRequestInterceptor();
+            }
+            if (typeof jQuery === 'function') {
+                this.registerjQueryAjaxSetup();
+            }
+        }
+        /**
+         * Register a Vue HTTP interceptor to add the X-Socket-ID header.
+         */
+
+    }, {
+        key: 'registerVueRequestInterceptor',
+        value: function registerVueRequestInterceptor() {
+            var _this = this;
+
+            Vue.http.interceptors.push(function (request, next) {
+                if (_this.socketId()) {
+                    request.headers.set('X-Socket-ID', _this.socketId());
+                }
+                next();
+            });
+        }
+        /**
+         * Register an Axios HTTP interceptor to add the X-Socket-ID header.
+         */
+
+    }, {
+        key: 'registerAxiosRequestInterceptor',
+        value: function registerAxiosRequestInterceptor() {
+            var _this2 = this;
+
+            axios.interceptors.request.use(function (config) {
+                if (_this2.socketId()) {
+                    config.headers['X-Socket-Id'] = _this2.socketId();
+                }
+                return config;
+            });
+        }
+        /**
+         * Register jQuery AjaxPrefilter to add the X-Socket-ID header.
+         */
+
+    }, {
+        key: 'registerjQueryAjaxSetup',
+        value: function registerjQueryAjaxSetup() {
+            var _this3 = this;
+
+            if (typeof jQuery.ajax != 'undefined') {
+                jQuery.ajaxPrefilter(function (options, originalOptions, xhr) {
+                    if (_this3.socketId()) {
+                        xhr.setRequestHeader('X-Socket-Id', _this3.socketId());
+                    }
+                });
+            }
+        }
+    }]);
+    return Echo;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }();
 
 /* harmony default export */ __webpack_exports__["default"] = (Echo);
@@ -21223,7 +27913,11 @@ var Echo = /*#__PURE__*/function () {
   var undefined;
 
   /** Used as the semantic version number. */
+<<<<<<< HEAD
   var VERSION = '4.17.20';
+=======
+  var VERSION = '4.17.15';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -24930,6 +31624,7 @@ var Echo = /*#__PURE__*/function () {
      * @returns {Array} Returns the new sorted array.
      */
     function baseOrderBy(collection, iteratees, orders) {
+<<<<<<< HEAD
       if (iteratees.length) {
         iteratees = arrayMap(iteratees, function(iteratee) {
           if (isArray(iteratee)) {
@@ -24945,6 +31640,10 @@ var Echo = /*#__PURE__*/function () {
 
       var index = -1;
       iteratees = arrayMap(iteratees, baseUnary(getIteratee()));
+=======
+      var index = -1;
+      iteratees = arrayMap(iteratees.length ? iteratees : [identity], baseUnary(getIteratee()));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
       var result = baseMap(collection, function(value, key, collection) {
         var criteria = arrayMap(iteratees, function(iteratee) {
@@ -25201,10 +31900,13 @@ var Echo = /*#__PURE__*/function () {
         var key = toKey(path[index]),
             newValue = value;
 
+<<<<<<< HEAD
         if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
           return object;
         }
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         if (index != lastIndex) {
           var objValue = nested[key];
           newValue = customizer ? customizer(objValue, key, nested) : undefined;
@@ -25357,6 +32059,7 @@ var Echo = /*#__PURE__*/function () {
      *  into `array`.
      */
     function baseSortedIndexBy(array, value, iteratee, retHighest) {
+<<<<<<< HEAD
       var low = 0,
           high = array == null ? 0 : array.length;
       if (high === 0) {
@@ -25365,6 +32068,13 @@ var Echo = /*#__PURE__*/function () {
 
       value = iteratee(value);
       var valIsNaN = value !== value,
+=======
+      value = iteratee(value);
+
+      var low = 0,
+          high = array == null ? 0 : array.length,
+          valIsNaN = value !== value,
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           valIsNull = value === null,
           valIsSymbol = isSymbol(value),
           valIsUndefined = value === undefined;
@@ -26849,11 +33559,18 @@ var Echo = /*#__PURE__*/function () {
       if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
         return false;
       }
+<<<<<<< HEAD
       // Check that cyclic values are equal.
       var arrStacked = stack.get(array);
       var othStacked = stack.get(other);
       if (arrStacked && othStacked) {
         return arrStacked == other && othStacked == array;
+=======
+      // Assume cyclic values are equal.
+      var stacked = stack.get(array);
+      if (stacked && stack.get(other)) {
+        return stacked == other;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
       var index = -1,
           result = true,
@@ -27015,11 +33732,18 @@ var Echo = /*#__PURE__*/function () {
           return false;
         }
       }
+<<<<<<< HEAD
       // Check that cyclic values are equal.
       var objStacked = stack.get(object);
       var othStacked = stack.get(other);
       if (objStacked && othStacked) {
         return objStacked == other && othStacked == object;
+=======
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked && stack.get(other)) {
+        return stacked == other;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       }
       var result = true;
       stack.set(object, other);
@@ -30400,10 +37124,13 @@ var Echo = /*#__PURE__*/function () {
      * // The `_.property` iteratee shorthand.
      * _.filter(users, 'active');
      * // => objects for ['barney']
+<<<<<<< HEAD
      *
      * // Combining several predicates using `_.overEvery` or `_.overSome`.
      * _.filter(users, _.overSome([{ 'age': 36 }, ['age', 40]]));
      * // => objects for ['fred', 'barney']
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      */
     function filter(collection, predicate) {
       var func = isArray(collection) ? arrayFilter : baseFilter;
@@ -31153,15 +37880,26 @@ var Echo = /*#__PURE__*/function () {
      * var users = [
      *   { 'user': 'fred',   'age': 48 },
      *   { 'user': 'barney', 'age': 36 },
+<<<<<<< HEAD
      *   { 'user': 'fred',   'age': 30 },
+=======
+     *   { 'user': 'fred',   'age': 40 },
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      *   { 'user': 'barney', 'age': 34 }
      * ];
      *
      * _.sortBy(users, [function(o) { return o.user; }]);
+<<<<<<< HEAD
      * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 30]]
      *
      * _.sortBy(users, ['user', 'age']);
      * // => objects for [['barney', 34], ['barney', 36], ['fred', 30], ['fred', 48]]
+=======
+     * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]
+     *
+     * _.sortBy(users, ['user', 'age']);
+     * // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      */
     var sortBy = baseRest(function(collection, iteratees) {
       if (collection == null) {
@@ -36036,11 +42774,19 @@ var Echo = /*#__PURE__*/function () {
 
       // Use a sourceURL for easier debugging.
       // The sourceURL gets injected into the source that's eval-ed, so be careful
+<<<<<<< HEAD
       // to normalize all kinds of whitespace, so e.g. newlines (and unicode versions of it) can't sneak in
       // and escape the comment, thus injecting code that gets evaled.
       var sourceURL = '//# sourceURL=' +
         (hasOwnProperty.call(options, 'sourceURL')
           ? (options.sourceURL + '').replace(/\s/g, ' ')
+=======
+      // with lookup (in case of e.g. prototype pollution), and strip newlines if any.
+      // A newline wouldn't be a valid sourceURL anyway, and it'd enable code injection.
+      var sourceURL = '//# sourceURL=' +
+        (hasOwnProperty.call(options, 'sourceURL')
+          ? (options.sourceURL + '').replace(/[\r\n]/g, ' ')
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           : ('lodash.templateSources[' + (++templateCounter) + ']')
         ) + '\n';
 
@@ -36073,6 +42819,11 @@ var Echo = /*#__PURE__*/function () {
 
       // If `variable` is not specified wrap a with-statement around the generated
       // code to add the data object to the top of the scope chain.
+<<<<<<< HEAD
+=======
+      // Like with sourceURL, we take care to not check the option's prototype,
+      // as this configuration is a code injection vector.
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       var variable = hasOwnProperty.call(options, 'variable') && options.variable;
       if (!variable) {
         source = 'with (obj) {\n' + source + '\n}\n';
@@ -36779,9 +43530,12 @@ var Echo = /*#__PURE__*/function () {
      * values against any array or object value, respectively. See `_.isEqual`
      * for a list of supported value comparisons.
      *
+<<<<<<< HEAD
      * **Note:** Multiple values can be checked by combining several matchers
      * using `_.overSome`
      *
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      * @static
      * @memberOf _
      * @since 3.0.0
@@ -36797,10 +43551,13 @@ var Echo = /*#__PURE__*/function () {
      *
      * _.filter(objects, _.matches({ 'a': 4, 'c': 6 }));
      * // => [{ 'a': 4, 'b': 5, 'c': 6 }]
+<<<<<<< HEAD
      *
      * // Checking for several possible values
      * _.filter(objects, _.overSome([_.matches({ 'a': 1 }), _.matches({ 'a': 4 })]));
      * // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      */
     function matches(source) {
       return baseMatches(baseClone(source, CLONE_DEEP_FLAG));
@@ -36815,9 +43572,12 @@ var Echo = /*#__PURE__*/function () {
      * `srcValue` values against any array or object value, respectively. See
      * `_.isEqual` for a list of supported value comparisons.
      *
+<<<<<<< HEAD
      * **Note:** Multiple values can be checked by combining several matchers
      * using `_.overSome`
      *
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      * @static
      * @memberOf _
      * @since 3.2.0
@@ -36834,10 +43594,13 @@ var Echo = /*#__PURE__*/function () {
      *
      * _.find(objects, _.matchesProperty('a', 4));
      * // => { 'a': 4, 'b': 5, 'c': 6 }
+<<<<<<< HEAD
      *
      * // Checking for several possible values
      * _.filter(objects, _.overSome([_.matchesProperty('a', 1), _.matchesProperty('a', 4)]));
      * // => [{ 'a': 1, 'b': 2, 'c': 3 }, { 'a': 4, 'b': 5, 'c': 6 }]
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      */
     function matchesProperty(path, srcValue) {
       return baseMatchesProperty(path, baseClone(srcValue, CLONE_DEEP_FLAG));
@@ -37061,10 +43824,13 @@ var Echo = /*#__PURE__*/function () {
      * Creates a function that checks if **all** of the `predicates` return
      * truthy when invoked with the arguments it receives.
      *
+<<<<<<< HEAD
      * Following shorthands are possible for providing predicates.
      * Pass an `Object` and it will be used as an parameter for `_.matches` to create the predicate.
      * Pass an `Array` of parameters for `_.matchesProperty` and the predicate will be created using them.
      *
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      * @static
      * @memberOf _
      * @since 4.0.0
@@ -37091,10 +43857,13 @@ var Echo = /*#__PURE__*/function () {
      * Creates a function that checks if **any** of the `predicates` return
      * truthy when invoked with the arguments it receives.
      *
+<<<<<<< HEAD
      * Following shorthands are possible for providing predicates.
      * Pass an `Object` and it will be used as an parameter for `_.matches` to create the predicate.
      * Pass an `Array` of parameters for `_.matchesProperty` and the predicate will be created using them.
      *
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      * @static
      * @memberOf _
      * @since 4.0.0
@@ -37114,9 +43883,12 @@ var Echo = /*#__PURE__*/function () {
      *
      * func(NaN);
      * // => false
+<<<<<<< HEAD
      *
      * var matchesFunc = _.overSome([{ 'a': 1 }, { 'a': 2 }])
      * var matchesPropertyFunc = _.overSome([['a', 1], ['a', 2]])
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
      */
     var overSome = createOver(arraySome);
 
@@ -38378,7 +45150,11 @@ var Echo = /*#__PURE__*/function () {
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(global) {/**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
+<<<<<<< HEAD
  * @version 1.16.1
+=======
+ * @version 1.16.0
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -38724,7 +45500,11 @@ function getBordersSize(styles, axis) {
   var sideA = axis === 'x' ? 'Left' : 'Top';
   var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
 
+<<<<<<< HEAD
   return parseFloat(styles['border' + sideA + 'Width']) + parseFloat(styles['border' + sideB + 'Width']);
+=======
+  return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 
 function getSize(axis, body, html, computedStyle) {
@@ -38879,8 +45659,13 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   var scrollParent = getScrollParent(children);
 
   var styles = getStyleComputedProperty(parent);
+<<<<<<< HEAD
   var borderTopWidth = parseFloat(styles.borderTopWidth);
   var borderLeftWidth = parseFloat(styles.borderLeftWidth);
+=======
+  var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
+  var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
   // In cases where the parent is fixed, we must ignore negative scroll in offset calc
   if (fixedPosition && isHTML) {
@@ -38901,8 +45686,13 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   // differently when margins are applied to it. The margins are included in
   // the box of the documentElement, in the other cases not.
   if (!isIE10 && isHTML) {
+<<<<<<< HEAD
     var marginTop = parseFloat(styles.marginTop);
     var marginLeft = parseFloat(styles.marginLeft);
+=======
+    var marginTop = parseFloat(styles.marginTop, 10);
+    var marginLeft = parseFloat(styles.marginLeft, 10);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
     offsets.top -= borderTopWidth - marginTop;
     offsets.bottom -= borderTopWidth - marginTop;
@@ -39841,8 +46631,13 @@ function arrow(data, options) {
   // Compute the sideValue using the updated popper offsets
   // take popper margin in account because we don't have this info available
   var css = getStyleComputedProperty(data.instance.popper);
+<<<<<<< HEAD
   var popperMarginSide = parseFloat(css['margin' + sideCapitalized]);
   var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width']);
+=======
+  var popperMarginSide = parseFloat(css['margin' + sideCapitalized], 10);
+  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width'], 10);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
   var sideValue = center - data.offsets.popper[side] - popperMarginSide - popperBorderSide;
 
   // prevent arrowElement from being placed not contiguously to its popper
@@ -41199,11 +47994,19 @@ process.umask = function() { return 0; };
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+<<<<<<< HEAD
 /*!
  * Pusher JavaScript Library v7.0.0
  * https://pusher.com/
  *
  * Copyright 2020, Pusher
+=======
+/* WEBPACK VAR INJECTION */(function(Buffer) {/*!
+ * Pusher JavaScript Library v5.0.3
+ * https://pusher.com/
+ *
+ * Copyright 2017, Pusher
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  * Released under the MIT licence.
  */
 
@@ -41302,6 +48105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
+<<<<<<< HEAD
 "use strict";
 
 // Copyright (C) 2016 Dmitry Chestnykh
@@ -41740,17 +48544,2497 @@ function decode(arr) {
 }
 exports.decode = decode;
 //# sourceMappingURL=utf8.js.map
+=======
+(function(nacl) {
+'use strict';
+
+// Ported in 2014 by Dmitry Chestnykh and Devi Mandiri.
+// Public domain.
+//
+// Implementation derived from TweetNaCl version 20140427.
+// See for details: http://tweetnacl.cr.yp.to/
+
+var gf = function(init) {
+  var i, r = new Float64Array(16);
+  if (init) for (i = 0; i < init.length; i++) r[i] = init[i];
+  return r;
+};
+
+//  Pluggable, initialized in high-level API below.
+var randombytes = function(/* x, n */) { throw new Error('no PRNG'); };
+
+var _0 = new Uint8Array(16);
+var _9 = new Uint8Array(32); _9[0] = 9;
+
+var gf0 = gf(),
+    gf1 = gf([1]),
+    _121665 = gf([0xdb41, 1]),
+    D = gf([0x78a3, 0x1359, 0x4dca, 0x75eb, 0xd8ab, 0x4141, 0x0a4d, 0x0070, 0xe898, 0x7779, 0x4079, 0x8cc7, 0xfe73, 0x2b6f, 0x6cee, 0x5203]),
+    D2 = gf([0xf159, 0x26b2, 0x9b94, 0xebd6, 0xb156, 0x8283, 0x149a, 0x00e0, 0xd130, 0xeef3, 0x80f2, 0x198e, 0xfce7, 0x56df, 0xd9dc, 0x2406]),
+    X = gf([0xd51a, 0x8f25, 0x2d60, 0xc956, 0xa7b2, 0x9525, 0xc760, 0x692c, 0xdc5c, 0xfdd6, 0xe231, 0xc0a4, 0x53fe, 0xcd6e, 0x36d3, 0x2169]),
+    Y = gf([0x6658, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666]),
+    I = gf([0xa0b0, 0x4a0e, 0x1b27, 0xc4ee, 0xe478, 0xad2f, 0x1806, 0x2f43, 0xd7a7, 0x3dfb, 0x0099, 0x2b4d, 0xdf0b, 0x4fc1, 0x2480, 0x2b83]);
+
+function ts64(x, i, h, l) {
+  x[i]   = (h >> 24) & 0xff;
+  x[i+1] = (h >> 16) & 0xff;
+  x[i+2] = (h >>  8) & 0xff;
+  x[i+3] = h & 0xff;
+  x[i+4] = (l >> 24)  & 0xff;
+  x[i+5] = (l >> 16)  & 0xff;
+  x[i+6] = (l >>  8)  & 0xff;
+  x[i+7] = l & 0xff;
+}
+
+function vn(x, xi, y, yi, n) {
+  var i,d = 0;
+  for (i = 0; i < n; i++) d |= x[xi+i]^y[yi+i];
+  return (1 & ((d - 1) >>> 8)) - 1;
+}
+
+function crypto_verify_16(x, xi, y, yi) {
+  return vn(x,xi,y,yi,16);
+}
+
+function crypto_verify_32(x, xi, y, yi) {
+  return vn(x,xi,y,yi,32);
+}
+
+function core_salsa20(o, p, k, c) {
+  var j0  = c[ 0] & 0xff | (c[ 1] & 0xff)<<8 | (c[ 2] & 0xff)<<16 | (c[ 3] & 0xff)<<24,
+      j1  = k[ 0] & 0xff | (k[ 1] & 0xff)<<8 | (k[ 2] & 0xff)<<16 | (k[ 3] & 0xff)<<24,
+      j2  = k[ 4] & 0xff | (k[ 5] & 0xff)<<8 | (k[ 6] & 0xff)<<16 | (k[ 7] & 0xff)<<24,
+      j3  = k[ 8] & 0xff | (k[ 9] & 0xff)<<8 | (k[10] & 0xff)<<16 | (k[11] & 0xff)<<24,
+      j4  = k[12] & 0xff | (k[13] & 0xff)<<8 | (k[14] & 0xff)<<16 | (k[15] & 0xff)<<24,
+      j5  = c[ 4] & 0xff | (c[ 5] & 0xff)<<8 | (c[ 6] & 0xff)<<16 | (c[ 7] & 0xff)<<24,
+      j6  = p[ 0] & 0xff | (p[ 1] & 0xff)<<8 | (p[ 2] & 0xff)<<16 | (p[ 3] & 0xff)<<24,
+      j7  = p[ 4] & 0xff | (p[ 5] & 0xff)<<8 | (p[ 6] & 0xff)<<16 | (p[ 7] & 0xff)<<24,
+      j8  = p[ 8] & 0xff | (p[ 9] & 0xff)<<8 | (p[10] & 0xff)<<16 | (p[11] & 0xff)<<24,
+      j9  = p[12] & 0xff | (p[13] & 0xff)<<8 | (p[14] & 0xff)<<16 | (p[15] & 0xff)<<24,
+      j10 = c[ 8] & 0xff | (c[ 9] & 0xff)<<8 | (c[10] & 0xff)<<16 | (c[11] & 0xff)<<24,
+      j11 = k[16] & 0xff | (k[17] & 0xff)<<8 | (k[18] & 0xff)<<16 | (k[19] & 0xff)<<24,
+      j12 = k[20] & 0xff | (k[21] & 0xff)<<8 | (k[22] & 0xff)<<16 | (k[23] & 0xff)<<24,
+      j13 = k[24] & 0xff | (k[25] & 0xff)<<8 | (k[26] & 0xff)<<16 | (k[27] & 0xff)<<24,
+      j14 = k[28] & 0xff | (k[29] & 0xff)<<8 | (k[30] & 0xff)<<16 | (k[31] & 0xff)<<24,
+      j15 = c[12] & 0xff | (c[13] & 0xff)<<8 | (c[14] & 0xff)<<16 | (c[15] & 0xff)<<24;
+
+  var x0 = j0, x1 = j1, x2 = j2, x3 = j3, x4 = j4, x5 = j5, x6 = j6, x7 = j7,
+      x8 = j8, x9 = j9, x10 = j10, x11 = j11, x12 = j12, x13 = j13, x14 = j14,
+      x15 = j15, u;
+
+  for (var i = 0; i < 20; i += 2) {
+    u = x0 + x12 | 0;
+    x4 ^= u<<7 | u>>>(32-7);
+    u = x4 + x0 | 0;
+    x8 ^= u<<9 | u>>>(32-9);
+    u = x8 + x4 | 0;
+    x12 ^= u<<13 | u>>>(32-13);
+    u = x12 + x8 | 0;
+    x0 ^= u<<18 | u>>>(32-18);
+
+    u = x5 + x1 | 0;
+    x9 ^= u<<7 | u>>>(32-7);
+    u = x9 + x5 | 0;
+    x13 ^= u<<9 | u>>>(32-9);
+    u = x13 + x9 | 0;
+    x1 ^= u<<13 | u>>>(32-13);
+    u = x1 + x13 | 0;
+    x5 ^= u<<18 | u>>>(32-18);
+
+    u = x10 + x6 | 0;
+    x14 ^= u<<7 | u>>>(32-7);
+    u = x14 + x10 | 0;
+    x2 ^= u<<9 | u>>>(32-9);
+    u = x2 + x14 | 0;
+    x6 ^= u<<13 | u>>>(32-13);
+    u = x6 + x2 | 0;
+    x10 ^= u<<18 | u>>>(32-18);
+
+    u = x15 + x11 | 0;
+    x3 ^= u<<7 | u>>>(32-7);
+    u = x3 + x15 | 0;
+    x7 ^= u<<9 | u>>>(32-9);
+    u = x7 + x3 | 0;
+    x11 ^= u<<13 | u>>>(32-13);
+    u = x11 + x7 | 0;
+    x15 ^= u<<18 | u>>>(32-18);
+
+    u = x0 + x3 | 0;
+    x1 ^= u<<7 | u>>>(32-7);
+    u = x1 + x0 | 0;
+    x2 ^= u<<9 | u>>>(32-9);
+    u = x2 + x1 | 0;
+    x3 ^= u<<13 | u>>>(32-13);
+    u = x3 + x2 | 0;
+    x0 ^= u<<18 | u>>>(32-18);
+
+    u = x5 + x4 | 0;
+    x6 ^= u<<7 | u>>>(32-7);
+    u = x6 + x5 | 0;
+    x7 ^= u<<9 | u>>>(32-9);
+    u = x7 + x6 | 0;
+    x4 ^= u<<13 | u>>>(32-13);
+    u = x4 + x7 | 0;
+    x5 ^= u<<18 | u>>>(32-18);
+
+    u = x10 + x9 | 0;
+    x11 ^= u<<7 | u>>>(32-7);
+    u = x11 + x10 | 0;
+    x8 ^= u<<9 | u>>>(32-9);
+    u = x8 + x11 | 0;
+    x9 ^= u<<13 | u>>>(32-13);
+    u = x9 + x8 | 0;
+    x10 ^= u<<18 | u>>>(32-18);
+
+    u = x15 + x14 | 0;
+    x12 ^= u<<7 | u>>>(32-7);
+    u = x12 + x15 | 0;
+    x13 ^= u<<9 | u>>>(32-9);
+    u = x13 + x12 | 0;
+    x14 ^= u<<13 | u>>>(32-13);
+    u = x14 + x13 | 0;
+    x15 ^= u<<18 | u>>>(32-18);
+  }
+   x0 =  x0 +  j0 | 0;
+   x1 =  x1 +  j1 | 0;
+   x2 =  x2 +  j2 | 0;
+   x3 =  x3 +  j3 | 0;
+   x4 =  x4 +  j4 | 0;
+   x5 =  x5 +  j5 | 0;
+   x6 =  x6 +  j6 | 0;
+   x7 =  x7 +  j7 | 0;
+   x8 =  x8 +  j8 | 0;
+   x9 =  x9 +  j9 | 0;
+  x10 = x10 + j10 | 0;
+  x11 = x11 + j11 | 0;
+  x12 = x12 + j12 | 0;
+  x13 = x13 + j13 | 0;
+  x14 = x14 + j14 | 0;
+  x15 = x15 + j15 | 0;
+
+  o[ 0] = x0 >>>  0 & 0xff;
+  o[ 1] = x0 >>>  8 & 0xff;
+  o[ 2] = x0 >>> 16 & 0xff;
+  o[ 3] = x0 >>> 24 & 0xff;
+
+  o[ 4] = x1 >>>  0 & 0xff;
+  o[ 5] = x1 >>>  8 & 0xff;
+  o[ 6] = x1 >>> 16 & 0xff;
+  o[ 7] = x1 >>> 24 & 0xff;
+
+  o[ 8] = x2 >>>  0 & 0xff;
+  o[ 9] = x2 >>>  8 & 0xff;
+  o[10] = x2 >>> 16 & 0xff;
+  o[11] = x2 >>> 24 & 0xff;
+
+  o[12] = x3 >>>  0 & 0xff;
+  o[13] = x3 >>>  8 & 0xff;
+  o[14] = x3 >>> 16 & 0xff;
+  o[15] = x3 >>> 24 & 0xff;
+
+  o[16] = x4 >>>  0 & 0xff;
+  o[17] = x4 >>>  8 & 0xff;
+  o[18] = x4 >>> 16 & 0xff;
+  o[19] = x4 >>> 24 & 0xff;
+
+  o[20] = x5 >>>  0 & 0xff;
+  o[21] = x5 >>>  8 & 0xff;
+  o[22] = x5 >>> 16 & 0xff;
+  o[23] = x5 >>> 24 & 0xff;
+
+  o[24] = x6 >>>  0 & 0xff;
+  o[25] = x6 >>>  8 & 0xff;
+  o[26] = x6 >>> 16 & 0xff;
+  o[27] = x6 >>> 24 & 0xff;
+
+  o[28] = x7 >>>  0 & 0xff;
+  o[29] = x7 >>>  8 & 0xff;
+  o[30] = x7 >>> 16 & 0xff;
+  o[31] = x7 >>> 24 & 0xff;
+
+  o[32] = x8 >>>  0 & 0xff;
+  o[33] = x8 >>>  8 & 0xff;
+  o[34] = x8 >>> 16 & 0xff;
+  o[35] = x8 >>> 24 & 0xff;
+
+  o[36] = x9 >>>  0 & 0xff;
+  o[37] = x9 >>>  8 & 0xff;
+  o[38] = x9 >>> 16 & 0xff;
+  o[39] = x9 >>> 24 & 0xff;
+
+  o[40] = x10 >>>  0 & 0xff;
+  o[41] = x10 >>>  8 & 0xff;
+  o[42] = x10 >>> 16 & 0xff;
+  o[43] = x10 >>> 24 & 0xff;
+
+  o[44] = x11 >>>  0 & 0xff;
+  o[45] = x11 >>>  8 & 0xff;
+  o[46] = x11 >>> 16 & 0xff;
+  o[47] = x11 >>> 24 & 0xff;
+
+  o[48] = x12 >>>  0 & 0xff;
+  o[49] = x12 >>>  8 & 0xff;
+  o[50] = x12 >>> 16 & 0xff;
+  o[51] = x12 >>> 24 & 0xff;
+
+  o[52] = x13 >>>  0 & 0xff;
+  o[53] = x13 >>>  8 & 0xff;
+  o[54] = x13 >>> 16 & 0xff;
+  o[55] = x13 >>> 24 & 0xff;
+
+  o[56] = x14 >>>  0 & 0xff;
+  o[57] = x14 >>>  8 & 0xff;
+  o[58] = x14 >>> 16 & 0xff;
+  o[59] = x14 >>> 24 & 0xff;
+
+  o[60] = x15 >>>  0 & 0xff;
+  o[61] = x15 >>>  8 & 0xff;
+  o[62] = x15 >>> 16 & 0xff;
+  o[63] = x15 >>> 24 & 0xff;
+}
+
+function core_hsalsa20(o,p,k,c) {
+  var j0  = c[ 0] & 0xff | (c[ 1] & 0xff)<<8 | (c[ 2] & 0xff)<<16 | (c[ 3] & 0xff)<<24,
+      j1  = k[ 0] & 0xff | (k[ 1] & 0xff)<<8 | (k[ 2] & 0xff)<<16 | (k[ 3] & 0xff)<<24,
+      j2  = k[ 4] & 0xff | (k[ 5] & 0xff)<<8 | (k[ 6] & 0xff)<<16 | (k[ 7] & 0xff)<<24,
+      j3  = k[ 8] & 0xff | (k[ 9] & 0xff)<<8 | (k[10] & 0xff)<<16 | (k[11] & 0xff)<<24,
+      j4  = k[12] & 0xff | (k[13] & 0xff)<<8 | (k[14] & 0xff)<<16 | (k[15] & 0xff)<<24,
+      j5  = c[ 4] & 0xff | (c[ 5] & 0xff)<<8 | (c[ 6] & 0xff)<<16 | (c[ 7] & 0xff)<<24,
+      j6  = p[ 0] & 0xff | (p[ 1] & 0xff)<<8 | (p[ 2] & 0xff)<<16 | (p[ 3] & 0xff)<<24,
+      j7  = p[ 4] & 0xff | (p[ 5] & 0xff)<<8 | (p[ 6] & 0xff)<<16 | (p[ 7] & 0xff)<<24,
+      j8  = p[ 8] & 0xff | (p[ 9] & 0xff)<<8 | (p[10] & 0xff)<<16 | (p[11] & 0xff)<<24,
+      j9  = p[12] & 0xff | (p[13] & 0xff)<<8 | (p[14] & 0xff)<<16 | (p[15] & 0xff)<<24,
+      j10 = c[ 8] & 0xff | (c[ 9] & 0xff)<<8 | (c[10] & 0xff)<<16 | (c[11] & 0xff)<<24,
+      j11 = k[16] & 0xff | (k[17] & 0xff)<<8 | (k[18] & 0xff)<<16 | (k[19] & 0xff)<<24,
+      j12 = k[20] & 0xff | (k[21] & 0xff)<<8 | (k[22] & 0xff)<<16 | (k[23] & 0xff)<<24,
+      j13 = k[24] & 0xff | (k[25] & 0xff)<<8 | (k[26] & 0xff)<<16 | (k[27] & 0xff)<<24,
+      j14 = k[28] & 0xff | (k[29] & 0xff)<<8 | (k[30] & 0xff)<<16 | (k[31] & 0xff)<<24,
+      j15 = c[12] & 0xff | (c[13] & 0xff)<<8 | (c[14] & 0xff)<<16 | (c[15] & 0xff)<<24;
+
+  var x0 = j0, x1 = j1, x2 = j2, x3 = j3, x4 = j4, x5 = j5, x6 = j6, x7 = j7,
+      x8 = j8, x9 = j9, x10 = j10, x11 = j11, x12 = j12, x13 = j13, x14 = j14,
+      x15 = j15, u;
+
+  for (var i = 0; i < 20; i += 2) {
+    u = x0 + x12 | 0;
+    x4 ^= u<<7 | u>>>(32-7);
+    u = x4 + x0 | 0;
+    x8 ^= u<<9 | u>>>(32-9);
+    u = x8 + x4 | 0;
+    x12 ^= u<<13 | u>>>(32-13);
+    u = x12 + x8 | 0;
+    x0 ^= u<<18 | u>>>(32-18);
+
+    u = x5 + x1 | 0;
+    x9 ^= u<<7 | u>>>(32-7);
+    u = x9 + x5 | 0;
+    x13 ^= u<<9 | u>>>(32-9);
+    u = x13 + x9 | 0;
+    x1 ^= u<<13 | u>>>(32-13);
+    u = x1 + x13 | 0;
+    x5 ^= u<<18 | u>>>(32-18);
+
+    u = x10 + x6 | 0;
+    x14 ^= u<<7 | u>>>(32-7);
+    u = x14 + x10 | 0;
+    x2 ^= u<<9 | u>>>(32-9);
+    u = x2 + x14 | 0;
+    x6 ^= u<<13 | u>>>(32-13);
+    u = x6 + x2 | 0;
+    x10 ^= u<<18 | u>>>(32-18);
+
+    u = x15 + x11 | 0;
+    x3 ^= u<<7 | u>>>(32-7);
+    u = x3 + x15 | 0;
+    x7 ^= u<<9 | u>>>(32-9);
+    u = x7 + x3 | 0;
+    x11 ^= u<<13 | u>>>(32-13);
+    u = x11 + x7 | 0;
+    x15 ^= u<<18 | u>>>(32-18);
+
+    u = x0 + x3 | 0;
+    x1 ^= u<<7 | u>>>(32-7);
+    u = x1 + x0 | 0;
+    x2 ^= u<<9 | u>>>(32-9);
+    u = x2 + x1 | 0;
+    x3 ^= u<<13 | u>>>(32-13);
+    u = x3 + x2 | 0;
+    x0 ^= u<<18 | u>>>(32-18);
+
+    u = x5 + x4 | 0;
+    x6 ^= u<<7 | u>>>(32-7);
+    u = x6 + x5 | 0;
+    x7 ^= u<<9 | u>>>(32-9);
+    u = x7 + x6 | 0;
+    x4 ^= u<<13 | u>>>(32-13);
+    u = x4 + x7 | 0;
+    x5 ^= u<<18 | u>>>(32-18);
+
+    u = x10 + x9 | 0;
+    x11 ^= u<<7 | u>>>(32-7);
+    u = x11 + x10 | 0;
+    x8 ^= u<<9 | u>>>(32-9);
+    u = x8 + x11 | 0;
+    x9 ^= u<<13 | u>>>(32-13);
+    u = x9 + x8 | 0;
+    x10 ^= u<<18 | u>>>(32-18);
+
+    u = x15 + x14 | 0;
+    x12 ^= u<<7 | u>>>(32-7);
+    u = x12 + x15 | 0;
+    x13 ^= u<<9 | u>>>(32-9);
+    u = x13 + x12 | 0;
+    x14 ^= u<<13 | u>>>(32-13);
+    u = x14 + x13 | 0;
+    x15 ^= u<<18 | u>>>(32-18);
+  }
+
+  o[ 0] = x0 >>>  0 & 0xff;
+  o[ 1] = x0 >>>  8 & 0xff;
+  o[ 2] = x0 >>> 16 & 0xff;
+  o[ 3] = x0 >>> 24 & 0xff;
+
+  o[ 4] = x5 >>>  0 & 0xff;
+  o[ 5] = x5 >>>  8 & 0xff;
+  o[ 6] = x5 >>> 16 & 0xff;
+  o[ 7] = x5 >>> 24 & 0xff;
+
+  o[ 8] = x10 >>>  0 & 0xff;
+  o[ 9] = x10 >>>  8 & 0xff;
+  o[10] = x10 >>> 16 & 0xff;
+  o[11] = x10 >>> 24 & 0xff;
+
+  o[12] = x15 >>>  0 & 0xff;
+  o[13] = x15 >>>  8 & 0xff;
+  o[14] = x15 >>> 16 & 0xff;
+  o[15] = x15 >>> 24 & 0xff;
+
+  o[16] = x6 >>>  0 & 0xff;
+  o[17] = x6 >>>  8 & 0xff;
+  o[18] = x6 >>> 16 & 0xff;
+  o[19] = x6 >>> 24 & 0xff;
+
+  o[20] = x7 >>>  0 & 0xff;
+  o[21] = x7 >>>  8 & 0xff;
+  o[22] = x7 >>> 16 & 0xff;
+  o[23] = x7 >>> 24 & 0xff;
+
+  o[24] = x8 >>>  0 & 0xff;
+  o[25] = x8 >>>  8 & 0xff;
+  o[26] = x8 >>> 16 & 0xff;
+  o[27] = x8 >>> 24 & 0xff;
+
+  o[28] = x9 >>>  0 & 0xff;
+  o[29] = x9 >>>  8 & 0xff;
+  o[30] = x9 >>> 16 & 0xff;
+  o[31] = x9 >>> 24 & 0xff;
+}
+
+function crypto_core_salsa20(out,inp,k,c) {
+  core_salsa20(out,inp,k,c);
+}
+
+function crypto_core_hsalsa20(out,inp,k,c) {
+  core_hsalsa20(out,inp,k,c);
+}
+
+var sigma = new Uint8Array([101, 120, 112, 97, 110, 100, 32, 51, 50, 45, 98, 121, 116, 101, 32, 107]);
+            // "expand 32-byte k"
+
+function crypto_stream_salsa20_xor(c,cpos,m,mpos,b,n,k) {
+  var z = new Uint8Array(16), x = new Uint8Array(64);
+  var u, i;
+  for (i = 0; i < 16; i++) z[i] = 0;
+  for (i = 0; i < 8; i++) z[i] = n[i];
+  while (b >= 64) {
+    crypto_core_salsa20(x,z,k,sigma);
+    for (i = 0; i < 64; i++) c[cpos+i] = m[mpos+i] ^ x[i];
+    u = 1;
+    for (i = 8; i < 16; i++) {
+      u = u + (z[i] & 0xff) | 0;
+      z[i] = u & 0xff;
+      u >>>= 8;
+    }
+    b -= 64;
+    cpos += 64;
+    mpos += 64;
+  }
+  if (b > 0) {
+    crypto_core_salsa20(x,z,k,sigma);
+    for (i = 0; i < b; i++) c[cpos+i] = m[mpos+i] ^ x[i];
+  }
+  return 0;
+}
+
+function crypto_stream_salsa20(c,cpos,b,n,k) {
+  var z = new Uint8Array(16), x = new Uint8Array(64);
+  var u, i;
+  for (i = 0; i < 16; i++) z[i] = 0;
+  for (i = 0; i < 8; i++) z[i] = n[i];
+  while (b >= 64) {
+    crypto_core_salsa20(x,z,k,sigma);
+    for (i = 0; i < 64; i++) c[cpos+i] = x[i];
+    u = 1;
+    for (i = 8; i < 16; i++) {
+      u = u + (z[i] & 0xff) | 0;
+      z[i] = u & 0xff;
+      u >>>= 8;
+    }
+    b -= 64;
+    cpos += 64;
+  }
+  if (b > 0) {
+    crypto_core_salsa20(x,z,k,sigma);
+    for (i = 0; i < b; i++) c[cpos+i] = x[i];
+  }
+  return 0;
+}
+
+function crypto_stream(c,cpos,d,n,k) {
+  var s = new Uint8Array(32);
+  crypto_core_hsalsa20(s,n,k,sigma);
+  var sn = new Uint8Array(8);
+  for (var i = 0; i < 8; i++) sn[i] = n[i+16];
+  return crypto_stream_salsa20(c,cpos,d,sn,s);
+}
+
+function crypto_stream_xor(c,cpos,m,mpos,d,n,k) {
+  var s = new Uint8Array(32);
+  crypto_core_hsalsa20(s,n,k,sigma);
+  var sn = new Uint8Array(8);
+  for (var i = 0; i < 8; i++) sn[i] = n[i+16];
+  return crypto_stream_salsa20_xor(c,cpos,m,mpos,d,sn,s);
+}
+
+/*
+* Port of Andrew Moon's Poly1305-donna-16. Public domain.
+* https://github.com/floodyberry/poly1305-donna
+*/
+
+var poly1305 = function(key) {
+  this.buffer = new Uint8Array(16);
+  this.r = new Uint16Array(10);
+  this.h = new Uint16Array(10);
+  this.pad = new Uint16Array(8);
+  this.leftover = 0;
+  this.fin = 0;
+
+  var t0, t1, t2, t3, t4, t5, t6, t7;
+
+  t0 = key[ 0] & 0xff | (key[ 1] & 0xff) << 8; this.r[0] = ( t0                     ) & 0x1fff;
+  t1 = key[ 2] & 0xff | (key[ 3] & 0xff) << 8; this.r[1] = ((t0 >>> 13) | (t1 <<  3)) & 0x1fff;
+  t2 = key[ 4] & 0xff | (key[ 5] & 0xff) << 8; this.r[2] = ((t1 >>> 10) | (t2 <<  6)) & 0x1f03;
+  t3 = key[ 6] & 0xff | (key[ 7] & 0xff) << 8; this.r[3] = ((t2 >>>  7) | (t3 <<  9)) & 0x1fff;
+  t4 = key[ 8] & 0xff | (key[ 9] & 0xff) << 8; this.r[4] = ((t3 >>>  4) | (t4 << 12)) & 0x00ff;
+  this.r[5] = ((t4 >>>  1)) & 0x1ffe;
+  t5 = key[10] & 0xff | (key[11] & 0xff) << 8; this.r[6] = ((t4 >>> 14) | (t5 <<  2)) & 0x1fff;
+  t6 = key[12] & 0xff | (key[13] & 0xff) << 8; this.r[7] = ((t5 >>> 11) | (t6 <<  5)) & 0x1f81;
+  t7 = key[14] & 0xff | (key[15] & 0xff) << 8; this.r[8] = ((t6 >>>  8) | (t7 <<  8)) & 0x1fff;
+  this.r[9] = ((t7 >>>  5)) & 0x007f;
+
+  this.pad[0] = key[16] & 0xff | (key[17] & 0xff) << 8;
+  this.pad[1] = key[18] & 0xff | (key[19] & 0xff) << 8;
+  this.pad[2] = key[20] & 0xff | (key[21] & 0xff) << 8;
+  this.pad[3] = key[22] & 0xff | (key[23] & 0xff) << 8;
+  this.pad[4] = key[24] & 0xff | (key[25] & 0xff) << 8;
+  this.pad[5] = key[26] & 0xff | (key[27] & 0xff) << 8;
+  this.pad[6] = key[28] & 0xff | (key[29] & 0xff) << 8;
+  this.pad[7] = key[30] & 0xff | (key[31] & 0xff) << 8;
+};
+
+poly1305.prototype.blocks = function(m, mpos, bytes) {
+  var hibit = this.fin ? 0 : (1 << 11);
+  var t0, t1, t2, t3, t4, t5, t6, t7, c;
+  var d0, d1, d2, d3, d4, d5, d6, d7, d8, d9;
+
+  var h0 = this.h[0],
+      h1 = this.h[1],
+      h2 = this.h[2],
+      h3 = this.h[3],
+      h4 = this.h[4],
+      h5 = this.h[5],
+      h6 = this.h[6],
+      h7 = this.h[7],
+      h8 = this.h[8],
+      h9 = this.h[9];
+
+  var r0 = this.r[0],
+      r1 = this.r[1],
+      r2 = this.r[2],
+      r3 = this.r[3],
+      r4 = this.r[4],
+      r5 = this.r[5],
+      r6 = this.r[6],
+      r7 = this.r[7],
+      r8 = this.r[8],
+      r9 = this.r[9];
+
+  while (bytes >= 16) {
+    t0 = m[mpos+ 0] & 0xff | (m[mpos+ 1] & 0xff) << 8; h0 += ( t0                     ) & 0x1fff;
+    t1 = m[mpos+ 2] & 0xff | (m[mpos+ 3] & 0xff) << 8; h1 += ((t0 >>> 13) | (t1 <<  3)) & 0x1fff;
+    t2 = m[mpos+ 4] & 0xff | (m[mpos+ 5] & 0xff) << 8; h2 += ((t1 >>> 10) | (t2 <<  6)) & 0x1fff;
+    t3 = m[mpos+ 6] & 0xff | (m[mpos+ 7] & 0xff) << 8; h3 += ((t2 >>>  7) | (t3 <<  9)) & 0x1fff;
+    t4 = m[mpos+ 8] & 0xff | (m[mpos+ 9] & 0xff) << 8; h4 += ((t3 >>>  4) | (t4 << 12)) & 0x1fff;
+    h5 += ((t4 >>>  1)) & 0x1fff;
+    t5 = m[mpos+10] & 0xff | (m[mpos+11] & 0xff) << 8; h6 += ((t4 >>> 14) | (t5 <<  2)) & 0x1fff;
+    t6 = m[mpos+12] & 0xff | (m[mpos+13] & 0xff) << 8; h7 += ((t5 >>> 11) | (t6 <<  5)) & 0x1fff;
+    t7 = m[mpos+14] & 0xff | (m[mpos+15] & 0xff) << 8; h8 += ((t6 >>>  8) | (t7 <<  8)) & 0x1fff;
+    h9 += ((t7 >>> 5)) | hibit;
+
+    c = 0;
+
+    d0 = c;
+    d0 += h0 * r0;
+    d0 += h1 * (5 * r9);
+    d0 += h2 * (5 * r8);
+    d0 += h3 * (5 * r7);
+    d0 += h4 * (5 * r6);
+    c = (d0 >>> 13); d0 &= 0x1fff;
+    d0 += h5 * (5 * r5);
+    d0 += h6 * (5 * r4);
+    d0 += h7 * (5 * r3);
+    d0 += h8 * (5 * r2);
+    d0 += h9 * (5 * r1);
+    c += (d0 >>> 13); d0 &= 0x1fff;
+
+    d1 = c;
+    d1 += h0 * r1;
+    d1 += h1 * r0;
+    d1 += h2 * (5 * r9);
+    d1 += h3 * (5 * r8);
+    d1 += h4 * (5 * r7);
+    c = (d1 >>> 13); d1 &= 0x1fff;
+    d1 += h5 * (5 * r6);
+    d1 += h6 * (5 * r5);
+    d1 += h7 * (5 * r4);
+    d1 += h8 * (5 * r3);
+    d1 += h9 * (5 * r2);
+    c += (d1 >>> 13); d1 &= 0x1fff;
+
+    d2 = c;
+    d2 += h0 * r2;
+    d2 += h1 * r1;
+    d2 += h2 * r0;
+    d2 += h3 * (5 * r9);
+    d2 += h4 * (5 * r8);
+    c = (d2 >>> 13); d2 &= 0x1fff;
+    d2 += h5 * (5 * r7);
+    d2 += h6 * (5 * r6);
+    d2 += h7 * (5 * r5);
+    d2 += h8 * (5 * r4);
+    d2 += h9 * (5 * r3);
+    c += (d2 >>> 13); d2 &= 0x1fff;
+
+    d3 = c;
+    d3 += h0 * r3;
+    d3 += h1 * r2;
+    d3 += h2 * r1;
+    d3 += h3 * r0;
+    d3 += h4 * (5 * r9);
+    c = (d3 >>> 13); d3 &= 0x1fff;
+    d3 += h5 * (5 * r8);
+    d3 += h6 * (5 * r7);
+    d3 += h7 * (5 * r6);
+    d3 += h8 * (5 * r5);
+    d3 += h9 * (5 * r4);
+    c += (d3 >>> 13); d3 &= 0x1fff;
+
+    d4 = c;
+    d4 += h0 * r4;
+    d4 += h1 * r3;
+    d4 += h2 * r2;
+    d4 += h3 * r1;
+    d4 += h4 * r0;
+    c = (d4 >>> 13); d4 &= 0x1fff;
+    d4 += h5 * (5 * r9);
+    d4 += h6 * (5 * r8);
+    d4 += h7 * (5 * r7);
+    d4 += h8 * (5 * r6);
+    d4 += h9 * (5 * r5);
+    c += (d4 >>> 13); d4 &= 0x1fff;
+
+    d5 = c;
+    d5 += h0 * r5;
+    d5 += h1 * r4;
+    d5 += h2 * r3;
+    d5 += h3 * r2;
+    d5 += h4 * r1;
+    c = (d5 >>> 13); d5 &= 0x1fff;
+    d5 += h5 * r0;
+    d5 += h6 * (5 * r9);
+    d5 += h7 * (5 * r8);
+    d5 += h8 * (5 * r7);
+    d5 += h9 * (5 * r6);
+    c += (d5 >>> 13); d5 &= 0x1fff;
+
+    d6 = c;
+    d6 += h0 * r6;
+    d6 += h1 * r5;
+    d6 += h2 * r4;
+    d6 += h3 * r3;
+    d6 += h4 * r2;
+    c = (d6 >>> 13); d6 &= 0x1fff;
+    d6 += h5 * r1;
+    d6 += h6 * r0;
+    d6 += h7 * (5 * r9);
+    d6 += h8 * (5 * r8);
+    d6 += h9 * (5 * r7);
+    c += (d6 >>> 13); d6 &= 0x1fff;
+
+    d7 = c;
+    d7 += h0 * r7;
+    d7 += h1 * r6;
+    d7 += h2 * r5;
+    d7 += h3 * r4;
+    d7 += h4 * r3;
+    c = (d7 >>> 13); d7 &= 0x1fff;
+    d7 += h5 * r2;
+    d7 += h6 * r1;
+    d7 += h7 * r0;
+    d7 += h8 * (5 * r9);
+    d7 += h9 * (5 * r8);
+    c += (d7 >>> 13); d7 &= 0x1fff;
+
+    d8 = c;
+    d8 += h0 * r8;
+    d8 += h1 * r7;
+    d8 += h2 * r6;
+    d8 += h3 * r5;
+    d8 += h4 * r4;
+    c = (d8 >>> 13); d8 &= 0x1fff;
+    d8 += h5 * r3;
+    d8 += h6 * r2;
+    d8 += h7 * r1;
+    d8 += h8 * r0;
+    d8 += h9 * (5 * r9);
+    c += (d8 >>> 13); d8 &= 0x1fff;
+
+    d9 = c;
+    d9 += h0 * r9;
+    d9 += h1 * r8;
+    d9 += h2 * r7;
+    d9 += h3 * r6;
+    d9 += h4 * r5;
+    c = (d9 >>> 13); d9 &= 0x1fff;
+    d9 += h5 * r4;
+    d9 += h6 * r3;
+    d9 += h7 * r2;
+    d9 += h8 * r1;
+    d9 += h9 * r0;
+    c += (d9 >>> 13); d9 &= 0x1fff;
+
+    c = (((c << 2) + c)) | 0;
+    c = (c + d0) | 0;
+    d0 = c & 0x1fff;
+    c = (c >>> 13);
+    d1 += c;
+
+    h0 = d0;
+    h1 = d1;
+    h2 = d2;
+    h3 = d3;
+    h4 = d4;
+    h5 = d5;
+    h6 = d6;
+    h7 = d7;
+    h8 = d8;
+    h9 = d9;
+
+    mpos += 16;
+    bytes -= 16;
+  }
+  this.h[0] = h0;
+  this.h[1] = h1;
+  this.h[2] = h2;
+  this.h[3] = h3;
+  this.h[4] = h4;
+  this.h[5] = h5;
+  this.h[6] = h6;
+  this.h[7] = h7;
+  this.h[8] = h8;
+  this.h[9] = h9;
+};
+
+poly1305.prototype.finish = function(mac, macpos) {
+  var g = new Uint16Array(10);
+  var c, mask, f, i;
+
+  if (this.leftover) {
+    i = this.leftover;
+    this.buffer[i++] = 1;
+    for (; i < 16; i++) this.buffer[i] = 0;
+    this.fin = 1;
+    this.blocks(this.buffer, 0, 16);
+  }
+
+  c = this.h[1] >>> 13;
+  this.h[1] &= 0x1fff;
+  for (i = 2; i < 10; i++) {
+    this.h[i] += c;
+    c = this.h[i] >>> 13;
+    this.h[i] &= 0x1fff;
+  }
+  this.h[0] += (c * 5);
+  c = this.h[0] >>> 13;
+  this.h[0] &= 0x1fff;
+  this.h[1] += c;
+  c = this.h[1] >>> 13;
+  this.h[1] &= 0x1fff;
+  this.h[2] += c;
+
+  g[0] = this.h[0] + 5;
+  c = g[0] >>> 13;
+  g[0] &= 0x1fff;
+  for (i = 1; i < 10; i++) {
+    g[i] = this.h[i] + c;
+    c = g[i] >>> 13;
+    g[i] &= 0x1fff;
+  }
+  g[9] -= (1 << 13);
+
+  mask = (c ^ 1) - 1;
+  for (i = 0; i < 10; i++) g[i] &= mask;
+  mask = ~mask;
+  for (i = 0; i < 10; i++) this.h[i] = (this.h[i] & mask) | g[i];
+
+  this.h[0] = ((this.h[0]       ) | (this.h[1] << 13)                    ) & 0xffff;
+  this.h[1] = ((this.h[1] >>>  3) | (this.h[2] << 10)                    ) & 0xffff;
+  this.h[2] = ((this.h[2] >>>  6) | (this.h[3] <<  7)                    ) & 0xffff;
+  this.h[3] = ((this.h[3] >>>  9) | (this.h[4] <<  4)                    ) & 0xffff;
+  this.h[4] = ((this.h[4] >>> 12) | (this.h[5] <<  1) | (this.h[6] << 14)) & 0xffff;
+  this.h[5] = ((this.h[6] >>>  2) | (this.h[7] << 11)                    ) & 0xffff;
+  this.h[6] = ((this.h[7] >>>  5) | (this.h[8] <<  8)                    ) & 0xffff;
+  this.h[7] = ((this.h[8] >>>  8) | (this.h[9] <<  5)                    ) & 0xffff;
+
+  f = this.h[0] + this.pad[0];
+  this.h[0] = f & 0xffff;
+  for (i = 1; i < 8; i++) {
+    f = (((this.h[i] + this.pad[i]) | 0) + (f >>> 16)) | 0;
+    this.h[i] = f & 0xffff;
+  }
+
+  mac[macpos+ 0] = (this.h[0] >>> 0) & 0xff;
+  mac[macpos+ 1] = (this.h[0] >>> 8) & 0xff;
+  mac[macpos+ 2] = (this.h[1] >>> 0) & 0xff;
+  mac[macpos+ 3] = (this.h[1] >>> 8) & 0xff;
+  mac[macpos+ 4] = (this.h[2] >>> 0) & 0xff;
+  mac[macpos+ 5] = (this.h[2] >>> 8) & 0xff;
+  mac[macpos+ 6] = (this.h[3] >>> 0) & 0xff;
+  mac[macpos+ 7] = (this.h[3] >>> 8) & 0xff;
+  mac[macpos+ 8] = (this.h[4] >>> 0) & 0xff;
+  mac[macpos+ 9] = (this.h[4] >>> 8) & 0xff;
+  mac[macpos+10] = (this.h[5] >>> 0) & 0xff;
+  mac[macpos+11] = (this.h[5] >>> 8) & 0xff;
+  mac[macpos+12] = (this.h[6] >>> 0) & 0xff;
+  mac[macpos+13] = (this.h[6] >>> 8) & 0xff;
+  mac[macpos+14] = (this.h[7] >>> 0) & 0xff;
+  mac[macpos+15] = (this.h[7] >>> 8) & 0xff;
+};
+
+poly1305.prototype.update = function(m, mpos, bytes) {
+  var i, want;
+
+  if (this.leftover) {
+    want = (16 - this.leftover);
+    if (want > bytes)
+      want = bytes;
+    for (i = 0; i < want; i++)
+      this.buffer[this.leftover + i] = m[mpos+i];
+    bytes -= want;
+    mpos += want;
+    this.leftover += want;
+    if (this.leftover < 16)
+      return;
+    this.blocks(this.buffer, 0, 16);
+    this.leftover = 0;
+  }
+
+  if (bytes >= 16) {
+    want = bytes - (bytes % 16);
+    this.blocks(m, mpos, want);
+    mpos += want;
+    bytes -= want;
+  }
+
+  if (bytes) {
+    for (i = 0; i < bytes; i++)
+      this.buffer[this.leftover + i] = m[mpos+i];
+    this.leftover += bytes;
+  }
+};
+
+function crypto_onetimeauth(out, outpos, m, mpos, n, k) {
+  var s = new poly1305(k);
+  s.update(m, mpos, n);
+  s.finish(out, outpos);
+  return 0;
+}
+
+function crypto_onetimeauth_verify(h, hpos, m, mpos, n, k) {
+  var x = new Uint8Array(16);
+  crypto_onetimeauth(x,0,m,mpos,n,k);
+  return crypto_verify_16(h,hpos,x,0);
+}
+
+function crypto_secretbox(c,m,d,n,k) {
+  var i;
+  if (d < 32) return -1;
+  crypto_stream_xor(c,0,m,0,d,n,k);
+  crypto_onetimeauth(c, 16, c, 32, d - 32, c);
+  for (i = 0; i < 16; i++) c[i] = 0;
+  return 0;
+}
+
+function crypto_secretbox_open(m,c,d,n,k) {
+  var i;
+  var x = new Uint8Array(32);
+  if (d < 32) return -1;
+  crypto_stream(x,0,32,n,k);
+  if (crypto_onetimeauth_verify(c, 16,c, 32,d - 32,x) !== 0) return -1;
+  crypto_stream_xor(m,0,c,0,d,n,k);
+  for (i = 0; i < 32; i++) m[i] = 0;
+  return 0;
+}
+
+function set25519(r, a) {
+  var i;
+  for (i = 0; i < 16; i++) r[i] = a[i]|0;
+}
+
+function car25519(o) {
+  var i, v, c = 1;
+  for (i = 0; i < 16; i++) {
+    v = o[i] + c + 65535;
+    c = Math.floor(v / 65536);
+    o[i] = v - c * 65536;
+  }
+  o[0] += c-1 + 37 * (c-1);
+}
+
+function sel25519(p, q, b) {
+  var t, c = ~(b-1);
+  for (var i = 0; i < 16; i++) {
+    t = c & (p[i] ^ q[i]);
+    p[i] ^= t;
+    q[i] ^= t;
+  }
+}
+
+function pack25519(o, n) {
+  var i, j, b;
+  var m = gf(), t = gf();
+  for (i = 0; i < 16; i++) t[i] = n[i];
+  car25519(t);
+  car25519(t);
+  car25519(t);
+  for (j = 0; j < 2; j++) {
+    m[0] = t[0] - 0xffed;
+    for (i = 1; i < 15; i++) {
+      m[i] = t[i] - 0xffff - ((m[i-1]>>16) & 1);
+      m[i-1] &= 0xffff;
+    }
+    m[15] = t[15] - 0x7fff - ((m[14]>>16) & 1);
+    b = (m[15]>>16) & 1;
+    m[14] &= 0xffff;
+    sel25519(t, m, 1-b);
+  }
+  for (i = 0; i < 16; i++) {
+    o[2*i] = t[i] & 0xff;
+    o[2*i+1] = t[i]>>8;
+  }
+}
+
+function neq25519(a, b) {
+  var c = new Uint8Array(32), d = new Uint8Array(32);
+  pack25519(c, a);
+  pack25519(d, b);
+  return crypto_verify_32(c, 0, d, 0);
+}
+
+function par25519(a) {
+  var d = new Uint8Array(32);
+  pack25519(d, a);
+  return d[0] & 1;
+}
+
+function unpack25519(o, n) {
+  var i;
+  for (i = 0; i < 16; i++) o[i] = n[2*i] + (n[2*i+1] << 8);
+  o[15] &= 0x7fff;
+}
+
+function A(o, a, b) {
+  for (var i = 0; i < 16; i++) o[i] = a[i] + b[i];
+}
+
+function Z(o, a, b) {
+  for (var i = 0; i < 16; i++) o[i] = a[i] - b[i];
+}
+
+function M(o, a, b) {
+  var v, c,
+     t0 = 0,  t1 = 0,  t2 = 0,  t3 = 0,  t4 = 0,  t5 = 0,  t6 = 0,  t7 = 0,
+     t8 = 0,  t9 = 0, t10 = 0, t11 = 0, t12 = 0, t13 = 0, t14 = 0, t15 = 0,
+    t16 = 0, t17 = 0, t18 = 0, t19 = 0, t20 = 0, t21 = 0, t22 = 0, t23 = 0,
+    t24 = 0, t25 = 0, t26 = 0, t27 = 0, t28 = 0, t29 = 0, t30 = 0,
+    b0 = b[0],
+    b1 = b[1],
+    b2 = b[2],
+    b3 = b[3],
+    b4 = b[4],
+    b5 = b[5],
+    b6 = b[6],
+    b7 = b[7],
+    b8 = b[8],
+    b9 = b[9],
+    b10 = b[10],
+    b11 = b[11],
+    b12 = b[12],
+    b13 = b[13],
+    b14 = b[14],
+    b15 = b[15];
+
+  v = a[0];
+  t0 += v * b0;
+  t1 += v * b1;
+  t2 += v * b2;
+  t3 += v * b3;
+  t4 += v * b4;
+  t5 += v * b5;
+  t6 += v * b6;
+  t7 += v * b7;
+  t8 += v * b8;
+  t9 += v * b9;
+  t10 += v * b10;
+  t11 += v * b11;
+  t12 += v * b12;
+  t13 += v * b13;
+  t14 += v * b14;
+  t15 += v * b15;
+  v = a[1];
+  t1 += v * b0;
+  t2 += v * b1;
+  t3 += v * b2;
+  t4 += v * b3;
+  t5 += v * b4;
+  t6 += v * b5;
+  t7 += v * b6;
+  t8 += v * b7;
+  t9 += v * b8;
+  t10 += v * b9;
+  t11 += v * b10;
+  t12 += v * b11;
+  t13 += v * b12;
+  t14 += v * b13;
+  t15 += v * b14;
+  t16 += v * b15;
+  v = a[2];
+  t2 += v * b0;
+  t3 += v * b1;
+  t4 += v * b2;
+  t5 += v * b3;
+  t6 += v * b4;
+  t7 += v * b5;
+  t8 += v * b6;
+  t9 += v * b7;
+  t10 += v * b8;
+  t11 += v * b9;
+  t12 += v * b10;
+  t13 += v * b11;
+  t14 += v * b12;
+  t15 += v * b13;
+  t16 += v * b14;
+  t17 += v * b15;
+  v = a[3];
+  t3 += v * b0;
+  t4 += v * b1;
+  t5 += v * b2;
+  t6 += v * b3;
+  t7 += v * b4;
+  t8 += v * b5;
+  t9 += v * b6;
+  t10 += v * b7;
+  t11 += v * b8;
+  t12 += v * b9;
+  t13 += v * b10;
+  t14 += v * b11;
+  t15 += v * b12;
+  t16 += v * b13;
+  t17 += v * b14;
+  t18 += v * b15;
+  v = a[4];
+  t4 += v * b0;
+  t5 += v * b1;
+  t6 += v * b2;
+  t7 += v * b3;
+  t8 += v * b4;
+  t9 += v * b5;
+  t10 += v * b6;
+  t11 += v * b7;
+  t12 += v * b8;
+  t13 += v * b9;
+  t14 += v * b10;
+  t15 += v * b11;
+  t16 += v * b12;
+  t17 += v * b13;
+  t18 += v * b14;
+  t19 += v * b15;
+  v = a[5];
+  t5 += v * b0;
+  t6 += v * b1;
+  t7 += v * b2;
+  t8 += v * b3;
+  t9 += v * b4;
+  t10 += v * b5;
+  t11 += v * b6;
+  t12 += v * b7;
+  t13 += v * b8;
+  t14 += v * b9;
+  t15 += v * b10;
+  t16 += v * b11;
+  t17 += v * b12;
+  t18 += v * b13;
+  t19 += v * b14;
+  t20 += v * b15;
+  v = a[6];
+  t6 += v * b0;
+  t7 += v * b1;
+  t8 += v * b2;
+  t9 += v * b3;
+  t10 += v * b4;
+  t11 += v * b5;
+  t12 += v * b6;
+  t13 += v * b7;
+  t14 += v * b8;
+  t15 += v * b9;
+  t16 += v * b10;
+  t17 += v * b11;
+  t18 += v * b12;
+  t19 += v * b13;
+  t20 += v * b14;
+  t21 += v * b15;
+  v = a[7];
+  t7 += v * b0;
+  t8 += v * b1;
+  t9 += v * b2;
+  t10 += v * b3;
+  t11 += v * b4;
+  t12 += v * b5;
+  t13 += v * b6;
+  t14 += v * b7;
+  t15 += v * b8;
+  t16 += v * b9;
+  t17 += v * b10;
+  t18 += v * b11;
+  t19 += v * b12;
+  t20 += v * b13;
+  t21 += v * b14;
+  t22 += v * b15;
+  v = a[8];
+  t8 += v * b0;
+  t9 += v * b1;
+  t10 += v * b2;
+  t11 += v * b3;
+  t12 += v * b4;
+  t13 += v * b5;
+  t14 += v * b6;
+  t15 += v * b7;
+  t16 += v * b8;
+  t17 += v * b9;
+  t18 += v * b10;
+  t19 += v * b11;
+  t20 += v * b12;
+  t21 += v * b13;
+  t22 += v * b14;
+  t23 += v * b15;
+  v = a[9];
+  t9 += v * b0;
+  t10 += v * b1;
+  t11 += v * b2;
+  t12 += v * b3;
+  t13 += v * b4;
+  t14 += v * b5;
+  t15 += v * b6;
+  t16 += v * b7;
+  t17 += v * b8;
+  t18 += v * b9;
+  t19 += v * b10;
+  t20 += v * b11;
+  t21 += v * b12;
+  t22 += v * b13;
+  t23 += v * b14;
+  t24 += v * b15;
+  v = a[10];
+  t10 += v * b0;
+  t11 += v * b1;
+  t12 += v * b2;
+  t13 += v * b3;
+  t14 += v * b4;
+  t15 += v * b5;
+  t16 += v * b6;
+  t17 += v * b7;
+  t18 += v * b8;
+  t19 += v * b9;
+  t20 += v * b10;
+  t21 += v * b11;
+  t22 += v * b12;
+  t23 += v * b13;
+  t24 += v * b14;
+  t25 += v * b15;
+  v = a[11];
+  t11 += v * b0;
+  t12 += v * b1;
+  t13 += v * b2;
+  t14 += v * b3;
+  t15 += v * b4;
+  t16 += v * b5;
+  t17 += v * b6;
+  t18 += v * b7;
+  t19 += v * b8;
+  t20 += v * b9;
+  t21 += v * b10;
+  t22 += v * b11;
+  t23 += v * b12;
+  t24 += v * b13;
+  t25 += v * b14;
+  t26 += v * b15;
+  v = a[12];
+  t12 += v * b0;
+  t13 += v * b1;
+  t14 += v * b2;
+  t15 += v * b3;
+  t16 += v * b4;
+  t17 += v * b5;
+  t18 += v * b6;
+  t19 += v * b7;
+  t20 += v * b8;
+  t21 += v * b9;
+  t22 += v * b10;
+  t23 += v * b11;
+  t24 += v * b12;
+  t25 += v * b13;
+  t26 += v * b14;
+  t27 += v * b15;
+  v = a[13];
+  t13 += v * b0;
+  t14 += v * b1;
+  t15 += v * b2;
+  t16 += v * b3;
+  t17 += v * b4;
+  t18 += v * b5;
+  t19 += v * b6;
+  t20 += v * b7;
+  t21 += v * b8;
+  t22 += v * b9;
+  t23 += v * b10;
+  t24 += v * b11;
+  t25 += v * b12;
+  t26 += v * b13;
+  t27 += v * b14;
+  t28 += v * b15;
+  v = a[14];
+  t14 += v * b0;
+  t15 += v * b1;
+  t16 += v * b2;
+  t17 += v * b3;
+  t18 += v * b4;
+  t19 += v * b5;
+  t20 += v * b6;
+  t21 += v * b7;
+  t22 += v * b8;
+  t23 += v * b9;
+  t24 += v * b10;
+  t25 += v * b11;
+  t26 += v * b12;
+  t27 += v * b13;
+  t28 += v * b14;
+  t29 += v * b15;
+  v = a[15];
+  t15 += v * b0;
+  t16 += v * b1;
+  t17 += v * b2;
+  t18 += v * b3;
+  t19 += v * b4;
+  t20 += v * b5;
+  t21 += v * b6;
+  t22 += v * b7;
+  t23 += v * b8;
+  t24 += v * b9;
+  t25 += v * b10;
+  t26 += v * b11;
+  t27 += v * b12;
+  t28 += v * b13;
+  t29 += v * b14;
+  t30 += v * b15;
+
+  t0  += 38 * t16;
+  t1  += 38 * t17;
+  t2  += 38 * t18;
+  t3  += 38 * t19;
+  t4  += 38 * t20;
+  t5  += 38 * t21;
+  t6  += 38 * t22;
+  t7  += 38 * t23;
+  t8  += 38 * t24;
+  t9  += 38 * t25;
+  t10 += 38 * t26;
+  t11 += 38 * t27;
+  t12 += 38 * t28;
+  t13 += 38 * t29;
+  t14 += 38 * t30;
+  // t15 left as is
+
+  // first car
+  c = 1;
+  v =  t0 + c + 65535; c = Math.floor(v / 65536);  t0 = v - c * 65536;
+  v =  t1 + c + 65535; c = Math.floor(v / 65536);  t1 = v - c * 65536;
+  v =  t2 + c + 65535; c = Math.floor(v / 65536);  t2 = v - c * 65536;
+  v =  t3 + c + 65535; c = Math.floor(v / 65536);  t3 = v - c * 65536;
+  v =  t4 + c + 65535; c = Math.floor(v / 65536);  t4 = v - c * 65536;
+  v =  t5 + c + 65535; c = Math.floor(v / 65536);  t5 = v - c * 65536;
+  v =  t6 + c + 65535; c = Math.floor(v / 65536);  t6 = v - c * 65536;
+  v =  t7 + c + 65535; c = Math.floor(v / 65536);  t7 = v - c * 65536;
+  v =  t8 + c + 65535; c = Math.floor(v / 65536);  t8 = v - c * 65536;
+  v =  t9 + c + 65535; c = Math.floor(v / 65536);  t9 = v - c * 65536;
+  v = t10 + c + 65535; c = Math.floor(v / 65536); t10 = v - c * 65536;
+  v = t11 + c + 65535; c = Math.floor(v / 65536); t11 = v - c * 65536;
+  v = t12 + c + 65535; c = Math.floor(v / 65536); t12 = v - c * 65536;
+  v = t13 + c + 65535; c = Math.floor(v / 65536); t13 = v - c * 65536;
+  v = t14 + c + 65535; c = Math.floor(v / 65536); t14 = v - c * 65536;
+  v = t15 + c + 65535; c = Math.floor(v / 65536); t15 = v - c * 65536;
+  t0 += c-1 + 37 * (c-1);
+
+  // second car
+  c = 1;
+  v =  t0 + c + 65535; c = Math.floor(v / 65536);  t0 = v - c * 65536;
+  v =  t1 + c + 65535; c = Math.floor(v / 65536);  t1 = v - c * 65536;
+  v =  t2 + c + 65535; c = Math.floor(v / 65536);  t2 = v - c * 65536;
+  v =  t3 + c + 65535; c = Math.floor(v / 65536);  t3 = v - c * 65536;
+  v =  t4 + c + 65535; c = Math.floor(v / 65536);  t4 = v - c * 65536;
+  v =  t5 + c + 65535; c = Math.floor(v / 65536);  t5 = v - c * 65536;
+  v =  t6 + c + 65535; c = Math.floor(v / 65536);  t6 = v - c * 65536;
+  v =  t7 + c + 65535; c = Math.floor(v / 65536);  t7 = v - c * 65536;
+  v =  t8 + c + 65535; c = Math.floor(v / 65536);  t8 = v - c * 65536;
+  v =  t9 + c + 65535; c = Math.floor(v / 65536);  t9 = v - c * 65536;
+  v = t10 + c + 65535; c = Math.floor(v / 65536); t10 = v - c * 65536;
+  v = t11 + c + 65535; c = Math.floor(v / 65536); t11 = v - c * 65536;
+  v = t12 + c + 65535; c = Math.floor(v / 65536); t12 = v - c * 65536;
+  v = t13 + c + 65535; c = Math.floor(v / 65536); t13 = v - c * 65536;
+  v = t14 + c + 65535; c = Math.floor(v / 65536); t14 = v - c * 65536;
+  v = t15 + c + 65535; c = Math.floor(v / 65536); t15 = v - c * 65536;
+  t0 += c-1 + 37 * (c-1);
+
+  o[ 0] = t0;
+  o[ 1] = t1;
+  o[ 2] = t2;
+  o[ 3] = t3;
+  o[ 4] = t4;
+  o[ 5] = t5;
+  o[ 6] = t6;
+  o[ 7] = t7;
+  o[ 8] = t8;
+  o[ 9] = t9;
+  o[10] = t10;
+  o[11] = t11;
+  o[12] = t12;
+  o[13] = t13;
+  o[14] = t14;
+  o[15] = t15;
+}
+
+function S(o, a) {
+  M(o, a, a);
+}
+
+function inv25519(o, i) {
+  var c = gf();
+  var a;
+  for (a = 0; a < 16; a++) c[a] = i[a];
+  for (a = 253; a >= 0; a--) {
+    S(c, c);
+    if(a !== 2 && a !== 4) M(c, c, i);
+  }
+  for (a = 0; a < 16; a++) o[a] = c[a];
+}
+
+function pow2523(o, i) {
+  var c = gf();
+  var a;
+  for (a = 0; a < 16; a++) c[a] = i[a];
+  for (a = 250; a >= 0; a--) {
+      S(c, c);
+      if(a !== 1) M(c, c, i);
+  }
+  for (a = 0; a < 16; a++) o[a] = c[a];
+}
+
+function crypto_scalarmult(q, n, p) {
+  var z = new Uint8Array(32);
+  var x = new Float64Array(80), r, i;
+  var a = gf(), b = gf(), c = gf(),
+      d = gf(), e = gf(), f = gf();
+  for (i = 0; i < 31; i++) z[i] = n[i];
+  z[31]=(n[31]&127)|64;
+  z[0]&=248;
+  unpack25519(x,p);
+  for (i = 0; i < 16; i++) {
+    b[i]=x[i];
+    d[i]=a[i]=c[i]=0;
+  }
+  a[0]=d[0]=1;
+  for (i=254; i>=0; --i) {
+    r=(z[i>>>3]>>>(i&7))&1;
+    sel25519(a,b,r);
+    sel25519(c,d,r);
+    A(e,a,c);
+    Z(a,a,c);
+    A(c,b,d);
+    Z(b,b,d);
+    S(d,e);
+    S(f,a);
+    M(a,c,a);
+    M(c,b,e);
+    A(e,a,c);
+    Z(a,a,c);
+    S(b,a);
+    Z(c,d,f);
+    M(a,c,_121665);
+    A(a,a,d);
+    M(c,c,a);
+    M(a,d,f);
+    M(d,b,x);
+    S(b,e);
+    sel25519(a,b,r);
+    sel25519(c,d,r);
+  }
+  for (i = 0; i < 16; i++) {
+    x[i+16]=a[i];
+    x[i+32]=c[i];
+    x[i+48]=b[i];
+    x[i+64]=d[i];
+  }
+  var x32 = x.subarray(32);
+  var x16 = x.subarray(16);
+  inv25519(x32,x32);
+  M(x16,x16,x32);
+  pack25519(q,x16);
+  return 0;
+}
+
+function crypto_scalarmult_base(q, n) {
+  return crypto_scalarmult(q, n, _9);
+}
+
+function crypto_box_keypair(y, x) {
+  randombytes(x, 32);
+  return crypto_scalarmult_base(y, x);
+}
+
+function crypto_box_beforenm(k, y, x) {
+  var s = new Uint8Array(32);
+  crypto_scalarmult(s, x, y);
+  return crypto_core_hsalsa20(k, _0, s, sigma);
+}
+
+var crypto_box_afternm = crypto_secretbox;
+var crypto_box_open_afternm = crypto_secretbox_open;
+
+function crypto_box(c, m, d, n, y, x) {
+  var k = new Uint8Array(32);
+  crypto_box_beforenm(k, y, x);
+  return crypto_box_afternm(c, m, d, n, k);
+}
+
+function crypto_box_open(m, c, d, n, y, x) {
+  var k = new Uint8Array(32);
+  crypto_box_beforenm(k, y, x);
+  return crypto_box_open_afternm(m, c, d, n, k);
+}
+
+var K = [
+  0x428a2f98, 0xd728ae22, 0x71374491, 0x23ef65cd,
+  0xb5c0fbcf, 0xec4d3b2f, 0xe9b5dba5, 0x8189dbbc,
+  0x3956c25b, 0xf348b538, 0x59f111f1, 0xb605d019,
+  0x923f82a4, 0xaf194f9b, 0xab1c5ed5, 0xda6d8118,
+  0xd807aa98, 0xa3030242, 0x12835b01, 0x45706fbe,
+  0x243185be, 0x4ee4b28c, 0x550c7dc3, 0xd5ffb4e2,
+  0x72be5d74, 0xf27b896f, 0x80deb1fe, 0x3b1696b1,
+  0x9bdc06a7, 0x25c71235, 0xc19bf174, 0xcf692694,
+  0xe49b69c1, 0x9ef14ad2, 0xefbe4786, 0x384f25e3,
+  0x0fc19dc6, 0x8b8cd5b5, 0x240ca1cc, 0x77ac9c65,
+  0x2de92c6f, 0x592b0275, 0x4a7484aa, 0x6ea6e483,
+  0x5cb0a9dc, 0xbd41fbd4, 0x76f988da, 0x831153b5,
+  0x983e5152, 0xee66dfab, 0xa831c66d, 0x2db43210,
+  0xb00327c8, 0x98fb213f, 0xbf597fc7, 0xbeef0ee4,
+  0xc6e00bf3, 0x3da88fc2, 0xd5a79147, 0x930aa725,
+  0x06ca6351, 0xe003826f, 0x14292967, 0x0a0e6e70,
+  0x27b70a85, 0x46d22ffc, 0x2e1b2138, 0x5c26c926,
+  0x4d2c6dfc, 0x5ac42aed, 0x53380d13, 0x9d95b3df,
+  0x650a7354, 0x8baf63de, 0x766a0abb, 0x3c77b2a8,
+  0x81c2c92e, 0x47edaee6, 0x92722c85, 0x1482353b,
+  0xa2bfe8a1, 0x4cf10364, 0xa81a664b, 0xbc423001,
+  0xc24b8b70, 0xd0f89791, 0xc76c51a3, 0x0654be30,
+  0xd192e819, 0xd6ef5218, 0xd6990624, 0x5565a910,
+  0xf40e3585, 0x5771202a, 0x106aa070, 0x32bbd1b8,
+  0x19a4c116, 0xb8d2d0c8, 0x1e376c08, 0x5141ab53,
+  0x2748774c, 0xdf8eeb99, 0x34b0bcb5, 0xe19b48a8,
+  0x391c0cb3, 0xc5c95a63, 0x4ed8aa4a, 0xe3418acb,
+  0x5b9cca4f, 0x7763e373, 0x682e6ff3, 0xd6b2b8a3,
+  0x748f82ee, 0x5defb2fc, 0x78a5636f, 0x43172f60,
+  0x84c87814, 0xa1f0ab72, 0x8cc70208, 0x1a6439ec,
+  0x90befffa, 0x23631e28, 0xa4506ceb, 0xde82bde9,
+  0xbef9a3f7, 0xb2c67915, 0xc67178f2, 0xe372532b,
+  0xca273ece, 0xea26619c, 0xd186b8c7, 0x21c0c207,
+  0xeada7dd6, 0xcde0eb1e, 0xf57d4f7f, 0xee6ed178,
+  0x06f067aa, 0x72176fba, 0x0a637dc5, 0xa2c898a6,
+  0x113f9804, 0xbef90dae, 0x1b710b35, 0x131c471b,
+  0x28db77f5, 0x23047d84, 0x32caab7b, 0x40c72493,
+  0x3c9ebe0a, 0x15c9bebc, 0x431d67c4, 0x9c100d4c,
+  0x4cc5d4be, 0xcb3e42b6, 0x597f299c, 0xfc657e2a,
+  0x5fcb6fab, 0x3ad6faec, 0x6c44198c, 0x4a475817
+];
+
+function crypto_hashblocks_hl(hh, hl, m, n) {
+  var wh = new Int32Array(16), wl = new Int32Array(16),
+      bh0, bh1, bh2, bh3, bh4, bh5, bh6, bh7,
+      bl0, bl1, bl2, bl3, bl4, bl5, bl6, bl7,
+      th, tl, i, j, h, l, a, b, c, d;
+
+  var ah0 = hh[0],
+      ah1 = hh[1],
+      ah2 = hh[2],
+      ah3 = hh[3],
+      ah4 = hh[4],
+      ah5 = hh[5],
+      ah6 = hh[6],
+      ah7 = hh[7],
+
+      al0 = hl[0],
+      al1 = hl[1],
+      al2 = hl[2],
+      al3 = hl[3],
+      al4 = hl[4],
+      al5 = hl[5],
+      al6 = hl[6],
+      al7 = hl[7];
+
+  var pos = 0;
+  while (n >= 128) {
+    for (i = 0; i < 16; i++) {
+      j = 8 * i + pos;
+      wh[i] = (m[j+0] << 24) | (m[j+1] << 16) | (m[j+2] << 8) | m[j+3];
+      wl[i] = (m[j+4] << 24) | (m[j+5] << 16) | (m[j+6] << 8) | m[j+7];
+    }
+    for (i = 0; i < 80; i++) {
+      bh0 = ah0;
+      bh1 = ah1;
+      bh2 = ah2;
+      bh3 = ah3;
+      bh4 = ah4;
+      bh5 = ah5;
+      bh6 = ah6;
+      bh7 = ah7;
+
+      bl0 = al0;
+      bl1 = al1;
+      bl2 = al2;
+      bl3 = al3;
+      bl4 = al4;
+      bl5 = al5;
+      bl6 = al6;
+      bl7 = al7;
+
+      // add
+      h = ah7;
+      l = al7;
+
+      a = l & 0xffff; b = l >>> 16;
+      c = h & 0xffff; d = h >>> 16;
+
+      // Sigma1
+      h = ((ah4 >>> 14) | (al4 << (32-14))) ^ ((ah4 >>> 18) | (al4 << (32-18))) ^ ((al4 >>> (41-32)) | (ah4 << (32-(41-32))));
+      l = ((al4 >>> 14) | (ah4 << (32-14))) ^ ((al4 >>> 18) | (ah4 << (32-18))) ^ ((ah4 >>> (41-32)) | (al4 << (32-(41-32))));
+
+      a += l & 0xffff; b += l >>> 16;
+      c += h & 0xffff; d += h >>> 16;
+
+      // Ch
+      h = (ah4 & ah5) ^ (~ah4 & ah6);
+      l = (al4 & al5) ^ (~al4 & al6);
+
+      a += l & 0xffff; b += l >>> 16;
+      c += h & 0xffff; d += h >>> 16;
+
+      // K
+      h = K[i*2];
+      l = K[i*2+1];
+
+      a += l & 0xffff; b += l >>> 16;
+      c += h & 0xffff; d += h >>> 16;
+
+      // w
+      h = wh[i%16];
+      l = wl[i%16];
+
+      a += l & 0xffff; b += l >>> 16;
+      c += h & 0xffff; d += h >>> 16;
+
+      b += a >>> 16;
+      c += b >>> 16;
+      d += c >>> 16;
+
+      th = c & 0xffff | d << 16;
+      tl = a & 0xffff | b << 16;
+
+      // add
+      h = th;
+      l = tl;
+
+      a = l & 0xffff; b = l >>> 16;
+      c = h & 0xffff; d = h >>> 16;
+
+      // Sigma0
+      h = ((ah0 >>> 28) | (al0 << (32-28))) ^ ((al0 >>> (34-32)) | (ah0 << (32-(34-32)))) ^ ((al0 >>> (39-32)) | (ah0 << (32-(39-32))));
+      l = ((al0 >>> 28) | (ah0 << (32-28))) ^ ((ah0 >>> (34-32)) | (al0 << (32-(34-32)))) ^ ((ah0 >>> (39-32)) | (al0 << (32-(39-32))));
+
+      a += l & 0xffff; b += l >>> 16;
+      c += h & 0xffff; d += h >>> 16;
+
+      // Maj
+      h = (ah0 & ah1) ^ (ah0 & ah2) ^ (ah1 & ah2);
+      l = (al0 & al1) ^ (al0 & al2) ^ (al1 & al2);
+
+      a += l & 0xffff; b += l >>> 16;
+      c += h & 0xffff; d += h >>> 16;
+
+      b += a >>> 16;
+      c += b >>> 16;
+      d += c >>> 16;
+
+      bh7 = (c & 0xffff) | (d << 16);
+      bl7 = (a & 0xffff) | (b << 16);
+
+      // add
+      h = bh3;
+      l = bl3;
+
+      a = l & 0xffff; b = l >>> 16;
+      c = h & 0xffff; d = h >>> 16;
+
+      h = th;
+      l = tl;
+
+      a += l & 0xffff; b += l >>> 16;
+      c += h & 0xffff; d += h >>> 16;
+
+      b += a >>> 16;
+      c += b >>> 16;
+      d += c >>> 16;
+
+      bh3 = (c & 0xffff) | (d << 16);
+      bl3 = (a & 0xffff) | (b << 16);
+
+      ah1 = bh0;
+      ah2 = bh1;
+      ah3 = bh2;
+      ah4 = bh3;
+      ah5 = bh4;
+      ah6 = bh5;
+      ah7 = bh6;
+      ah0 = bh7;
+
+      al1 = bl0;
+      al2 = bl1;
+      al3 = bl2;
+      al4 = bl3;
+      al5 = bl4;
+      al6 = bl5;
+      al7 = bl6;
+      al0 = bl7;
+
+      if (i%16 === 15) {
+        for (j = 0; j < 16; j++) {
+          // add
+          h = wh[j];
+          l = wl[j];
+
+          a = l & 0xffff; b = l >>> 16;
+          c = h & 0xffff; d = h >>> 16;
+
+          h = wh[(j+9)%16];
+          l = wl[(j+9)%16];
+
+          a += l & 0xffff; b += l >>> 16;
+          c += h & 0xffff; d += h >>> 16;
+
+          // sigma0
+          th = wh[(j+1)%16];
+          tl = wl[(j+1)%16];
+          h = ((th >>> 1) | (tl << (32-1))) ^ ((th >>> 8) | (tl << (32-8))) ^ (th >>> 7);
+          l = ((tl >>> 1) | (th << (32-1))) ^ ((tl >>> 8) | (th << (32-8))) ^ ((tl >>> 7) | (th << (32-7)));
+
+          a += l & 0xffff; b += l >>> 16;
+          c += h & 0xffff; d += h >>> 16;
+
+          // sigma1
+          th = wh[(j+14)%16];
+          tl = wl[(j+14)%16];
+          h = ((th >>> 19) | (tl << (32-19))) ^ ((tl >>> (61-32)) | (th << (32-(61-32)))) ^ (th >>> 6);
+          l = ((tl >>> 19) | (th << (32-19))) ^ ((th >>> (61-32)) | (tl << (32-(61-32)))) ^ ((tl >>> 6) | (th << (32-6)));
+
+          a += l & 0xffff; b += l >>> 16;
+          c += h & 0xffff; d += h >>> 16;
+
+          b += a >>> 16;
+          c += b >>> 16;
+          d += c >>> 16;
+
+          wh[j] = (c & 0xffff) | (d << 16);
+          wl[j] = (a & 0xffff) | (b << 16);
+        }
+      }
+    }
+
+    // add
+    h = ah0;
+    l = al0;
+
+    a = l & 0xffff; b = l >>> 16;
+    c = h & 0xffff; d = h >>> 16;
+
+    h = hh[0];
+    l = hl[0];
+
+    a += l & 0xffff; b += l >>> 16;
+    c += h & 0xffff; d += h >>> 16;
+
+    b += a >>> 16;
+    c += b >>> 16;
+    d += c >>> 16;
+
+    hh[0] = ah0 = (c & 0xffff) | (d << 16);
+    hl[0] = al0 = (a & 0xffff) | (b << 16);
+
+    h = ah1;
+    l = al1;
+
+    a = l & 0xffff; b = l >>> 16;
+    c = h & 0xffff; d = h >>> 16;
+
+    h = hh[1];
+    l = hl[1];
+
+    a += l & 0xffff; b += l >>> 16;
+    c += h & 0xffff; d += h >>> 16;
+
+    b += a >>> 16;
+    c += b >>> 16;
+    d += c >>> 16;
+
+    hh[1] = ah1 = (c & 0xffff) | (d << 16);
+    hl[1] = al1 = (a & 0xffff) | (b << 16);
+
+    h = ah2;
+    l = al2;
+
+    a = l & 0xffff; b = l >>> 16;
+    c = h & 0xffff; d = h >>> 16;
+
+    h = hh[2];
+    l = hl[2];
+
+    a += l & 0xffff; b += l >>> 16;
+    c += h & 0xffff; d += h >>> 16;
+
+    b += a >>> 16;
+    c += b >>> 16;
+    d += c >>> 16;
+
+    hh[2] = ah2 = (c & 0xffff) | (d << 16);
+    hl[2] = al2 = (a & 0xffff) | (b << 16);
+
+    h = ah3;
+    l = al3;
+
+    a = l & 0xffff; b = l >>> 16;
+    c = h & 0xffff; d = h >>> 16;
+
+    h = hh[3];
+    l = hl[3];
+
+    a += l & 0xffff; b += l >>> 16;
+    c += h & 0xffff; d += h >>> 16;
+
+    b += a >>> 16;
+    c += b >>> 16;
+    d += c >>> 16;
+
+    hh[3] = ah3 = (c & 0xffff) | (d << 16);
+    hl[3] = al3 = (a & 0xffff) | (b << 16);
+
+    h = ah4;
+    l = al4;
+
+    a = l & 0xffff; b = l >>> 16;
+    c = h & 0xffff; d = h >>> 16;
+
+    h = hh[4];
+    l = hl[4];
+
+    a += l & 0xffff; b += l >>> 16;
+    c += h & 0xffff; d += h >>> 16;
+
+    b += a >>> 16;
+    c += b >>> 16;
+    d += c >>> 16;
+
+    hh[4] = ah4 = (c & 0xffff) | (d << 16);
+    hl[4] = al4 = (a & 0xffff) | (b << 16);
+
+    h = ah5;
+    l = al5;
+
+    a = l & 0xffff; b = l >>> 16;
+    c = h & 0xffff; d = h >>> 16;
+
+    h = hh[5];
+    l = hl[5];
+
+    a += l & 0xffff; b += l >>> 16;
+    c += h & 0xffff; d += h >>> 16;
+
+    b += a >>> 16;
+    c += b >>> 16;
+    d += c >>> 16;
+
+    hh[5] = ah5 = (c & 0xffff) | (d << 16);
+    hl[5] = al5 = (a & 0xffff) | (b << 16);
+
+    h = ah6;
+    l = al6;
+
+    a = l & 0xffff; b = l >>> 16;
+    c = h & 0xffff; d = h >>> 16;
+
+    h = hh[6];
+    l = hl[6];
+
+    a += l & 0xffff; b += l >>> 16;
+    c += h & 0xffff; d += h >>> 16;
+
+    b += a >>> 16;
+    c += b >>> 16;
+    d += c >>> 16;
+
+    hh[6] = ah6 = (c & 0xffff) | (d << 16);
+    hl[6] = al6 = (a & 0xffff) | (b << 16);
+
+    h = ah7;
+    l = al7;
+
+    a = l & 0xffff; b = l >>> 16;
+    c = h & 0xffff; d = h >>> 16;
+
+    h = hh[7];
+    l = hl[7];
+
+    a += l & 0xffff; b += l >>> 16;
+    c += h & 0xffff; d += h >>> 16;
+
+    b += a >>> 16;
+    c += b >>> 16;
+    d += c >>> 16;
+
+    hh[7] = ah7 = (c & 0xffff) | (d << 16);
+    hl[7] = al7 = (a & 0xffff) | (b << 16);
+
+    pos += 128;
+    n -= 128;
+  }
+
+  return n;
+}
+
+function crypto_hash(out, m, n) {
+  var hh = new Int32Array(8),
+      hl = new Int32Array(8),
+      x = new Uint8Array(256),
+      i, b = n;
+
+  hh[0] = 0x6a09e667;
+  hh[1] = 0xbb67ae85;
+  hh[2] = 0x3c6ef372;
+  hh[3] = 0xa54ff53a;
+  hh[4] = 0x510e527f;
+  hh[5] = 0x9b05688c;
+  hh[6] = 0x1f83d9ab;
+  hh[7] = 0x5be0cd19;
+
+  hl[0] = 0xf3bcc908;
+  hl[1] = 0x84caa73b;
+  hl[2] = 0xfe94f82b;
+  hl[3] = 0x5f1d36f1;
+  hl[4] = 0xade682d1;
+  hl[5] = 0x2b3e6c1f;
+  hl[6] = 0xfb41bd6b;
+  hl[7] = 0x137e2179;
+
+  crypto_hashblocks_hl(hh, hl, m, n);
+  n %= 128;
+
+  for (i = 0; i < n; i++) x[i] = m[b-n+i];
+  x[n] = 128;
+
+  n = 256-128*(n<112?1:0);
+  x[n-9] = 0;
+  ts64(x, n-8,  (b / 0x20000000) | 0, b << 3);
+  crypto_hashblocks_hl(hh, hl, x, n);
+
+  for (i = 0; i < 8; i++) ts64(out, 8*i, hh[i], hl[i]);
+
+  return 0;
+}
+
+function add(p, q) {
+  var a = gf(), b = gf(), c = gf(),
+      d = gf(), e = gf(), f = gf(),
+      g = gf(), h = gf(), t = gf();
+
+  Z(a, p[1], p[0]);
+  Z(t, q[1], q[0]);
+  M(a, a, t);
+  A(b, p[0], p[1]);
+  A(t, q[0], q[1]);
+  M(b, b, t);
+  M(c, p[3], q[3]);
+  M(c, c, D2);
+  M(d, p[2], q[2]);
+  A(d, d, d);
+  Z(e, b, a);
+  Z(f, d, c);
+  A(g, d, c);
+  A(h, b, a);
+
+  M(p[0], e, f);
+  M(p[1], h, g);
+  M(p[2], g, f);
+  M(p[3], e, h);
+}
+
+function cswap(p, q, b) {
+  var i;
+  for (i = 0; i < 4; i++) {
+    sel25519(p[i], q[i], b);
+  }
+}
+
+function pack(r, p) {
+  var tx = gf(), ty = gf(), zi = gf();
+  inv25519(zi, p[2]);
+  M(tx, p[0], zi);
+  M(ty, p[1], zi);
+  pack25519(r, ty);
+  r[31] ^= par25519(tx) << 7;
+}
+
+function scalarmult(p, q, s) {
+  var b, i;
+  set25519(p[0], gf0);
+  set25519(p[1], gf1);
+  set25519(p[2], gf1);
+  set25519(p[3], gf0);
+  for (i = 255; i >= 0; --i) {
+    b = (s[(i/8)|0] >> (i&7)) & 1;
+    cswap(p, q, b);
+    add(q, p);
+    add(p, p);
+    cswap(p, q, b);
+  }
+}
+
+function scalarbase(p, s) {
+  var q = [gf(), gf(), gf(), gf()];
+  set25519(q[0], X);
+  set25519(q[1], Y);
+  set25519(q[2], gf1);
+  M(q[3], X, Y);
+  scalarmult(p, q, s);
+}
+
+function crypto_sign_keypair(pk, sk, seeded) {
+  var d = new Uint8Array(64);
+  var p = [gf(), gf(), gf(), gf()];
+  var i;
+
+  if (!seeded) randombytes(sk, 32);
+  crypto_hash(d, sk, 32);
+  d[0] &= 248;
+  d[31] &= 127;
+  d[31] |= 64;
+
+  scalarbase(p, d);
+  pack(pk, p);
+
+  for (i = 0; i < 32; i++) sk[i+32] = pk[i];
+  return 0;
+}
+
+var L = new Float64Array([0xed, 0xd3, 0xf5, 0x5c, 0x1a, 0x63, 0x12, 0x58, 0xd6, 0x9c, 0xf7, 0xa2, 0xde, 0xf9, 0xde, 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x10]);
+
+function modL(r, x) {
+  var carry, i, j, k;
+  for (i = 63; i >= 32; --i) {
+    carry = 0;
+    for (j = i - 32, k = i - 12; j < k; ++j) {
+      x[j] += carry - 16 * x[i] * L[j - (i - 32)];
+      carry = (x[j] + 128) >> 8;
+      x[j] -= carry * 256;
+    }
+    x[j] += carry;
+    x[i] = 0;
+  }
+  carry = 0;
+  for (j = 0; j < 32; j++) {
+    x[j] += carry - (x[31] >> 4) * L[j];
+    carry = x[j] >> 8;
+    x[j] &= 255;
+  }
+  for (j = 0; j < 32; j++) x[j] -= carry * L[j];
+  for (i = 0; i < 32; i++) {
+    x[i+1] += x[i] >> 8;
+    r[i] = x[i] & 255;
+  }
+}
+
+function reduce(r) {
+  var x = new Float64Array(64), i;
+  for (i = 0; i < 64; i++) x[i] = r[i];
+  for (i = 0; i < 64; i++) r[i] = 0;
+  modL(r, x);
+}
+
+// Note: difference from C - smlen returned, not passed as argument.
+function crypto_sign(sm, m, n, sk) {
+  var d = new Uint8Array(64), h = new Uint8Array(64), r = new Uint8Array(64);
+  var i, j, x = new Float64Array(64);
+  var p = [gf(), gf(), gf(), gf()];
+
+  crypto_hash(d, sk, 32);
+  d[0] &= 248;
+  d[31] &= 127;
+  d[31] |= 64;
+
+  var smlen = n + 64;
+  for (i = 0; i < n; i++) sm[64 + i] = m[i];
+  for (i = 0; i < 32; i++) sm[32 + i] = d[32 + i];
+
+  crypto_hash(r, sm.subarray(32), n+32);
+  reduce(r);
+  scalarbase(p, r);
+  pack(sm, p);
+
+  for (i = 32; i < 64; i++) sm[i] = sk[i];
+  crypto_hash(h, sm, n + 64);
+  reduce(h);
+
+  for (i = 0; i < 64; i++) x[i] = 0;
+  for (i = 0; i < 32; i++) x[i] = r[i];
+  for (i = 0; i < 32; i++) {
+    for (j = 0; j < 32; j++) {
+      x[i+j] += h[i] * d[j];
+    }
+  }
+
+  modL(sm.subarray(32), x);
+  return smlen;
+}
+
+function unpackneg(r, p) {
+  var t = gf(), chk = gf(), num = gf(),
+      den = gf(), den2 = gf(), den4 = gf(),
+      den6 = gf();
+
+  set25519(r[2], gf1);
+  unpack25519(r[1], p);
+  S(num, r[1]);
+  M(den, num, D);
+  Z(num, num, r[2]);
+  A(den, r[2], den);
+
+  S(den2, den);
+  S(den4, den2);
+  M(den6, den4, den2);
+  M(t, den6, num);
+  M(t, t, den);
+
+  pow2523(t, t);
+  M(t, t, num);
+  M(t, t, den);
+  M(t, t, den);
+  M(r[0], t, den);
+
+  S(chk, r[0]);
+  M(chk, chk, den);
+  if (neq25519(chk, num)) M(r[0], r[0], I);
+
+  S(chk, r[0]);
+  M(chk, chk, den);
+  if (neq25519(chk, num)) return -1;
+
+  if (par25519(r[0]) === (p[31]>>7)) Z(r[0], gf0, r[0]);
+
+  M(r[3], r[0], r[1]);
+  return 0;
+}
+
+function crypto_sign_open(m, sm, n, pk) {
+  var i, mlen;
+  var t = new Uint8Array(32), h = new Uint8Array(64);
+  var p = [gf(), gf(), gf(), gf()],
+      q = [gf(), gf(), gf(), gf()];
+
+  mlen = -1;
+  if (n < 64) return -1;
+
+  if (unpackneg(q, pk)) return -1;
+
+  for (i = 0; i < n; i++) m[i] = sm[i];
+  for (i = 0; i < 32; i++) m[i+32] = pk[i];
+  crypto_hash(h, m, n);
+  reduce(h);
+  scalarmult(p, q, h);
+
+  scalarbase(q, sm.subarray(32));
+  add(p, q);
+  pack(t, p);
+
+  n -= 64;
+  if (crypto_verify_32(sm, 0, t, 0)) {
+    for (i = 0; i < n; i++) m[i] = 0;
+    return -1;
+  }
+
+  for (i = 0; i < n; i++) m[i] = sm[i + 64];
+  mlen = n;
+  return mlen;
+}
+
+var crypto_secretbox_KEYBYTES = 32,
+    crypto_secretbox_NONCEBYTES = 24,
+    crypto_secretbox_ZEROBYTES = 32,
+    crypto_secretbox_BOXZEROBYTES = 16,
+    crypto_scalarmult_BYTES = 32,
+    crypto_scalarmult_SCALARBYTES = 32,
+    crypto_box_PUBLICKEYBYTES = 32,
+    crypto_box_SECRETKEYBYTES = 32,
+    crypto_box_BEFORENMBYTES = 32,
+    crypto_box_NONCEBYTES = crypto_secretbox_NONCEBYTES,
+    crypto_box_ZEROBYTES = crypto_secretbox_ZEROBYTES,
+    crypto_box_BOXZEROBYTES = crypto_secretbox_BOXZEROBYTES,
+    crypto_sign_BYTES = 64,
+    crypto_sign_PUBLICKEYBYTES = 32,
+    crypto_sign_SECRETKEYBYTES = 64,
+    crypto_sign_SEEDBYTES = 32,
+    crypto_hash_BYTES = 64;
+
+nacl.lowlevel = {
+  crypto_core_hsalsa20: crypto_core_hsalsa20,
+  crypto_stream_xor: crypto_stream_xor,
+  crypto_stream: crypto_stream,
+  crypto_stream_salsa20_xor: crypto_stream_salsa20_xor,
+  crypto_stream_salsa20: crypto_stream_salsa20,
+  crypto_onetimeauth: crypto_onetimeauth,
+  crypto_onetimeauth_verify: crypto_onetimeauth_verify,
+  crypto_verify_16: crypto_verify_16,
+  crypto_verify_32: crypto_verify_32,
+  crypto_secretbox: crypto_secretbox,
+  crypto_secretbox_open: crypto_secretbox_open,
+  crypto_scalarmult: crypto_scalarmult,
+  crypto_scalarmult_base: crypto_scalarmult_base,
+  crypto_box_beforenm: crypto_box_beforenm,
+  crypto_box_afternm: crypto_box_afternm,
+  crypto_box: crypto_box,
+  crypto_box_open: crypto_box_open,
+  crypto_box_keypair: crypto_box_keypair,
+  crypto_hash: crypto_hash,
+  crypto_sign: crypto_sign,
+  crypto_sign_keypair: crypto_sign_keypair,
+  crypto_sign_open: crypto_sign_open,
+
+  crypto_secretbox_KEYBYTES: crypto_secretbox_KEYBYTES,
+  crypto_secretbox_NONCEBYTES: crypto_secretbox_NONCEBYTES,
+  crypto_secretbox_ZEROBYTES: crypto_secretbox_ZEROBYTES,
+  crypto_secretbox_BOXZEROBYTES: crypto_secretbox_BOXZEROBYTES,
+  crypto_scalarmult_BYTES: crypto_scalarmult_BYTES,
+  crypto_scalarmult_SCALARBYTES: crypto_scalarmult_SCALARBYTES,
+  crypto_box_PUBLICKEYBYTES: crypto_box_PUBLICKEYBYTES,
+  crypto_box_SECRETKEYBYTES: crypto_box_SECRETKEYBYTES,
+  crypto_box_BEFORENMBYTES: crypto_box_BEFORENMBYTES,
+  crypto_box_NONCEBYTES: crypto_box_NONCEBYTES,
+  crypto_box_ZEROBYTES: crypto_box_ZEROBYTES,
+  crypto_box_BOXZEROBYTES: crypto_box_BOXZEROBYTES,
+  crypto_sign_BYTES: crypto_sign_BYTES,
+  crypto_sign_PUBLICKEYBYTES: crypto_sign_PUBLICKEYBYTES,
+  crypto_sign_SECRETKEYBYTES: crypto_sign_SECRETKEYBYTES,
+  crypto_sign_SEEDBYTES: crypto_sign_SEEDBYTES,
+  crypto_hash_BYTES: crypto_hash_BYTES
+};
+
+/* High-level API */
+
+function checkLengths(k, n) {
+  if (k.length !== crypto_secretbox_KEYBYTES) throw new Error('bad key size');
+  if (n.length !== crypto_secretbox_NONCEBYTES) throw new Error('bad nonce size');
+}
+
+function checkBoxLengths(pk, sk) {
+  if (pk.length !== crypto_box_PUBLICKEYBYTES) throw new Error('bad public key size');
+  if (sk.length !== crypto_box_SECRETKEYBYTES) throw new Error('bad secret key size');
+}
+
+function checkArrayTypes() {
+  for (var i = 0; i < arguments.length; i++) {
+    if (!(arguments[i] instanceof Uint8Array))
+      throw new TypeError('unexpected type, use Uint8Array');
+  }
+}
+
+function cleanup(arr) {
+  for (var i = 0; i < arr.length; i++) arr[i] = 0;
+}
+
+nacl.randomBytes = function(n) {
+  var b = new Uint8Array(n);
+  randombytes(b, n);
+  return b;
+};
+
+nacl.secretbox = function(msg, nonce, key) {
+  checkArrayTypes(msg, nonce, key);
+  checkLengths(key, nonce);
+  var m = new Uint8Array(crypto_secretbox_ZEROBYTES + msg.length);
+  var c = new Uint8Array(m.length);
+  for (var i = 0; i < msg.length; i++) m[i+crypto_secretbox_ZEROBYTES] = msg[i];
+  crypto_secretbox(c, m, m.length, nonce, key);
+  return c.subarray(crypto_secretbox_BOXZEROBYTES);
+};
+
+nacl.secretbox.open = function(box, nonce, key) {
+  checkArrayTypes(box, nonce, key);
+  checkLengths(key, nonce);
+  var c = new Uint8Array(crypto_secretbox_BOXZEROBYTES + box.length);
+  var m = new Uint8Array(c.length);
+  for (var i = 0; i < box.length; i++) c[i+crypto_secretbox_BOXZEROBYTES] = box[i];
+  if (c.length < 32) return null;
+  if (crypto_secretbox_open(m, c, c.length, nonce, key) !== 0) return null;
+  return m.subarray(crypto_secretbox_ZEROBYTES);
+};
+
+nacl.secretbox.keyLength = crypto_secretbox_KEYBYTES;
+nacl.secretbox.nonceLength = crypto_secretbox_NONCEBYTES;
+nacl.secretbox.overheadLength = crypto_secretbox_BOXZEROBYTES;
+
+nacl.scalarMult = function(n, p) {
+  checkArrayTypes(n, p);
+  if (n.length !== crypto_scalarmult_SCALARBYTES) throw new Error('bad n size');
+  if (p.length !== crypto_scalarmult_BYTES) throw new Error('bad p size');
+  var q = new Uint8Array(crypto_scalarmult_BYTES);
+  crypto_scalarmult(q, n, p);
+  return q;
+};
+
+nacl.scalarMult.base = function(n) {
+  checkArrayTypes(n);
+  if (n.length !== crypto_scalarmult_SCALARBYTES) throw new Error('bad n size');
+  var q = new Uint8Array(crypto_scalarmult_BYTES);
+  crypto_scalarmult_base(q, n);
+  return q;
+};
+
+nacl.scalarMult.scalarLength = crypto_scalarmult_SCALARBYTES;
+nacl.scalarMult.groupElementLength = crypto_scalarmult_BYTES;
+
+nacl.box = function(msg, nonce, publicKey, secretKey) {
+  var k = nacl.box.before(publicKey, secretKey);
+  return nacl.secretbox(msg, nonce, k);
+};
+
+nacl.box.before = function(publicKey, secretKey) {
+  checkArrayTypes(publicKey, secretKey);
+  checkBoxLengths(publicKey, secretKey);
+  var k = new Uint8Array(crypto_box_BEFORENMBYTES);
+  crypto_box_beforenm(k, publicKey, secretKey);
+  return k;
+};
+
+nacl.box.after = nacl.secretbox;
+
+nacl.box.open = function(msg, nonce, publicKey, secretKey) {
+  var k = nacl.box.before(publicKey, secretKey);
+  return nacl.secretbox.open(msg, nonce, k);
+};
+
+nacl.box.open.after = nacl.secretbox.open;
+
+nacl.box.keyPair = function() {
+  var pk = new Uint8Array(crypto_box_PUBLICKEYBYTES);
+  var sk = new Uint8Array(crypto_box_SECRETKEYBYTES);
+  crypto_box_keypair(pk, sk);
+  return {publicKey: pk, secretKey: sk};
+};
+
+nacl.box.keyPair.fromSecretKey = function(secretKey) {
+  checkArrayTypes(secretKey);
+  if (secretKey.length !== crypto_box_SECRETKEYBYTES)
+    throw new Error('bad secret key size');
+  var pk = new Uint8Array(crypto_box_PUBLICKEYBYTES);
+  crypto_scalarmult_base(pk, secretKey);
+  return {publicKey: pk, secretKey: new Uint8Array(secretKey)};
+};
+
+nacl.box.publicKeyLength = crypto_box_PUBLICKEYBYTES;
+nacl.box.secretKeyLength = crypto_box_SECRETKEYBYTES;
+nacl.box.sharedKeyLength = crypto_box_BEFORENMBYTES;
+nacl.box.nonceLength = crypto_box_NONCEBYTES;
+nacl.box.overheadLength = nacl.secretbox.overheadLength;
+
+nacl.sign = function(msg, secretKey) {
+  checkArrayTypes(msg, secretKey);
+  if (secretKey.length !== crypto_sign_SECRETKEYBYTES)
+    throw new Error('bad secret key size');
+  var signedMsg = new Uint8Array(crypto_sign_BYTES+msg.length);
+  crypto_sign(signedMsg, msg, msg.length, secretKey);
+  return signedMsg;
+};
+
+nacl.sign.open = function(signedMsg, publicKey) {
+  checkArrayTypes(signedMsg, publicKey);
+  if (publicKey.length !== crypto_sign_PUBLICKEYBYTES)
+    throw new Error('bad public key size');
+  var tmp = new Uint8Array(signedMsg.length);
+  var mlen = crypto_sign_open(tmp, signedMsg, signedMsg.length, publicKey);
+  if (mlen < 0) return null;
+  var m = new Uint8Array(mlen);
+  for (var i = 0; i < m.length; i++) m[i] = tmp[i];
+  return m;
+};
+
+nacl.sign.detached = function(msg, secretKey) {
+  var signedMsg = nacl.sign(msg, secretKey);
+  var sig = new Uint8Array(crypto_sign_BYTES);
+  for (var i = 0; i < sig.length; i++) sig[i] = signedMsg[i];
+  return sig;
+};
+
+nacl.sign.detached.verify = function(msg, sig, publicKey) {
+  checkArrayTypes(msg, sig, publicKey);
+  if (sig.length !== crypto_sign_BYTES)
+    throw new Error('bad signature size');
+  if (publicKey.length !== crypto_sign_PUBLICKEYBYTES)
+    throw new Error('bad public key size');
+  var sm = new Uint8Array(crypto_sign_BYTES + msg.length);
+  var m = new Uint8Array(crypto_sign_BYTES + msg.length);
+  var i;
+  for (i = 0; i < crypto_sign_BYTES; i++) sm[i] = sig[i];
+  for (i = 0; i < msg.length; i++) sm[i+crypto_sign_BYTES] = msg[i];
+  return (crypto_sign_open(m, sm, sm.length, publicKey) >= 0);
+};
+
+nacl.sign.keyPair = function() {
+  var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
+  var sk = new Uint8Array(crypto_sign_SECRETKEYBYTES);
+  crypto_sign_keypair(pk, sk);
+  return {publicKey: pk, secretKey: sk};
+};
+
+nacl.sign.keyPair.fromSecretKey = function(secretKey) {
+  checkArrayTypes(secretKey);
+  if (secretKey.length !== crypto_sign_SECRETKEYBYTES)
+    throw new Error('bad secret key size');
+  var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
+  for (var i = 0; i < pk.length; i++) pk[i] = secretKey[32+i];
+  return {publicKey: pk, secretKey: new Uint8Array(secretKey)};
+};
+
+nacl.sign.keyPair.fromSeed = function(seed) {
+  checkArrayTypes(seed);
+  if (seed.length !== crypto_sign_SEEDBYTES)
+    throw new Error('bad seed size');
+  var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
+  var sk = new Uint8Array(crypto_sign_SECRETKEYBYTES);
+  for (var i = 0; i < 32; i++) sk[i] = seed[i];
+  crypto_sign_keypair(pk, sk, true);
+  return {publicKey: pk, secretKey: sk};
+};
+
+nacl.sign.publicKeyLength = crypto_sign_PUBLICKEYBYTES;
+nacl.sign.secretKeyLength = crypto_sign_SECRETKEYBYTES;
+nacl.sign.seedLength = crypto_sign_SEEDBYTES;
+nacl.sign.signatureLength = crypto_sign_BYTES;
+
+nacl.hash = function(msg) {
+  checkArrayTypes(msg);
+  var h = new Uint8Array(crypto_hash_BYTES);
+  crypto_hash(h, msg, msg.length);
+  return h;
+};
+
+nacl.hash.hashLength = crypto_hash_BYTES;
+
+nacl.verify = function(x, y) {
+  checkArrayTypes(x, y);
+  // Zero length arguments are considered not equal.
+  if (x.length === 0 || y.length === 0) return false;
+  if (x.length !== y.length) return false;
+  return (vn(x, 0, y, 0, x.length) === 0) ? true : false;
+};
+
+nacl.setPRNG = function(fn) {
+  randombytes = fn;
+};
+
+(function() {
+  // Initialize PRNG if environment provides CSPRNG.
+  // If not, methods calling randombytes will throw.
+  var crypto = typeof self !== 'undefined' ? (self.crypto || self.msCrypto) : null;
+  if (crypto && crypto.getRandomValues) {
+    // Browsers.
+    var QUOTA = 65536;
+    nacl.setPRNG(function(x, n) {
+      var i, v = new Uint8Array(n);
+      for (i = 0; i < n; i += QUOTA) {
+        crypto.getRandomValues(v.subarray(i, i + Math.min(n - i, QUOTA)));
+      }
+      for (i = 0; i < n; i++) x[i] = v[i];
+      cleanup(v);
+    });
+  } else if (true) {
+    // Node.js.
+    crypto = __webpack_require__(3);
+    if (crypto && crypto.randomBytes) {
+      nacl.setPRNG(function(x, n) {
+        var i, v = crypto.randomBytes(n);
+        for (i = 0; i < n; i++) x[i] = v[i];
+        cleanup(v);
+      });
+    }
+  }
+})();
+
+})(  true && module.exports ? module.exports : (self.nacl = self.nacl || {}));
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Written in 2014-2016 by Dmitry Chestnykh and Devi Mandiri.
+// Public domain.
+(function(root, f) {
+  'use strict';
+  if (  true && module.exports) module.exports = f();
+  else if (root.nacl) root.nacl.util = f();
+  else {
+    root.nacl = {};
+    root.nacl.util = f();
+  }
+}(this, function() {
+  'use strict';
+
+  var util = {};
+
+  function validateBase64(s) {
+    if (!(/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(s))) {
+      throw new TypeError('invalid encoding');
+    }
+  }
+
+  util.decodeUTF8 = function(s) {
+    if (typeof s !== 'string') throw new TypeError('expected string');
+    var i, d = unescape(encodeURIComponent(s)), b = new Uint8Array(d.length);
+    for (i = 0; i < d.length; i++) b[i] = d.charCodeAt(i);
+    return b;
+  };
+
+  util.encodeUTF8 = function(arr) {
+    var i, s = [];
+    for (i = 0; i < arr.length; i++) s.push(String.fromCharCode(arr[i]));
+    return decodeURIComponent(escape(s.join('')));
+  };
+
+  if (typeof atob === 'undefined') {
+    // Node.js
+
+    if (typeof Buffer.from !== 'undefined') {
+       // Node v6 and later
+      util.encodeBase64 = function (arr) { // v6 and later
+          return Buffer.from(arr).toString('base64');
+      };
+
+      util.decodeBase64 = function (s) {
+        validateBase64(s);
+        return new Uint8Array(Array.prototype.slice.call(Buffer.from(s, 'base64'), 0));
+      };
+
+    } else {
+      // Node earlier than v6
+      util.encodeBase64 = function (arr) { // v6 and later
+        return (new Buffer(arr)).toString('base64');
+      };
+
+      util.decodeBase64 = function(s) {
+        validateBase64(s);
+        return new Uint8Array(Array.prototype.slice.call(new Buffer(s, 'base64'), 0));
+      };
+    }
+
+  } else {
+    // Browsers
+
+    util.encodeBase64 = function(arr) {
+      var i, s = [], len = arr.length;
+      for (i = 0; i < len; i++) s.push(String.fromCharCode(arr[i]));
+      return btoa(s.join(''));
+    };
+
+    util.decodeBase64 = function(s) {
+      validateBase64(s);
+      var i, d = atob(s), b = new Uint8Array(d.length);
+      for (i = 0; i < d.length; i++) b[i] = d.charCodeAt(i);
+      return b;
+    };
+
+  }
+
+  return util;
+
+}));
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // required so we don't have to do require('pusher').default etc.
+<<<<<<< HEAD
 module.exports = __webpack_require__(3).default;
+=======
+module.exports = __webpack_require__(4).default;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 
 /***/ }),
 /* 3 */
+<<<<<<< HEAD
+=======
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 4 */
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41767,7 +51051,11 @@ var ScriptReceiverFactory = (function () {
         this.lastId++;
         var number = this.lastId;
         var id = this.prefix + number;
+<<<<<<< HEAD
         var name = this.name + '[' + number + ']';
+=======
+        var name = this.name + "[" + number + "]";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         var called = false;
         var callbackWrapper = function () {
             if (!called) {
@@ -41784,6 +51072,7 @@ var ScriptReceiverFactory = (function () {
     return ScriptReceiverFactory;
 }());
 
+<<<<<<< HEAD
 var ScriptReceivers = new ScriptReceiverFactory('_pusher_script_', 'Pusher.ScriptReceivers');
 
 // CONCATENATED MODULE: ./src/core/defaults.ts
@@ -41804,6 +51093,28 @@ var Defaults = {
     pongTimeout: 30000,
     unavailableTimeout: 10000,
     cluster: 'mt1',
+=======
+var ScriptReceivers = new ScriptReceiverFactory("_pusher_script_", "Pusher.ScriptReceivers");
+
+// CONCATENATED MODULE: ./src/core/defaults.ts
+var Defaults = {
+    VERSION: "5.0.3",
+    PROTOCOL: 7,
+    host: 'ws.pusherapp.com',
+    ws_port: 80,
+    wss_port: 443,
+    ws_path: '',
+    sockjs_host: 'sockjs.pusher.com',
+    sockjs_http_port: 80,
+    sockjs_https_port: 443,
+    sockjs_path: '/pusher',
+    stats_host: 'stats.pusher.com',
+    channel_auth_endpoint: '/pusher/auth',
+    channel_auth_transport: 'ajax',
+    activity_timeout: 120000,
+    pong_timeout: 30000,
+    unavailable_timeout: 10000,
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     cdn_http: "http://js.pusher.com",
     cdn_https: "https://js.pusher.com",
     dependency_suffix: ""
@@ -41848,17 +51159,29 @@ var dependency_loader_DependencyLoader = (function () {
     DependencyLoader.prototype.getRoot = function (options) {
         var cdn;
         var protocol = runtime.getDocument().location.protocol;
+<<<<<<< HEAD
         if ((options && options.useTLS) || protocol === 'https:') {
+=======
+        if ((options && options.useTLS) || protocol === "https:") {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             cdn = this.options.cdn_https;
         }
         else {
             cdn = this.options.cdn_http;
         }
+<<<<<<< HEAD
         return cdn.replace(/\/*$/, '') + '/' + this.options.version;
+=======
+        return cdn.replace(/\/*$/, "") + "/" + this.options.version;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     DependencyLoader.prototype.getPath = function (name, options) {
         return this.getRoot(options) + '/' + name + this.options.suffix + '.js';
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     return DependencyLoader;
 }());
 /* harmony default export */ var dependency_loader = (dependency_loader_DependencyLoader);
@@ -41867,7 +51190,11 @@ var dependency_loader_DependencyLoader = (function () {
 
 
 
+<<<<<<< HEAD
 var DependenciesReceivers = new ScriptReceiverFactory('_pusher_dependencies', 'Pusher.DependenciesReceivers');
+=======
+var DependenciesReceivers = new ScriptReceiverFactory("_pusher_dependencies", "Pusher.DependenciesReceivers");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var Dependencies = new dependency_loader({
     cdn_http: defaults.cdn_http,
     cdn_https: defaults.cdn_https,
@@ -41876,6 +51203,7 @@ var Dependencies = new dependency_loader({
     receivers: DependenciesReceivers
 });
 
+<<<<<<< HEAD
 // CONCATENATED MODULE: ./src/core/utils/url_store.ts
 var urlStore = {
     baseUrl: 'https://pusher.com',
@@ -42058,6 +51386,8 @@ var ajax = function (context, socketId, callback) {
 };
 /* harmony default export */ var xhr_auth = (ajax);
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 // CONCATENATED MODULE: ./src/core/base64.ts
 function encode(s) {
     return btoa(utob(s));
@@ -42124,7 +51454,11 @@ var Timer = (function () {
 /* harmony default export */ var abstract_timer = (Timer);
 
 // CONCATENATED MODULE: ./src/core/utils/timers/index.ts
+<<<<<<< HEAD
 var timers_extends = (undefined && undefined.__extends) || (function () {
+=======
+var __extends = (undefined && undefined.__extends) || (function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -42145,7 +51479,11 @@ function timers_clearInterval(timer) {
     window.clearInterval(timer);
 }
 var OneOffTimer = (function (_super) {
+<<<<<<< HEAD
     timers_extends(OneOffTimer, _super);
+=======
+    __extends(OneOffTimer, _super);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function OneOffTimer(delay, callback) {
         return _super.call(this, setTimeout, timers_clearTimeout, delay, function (timer) {
             callback();
@@ -42156,7 +51494,11 @@ var OneOffTimer = (function (_super) {
 }(abstract_timer));
 
 var PeriodicTimer = (function (_super) {
+<<<<<<< HEAD
     timers_extends(PeriodicTimer, _super);
+=======
+    __extends(PeriodicTimer, _super);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     function PeriodicTimer(delay, callback) {
         return _super.call(this, setInterval, timers_clearInterval, delay, function (timer) {
             callback();
@@ -42205,8 +51547,12 @@ function extend(target) {
     for (var i = 0; i < sources.length; i++) {
         var extensions = sources[i];
         for (var property in extensions) {
+<<<<<<< HEAD
             if (extensions[property] &&
                 extensions[property].constructor &&
+=======
+            if (extensions[property] && extensions[property].constructor &&
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 extensions[property].constructor === Object) {
                 target[property] = extend(target[property] || {}, extensions[property]);
             }
@@ -42218,16 +51564,26 @@ function extend(target) {
     return target;
 }
 function stringify() {
+<<<<<<< HEAD
     var m = ['Pusher'];
     for (var i = 0; i < arguments.length; i++) {
         if (typeof arguments[i] === 'string') {
+=======
+    var m = ["Pusher"];
+    for (var i = 0; i < arguments.length; i++) {
+        if (typeof arguments[i] === "string") {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             m.push(arguments[i]);
         }
         else {
             m.push(safeJSONStringify(arguments[i]));
         }
     }
+<<<<<<< HEAD
     return m.join(' : ');
+=======
+    return m.join(" : ");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 function arrayIndexOf(array, item) {
     var nativeIndexOf = Array.prototype.indexOf;
@@ -42285,11 +51641,15 @@ function mapObject(object, f) {
     return result;
 }
 function filter(array, test) {
+<<<<<<< HEAD
     test =
         test ||
             function (value) {
                 return !!value;
             };
+=======
+    test = test || function (value) { return !!value; };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     var result = [];
     for (var i = 0; i < array.length; i++) {
         if (test(array[i], i, array, result)) {
@@ -42332,7 +51692,11 @@ function collections_all(array, test) {
 }
 function encodeParamsObject(data) {
     return mapObject(data, function (value) {
+<<<<<<< HEAD
         if (typeof value === 'object') {
+=======
+        if (typeof value === "object") {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             value = safeJSONStringify(value);
         }
         return encodeURIComponent(encode(value.toString()));
@@ -42342,7 +51706,11 @@ function buildQueryString(data) {
     var params = filterObject(data, function (value) {
         return value !== undefined;
     });
+<<<<<<< HEAD
     var query = map(flatten(encodeParamsObject(params)), util.method('join', '=')).join('&');
+=======
+    var query = map(flatten(encodeParamsObject(params)), util.method("join", "=")).join("&");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     return query;
 }
 function decycleObject(object) {
@@ -42381,7 +51749,11 @@ function decycleObject(object) {
             case 'boolean':
                 return value;
         }
+<<<<<<< HEAD
     })(object, '$');
+=======
+    }(object, '$'));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 function safeJSONStringify(source) {
     try {
@@ -42458,6 +51830,83 @@ var logger_Logger = (function () {
 }());
 /* harmony default export */ var logger = (new logger_Logger());
 
+<<<<<<< HEAD
+=======
+// CONCATENATED MODULE: ./src/core/utils/url_store.ts
+var urlStore = {
+    baseUrl: "https://pusher.com",
+    urls: {
+        authenticationEndpoint: {
+            path: "/docs/authenticating_users",
+        },
+        javascriptQuickStart: {
+            path: "/docs/javascript_quick_start"
+        },
+        triggeringClientEvents: {
+            path: "/docs/client_api_guide/client_events#trigger-events"
+        }
+    }
+};
+var buildLogSuffix = function (key) {
+    var urlPrefix = "See:";
+    var urlObj = urlStore.urls[key];
+    if (!urlObj)
+        return "";
+    var url;
+    if (urlObj.fullUrl) {
+        url = urlObj.fullUrl;
+    }
+    else if (urlObj.path) {
+        url = urlStore.baseUrl + urlObj.path;
+    }
+    if (!url)
+        return "";
+    return urlPrefix + " " + url;
+};
+/* harmony default export */ var url_store = ({ buildLogSuffix: buildLogSuffix });
+
+// CONCATENATED MODULE: ./src/runtimes/isomorphic/auth/xhr_auth.ts
+
+
+
+var ajax = function (context, socketId, callback) {
+    var self = this, xhr;
+    xhr = runtime.createXHR();
+    xhr.open("POST", self.options.authEndpoint, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    for (var headerName in this.authOptions.headers) {
+        xhr.setRequestHeader(headerName, this.authOptions.headers[headerName]);
+    }
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var data, parsed = false;
+                try {
+                    data = JSON.parse(xhr.responseText);
+                    parsed = true;
+                }
+                catch (e) {
+                    callback(true, 'JSON returned from auth endpoint was invalid, yet status code was 200. Data was: ' + xhr.responseText);
+                }
+                if (parsed) {
+                    callback(false, data);
+                }
+            }
+            else {
+                var suffix = url_store.buildLogSuffix("authenticationEndpoint");
+                logger.error('Unable to retrieve auth string from auth endpoint - ' +
+                    ("received status " + xhr.status + " from " + self.options.authEndpoint + ". ") +
+                    ("Clients must be authenticated to join private or presence channels. " + suffix));
+                callback(true, xhr.status);
+            }
+        }
+    };
+    xhr.send(this.composeQuery(socketId));
+    return xhr;
+};
+/* harmony default export */ var xhr_auth = (ajax);
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 // CONCATENATED MODULE: ./src/runtimes/web/auth/jsonp_auth.ts
 
 var jsonp = function (context, socketId, callback) {
@@ -42467,6 +51916,7 @@ var jsonp = function (context, socketId, callback) {
     var callbackName = context.nextAuthCallbackID.toString();
     context.nextAuthCallbackID++;
     var document = context.getDocument();
+<<<<<<< HEAD
     var script = document.createElement('script');
     context.auth_callbacks[callbackName] = function (data) {
         callback(null, data);
@@ -42479,6 +51929,19 @@ var jsonp = function (context, socketId, callback) {
             '&' +
             this.composeQuery(socketId);
     var head = document.getElementsByTagName('head')[0] || document.documentElement;
+=======
+    var script = document.createElement("script");
+    context.auth_callbacks[callbackName] = function (data) {
+        callback(false, data);
+    };
+    var callback_name = "Pusher.auth_callbacks['" + callbackName + "']";
+    script.src = this.options.authEndpoint +
+        '?callback=' +
+        encodeURIComponent(callback_name) +
+        '&' +
+        this.composeQuery(socketId);
+    var head = document.getElementsByTagName("head")[0] || document.documentElement;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     head.insertBefore(script, head.firstChild);
 };
 /* harmony default export */ var jsonp_auth = (jsonp);
@@ -42490,12 +51953,21 @@ var ScriptRequest = (function () {
     }
     ScriptRequest.prototype.send = function (receiver) {
         var self = this;
+<<<<<<< HEAD
         var errorString = 'Error loading ' + self.src;
         self.script = document.createElement('script');
         self.script.id = receiver.id;
         self.script.src = self.src;
         self.script.type = 'text/javascript';
         self.script.charset = 'UTF-8';
+=======
+        var errorString = "Error loading " + self.src;
+        self.script = document.createElement("script");
+        self.script.id = receiver.id;
+        self.script.src = self.src;
+        self.script.type = "text/javascript";
+        self.script.charset = "UTF-8";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         if (self.script.addEventListener) {
             self.script.onerror = function () {
                 receiver.callback(errorString);
@@ -42512,11 +51984,18 @@ var ScriptRequest = (function () {
                 }
             };
         }
+<<<<<<< HEAD
         if (self.script.async === undefined &&
             document.attachEvent &&
             /opera/i.test(navigator.userAgent)) {
             self.errorScript = document.createElement('script');
             self.errorScript.id = receiver.id + '_error';
+=======
+        if (self.script.async === undefined && document.attachEvent &&
+            /opera/i.test(navigator.userAgent)) {
+            self.errorScript = document.createElement("script");
+            self.errorScript.id = receiver.id + "_error";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             self.errorScript.text = receiver.name + "('" + errorString + "');";
             self.script.async = self.errorScript.async = false;
         }
@@ -42560,7 +52039,11 @@ var jsonp_request_JSONPRequest = (function () {
             return;
         }
         var query = buildQueryString(this.data);
+<<<<<<< HEAD
         var url = this.url + '/' + receiver.number + '?' + query;
+=======
+        var url = this.url + "/" + receiver.number + "?" + query;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this.request = runtime.createScriptRequest(url);
         this.request.send(receiver);
     };
@@ -42578,7 +52061,11 @@ var jsonp_request_JSONPRequest = (function () {
 
 var getAgent = function (sender, useTLS) {
     return function (data, callback) {
+<<<<<<< HEAD
         var scheme = 'http' + (useTLS ? 's' : '') + '://';
+=======
+        var scheme = "http" + (useTLS ? "s" : "") + "://";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         var url = scheme + (sender.host || sender.options.host) + sender.options.path;
         var request = runtime.createJSONPRequest(url, data);
         var receiver = runtime.ScriptReceivers.create(function (error, result) {
@@ -42603,6 +52090,7 @@ var jsonp_timeline_jsonp = {
 // CONCATENATED MODULE: ./src/core/transports/url_schemes.ts
 
 function getGenericURL(baseScheme, params, path) {
+<<<<<<< HEAD
     var scheme = baseScheme + (params.useTLS ? 's' : '');
     var host = params.useTLS ? params.hostTLS : params.hostNonTLS;
     return scheme + '://' + host + path;
@@ -42615,23 +52103,49 @@ function getGenericPath(key, queryString) {
         '&version=' +
         defaults.VERSION +
         (queryString ? '&' + queryString : '');
+=======
+    var scheme = baseScheme + (params.useTLS ? "s" : "");
+    var host = params.useTLS ? params.hostTLS : params.hostNonTLS;
+    return scheme + "://" + host + path;
+}
+function getGenericPath(key, queryString) {
+    var path = "/app/" + key;
+    var query = "?protocol=" + defaults.PROTOCOL +
+        "&client=js" +
+        "&version=" + defaults.VERSION +
+        (queryString ? ("&" + queryString) : "");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     return path + query;
 }
 var ws = {
     getInitial: function (key, params) {
+<<<<<<< HEAD
         var path = (params.httpPath || '') + getGenericPath(key, 'flash=false');
         return getGenericURL('ws', params, path);
+=======
+        var path = (params.httpPath || "") + getGenericPath(key, "flash=false");
+        return getGenericURL("ws", params, path);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
 };
 var http = {
     getInitial: function (key, params) {
+<<<<<<< HEAD
         var path = (params.httpPath || '/pusher') + getGenericPath(key);
         return getGenericURL('http', params, path);
+=======
+        var path = (params.httpPath || "/pusher") + getGenericPath(key);
+        return getGenericURL("http", params, path);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
 };
 var sockjs = {
     getInitial: function (key, params) {
+<<<<<<< HEAD
         return getGenericURL('http', params, params.httpPath || '/pusher');
+=======
+        return getGenericURL("http", params, params.httpPath || "/pusher");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     },
     getPath: function (key, params) {
         return getGenericPath(key);
@@ -42649,8 +52163,12 @@ var callback_registry_CallbackRegistry = (function () {
     };
     CallbackRegistry.prototype.add = function (name, callback, context) {
         var prefixedEventName = prefix(name);
+<<<<<<< HEAD
         this._callbacks[prefixedEventName] =
             this._callbacks[prefixedEventName] || [];
+=======
+        this._callbacks[prefixedEventName] = this._callbacks[prefixedEventName] || [];
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this._callbacks[prefixedEventName].push({
             fn: callback,
             context: context
@@ -42672,8 +52190,13 @@ var callback_registry_CallbackRegistry = (function () {
     CallbackRegistry.prototype.removeCallback = function (names, callback, context) {
         apply(names, function (name) {
             this._callbacks[name] = filter(this._callbacks[name] || [], function (binding) {
+<<<<<<< HEAD
                 return ((callback && callback !== binding.fn) ||
                     (context && context !== binding.context));
+=======
+                return (callback && callback !== binding.fn) ||
+                    (context && context !== binding.context);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             });
             if (this._callbacks[name].length === 0) {
                 delete this._callbacks[name];
@@ -42689,7 +52212,11 @@ var callback_registry_CallbackRegistry = (function () {
 }());
 /* harmony default export */ var callback_registry = (callback_registry_CallbackRegistry);
 function prefix(name) {
+<<<<<<< HEAD
     return '_' + name;
+=======
+    return "_" + name;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 
 // CONCATENATED MODULE: ./src/core/events/dispatcher.ts
@@ -42781,7 +52308,11 @@ var transport_connection_TransportConnection = (function (_super) {
         _this.priority = priority;
         _this.key = key;
         _this.options = options;
+<<<<<<< HEAD
         _this.state = 'new';
+=======
+        _this.state = "new";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         _this.timeline = options.timeline;
         _this.activityTimeout = options.activityTimeout;
         _this.id = _this.timeline.generateUniqueID();
@@ -42795,7 +52326,11 @@ var transport_connection_TransportConnection = (function (_super) {
     };
     TransportConnection.prototype.connect = function () {
         var _this = this;
+<<<<<<< HEAD
         if (this.socket || this.state !== 'initialized') {
+=======
+        if (this.socket || this.state !== "initialized") {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             return false;
         }
         var url = this.hooks.urls.getInitial(this.key, this.options);
@@ -42805,13 +52340,22 @@ var transport_connection_TransportConnection = (function (_super) {
         catch (e) {
             util.defer(function () {
                 _this.onError(e);
+<<<<<<< HEAD
                 _this.changeState('closed');
+=======
+                _this.changeState("closed");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             });
             return false;
         }
         this.bindListeners();
+<<<<<<< HEAD
         logger.debug('Connecting', { transport: this.name, url: url });
         this.changeState('connecting');
+=======
+        logger.debug("Connecting", { transport: this.name, url: url });
+        this.changeState("connecting");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return true;
     };
     TransportConnection.prototype.close = function () {
@@ -42825,7 +52369,11 @@ var transport_connection_TransportConnection = (function (_super) {
     };
     TransportConnection.prototype.send = function (data) {
         var _this = this;
+<<<<<<< HEAD
         if (this.state === 'open') {
+=======
+        if (this.state === "open") {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             util.defer(function () {
                 if (_this.socket) {
                     _this.socket.send(data);
@@ -42838,7 +52386,11 @@ var transport_connection_TransportConnection = (function (_super) {
         }
     };
     TransportConnection.prototype.ping = function () {
+<<<<<<< HEAD
         if (this.state === 'open' && this.supportsPing()) {
+=======
+        if (this.state === "open" && this.supportsPing()) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             this.socket.ping();
         }
     };
@@ -42846,32 +52398,55 @@ var transport_connection_TransportConnection = (function (_super) {
         if (this.hooks.beforeOpen) {
             this.hooks.beforeOpen(this.socket, this.hooks.urls.getPath(this.key, this.options));
         }
+<<<<<<< HEAD
         this.changeState('open');
         this.socket.onopen = undefined;
     };
     TransportConnection.prototype.onError = function (error) {
         this.emit('error', { type: 'WebSocketError', error: error });
+=======
+        this.changeState("open");
+        this.socket.onopen = undefined;
+    };
+    TransportConnection.prototype.onError = function (error) {
+        this.emit("error", { type: 'WebSocketError', error: error });
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this.timeline.error(this.buildTimelineMessage({ error: error.toString() }));
     };
     TransportConnection.prototype.onClose = function (closeEvent) {
         if (closeEvent) {
+<<<<<<< HEAD
             this.changeState('closed', {
+=======
+            this.changeState("closed", {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 code: closeEvent.code,
                 reason: closeEvent.reason,
                 wasClean: closeEvent.wasClean
             });
         }
         else {
+<<<<<<< HEAD
             this.changeState('closed');
+=======
+            this.changeState("closed");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
         this.unbindListeners();
         this.socket = undefined;
     };
     TransportConnection.prototype.onMessage = function (message) {
+<<<<<<< HEAD
         this.emit('message', message);
     };
     TransportConnection.prototype.onActivity = function () {
         this.emit('activity');
+=======
+        this.emit("message", message);
+    };
+    TransportConnection.prototype.onActivity = function () {
+        this.emit("activity");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     TransportConnection.prototype.bindListeners = function () {
         var _this = this;
@@ -42888,9 +52463,13 @@ var transport_connection_TransportConnection = (function (_super) {
             _this.onMessage(message);
         };
         if (this.supportsPing()) {
+<<<<<<< HEAD
             this.socket.onactivity = function () {
                 _this.onActivity();
             };
+=======
+            this.socket.onactivity = function () { _this.onActivity(); };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     };
     TransportConnection.prototype.unbindListeners = function () {
@@ -42962,6 +52541,7 @@ var httpConfiguration = {
         return true;
     }
 };
+<<<<<<< HEAD
 var streamingConfiguration = extend({
     getSocket: function (url) {
         return runtime.HTTPFactory.createStreamingSocket(url);
@@ -42969,6 +52549,13 @@ var streamingConfiguration = extend({
 }, httpConfiguration);
 var pollingConfiguration = extend({
     getSocket: function (url) {
+=======
+var streamingConfiguration = extend({ getSocket: function (url) {
+        return runtime.HTTPFactory.createStreamingSocket(url);
+    }
+}, httpConfiguration);
+var pollingConfiguration = extend({ getSocket: function (url) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return runtime.HTTPFactory.createPollingSocket(url);
     }
 }, httpConfiguration);
@@ -42977,7 +52564,11 @@ var xhrConfiguration = {
         return runtime.isXHRSupported();
     }
 };
+<<<<<<< HEAD
 var XHRStreamingTransport = new transports_transport((extend({}, streamingConfiguration, xhrConfiguration)));
+=======
+var XHRStreamingTransport = new transports_transport(extend({}, streamingConfiguration, xhrConfiguration));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var XHRPollingTransport = new transports_transport(extend({}, pollingConfiguration, xhrConfiguration));
 var Transports = {
     ws: WSTransport,
@@ -42994,7 +52585,11 @@ var Transports = {
 
 
 var SockJSTransport = new transports_transport({
+<<<<<<< HEAD
     file: 'sockjs',
+=======
+    file: "sockjs",
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     urls: sockjs,
     handlesActivityChecks: true,
     supportsPing: false,
@@ -43006,7 +52601,11 @@ var SockJSTransport = new transports_transport({
     },
     getSocket: function (url, options) {
         return new window.SockJS(url, null, {
+<<<<<<< HEAD
             js_path: Dependencies.getPath('sockjs', {
+=======
+            js_path: Dependencies.getPath("sockjs", {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 useTLS: options.useTLS
             }),
             ignore_null_origin: options.ignoreNullOrigin
@@ -43024,7 +52623,11 @@ var xdrConfiguration = {
         return yes;
     }
 };
+<<<<<<< HEAD
 var XDRStreamingTransport = new transports_transport((extend({}, streamingConfiguration, xdrConfiguration)));
+=======
+var XDRStreamingTransport = new transports_transport(extend({}, streamingConfiguration, xdrConfiguration));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var XDRPollingTransport = new transports_transport(extend({}, pollingConfiguration, xdrConfiguration));
 transports.xdr_streaming = XDRStreamingTransport;
 transports.xdr_polling = XDRPollingTransport;
@@ -43052,10 +52655,17 @@ var NetInfo = (function (_super) {
         var _this = _super.call(this) || this;
         var self = _this;
         if (window.addEventListener !== undefined) {
+<<<<<<< HEAD
             window.addEventListener('online', function () {
                 self.emit('online');
             }, false);
             window.addEventListener('offline', function () {
+=======
+            window.addEventListener("online", function () {
+                self.emit('online');
+            }, false);
+            window.addEventListener("offline", function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 self.emit('offline');
             }, false);
         }
@@ -43093,12 +52703,21 @@ var assistant_to_the_transport_manager_AssistantToTheTransportManager = (functio
         var connection = this.transport.createConnection(name, priority, key, options);
         var openTimestamp = null;
         var onOpen = function () {
+<<<<<<< HEAD
             connection.unbind('open', onOpen);
             connection.bind('closed', onClosed);
             openTimestamp = util.now();
         };
         var onClosed = function (closeEvent) {
             connection.unbind('closed', onClosed);
+=======
+            connection.unbind("open", onOpen);
+            connection.bind("closed", onClosed);
+            openTimestamp = util.now();
+        };
+        var onClosed = function (closeEvent) {
+            connection.unbind("closed", onClosed);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             if (closeEvent.code === 1002 || closeEvent.code === 1003) {
                 _this.manager.reportDeath();
             }
@@ -43110,7 +52729,11 @@ var assistant_to_the_transport_manager_AssistantToTheTransportManager = (functio
                 }
             }
         };
+<<<<<<< HEAD
         connection.bind('open', onOpen);
+=======
+        connection.bind("open", onOpen);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return connection;
     };
     AssistantToTheTransportManager.prototype.isSupported = function (environment) {
@@ -43135,7 +52758,11 @@ var Protocol = {
             var pusherEvent = {
                 event: messageData.event,
                 channel: messageData.channel,
+<<<<<<< HEAD
                 data: pusherEventData
+=======
+                data: pusherEventData,
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             };
             if (messageData.user_id) {
                 pusherEvent.user_id = messageData.user_id;
@@ -43151,36 +52778,58 @@ var Protocol = {
     },
     processHandshake: function (messageEvent) {
         var message = Protocol.decodeMessage(messageEvent);
+<<<<<<< HEAD
         if (message.event === 'pusher:connection_established') {
             if (!message.data.activity_timeout) {
                 throw 'No activity timeout specified in handshake';
             }
             return {
                 action: 'connected',
+=======
+        if (message.event === "pusher:connection_established") {
+            if (!message.data.activity_timeout) {
+                throw "No activity timeout specified in handshake";
+            }
+            return {
+                action: "connected",
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 id: message.data.socket_id,
                 activityTimeout: message.data.activity_timeout * 1000
             };
         }
+<<<<<<< HEAD
         else if (message.event === 'pusher:error') {
+=======
+        else if (message.event === "pusher:error") {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             return {
                 action: this.getCloseAction(message.data),
                 error: this.getCloseError(message.data)
             };
         }
         else {
+<<<<<<< HEAD
             throw 'Invalid handshake';
+=======
+            throw "Invalid handshake";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     },
     getCloseAction: function (closeEvent) {
         if (closeEvent.code < 4000) {
             if (closeEvent.code >= 1002 && closeEvent.code <= 1004) {
+<<<<<<< HEAD
                 return 'backoff';
+=======
+                return "backoff";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             }
             else {
                 return null;
             }
         }
         else if (closeEvent.code === 4000) {
+<<<<<<< HEAD
             return 'tls_only';
         }
         else if (closeEvent.code < 4100) {
@@ -43194,6 +52843,21 @@ var Protocol = {
         }
         else {
             return 'refused';
+=======
+            return "tls_only";
+        }
+        else if (closeEvent.code < 4100) {
+            return "refused";
+        }
+        else if (closeEvent.code < 4200) {
+            return "backoff";
+        }
+        else if (closeEvent.code < 4300) {
+            return "retry";
+        }
+        else {
+            return "refused";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     },
     getCloseError: function (closeEvent) {
@@ -43285,6 +52949,7 @@ var connection_Connection = (function (_super) {
                     logger.debug('Event recd', pusherEvent);
                     switch (pusherEvent.event) {
                         case 'pusher:error':
+<<<<<<< HEAD
                             _this.emit('error', {
                                 type: 'PusherError',
                                 data: pusherEvent.data
@@ -43295,16 +52960,32 @@ var connection_Connection = (function (_super) {
                             break;
                         case 'pusher:pong':
                             _this.emit('pong');
+=======
+                            _this.emit('error', { type: 'PusherError', data: pusherEvent.data });
+                            break;
+                        case 'pusher:ping':
+                            _this.emit("ping");
+                            break;
+                        case 'pusher:pong':
+                            _this.emit("pong");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                             break;
                     }
                     _this.emit('message', pusherEvent);
                 }
             },
             activity: function () {
+<<<<<<< HEAD
                 _this.emit('activity');
             },
             error: function (error) {
                 _this.emit('error', error);
+=======
+                _this.emit("activity");
+            },
+            error: function (error) {
+                _this.emit("error", { type: "WebSocketError", error: error });
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             },
             closed: function (closeEvent) {
                 unbindListeners();
@@ -43312,7 +52993,11 @@ var connection_Connection = (function (_super) {
                     _this.handleCloseEvent(closeEvent);
                 }
                 _this.transport = null;
+<<<<<<< HEAD
                 _this.emit('closed');
+=======
+                _this.emit("closed");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             }
         };
         var unbindListeners = function () {
@@ -43361,12 +53046,21 @@ var handshake_Handshake = (function () {
                 result = protocol_protocol.processHandshake(m);
             }
             catch (e) {
+<<<<<<< HEAD
                 _this.finish('error', { error: e });
                 _this.transport.close();
                 return;
             }
             if (result.action === 'connected') {
                 _this.finish('connected', {
+=======
+                _this.finish("error", { error: e });
+                _this.transport.close();
+                return;
+            }
+            if (result.action === "connected") {
+                _this.finish("connected", {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                     connection: new connection_connection(result.id, _this.transport),
                     activityTimeout: result.activityTimeout
                 });
@@ -43378,6 +53072,7 @@ var handshake_Handshake = (function () {
         };
         this.onClosed = function (closeEvent) {
             _this.unbindListeners();
+<<<<<<< HEAD
             var action = protocol_protocol.getCloseAction(closeEvent) || 'backoff';
             var error = protocol_protocol.getCloseError(closeEvent);
             _this.finish(action, { error: error });
@@ -43388,6 +53083,18 @@ var handshake_Handshake = (function () {
     Handshake.prototype.unbindListeners = function () {
         this.transport.unbind('message', this.onMessage);
         this.transport.unbind('closed', this.onClosed);
+=======
+            var action = protocol_protocol.getCloseAction(closeEvent) || "backoff";
+            var error = protocol_protocol.getCloseError(closeEvent);
+            _this.finish(action, { error: error });
+        };
+        this.transport.bind("message", this.onMessage);
+        this.transport.bind("closed", this.onClosed);
+    };
+    Handshake.prototype.unbindListeners = function () {
+        this.transport.unbind("message", this.onMessage);
+        this.transport.unbind("closed", this.onClosed);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     Handshake.prototype.finish = function (action, params) {
         this.callback(extend({ transport: this.transport, action: action }, params));
@@ -43402,11 +53109,16 @@ var pusher_authorizer_PusherAuthorizer = (function () {
     function PusherAuthorizer(channel, options) {
         this.channel = channel;
         var authTransport = options.authTransport;
+<<<<<<< HEAD
         if (typeof runtime.getAuthorizers()[authTransport] === 'undefined') {
+=======
+        if (typeof runtime.getAuthorizers()[authTransport] === "undefined") {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             throw "'" + authTransport + "' is not a recognized auth transport";
         }
         this.type = authTransport;
         this.options = options;
+<<<<<<< HEAD
         this.authOptions = options.auth || {};
     }
     PusherAuthorizer.prototype.composeQuery = function (socketId) {
@@ -43420,13 +53132,27 @@ var pusher_authorizer_PusherAuthorizer = (function () {
                     encodeURIComponent(i) +
                     '=' +
                     encodeURIComponent(this.authOptions.params[i]);
+=======
+        this.authOptions = (options || {}).auth || {};
+    }
+    PusherAuthorizer.prototype.composeQuery = function (socketId) {
+        var query = 'socket_id=' + encodeURIComponent(socketId) +
+            '&channel_name=' + encodeURIComponent(this.channel.name);
+        for (var i in this.authOptions.params) {
+            query += "&" + encodeURIComponent(i) + "=" + encodeURIComponent(this.authOptions.params[i]);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
         return query;
     };
     PusherAuthorizer.prototype.authorize = function (socketId, callback) {
+<<<<<<< HEAD
         PusherAuthorizer.authorizers =
             PusherAuthorizer.authorizers || runtime.getAuthorizers();
         PusherAuthorizer.authorizers[this.type].call(this, runtime, socketId, callback);
+=======
+        PusherAuthorizer.authorizers = PusherAuthorizer.authorizers || runtime.getAuthorizers();
+        return PusherAuthorizer.authorizers[this.type].call(this, runtime, socketId, callback);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     return PusherAuthorizer;
 }());
@@ -43449,6 +53175,101 @@ var timeline_sender_TimelineSender = (function () {
 }());
 /* harmony default export */ var timeline_sender = (timeline_sender_TimelineSender);
 
+<<<<<<< HEAD
+=======
+// CONCATENATED MODULE: ./src/core/errors.ts
+var errors_extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var BadEventName = (function (_super) {
+    errors_extends(BadEventName, _super);
+    function BadEventName(msg) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, msg) || this;
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        return _this;
+    }
+    return BadEventName;
+}(Error));
+
+var RequestTimedOut = (function (_super) {
+    errors_extends(RequestTimedOut, _super);
+    function RequestTimedOut(msg) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, msg) || this;
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        return _this;
+    }
+    return RequestTimedOut;
+}(Error));
+
+var TransportPriorityTooLow = (function (_super) {
+    errors_extends(TransportPriorityTooLow, _super);
+    function TransportPriorityTooLow(msg) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, msg) || this;
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        return _this;
+    }
+    return TransportPriorityTooLow;
+}(Error));
+
+var TransportClosed = (function (_super) {
+    errors_extends(TransportClosed, _super);
+    function TransportClosed(msg) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, msg) || this;
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        return _this;
+    }
+    return TransportClosed;
+}(Error));
+
+var UnsupportedFeature = (function (_super) {
+    errors_extends(UnsupportedFeature, _super);
+    function UnsupportedFeature(msg) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, msg) || this;
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        return _this;
+    }
+    return UnsupportedFeature;
+}(Error));
+
+var UnsupportedTransport = (function (_super) {
+    errors_extends(UnsupportedTransport, _super);
+    function UnsupportedTransport(msg) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, msg) || this;
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        return _this;
+    }
+    return UnsupportedTransport;
+}(Error));
+
+var UnsupportedStrategy = (function (_super) {
+    errors_extends(UnsupportedStrategy, _super);
+    function UnsupportedStrategy(msg) {
+        var _newTarget = this.constructor;
+        var _this = _super.call(this, msg) || this;
+        Object.setPrototypeOf(_this, _newTarget.prototype);
+        return _this;
+    }
+    return UnsupportedStrategy;
+}(Error));
+
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 // CONCATENATED MODULE: ./src/core/channels/channel.ts
 var channel_extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -43467,7 +53288,10 @@ var channel_extends = (undefined && undefined.__extends) || (function () {
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var channel_Channel = (function (_super) {
     channel_extends(Channel, _super);
     function Channel(name, pusher) {
@@ -43482,6 +53306,7 @@ var channel_Channel = (function (_super) {
         return _this;
     }
     Channel.prototype.authorize = function (socketId, callback) {
+<<<<<<< HEAD
         return callback(null, { auth: '' });
     };
     Channel.prototype.trigger = function (event, data) {
@@ -43490,6 +53315,16 @@ var channel_Channel = (function (_super) {
         }
         if (!this.subscribed) {
             var suffix = url_store.buildLogSuffix('triggeringClientEvents');
+=======
+        return callback(false, {});
+    };
+    Channel.prototype.trigger = function (event, data) {
+        if (event.indexOf("client-") !== 0) {
+            throw new BadEventName("Event '" + event + "' does not start with 'client-'");
+        }
+        if (!this.subscribed) {
+            var suffix = url_store.buildLogSuffix("triggeringClientEvents");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             logger.warn("Client event triggered before channel 'subscription_succeeded' event . " + suffix);
         }
         return this.pusher.send_event(event, data, this.name);
@@ -43501,10 +53336,17 @@ var channel_Channel = (function (_super) {
     Channel.prototype.handleEvent = function (event) {
         var eventName = event.event;
         var data = event.data;
+<<<<<<< HEAD
         if (eventName === 'pusher_internal:subscription_succeeded') {
             this.handleSubscriptionSucceededEvent(event);
         }
         else if (eventName.indexOf('pusher_internal:') !== 0) {
+=======
+        if (eventName === "pusher_internal:subscription_succeeded") {
+            this.handleSubscriptionSucceededEvent(event);
+        }
+        else if (eventName.indexOf("pusher_internal:") !== 0) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             var metadata = {};
             this.emit(eventName, data, metadata);
         }
@@ -43516,7 +53358,11 @@ var channel_Channel = (function (_super) {
             this.pusher.unsubscribe(this.name);
         }
         else {
+<<<<<<< HEAD
             this.emit('pusher:subscription_succeeded', event.data);
+=======
+            this.emit("pusher:subscription_succeeded", event.data);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     };
     Channel.prototype.subscribe = function () {
@@ -43528,11 +53374,16 @@ var channel_Channel = (function (_super) {
         this.subscriptionCancelled = false;
         this.authorize(this.pusher.connection.socket_id, function (error, data) {
             if (error) {
+<<<<<<< HEAD
                 logger.error(error.toString());
                 _this.emit('pusher:subscription_error', Object.assign({}, {
                     type: 'AuthError',
                     error: error.message
                 }, error instanceof HTTPAuthError ? { status: error.status } : {}));
+=======
+                logger.error(data);
+                _this.emit('pusher:subscription_error', data);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             }
             else {
                 _this.pusher.send_event('pusher:subscribe', {
@@ -43673,12 +53524,20 @@ var presence_channel_PresenceChannel = (function (_super) {
         var _this = this;
         _super.prototype.authorize.call(this, socketId, function (error, authData) {
             if (!error) {
+<<<<<<< HEAD
                 authData = authData;
                 if (authData.channel_data === undefined) {
                     var suffix = url_store.buildLogSuffix('authenticationEndpoint');
                     logger.error("Invalid auth response for channel '" + _this.name + "'," +
                         ("expected 'channel_data' field. " + suffix));
                     callback('Invalid auth response');
+=======
+                if (authData.channel_data === undefined) {
+                    var suffix = url_store.buildLogSuffix("authenticationEndpoint");
+                    logger.error("Invalid auth response for channel '" + _this.name + "'," +
+                        ("expected 'channel_data' field. " + suffix));
+                    callback("Invalid auth response");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                     return;
                 }
                 var channelData = JSON.parse(authData.channel_data);
@@ -43689,7 +53548,11 @@ var presence_channel_PresenceChannel = (function (_super) {
     };
     PresenceChannel.prototype.handleEvent = function (event) {
         var eventName = event.event;
+<<<<<<< HEAD
         if (eventName.indexOf('pusher_internal:') === 0) {
+=======
+        if (eventName.indexOf("pusher_internal:") === 0) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             this.handleInternalEvent(event);
         }
         else {
@@ -43705,6 +53568,7 @@ var presence_channel_PresenceChannel = (function (_super) {
         var eventName = event.event;
         var data = event.data;
         switch (eventName) {
+<<<<<<< HEAD
             case 'pusher_internal:subscription_succeeded':
                 this.handleSubscriptionSucceededEvent(event);
                 break;
@@ -43713,6 +53577,16 @@ var presence_channel_PresenceChannel = (function (_super) {
                 this.emit('pusher:member_added', addedMember);
                 break;
             case 'pusher_internal:member_removed':
+=======
+            case "pusher_internal:subscription_succeeded":
+                this.handleSubscriptionSucceededEvent(event);
+                break;
+            case "pusher_internal:member_added":
+                var addedMember = this.members.addMember(data);
+                this.emit('pusher:member_added', addedMember);
+                break;
+            case "pusher_internal:member_removed":
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 var removedMember = this.members.removeMember(data);
                 if (removedMember) {
                     this.emit('pusher:member_removed', removedMember);
@@ -43728,7 +53602,11 @@ var presence_channel_PresenceChannel = (function (_super) {
         }
         else {
             this.members.onSubscription(event.data);
+<<<<<<< HEAD
             this.emit('pusher:subscription_succeeded', this.members);
+=======
+            this.emit("pusher:subscription_succeeded", this.members);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     };
     PresenceChannel.prototype.disconnect = function () {
@@ -43739,11 +53617,19 @@ var presence_channel_PresenceChannel = (function (_super) {
 }(private_channel));
 /* harmony default export */ var presence_channel = (presence_channel_PresenceChannel);
 
+<<<<<<< HEAD
 // EXTERNAL MODULE: ./node_modules/@stablelib/utf8/lib/utf8.js
 var utf8 = __webpack_require__(1);
 
 // EXTERNAL MODULE: ./node_modules/@stablelib/base64/lib/base64.js
 var base64 = __webpack_require__(0);
+=======
+// EXTERNAL MODULE: ./node_modules/tweetnacl/nacl-fast.js
+var nacl_fast = __webpack_require__(0);
+
+// EXTERNAL MODULE: ./node_modules/tweetnacl-util/nacl-util.js
+var nacl_util = __webpack_require__(1);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 // CONCATENATED MODULE: ./src/core/channels/encrypted_channel.ts
 var encrypted_channel_extends = (undefined && undefined.__extends) || (function () {
@@ -43766,16 +53652,23 @@ var encrypted_channel_extends = (undefined && undefined.__extends) || (function 
 
 var encrypted_channel_EncryptedChannel = (function (_super) {
     encrypted_channel_extends(EncryptedChannel, _super);
+<<<<<<< HEAD
     function EncryptedChannel(name, pusher, nacl) {
         var _this = _super.call(this, name, pusher) || this;
         _this.key = null;
         _this.nacl = nacl;
+=======
+    function EncryptedChannel() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.key = null;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         return _this;
     }
     EncryptedChannel.prototype.authorize = function (socketId, callback) {
         var _this = this;
         _super.prototype.authorize.call(this, socketId, function (error, authData) {
             if (error) {
+<<<<<<< HEAD
                 callback(error, authData);
                 return;
             }
@@ -43787,6 +53680,20 @@ var encrypted_channel_EncryptedChannel = (function (_super) {
             _this.key = Object(base64["decode"])(sharedSecret);
             delete authData['shared_secret'];
             callback(null, authData);
+=======
+                callback(true, authData);
+                return;
+            }
+            var sharedSecret = authData["shared_secret"];
+            if (!sharedSecret) {
+                var errorMsg = "No shared_secret key in auth payload for encrypted channel: " + _this.name;
+                callback(true, errorMsg);
+                return;
+            }
+            _this.key = Object(nacl_util["decodeBase64"])(sharedSecret);
+            delete authData["shared_secret"];
+            callback(false, authData);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         });
     };
     EncryptedChannel.prototype.trigger = function (event, data) {
@@ -43795,8 +53702,12 @@ var encrypted_channel_EncryptedChannel = (function (_super) {
     EncryptedChannel.prototype.handleEvent = function (event) {
         var eventName = event.event;
         var data = event.data;
+<<<<<<< HEAD
         if (eventName.indexOf('pusher_internal:') === 0 ||
             eventName.indexOf('pusher:') === 0) {
+=======
+        if (eventName.indexOf("pusher_internal:") === 0 || eventName.indexOf("pusher:") === 0) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             _super.prototype.handleEvent.call(this, event);
             return;
         }
@@ -43809,6 +53720,7 @@ var encrypted_channel_EncryptedChannel = (function (_super) {
             return;
         }
         if (!data.ciphertext || !data.nonce) {
+<<<<<<< HEAD
             logger.error('Unexpected format for encrypted event, expected object with `ciphertext` and `nonce` fields, got: ' +
                 data);
             return;
@@ -43824,6 +53736,22 @@ var encrypted_channel_EncryptedChannel = (function (_super) {
             return;
         }
         var bytes = this.nacl.secretbox.open(cipherText, nonce, this.key);
+=======
+            logger.error('Unexpected format for encrypted event, expected object with `ciphertext` and `nonce` fields, got: ' + data);
+            return;
+        }
+        var cipherText = Object(nacl_util["decodeBase64"])(data.ciphertext);
+        if (cipherText.length < nacl_fast["secretbox"].overheadLength) {
+            logger.error("Expected encrypted event ciphertext length to be " + nacl_fast["secretbox"].overheadLength + ", got: " + cipherText.length);
+            return;
+        }
+        var nonce = Object(nacl_util["decodeBase64"])(data.nonce);
+        if (nonce.length < nacl_fast["secretbox"].nonceLength) {
+            logger.error("Expected encrypted event nonce length to be " + nacl_fast["secretbox"].nonceLength + ", got: " + nonce.length);
+            return;
+        }
+        var bytes = nacl_fast["secretbox"].open(cipherText, nonce, this.key);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         if (bytes === null) {
             logger.debug('Failed to decrypt an event, probably because it was encrypted with a different key. Fetching a new key from the authEndpoint...');
             this.authorize(this.pusher.connection.socket_id, function (error, authData) {
@@ -43831,16 +53759,25 @@ var encrypted_channel_EncryptedChannel = (function (_super) {
                     logger.error("Failed to make a request to the authEndpoint: " + authData + ". Unable to fetch new key, so dropping encrypted event");
                     return;
                 }
+<<<<<<< HEAD
                 bytes = _this.nacl.secretbox.open(cipherText, nonce, _this.key);
+=======
+                bytes = nacl_fast["secretbox"].open(cipherText, nonce, _this.key);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 if (bytes === null) {
                     logger.error("Failed to decrypt event with new key. Dropping encrypted event");
                     return;
                 }
+<<<<<<< HEAD
                 _this.emit(event, _this.getDataToEmit(bytes));
+=======
+                _this.emitJSON(event, Object(nacl_util["encodeUTF8"])(bytes));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 return;
             });
             return;
         }
+<<<<<<< HEAD
         this.emit(event, this.getDataToEmit(bytes));
     };
     EncryptedChannel.prototype.getDataToEmit = function (bytes) {
@@ -43851,6 +53788,18 @@ var encrypted_channel_EncryptedChannel = (function (_super) {
         catch (_a) {
             return raw;
         }
+=======
+        this.emitJSON(event, Object(nacl_util["encodeUTF8"])(bytes));
+    };
+    EncryptedChannel.prototype.emitJSON = function (eventName, data) {
+        try {
+            this.emit(eventName, JSON.parse(data));
+        }
+        catch (e) {
+            this.emit(eventName, data);
+        }
+        return this;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     return EncryptedChannel;
 }(private_channel));
@@ -43879,16 +53828,26 @@ var connection_manager_ConnectionManager = (function (_super) {
     connection_manager_extends(ConnectionManager, _super);
     function ConnectionManager(key, options) {
         var _this = _super.call(this) || this;
+<<<<<<< HEAD
         _this.state = 'initialized';
         _this.connection = null;
         _this.key = key;
         _this.options = options;
         _this.timeline = _this.options.timeline;
         _this.usingTLS = _this.options.useTLS;
+=======
+        _this.key = key;
+        _this.options = options || {};
+        _this.state = "initialized";
+        _this.connection = null;
+        _this.usingTLS = !!options.useTLS;
+        _this.timeline = _this.options.timeline;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         _this.errorCallbacks = _this.buildErrorCallbacks();
         _this.connectionCallbacks = _this.buildConnectionCallbacks(_this.errorCallbacks);
         _this.handshakeCallbacks = _this.buildHandshakeCallbacks(_this.errorCallbacks);
         var Network = runtime.getNetwork();
+<<<<<<< HEAD
         Network.bind('online', function () {
             _this.timeline.info({ netinfo: 'online' });
             if (_this.state === 'connecting' || _this.state === 'unavailable') {
@@ -43897,6 +53856,16 @@ var connection_manager_ConnectionManager = (function (_super) {
         });
         Network.bind('offline', function () {
             _this.timeline.info({ netinfo: 'offline' });
+=======
+        Network.bind("online", function () {
+            _this.timeline.info({ netinfo: "online" });
+            if (_this.state === "connecting" || _this.state === "unavailable") {
+                _this.retryIn(0);
+            }
+        });
+        Network.bind("offline", function () {
+            _this.timeline.info({ netinfo: "offline" });
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             if (_this.connection) {
                 _this.sendActivityCheck();
             }
@@ -43909,6 +53878,7 @@ var connection_manager_ConnectionManager = (function (_super) {
             return;
         }
         if (!this.strategy.isSupported()) {
+<<<<<<< HEAD
             this.updateState('failed');
             return;
         }
@@ -43916,6 +53886,16 @@ var connection_manager_ConnectionManager = (function (_super) {
         this.startConnecting();
         this.setUnavailableTimer();
     };
+=======
+            this.updateState("failed");
+            return;
+        }
+        this.updateState("connecting");
+        this.startConnecting();
+        this.setUnavailableTimer();
+    };
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.send = function (data) {
         if (this.connection) {
             return this.connection.send(data);
@@ -43924,6 +53904,10 @@ var connection_manager_ConnectionManager = (function (_super) {
             return false;
         }
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.send_event = function (name, data, channel) {
         if (this.connection) {
             return this.connection.send_event(name, data, channel);
@@ -43932,6 +53916,7 @@ var connection_manager_ConnectionManager = (function (_super) {
             return false;
         }
     };
+<<<<<<< HEAD
     ConnectionManager.prototype.disconnect = function () {
         this.disconnectInternally();
         this.updateState('disconnected');
@@ -43939,6 +53924,18 @@ var connection_manager_ConnectionManager = (function (_super) {
     ConnectionManager.prototype.isUsingTLS = function () {
         return this.usingTLS;
     };
+=======
+    ;
+    ConnectionManager.prototype.disconnect = function () {
+        this.disconnectInternally();
+        this.updateState("disconnected");
+    };
+    ;
+    ConnectionManager.prototype.isUsingTLS = function () {
+        return this.usingTLS;
+    };
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.startConnecting = function () {
         var _this = this;
         var callback = function (error, handshake) {
@@ -43946,11 +53943,16 @@ var connection_manager_ConnectionManager = (function (_super) {
                 _this.runner = _this.strategy.connect(0, callback);
             }
             else {
+<<<<<<< HEAD
                 if (handshake.action === 'error') {
                     _this.emit('error', {
                         type: 'HandshakeError',
                         error: handshake.error
                     });
+=======
+                if (handshake.action === "error") {
+                    _this.emit("error", { type: "HandshakeError", error: handshake.error });
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                     _this.timeline.error({ handshakeError: handshake.error });
                 }
                 else {
@@ -43961,12 +53963,20 @@ var connection_manager_ConnectionManager = (function (_super) {
         };
         this.runner = this.strategy.connect(0, callback);
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.abortConnecting = function () {
         if (this.runner) {
             this.runner.abort();
             this.runner = null;
         }
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.disconnectInternally = function () {
         this.abortConnecting();
         this.clearRetryTimer();
@@ -43976,6 +53986,10 @@ var connection_manager_ConnectionManager = (function (_super) {
             connection.close();
         }
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.updateStrategy = function () {
         this.strategy = this.options.getStrategy({
             key: this.key,
@@ -43983,34 +53997,62 @@ var connection_manager_ConnectionManager = (function (_super) {
             useTLS: this.usingTLS
         });
     };
+<<<<<<< HEAD
     ConnectionManager.prototype.retryIn = function (delay) {
         var _this = this;
         this.timeline.info({ action: 'retry', delay: delay });
         if (delay > 0) {
             this.emit('connecting_in', Math.round(delay / 1000));
+=======
+    ;
+    ConnectionManager.prototype.retryIn = function (delay) {
+        var _this = this;
+        this.timeline.info({ action: "retry", delay: delay });
+        if (delay > 0) {
+            this.emit("connecting_in", Math.round(delay / 1000));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
         this.retryTimer = new OneOffTimer(delay || 0, function () {
             _this.disconnectInternally();
             _this.connect();
         });
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.clearRetryTimer = function () {
         if (this.retryTimer) {
             this.retryTimer.ensureAborted();
             this.retryTimer = null;
         }
     };
+<<<<<<< HEAD
     ConnectionManager.prototype.setUnavailableTimer = function () {
         var _this = this;
         this.unavailableTimer = new OneOffTimer(this.options.unavailableTimeout, function () {
             _this.updateState('unavailable');
         });
     };
+=======
+    ;
+    ConnectionManager.prototype.setUnavailableTimer = function () {
+        var _this = this;
+        this.unavailableTimer = new OneOffTimer(this.options.unavailableTimeout, function () {
+            _this.updateState("unavailable");
+        });
+    };
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.clearUnavailableTimer = function () {
         if (this.unavailableTimer) {
             this.unavailableTimer.ensureAborted();
         }
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.sendActivityCheck = function () {
         var _this = this;
         this.stopActivityCheck();
@@ -44020,6 +54062,10 @@ var connection_manager_ConnectionManager = (function (_super) {
             _this.retryIn(0);
         });
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.resetActivityCheck = function () {
         var _this = this;
         this.stopActivityCheck();
@@ -44029,11 +54075,19 @@ var connection_manager_ConnectionManager = (function (_super) {
             });
         }
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.stopActivityCheck = function () {
         if (this.activityTimer) {
             this.activityTimer.ensureAborted();
         }
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.buildConnectionCallbacks = function (errorCallbacks) {
         var _this = this;
         return extend({}, errorCallbacks, {
@@ -44048,7 +54102,11 @@ var connection_manager_ConnectionManager = (function (_super) {
                 _this.resetActivityCheck();
             },
             error: function (error) {
+<<<<<<< HEAD
                 _this.emit('error', error);
+=======
+                _this.emit("error", { type: "WebSocketError", error: error });
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             },
             closed: function () {
                 _this.abandonConnection();
@@ -44058,6 +54116,10 @@ var connection_manager_ConnectionManager = (function (_super) {
             }
         });
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.buildHandshakeCallbacks = function (errorCallbacks) {
         var _this = this;
         return extend({}, errorCallbacks, {
@@ -44066,16 +54128,28 @@ var connection_manager_ConnectionManager = (function (_super) {
                 _this.clearUnavailableTimer();
                 _this.setConnection(handshake.connection);
                 _this.socket_id = _this.connection.id;
+<<<<<<< HEAD
                 _this.updateState('connected', { socket_id: _this.socket_id });
             }
         });
     };
+=======
+                _this.updateState("connected", { socket_id: _this.socket_id });
+            }
+        });
+    };
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.buildErrorCallbacks = function () {
         var _this = this;
         var withErrorEmitted = function (callback) {
             return function (result) {
                 if (result.error) {
+<<<<<<< HEAD
                     _this.emit('error', { type: 'WebSocketError', error: result.error });
+=======
+                    _this.emit("error", { type: "WebSocketError", error: result.error });
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 }
                 callback(result);
             };
@@ -44097,6 +54171,10 @@ var connection_manager_ConnectionManager = (function (_super) {
             })
         };
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.setConnection = function (connection) {
         this.connection = connection;
         for (var event in this.connectionCallbacks) {
@@ -44104,6 +54182,10 @@ var connection_manager_ConnectionManager = (function (_super) {
         }
         this.resetActivityCheck();
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     ConnectionManager.prototype.abandonConnection = function () {
         if (!this.connection) {
             return;
@@ -44121,8 +54203,13 @@ var connection_manager_ConnectionManager = (function (_super) {
         this.state = newState;
         if (previousState !== newState) {
             var newStateDescription = newState;
+<<<<<<< HEAD
             if (newStateDescription === 'connected') {
                 newStateDescription += ' with new socket ID ' + data.socket_id;
+=======
+            if (newStateDescription === "connected") {
+                newStateDescription += " with new socket ID " + data.socket_id;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             }
             logger.debug('State changed', previousState + ' -> ' + newStateDescription);
             this.timeline.info({ state: newState, params: data });
@@ -44131,7 +54218,11 @@ var connection_manager_ConnectionManager = (function (_super) {
         }
     };
     ConnectionManager.prototype.shouldRetry = function () {
+<<<<<<< HEAD
         return this.state === 'connecting' || this.state === 'connected';
+=======
+        return this.state === "connecting" || this.state === "connected";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     return ConnectionManager;
 }(dispatcher));
@@ -44141,7 +54232,10 @@ var connection_manager_ConnectionManager = (function (_super) {
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 var channels_Channels = (function () {
     function Channels() {
         this.channels = {};
@@ -44173,12 +54267,17 @@ var channels_Channels = (function () {
 /* harmony default export */ var channels = (channels_Channels);
 function createChannel(name, pusher) {
     if (name.indexOf('private-encrypted-') === 0) {
+<<<<<<< HEAD
         if (pusher.config.nacl) {
             return factory.createEncryptedChannel(name, pusher, pusher.config.nacl);
         }
         var errMsg = 'Tried to subscribe to a private-encrypted- channel but no nacl implementation available';
         var suffix = url_store.buildLogSuffix('encryptedChannelSupport');
         throw new UnsupportedFeature(errMsg + ". " + suffix);
+=======
+        if (false) { var errorMsg; }
+        return factory.createEncryptedChannel(name, pusher);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
     else if (name.indexOf('private-') === 0) {
         return factory.createPrivateChannel(name, pusher);
@@ -44218,8 +54317,13 @@ var Factory = {
     createPresenceChannel: function (name, pusher) {
         return new presence_channel(name, pusher);
     },
+<<<<<<< HEAD
     createEncryptedChannel: function (name, pusher, nacl) {
         return new encrypted_channel(name, pusher, nacl);
+=======
+    createEncryptedChannel: function (name, pusher) {
+        return new encrypted_channel(name, pusher);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     },
     createTimelineSender: function (timeline, options) {
         return new timeline_sender(timeline, options);
@@ -44275,7 +54379,11 @@ var sequential_strategy_SequentialStrategy = (function () {
         this.timeoutLimit = options.timeoutLimit;
     }
     SequentialStrategy.prototype.isSupported = function () {
+<<<<<<< HEAD
         return any(this.strategies, util.method('isSupported'));
+=======
+        return any(this.strategies, util.method("isSupported"));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     SequentialStrategy.prototype.connect = function (minPriority, callback) {
         var _this = this;
@@ -44361,7 +54469,11 @@ var best_connected_ever_strategy_BestConnectedEverStrategy = (function () {
         this.strategies = strategies;
     }
     BestConnectedEverStrategy.prototype.isSupported = function () {
+<<<<<<< HEAD
         return any(this.strategies, util.method('isSupported'));
+=======
+        return any(this.strategies, util.method("isSupported"));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     BestConnectedEverStrategy.prototype.connect = function (minPriority, callback) {
         return connect(this.strategies, minPriority, function (i, runners) {
@@ -44445,9 +54557,13 @@ var cached_strategy_CachedStrategy = (function () {
             }
         }
         var startTimestamp = util.now();
+<<<<<<< HEAD
         var runner = strategies
             .pop()
             .connect(minPriority, function cb(error, handshake) {
+=======
+        var runner = strategies.pop().connect(minPriority, function cb(error, handshake) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             if (error) {
                 flushTransportCache(usingTLS);
                 if (strategies.length > 0) {
@@ -44479,7 +54595,11 @@ var cached_strategy_CachedStrategy = (function () {
 }());
 /* harmony default export */ var cached_strategy = (cached_strategy_CachedStrategy);
 function getTransportCacheKey(usingTLS) {
+<<<<<<< HEAD
     return 'pusherTransport' + (usingTLS ? 'TLS' : 'NonTLS');
+=======
+    return "pusherTransport" + (usingTLS ? "TLS" : "NonTLS");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 function fetchTransportCache(usingTLS) {
     var storage = runtime.getLocalStorage();
@@ -44605,18 +54725,27 @@ var FirstConnectedStrategy = (function () {
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 function testSupportsStrategy(strategy) {
     return function () {
         return strategy.isSupported();
     };
 }
+<<<<<<< HEAD
 var getDefaultStrategy = function (config, baseOptions, defineTransport) {
+=======
+var getDefaultStrategy = function (config, defineTransport) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     var definedTransports = {};
     function defineTransportStrategy(name, type, priority, options, manager) {
         var transport = defineTransport(config, name, type, priority, options, manager);
         definedTransports[name] = transport;
         return transport;
     }
+<<<<<<< HEAD
     var ws_options = Object.assign({}, baseOptions, {
         hostNonTLS: config.wsHost + ':' + config.wsPort,
         hostTLS: config.wsHost + ':' + config.wssPort,
@@ -44630,6 +54759,21 @@ var getDefaultStrategy = function (config, baseOptions, defineTransport) {
         hostTLS: config.httpHost + ':' + config.httpsPort,
         httpPath: config.httpPath
     });
+=======
+    var ws_options = {
+        hostNonTLS: config.wsHost + ":" + config.wsPort,
+        hostTLS: config.wsHost + ":" + config.wssPort,
+        httpPath: config.wsPath
+    };
+    var wss_options = extend({}, ws_options, {
+        useTLS: true
+    });
+    var sockjs_options = {
+        hostNonTLS: config.httpHost + ":" + config.httpPort,
+        hostTLS: config.httpHost + ":" + config.httpsPort,
+        httpPath: config.httpPath
+    };
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     var timeouts = {
         loop: true,
         timeout: 15000,
@@ -44638,11 +54782,16 @@ var getDefaultStrategy = function (config, baseOptions, defineTransport) {
     var ws_manager = new transport_manager({
         lives: 2,
         minPingDelay: 10000,
+<<<<<<< HEAD
         maxPingDelay: config.activityTimeout
+=======
+        maxPingDelay: config.activity_timeout
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     });
     var streaming_manager = new transport_manager({
         lives: 2,
         minPingDelay: 10000,
+<<<<<<< HEAD
         maxPingDelay: config.activityTimeout
     });
     var ws_transport = defineTransportStrategy('ws', 'ws', 3, ws_options, ws_manager);
@@ -44674,6 +54823,27 @@ var getDefaultStrategy = function (config, baseOptions, defineTransport) {
             ws_loop,
             new delayed_strategy(http_fallback_loop, { delay: 2000 })
         ]);
+=======
+        maxPingDelay: config.activity_timeout
+    });
+    var ws_transport = defineTransportStrategy("ws", "ws", 3, ws_options, ws_manager);
+    var wss_transport = defineTransportStrategy("wss", "ws", 3, wss_options, ws_manager);
+    var sockjs_transport = defineTransportStrategy("sockjs", "sockjs", 1, sockjs_options);
+    var xhr_streaming_transport = defineTransportStrategy("xhr_streaming", "xhr_streaming", 1, sockjs_options, streaming_manager);
+    var xdr_streaming_transport = defineTransportStrategy("xdr_streaming", "xdr_streaming", 1, sockjs_options, streaming_manager);
+    var xhr_polling_transport = defineTransportStrategy("xhr_polling", "xhr_polling", 1, sockjs_options);
+    var xdr_polling_transport = defineTransportStrategy("xdr_polling", "xdr_polling", 1, sockjs_options);
+    var ws_loop = new sequential_strategy([ws_transport], timeouts);
+    var wss_loop = new sequential_strategy([wss_transport], timeouts);
+    var sockjs_loop = new sequential_strategy([sockjs_transport], timeouts);
+    var streaming_loop = new sequential_strategy([new if_strategy(testSupportsStrategy(xhr_streaming_transport), xhr_streaming_transport, xdr_streaming_transport)], timeouts);
+    var polling_loop = new sequential_strategy([new if_strategy(testSupportsStrategy(xhr_polling_transport), xhr_polling_transport, xdr_polling_transport)], timeouts);
+    var http_loop = new sequential_strategy([new if_strategy(testSupportsStrategy(streaming_loop), new best_connected_ever_strategy([streaming_loop, new delayed_strategy(polling_loop, { delay: 4000 })]), polling_loop)], timeouts);
+    var http_fallback_loop = new if_strategy(testSupportsStrategy(http_loop), http_loop, sockjs_loop);
+    var wsStrategy;
+    if (config.useTLS) {
+        wsStrategy = new best_connected_ever_strategy([ws_loop, new delayed_strategy(http_fallback_loop, { delay: 2000 })]);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
     else {
         wsStrategy = new best_connected_ever_strategy([
@@ -44684,8 +54854,13 @@ var getDefaultStrategy = function (config, baseOptions, defineTransport) {
     }
     return new cached_strategy(new first_connected_strategy(new if_strategy(testSupportsStrategy(ws_transport), wsStrategy, http_fallback_loop)), definedTransports, {
         ttl: 1800000,
+<<<<<<< HEAD
         timeline: baseOptions.timeline,
         useTLS: baseOptions.useTLS
+=======
+        timeline: config.timeline,
+        useTLS: config.useTLS
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     });
 };
 /* harmony default export */ var default_strategy = (getDefaultStrategy);
@@ -44695,6 +54870,7 @@ var getDefaultStrategy = function (config, baseOptions, defineTransport) {
 /* harmony default export */ var transport_connection_initializer = (function () {
     var self = this;
     self.timeline.info(self.buildTimelineMessage({
+<<<<<<< HEAD
         transport: self.name + (self.options.useTLS ? 's' : '')
     }));
     if (self.hooks.isInitialized()) {
@@ -44705,6 +54881,18 @@ var getDefaultStrategy = function (config, baseOptions, defineTransport) {
         Dependencies.load(self.hooks.file, { useTLS: self.options.useTLS }, function (error, callback) {
             if (self.hooks.isInitialized()) {
                 self.changeState('initialized');
+=======
+        transport: self.name + (self.options.useTLS ? "s" : "")
+    }));
+    if (self.hooks.isInitialized()) {
+        self.changeState("initialized");
+    }
+    else if (self.hooks.file) {
+        self.changeState("initializing");
+        Dependencies.load(self.hooks.file, { useTLS: self.options.useTLS }, function (error, callback) {
+            if (self.hooks.isInitialized()) {
+                self.changeState("initialized");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 callback(true);
             }
             else {
@@ -44727,11 +54915,19 @@ var http_xdomain_request_hooks = {
     getRequest: function (socket) {
         var xdr = new window.XDomainRequest();
         xdr.ontimeout = function () {
+<<<<<<< HEAD
             socket.emit('error', new RequestTimedOut());
             socket.close();
         };
         xdr.onerror = function (e) {
             socket.emit('error', e);
+=======
+            socket.emit("error", new RequestTimedOut());
+            socket.close();
+        };
+        xdr.onerror = function (e) {
+            socket.emit("error", e);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             socket.close();
         };
         xdr.onprogress = function () {
@@ -44743,7 +54939,11 @@ var http_xdomain_request_hooks = {
             if (xdr.responseText && xdr.responseText.length > 0) {
                 socket.onChunk(200, xdr.responseText);
             }
+<<<<<<< HEAD
             socket.emit('finished', 200);
+=======
+            socket.emit("finished", 200);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             socket.close();
         };
         return xdr;
@@ -44791,7 +54991,11 @@ var http_request_HTTPRequest = (function (_super) {
         runtime.addUnloadListener(this.unloader);
         this.xhr.open(this.method, this.url, true);
         if (this.xhr.setRequestHeader) {
+<<<<<<< HEAD
             this.xhr.setRequestHeader('Content-Type', 'application/json');
+=======
+            this.xhr.setRequestHeader("Content-Type", "application/json");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
         this.xhr.send(payload);
     };
@@ -44809,19 +55013,31 @@ var http_request_HTTPRequest = (function (_super) {
         while (true) {
             var chunk = this.advanceBuffer(data);
             if (chunk) {
+<<<<<<< HEAD
                 this.emit('chunk', { status: status, data: chunk });
+=======
+                this.emit("chunk", { status: status, data: chunk });
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             }
             else {
                 break;
             }
         }
         if (this.isBufferTooLong(data)) {
+<<<<<<< HEAD
             this.emit('buffer_too_long');
+=======
+            this.emit("buffer_too_long");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     };
     HTTPRequest.prototype.advanceBuffer = function (buffer) {
         var unreadData = buffer.slice(this.position);
+<<<<<<< HEAD
         var endOfLinePosition = unreadData.indexOf('\n');
+=======
+        var endOfLinePosition = unreadData.indexOf("\n");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         if (endOfLinePosition !== -1) {
             this.position += endOfLinePosition + 1;
             return unreadData.slice(0, endOfLinePosition);
@@ -44854,7 +55070,11 @@ var autoIncrement = 1;
 var http_socket_HTTPSocket = (function () {
     function HTTPSocket(hooks, url) {
         this.hooks = hooks;
+<<<<<<< HEAD
         this.session = randomNumber(1000) + '/' + randomString(8);
+=======
+        this.session = randomNumber(1000) + "/" + randomString(8);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this.location = getLocation(url);
         this.readyState = state.CONNECTING;
         this.openStream();
@@ -44871,7 +55091,11 @@ var http_socket_HTTPSocket = (function () {
     HTTPSocket.prototype.sendRaw = function (payload) {
         if (this.readyState === state.OPEN) {
             try {
+<<<<<<< HEAD
                 runtime.createSocketRequest('POST', getUniqueURL(getSendURL(this.location, this.session))).start(payload);
+=======
+                runtime.createSocketRequest("POST", getUniqueURL(getSendURL(this.location, this.session))).start(payload);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                 return true;
             }
             catch (e) {
@@ -44886,6 +55110,10 @@ var http_socket_HTTPSocket = (function () {
         this.closeStream();
         this.openStream();
     };
+<<<<<<< HEAD
+=======
+    ;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     HTTPSocket.prototype.onClose = function (code, reason, wasClean) {
         this.closeStream();
         this.readyState = state.CLOSED;
@@ -44941,7 +55169,11 @@ var http_socket_HTTPSocket = (function () {
             }
         }
         else {
+<<<<<<< HEAD
             this.onClose(1006, 'Server lost session', true);
+=======
+            this.onClose(1006, "Server lost session", true);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     };
     HTTPSocket.prototype.onEvent = function (event) {
@@ -44961,6 +55193,7 @@ var http_socket_HTTPSocket = (function () {
     };
     HTTPSocket.prototype.openStream = function () {
         var _this = this;
+<<<<<<< HEAD
         this.stream = runtime.createSocketRequest('POST', getUniqueURL(this.hooks.getReceiveURL(this.location, this.session)));
         this.stream.bind('chunk', function (chunk) {
             _this.onChunk(chunk);
@@ -44969,6 +55202,16 @@ var http_socket_HTTPSocket = (function () {
             _this.hooks.onFinished(_this, status);
         });
         this.stream.bind('buffer_too_long', function () {
+=======
+        this.stream = runtime.createSocketRequest("POST", getUniqueURL(this.hooks.getReceiveURL(this.location, this.session)));
+        this.stream.bind("chunk", function (chunk) {
+            _this.onChunk(chunk);
+        });
+        this.stream.bind("finished", function (status) {
+            _this.hooks.onFinished(_this, status);
+        });
+        this.stream.bind("buffer_too_long", function () {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             _this.reconnect();
         });
         try {
@@ -44977,7 +55220,11 @@ var http_socket_HTTPSocket = (function () {
         catch (error) {
             util.defer(function () {
                 _this.onError(error);
+<<<<<<< HEAD
                 _this.onClose(1006, 'Could not start streaming', false);
+=======
+                _this.onClose(1006, "Could not start streaming", false);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             });
         }
     };
@@ -44998,11 +55245,19 @@ function getLocation(url) {
     };
 }
 function getSendURL(url, session) {
+<<<<<<< HEAD
     return url.base + '/' + session + '/xhr_send';
 }
 function getUniqueURL(url) {
     var separator = url.indexOf('?') === -1 ? '?' : '&';
     return url + separator + 't=' + +new Date() + '&n=' + autoIncrement++;
+=======
+    return url.base + "/" + session + "/xhr_send";
+}
+function getUniqueURL(url) {
+    var separator = (url.indexOf('?') === -1) ? "?" : "&";
+    return url + separator + "t=" + (+new Date()) + "&n=" + autoIncrement++;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 }
 function replaceHost(url, hostname) {
     var urlParts = /(https?:\/\/)([^\/:]+)((\/|:)?.*)/.exec(url);
@@ -45023,6 +55278,7 @@ function randomString(length) {
 // CONCATENATED MODULE: ./src/core/http/http_streaming_socket.ts
 var http_streaming_socket_hooks = {
     getReceiveURL: function (url, session) {
+<<<<<<< HEAD
         return url.base + '/' + session + '/xhr_streaming' + url.queryString;
     },
     onHeartbeat: function (socket) {
@@ -45033,6 +55289,18 @@ var http_streaming_socket_hooks = {
     },
     onFinished: function (socket, status) {
         socket.onClose(1006, 'Connection interrupted (' + status + ')', false);
+=======
+        return url.base + "/" + session + "/xhr_streaming" + url.queryString;
+    },
+    onHeartbeat: function (socket) {
+        socket.sendRaw("[]");
+    },
+    sendHeartbeat: function (socket) {
+        socket.sendRaw("[]");
+    },
+    onFinished: function (socket, status) {
+        socket.onClose(1006, "Connection interrupted (" + status + ")", false);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
 };
 /* harmony default export */ var http_streaming_socket = (http_streaming_socket_hooks);
@@ -45040,19 +55308,31 @@ var http_streaming_socket_hooks = {
 // CONCATENATED MODULE: ./src/core/http/http_polling_socket.ts
 var http_polling_socket_hooks = {
     getReceiveURL: function (url, session) {
+<<<<<<< HEAD
         return url.base + '/' + session + '/xhr' + url.queryString;
+=======
+        return url.base + "/" + session + "/xhr" + url.queryString;
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     },
     onHeartbeat: function () {
     },
     sendHeartbeat: function (socket) {
+<<<<<<< HEAD
         socket.sendRaw('[]');
+=======
+        socket.sendRaw("[]");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     },
     onFinished: function (socket, status) {
         if (status === 200) {
             socket.reconnect();
         }
         else {
+<<<<<<< HEAD
             socket.onClose(1006, 'Connection interrupted (' + status + ')', false);
+=======
+            socket.onClose(1006, "Connection interrupted (" + status + ")", false);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     }
 };
@@ -45075,7 +55355,11 @@ var http_xhr_request_hooks = {
                     if (xhr.responseText && xhr.responseText.length > 0) {
                         socket.onChunk(xhr.status, xhr.responseText);
                     }
+<<<<<<< HEAD
                     socket.emit('finished', xhr.status);
+=======
+                    socket.emit("finished", xhr.status);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
                     socket.close();
                     break;
             }
@@ -45158,7 +55442,11 @@ var Runtime = {
             _this.onDocumentBody(PusherClass.ready);
         };
         if (!window.JSON) {
+<<<<<<< HEAD
             Dependencies.load('json2', {}, initializeOnDocumentBody);
+=======
+            Dependencies.load("json2", {}, initializeOnDocumentBody);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
         else {
             initializeOnDocumentBody();
@@ -45211,7 +55499,11 @@ var Runtime = {
         return new Constructor();
     },
     createMicrosoftXHR: function () {
+<<<<<<< HEAD
         return new ActiveXObject('Microsoft.XMLHTTP');
+=======
+        return new ActiveXObject("Microsoft.XMLHTTP");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     },
     getNetwork: function () {
         return net_info_Network;
@@ -45224,15 +55516,24 @@ var Runtime = {
         if (this.isXHRSupported()) {
             return this.HTTPFactory.createXHR(method, url);
         }
+<<<<<<< HEAD
         else if (this.isXDRSupported(url.indexOf('https:') === 0)) {
             return this.HTTPFactory.createXDR(method, url);
         }
         else {
             throw 'Cross-origin HTTP requests are not supported';
+=======
+        else if (this.isXDRSupported(url.indexOf("https:") === 0)) {
+            return this.HTTPFactory.createXDR(method, url);
+        }
+        else {
+            throw "Cross-origin HTTP requests are not supported";
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     },
     isXHRSupported: function () {
         var Constructor = this.getXHRAPI();
+<<<<<<< HEAD
         return (Boolean(Constructor) && new Constructor().withCredentials !== undefined);
     },
     isXDRSupported: function (useTLS) {
@@ -45246,14 +55547,36 @@ var Runtime = {
         }
         else if (window.attachEvent !== undefined) {
             window.attachEvent('onunload', listener);
+=======
+        return Boolean(Constructor) && (new Constructor()).withCredentials !== undefined;
+    },
+    isXDRSupported: function (useTLS) {
+        var protocol = useTLS ? "https:" : "http:";
+        var documentProtocol = this.getProtocol();
+        return Boolean((window['XDomainRequest'])) && documentProtocol === protocol;
+    },
+    addUnloadListener: function (listener) {
+        if (window.addEventListener !== undefined) {
+            window.addEventListener("unload", listener, false);
+        }
+        else if (window.attachEvent !== undefined) {
+            window.attachEvent("onunload", listener);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     },
     removeUnloadListener: function (listener) {
         if (window.addEventListener !== undefined) {
+<<<<<<< HEAD
             window.removeEventListener('unload', listener, false);
         }
         else if (window.detachEvent !== undefined) {
             window.detachEvent('onunload', listener);
+=======
+            window.removeEventListener("unload", listener, false);
+        }
+        else if (window.detachEvent !== undefined) {
+            window.detachEvent("onunload", listener);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         }
     }
 };
@@ -45307,7 +55630,11 @@ var timeline_Timeline = (function () {
             session: this.session,
             bundle: this.sent + 1,
             key: this.key,
+<<<<<<< HEAD
             lib: 'js',
+=======
+            lib: "js",
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             version: this.options.version,
             cluster: this.options.cluster,
             features: this.options.features,
@@ -45361,7 +55688,11 @@ var transport_strategy_TransportStrategy = (function () {
         var transport = this.transport.createConnection(this.name, this.priority, this.options.key, this.options);
         var handshake = null;
         var onInitialized = function () {
+<<<<<<< HEAD
             transport.unbind('initialized', onInitialized);
+=======
+            transport.unbind("initialized", onInitialized);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             transport.connect();
         };
         var onOpen = function () {
@@ -45382,6 +55713,7 @@ var transport_strategy_TransportStrategy = (function () {
             callback(new TransportClosed(serializedTransport));
         };
         var unbindListeners = function () {
+<<<<<<< HEAD
             transport.unbind('initialized', onInitialized);
             transport.unbind('open', onOpen);
             transport.unbind('error', onError);
@@ -45391,6 +55723,17 @@ var transport_strategy_TransportStrategy = (function () {
         transport.bind('open', onOpen);
         transport.bind('error', onError);
         transport.bind('closed', onClosed);
+=======
+            transport.unbind("initialized", onInitialized);
+            transport.unbind("open", onOpen);
+            transport.unbind("error", onError);
+            transport.unbind("closed", onClosed);
+        };
+        transport.bind("initialized", onInitialized);
+        transport.bind("open", onOpen);
+        transport.bind("error", onError);
+        transport.bind("closed", onClosed);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         transport.initialize();
         return {
             abort: function () {
@@ -45451,8 +55794,17 @@ var strategy_builder_defineTransport = function (config, name, type, priority, o
             arrayIndexOf(config.disabledTransports, name) === -1);
     var transport;
     if (enabled) {
+<<<<<<< HEAD
         options = Object.assign({ ignoreNullOrigin: config.ignoreNullOrigin }, options);
         transport = new transport_strategy(name, priority, manager ? manager.getAssistant(transportClass) : transportClass, options);
+=======
+        transport = new transport_strategy(name, priority, manager ? manager.getAssistant(transportClass) : transportClass, extend({
+            key: config.key,
+            useTLS: config.useTLS,
+            timeline: config.timeline,
+            ignoreNullOrigin: config.ignoreNullOrigin
+        }, options));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     }
     else {
         transport = strategy_builder_UnsupportedStrategy;
@@ -45478,6 +55830,7 @@ var strategy_builder_UnsupportedStrategy = {
 
 // CONCATENATED MODULE: ./src/core/config.ts
 
+<<<<<<< HEAD
 
 function getConfig(opts) {
     var config = {
@@ -45555,6 +55908,32 @@ function getEnableStatsConfig(opts) {
     }
     return false;
 }
+=======
+var getGlobalConfig = function () {
+    return {
+        wsHost: defaults.host,
+        wsPort: defaults.ws_port,
+        wssPort: defaults.wss_port,
+        wsPath: defaults.ws_path,
+        httpHost: defaults.sockjs_host,
+        httpPort: defaults.sockjs_http_port,
+        httpsPort: defaults.sockjs_https_port,
+        httpPath: defaults.sockjs_path,
+        statsHost: defaults.stats_host,
+        authEndpoint: defaults.channel_auth_endpoint,
+        authTransport: defaults.channel_auth_transport,
+        activity_timeout: defaults.activity_timeout,
+        pong_timeout: defaults.pong_timeout,
+        unavailable_timeout: defaults.unavailable_timeout
+    };
+};
+var getClusterConfig = function (clusterName) {
+    return {
+        wsHost: 'ws-' + clusterName + '.pusher.com',
+        httpHost: 'sockjs-' + clusterName + '.pusher.com'
+    };
+};
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 // CONCATENATED MODULE: ./src/core/pusher.ts
 
@@ -45578,11 +55957,16 @@ var pusher_Pusher = (function () {
             var suffix = url_store.buildLogSuffix('javascriptQuickStart');
             logger.warn("You should always specify a cluster when connecting. " + suffix);
         }
+<<<<<<< HEAD
         if ('disableStats' in options) {
             logger.warn('The disableStats option is deprecated in favor of enableStats');
         }
         this.key = app_key;
         this.config = getConfig(options);
+=======
+        this.key = app_key;
+        this.config = extend(getGlobalConfig(), options.cluster ? getClusterConfig(options.cluster) : {}, options);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this.channels = factory.createChannels();
         this.global_emitter = new dispatcher();
         this.sessionID = Math.floor(Math.random() * 1000000000);
@@ -45594,13 +55978,18 @@ var pusher_Pusher = (function () {
             level: timeline_level.INFO,
             version: defaults.VERSION
         });
+<<<<<<< HEAD
         if (this.config.enableStats) {
+=======
+        if (!this.config.disableStats) {
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
             this.timelineSender = factory.createTimelineSender(this.timeline, {
                 host: this.config.statsHost,
                 path: '/timeline/v2/' + runtime.TimelineTransport.name
             });
         }
         var getStrategy = function (options) {
+<<<<<<< HEAD
             return runtime.getDefaultStrategy(_this.config, options, strategy_builder_defineTransport);
         };
         this.connection = factory.createConnectionManager(this.key, {
@@ -45611,6 +56000,18 @@ var pusher_Pusher = (function () {
             unavailableTimeout: this.config.unavailableTimeout,
             useTLS: Boolean(this.config.useTLS)
         });
+=======
+            var config = extend({}, _this.config, options);
+            return runtime.getDefaultStrategy(config, strategy_builder_defineTransport);
+        };
+        this.connection = factory.createConnectionManager(this.key, extend({
+            getStrategy: getStrategy,
+            timeline: this.timeline,
+            activityTimeout: this.config.activity_timeout,
+            pongTimeout: this.config.pong_timeout,
+            unavailableTimeout: this.config.unavailable_timeout
+        }, this.config, { useTLS: this.shouldUseTLS() }));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         this.connection.bind('connected', function () {
             _this.subscribeAll();
             if (_this.timelineSender) {
@@ -45736,7 +56137,19 @@ var pusher_Pusher = (function () {
         return this.connection.send_event(event_name, data, channel);
     };
     Pusher.prototype.shouldUseTLS = function () {
+<<<<<<< HEAD
         return this.config.useTLS;
+=======
+        if (runtime.getProtocol() === 'https:') {
+            return true;
+        }
+        else if (this.config.forceTLS === true) {
+            return true;
+        }
+        else {
+            return Boolean(this.config.encrypted);
+        }
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
     };
     Pusher.instances = [];
     Pusher.isReady = false;
@@ -45759,6 +56172,10 @@ runtime.setup(pusher_Pusher);
 /***/ })
 /******/ ]);
 });
+<<<<<<< HEAD
+=======
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../buffer/index.js */ "./node_modules/buffer/index.js").Buffer))
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 /***/ }),
 
@@ -49264,6 +59681,7 @@ var render = function() {
       _c(
         "form",
         {
+<<<<<<< HEAD
           staticClass: "disable-form",
           attrs: { action: "/user/trade-bitcoin", method: "post" }
         },
@@ -49319,6 +59737,17 @@ var render = function() {
             }
           }),
           _vm._v(" "),
+=======
+          attrs: { method: "post" },
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.sell()
+            }
+          }
+        },
+        [
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
           _c("div", { staticClass: "form-group mb-4" }, [
             _c(
               "label",
@@ -49484,6 +59913,7 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
+<<<<<<< HEAD
           _c(
             "button",
             {
@@ -49492,6 +59922,26 @@ var render = function() {
             },
             [_vm._v("Sell")]
           )
+=======
+          !_vm.loading
+            ? _c(
+                "button",
+                {
+                  staticClass:
+                    "sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn"
+                },
+                [_vm._v("Sell")]
+              )
+            : _c(
+                "button",
+                {
+                  staticClass:
+                    "sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn",
+                  attrs: { disabled: "" }
+                },
+                [_c("i", { staticClass: "spinner-border" })]
+              )
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
         ]
       )
     ]
@@ -49556,6 +60006,265 @@ render._withStripped = true
 
 /***/ }),
 
+<<<<<<< HEAD
+=======
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "container my-3 mt-lg-5 wallet_trx_tabs",
+      attrs: { id: "bitcoin_wallet_send_tab" }
+    },
+    [
+      _c(
+        "form",
+        {
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.send()
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "row" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("div", { staticClass: "container mt-3m mt-lg-5" }, [
+              _c("div", { staticClass: "row" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _vm._m(2),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-12 col-md-10 mx-auto" }, [
+                  _c("span", { staticClass: "address_input_label" }, [
+                    _vm._v("Address")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "input-group col-12 col-md-7 mx-auto mb-3 mt-4"
+                    },
+                    [
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          id: "receipientAddress",
+                          name: "address",
+                          "aria-label": "Recipient's username",
+                          "aria-describedby": "basic-addon2"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("input", {
+                        attrs: { type: "hidden", name: "fees", value: "" }
+                      }),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "input-group-append" }, [
+                        _c(
+                          "span",
+                          {
+                            staticClass: "input-group-text",
+                            staticStyle: {
+                              cursor: "pointer",
+                              background: "#000070"
+                            },
+                            attrs: {
+                              onclick: "copywalletaddress('receipientAddress')",
+                              id: "basic-addon2"
+                            }
+                          },
+                          [
+                            _c(
+                              "svg",
+                              {
+                                attrs: {
+                                  width: "17",
+                                  height: "19",
+                                  viewBox: "0 0 17 19",
+                                  fill: "none",
+                                  xmlns: "http://www.w3.org/2000/svg"
+                                }
+                              },
+                              [
+                                _c("path", {
+                                  attrs: {
+                                    d:
+                                      "M12.0909 0H1.72727C0.777273 0 0 0.777273 0 1.72727V13.8182H1.72727V1.72727H12.0909V0ZM14.6818 3.45455H5.18182C4.23182 3.45455 3.45455 4.23182 3.45455 5.18182V17.2727C3.45455 18.2227 4.23182 19 5.18182 19H14.6818C15.6318 19 16.4091 18.2227 16.4091 17.2727V5.18182C16.4091 4.23182 15.6318 3.45455 14.6818 3.45455ZM14.6818 17.2727H5.18182V5.18182H14.6818V17.2727Z",
+                                    fill: "white"
+                                  }
+                                })
+                              ]
+                            )
+                          ]
+                        )
+                      ])
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm._m(3),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn walletpage_btn text-white mt-3 mt-lg-5",
+                    attrs: { type: "submit" }
+                  },
+                  [_vm._v("Continue")]
+                )
+              ])
+            ])
+          ])
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "col-12 col-md-10 col-lg-8 mx-auto",
+        staticStyle: { border: "1px solid rgba(0, 0, 112, 0.25)" }
+      },
+      [
+        _c("div", { staticClass: "input-group" }, [
+          _c("input", {
+            staticClass: "form-control",
+            staticStyle: { border: "0px" },
+            attrs: {
+              type: "number",
+              step: "any",
+              id: "usd-amount",
+              required: "",
+              placeholder: "0.00"
+            }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "input-group-append" }, [
+            _c("span", { staticClass: "input-group-text usd_bg_text pr-1" }, [
+              _vm._v("USD")
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "input-group-text usd_bg_text" }, [
+              _c("img", {
+                attrs: { src: "/svg/conversion-arrow.svg", alt: "" }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control",
+            staticStyle: { border: "0px", "border-right": "0px" },
+            attrs: {
+              type: "number",
+              step: "any",
+              name: "amount",
+              id: "btc-amount",
+              placeholder: "0"
+            }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "input-group-prepend" }, [
+            _c("span", { staticClass: "input-group-text usd_bg_text" }, [
+              _vm._v("BTC")
+            ])
+          ])
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-6 col-md-4 mx-0 p-0 ml-md-auto" }, [
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", { staticClass: "networkfee_text", attrs: { for: "" } }, [
+          _vm._v("Network fee")
+        ]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            staticClass: "custom-select",
+            staticStyle: { height: "42px", "border-radius": "0px" }
+          },
+          [_c("option", { attrs: { selected: "" } }, [_vm._v("Network fee")])]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-6 col-md-4 mr-md-auto" }, [
+      _c(
+        "div",
+        { staticClass: "d-flex flex-column mx-auto networkfee_container" },
+        [
+          _c("span", { staticClass: "d-block align-self-end btctext" }, [
+            _vm._v("0 BTC")
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "d-block align-self-end customfee" }, [
+            _vm._v("Transaction Fee")
+          ])
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-10 mx-auto" }, [
+      _c("span", { staticClass: "address_input_label" }, [_vm._v("Pin")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "input-group col-7 mx-auto mb-3 mt-4" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: {
+            type: "password",
+            name: "pin",
+            required: "",
+            id: "receipientAddress"
+          }
+        })
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce&":
 /*!*****************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/calculator/giftCardCalculatorComponent.vue?vue&type=template&id=2d98c5ce& ***!
@@ -51041,12 +61750,16 @@ function normalizeComponent (
     options._ssrRegister = hook
   } else if (injectStyles) {
     hook = shadowMode
+<<<<<<< HEAD
       ? function () {
         injectStyles.call(
           this,
           (options.functional ? this.parent : this).$root.$options.shadowRoot
         )
       }
+=======
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       : injectStyles
   }
 
@@ -51055,7 +61768,11 @@ function normalizeComponent (
       // for template-only hot-reload because in that case the render fn doesn't
       // go through the normalizer
       options._injectStyles = hook
+<<<<<<< HEAD
       // register for functional component in vue file
+=======
+      // register for functioal component in vue file
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       var originalRender = options.render
       options.render = function renderWithStyleInjection (h, context) {
         hook.call(context)
@@ -51088,8 +61805,13 @@ function normalizeComponent (
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
+<<<<<<< HEAD
  * Vue.js v2.6.12
  * (c) 2014-2020 Evan You
+=======
+ * Vue.js v2.6.11
+ * (c) 2014-2019 Evan You
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  * Released under the MIT License.
  */
 
@@ -56528,7 +67250,11 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
+<<<<<<< HEAD
 Vue.version = '2.6.12';
+=======
+Vue.version = '2.6.11';
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 /*  */
 
@@ -58734,7 +69460,11 @@ function updateDOMProps (oldVnode, vnode) {
       // skip the update if old and new VDOM state is the same.
       // `value` is handled separately because the DOM value may be temporarily
       // out of sync with VDOM state due to focus, composition and modifiers.
+<<<<<<< HEAD
       // This  #4521 by skipping the unnecessary `checked` update.
+=======
+      // This  #4521 by skipping the unnecesarry `checked` update.
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       cur !== oldProps[key]
     ) {
       // some property updates can throw
@@ -60979,7 +71709,11 @@ function parse (
       }
     },
     comment: function comment (text, start, end) {
+<<<<<<< HEAD
       // adding anything as a sibling to the root node is forbidden
+=======
+      // adding anyting as a sibling to the root node is forbidden
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
       // comments should still be allowed, but ignored
       if (currentParent) {
         var child = {
@@ -63221,6 +73955,10 @@ Vue.component('gift-card-component', __webpack_require__(/*! ./components/calcul
 Vue.component('upload-modal-component', __webpack_require__(/*! ./components/calculator/uploadModalComponent.vue */ "./resources/js/components/calculator/uploadModalComponent.vue")["default"]);
 Vue.component('bitcoin-sell-component', __webpack_require__(/*! ./components/calculator/bitcoinSellComponent.vue */ "./resources/js/components/calculator/bitcoinSellComponent.vue")["default"]);
 Vue.component('bitcoin-buy-component', __webpack_require__(/*! ./components/calculator/bitcoinBuyComponent.vue */ "./resources/js/components/calculator/bitcoinBuyComponent.vue")["default"]);
+<<<<<<< HEAD
+=======
+Vue.component('bitcoin-send-component', __webpack_require__(/*! ./components/calculator/bitcoinSendComponent.vue */ "./resources/js/components/calculator/bitcoinSendComponent.vue")["default"]);
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -63555,7 +74293,11 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatFormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./ChatFormComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ChatFormComponent.vue?vue&type=style&index=0&lang=css&");
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatFormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatFormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+<<<<<<< HEAD
 /* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatFormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatFormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+=======
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatFormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatFormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ChatFormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
@@ -63780,7 +74522,11 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MessageComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./MessageComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MessageComponent.vue?vue&type=style&index=0&lang=css&");
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MessageComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MessageComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+<<<<<<< HEAD
 /* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MessageComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MessageComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+=======
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MessageComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MessageComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MessageComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
@@ -64493,6 +75239,78 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+<<<<<<< HEAD
+=======
+/***/ "./resources/js/components/calculator/bitcoinSendComponent.vue":
+/*!*********************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinSendComponent.vue ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true& */ "./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true&");
+/* harmony import */ var _bitcoinSendComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bitcoinSendComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _bitcoinSendComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "53993f49",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/calculator/bitcoinSendComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./bitcoinSendComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true&":
+/*!****************************************************************************************************************!*\
+  !*** ./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true& ***!
+  \****************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/calculator/bitcoinSendComponent.vue?vue&type=template&id=53993f49&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_bitcoinSendComponent_vue_vue_type_template_id_53993f49_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 /***/ "./resources/js/components/calculator/giftCardCalculatorComponent.vue":
 /*!****************************************************************************!*\
   !*** ./resources/js/components/calculator/giftCardCalculatorComponent.vue ***!
@@ -64695,7 +75513,11 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./FormComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/chat/FormComponent.vue?vue&type=style&index=0&lang=css&");
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+<<<<<<< HEAD
 /* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+=======
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
  /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FormComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
@@ -64911,8 +75733,13 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+<<<<<<< HEAD
 __webpack_require__(/*! C:\xampp\htdocs\godantown\app_dantownms_prod\resources\js\app.js */"./resources/js/app.js");
 module.exports = __webpack_require__(/*! C:\xampp\htdocs\godantown\app_dantownms_prod\resources\sass\app.scss */"./resources/sass/app.scss");
+=======
+__webpack_require__(/*! C:\Users\Winston\Desktop\Clients\Laravel\dantownms\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Winston\Desktop\Clients\Laravel\dantownms\resources\sass\app.scss */"./resources/sass/app.scss");
+>>>>>>> 79826d3d25e842d9bdf2bcae1b995c3f7e841760
 
 
 /***/ })

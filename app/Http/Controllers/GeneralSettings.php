@@ -43,7 +43,7 @@ class GeneralSettings extends Controller
 
     public static function getSetting($name)
     {
-        $setting = SystemSettings::where('settings_name',$name)->first();
-        return $setting;
+        // $setting = SystemSettings::where('settings_name',$name)->first();
+        // return $setting;
     }
 }

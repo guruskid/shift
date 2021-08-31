@@ -1,6 +1,6 @@
-<div class="container my-3 mt-lg-5 wallet_trx_tabs" id="bitcoin_wallet_send_tab">
-    {{-- @if($btc_withdrawal_setting['settings_value'] == 1) --}}
-    <form action="{{ route('user.send-bitcoin') }}" method="post" class="disable-form"> @csrf
+<template>
+   <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="bitcoin_wallet_send_tab">
+    <form @submit.prevent="send()" > 
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">
@@ -26,14 +26,13 @@
                             <label for="" class="networkfee_text">Network fee</label>
                             <select class="custom-select" style="height: 42px;border-radius:0px;">
                                 <option selected>Network fee</option>
-                                {{-- <option value="1">Regular</option> --}}
+                                
                             </select>
                         </div>
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end btctext">{{ number_format((float)$total_fees, 4) }}
-                                BTC</span>
+                            <span class="d-block align-self-end btctext">0 BTC</span>
                             <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>
@@ -42,7 +41,7 @@
                         <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
                             <input type="text" class="form-control" id="receipientAddress" name="address"
                                 aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <input type="hidden" name="fees" value="{{ $fees }}">
+                            <input type="hidden" name="fees" value="">
                             <div class="input-group-append">
                                 <span class="input-group-text" onclick="copywalletaddress('receipientAddress')"
                                     style="cursor:pointer;background: #000070;" id="basic-addon2"><svg width="17"
@@ -67,59 +66,25 @@
             </div>
         </div>
     </form>
-    {{-- @else
-    <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i>
-        {{$btc_withdrawal_setting['notice']}}</h4>
-    @endif --}}
 </div>
+</template>
 
-@section('scripts')
 <script>
-    var btc_to_usd = {
-        {
-            $btc_rate
-        }
-    }
-    var btcAmount = $('#btc-amount');
-    var usdAmount = $('#usd-amount');
-    //$('#usd-amount').ke
-    btcAmount.keyup(function (e) {
-        usdAmount.val(btc_to_usd * $(this).val())
-    });
+    export default {
+        props: ['usdBtc'],
 
-    usdAmount.keyup(function (e) {
-        btcAmount.val($(this).val() / btc_to_usd)
-    });
-
-
-
-    function getFees() {
-        var address = $('#receipientAddress');
-        var amount = $('#btc-amount');
-        var submitBtn = $('.btn')
-
-        if (address.val() == '' || amount.val() <= 0) {
-            return false;
-        }
-
-        submitBtn.attr('disabled', true);
-        var url = `/user/bitcoin-fees/${address.val()}/${amount.val()}`
-        $.ajax({
-            type: "get",
-            url: url,
-            success: function (res) {
-                console.log(res);
-                x = parseFloat(res.fee.medium) + parseFloat(res.charge)
-                $('.fee-text').text(x.toFixed(5));
-                $('.fee-input').val(res.fee.medium);
-                submitBtn.attr('disabled', false);
-            },
-            error: function (err) {
-                submitBtn.attr('disabled', false);
+        data() {
+            return {
+                
             }
+        },
 
-        });
+        mounted () {
+            alert(this.usdBtc);
+        },
     }
-
 </script>
-@endsection
+
+<style lang="scss" scoped>
+
+</style>

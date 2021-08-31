@@ -1,11 +1,6 @@
 <template>
-    <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home" role="tabpanel"
-        aria-labelledby="home-tab">
-        <form action="/user/trade-bitcoin" class="disable-form" method="post">
-            <input type="hidden" name="card_id" v-model="card_id">
-            <input type="hidden" name="type" value="sell">
-            <input type="hidden" name="_token" :value="csrf">
-            <input type="hidden" name="current_rate" v-model="btcToUsd">
+    <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <form @submit.prevent="sell()"  method="post">
             <div class="form-group mb-4">
                 <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
                 <div class="input-group mb-2 mr-sm-2">
@@ -55,7 +50,8 @@
                 <span class="text-primary">${{ chargeNgn.toLocaleString() }}</span>
             </div>
 
-            <button class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
+            <button v-if="!loading" class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn">Sell</button>
+            <button v-else class="sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn" disabled><i class="spinner-border"></i> </button>
         </form>
     </div>
 </template>
@@ -70,51 +66,68 @@
                 naira: '',
                 usd: '',
                 btc: '',
-
                 chargeBtc: 0,
                 chargeNgn: 0,
-
                 //rates
                 btcToUsd:  this.real_btc,
                 usdToNaira: this.rate.sell[0].rate, //our rate
                 btcToNaira: '',
-
+                loading: false,
             }
         },
         mounted () {
             //console.log(this.real_btc);
             this.btcToNaira = this.btcToUsd * this.usdToNaira;
         },
-
         methods: {
             //When USD field is updated
             getRateUsd() {
                 this.naira = this.usd * this.usdToNaira
                 this.btc = this.usd / this.btcToUsd
             },
-
             /* When btc is updated */
             getRateBtc(){
                 this.usd = this.btcToUsd * this.btc
                 this.naira = this.btc * this.btcToNaira
             },
-
             /* When ngn is updated */
             getRateNgn(){
                 this.btc = this.naira / this.btcToNaira;
                 this.usd = this.naira / this.usdToNaira;
+            },
+
+            sell(){
+                if (this.btc < 0) {
+                    swal('Oops', 'BTC amount should be greater than 0', 'error');
+                    return false;
+                }
+
+                this.loading = true;
+                axios.post('/user/sell-bitcoin', {"quantity" : this.btc })
+                .then((res)=>{
+                    if (res.data.success) {
+                        swal('Great!!', 'Bitcoin traded successfully', 'success');
+                        window.location = '/user/transactions';
+                    } else {
+                        swal('oops!!', res.data.msg, 'error');
+                    }
+                })
+                .catch((e)=>{
+                    console.log(e);
+                    swal('Oops', 'An error occured, please reload and try again', 'error');
+                })
+                .finally(()=>{
+                    this.loading = false;
+                })
+
             }
         },
-
-
         updated () {
             this.chargeBtc = (this.charge/100) * this.btc
             this.chargeNgn = this.chargeBtc * this.btcToUsd
         },
     }
-
 </script>
 
 <style>
-
 </style>

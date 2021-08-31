@@ -29,6 +29,11 @@ class BitcoinWalletController extends Controller
 
     public function btcPrice()
     {
+        return response()->json([
+            'success' => false,
+            'msg' => 'Service not available'
+        ]);
+
         $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
         $btc_rate = $res->bitcoin->usd;
 
@@ -102,6 +107,11 @@ class BitcoinWalletController extends Controller
 
     public function balance()
     {
+        return response()->json([
+            'success' => false,
+            'msg' => 'Service not available'
+        ]);
+
         if (!Auth::user()->bitcoinWallet) {
             return response()->json([
                 'success' => false,
@@ -169,6 +179,11 @@ class BitcoinWalletController extends Controller
 
     public function send(Request $r)
     {
+        return response()->json([
+            'success' => false,
+            'msg' => 'Service not available'
+        ]);
+
         if (!Auth::user()->bitcoinWallet) {
             return response()->json([
                 'success' => false,
@@ -292,6 +307,11 @@ class BitcoinWalletController extends Controller
 
     public function trade(Request $r)
     {
+        return response()->json([
+            'success' => false,
+            'msg' => 'Service not available'
+        ]);
+
         $validator = Validator::make($r->all(), [
             'card_id' => 'required|integer',
             'type' => 'required|string',

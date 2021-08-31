@@ -12,6 +12,7 @@ use App\Pop;
 use App\Setting;
 use App\Transaction;
 use App\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -38,7 +39,7 @@ class TradeController extends Controller
         /* return response()->json($assets); */
     }
 
-    public function assetRates($buy_sell, $card_id, $card_name)
+/*  */    public function assetRates($buy_sell, $card_id, $card_name)
     {
         if (!Auth::user()->nairaWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please create a Naira Wallet to continue']);
@@ -81,6 +82,18 @@ class TradeController extends Controller
 
         $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
         $tp = ($trading_per / 100) * $btc_real_time;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $btc_wallet = Auth::user()->btcWallet;
+        $btc_wallet->balance = $accounts[0]->balance->availableBalance;
+        $btc_wallet->usd = $btc_wallet->balance  * $btc_real_time;
 
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value;
 
