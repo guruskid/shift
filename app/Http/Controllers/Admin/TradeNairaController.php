@@ -60,6 +60,15 @@ class TradeNairaController extends Controller
     public function agentTransactions(User $user)
     {
         $transactions = $user->agentNairaTrades()->paginate(20);
+
+        foreach ($transactions as $t) {
+            $a = Auth::user($t->user_id)->accounts->get(1);
+            $u['account_name'] = $a['account_name'];
+            $u['bank_name'] = $a['bank_name'];
+            $u['account_number'] = $a['account_number'];
+            $t->acct_details = json_encode($u);
+        }
+
         $show_limit = false;
 
         return view('admin.trade_naira.transactions', compact('transactions', 'show_limit'));

@@ -9,4 +9,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/confirm_transaction', 'TradeController@confirm');
     Route::post('/cancel_transaction', 'TradeController@cancel');
 
+    Route::post('/sell_naira', 'TradeController@sellNaira');
+
 });
