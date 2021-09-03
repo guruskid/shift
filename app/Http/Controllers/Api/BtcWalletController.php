@@ -18,8 +18,11 @@ class BtcWalletController extends Controller
     public function btcPrice()
     {
 
-        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
-        $btc_rate = $res->bitcoin->usd;
+        $client = new Client();
+        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        $res = json_decode($res->getBody());
+        $btc_rate = $res->value;
 
         $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
         $tp = ($trading_per / 100) * $btc_rate;
@@ -38,7 +41,7 @@ class BtcWalletController extends Controller
         ]);
     }
 
-    
+
     public function create(Request $r)
     {
         $validator = Validator::make($r->all(), [
@@ -132,14 +135,19 @@ class BtcWalletController extends Controller
         }
         $card = Card::find(102);
         $rates = $card->currency->first();
-        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
-        $btc_rate = $res->bitcoin->usd;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        $res = json_decode($res->getBody());
+        $btc_rate = $res->value;
+
 
         $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
         $tp = ($trading_per / 100) * $btc_rate;
         $btc_rate -= $tp;
 
-        $client = new Client();
+        
         $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
