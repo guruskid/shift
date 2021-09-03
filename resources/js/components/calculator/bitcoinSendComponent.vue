@@ -39,7 +39,7 @@
                     <div class="col-12 col-md-10 mx-auto">
                         <span class="address_input_label">Address</span>
                         <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
-                            <input type="text" class="form-control" id="receipientAddress" name="address"
+                            <input type="text" class="form-control"  name="address"
                                 aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <input type="hidden" name="fees" value="">
                             <div class="input-group-append">
@@ -58,10 +58,10 @@
                     <div class="col-10 mx-auto">
                         <span class="address_input_label">Pin</span>
                         <div class="input-group col-7 mx-auto mb-3 mt-4">
-                            <input type="password" name="pin" required class="form-control" id="receipientAddress">
+                            <input type="password" name="pin" required class="form-control" >
                         </div>
                     </div>
-                    <button type="submit" class="btn walletpage_btn text-white mt-3 mt-lg-5">Continue</button>
+                    <button type="submit" class="btn walletpage_btn text-white mt-3 mt-lg-5">Continue -- {{ usdBtc }} </button>
                 </div>
             </div>
         </div>
@@ -71,11 +71,11 @@
 
 <script>
     export default {
-        props: ['usdBtc'],
+        props: ['usd_btc'],
 
         data() {
             return {
-                
+                usdBtc : this.usd_btc
             }
         },
 

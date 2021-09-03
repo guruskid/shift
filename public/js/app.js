@@ -3684,9 +3684,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['usdBtc'],
+  props: ['usd_btc'],
   data: function data() {
-    return {};
+    return {
+      usdBtc: this.usd_btc
+    };
   },
   mounted: function mounted() {
     alert(this.usdBtc);
@@ -53193,7 +53195,6 @@ var render = function() {
                         staticClass: "form-control",
                         attrs: {
                           type: "text",
-                          id: "receipientAddress",
                           name: "address",
                           "aria-label": "Recipient's username",
                           "aria-describedby": "basic-addon2"
@@ -53255,7 +53256,7 @@ var render = function() {
                     staticClass: "btn walletpage_btn text-white mt-3 mt-lg-5",
                     attrs: { type: "submit" }
                   },
-                  [_vm._v("Continue")]
+                  [_vm._v("Continue -- " + _vm._s(_vm.usdBtc) + " ")]
                 )
               ])
             ])
@@ -53374,12 +53375,7 @@ var staticRenderFns = [
       _c("div", { staticClass: "input-group col-7 mx-auto mb-3 mt-4" }, [
         _c("input", {
           staticClass: "form-control",
-          attrs: {
-            type: "password",
-            name: "pin",
-            required: "",
-            id: "receipientAddress"
-          }
+          attrs: { type: "password", name: "pin", required: "" }
         })
       ])
     ])

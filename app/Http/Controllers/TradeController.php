@@ -24,11 +24,11 @@ class TradeController extends Controller
     public function assets($asset_type = 'all')
     {
         if ($asset_type == 'gift cards') {
-            $assets = Card::where('is_crypto', 0)->where(function($query){
+            $assets = Card::where('is_crypto', 0)->where(function ($query) {
                 $query->where('buyable', 1)->orWhere('sellable', 1);
             })->get();
         } elseif ($asset_type == 'digital assets') {
-            $assets = Card::where('is_crypto', 1)->where(function($query){
+            $assets = Card::where('is_crypto', 1)->where(function ($query) {
                 $query->where('buyable', 1)->orWhere('sellable', 1);
             })->get();
         } else {
@@ -39,7 +39,8 @@ class TradeController extends Controller
         /* return response()->json($assets); */
     }
 
-/*  */    public function assetRates($buy_sell, $card_id, $card_name)
+    /*  */
+    public function assetRates($buy_sell, $card_id, $card_name)
     {
         if (!Auth::user()->nairaWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please create a Naira Wallet to continue']);
@@ -53,7 +54,7 @@ class TradeController extends Controller
         $card_rates =  new CardResource($card);
         $card_rates = json_encode($card_rates);
         if (\Str::lower($card->name) == 'bitcoins' || \Str::lower($card->name) == 'bitcoin') {
-            return $this->bitcoin($card->id,$buy_sell);
+            return $this->bitcoin($card->id, $buy_sell);
         }
         if (\Str::lower($card->name) == 'ether' || \Str::lower($card->name) == 'ethereum') {
             return $this->ethereum($card->id);
@@ -62,10 +63,10 @@ class TradeController extends Controller
         $sell_gc_setting = GeneralSettings::getSetting('GIFTCARD_SELL');
         $buy_gc_setting = GeneralSettings::getSetting('GIFTCARD_BUY');
 
-        return view('user.gift_card_calculator', compact(['card_rates', 'buy_sell','sell_gc_setting','buy_gc_setting']));
+        return view('user.gift_card_calculator', compact(['card_rates', 'buy_sell', 'sell_gc_setting', 'buy_gc_setting']));
     }
 
-    public function bitcoin($card_id,$buy_sell = 1)
+    public function bitcoin($card_id, $buy_sell = 1)
     {
         $card = Card::find($card_id);
         $rates = $card->currency->first();
@@ -75,10 +76,11 @@ class TradeController extends Controller
         $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
-        //dd($rates->buy);
-
-        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
-        $btc_real_time = $res->bitcoin->usd;
+        $client = new Client();
+        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $btc_real_time = $res->value;
 
         $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
         $tp = ($trading_per / 100) * $btc_real_time;
@@ -124,7 +126,7 @@ class TradeController extends Controller
             return back()->with(['error' => 'Invalid trade details']);
         }
 
-       /*  if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+        /*  if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
         } */
 
