@@ -39,7 +39,7 @@
                     </div>
                     <input type="number" required name="amount_paid" step="any" min="0"
                     v-model="naira" @keyup="getRateNgn()"
-                        class="form-control bitcoin-input-radius"  >
+                        class="form-control bitcoin-input-radius">
                 </div>
             </div>
 

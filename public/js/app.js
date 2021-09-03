@@ -3682,16 +3682,76 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['usd_btc'],
   data: function data() {
     return {
-      usdBtc: this.usd_btc
+      btcToUsd: this.usd_btc,
+      btc: '',
+      usd: '',
+      address: '',
+      pin: '',
+      fee: 0.0005,
+      loading: false
     };
   },
-  mounted: function mounted() {
-    alert(this.usdBtc);
+  mounted: function mounted() {},
+  methods: {
+    //When USD field is updated
+    getRateUsd: function getRateUsd() {
+      this.btc = this.usd / this.btcToUsd;
+      this.getFees();
+    },
+
+    /* When btc is updated */
+    getRateBtc: function getRateBtc() {
+      this.usd = this.btcToUsd * this.btc;
+      this.getFees();
+    },
+    //Get transfer fees
+    getFees: function getFees() {
+      var _this = this;
+
+      if (this.btc < 0 || this.address == '') {
+        return false;
+      }
+
+      this.loading = true;
+      axios.get("/user/bitcoin-fees/".concat(this.address, "/").concat(this.btc)).then(function (res) {
+        var x = parseFloat(res.data.fee.medium) + parseFloat(res.data.charge);
+        _this.fee = x.toFixed(5);
+      })["finally"](function () {
+        _this.loading = false;
+      });
+    },
+    send: function send() {
+      var _this2 = this;
+
+      if (this.btc < 0) {
+        swal('Oops', 'BTC amount should be greater than 0', 'error');
+        return false;
+      }
+
+      this.loading = true;
+      axios.post('/user/send-bitcoin', {
+        "amount": this.btc,
+        "address": this.address,
+        "pin": this.pin,
+        "fees": this.fee
+      }).then(function (res) {
+        if (res.data.success) {
+          swal('Great!!', 'Bitcoin sent successfully', 'success');
+          window.location = '/user/bitcoin-wallet';
+        } else {
+          swal('oops!!', res.data.msg, 'error');
+        }
+      })["catch"](function (e) {
+        console.log(e);
+        swal('Oops', 'An error occured, please reload and try again', 'error');
+      })["finally"](function () {
+        _this2.loading = false;
+      });
+    }
   }
 });
 
@@ -53171,13 +53231,104 @@ var render = function() {
         },
         [
           _c("div", { staticClass: "row" }, [
-            _vm._m(0),
+            _c(
+              "div",
+              {
+                staticClass: "col-12 col-md-10 col-lg-8 mx-auto",
+                staticStyle: { border: "1px solid rgba(0, 0, 112, 0.25)" }
+              },
+              [
+                _c("div", { staticClass: "input-group" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.usd,
+                        expression: "usd"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    staticStyle: { border: "0px" },
+                    attrs: {
+                      type: "number",
+                      step: "any",
+                      required: "",
+                      placeholder: "0.00"
+                    },
+                    domProps: { value: _vm.usd },
+                    on: {
+                      keyup: function($event) {
+                        return _vm.getRateUsd()
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.usd = $event.target.value
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.btc,
+                        expression: "btc"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    staticStyle: { border: "0px", "border-right": "0px" },
+                    attrs: { type: "number", step: "any", placeholder: "0" },
+                    domProps: { value: _vm.btc },
+                    on: {
+                      keyup: function($event) {
+                        return _vm.getRateBtc()
+                      },
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.btc = $event.target.value
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm._m(1)
+                ])
+              ]
+            ),
             _vm._v(" "),
             _c("div", { staticClass: "container mt-3m mt-lg-5" }, [
               _c("div", { staticClass: "row" }, [
-                _vm._m(1),
-                _vm._v(" "),
                 _vm._m(2),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-6 col-md-4 mr-md-auto" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "d-flex flex-column mx-auto networkfee_container"
+                    },
+                    [
+                      _c(
+                        "span",
+                        { staticClass: "d-block align-self-end btctext" },
+                        [_vm._v(_vm._s(_vm.fee) + " BTC")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { staticClass: "d-block align-self-end customfee" },
+                        [_vm._v("Transaction Fee")]
+                      )
+                    ]
+                  )
+                ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-12 col-md-10 mx-auto" }, [
                   _c("span", { staticClass: "address_input_label" }, [
@@ -53192,17 +53343,28 @@ var render = function() {
                     },
                     [
                       _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.address,
+                            expression: "address"
+                          }
+                        ],
                         staticClass: "form-control",
-                        attrs: {
-                          type: "text",
-                          name: "address",
-                          "aria-label": "Recipient's username",
-                          "aria-describedby": "basic-addon2"
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.address },
+                        on: {
+                          change: function($event) {
+                            return _vm.getFees()
+                          },
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.address = $event.target.value
+                          }
                         }
-                      }),
-                      _vm._v(" "),
-                      _c("input", {
-                        attrs: { type: "hidden", name: "fees", value: "" }
                       }),
                       _vm._v(" "),
                       _c("div", { staticClass: "input-group-append" }, [
@@ -53248,16 +53410,63 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _vm._m(3),
+                _c("div", { staticClass: "col-10 mx-auto" }, [
+                  _c("span", { staticClass: "address_input_label" }, [
+                    _vm._v("Pin")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "input-group col-7 mx-auto mb-3 mt-4" },
+                    [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.pin,
+                            expression: "pin"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "password",
+                          maxlength: "4",
+                          required: ""
+                        },
+                        domProps: { value: _vm.pin },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.pin = $event.target.value
+                          }
+                        }
+                      })
+                    ]
+                  )
+                ]),
                 _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn walletpage_btn text-white mt-3 mt-lg-5",
-                    attrs: { type: "submit" }
-                  },
-                  [_vm._v("Continue -- " + _vm._s(_vm.usdBtc) + " ")]
-                )
+                !_vm.loading
+                  ? _c(
+                      "button",
+                      {
+                        staticClass:
+                          "btn walletpage_btn text-white mt-3 mt-lg-5",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Send ")]
+                    )
+                  : _c(
+                      "button",
+                      {
+                        staticClass:
+                          "btn walletpage_btn text-white mt-3 mt-lg-5",
+                        attrs: { disabled: "", type: "submit" }
+                      },
+                      [_vm._v("Loading... ")]
+                    )
               ])
             ])
           ])
@@ -53271,58 +53480,25 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "col-12 col-md-10 col-lg-8 mx-auto",
-        staticStyle: { border: "1px solid rgba(0, 0, 112, 0.25)" }
-      },
-      [
-        _c("div", { staticClass: "input-group" }, [
-          _c("input", {
-            staticClass: "form-control",
-            staticStyle: { border: "0px" },
-            attrs: {
-              type: "number",
-              step: "any",
-              id: "usd-amount",
-              required: "",
-              placeholder: "0.00"
-            }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "input-group-append" }, [
-            _c("span", { staticClass: "input-group-text usd_bg_text pr-1" }, [
-              _vm._v("USD")
-            ]),
-            _vm._v(" "),
-            _c("span", { staticClass: "input-group-text usd_bg_text" }, [
-              _c("img", {
-                attrs: { src: "/svg/conversion-arrow.svg", alt: "" }
-              })
-            ])
-          ]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "form-control",
-            staticStyle: { border: "0px", "border-right": "0px" },
-            attrs: {
-              type: "number",
-              step: "any",
-              name: "amount",
-              id: "btc-amount",
-              placeholder: "0"
-            }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "input-group-prepend" }, [
-            _c("span", { staticClass: "input-group-text usd_bg_text" }, [
-              _vm._v("BTC")
-            ])
-          ])
-        ])
-      ]
-    )
+    return _c("div", { staticClass: "input-group-append" }, [
+      _c("span", { staticClass: "input-group-text usd_bg_text pr-1" }, [
+        _vm._v("USD")
+      ]),
+      _vm._v(" "),
+      _c("span", { staticClass: "input-group-text usd_bg_text" }, [
+        _c("img", { attrs: { src: "/svg/conversion-arrow.svg", alt: "" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-text usd_bg_text" }, [
+        _vm._v("BTC")
+      ])
+    ])
   },
   function() {
     var _vm = this
@@ -53342,41 +53518,6 @@ var staticRenderFns = [
           },
           [_c("option", { attrs: { selected: "" } }, [_vm._v("Network fee")])]
         )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-6 col-md-4 mr-md-auto" }, [
-      _c(
-        "div",
-        { staticClass: "d-flex flex-column mx-auto networkfee_container" },
-        [
-          _c("span", { staticClass: "d-block align-self-end btctext" }, [
-            _vm._v("0 BTC")
-          ]),
-          _vm._v(" "),
-          _c("span", { staticClass: "d-block align-self-end customfee" }, [
-            _vm._v("Transaction Fee")
-          ])
-        ]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-10 mx-auto" }, [
-      _c("span", { staticClass: "address_input_label" }, [_vm._v("Pin")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "input-group col-7 mx-auto mb-3 mt-4" }, [
-        _c("input", {
-          staticClass: "form-control",
-          attrs: { type: "password", name: "pin", required: "" }
-        })
       ])
     ])
   }

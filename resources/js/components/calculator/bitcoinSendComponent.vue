@@ -1,10 +1,10 @@
 <template>
    <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="bitcoin_wallet_send_tab">
-    <form @submit.prevent="send()" > 
+    <form @submit.prevent="send()" >
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">
-                    <input type="number" step="any" id="usd-amount" required class="form-control" placeholder="0.00"
+                    <input type="number" step="any" @keyup="getRateUsd()" v-model="usd" required class="form-control" placeholder="0.00"
                         style="border: 0px;">
                     <div class="input-group-append">
                         <span class="input-group-text usd_bg_text pr-1">USD</span>
@@ -12,7 +12,7 @@
                             <img src="/svg/conversion-arrow.svg" alt="">
                         </span>
                     </div>
-                    <input type="number" step="any" name="amount" id="btc-amount" placeholder="0" class="form-control"
+                    <input type="number" step="any" @keyup="getRateBtc()" v-model="btc" placeholder="0" class="form-control"
                         style="border: 0px;border-right:0px;">
                     <div class="input-group-prepend">
                         <span class="input-group-text usd_bg_text">BTC</span>
@@ -26,22 +26,20 @@
                             <label for="" class="networkfee_text">Network fee</label>
                             <select class="custom-select" style="height: 42px;border-radius:0px;">
                                 <option selected>Network fee</option>
-                                
+
                             </select>
                         </div>
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end btctext">0 BTC</span>
+                            <span class="d-block align-self-end btctext">{{ fee }} BTC</span>
                             <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>
                     <div class="col-12 col-md-10 mx-auto">
                         <span class="address_input_label">Address</span>
                         <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
-                            <input type="text" class="form-control"  name="address"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <input type="hidden" name="fees" value="">
+                            <input type="text" class="form-control"  v-model="address" @change="getFees()">
                             <div class="input-group-append">
                                 <span class="input-group-text" onclick="copywalletaddress('receipientAddress')"
                                     style="cursor:pointer;background: #000070;" id="basic-addon2"><svg width="17"
@@ -58,10 +56,11 @@
                     <div class="col-10 mx-auto">
                         <span class="address_input_label">Pin</span>
                         <div class="input-group col-7 mx-auto mb-3 mt-4">
-                            <input type="password" name="pin" required class="form-control" >
+                            <input type="password" v-model="pin" maxlength="4" required class="form-control" >
                         </div>
                     </div>
-                    <button type="submit" class="btn walletpage_btn text-white mt-3 mt-lg-5">Continue -- {{ usdBtc }} </button>
+                    <button type="submit" v-if="!loading" class="btn walletpage_btn text-white mt-3 mt-lg-5">Send </button>
+                    <button disabled type="submit" v-else class="btn walletpage_btn text-white mt-3 mt-lg-5">Loading... </button>
                 </div>
             </div>
         </div>
@@ -75,12 +74,80 @@
 
         data() {
             return {
-                usdBtc : this.usd_btc
+                btcToUsd : this.usd_btc,
+                btc: '',
+                usd: '',
+                address: '',
+                pin: '',
+                fee: 0.0005,
+                loading: false,
             }
         },
 
         mounted () {
-            alert(this.usdBtc);
+
+        },
+
+        methods: {
+            //When USD field is updated
+            getRateUsd() {
+                this.btc = this.usd / this.btcToUsd;
+                this.getFees();
+            },
+
+            /* When btc is updated */
+            getRateBtc(){
+                this.usd = this.btcToUsd * this.btc
+                this.getFees();
+            },
+
+            //Get transfer fees
+            getFees(){
+                if(this.btc < 0 || this.address == '' ){
+                    return false;
+                }
+                this.loading = true;
+                axios.get(`/user/bitcoin-fees/${this.address}/${this.btc}`)
+                .then((res) =>{
+                    let x = parseFloat(res.data.fee.medium) + parseFloat(res.data.charge);
+                    this.fee = x.toFixed(5);
+                })
+                .finally(()=>{
+                    this.loading = false;
+                });
+            },
+
+            send(){
+                if (this.btc < 0) {
+                    swal('Oops', 'BTC amount should be greater than 0', 'error');
+                    return false;
+                }
+
+                this.loading = true;
+                axios.post('/user/send-bitcoin', {
+                    "amount" : this.btc,
+                    "address" : this.address,
+                    "pin" : this.pin,
+                    "fees" : this.fee
+                    })
+                .then((res)=>{
+                    if (res.data.success) {
+                        swal('Great!!', 'Bitcoin sent successfully', 'success');
+                        window.location = '/user/bitcoin-wallet';
+                    } else {
+                        swal('oops!!', res.data.msg, 'error');
+                    }
+                })
+                .catch((e)=>{
+                    console.log(e);
+                    swal('Oops', 'An error occured, please reload and try again', 'error');
+                })
+                .finally(()=>{
+                    this.loading = false;
+                })
+
+            }
+
         },
     }
 </script>

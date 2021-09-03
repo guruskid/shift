@@ -476,12 +476,18 @@ class BtcWalletController extends Controller
 
 
         if (!Auth::user()->btcWallet) {
-            return redirect()->route('user.portfolio')->with(['error' => 'Please create a bitcoin wallet to continue']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please create a bitcoin wallet to continue'
+            ]);
         }
 
         //Check password
         if (!Hash::check($data['pin'], Auth::user()->pin)) {
-            return back()->with(['error' => 'Incorrect bitcoin wallet pin']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Incorrect bitcoin wallet pin'
+            ]);
         }
 
         $client = new Client();
@@ -498,7 +504,10 @@ class BtcWalletController extends Controller
         $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
 
         if ($data['amount'] > $user_wallet->balance) {
-            return back()->with(['error' => 'Insufficient balance']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient balance'
+            ]);
         }
 
         $charge_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
@@ -510,7 +519,10 @@ class BtcWalletController extends Controller
         $send_total = number_format((float)$total, 8);
 
         if ($send_total < 0) {
-            return back()->with(['error' => 'Insufficient amount']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient amount'
+            ]);
         }
         //dd($send_total, $fees, $data['address']);
         $fees = number_format((float) $fees, 6);
@@ -552,15 +564,24 @@ class BtcWalletController extends Controller
 
 
             if (Arr::exists($res, 'signatureId')) {
-                return back()->with(['success' => 'Bitcoin sent successfully']);
+                return response()->json([
+                    'success' => true,
+                    'msg' => 'Bitcoin sent successfully'
+                ]);
+                
             } else {
-                return back()->with(['error' => 'An error occured, please try again']);
+                return response()->json([
+                    'success' => false,
+                    'msg' => 'An error occured, please try again'
+                ]);
             }
         } catch (\Exception $e) {
             //report($e);
             \Log::info($e->getResponse()->getBody());
-
-            return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'An error occured while processing the transaction, please confirm the details and try again'
+            ]);
         }
     }
 }

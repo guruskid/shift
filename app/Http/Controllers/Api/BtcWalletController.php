@@ -41,6 +41,33 @@ class BtcWalletController extends Controller
         ]);
     }
 
+    public function fees($address, $amount)
+    {
+        $client = new Client();
+        $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
+        $amount = number_format((float) $amount, 8);
+
+        $url = env('TATUM_URL') . '/offchain/blockchain/estimate';
+        /* try { */
+        $get_fees = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' =>  [
+                "senderAccountId" => Auth::user()->btcWallet->account_id,
+                "address" => $address,
+                "amount" => $amount,
+                "xpub" => $hd_wallet->xpub
+            ]
+        ]);
+        /*  } catch (\Exception $e) {
+            //\Log::info($e->getResponse()->getBody());
+        } */
+        $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
+        $res = json_decode($get_fees->getBody());
+        return response()->json([
+            "fee" => $res,
+            "charge" => $charge
+        ]);
+    }
 
     public function create(Request $r)
     {
@@ -171,6 +198,32 @@ class BtcWalletController extends Controller
             'btc_value' => number_format((float)$btc_wallet->balance, 8),
             'ngn_value' => (int)$btc_ngn,
             'usd_value' => $btc_wallet->usd
+        ]);
+    }
+
+    public function transactions()
+    {
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+        $get_txns = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            "json" => ["id" => Auth::user()->btcWallet->account_id]
+        ]);
+
+        $transactions = json_decode($get_txns->getBody());
+        foreach ($transactions as $t) {
+            $x = \Str::limit($t->created, 10, '');
+            $time = \Carbon\Carbon::parse((int)$x);
+            $t->created_at = $time->setTimezone('Africa/Lagos');
+
+            if (!isset($t->senderNote)) {
+                $t->senderNote = 'Sending BTC';
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'transactions' => $transactions
         ]);
     }
 }

@@ -154,8 +154,8 @@
                                     </div>
                                 </div>
 
-                                @include('newpages.tabs.bitcoin-wallet-send')
-                                {{-- <bitcoin-send-component :usd_btc="{{ $btc_rate }}" ></bitcoin-send-component> --}}
+                                {{-- @include('newpages.tabs.bitcoin-wallet-send') --}}
+                                <bitcoin-send-component :usd_btc="{{ $btc_rate }}" ></bitcoin-send-component>
                                 @include('newpages.tabs.bitcoin-wallet-receive')
 
                             </div>
