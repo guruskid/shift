@@ -50,7 +50,7 @@ class BtcWalletController extends Controller
         $amount = number_format((float) $amount, 8);
 
         $url = env('TATUM_URL') . '/offchain/blockchain/estimate';
-        
+
         $get_fees = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' =>  [
@@ -60,8 +60,8 @@ class BtcWalletController extends Controller
                 "xpub" => $hd_wallet->xpub
             ]
         ]);
-        
-        
+
+
         $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
         $res = json_decode($get_fees->getBody());
         $total_fees = $charge + $res->medium;
@@ -69,7 +69,7 @@ class BtcWalletController extends Controller
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
         $res = json_decode($res->getBody());
-        $btc_rate = $res->value;
+        $btc_rate = floatval($res->value);
 
         return response()->json([
             'success' => true,
@@ -183,7 +183,7 @@ class BtcWalletController extends Controller
         $tp = ($trading_per / 100) * $btc_rate;
         $btc_rate -= $tp;
 
-        
+
         $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
