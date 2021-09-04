@@ -22,7 +22,7 @@ class BtcWalletController extends Controller
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
         $res = json_decode($res->getBody());
-        $btc_rate = $res->value;
+        $btc_rate = (int)$res->value;
 
         $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
         $tp = ($trading_per / 100) * $btc_rate;
@@ -176,7 +176,7 @@ class BtcWalletController extends Controller
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
         $res = json_decode($res->getBody());
-        $btc_rate = $res->value;
+        $btc_rate = (int)$res->value;
 
 
         $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;

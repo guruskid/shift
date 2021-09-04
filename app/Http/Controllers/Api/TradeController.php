@@ -44,8 +44,8 @@ class TradeController extends Controller
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
-        $btc_real_time = $res->value;
-        
+        $btc_real_time = (int)$res->value;
+
         return response()->json([
             'success' => true,
             'data' => $card_rates,
