@@ -93,12 +93,13 @@ Route::group(['prefix' => 'v1'], function () {
             Route::POST('/create', 'Api\BtcWalletController@create');
             Route::GET('/balance', 'Api\BtcWalletController@balance');
             Route::GET('/transactions', 'Api\BtcWalletController@transactions');
+            Route::GET('/send-charges', 'Api\BtcWalletController@fees');
 
             Route::POST('/trade', 'BtcWalletController@sell');
             Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
             Route::POST('/send', 'BtcWalletController@send');
 
-            Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');
+            
         });
 
 

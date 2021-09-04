@@ -41,14 +41,16 @@ class BtcWalletController extends Controller
         ]);
     }
 
-    public function fees($address, $amount)
+    public function fees()
     {
+        $address = HdWallet::where('currency_id', 1)->first()->address;
+        $amount = 0.002;
         $client = new Client();
         $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
         $amount = number_format((float) $amount, 8);
 
         $url = env('TATUM_URL') . '/offchain/blockchain/estimate';
-        /* try { */
+        
         $get_fees = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' =>  [
@@ -58,14 +60,21 @@ class BtcWalletController extends Controller
                 "xpub" => $hd_wallet->xpub
             ]
         ]);
-        /*  } catch (\Exception $e) {
-            //\Log::info($e->getResponse()->getBody());
-        } */
+        
+        
         $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
         $res = json_decode($get_fees->getBody());
+        $total_fees = $charge + $res->medium;
+
+        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        $res = json_decode($res->getBody());
+        $btc_rate = $res->value;
+
         return response()->json([
-            "fee" => $res,
-            "charge" => $charge
+            'success' => true,
+            'send_fee' => $total_fees,
+            'btc_to_usd' => $btc_rate,
         ]);
     }
 
