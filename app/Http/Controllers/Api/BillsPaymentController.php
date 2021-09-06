@@ -382,10 +382,42 @@ class BillsPaymentController extends Controller
                 $nt->narration = 'Payment for Electricity bill';
                 $nt->trans_msg = 'done';
                 $nt->status = 'success';
+                
+                $extras = json_encode([
+                    'token' => $response['token'],
+                    'purchased_code' => $response['purchased_code'],
+                    'units' => $response['units'],
+                ]);
+
+                $nt->extras = $extras;
                 $nt->save();
 
+                $phone = Auth::user()->country->phonecode . Auth::user()->phone;
+
+                if (isset(Auth::user()->phone)) {
+                    $client = new Client();
+                    $url = env('TERMII_SMS_URL') . "/send";
+                    $country = Country::find($country_id);
+                    $phone_number = $country->phonecode . $phone;
+
+                    $response = $client->request('POST', $url, [
+                        'json' => [
+                            'api_key' => env('TERMII_API_KEY'),
+                            "type" => "plain",
+                            "to" => $phone_number,
+                            "from" => "N-Alert",
+                            "channel" => "dnd",
+                            "sms" => "Your electricity purchase from Dantown was successful. Token : ".$response['token'].", Units : ".$response['units'].", Reference code:".$reference."."
+                        ],
+                    ]);
+                    $body = json_decode($response->getBody()->getContents());   
+                }
+
                 $title = 'Electricity purchase';
-                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge';
+                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge. 
+                Token: '.$response['token']. ',
+                Unit: '. $response['units']. ',
+                Reference code:'. $reference;
 
                 $not = Notification::create([
                     'user_id' => Auth::user()->id,
