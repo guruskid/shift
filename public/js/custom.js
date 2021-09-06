@@ -133,6 +133,17 @@ $(document).ready(function () {
         })
     })
 
+    $('#electricy_board').on('change',function (e) {
+        var serviceId = e.currentTarget.value
+        $.post('/user/get-variations/'+serviceId,null,function (result,status) {
+            var option = "<option>Select Metre Type</option>";
+            result.forEach(variation => {
+                option += "<option value="+variation.variation_code+">"+variation.variation_name+"</option>"
+            });
+            $('#metre_type').html(option)
+        })
+    })
+
 });
 
 //Update wallet balance

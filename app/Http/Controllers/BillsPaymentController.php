@@ -69,7 +69,6 @@ class BillsPaymentController extends Controller
     }
 
 
-
     public function CableView()
     {
 
@@ -170,7 +169,6 @@ class BillsPaymentController extends Controller
         if ($body->responsecode == 00 || $body->responsecode == "-1") {
             return back()->with(['success' => 'Purchase made successfully']);
         } else {
-
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
     }
@@ -915,6 +913,181 @@ class BillsPaymentController extends Controller
             //dd($body,$reference,1);
         } catch (Exception $exception) {
             return back()->with(['error' => 'Oops! ']);
+        }
+    }
+
+
+
+    public function electricityRechargeView()
+    {
+        $content = $this->getProducts();
+        if (!empty($content)) {
+            $boards = $content;
+            return view('newpages.electricity-recharge', compact(['boards']));
+        } else {
+            return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
+        }
+    }
+
+    public function getProducts($category = "electricity-bill") {
+        $category = (
+            ($category == "airtime") ? "airtime" :
+            (($category == "data") ? "data" :
+            (($category == "tv-subscription") ? "tv-subscription" :
+            (($category == "electricity-bill") ? "electricity-bill" :
+            (($category == "insurance") ? "insurance" : 
+            (($category == "education") ? "education" :
+            (($category == "funds") ? "funds" : ""))))))
+        );
+        
+        $response = [];
+        if(!empty($category)) {
+            $ch = curl_init(env('LIVE_VTPASS_GET_PRODUCTS_URL').$category);
+            \curl_setopt_array($ch,[
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT=> 120,    
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response,true);
+            if(isset($response['response_description']) && $response['response_description'] != "000") {
+                $response = [];
+            }else{
+                $response = $response['content'];
+            }
+        }
+        return $response;
+    }
+
+    public function getVariations($product) { 
+        $response = [];
+        if(!empty($product)) {
+            $ch = curl_init(env('LIVE_VTPASS_GET_VARIATIONS_URL').$product);
+            \curl_setopt_array($ch,[
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT=> 120,    
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response,true);
+            
+            if(isset($response['response_description']) && $response['response_description'] != "000") {
+                $response = [];
+            }else{
+                $response = isset($response['content']['varations']) ? $response['content']['varations'] : [];
+            }
+        }
+        if(count($response) > 0) {
+            $vars = [];
+            foreach($response as $vr) {
+                $vars[] = [
+                    'variation_name' => $vr['name'],
+                    'variation_code' => $vr['variation_code']
+                ];
+            }
+            $response = $vars;
+        }
+        return $response;
+    }
+
+    public function payElectricityVtpass(Request $r)
+    {
+
+        $r->validate([
+            'electricity_board' => 'required',
+            'amount' => 'required',
+            'password' => 'required',
+            'metre_type' => 'required',
+            'metre_number'  => 'required',
+            'email'  => 'required',
+            'phone_number'  => 'required'
+        ]);
+
+        $n = Auth::user()->nairaWallet;
+
+        if (Hash::check($r->password, $n->password) == false) {
+            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+        }
+
+        $amount = $r->amount;
+        if ($amount > $n->amount) {
+            return redirect()->back()->with(['error' => 'Insufficient funds']);
+        }
+
+        if($r->amount < 500){
+            return redirect()->back()->with(['error' => 'Minimium amount is ₦500']);
+        }
+
+        if($r->amount > 100000){
+            return redirect()->back()->with(['error' => 'Maximium amount is ₦100000']);
+        }
+
+        $reference = rand(111111,999999).time();
+        $postData['serviceID'] = $r->electricity_board;
+        $postData['variation_code'] = $r->metre_type;
+        $postData['amount'] = $r->amount;
+        $postData['billersCode'] = $r->metre_number;
+        $postData['phone'] = $r->phone_number;
+        $postData['email'] = $r->email;
+        $postData['request_id'] = $reference;
+
+        $ch = curl_init(env('LIVE_VTPASS_PURCHASE_URL'));
+        \curl_setopt_array($ch,[
+            CURLOPT_HEADER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERPWD=> env('VTPASS_USERNAME').':'.env('VTPASS_PASSWORD'),
+            CURLOPT_TIMEOUT=> 120, 
+            CURLOPT_POST=>true,
+            CURLOPT_POSTFIELDS=>$postData 
+        ]);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $response = json_decode($response,true);
+
+        // dd($response);
+
+        if(isset($response['content']) && isset($response['content']['transactions'])) {
+            if($response['content']['transactions']['status'] == 'delivered') {
+                $prev_bal = $n->amount;
+                $n->amount -= $amount;
+                $n->save();
+
+                $nt = new NairaTransaction();
+                $nt->reference = $reference;
+                $nt->amount = $amount;
+                $nt->user_id = Auth::user()->id;
+                $nt->type = 'elecriciy bills';
+
+                $nt->previous_balance = $prev_bal;
+                $nt->current_balance = $n->amount;
+                $nt->charge = (1 / 100) * $amount;
+                $nt->transaction_type_id = 11;
+
+
+                $nt->dr_user_id = Auth::user()->id;
+                $nt->dr_wallet_id = $n->id;
+                $nt->dr_acct_name = $n->account_name;
+                $nt->cr_acct_name = $r->provider;
+                $nt->narration = 'Payment for Electricity bill';
+                $nt->trans_msg = 'done';
+                $nt->status = 'success';
+                $nt->save();
+
+                $title = 'Electricity purchase';
+                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge';
+
+                $not = Notification::create([
+                    'user_id' => Auth::user()->id,
+                    'title' => $title,
+                    'body' => $msg_body,
+                ]);
+
+                return back()->with(['success' => 'Purchase made successfully']);
+            }
+        }else {
+            return back()->with(['error' => 'Oops! An error occured, please try again' . $response['response_description']]);
         }
     }
 
