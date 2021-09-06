@@ -304,7 +304,7 @@ class BillsPaymentController extends Controller
 
     public function nairaRate()
     {
-        return back()->with(['error' => 'Service not available']);
+        // return back()->with(['error' => 'Service not available']);
         $naira_wallet = Auth::user()->nairaWallet;
         $balance = $naira_wallet->amount;
         // dd($balance);
@@ -377,7 +377,7 @@ class BillsPaymentController extends Controller
         if ($request->rechargetype == 'self') {
             $phone = Auth::user()->country->phonecode . Auth::user()->phone;
             if(!isset(Auth::user()->phone)){
-                return back()->with(['error'=> 'Please your phone number to your account']);
+                return back()->with(['error'=> 'Please add a phone number to your account']);
             }
         } else{
             $request->validate([
@@ -418,8 +418,9 @@ class BillsPaymentController extends Controller
         ]);
 
         // dd('stop here');
+        $reference = rand(111111,999999).time();
         $nt = new NairaTransaction();
-        $nt->reference = $request->reference;
+        $nt->reference = $reference;
         $nt->narration = $phone. ' ' . 'Payment for recharge card';
         $nt->amount = $request->amount;
         $nt->user_id = Auth::user()->id;
@@ -443,7 +444,7 @@ class BillsPaymentController extends Controller
         $response = $client->request('POST', $url, [
             'json' => [
                 // 'request_id' => Str::random(6),
-                'request_id' => $request->reference,
+                'request_id' => $reference,
                 'serviceID' => $request->network,
                 'amount' => $request->amount,
                 'phone' => $phone
@@ -1091,7 +1092,7 @@ class BillsPaymentController extends Controller
                 if (isset(Auth::user()->phone)) {
                     $client = new Client();
                     $url = env('TERMII_SMS_URL') . "/send";
-                    $country = Country::find($country_id);
+                    $country = Country::find(Auth::user()->country_id);
                     $phone_number = $country->phonecode . $phone;
 
                     $response = $client->request('POST', $url, [

@@ -382,7 +382,7 @@ class BillsPaymentController extends Controller
                 $nt->narration = 'Payment for Electricity bill';
                 $nt->trans_msg = 'done';
                 $nt->status = 'success';
-                
+
                 $extras = json_encode([
                     'token' => $response['token'],
                     'purchased_code' => $response['purchased_code'],
@@ -397,7 +397,7 @@ class BillsPaymentController extends Controller
                 if (isset(Auth::user()->phone)) {
                     $client = new Client();
                     $url = env('TERMII_SMS_URL') . "/send";
-                    $country = Country::find($country_id);
+                    $country = Country::find(Auth::user()->country_id);
                     $phone_number = $country->phonecode . $phone;
 
                     $response = $client->request('POST', $url, [
