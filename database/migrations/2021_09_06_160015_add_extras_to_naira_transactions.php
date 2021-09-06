@@ -14,7 +14,7 @@ class AddExtrasToNairaTransactions extends Migration
     public function up()
     {
         Schema::table('naira_transactions', function (Blueprint $table) {
-            $table->text('extras');
+            $table->text('extras')->nullable();
         });
     }
 
