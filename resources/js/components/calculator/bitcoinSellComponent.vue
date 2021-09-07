@@ -123,7 +123,7 @@
                 }
 
                 ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
-                ajax.send(); //wrong
+                ajax.send(); 
             },
             sell(){
                 if (this.btc < 0) {
