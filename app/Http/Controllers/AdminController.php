@@ -14,6 +14,8 @@ use App\Charts\UserChart;
 use App\Events\TransactionUpdated;
 use App\Mail\DantownNotification;
 use App\NairaTransaction;
+use App\Exports\DownloadUsers;
+use Excel;
 use App\NairaWallet;
 use App\TransactionType;
 use Carbon\Carbon;
@@ -519,5 +521,38 @@ class AdminController extends Controller
     {
         $not = Notification::find($id);
         return response()->json($not->delete());
+    }
+
+    public function downloadUserDb()
+    {
+        return view("admin.userdb");
+    }
+
+    // public function downloadUserDbsearchj(Request $request)
+    // {
+    //     $request->validate([
+    //         'start' => 'required|date|string',
+    //         'end' => 'required|date|string',
+    //     ]);
+    //     $users = User::where('created_at', '>=', $request->start)->where('created_at', '<=', $request->end)->paginate(200);
+    //     // $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Asset';
+
+    //     return view('admin.userdb', compact(['users']));
+    // }
+
+    // public function exportIntoExcel()
+    // {
+    //     return Excel::download(new DownloadUsers, 'roxo.csv');
+    // }
+
+    // public function downloadUserDbsearch()
+    // {
+    //     return Excel::download(new DownloadUsers, 'roxo.xlsx');
+    //     return $datas;
+    // }
+
+    public function downloadUserDbsearch()
+    {
+        return Excel::download(new DownloadUsers, 'dantown_users.xlsx');
     }
 }

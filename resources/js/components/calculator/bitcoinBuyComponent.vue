@@ -18,12 +18,21 @@
                 </div>
             </div>
             <div class="form-group mb-4">
-                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Bitcoin
+                <div class="d-flex justify-content-between" >
+                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Bitcoin
                     equivalent</label>
+
+                    <div>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(25)"> 25% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(50)"> 50% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(75)"> 75% </span>
+                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(100)"> 100% </span>
+                    </div>
+
+                </div>
                 <div class="input-group mb-2 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
-                        <div class="input-group-text input_label">
-                            BTC</div>
+                        <div class="input-group-text input_label">BTC</div>
                     </div>
                     <input type="number" required step="any" min="0" name="quantity" v-model="btcBuy"
                         @keyup="getRateBtcBuy()" class="form-control bitcoin-input-radius">
@@ -54,6 +63,8 @@
     export default {
         props: ['rate', 'real_btc', 'card_id'],
         data() {
+
+
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 //Input fields
@@ -90,9 +101,30 @@
             getRateNgnBuy() {
                 this.btcBuy = this.nairaBuy / this.btcToNairaBuy;
                 this.usdBuy = this.nairaBuy / this.usdToNairaBuy;
-            }
-        },
+            },
 
+            btcPercentage(percentage) {
+                const userFraction = percentage / 100
+
+                const ajax = new XMLHttpRequest;
+                ajax.onload = ()=>{
+                    // console.log(ajax.responseText)
+                    const userWallet = JSON.parse(ajax.responseText)
+                    const balance = userWallet.btcBalance[0].balance
+                     setTimeout(()=>{
+                        // console.log(balance)
+                        this.btcBuy = balance * userFraction
+                        this.usdBuy = this.btcToUsdBuy * this.btcBuy
+                        this.nairaBuy = this.btcBuy * this.btcToNairaBuy
+
+                     }, 100)
+
+                }
+
+                ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
+                ajax.send();
+            }
+        }
     }
 
 </script>

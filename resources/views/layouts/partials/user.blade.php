@@ -12,6 +12,7 @@
                             <img src="{{ Route::currentRouteName() == "user.dashboard" ? asset('svg/dashboard_icon.svg'):asset('svg/dashboard_icon_inactive.svg')}}" alt="">
                         </i>
                         Dashboard
+                        {{-- <vue-file :variable="{{ $balance }}"></vue-file> --}}
                 </a>
             </li>
 

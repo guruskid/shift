@@ -180,7 +180,12 @@ class RegisterController extends Controller
         //Mail::to($user->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.bitcoin-wallet')));
 
 
-
+        // $engage = new \Engage\EngageClient($_SERVER['01ce2904a334879cddb2ae7e62d019a3'], $_SERVER['4595ad59cdc1a7df2af3e4a06ce1a4da']);
+        // $engage->users->identify([
+        //     'id' => $user->id,
+        //     'email' => $user->email,
+        //     'created_at' => $user->created_at
+        //   ]);
         return $user;
     }
 }

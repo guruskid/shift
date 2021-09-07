@@ -54,6 +54,9 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::view('/bitcoin-new-txn', 'admin.bitcoin_wallet.new_txn');
     Route::POST('/bitcoin-new-txn', 'BitcoinWalletController@addTxn')->name('admin.bitcoin.add-txn');
 
+    Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
+    Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
+
 
     Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
     Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
@@ -82,6 +85,9 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::get('/bitcoin-charges', 'BitcoinWalletController@charges')->name('admin.bitcoin.charges');
     Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges' )->name('admin.bitcoin.transfer-charges');
     Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions')->name('admin.bitcoin-wallets-transactions');
+
+    Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
+
 
 
     Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');

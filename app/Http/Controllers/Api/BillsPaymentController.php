@@ -362,7 +362,7 @@ class BillsPaymentController extends Controller
     //     if($request->amount > 25000){
     //         return response()->json([
     //             'success' => false,
-    //             'message' => 'Minimium amount is ₦25000',
+    //             'message' => 'Maximium amount is ₦25000',
     //             'response_description' => 'TRANSACTION FAILURE',
     //         ]);
     //     }
@@ -391,7 +391,7 @@ class BillsPaymentController extends Controller
     //     $bt->save();
 
     //     $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
-    //     $url = "https://sandbox.vtpass.com/api/pay";
+    //     $url = "https://vtpass.com/api/pay";
     //     $response = $client->request('POST', $url, [
     //         'json' => [
     //             // 'request_id' => Str::random(6),

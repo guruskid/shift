@@ -218,7 +218,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/bitcoin-airtime', 'BillsPaymentController@bitcoinAirtime')->name('user.bitcoin-airtime'); // the post for the bitcoin wallet
     Route::get('/data', 'BillsPaymentController@disabledView')->name('user.data');
     Route::get('/discounted-airtime', 'BillsPaymentController@disabledView')->name('user.discount-airtime');
-    Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
+    // Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
+    Route::get('/airtime-to-cash', 'BillsPaymentController@TimeToCash')->name('user.test');
     Route::post('/airtime-to-cash', 'BillsPaymentController@airtimeToCash')->name('user.airtime-to-cash');
     Route::get('/electricity', 'BillsPaymentController@disabledView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
@@ -241,6 +242,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/send-bitcoin', 'BtcWalletController@send')->name('user.send-bitcoin');
     Route::get('/bitcoin-fees/{address}/{fees}', 'BtcWalletController@fees')->name('user.bitcoin-fees');
 
+    Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet');
 
 });
 
@@ -306,8 +308,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
 
-
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
+    Route::get('/faq', 'FaqController@index')->name('admin.faq');
+    Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
+    Route::get('/edit-faq/{id}/{title}', 'FaqController@editFaqView')->name('admin.edit-faq');
+    Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
+    Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
+    Route::GET('/download-database', 'AdminController@downloadUserDb')->name('admin.userdb');
+    Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
+
 });
 
 

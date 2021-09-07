@@ -7,11 +7,17 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Passport\HasApiTokens;
 
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+
+    public static function getUsers(){
+        $datas = DB::table('users')->select('first_name', 'last_name', 'email', 'phone', 'created_at')->orderBy('id', 'asc')->get()->toArray();
+    }
+
     use HasApiTokens, Notifiable;
 
 
