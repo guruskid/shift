@@ -13,6 +13,7 @@ use App\Notification;
 use App\Pop;
 use App\Transaction;
 use App\User;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -39,8 +40,12 @@ class TradeController extends Controller
         $card = Card::find($card_id);
         $card_rates =  new CardResource($card);
 
-        $res = json_decode(file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"));
-        $btc_real_time = $res->bitcoin->usd;
+        $client = new Client();
+        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $btc_real_time = (int)$res->value;
+
         return response()->json([
             'success' => true,
             'data' => $card_rates,

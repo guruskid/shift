@@ -51,11 +51,6 @@
                                     <div>
                                         <span class="h3 giftcard-text" style="color: #000070;">Bitcoin Wallet</span>
                                     </div>
-                                    <div class="widget-n" style="justify-content: center; text-align: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">Wallet Balance</span>
-                                        <span class="d-block price realtime-wallet-balance"></span>
-
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -115,11 +110,11 @@
                                                 Balance</span>
                                             <span class="d-block">
                                                 <span
-                                                    style="color: #000070;font-size: 30px;">{{ number_format((float) Auth::user()->bitcoinWallet->balance, 8) }}</span>
+                                                    style="color: #000070;font-size: 30px;">{{ number_format((float) $btc_wallet->balance, 8) }}</span>
                                                 <span style="color: #000070;font-size: 30px;">BTC</span>
                                             </span>
                                             <span class="d-block"
-                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$btc_usd, 2) }}
+                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$btc_wallet->usd  , 2) }}
                                         </div>
                                         <div class="d-flex">
                                             <a id="bitcoin_send" class="btn walletpage_menu-active">
@@ -159,7 +154,8 @@
                                     </div>
                                 </div>
 
-                                @include('newpages.tabs.bitcoin-wallet-send')
+                                {{-- @include('newpages.tabs.bitcoin-wallet-send') --}}
+                                <bitcoin-send-component :usd_btc="{{ $btc_rate }}" ></bitcoin-send-component>
                                 @include('newpages.tabs.bitcoin-wallet-receive')
 
                             </div>
@@ -170,22 +166,6 @@
                                     <div class="mb-3 mb-lg-0">
                                         <span class="recent_trx_text">Recent Transactions</span>
                                     </div>
-                                    <form action="{{ route('user.bitcoin-wallet') }}" method="GET">
-                                        <div
-                                        class="d-flex flex-column flex-md-row justify-content-center align-items-center justify-content-lg-between">
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-1" style="color: #000070;font-size: 14px;">Start Date</span>
-                                            <input type="date" required class="col-7 form-control" name="start" id=""
-                                                value="14-05-2020">
-                                        </div>
-                                        <div class="d-flex align-items-center mt-3 mt-md-0">
-                                            <span class="mr-1" style="color: #000070;font-size: 14px;">End Date</span>
-                                            <input type="date" required class="col-7 form-control" name="end" id=""
-                                                value="14-05-2020">
-                                        </div>
-                                        <button class="btn btn-primary">Search</button>
-                                    </div>
-                                    </form>
                                 </div>
                                 <div class="table-responsive mt-4 mt-lg-3">
                                     <table class="table table-striped">
@@ -203,52 +183,40 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($transactions as $key => $transaction)
+                                            @if ($transaction->senderNote != 'hidden')
                                             <tr>
-                                                <th scope="row">{{ $transaction->id }}</th>
+                                                <th scope="row">{{ $key++ }}</th>
                                                 <td>
-                                                    {{ $transaction->type->name }}</td>
+                                                    {{ $transaction->transactionType }}</td>
                                                 <td>
-                                                    @if ($transaction->credit != null)
-                                                    <span class="d-block"
+                                                    @if ($transaction->amount > 0)
+                                                    <span class="d-block text-success"
                                                         style="font-size: 14px;color: #000000;font-weight: 500;">BTC
-                                                        {{ number_format((float) $transaction->credit, 8) }}</span>
+                                                        {{ number_format((float) $transaction->amount, 8) }}</span>
                                                     @else
-                                                    <span class="d-block"
+                                                    <span class="d-block text-danger"
                                                         style="font-size: 14px;color: #000000;font-weight: 500;">BTC
-                                                        {{ number_format((float) $transaction->debit, 8) }}</span>
+                                                        {{ number_format((float) $transaction->amount, 8) }}  </span>
                                                     @endif
-                                                    {{-- <span class="d-block" style="font-size: 12px;color: #676B87;">N70,000</span> --}}
+
                                                 </td>
                                                 <td style="color: #000000;font-size: 14px;">
-                                                    {{ $transaction->created_at->format('M, d Y') }}</td>
+                                                    {{ $transaction->created->format('d M Y') }}</td>
                                                 <td style="font-weight: 500;">
-                                                    {{ $transaction->created_at->format('h:i a') }}</td>
+                                                    {{ $transaction->created->format('h:ia')}}</td>
                                                 <td>
-                                                    @switch($transaction->status)
-                                                    @case('success')
-                                                    <span class="status_success">{{ $transaction->status }}</span>
-                                                    @break
-                                                    @case('unconfirmed')
-                                                    <span class="status_waiting">{{ $transaction->status }}</span>
-                                                    @break
-                                                    @case('pending')
-                                                    <span class="status_inprogress">{{ $transaction->status }}</span>
-                                                    @break
-                                                    @default
-                                                    <span class="status_waiting">{{ $transaction->status }}</span>
-                                                    @endswitch
+                                                    <span class="status_success">Completed</span>
                                                 </td>
                                                 <td class="transaction_content">
-                                                    @if ($transaction->hash != null)
-                                                    <a href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->hash }}" class="btn transaction_view_link">Explorer</a>
-                                                    @else
-                                                    - - -
+                                                    @if (isset($transaction->txId))
+                                                        <a target="_blank" href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->txId }}" class="btn transaction_view_link">Explorer</a>
+
                                                     @endif
                                                 </td>
                                             </tr>
+                                            @endif
                                             @endforeach
 
-                                            {{ $transactions->links() }}
                                         </tbody>
                                     </table>
                                 </div>

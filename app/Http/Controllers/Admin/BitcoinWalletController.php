@@ -37,7 +37,7 @@ class BitcoinWalletController extends Controller
             $result = $this->instance->walletApiBtcGetWallet()->getHd(Constants::$BTC_MAINNET, $wallet->name);
             $live_balance += $result->payload->totalBalance;
         }
-        //$live_balance = 30;
+        dd($live_balance);
 
 
         return view('admin.bitcoin_wallet.index', compact('charges', 'service_fee', 'hd_wallets_balance', 'transactions', 'users_wallet_balance', 'live_balance'));
@@ -77,8 +77,6 @@ class BitcoinWalletController extends Controller
 
     public function hdWallets(Request $request)
     {
-        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
-        $fees = $fees_req->payload->recommended;
         $hd_wallets = BitcoinWallet::where('type', 'primary')->get();
 
         if ($request->start && $request->end) {
@@ -99,20 +97,19 @@ class BitcoinWalletController extends Controller
             $debit_transactions = $debit_transactions->where(['transaction_type_id' => 21, 'user_id' => 1])->latest()->paginate(200);
         }
 
-        return view('admin.bitcoin_wallet.hd_wallets', compact('hd_wallets', 'fees', 'credit_transactions', 'debit_transactions'));
+        return view('admin.bitcoin_wallet.hd_wallets', compact('hd_wallets',  'credit_transactions', 'debit_transactions'));
     }
 
     public function charges()
     {
-        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
-        $fees = $fees_req->payload->recommended;
+
         $transactions = BitcoinTransaction::where('charge', '!=', 0)->where('status', 'success')->latest()->paginate(200);
         $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
         $bitcoin_charge = Setting::where('name', 'bitcoin_charge')->first();
         $bitcoin_buy_charge = Setting::where('name', 'bitcoin_buy_charge')->first();
         $bitcoin_sell_charge = Setting::where('name', 'bitcoin_sell_charge')->first();
 
-        return view('admin.bitcoin_wallet.charges', compact('transactions', 'fees', 'bitcoin_charge', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
+        return view('admin.bitcoin_wallet.charges', compact('transactions',  'bitcoin_charge', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
     }
 
     public function setCharge(Request $r)
@@ -235,14 +232,11 @@ class BitcoinWalletController extends Controller
 
     public function serviceFee()
     {
-        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
-        $fees = $fees_req->payload->recommended;
-
         $service_fee = BitcoinWallet::where('name', 'bitcoin trade fee')->first()->balance;
         $transactions = BitcoinTransaction::whereIn('transaction_type_id', [19, 20])->where('fee', '!=', 0)->paginate(20);
         $tp = Setting::where('name', 'trading_btc_per')->first()->value;
 
-        return view('admin.bitcoin_wallet.service', compact('transactions', 'service_fee', 'tp', 'fees'));
+        return view('admin.bitcoin_wallet.service', compact('transactions', 'service_fee', 'tp'));
     }
 
     public function setFee(Request $request)

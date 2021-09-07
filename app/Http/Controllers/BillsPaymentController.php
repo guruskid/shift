@@ -29,7 +29,9 @@ class BillsPaymentController extends Controller
         if (!Auth::user()->nairaWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please create a Dantown wallet to continue']);
         }
-        return view('newpages.rechargemenu');
+        $buy_airtime = GeneralSettings::getSetting('AIRTIME_BUY');
+        $sell_airtime = GeneralSettings::getSetting('AIRTIME_SELL');
+        return view('newpages.rechargemenu', compact(['buy_airtime','sell_airtime']));
     }
 
     public function getUser(Request $details)
@@ -49,7 +51,6 @@ class BillsPaymentController extends Controller
         $body = json_decode($response->getBody()->getContents());
         return response()->json($body);
     }
-
 
     public function getPackages(Request $r)
     {

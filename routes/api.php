@@ -25,6 +25,8 @@ Route::get('email/verify/{id}', 'VerificationController@verify')->name('verifica
 
 Route::group(['prefix' => 'v1'], function () {
 
+    Route::post('/general-settings/{name}', 'Api\GeneralSettings@getSetting');
+
 
     Route::post('/engage', 'testController@engage');
     Route::post('/register', 'Api\AuthController@register');
@@ -33,7 +35,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/countries', 'Api\AuthController@countries' );
 
     Route::get('/check-phone/{phone}', 'Api\UserController@checkPhone');
-    Route::GET('/bitcoin-wallet/price', 'Api\BitcoinWalletController@btcPrice');
+    Route::GET('/bitcoin-wallet/price', 'Api\BtcWalletController@btcPrice');
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('email/resend', 'Api\VerificationController@resend')->name('verification.resend');
@@ -92,12 +94,16 @@ Route::group(['prefix' => 'v1'], function () {
         //BTC Wallet
         Route::group(['prefix' => 'bitcoin-wallet'], function () {
 
-            Route::POST('/create', 'Api\BitcoinWalletController@create');
-            Route::GET('/balance', 'Api\BitcoinWalletController@balance');
-            Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');
-            Route::GET('/transactions', 'Api\BitcoinWalletController@transactions');
-            Route::POST('/trade', 'Api\BitcoinWalletController@trade');
-            Route::POST('/send', 'Api\BitcoinWalletController@send');
+            Route::POST('/create', 'Api\BtcWalletController@create');
+            Route::GET('/balance', 'Api\BtcWalletController@balance');
+            Route::GET('/transactions', 'Api\BtcWalletController@transactions');
+            Route::GET('/send-charges', 'Api\BtcWalletController@fees');
+
+            Route::POST('/trade', 'BtcWalletController@sell');
+            Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
+            Route::POST('/send', 'BtcWalletController@send');
+
+            
         });
 
 

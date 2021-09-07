@@ -6,6 +6,7 @@ use App\Account;
 use App\Bank;
 use App\BitcoinWallet;
 use App\Country;
+use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -68,6 +69,7 @@ class AuthController extends Controller
         }
         $input = $request->all();
         $username = \Str::lower($input['username']);
+        $external_id = $username . '-' . uniqid();
 
         $user = User::create([
             'first_name' => ' ',
@@ -75,8 +77,7 @@ class AuthController extends Controller
             'username' => $input['username'],
             'country_id' => $input['country_id'],
             'email' => $input['email'],
-            /* 'phone' => $phone,
-            'phone_pin_id' => $body->pinId, */
+            'external_id' => $external_id,
             'password' => Hash::make($input['password']),
         ]);
 
@@ -97,30 +98,59 @@ class AuthController extends Controller
             'amount_control' => 'VARIABLE',
         ]);
 
-        try {
-            $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
+        $btc_hd = HdWallet::where('currency_id', 1)->first();
+        $btc_xpub = $btc_hd->xpub;
 
-            $primary_wallet = BitcoinWallet::where(['user_id' => 1, 'primary_wallet_id' => 0])->first();
-            $result = $instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, 1);
+        $client = new Client();
+        $url = env('TATUM_URL') . "/ledger/account/batch";
 
-            $wallet = new BitcoinWallet();
-            $address = $result->payload->addresses[0];
-            $wallet->user_id = $user->id;
-            $wallet->path = $address->path;
-            $wallet->address = $address->address;
-            $wallet->type = 'secondary';
-            $wallet->name = $username;
-            $wallet->password = $password;
-            $wallet->balance = 0.00000000;
-            $wallet->primary_wallet_id = $primary_wallet->id;
-            $wallet->save();
+        /* try { */
+        $response = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' => [
+                "accounts" => [
+                    [
+                        "currency" => "BTC",
+                        "xpub" => $btc_xpub,
+                        "customer" => [
+                            "accountingCurrency" => "USD",
+                            "customerCountry" => "NG",
+                            "externalId" => $external_id,
+                            "providerCountry" => "NG"
+                        ],
+                        "compliant" => false,
+                        "accountingCurrency" => "USD"
+                    ]
+                ]
+            ],
+        ]);
 
-            $callback = route('user.wallet-webhook');
-            $result = $instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, $wallet->address, 6);
-        } catch (\Exception  $e) {
-            report($e);
-            return $user;
-        }
+        $body = json_decode($response->getBody());
+
+
+        $btc_account_id = $body[0]->id;
+        $user->customer_id = $body[0]->customerId;
+        $user->save();
+
+        $address_url = env('TATUM_URL') . "/offchain/account/address/batch";
+        $res = $client->request('POST', $address_url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' => [
+                "addresses" => [
+                    ["accountId" => $btc_account_id]
+                ]
+            ],
+        ]);
+
+        $address_body = json_decode($res->getBody());
+
+        $user->btcWallet()->create([
+            'account_id' => $btc_account_id,
+            'name' => $user->username,
+            'currency_id' => 1,
+            'address' => $address_body[0]->address,
+        ]);
+
 
         $title = 'Bitcoin Wallet created';
         $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';

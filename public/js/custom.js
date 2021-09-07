@@ -91,6 +91,48 @@ $(document).ready(function () {
 
     })
 
+    $('.toggle-settings').on('click',function (e) {
+        var status = e.currentTarget.checked
+        var notice = $(this).attr('data-notice')
+        var settings_name = $(this).attr('data-name')
+        $('.toggle-settings').removeClass('s-active')
+        $(this).addClass('s-active')
+        if (!status) {
+            $('#settings-modal').find('.notice').val(notice)
+            $('#settings-modal').modal('show');
+            $('#settings-modal').find('#name').val(settings_name)
+            $('#settings-modal').find('#status').val(status)
+            $('#settings-modal').find('#setting-name').html(settings_name.replace('_',' '))
+        } else {
+            var formData = {
+                name: settings_name,
+                value: status,
+                notice: notice
+            };
+            $.post('/admin/update-setting',formData,function (result,status) {
+                Notify(result.msg, null, null, result.status);
+            })
+        }
+    })
+
+    $('#save-setting').on('submit',function (e) {
+        e.preventDefault()
+        var notice = $(this).find('#notice').val()
+        var status = $(this).find('#status').val()
+        var name = $(this).find('#name').val()
+
+        var formData = {
+            name: name,
+            value: status,
+            notice: notice
+        };
+        $.post('/admin/update-setting',formData,function (result,status) {
+            $('#settings-modal').modal('hide')
+            $('.s-active').attr('data-notice',notice)
+            Notify(result.msg, null, null, result.status);   
+        })
+    })
+
 });
 
 //Update wallet balance
@@ -100,8 +142,9 @@ function getWalletBalance() {
     var bitcoin = 0;
     var walletBalance = 0;
 
+    $('.realtime-wallet-balance').text('₦'+naira.toLocaleString());
 
-    $.get('/user/get-bitcoin-ngn')
+    /* $.get('/user/get-bitcoin-ngn')
         .done(function (res) {
             //console.log(res);
             bitcoin = res.data;
@@ -111,7 +154,7 @@ function getWalletBalance() {
         })
     .fail(function (xhr, status, err) {
         console.log(xhr)
-     })
+     }) */
 }
 
 /* Copy Wallet Id */

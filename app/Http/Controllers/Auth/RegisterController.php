@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\BitcoinWallet;
 use App\Country;
+use App\HdWallet;
 use App\User;
 
 use App\Http\Controllers\Controller;
@@ -79,41 +80,19 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-       /*  $country = Country::find($data['country_id']);
-        $phone = $country->phonecode . (int)$data['phone']; */
-
         $emailJob = (new RegistrationEmailJob($data['email']));
         dispatch($emailJob);
 
-        /* $client = new Client();
-        $url = env('TERMII_SMS_URL') . "/otp/send";
 
-        $response = $client->request('POST', $url, [
-            'json' => [
-                'api_key' => env('TERMII_API_KEY'),
-                "message_type" => "NUMERIC",
-                "to" => $phone,
-                "from" => "N-Alert",
-                "channel" => "dnd",
-                "pin_attempts" => 4,
-                "pin_time_to_live" =>  10,
-                "pin_length" => 6,
-                "pin_placeholder" => "< 1234 >",
-                "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
-                "pin_type" => "NUMERIC"
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents()); */
         $username = \Str::lower($data['username']);
+        $external_id = $username . '-' . uniqid();
 
         $user =  User::create([
             'first_name' => ' ',
             'last_name' => ' ',
             'username' => $username,
-            /* 'country_id' => $data['country_id'], */
             'email' => $data['email'],
-            /* 'phone' => $data['phone'],
-            'phone_pin_id' => $body->pinId, */
+            'external_id' => $external_id,
             'password' => Hash::make($data['password']),
         ]);
 
@@ -131,30 +110,64 @@ class RegisterController extends Controller
             'amount_control' => 'VARIABLE',
         ]);
 
-        try {
-            $instance = new \RestApis\Factory(env('BITCOIN_WALLET_API_KEY'));
 
-            $primary_wallet = BitcoinWallet::where(['user_id' => 1, 'primary_wallet_id' => 0])->first();
-            $result = $instance->walletApiBtcGenerateAddressInWallet()->createHd(Constants::$BTC_MAINNET, $primary_wallet->name, $primary_wallet->password, 1);
+        $btc_hd = HdWallet::where('currency_id', 1)->first();
+        $btc_xpub = $btc_hd->xpub;
 
-            $wallet = new BitcoinWallet();
-            $address = $result->payload->addresses[0];
-            $wallet->user_id = $user->id;
-            $wallet->path = $address->path;
-            $wallet->address = $address->address;
-            $wallet->type = 'secondary';
-            $wallet->name = $username;
-            $wallet->password = $password;
-            $wallet->balance = 0.00000000;
-            $wallet->primary_wallet_id = $primary_wallet->id;
-            $wallet->save();
+        $client = new Client();
+        $url = env('TATUM_URL') . "/ledger/account/batch";
 
-            $callback = route('user.wallet-webhook');
-            $result = $instance->webhookBtcCreateAddressTransaction()->create(Constants::$BTC_MAINNET, $callback, $wallet->address, 6);
-        } catch (\Exception  $e) {
+        /* try { */
+        $response = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' => [
+                "accounts" => [
+                    [
+                        "currency" => "BTC",
+                        "xpub" => $btc_xpub,
+                        "customer" => [
+                            "accountingCurrency" => "USD",
+                            "customerCountry" => "NG",
+                            "externalId" => $external_id,
+                            "providerCountry" => "NG"
+                        ],
+                        "compliant" => false,
+                        "accountingCurrency" => "USD"
+                    ]
+                ]
+            ],
+        ]);
+
+        $body = json_decode($response->getBody());
+
+
+        $btc_account_id = $body[0]->id;
+        $user->customer_id = $body[0]->customerId;
+        $user->save();
+
+        $address_url = env('TATUM_URL') . "/offchain/account/address/batch";
+        $res = $client->request('POST', $address_url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' => [
+                "addresses" => [
+                    ["accountId" => $btc_account_id]
+                ]
+            ],
+        ]);
+
+        $address_body = json_decode($res->getBody());
+
+        $user->btcWallet()->create([
+            'account_id' => $btc_account_id,
+            'name' => $user->username,
+            'currency_id' => 1,
+            'address' => $address_body[0]->address,
+        ]);
+
+        /* } catch (\Exception  $e) {
             report($e);
             return $user;
-        }
+        } */
 
         $title = 'Bitcoin Wallet created';
         $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';

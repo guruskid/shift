@@ -42,6 +42,11 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::POST('/send-from-hd-wallet', 'BitcoinWalletController@sendFromHd')->name('admin.btc-hd-wallet.send');
 
 
+    Route::POST('/send-from-admin-wallet', 'BtcWalletController@send')->name('admin.btc.send');
+    Route::GET('/btc-migration-wallet', 'BtcWalletController@migrationWallet')->name('admin.btc.migration');
+    Route::put('/confirm-migration/{migration}', 'BtcWalletController@confirmMigration')->name('admin.migration.confirm');
+
+
     Route::get('/bitcoin-summary', 'SummaryController@index')->name('admin.bitcoin-summary');
     Route::get('/bitcoin-summary-txns/{summary}', 'SummaryController@transactions')->name('admin.bitcoin-summary-txns');
     Route::post('/bitcoin-summary-txns/sort', 'SummaryController@sortTransactions')->name('admin.bitcoin-summary-txns.sort');
@@ -74,7 +79,7 @@ Route::group(['middleware' => ['accountant'] ], function () {
 
     Route::get('/setup-webhooks', 'BitcoinWalletController@webhooks' );
 
-    Route::get('/bitcoin', 'BitcoinWalletController@index')->name('admin.bitcoin');
+    Route::get('/bitcoin', 'BtcWalletController@index')->name('admin.bitcoin');
     Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets')->name('admin.bitcoin-wallets');
     Route::get('/bitcoin-hd-wallets', 'BitcoinWalletController@hdWallets')->name('admin.bitcoin.hd-wallets');
     Route::get('/bitcoin-charges', 'BitcoinWalletController@charges')->name('admin.bitcoin.charges');

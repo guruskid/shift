@@ -84,8 +84,24 @@
                                         </a>
                                     </div>
                                 </div>
-                                <gift-card-component :card="{{ $card_rates }}" :buy_sell="{{ $buy_sell }}" ></gift-card-component>
 
+                                @if($buy_sell == 1)
+                                    {{-- Sell --}}
+                                    {{-- @if($sell_gc_setting['settings_value'] == 1) --}}
+                                        <gift-card-component :card="{{ $card_rates }}" :buy_sell="{{ $buy_sell }}" ></gift-card-component>
+                                   {{--  @else
+                                        <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$sell_gc_setting['notice']}}</h4>
+                                    @endif --}}
+                                @endif
+
+                                @if($buy_sell == 2)
+                                    {{-- @if($buy_gc_setting['settings_value'] == '1') --}}
+                                        {{-- Buy --}}
+                                        <gift-card-component :card="{{ $card_rates }}" :buy_sell="{{ $buy_sell }}" ></gift-card-component>
+                                   {{--  @else
+                                        <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$buy_gc_setting['notice']}}</h4>
+                                    @endif --}}
+                                @endif
                             </div>
                         </div>
                     </div>

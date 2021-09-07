@@ -80,7 +80,7 @@
                                     {{-- <th >Last name</th> --}}
                                     <th>Email</th>
                                     <th>Phone</th>
-                                    <th>Wallet balance</th>
+                                    <th>Naira balance</th>
                                     <th>Date added</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -94,9 +94,7 @@
                                     {{-- <td >{{$u->last_name}}</td> --}}
                                     <td>{{$u->email}}</td>
                                     <td>{{$u->phone}}</td>
-                                    <td>
-                                        {{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }}
-                                    </td>
+                                    <td>₦{{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }} </td>
                                     <td>{{$u->created_at->format('d M y')}}</td>
                                     <td>
                                         @switch($u->status)

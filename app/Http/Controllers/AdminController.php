@@ -403,7 +403,6 @@ class AdminController extends Controller
     {
         $user = User::find($id);
         $transactions = $user->transactions;
-        //dd($transactions);
 
         $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->orderBy('id', 'desc')->paginate(20);
         $dr_total = 0;
@@ -418,7 +417,31 @@ class AdminController extends Controller
             }
         }
 
-        return view('admin.user', compact(['user', 'transactions', 'wallet_txns', 'dr_total', 'cr_total']));
+        $btc_wallet = $user->btcWallet;
+        $client = new Client();
+
+        $url = env('TATUM_URL') . '/ledger/account/' . $btc_wallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+        $res = json_decode($res->getBody());
+        $btc_wallet->balance = $res->balance->availableBalance;
+
+
+        $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+        $get_txns = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            "json" => ["id" => $btc_wallet->account_id]
+        ]);
+
+        $btc_transactions = json_decode($get_txns->getBody());
+        foreach ($btc_transactions as $t) {
+            $x = \Str::limit($t->created, 10, '');
+            $time = \Carbon\Carbon::parse((int)$x);
+            $t->created = $time->setTimezone('Africa/Lagos');
+        }
+
+        return view('admin.user', compact(['user', 'transactions', 'wallet_txns', 'btc_wallet', 'btc_transactions', 'dr_total', 'cr_total']));
     }
 
     public function searchUser(Request $r)

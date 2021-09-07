@@ -54,7 +54,7 @@
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Bitcoin Wallet Balance</span>
                                         <span
-                                            class="d-block price">{{ Auth::user()->bitcoinWallet ? number_format((float)Auth::user()->bitcoinWallet->balance, 8) : 'No bitcoin wallet' }}</span>
+                                            class="d-block price">{{ Auth::user()->btcWallet ? number_format((float)Auth::user()->btcWallet->balance, 8) : 'No bitcoin wallet' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                 @foreach ($errors->all() as $err)
                                 <p class="text-danger text-center">{{ $err }}</p>
                                 @endforeach
-                                @if (!Auth::user()->bitcoinWallet)
+                                @if (!Auth::user()->btcWallet)
                                 <p class="text-danger text-center">Please create a Bitcoin wallet before initiating a
                                     trade. <a href="{{ route('user.portfolio') }}">Create wallet</a> </p>
                                 @endif
@@ -97,25 +97,37 @@
                                                 data-toggle="tab" href="#home" role="tab" aria-controls="home"
                                                 aria-selected="true">Sell</a>
                                         </li>
-                                        <li class="nav-item" role="presentation" style="width:50%;">
+                                        {{-- <li class="nav-item" role="presentation" style="width:50%;">
                                             <a class="nav-link d-block text-center" id="profile-tab" data-toggle="tab"
                                                 href="#profile" role="tab" aria-controls="profile"
                                                 aria-selected="false">Buy</a>
-                                        </li>
+                                        </li> --}}
                                     </ul>
                                     <div class="tab-content " id="myTabContent">
                                         <div class="text-center text-muted mb-3 mt-3 mt-lg-1"
                                             style="margin-top: -10px;">Buy or sell
                                             cryptocurrency in less than a minute
-                                            
+
                                         </div>
 
-                                        {{-- Sell Bitcoin --}}
-                                       <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time - $tp }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
 
+                                        {{-- @if($buy_sell == 2) --}}
+                                            {{-- Sell --}}
+                                            {{-- @if($sell_btc_setting['settings_value'] == 1) --}}
+                                                <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time - $tp }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
+                                            {{-- @else
+                                                <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$sell_btc_setting['notice']}}</h4>
+                                            @endif
+                                        @endif --}}
 
-                                        {{-- Buy --}}
-                                        <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time + $tp }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
+                                        @if($buy_sell == 1)
+                                            @if($buy_btc_settings['settings_value'] == '1')
+                                                {{-- Buy --}}
+                                                <bitcoin-buy-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time + $tp }}" :card_id="{{ $card->id }}" ></bitcoin-buy-component>
+                                            @else
+                                                <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$buy_btc_settings['notice']}}</h4>
+                                            @endif
+                                        @endif
 
                                     </div>
                                 </div>
