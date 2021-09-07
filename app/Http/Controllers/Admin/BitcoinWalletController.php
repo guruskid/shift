@@ -102,15 +102,14 @@ class BitcoinWalletController extends Controller
 
     public function charges()
     {
-        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
-        $fees = $fees_req->payload->recommended;
+
         $transactions = BitcoinTransaction::where('charge', '!=', 0)->where('status', 'success')->latest()->paginate(200);
         $charges = BitcoinWallet::where('name', 'bitcoin charges')->first()->balance ?? 0;
         $bitcoin_charge = Setting::where('name', 'bitcoin_charge')->first();
         $bitcoin_buy_charge = Setting::where('name', 'bitcoin_buy_charge')->first();
         $bitcoin_sell_charge = Setting::where('name', 'bitcoin_sell_charge')->first();
 
-        return view('admin.bitcoin_wallet.charges', compact('transactions', 'fees', 'bitcoin_charge', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
+        return view('admin.bitcoin_wallet.charges', compact('transactions',  'bitcoin_charge', 'charges', 'bitcoin_buy_charge', 'bitcoin_sell_charge'));
     }
 
     public function setCharge(Request $r)
@@ -233,14 +232,11 @@ class BitcoinWalletController extends Controller
 
     public function serviceFee()
     {
-        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
-        $fees = $fees_req->payload->recommended;
-
         $service_fee = BitcoinWallet::where('name', 'bitcoin trade fee')->first()->balance;
         $transactions = BitcoinTransaction::whereIn('transaction_type_id', [19, 20])->where('fee', '!=', 0)->paginate(20);
         $tp = Setting::where('name', 'trading_btc_per')->first()->value;
 
-        return view('admin.bitcoin_wallet.service', compact('transactions', 'service_fee', 'tp', 'fees'));
+        return view('admin.bitcoin_wallet.service', compact('transactions', 'service_fee', 'tp'));
     }
 
     public function setFee(Request $request)

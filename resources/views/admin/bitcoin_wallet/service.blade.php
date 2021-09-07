@@ -69,14 +69,14 @@
                     <div class="card card-body">
                         <form action="{{ route('admin.bitcoin.transfer-charges') }}" method="POST">@csrf
                             <div class="row">
-                                <div class="col-md-6">
+                               {{--  <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Txn Fee</label>
                                         <input type="hidden" value="bitcoin trade fee" name="wallet">
                                         <input type="number" step="any" name="fees"
                                             value="{{ $fees ?? '' }}" class="form-control">
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Amount</label>
