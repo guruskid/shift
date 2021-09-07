@@ -77,8 +77,6 @@ class BitcoinWalletController extends Controller
 
     public function hdWallets(Request $request)
     {
-        $fees_req = $this->instance->transactionApiBtcNewTransactionFee()->get(Constants::$BTC_MAINNET);
-        $fees = $fees_req->payload->recommended;
         $hd_wallets = BitcoinWallet::where('type', 'primary')->get();
 
         if ($request->start && $request->end) {
@@ -99,7 +97,7 @@ class BitcoinWalletController extends Controller
             $debit_transactions = $debit_transactions->where(['transaction_type_id' => 21, 'user_id' => 1])->latest()->paginate(200);
         }
 
-        return view('admin.bitcoin_wallet.hd_wallets', compact('hd_wallets', 'fees', 'credit_transactions', 'debit_transactions'));
+        return view('admin.bitcoin_wallet.hd_wallets', compact('hd_wallets',  'credit_transactions', 'debit_transactions'));
     }
 
     public function charges()
