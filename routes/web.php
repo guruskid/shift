@@ -308,6 +308,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
 
+    Route::get('/users', 'AdminController@users')->name('admin.users');
+    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
+    
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
     Route::get('/faq', 'FaqController@index')->name('admin.faq');
     Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
@@ -342,8 +345,7 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
     Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');
     Route::get('/admin-wallet', 'AdminController@adminWallet')->name('admin.admin-wallet');
 
-    Route::get('/users', 'AdminController@users')->name('admin.users');
-    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
+
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
     Route::post('/chat-agents', 'ChatAgentController@addChatAgent' )->name('admin.add_chat_agent');
