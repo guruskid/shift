@@ -91,9 +91,10 @@ class BillsPaymentController extends Controller
                 ]);
             }
 
-        $naira_wallet = Auth::user()->nairaWallet;
+        $user = Auth::user();
+        $naira_wallet = $user->nairaWallet;
         $balance = $naira_wallet->amount;
-        $pin = $naira_wallet->password;
+        $pin = $user->pin;
         $put_pin = $request->password;
         $hash = Hash::check($put_pin, $pin);
 
@@ -295,9 +296,10 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        $naira_wallet = Auth::user()->nairaWallet;
+        $user = Auth::user();
+        $naira_wallet = $user->nairaWallet;
         $balance = $naira_wallet->amount;
-        $pin = $naira_wallet->password;
+        $pin = $user->pin;
         $put_pin = $r->password;
         $hash = Hash::check($put_pin, $pin);
 

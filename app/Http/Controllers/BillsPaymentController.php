@@ -97,9 +97,10 @@ class BillsPaymentController extends Controller
         ]);
 
         $callback = route('recharge-card.callback');
-        $n = Auth::user()->nairaWallet;
+        $user = Auth::user();
+        $n = $user->nairaWallet;
 
-        if (Hash::check($r->password, $n->password) == false) {
+        if (Hash::check($r->password, $user->pin) == false) {
             return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
         }
         $amount = $r->amount;
@@ -192,9 +193,10 @@ class BillsPaymentController extends Controller
         }
 
         $callback = route('recharge-card.callback');
-        $n = Auth::user()->nairaWallet;
+        $user = Auth::user();
+        $n = $user->nairaWallet;
 
-        if (Hash::check($r->password, $n->password) == false) {
+        if (Hash::check($r->password, $user->pin) == false) {
             return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
         }
 
@@ -387,9 +389,11 @@ class BillsPaymentController extends Controller
             $phone = $request->phone;
         }
 
-        $naira_wallet = Auth::user()->nairaWallet;
+        $user = Auth::user();
+
+        $naira_wallet = $user->nairaWallet;
         $balance = $naira_wallet->amount;
-        $pin = $naira_wallet->password;
+        $pin = $user->pin;
         $put_pin = $request->password;
         $hash = Hash::check($put_pin, $pin);
 
@@ -806,9 +810,10 @@ class BillsPaymentController extends Controller
             "billercode"  => 'required'
         ]);
         $callback = route('recharge-card.callback');
-        $n = Auth::user()->nairaWallet;
+        $user = Auth::user();
+        $n = $user->nairaWallet;
 
-        if (Hash::check($r->password, $n->password) == false) {
+        if (Hash::check($r->password, $user->pin) == false) {
             return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
         }
         $amount = $r->amount;
@@ -929,7 +934,7 @@ class BillsPaymentController extends Controller
             $boards = $content;
             return view('newpages.electricity-recharge', compact(['boards']));
         } else {
-            return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
+            return back()->with(['error' => 'Oops! an error ocurred, please try again']);
         }
     }
 
@@ -1009,9 +1014,10 @@ class BillsPaymentController extends Controller
             'phone_number'  => 'required'
         ]);
 
-        $n = Auth::user()->nairaWallet;
+        $user = Auth::user();
+        $n = $user->nairaWallet;
 
-        if (Hash::check($r->password, $n->password) == false) {
+        if (Hash::check($r->password, $user->pin) == false) {
             return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
         }
 
