@@ -123,7 +123,11 @@
     @foreach ($transactions as $t)
     <div class="modal fade " id="confirm-modal-{{ $t->id }}">
         <div class="modal-dialog  ">
-            <form action="{{route('admin.naira-p2p.confirm', $t)}}" id="freeze-form" method="post"> @method('put')
+            @if($t->type == 'sell')
+                <form action="{{route('admin.naira-p2p.confirm-sell', $t)}}" id="freeze-form" method="post"> @method('put')
+            @else
+                <form action="{{route('admin.naira-p2p.confirm', $t)}}" id="freeze-form" method="post"> @method('put')
+            @endif
                 @csrf
                 <div class="modal-content  c-rounded">
                     <!-- Modal Header -->

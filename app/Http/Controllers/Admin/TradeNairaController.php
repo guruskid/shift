@@ -88,7 +88,7 @@ class TradeNairaController extends Controller
 
     public function confirm(Request $request, NairaTrade $transaction)
     {
-        if (!Hash::check($request->pin, Auth::user()->nairaWallet->password)) {
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
 
@@ -117,6 +117,48 @@ class TradeNairaController extends Controller
         $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
         $nt->cr_user_id = $user->id;
         $nt->dr_user_id = 1;
+        $nt->status = 'success';
+        $nt->save();
+        //dd($user_wallet);
+
+        $transaction->status = 'success';
+        $transaction->save();
+
+        return back()->with(['success' => 'Transaction confirmed']);
+    }
+
+    public function confirmSell(Request $request, NairaTrade $transaction)
+    {
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return back()->with(['error' => 'Incorrect pin']);
+        }
+
+        $user = $transaction->user;
+        $user_wallet = $transaction->user->nairaWallet;
+
+        if ($transaction->status != 'waiting') {
+            return back()->with(['error' => 'Invalid transaction']);
+        }
+
+        $user_wallet->amount += $transaction->amount;
+        $user_wallet->save();
+
+
+        $nt = new NairaTransaction();
+        $nt->reference = $transaction->reference;
+        $nt->amount = $transaction->amount;
+        $nt->user_id = $user->id;
+        $nt->type = 'naira wallet';
+        $nt->previous_balance = $user_wallet->amount + $transaction->amount;
+        $nt->current_balance = $user_wallet->amount;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 3;
+        $nt->cr_wallet_id = $user_wallet->id;
+        $nt->cr_acct_name = $user->first_name;
+        $nt->narration = 'Withdraw ' . $transaction->reference;
+        $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+        $nt->cr_user_id = 1;
+        $nt->dr_user_id = $user->id;
         $nt->status = 'success';
         $nt->save();
         //dd($user_wallet);
