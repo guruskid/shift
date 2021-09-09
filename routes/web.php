@@ -272,6 +272,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
+
+    Route::get('/users', 'AdminController@users')->name('admin.users');
+    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 });
 
 /* For Super Admins Only */
@@ -310,7 +313,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] 
 
     Route::get('/users', 'AdminController@users')->name('admin.users');
     Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
-    
+
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
     Route::get('/faq', 'FaqController@index')->name('admin.faq');
     Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
