@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\BitcoinWallet;
-use App\Country;
+use App\Contract;
 use App\HdWallet;
 use App\User;
 
@@ -18,9 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistered;
 use App\NairaWallet;
 use App\Notification;
-use Carbon\Carbon;
 use GuzzleHttp\Client;
-use RestApis\Blockchain\Constants;
 
 class RegisterController extends Controller
 {
@@ -114,6 +111,8 @@ class RegisterController extends Controller
         $btc_hd = HdWallet::where('currency_id', 1)->first();
         $btc_xpub = $btc_hd->xpub;
 
+        $eth_hd = HdWallet::where('currency_id', 2)->first();
+
         $client = new Client();
         $url = env('TATUM_URL') . "/ledger/account/batch";
 
@@ -133,6 +132,17 @@ class RegisterController extends Controller
                         ],
                         "compliant" => false,
                         "accountingCurrency" => "USD"
+                    ],
+                    [
+                        "currency" => "ETH",
+                        "customer" => [
+                            "accountingCurrency" => "USD",
+                            "customerCountry" => "NG",
+                            "externalId" => $external_id,
+                            "providerCountry" => "NG"
+                        ],
+                        "compliant" => false,
+                        "accountingCurrency" => "USD"
                     ]
                 ]
             ],
@@ -142,6 +152,8 @@ class RegisterController extends Controller
 
 
         $btc_account_id = $body[0]->id;
+        $eth_account_id = $body[1]->id;
+
         $user->customer_id = $body[0]->customerId;
         $user->save();
 
@@ -163,14 +175,40 @@ class RegisterController extends Controller
             'currency_id' => 1,
             'address' => $address_body[0]->address,
         ]);
+        //End BTC wallet SETUP
 
-        /* } catch (\Exception  $e) {
-            report($e);
-            return $user;
-        } */
+        //Setup ETH Wallet
+        $contract = Contract::where(['status'=> 'pending', 'currency_id' => 2])->first();
+        $eth_hash = $contract->hash;
 
-        $title = 'Bitcoin Wallet created';
-        $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';
+        //Get address form the txn hash
+        $eth_address_url = env('TATUM_URL') . "/blockchain/sc/address/ETH/".$eth_hash;
+        $res = $client->request('GET', $eth_address_url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+        ]);
+
+        $get_eth_address_res = json_decode($res->getBody());
+        $eth_address = $get_eth_address_res->contractAddress;
+
+        //Link address to ledger account
+        $link_eth_url = env('TATUM_URL') . '/offchain/account/'.$eth_account_id.'/address/'.$eth_address;
+        $res = $client->request('POST', $link_eth_url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+        ]);
+
+        $contract->status = 'completed';
+        $contract->save();
+
+
+        $user->ethWallet()->create([
+            'account_id' => $eth_account_id,
+            'currency_id' => 2,
+            'name' => $user->username,
+            'address' => $eth_address,
+        ]);
+
+        $title = 'Crypto Wallets created';
+        $msg_body = 'Congratulations your Dantown Crypto Wallet has been created successfully, you can now send, receive, buy and sell cryptocurrencies in the wallet. ';
         $not = Notification::create([
             'user_id' => $user->id,
             'title' => $title,
@@ -180,12 +218,6 @@ class RegisterController extends Controller
         //Mail::to($user->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.bitcoin-wallet')));
 
 
-        // $engage = new \Engage\EngageClient($_SERVER['01ce2904a334879cddb2ae7e62d019a3'], $_SERVER['4595ad59cdc1a7df2af3e4a06ce1a4da']);
-        // $engage->users->identify([
-        //     'id' => $user->id,
-        //     'email' => $user->email,
-        //     'created_at' => $user->created_at
-        //   ]);
         return $user;
     }
 }
