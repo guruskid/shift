@@ -169,7 +169,7 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 /* Bitcoin Wallet Callback */
 Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName'] ], function () {
 
     /* ajax calls */
     Route::POST('/add_transaction', 'UserController@addTransaction');
@@ -241,6 +241,10 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
     Route::post('/send-bitcoin', 'BtcWalletController@send')->name('user.send-bitcoin');
     Route::get('/bitcoin-fees/{address}/{fees}', 'BtcWalletController@fees')->name('user.bitcoin-fees');
+
+    Route::prefix('ethereum')->group(function () {
+        Route::post('/create', 'EthWalletController@create')->name('ethereum.create');
+    });
 
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */
 
