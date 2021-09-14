@@ -37,7 +37,7 @@ class TradeController extends Controller
 
         /* $balance = Auth::user()->email; */
 
-        return view('user.assets', compact(['assets', 'asset_type', 'balance']));
+        return view('user.assets', compact(['assets', 'asset_type']));
         /* return response()->json($assets); */
     }
 
