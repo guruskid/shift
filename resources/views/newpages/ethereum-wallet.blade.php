@@ -49,7 +49,7 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text" style="color: #000070;">Bitcoin Wallet</span>
+                                        <span class="h3 giftcard-text" style="color: #000070;">Ethereum Wallet</span>
                                     </div>
                                 </div>
                             </div>
@@ -106,15 +106,15 @@
                                     <div
                                         class="walletpage_menu d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
                                         <div class="mb-4 mb-lg-0">
-                                            <span class="d-block" style="color: #565656;font-size: 16px;">Bitcoin wallet
+                                            <span class="d-block" style="color: #565656;font-size: 16px;">Ethereum wallet
                                                 Balance</span>
                                             <span class="d-block">
                                                 <span
-                                                    style="color: #000070;font-size: 30px;">{{ number_format((float) $btc_wallet->balance, 8) }}</span>
-                                                <span style="color: #000070;font-size: 30px;">BTC</span>
+                                                    style="color: #000070;font-size: 30px;">{{ number_format((float) $eth_wallet->balance, 5) }}</span>
+                                                <span style="color: #000070;font-size: 30px;">ETH</span>
                                             </span>
                                             <span class="d-block"
-                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$btc_wallet->usd  , 2) }}
+                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$eth_wallet->usd  , 2) }}
                                         </div>
                                         <div class="d-flex">
                                             <a id="bitcoin_send" class="btn walletpage_menu-active">
@@ -153,9 +153,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <bitcoin-send-component :usd_btc="{{ $btc_rate }}" ></bitcoin-send-component>
-                                @include('newpages.tabs.bitcoin-wallet-receive')
+
+                                <bitcoin-send-component :usd_eth="{{ $eth_rate }}" ></bitcoin-send-component>
+
+                                @include('newpages.tabs.ethereum-wallet-receive')
 
                             </div>
                         </div>
@@ -190,11 +191,11 @@
                                                 <td>
                                                     @if ($transaction->amount > 0)
                                                     <span class="d-block text-success"
-                                                        style="font-size: 14px;color: #000000;font-weight: 500;">BTC
+                                                        style="font-size: 14px;color: #000000;font-weight: 500;">eth
                                                         {{ number_format((float) $transaction->amount, 8) }}</span>
                                                     @else
                                                     <span class="d-block text-danger"
-                                                        style="font-size: 14px;color: #000000;font-weight: 500;">BTC
+                                                        style="font-size: 14px;color: #000000;font-weight: 500;">eth
                                                         {{ number_format((float) $transaction->amount, 8) }}  </span>
                                                     @endif
 
