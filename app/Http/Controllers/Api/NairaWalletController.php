@@ -61,7 +61,7 @@ class NairaWalletController extends Controller
                 'message' => 'Your current account does not match with the password you provided. Please try again.',
             ]);
         }
-        
+
         Auth::user()->pin = Hash::make($r->new_pin);
         Auth::user()->save();
 
@@ -373,7 +373,7 @@ class NairaWalletController extends Controller
 
         $n = Auth::user()->nairaWallet;
 
-        if (Hash::check($r->pin, $n->password) == false) {
+        if (Hash::check($r->pin, Auth::user()->pin) == false) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Wrong wallet pin entered'

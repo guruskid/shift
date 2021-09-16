@@ -237,7 +237,7 @@ class NairaWalletController extends Controller
 
         $n = Auth::user()->nairaWallet;
 
-        if (Hash::check($r->pin, $n->password) == false) {
+        if (Hash::check($r->pin, Auth::user()->pin) == false) {
             return redirect()->back()->with(['error' => 'Wrong wallet pin entered']);
         }
 
