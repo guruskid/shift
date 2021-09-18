@@ -85,7 +85,7 @@
                                 <button id="upload_card_btn" type="submit" class="btn text-white mt-4 mt-lg-5 mx-auto"
                                 style="width: 150px;height:50px;background: #000070;border-radius: 5px;position:relative;left:16px;">Recharge</button>
                             @else
-                                <h3 class="text-center p-3 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$setting_airtime['notice']}}</h3>
+                                <h5 class="text-center p-2 text-center w-100 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$setting_airtime['notice']}}</h5>
                             @endif
                         </div>
                     </form>

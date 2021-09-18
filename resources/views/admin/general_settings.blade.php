@@ -130,6 +130,41 @@
                                     </div>
                                 </fieldset>
 
+                                 <fieldset>
+                                    <legend>Buy/Sell BTC</legend>
+                                    <div class="row">
+                                        @if(!empty($settings['SEND_BTC']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="SEND_BTC" id="send-btc" onclick="" class="custom-control-input toggle-settings" {{($settings['SEND_BTC']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['SEND_BTC']['notice']}}" data-name="SEND_BTC"> 
+                                                                <label for="send-btc" class="custom-control-label">Send BTC</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         @endif
+
+                                        @if(!empty($settings['RECEIVE_BTC']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="RECEIVE_BTC" id="receive-btc" onclick="" class="custom-control-input toggle-settings" {{($settings['RECEIVE_BTC']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['RECEIVE_BTC']['notice']}}" data-name="RECEIVE_BTC"> 
+                                                                <label for="receive-btc" class="custom-control-label">Receive BTC</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </fieldset>
+
                                 <fieldset>
                                     <legend>Buy/Sell Giftcard</legend>
                                     <div class="row">

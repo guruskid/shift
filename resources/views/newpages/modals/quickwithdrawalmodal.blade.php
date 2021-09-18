@@ -54,7 +54,7 @@
                                 <button type="submit" class="btn text-white wdbtn">Withdraw</button>
                             </div>
                         @else
-                            <h3 class="text-center p-3 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$setting_withdrawal['notice']}}</h3>
+                            <h5 class="text-center p-2 text-center w-100 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$setting_withdrawal['notice']}}</h5>
                         @endif
                     </form>
                     </div>

@@ -99,9 +99,9 @@ class TradeController extends Controller
 
         $sell_btc_setting = GeneralSettings::getSetting('SELL_BTC');
 
-        $buy_btc_settings = GeneralSettings::getSetting('BUY_BTC');
+        $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
-        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp', 'buy_sell', 'sell_btc_setting', 'buy_btc_settings']));
+        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
     }
 
     public function ethereum($card_id)
