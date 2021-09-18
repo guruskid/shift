@@ -182,7 +182,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($transactions as $key => $transaction)
-                                            @if ($transaction->senderNote != 'hidden')
+                                            @if ($transaction->amount != 0)
                                             <tr>
                                                 <th scope="row">{{ $key++ }}</th>
                                                 <td>
