@@ -154,7 +154,7 @@
                                     </div>
                                 </div>
 
-                                <bitcoin-send-component :usd_eth="{{ $eth_rate }}" ></bitcoin-send-component>
+                                <ethereum-send-component :usd_eth="{{ $eth_rate }}" ></ethereum-send-component>
 
                                 @include('newpages.tabs.ethereum-wallet-receive')
 

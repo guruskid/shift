@@ -1,5 +1,5 @@
 <template>
-   <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="bitcoin_wallet_send_tab">
+   <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="ethereum_wallet_send_tab">
     <form @submit.prevent="send()" >
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
@@ -12,10 +12,10 @@
                             <img src="/svg/conversion-arrow.svg" alt="">
                         </span>
                     </div>
-                    <input type="number" step="any" @keyup="getRateBtc()" v-model="btc" placeholder="0" class="form-control"
+                    <input type="number" required step="any" @keyup="getRateEth()" v-model="eth" placeholder="0" class="form-control"
                         style="border: 0px;border-right:0px;">
                     <div class="input-group-prepend">
-                        <span class="input-group-text usd_bg_text">BTC</span>
+                        <span class="input-group-text usd_bg_text">ETH</span>
                     </div>
                 </div>
             </div>
@@ -32,14 +32,14 @@
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end btctext">{{ fee }} BTC</span>
+                            <span class="d-block align-self-end ethtext">{{ fee }} ETH</span>
                             <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>
                     <div class="col-12 col-md-10 mx-auto">
                         <span class="address_input_label">Address</span>
                         <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
-                            <input type="text" class="form-control"  v-model="address" @change="getFees()">
+                            <input type="text" class="form-control" required v-model="address" @change="getFees()">
                             <div class="input-group-append">
                                 <span class="input-group-text" onclick="copywalletaddress('receipientAddress')"
                                     style="cursor:pointer;background: #000070;" id="basic-addon2"><svg width="17"
@@ -70,16 +70,16 @@
 
 <script>
     export default {
-        props: ['usd_btc'],
+        props: ['usd_eth'],
 
         data() {
             return {
-                btcToUsd : this.usd_btc,
-                btc: '',
+                ethToUsd : this.usd_eth,
+                eth: '',
                 usd: '',
                 address: '',
                 pin: '',
-                fee: 0.0005,
+                fee: 0,
                 loading: false,
             }
         },
@@ -91,25 +91,25 @@
         methods: {
             //When USD field is updated
             getRateUsd() {
-                this.btc = this.usd / this.btcToUsd;
+                this.eth = this.usd / this.ethToUsd;
                 this.getFees();
             },
 
-            /* When btc is updated */
-            getRateBtc(){
-                this.usd = this.btcToUsd * this.btc
+            /* When eth is updated */
+            getRateEth(){
+                this.usd = this.ethToUsd * this.eth
                 this.getFees();
             },
 
             //Get transfer fees
             getFees(){
-                if(this.btc <= 0 || this.address == '' ){
+                if(this.eth <= 0 || this.address == '' ){
                     return false;
                 }
                 this.loading = true;
-                axios.get(`/user/bitcoin-fees/${this.address}/${this.btc}`)
+                axios.get(`/user/ethereum/fees/${this.address}/${this.eth}`)
                 .then((res) =>{
-                    let x = parseFloat(res.data.fee.medium) + parseFloat(res.data.charge);
+                    let x = parseFloat(res.data.fee);
                     this.fee = x.toFixed(5);
                 })
                 .finally(()=>{
@@ -118,22 +118,23 @@
             },
 
             send(){
-                if (this.btc <= 0) {
-                    swal('Oops', 'BTC amount should be greater than 0', 'error');
+                if (this.eth <= 0) {
+                    swal('Oops', 'ETH amount should be greater than 0', 'error');
                     return false;
                 }
 
                 this.loading = true;
-                axios.post('/user/send-bitcoin', {
-                    "amount" : this.btc,
+                axios.post('/user/ethereum/send', {
+                    "amount" : this.eth,
                     "address" : this.address,
                     "pin" : this.pin,
                     "fees" : this.fee
                     })
                 .then((res)=>{
+                    console.log(res)
                     if (res.data.success) {
-                        swal('Great!!', 'Bitcoin sent successfully', 'success');
-                        window.location = '/user/bitcoin-wallet';
+                        swal('Great!!', 'ethereum sent successfully', 'success');
+                        window.location = '/user/ethereum/wallet';
                     } else {
                         swal('oops!!', res.data.msg, 'error');
                     }

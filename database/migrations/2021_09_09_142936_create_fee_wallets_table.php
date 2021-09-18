@@ -17,6 +17,7 @@ class CreateFeeWalletsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('crypto_currency_id');
             $table->string('name');
+            $table->string('account_id');
             $table->string('address');
             $table->timestamps();
         });

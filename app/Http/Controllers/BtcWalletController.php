@@ -568,7 +568,7 @@ class BtcWalletController extends Controller
                     'success' => true,
                     'msg' => 'Bitcoin sent successfully'
                 ]);
-                
+
             } else {
                 return response()->json([
                     'success' => false,
