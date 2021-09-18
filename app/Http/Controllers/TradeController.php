@@ -88,7 +88,7 @@ class TradeController extends Controller
         $tp = ($trading_per / 100) * $btc_real_time;
 
 
-        $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id;
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
         ]);
@@ -96,7 +96,7 @@ class TradeController extends Controller
         $accounts = json_decode($res->getBody());
 
         $btc_wallet = Auth::user()->btcWallet;
-        $btc_wallet->balance = $accounts[0]->balance->availableBalance;
+        $btc_wallet->balance = $accounts->balance->availableBalance;
         $btc_wallet->usd = $btc_wallet->balance  * $btc_real_time;
 
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value;

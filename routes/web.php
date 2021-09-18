@@ -247,6 +247,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
         Route::get('/wallet', 'EthWalletController@wallet')->name('user.ethereum-wallet');
         Route::get('/fees/{address}/{amount}', 'EthWalletController@fees')->name('user.ethereum-fees');
         Route::post('/send', 'EthWalletController@send')->name('ethereum.send');
+        Route::get('/trade', 'EthWalletController@trade')->name('ethereum.trade');
+        Route::post('/sell', 'EthWalletController@sell')->name('ethereum.sell');
     });
 
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */

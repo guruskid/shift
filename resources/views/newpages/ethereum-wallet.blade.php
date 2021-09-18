@@ -133,7 +133,7 @@
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Receive</span>
                                             </a>
-                                            <a href="{{ route('user.asset.rate', ['buy', 102, 'bitcoins']) }}"
+                                            <a href="{{ route('ethereum.trade') }}"
                                                 class="btn">
                                                 <span class="d-block">
                                                     <img class="img-fluid"
@@ -141,8 +141,7 @@
                                                 </span>
                                                 <span class="d-block" style="color: #000000;font-size: 14px;">Buy</span>
                                             </a>
-                                            <a href="{{ route('user.asset.rate', ['sell', 102, 'bitcoins']) }}"
-                                                class="btn">
+                                            <a href="{{ route('ethereum.trade') }}" class="btn">
                                                 <span class="d-block">
                                                     <img class="img-fluid" src="{{asset('svg/bitcoin-sell-icon.svg')}}"
                                                         alt="">

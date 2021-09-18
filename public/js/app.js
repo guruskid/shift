@@ -4440,6 +4440,151 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ethereum/Sell.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ethereum/Sell.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['rate', 'eth_usd', 'charge'],
+  data: function data() {
+    return {
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      //Input fields
+      naira: '',
+      usd: '',
+      eth: '',
+      chargeEth: 0,
+      chargeNgn: 0,
+      //rates
+      ethUsd: this.eth_usd,
+      usdToNaira: this.rate,
+      //our rate
+      ethToNaira: '',
+      loading: false
+    };
+  },
+  mounted: function mounted() {
+    //console.log(this.eth_usd);
+    this.ethToNaira = this.ethUsd * this.usdToNaira;
+  },
+  methods: {
+    //When USD field is updated
+    getRateUsd: function getRateUsd() {
+      this.naira = this.usd * this.usdToNaira;
+      this.eth = this.usd / this.ethUsd;
+    },
+
+    /* When eth is updated */
+    getRateeth: function getRateeth() {
+      this.usd = this.ethUsd * this.eth;
+      this.naira = this.eth * this.ethToNaira;
+    },
+
+    /* When ngn is updated */
+    getRateNgn: function getRateNgn() {
+      this.eth = this.naira / this.ethToNaira;
+      this.usd = this.naira / this.usdToNaira;
+    },
+    sell: function sell() {
+      var _this = this;
+
+      if (this.eth < 0) {
+        swal('Oops', 'eth amount should be greater than 0', 'error');
+        return false;
+      }
+
+      this.loading = true;
+      axios.post('/user/ethereum/sell', {
+        "amount": this.eth
+      }).then(function (res) {
+        if (res.data.success) {
+          swal('Great!!', 'Ethereum traded successfully', 'success');
+          window.location = '/user/transactions';
+        } else {
+          swal('oops!!', res.data.msg, 'error');
+        }
+      })["catch"](function (e) {
+        console.log(e);
+        swal('Oops', 'An error occured, please reload and try again', 'error');
+      })["finally"](function () {
+        _this.loading = false;
+      });
+    }
+  },
+  updated: function updated() {
+    this.chargeEth = this.charge / 100 * this.eth;
+    this.chargeNgn = this.chargeEth * this.ethUsd;
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ethereum/Send.vue?vue&type=script&lang=js&":
 /*!************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ethereum/Send.vue?vue&type=script&lang=js& ***!
@@ -55396,6 +55541,295 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ethereum/Sell.vue?vue&type=template&id=7fad4d4f&":
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ethereum/Sell.vue?vue&type=template&id=7fad4d4f& ***!
+  \****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "tab-pane fade show active mx-auto p-3 calculator_form",
+      attrs: { id: "home", role: "tabpanel", "aria-labelledby": "home-tab" }
+    },
+    [
+      _c(
+        "form",
+        {
+          attrs: { method: "post" },
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.sell()
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "form-group mb-4" }, [
+            _c(
+              "label",
+              {
+                staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                attrs: { for: "inlineFormInputGroupUsername2" }
+              },
+              [_vm._v("USD equivalent")]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.usd,
+                    expression: "usd"
+                  }
+                ],
+                staticClass: "form-control bitcoin-input-radius",
+                attrs: {
+                  type: "number",
+                  required: "",
+                  step: "any",
+                  min: "0",
+                  name: "amount"
+                },
+                domProps: { value: _vm.usd },
+                on: {
+                  keyup: function($event) {
+                    return _vm.getRateUsd()
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.usd = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group mb-4" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.eth,
+                    expression: "eth"
+                  }
+                ],
+                staticClass: "form-control bitcoin-input-radius",
+                attrs: {
+                  type: "number",
+                  required: "",
+                  step: "any",
+                  min: "0",
+                  name: "quantity"
+                },
+                domProps: { value: _vm.eth },
+                on: {
+                  keyup: function($event) {
+                    return _vm.getRateeth()
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.eth = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group mb-4" }, [
+            _c("div", { staticClass: "d-flex justify-content-between" }, [
+              _c(
+                "label",
+                {
+                  staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                  attrs: { for: "inlineFormInputGroupUsername2" }
+                },
+                [_vm._v("Naira\n                    equivalent")]
+              ),
+              _vm._v(" "),
+              _c(
+                "label",
+                {
+                  staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+                  attrs: { for: "inlineFormInputGroupUsername2" }
+                },
+                [_vm._v(_vm._s(_vm.usdToNaira) + "/$")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group mb-2 mr-sm-2" }, [
+              _vm._m(3),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.naira,
+                    expression: "naira"
+                  }
+                ],
+                staticClass: "form-control bitcoin-input-radius",
+                attrs: {
+                  type: "number",
+                  required: "",
+                  name: "amount_paid",
+                  step: "any",
+                  min: "0"
+                },
+                domProps: { value: _vm.naira },
+                on: {
+                  keyup: function($event) {
+                    return _vm.getRateNgn()
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.naira = $event.target.value
+                  }
+                }
+              })
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "d-flex justify-content-around mb-2" }, [
+            _c("span", { staticClass: "text-primary" }, [_vm._v("Charges")]),
+            _vm._v(" "),
+            _c("span", { staticClass: "text-primary" }, [
+              _vm._v(_vm._s(_vm.chargeEth.toFixed(5)))
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "text-primary" }, [
+              _vm._v(_vm._s(_vm.charge) + "%")
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "text-primary" }, [
+              _vm._v("$" + _vm._s(_vm.chargeNgn.toLocaleString()))
+            ])
+          ]),
+          _vm._v(" "),
+          !_vm.loading
+            ? _c(
+                "button",
+                {
+                  staticClass:
+                    "sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn"
+                },
+                [_vm._v("Sell")]
+              )
+            : _c(
+                "button",
+                {
+                  staticClass:
+                    "sell_submit_btn btn w-100 text-white mt-2 bitcoin_calculator_btn",
+                  attrs: { disabled: "" }
+                },
+                [_c("i", { staticClass: "spinner-border" })]
+              )
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "input-group-prepend",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _c("div", { staticClass: "input-group-text input_label" }, [
+          _vm._v(" USD")
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "d-flex justify-content-between" }, [
+      _c(
+        "label",
+        {
+          staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
+          attrs: { for: "inlineFormInputGroupUsername2" }
+        },
+        [_vm._v("Ethereum\n                equivalent")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "input-group-prepend",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _c("div", { staticClass: "input-group-text input_label" }, [
+          _vm._v("\n                        ETH")
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "input-group-prepend",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _c("div", { staticClass: "input-group-text input_label" }, [
+          _vm._v("\n                        NGN")
+        ])
+      ]
+    )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ethereum/Send.vue?vue&type=template&id=fab37af6&scoped=true&":
 /*!****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ethereum/Send.vue?vue&type=template&id=fab37af6&scoped=true& ***!
@@ -67984,6 +68418,7 @@ Vue.component('bitcoin-buy-component', __webpack_require__(/*! ./components/calc
 Vue.component('bitcoin-send-component', __webpack_require__(/*! ./components/calculator/bitcoinSendComponent.vue */ "./resources/js/components/calculator/bitcoinSendComponent.vue")["default"]);
 Vue.component('ethereum-create-component', __webpack_require__(/*! ./components/ethereum/CreateWallet.vue */ "./resources/js/components/ethereum/CreateWallet.vue")["default"]);
 Vue.component('ethereum-send-component', __webpack_require__(/*! ./components/ethereum/Send.vue */ "./resources/js/components/ethereum/Send.vue")["default"]);
+Vue.component('ethereum-sell-component', __webpack_require__(/*! ./components/ethereum/Sell.vue */ "./resources/js/components/ethereum/Sell.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -69752,6 +70187,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateWallet_vue_vue_type_template_id_002c6392_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateWallet_vue_vue_type_template_id_002c6392_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ethereum/Sell.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/ethereum/Sell.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Sell_vue_vue_type_template_id_7fad4d4f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Sell.vue?vue&type=template&id=7fad4d4f& */ "./resources/js/components/ethereum/Sell.vue?vue&type=template&id=7fad4d4f&");
+/* harmony import */ var _Sell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Sell.vue?vue&type=script&lang=js& */ "./resources/js/components/ethereum/Sell.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Sell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Sell_vue_vue_type_template_id_7fad4d4f___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Sell_vue_vue_type_template_id_7fad4d4f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ethereum/Sell.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ethereum/Sell.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/ethereum/Sell.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Sell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Sell.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ethereum/Sell.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Sell_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ethereum/Sell.vue?vue&type=template&id=7fad4d4f&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/ethereum/Sell.vue?vue&type=template&id=7fad4d4f& ***!
+  \**********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Sell_vue_vue_type_template_id_7fad4d4f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Sell.vue?vue&type=template&id=7fad4d4f& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ethereum/Sell.vue?vue&type=template&id=7fad4d4f&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Sell_vue_vue_type_template_id_7fad4d4f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Sell_vue_vue_type_template_id_7fad4d4f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
