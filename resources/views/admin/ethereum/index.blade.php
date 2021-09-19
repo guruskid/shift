@@ -48,7 +48,7 @@
                             </i>
                         </div>
                         <div>Ethereum Wallet <br>
-                            <a href="">Settings</a>
+                            <a href="{{ route('admin.ethereum.settings') }}">Settings</a>
                         </div>
                     </div>
                 </div>

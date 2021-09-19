@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Rate;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -76,6 +78,21 @@ class EthWalletController extends Controller
         return view('admin.ethereum.index', compact('service_wallet', 'charges_wallet', 'fees_wallet', 'hd_wallet', 'transactions'));
     }
 
+    public function settings()
+    {
+        $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first()->rate;
+        return view('admin.ethereum.settings', compact('sell_rate'));
+    }
+
+    public function updateRate(Request $request)
+    {
+        $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first();
+
+        $sell_rate->rate = $request->sell_rate;
+        $sell_rate->save();
+
+        return back()->with(['success' => 'Rate updated']);
+    }
 
 
     public function send(Request $request)

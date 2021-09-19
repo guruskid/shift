@@ -89,12 +89,12 @@ Route::group(['middleware' => ['accountant'] ], function () {
 
     Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
 
-
-
-    Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
+    Route::post('/update-settings', 'SettingController@set' )->name('admin.settings.update');
 
     Route::prefix('ethereum')->group(function () {
         Route::get('/', 'EthWalletController@index')->name('admin.ethereum');
+        Route::get('/settings', 'EthWalletController@settings')->name('admin.ethereum.settings');
+        Route::post('/update-rate', 'EthWalletController@updateRate')->name('admin.eth.update-rate');
     });
 
     //Trade Naira
