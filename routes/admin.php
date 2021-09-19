@@ -67,7 +67,8 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
         Route::get('/agent-transactions/{user}', 'TradeNairaController@agentTransactions')->name('p2p.agent-transactions');
     });
 
-
+    //Eth
+    Route::POST('/ethereum/send', 'EthWalletController@send')->name('admin.eth.send');
 });
 
 
@@ -92,7 +93,9 @@ Route::group(['middleware' => ['accountant'] ], function () {
 
     Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
 
-
+    Route::prefix('ethereum')->group(function () {
+        Route::get('/', 'EthWalletController@index')->name('admin.ethereum');
+    });
 
     //Trade Naira
     Route::prefix('trade-naira')->group(function () {

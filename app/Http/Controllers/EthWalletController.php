@@ -331,8 +331,9 @@ class EthWalletController extends Controller
                 return response()->json(['success' => true, 'msg' => 'ETH transferred successfully']);
             } else {
                 //Cancel TXN
-                $cancel =  Http::withHeaders(['x-api-key' => env('TATUM_KEY')])
-                    ->delete(env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id);
+                $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                ]);
                 return $send_res;
             }
         } catch (\Exception $e) {
@@ -341,7 +342,7 @@ class EthWalletController extends Controller
                 'headers' => ['x-api-key' => env('TATUM_KEY')],
             ]);
 
-            return response()->json(['success' => false, 'msg' => 'An error occured, please try againss']);
+            return response()->json(['success' => false, 'msg' => 'An error occured, please try again']);
         }
     }
 
@@ -389,6 +390,7 @@ class EthWalletController extends Controller
 
         $fees_wallet = FeeWallet::where(['crypto_currency_id' => 2, 'name' => 'eth_fees'])->first();
         $charge_wallet = FeeWallet::where(['crypto_currency_id' => 2, 'name' => 'eth_charge'])->first();
+        $service_wallet = FeeWallet::where(['crypto_currency_id' => 2, 'name' => 'eth_service'])->first();
 
         // percentage deduction in price
         $trading_per = Setting::where('name', 'trading_eth_per')->first()->value;
@@ -458,12 +460,12 @@ class EthWalletController extends Controller
                 'json' =>  [
                     "chain" => "ETH",
                     "custodialAddress" => Auth::user()->ethWallet->address,
-                    "contractType" => [3, 3, 3],
-                    "recipient" => [$hd_wallet->address, $fees_wallet->address, $charge_wallet->address],
-                    "amount" => [number_format((float) $total, 8), number_format((float) $fees, 8), number_format((float) $charge, 8)],
+                    "contractType" => [3, 3, 3, 3],
+                    "recipient" => [$hd_wallet->address, $fees_wallet->address, $charge_wallet->address, $service_wallet->address],
+                    "amount" => [number_format((float) $total, 8), number_format((float) $fees, 8), number_format((float) $charge, 8), number_format((float) $service_fee, 8)],
                     "signatureId" => $hd_wallet->private_key,
-                    "tokenId" => ["0", "0", "0"],
-                    "tokenAddress" => ["0", "0", "0"]
+                    "tokenId" => ["0", "0", "0", "0"],
+                    "tokenAddress" => ["0", "0", "0", "0"]
                 ]
             ]);
 
