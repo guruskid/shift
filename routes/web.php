@@ -221,9 +221,11 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     // Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
     Route::get('/airtime-to-cash', 'BillsPaymentController@TimeToCash')->name('user.test');
     Route::post('/airtime-to-cash', 'BillsPaymentController@airtimeToCash')->name('user.airtime-to-cash');
-    Route::get('/electricity', 'BillsPaymentController@disabledView')->name('user.electricity');
+    // Route::get('/electricity', 'BillsPaymentController@disabledView')->name('user.electricity');
+    Route::get('/electricity', 'BillsPaymentController@electricityRechargeView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
-    Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.pay-electricity');
+    Route::post('/electricity', 'BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
+    Route::post('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
 
     /* Routes for the new calculator */
     Route::get('/assets/{asset_type?}', 'TradeController@assets')->name('user.assets');

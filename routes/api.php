@@ -85,8 +85,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::POST('/withdraw-cash', 'Api\NairaWalletController@transfer');
 
             //Pay electricity
-        Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
-        Route::post('/electricity', 'BillsPaymentController@payElectricity');
+        // Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
+        // Route::post('/electricity', 'BillsPaymentController@payElectricity');
+        Route::get('/get-elect-boards/{category?}', 'BillsPaymentController@getProducts');
+        Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+        Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
             //Pay Cable
         Route::post('/get-dec-user', 'BillsPaymentController@getUser');
         Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');

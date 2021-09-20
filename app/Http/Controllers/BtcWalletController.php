@@ -213,8 +213,11 @@ class BtcWalletController extends Controller
             }
         }
 
+        $send_btc_setting = GeneralSettings::getSetting('SEND_BTC');
+        $receive_btc_setting = GeneralSettings::getSetting('RECEIVE_BTC');
 
-        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees'));
+
+        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees','send_btc_setting','receive_btc_setting'));
     }
 
     public function fees($address, $amount)

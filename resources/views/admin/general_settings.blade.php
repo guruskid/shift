@@ -60,125 +60,178 @@
                                 @csrf
                                 <fieldset>
                                     <legend>Withdrawal</legend>
+                                    
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group form-material" data-plugin="formMaterial">
-                                                <div class="d-flex flex-row my-3">
-                                                    <div class="float-left mr-20 p-box">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" name="NAIRA_WALLET_WITHDRAWAL" id="naira-w"  onclick="" class="custom-control-input toggle-settings" {{($settings['NAIRA_WALLET_WITHDRAWALS']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['NAIRA_WALLET_WITHDRAWALS']['notice']}}" data-name="NAIRA_WALLET_WITHDRAWALS"> 
-                                                            <label for="naira-w" class="custom-control-label">Naira Wallet Withdrawal</label>
+                                        @if(!empty($settings['NAIRA_WALLET_WITHDRAWALS']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material" data-plugin="formMaterial">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20 p-box">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="NAIRA_WALLET_WITHDRAWAL" id="naira-w"  onclick="" class="custom-control-input toggle-settings" {{($settings['NAIRA_WALLET_WITHDRAWALS']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['NAIRA_WALLET_WITHDRAWALS']['notice']}}" data-name="NAIRA_WALLET_WITHDRAWALS"> 
+                                                                <label for="naira-w" class="custom-control-label">Naira Wallet Withdrawal</label>
+                                                            </div>
+                                                            
                                                         </div>
-                                                        
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
 
-                                         <div class="col-md-4">
-                                            <div class="form-group form-material">
-                                                <div class="d-flex flex-row my-3">
-                                                    <div class="float-left mr-20">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" name="BTC_WITHDRAWALS" id="btc-w" onclick="" class="custom-control-input toggle-settings" {{($settings['BTC_WITHDRAWALS']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['BTC_WITHDRAWALS']['notice']}}" data-name="BTC_WITHDRAWALS"> 
-                                                            <label for="btc-w" class="custom-control-label">BTC Withdrawal</label>
+                                        @if(!empty($settings['BTC_WITHDRAWALS']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="BTC_WITHDRAWALS" id="btc-w" onclick="" class="custom-control-input toggle-settings" {{($settings['BTC_WITHDRAWALS']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['BTC_WITHDRAWALS']['notice']}}" data-name="BTC_WITHDRAWALS"> 
+                                                                <label for="btc-w" class="custom-control-label">BTC Withdrawal</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
                                 </fieldset>
 
                                 <fieldset>
                                     <legend>Buy/Sell BTC</legend>
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group form-material">
-                                                <div class="d-flex flex-row my-3">
-                                                    <div class="float-left mr-20">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" name="SELL_BTC" id="sell-btc" onclick="" class="custom-control-input toggle-settings" {{($settings['SELL_BTC']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['SELL_BTC']['notice']}}" data-name="SELL_BTC"> 
-                                                            <label for="sell-btc" class="custom-control-label">Sell BTC</label>
+                                        @if(!empty($settings['SELL_BTC']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="SELL_BTC" id="sell-btc" onclick="" class="custom-control-input toggle-settings" {{($settings['SELL_BTC']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['SELL_BTC']['notice']}}" data-name="SELL_BTC"> 
+                                                                <label for="sell-btc" class="custom-control-label">Sell BTC</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                         @endif
 
-                                         <div class="col-md-4">
-                                            <div class="form-group form-material">
-                                                <div class="d-flex flex-row my-3">
-                                                    <div class="float-left mr-20">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" name="BUY_BTC" id="buy-btc" onclick="" class="custom-control-input toggle-settings" {{($settings['BUY_BTC']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['BUY_BTC']['notice']}}" data-name="BUY_BTC"> 
-                                                            <label for="buy-btc" class="custom-control-label">Buy BTC</label>
+                                        @if(!empty($settings['BUY_BTC']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="BUY_BTC" id="buy-btc" onclick="" class="custom-control-input toggle-settings" {{($settings['BUY_BTC']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['BUY_BTC']['notice']}}" data-name="BUY_BTC"> 
+                                                                <label for="buy-btc" class="custom-control-label">Buy BTC</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
+                                    </div>
+                                </fieldset>
+
+                                 <fieldset>
+                                    <legend>Buy/Sell BTC</legend>
+                                    <div class="row">
+                                        @if(!empty($settings['SEND_BTC']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="SEND_BTC" id="send-btc" onclick="" class="custom-control-input toggle-settings" {{($settings['SEND_BTC']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['SEND_BTC']['notice']}}" data-name="SEND_BTC"> 
+                                                                <label for="send-btc" class="custom-control-label">Send BTC</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         @endif
+
+                                        @if(!empty($settings['RECEIVE_BTC']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="RECEIVE_BTC" id="receive-btc" onclick="" class="custom-control-input toggle-settings" {{($settings['RECEIVE_BTC']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['RECEIVE_BTC']['notice']}}" data-name="RECEIVE_BTC"> 
+                                                                <label for="receive-btc" class="custom-control-label">Receive BTC</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </fieldset>
 
                                 <fieldset>
                                     <legend>Buy/Sell Giftcard</legend>
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group form-material">
-                                                <div class="d-flex flex-row my-3">
-                                                    <div class="float-left mr-20">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" name="GIFTCARD_BUY" id="sell-gc" onclick="" class="custom-control-input toggle-settings" {{($settings['GIFTCARD_BUY']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['GIFTCARD_BUY']['notice']}}" data-name="GIFTCARD_BUY"> 
-                                                            <label for="sell-gc" class="custom-control-label">Sell Giftcard</label>
+                                        @if(!empty($settings['GIFTCARD_BUY']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="GIFTCARD_BUY" id="sell-gc" onclick="" class="custom-control-input toggle-settings" {{($settings['GIFTCARD_BUY']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['GIFTCARD_BUY']['notice']}}" data-name="GIFTCARD_BUY"> 
+                                                                <label for="sell-gc" class="custom-control-label">Sell Giftcard</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
 
-                                         <div class="col-md-4">
-                                            <div class="form-group form-material">
-                                                <div class="d-flex flex-row my-3">
-                                                    <div class="float-left mr-20">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" name="GIFTCARD_SELL" id="buy-gc" onclick="" class="custom-control-input toggle-settings" {{($settings['GIFTCARD_SELL']['settings_value'] == 1) ? 'checked' : ''}}  data-notice="{{$settings['GIFTCARD_SELL']['notice']}}" data-name="GIFTCARD_SELL"> 
-                                                            <label for="buy-gc" class="custom-control-label">Buy Giftcard</label>
+                                        @if(!empty($settings['GIFTCARD_SELL']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="GIFTCARD_SELL" id="buy-gc" onclick="" class="custom-control-input toggle-settings" {{($settings['GIFTCARD_SELL']['settings_value'] == 1) ? 'checked' : ''}}  data-notice="{{$settings['GIFTCARD_SELL']['notice']}}" data-name="GIFTCARD_SELL"> 
+                                                                <label for="buy-gc" class="custom-control-label">Buy Giftcard</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
                                 </fieldset>
 
                                 <fieldset>
                                     <legend>Buy/Sell Airtime</legend>
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group form-material">
-                                                <div class="d-flex flex-row my-3">
-                                                    <div class="float-left mr-20">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" name="AIRTIME_BUY" id="buy-airtime"  class="custom-control-input toggle-settings s-active" {{($settings['AIRTIME_BUY']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['AIRTIME_BUY']['notice']}}" data-name="AIRTIME_BUY"> 
-                                                            <label for="buy-airtime" class="custom-control-label">Buy Airtime</label>
+                                        @if(!empty($settings['AIRTIME_BUY']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="AIRTIME_BUY" id="buy-airtime"  class="custom-control-input toggle-settings s-active" {{($settings['AIRTIME_BUY']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['AIRTIME_BUY']['notice']}}" data-name="AIRTIME_BUY"> 
+                                                                <label for="buy-airtime" class="custom-control-label">Buy Airtime</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
 
-                                        <div class="col-md-4">
-                                            <div class="form-group form-material">
-                                                <div class="d-flex flex-row my-3">
-                                                    <div class="float-left mr-20">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" name="AIRTIME_SELL" id="sell-airtime"  class="custom-control-input toggle-settings s-active" {{($settings['AIRTIME_SELL']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['AIRTIME_SELL']['notice']}}" data-name="AIRTIME_SELL"> 
-                                                            <label for="sell-airtime" class="custom-control-label">Sell Airtime</label>
+                                        @if(!empty($settings['AIRTIME_SELL']))
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <div class="d-flex flex-row my-3">
+                                                        <div class="float-left mr-20">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox" name="AIRTIME_SELL" id="sell-airtime"  class="custom-control-input toggle-settings s-active" {{($settings['AIRTIME_SELL']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['AIRTIME_SELL']['notice']}}" data-name="AIRTIME_SELL"> 
+                                                                <label for="sell-airtime" class="custom-control-label">Sell Airtime</label>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                        @endif
                                     </div>
                                 </fieldset>
                                
