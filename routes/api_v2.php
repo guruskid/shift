@@ -3,10 +3,11 @@
 use Illuminate\Http\Request;
 
 
+//Register and login here and other routes that dont require authentication
 
 
+Route::group(['middleware' => 'auth:api'], function () {
 
-Route::group([], function () {
-    
+    //Authenticated routes here
 
 });
