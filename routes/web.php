@@ -312,7 +312,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
 
     Route::get('/users', 'AdminController@users')->name('admin.users');
-    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
     Route::get('/faq', 'FaqController@index')->name('admin.faq');
