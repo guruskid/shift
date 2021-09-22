@@ -135,6 +135,7 @@ class BtcWalletController extends Controller
         $btc_account_id = $body[0]->id;
         $user->customer_id = $body[0]->customerId;
         $user->pin = $password;
+        $user->external_id = $external_id;
         $user->save();
 
         $address_url = env('TATUM_URL') . "/offchain/account/address/batch";
