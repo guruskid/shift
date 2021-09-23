@@ -10,4 +10,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     //Authenticated routes here
 
+    Route::get('/dashboard', 'UserController@dashboard');
+
 });
