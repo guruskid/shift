@@ -26,11 +26,11 @@ class UserController extends Controller
         $res = json_decode($res->getBody());
         $naira_usd_real_time = $res->value;
 
-        $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
         ]);
-        $accounts = json_decode($res->getBody());
+        $accounts = json_decode($res->getBody(),true);
 
         if (empty($accounts)) {
             return response()->json([
@@ -39,7 +39,7 @@ class UserController extends Controller
             ]);
         }
 
-        $btc_balance = $accounts[0]->balance->availableBalance;
+        $btc_balance = $accounts['balance']['availableBalance'];
 
         $btc_wallet = Auth::user()->btcWallet;
         $btc_wallet->balance = $btc_balance;
