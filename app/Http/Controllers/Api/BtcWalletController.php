@@ -225,6 +225,7 @@ class BtcWalletController extends Controller
             $x = \Str::limit($t->created, 10, '');
             $time = \Carbon\Carbon::parse((int)$x);
             $t->created_at = $time->setTimezone('Africa/Lagos');
+            $t->created_at = $t->created_at->format('d M, y');
 
             if (!isset($t->senderNote)) {
                 $t->senderNote = 'Sending BTC';
