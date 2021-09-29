@@ -336,7 +336,7 @@ class BtcWalletController extends Controller
 
 
 
-        //Convert the charge t0 naira and subtract it from the amount paid
+        //Convert the charge to naira and subtract it from the amount paid
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
         $charge = ($charge / 100) * $r->quantity;
         $charge_ngn = $charge * $r->current_rate * $trade_rate;
@@ -392,7 +392,7 @@ class BtcWalletController extends Controller
                 'headers' => ['x-api-key' => env('TATUM_KEY')],
                 'json' =>  [
                     "senderAccountId" => $hd_wallet->account_id,
-                    "recipientAccountId" => $service_wallet->account_id,
+                    "recipientAccountId" => $charges_wallet->account_id,
                     "amount" => number_format((float) $charge, 9),
                     "anonymous" => false,
                     "compliant" => false,
@@ -407,7 +407,7 @@ class BtcWalletController extends Controller
                 'headers' => ['x-api-key' => env('TATUM_KEY')],
                 'json' =>  [
                     "senderAccountId" => $hd_wallet->account_id,
-                    "recipientAccountId" => $charges_wallet->account_id,
+                    "recipientAccountId" => $service_wallet->account_id,
                     "amount" => number_format((float) $service_fee, 9),
                     "anonymous" => false,
                     "compliant" => false,
