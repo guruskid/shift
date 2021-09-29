@@ -209,13 +209,13 @@ $setting_airtime = \App\Http\Controllers\GeneralSettings::getSetting('AIRTIME_BU
                                 style="font-size:14px;font-weight: 500;background: #000070;border-radius: 30px;height:40px;width:150px;">
                                 <a class="nav-link text-white" href="#">Quick Top up</a>
                             </li>
-                            @include('newpages.modals.quicktop-up',$setting_airtime)
+                            @include('newpages.modals.quicktop-up')
                             <li id="quickWithdrawalLink"
                                 class="nav-item d-flex justify-content-center align-items-center mx-2"
                                 style="font-size:14px;font-weight: 500;border: 1px solid #000070;border-radius: 30px;height:40px;width:150px;">
                                 <a class="nav-link" style="color: #000070;font-weight: 500;">Quick Withdrawal</a>
                             </li>
-                            @include('newpages.modals.quickwithdrawalmodal',$setting_withdrawal)
+                            @include('newpages.modals.quickwithdrawalmodal')
                             <li id="quickWithdrawalLink"
                                 class="nav-item d-flex justify-content-center align-items-center mx-2"
                                 style="font-size:14px;font-weight: 500;background: #00B9CD;border-radius: 30px;height:40px;width:150px;">

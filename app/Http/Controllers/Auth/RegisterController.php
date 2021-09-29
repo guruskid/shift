@@ -135,6 +135,7 @@ class RegisterController extends Controller
                     ],
                     [
                         "currency" => "ETH",
+                        "xpub" => $eth_hd->xpub,
                         "customer" => [
                             "accountingCurrency" => "USD",
                             "customerCountry" => "NG",
@@ -162,7 +163,12 @@ class RegisterController extends Controller
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' => [
                 "addresses" => [
-                    ["accountId" => $btc_account_id]
+                    [
+                        "accountId" => $btc_account_id
+                    ],
+                    [
+                        "accountId" => $eth_account_id,
+                    ]
                 ]
             ],
         ]);
@@ -177,34 +183,13 @@ class RegisterController extends Controller
         ]);
         //End BTC wallet SETUP
 
-        //Setup ETH Wallet
-        $contract = Contract::where(['status'=> 'pending', 'currency_id' => 2])->first();
-        $eth_hash = $contract->hash;
-
-        //Get address form the txn hash
-        $eth_address_url = env('TATUM_URL') . "/blockchain/sc/address/ETH/".$eth_hash;
-        $res = $client->request('GET', $eth_address_url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
-        ]);
-
-        $get_eth_address_res = json_decode($res->getBody());
-        $eth_address = $get_eth_address_res->contractAddress;
-
-        //Link address to ledger account
-        $link_eth_url = env('TATUM_URL') . '/offchain/account/'.$eth_account_id.'/address/'.$eth_address;
-        $res = $client->request('POST', $link_eth_url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
-        ]);
-
-        $contract->status = 'completed';
-        $contract->save();
-
 
         $user->ethWallet()->create([
             'account_id' => $eth_account_id,
             'currency_id' => 2,
             'name' => $user->username,
-            'address' => $eth_address,
+            'address' => $address_body[1]->address,
+            'pin' => $address_body[1]->derivationKey
         ]);
 
         $title = 'Crypto Wallets created';
