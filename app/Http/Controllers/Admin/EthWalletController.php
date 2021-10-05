@@ -136,66 +136,53 @@ class EthWalletController extends Controller
 
         $hd_wallet = HdWallet::where(['currency_id' => 2])->first();
 
-        if ($request->amount > $wallet->balance) {
-            return back()->with(['error' => 'Insufficient balance']);
-        }
-
-
-        //Store Withdrawal
-        $url = env('TATUM_URL') . '/offchain/withdrawal';
-        $store = $client->request('POST', $url, [
+        $url = env('TATUM_URL') . '/ethereum/gas';
+        $get_fees = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' =>  [
-                "senderAccountId" => $wallet->account_id,
-                "address" => $request->address,
-                "amount" => number_format((float) $request->amount, 8),
-                "compliant" => false,
-                "fee" => "0",
-                "paymentId" => uniqid(),
-                "senderNote" => "Sending ETH "
+                "from" => Auth::user()->ethWallet->address,
+                "to" => $request->address,
+                "amount" => number_format((float)$request->amount, 8),
             ]
         ]);
 
-        $store_res = json_decode($store->getBody());
-        if ($store->getStatusCode() != 200) {
-            return back()->with(['error' => 'An error occured while withdrawing, please try again']);
+        $res = json_decode($get_fees->getBody());
+
+        $fees = ($res->gasPrice * 100000) / 1e18;
+
+        if ($request->amount + $fees > $wallet->balance) {
+           // return back()->with(['error' => 'Insufficient balance']);
         }
 
 
         try {
-            $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
-            $send = $client->request('POST', $url, [
+            $url = env('TATUM_URL') . '/offchain/ethereum/transfer';
+            $send_eth = $client->request('POST', $url, [
                 'headers' => ['x-api-key' => env('TATUM_KEY')],
                 'json' =>  [
-                    "chain" => "ETH",
-                    "custodialAddress" => $wallet->address,
-                    "contractType" => [3],
-                    "recipient" => [$request->address],
-                    "amount" => [number_format((float) $request->amount, 8)],
-                    "signatureId" => $hd_wallet->private_key,
-                    "tokenId" => ["0"],
-                    "tokenAddress" => ["0"]
+                    "senderAccountId" => $wallet->account_id,
+                    "address" => $request->address,
+                    "amount" => number_format((float) $request->amount, 8),
+                    "compliant" => false,
+                    "signatureId" => $hd_wallet->signature_id,
+                    "index" => $wallet->pin,
+                    "senderNote" => "Send ETH"
                 ]
             ]);
 
-            $send_res = json_decode($send->getBody());
+            $res = json_decode($send_eth->getBody());
 
-            if (Arr::exists($send_res, 'signatureId')) {
-                return back()->with(['success' => 'Ethereum sent']);
+
+            if (Arr::exists($res, 'signatureId')) {
+                return back()->with(['success' => 'Ethereum sent successfully']);
+
             } else {
-                //Cancel TXN
-                $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
-                    'headers' => ['x-api-key' => env('TATUM_KEY')],
-                ]);
-                return back()->with(['error' => 'An error occured, please try again']);
+                return back()->with(['error' => 'AN error occured, try again']);
             }
         } catch (\Exception $e) {
-            report($e);
-            $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
-            ]);
-            return back()->with(['error' => 'An error occured, please try again']);
-
+            //report($e);
+            \Log::info($e->getResponse()->getBody());
+            return back()->with(['error' => 'AN error occured, try again']);
         }
     }
 }
