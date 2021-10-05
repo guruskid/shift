@@ -388,35 +388,39 @@ class BtcWalletController extends Controller
                 ]
             ]);
 
-            $send_charge = $client->request('POST', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
-                'json' =>  [
-                    "senderAccountId" => $hd_wallet->account_id,
-                    "recipientAccountId" => $charges_wallet->account_id,
-                    "amount" => number_format((float) $charge, 9),
-                    "anonymous" => false,
-                    "compliant" => false,
-                    "transactionCode" => uniqid(),
-                    "paymentId" => uniqid(),
-                    "baseRate" => 1,
-                    "senderNote" => 'hidden'
-                ]
-            ]);
+            if ($charge > 0.0000001) {
+                $send_charge = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $hd_wallet->account_id,
+                        "recipientAccountId" => $charges_wallet->account_id,
+                        "amount" => number_format((float) $charge, 9),
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => uniqid(),
+                        "paymentId" => uniqid(),
+                        "baseRate" => 1,
+                        "senderNote" => 'hidden'
+                    ]
+                ]);
+            }
 
-            $send_service = $client->request('POST', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
-                'json' =>  [
-                    "senderAccountId" => $hd_wallet->account_id,
-                    "recipientAccountId" => $service_wallet->account_id,
-                    "amount" => number_format((float) $service_fee, 9),
-                    "anonymous" => false,
-                    "compliant" => false,
-                    "transactionCode" => uniqid(),
-                    "paymentId" => uniqid(),
-                    "baseRate" => 1,
-                    "senderNote" => 'hidden'
-                ]
-            ]);
+            if ($service_fee > 0.0000001) {
+                $send_service = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $hd_wallet->account_id,
+                        "recipientAccountId" => $service_wallet->account_id,
+                        "amount" => number_format((float) $service_fee, 9),
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => uniqid(),
+                        "paymentId" => uniqid(),
+                        "baseRate" => 1,
+                        "senderNote" => 'hidden'
+                    ]
+                ]);
+            }
             $t->status = 'success';
             $t->save();
         } catch (\Exception $e) {
@@ -568,7 +572,6 @@ class BtcWalletController extends Controller
                     'success' => true,
                     'msg' => 'Bitcoin sent successfully'
                 ]);
-
             } else {
                 return response()->json([
                     'success' => false,
