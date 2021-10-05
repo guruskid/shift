@@ -43,7 +43,7 @@
                 .then((res)=>{
                     if (res.data.success) {
                         swal('Great!!', 'Ethereum walet created successfully', 'success');
-                        window.location = '/user/ethereum-wallet';
+                        window.location = '/user/ethereum/wallet';
                     } else {
                         swal('oops!!', res.data.msg, 'error');
                     }

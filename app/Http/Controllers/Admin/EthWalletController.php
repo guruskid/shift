@@ -49,13 +49,13 @@ class EthWalletController extends Controller
 
 
 
-        $fees_wallet = FeeWallet::where(['crypto_currency_id' => 2, 'name' => 'eth_fees'])->first();
-        $fees_url = env('TATUM_URL') . '/ethereum/account/balance/' . $fees_wallet->address;
-        $res_fees = $client->request('GET', $fees_url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
-        ]);
-        $res_fees = json_decode($res_fees->getBody());
-        $fees_wallet->balance = $res_fees->balance;
+        // $fees_wallet = FeeWallet::where(['crypto_currency_id' => 2, 'name' => 'eth_fees'])->first();
+        // $fees_url = env('TATUM_URL') . '/ethereum/account/balance/' . $fees_wallet->address;
+        // $res_fees = $client->request('GET', $fees_url, [
+        //     'headers' => ['x-api-key' => env('TATUM_KEY')]
+        // ]);
+        // $res_fees = json_decode($res_fees->getBody());
+        // $fees_wallet->balance = $res_fees->balance;
 
 
 
@@ -75,7 +75,7 @@ class EthWalletController extends Controller
 
 
 
-        return view('admin.ethereum.index', compact('service_wallet', 'charges_wallet', 'fees_wallet', 'hd_wallet', 'transactions'));
+        return view('admin.ethereum.index', compact('service_wallet', 'charges_wallet',  'hd_wallet', 'transactions'));
     }
 
     public function settings()

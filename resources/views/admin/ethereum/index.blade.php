@@ -55,7 +55,7 @@
             </div>
 
             <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <a href="#">
                 <div class="card mb-3 widget-content ">
                     <div class="widget-content-wrapper ">
@@ -69,7 +69,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card mb-3 widget-content">
                 <a href="#">
                     <div class="widget-content-wrapper ">
@@ -83,7 +83,7 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card mb-3 widget-content">
                 <a href="#">
                     <div class="widget-content-wrapper ">
@@ -97,7 +97,7 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <div class="card mb-3 widget-content">
                 <a href="#">
                     <div class="widget-content-wrapper ">
@@ -110,7 +110,7 @@
                     </div>
                 </a>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <div class="row mb-5">
@@ -169,10 +169,10 @@
                 <p>{{ $service_wallet->address }}</p>
             </div>
 
-            <div class="card card-body mb-3">
+            {{-- <div class="card card-body mb-3">
                 <h5>Fees Wallet</h5>
                 <p>{{ $fees_wallet->address }}</p>
-            </div>
+            </div> --}}
         </div>
     </div>
 
