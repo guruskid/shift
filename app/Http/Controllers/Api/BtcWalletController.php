@@ -135,6 +135,7 @@ class BtcWalletController extends Controller
         $btc_account_id = $body[0]->id;
         $user->customer_id = $body[0]->customerId;
         $user->pin = $password;
+        $user->external_id = $external_id;
         $user->save();
 
         $address_url = env('TATUM_URL') . "/offchain/account/address/batch";
@@ -224,6 +225,7 @@ class BtcWalletController extends Controller
             $x = \Str::limit($t->created, 10, '');
             $time = \Carbon\Carbon::parse((int)$x);
             $t->created_at = $time->setTimezone('Africa/Lagos');
+            $t->created_at = $t->created_at->format('d M, y');
 
             if (!isset($t->senderNote)) {
                 $t->senderNote = 'Sending BTC';

@@ -35,9 +35,9 @@ class TradeController extends Controller
             $assets = Card::where('buyable', 1)->orWhere('sellable', 1)->get();
         }
 
-        $balance = Auth::user()->email;
+        /* $balance = Auth::user()->email; */
 
-        return view('user.assets', compact(['assets', 'asset_type', 'balance']))->share('app', $balance);
+        return view('user.assets', compact(['assets', 'asset_type']));
         /* return response()->json($assets); */
     }
 
