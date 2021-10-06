@@ -169,7 +169,7 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 /* Bitcoin Wallet Callback */
 Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName'] ], function () {
 
     /* ajax calls */
     Route::POST('/add_transaction', 'UserController@addTransaction');
@@ -221,9 +221,11 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     // Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
     Route::get('/airtime-to-cash', 'BillsPaymentController@TimeToCash')->name('user.test');
     Route::post('/airtime-to-cash', 'BillsPaymentController@airtimeToCash')->name('user.airtime-to-cash');
-    Route::get('/electricity', 'BillsPaymentController@disabledView')->name('user.electricity');
+    // Route::get('/electricity', 'BillsPaymentController@disabledView')->name('user.electricity');
+    Route::get('/electricity', 'BillsPaymentController@electricityRechargeView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
-    Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.pay-electricity');
+    Route::post('/electricity', 'BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
+    Route::post('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
 
     /* Routes for the new calculator */
     Route::get('/assets/{asset_type?}', 'TradeController@assets')->name('user.assets');
@@ -241,6 +243,15 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');
     Route::post('/send-bitcoin', 'BtcWalletController@send')->name('user.send-bitcoin');
     Route::get('/bitcoin-fees/{address}/{fees}', 'BtcWalletController@fees')->name('user.bitcoin-fees');
+
+    Route::prefix('ethereum')->group(function () {
+        Route::post('/create', 'EthWalletController@create')->name('ethereum.create');
+        Route::get('/wallet', 'EthWalletController@wallet')->name('user.ethereum-wallet');
+        Route::get('/fees/{address}/{amount}', 'EthWalletController@fees')->name('user.ethereum-fees');
+        Route::post('/send', 'EthWalletController@send')->name('ethereum.send');
+        Route::get('/trade', 'EthWalletController@trade')->name('ethereum.trade');
+        Route::post('/sell', 'EthWalletController@sell')->name('ethereum.sell');
+    });
 
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */
 

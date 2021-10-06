@@ -11,6 +11,10 @@ $naira_balance = 0;
 if (Auth::user()->nairaWallet) {
 $naira_balance = Auth::user()->nairaWallet->amount;
 }
+
+$setting_withdrawal = \App\Http\Controllers\GeneralSettings::getSetting('NAIRA_WALLET_WITHDRAWALS');
+$setting_airtime = \App\Http\Controllers\GeneralSettings::getSetting('AIRTIME_BUY');
+
 @endphp
 @endauth
 

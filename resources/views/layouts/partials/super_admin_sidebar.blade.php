@@ -44,11 +44,22 @@
         </a>
     </li>
 
+
+
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin-summary')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="logo-bitcoin"></ion-icon>
                 <span>Bitcoin Summary </span>
+            </div>
+        </a>
+    </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.ethereum' ? 'active' : '' }}  ">
+        <a href="{{route('admin.ethereum')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <img src="/svg/ethereum.svg" height="20px" class="mr-4" alt="">
+                <span>Ethereum Wallet <span class="badge badge-warning">New</span></span>
             </div>
         </a>
     </li>
@@ -96,7 +107,7 @@
         <a href="{{route('admin.user-verifications')}}" aria-expanded="false" class="dropdown-toggle" >
             <div class="">
                 <ion-icon name="shield-checkmark-outline"></ion-icon>
-                <span>Users verification <span class="badge badge-warning">New</span></span>
+                <span>Users verification </span>
             </div>
         </a>
     </li>

@@ -278,7 +278,7 @@
         });
     </script>
     <script src="{{asset('admin_assets/js/custom.js?v=45')}} "></script>
-    
+
     <!-- END GLOBAL MANDATORY SCRIPTS -->
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

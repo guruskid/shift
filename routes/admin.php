@@ -67,7 +67,8 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
         Route::get('/agent-transactions/{user}', 'TradeNairaController@agentTransactions')->name('p2p.agent-transactions');
     });
 
-
+    //Eth
+    Route::POST('/ethereum/send', 'EthWalletController@send')->name('admin.eth.send');
 });
 
 
@@ -88,11 +89,13 @@ Route::group(['middleware' => ['accountant'] ], function () {
 
     Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
 
+    Route::post('/update-settings', 'SettingController@set' )->name('admin.settings.update');
 
-
-    Route::get('/bitcoin-live-balance-transactions', 'BitcoinWalletController@liveBalanceTransactions')->name('live-balance.transactions');
-
-
+    Route::prefix('ethereum')->group(function () {
+        Route::get('/', 'EthWalletController@index')->name('admin.ethereum');
+        Route::get('/settings', 'EthWalletController@settings')->name('admin.ethereum.settings');
+        Route::post('/update-rate', 'EthWalletController@updateRate')->name('admin.eth.update-rate');
+    });
 
     //Trade Naira
     Route::prefix('trade-naira')->group(function () {
@@ -103,6 +106,7 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::get('/transactions', 'TradeNairaController@transactions')->name('admin.naira-p2p');
         Route::post('/set-limits', 'TradeNairaController@setLimits')->name('admin.naira-p2p.set-limits');
         Route::put('/confirm/{transaction}', 'TradeNairaController@confirm')->name('admin.naira-p2p.confirm');
+        Route::put('/confirm-sell/{transaction}', 'TradeNairaController@confirmSell')->name('admin.naira-p2p.confirm-sell');
         Route::post('/update-bank-details', 'TradeNairaController@updateBankdetails')->name('agent.update-bank');
     });
 

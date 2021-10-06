@@ -213,8 +213,11 @@ class BtcWalletController extends Controller
             }
         }
 
+        $send_btc_setting = GeneralSettings::getSetting('SEND_BTC');
+        $receive_btc_setting = GeneralSettings::getSetting('RECEIVE_BTC');
 
-        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees'));
+
+        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees','send_btc_setting','receive_btc_setting'));
     }
 
     public function fees($address, $amount)
@@ -448,7 +451,7 @@ class BtcWalletController extends Controller
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $nt->charge = 0;
-        $nt->transaction_type_id = 4;
+        $nt->transaction_type_id = 20;
         $nt->dr_wallet_id = $n->id;
         $nt->cr_wallet_id = $user_naira_wallet->id;
         $nt->dr_acct_name = 'Dantown';
