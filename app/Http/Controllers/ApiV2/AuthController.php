@@ -5,12 +5,15 @@ namespace App\Http\Controllers\ApiV2;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\VerificationCodeMail;
 use App\NairaWallet;
 use App\Notification;
 use App\User;
+use App\VerificationCode;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -37,6 +40,16 @@ class AuthController extends Controller
                 'message' => 'Invalid Email or Password',
             ], 401);
         }
+    }
+
+    public function verificationCodeEmail($email, $userId)
+    {
+        $otpCode = rand(1000, 9999);
+        VerificationCode::create([
+            'user_id' => $userId,
+            'verification_code' => $otpCode
+        ]);
+        Mail::to($email)->send(new VerificationCodeMail($otpCode));
     }
 
 
@@ -72,7 +85,9 @@ class AuthController extends Controller
             'password' => Hash::make($input['password']),
         ]);
 
-        $user->sendEmailVerificationNotification();
+
+
+        // $user->sendEmailVerificationNotification();
 
         $auth_user = User::find($user->id);
         $success['token'] = $user->createToken('appToken')->accessToken;
@@ -145,6 +160,7 @@ class AuthController extends Controller
         ]);
 
 
+
         $title = 'Bitcoin Wallet created';
         $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';
         $not = Notification::create([
@@ -153,13 +169,55 @@ class AuthController extends Controller
             'body' => $msg_body,
         ]);
 
-
-
+        $this->verificationCodeEmail($user->email, $user->id);
 
         return response()->json([
             'success' => true,
             'token' => $success,
             'user' => $auth_user
+        ]);
+    }
+
+    public function emailVerification(Request $otp)
+    {
+        $user = Auth::user();
+        $validator = Validator::make($otp->all(), [
+            'otp_code' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $checkOtp = VerificationCode::where('verification_code', $otp->otp_code)->where('user_id',$user->id);
+        $countOtp = VerificationCode::where('verification_code', $otp->otp_code)->where('user_id',$user->id)->count();
+        if($countOtp <= 0 ){
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid OTP'
+            ]);
+        }
+
+        $user->update([
+            'email_verified_at' => now()
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your email verification was successful'
+        ]);
+    }
+
+    public function resendCode()
+    {
+        $user = Auth::user();
+        $this->verificationCodeEmail($user->email, $user->id);
+        return response()->json([
+            'success' => true,
+            'message' => 'Email verification was sent successfully'
         ]);
     }
 }
