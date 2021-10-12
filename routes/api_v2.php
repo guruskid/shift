@@ -18,5 +18,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/resend-code', 'AuthController@resendCode');
 
 
+    Route::get('/dashboard', 'UserController@dashboard');
+
 });
 
