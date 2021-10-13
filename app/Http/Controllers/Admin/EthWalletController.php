@@ -140,7 +140,7 @@ class EthWalletController extends Controller
         $get_fees = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' =>  [
-                "from" => Auth::user()->ethWallet->address,
+                "from" => $hd_wallet->address,
                 "to" => $request->address,
                 "amount" => number_format((float)$request->amount, 8),
             ]
