@@ -277,10 +277,10 @@
                                 <label for="">Address</label>
                                 <input type="text"  name="address" required class="form-control">
                             </div>
-                            {{-- <div class="form-group">
+                            <div class="form-group">
                                 <label for="">Fee</label>
                                 <input type="number" step="any" value="{{ $fees }}"  name="fees" required class="form-control">
-                            </div> --}}
+                            </div>
                             <div class="form-group">
                                 <label for="">Amount</label>
                                 <input type="number" step="any"  name="amount" required class="form-control">

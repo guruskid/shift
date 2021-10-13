@@ -34,7 +34,7 @@
             </span>
         </div>
         {{-- User Side bar --}}
-        {{-- @include('layouts.partials.user') --}}
+        @include('layouts.partials.user')
     </div>
 
     {{-- Content Starts here --}}

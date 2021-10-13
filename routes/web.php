@@ -216,14 +216,17 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
 
     Route::post('/airtime', 'BillsPaymentController@buyAirtime')->name('user.airtime'); // the post for the naira wallet
     Route::post('/bitcoin-airtime', 'BillsPaymentController@bitcoinAirtime')->name('user.bitcoin-airtime'); // the post for the bitcoin wallet
-    Route::get('/data', 'BillsPaymentController@disabledView')->name('user.data');
+    Route::get('/data', 'BillsPaymentController@buyDataView')->name('user.data');
+    Route::post('/buy-data', 'BillsPaymentController@buyData')->name('user.buy-data');
     Route::get('/discounted-airtime', 'BillsPaymentController@disabledView')->name('user.discount-airtime');
-    // Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
-    Route::get('/airtime-to-cash', 'BillsPaymentController@TimeToCash')->name('user.test');
+    Route::get('/airtime-to-cash', 'BillsPaymentController@disabledView')->name('user.airtime-to-cash');
     Route::post('/airtime-to-cash', 'BillsPaymentController@airtimeToCash')->name('user.airtime-to-cash');
-    Route::get('/electricity', 'BillsPaymentController@disabledView')->name('user.electricity');
+    // Route::get('/electricity', 'BillsPaymentController@disabledView')->name('user.electricity');
+    Route::get('/electricity', 'BillsPaymentController@electricityRechargeView')->name('user.electricity');
     Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
-    Route::post('/electricity', 'BillsPaymentController@payElectricity')->name('user.pay-electricity');
+    
+    Route::post('/electricity', 'BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
+    Route::post('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
 
     /* Routes for the new calculator */
     Route::get('/assets/{asset_type?}', 'TradeController@assets')->name('user.assets');
@@ -242,7 +245,6 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::post('/send-bitcoin', 'BtcWalletController@send')->name('user.send-bitcoin');
     Route::get('/bitcoin-fees/{address}/{fees}', 'BtcWalletController@fees')->name('user.bitcoin-fees');
 
-    /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */
 
 });
 
@@ -272,9 +274,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
-
-    Route::get('/users', 'AdminController@users')->name('admin.users');
-    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 });
 
 /* For Super Admins Only */
@@ -311,17 +310,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ]
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
 
-    Route::get('/users', 'AdminController@users')->name('admin.users');
 
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
-    Route::get('/faq', 'FaqController@index')->name('admin.faq');
-    Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
-    Route::get('/edit-faq/{id}/{title}', 'FaqController@editFaqView')->name('admin.edit-faq');
-    Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
-    Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
-    Route::GET('/download-database', 'AdminController@downloadUserDb')->name('admin.userdb');
-    Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
-
 });
 
 
@@ -347,7 +337,8 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
     Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');
     Route::get('/admin-wallet', 'AdminController@adminWallet')->name('admin.admin-wallet');
 
-
+    Route::get('/users', 'AdminController@users')->name('admin.users');
+    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
     Route::post('/chat-agents', 'ChatAgentController@addChatAgent' )->name('admin.add_chat_agent');
@@ -355,4 +346,6 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
 
     Route::any('/transfer-charges', 'AdminController@transferCharges')->name('admin.wallet-charges');
     Route::any('/old-transfer-charges', 'AdminController@oldTransferCharges')->name('admin.old-wallet-charges');
+
+    Route::get('/utility-transactions', 'Admin\UtilityTransactions@index')->name('admin.utility-transactions');
 });

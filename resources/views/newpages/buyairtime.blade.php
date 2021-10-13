@@ -117,26 +117,26 @@
                                             </div>
                                         </div>
                                         <div class="col-12 col-lg-6 py-3 py-lg-5 mt-5 mt-lg-0 buyairtime_border">
-                                            <h5 class="text-center mb-2">Select wallet charge</h5>
+                                            {{-- <h5 class="text-center mb-2">Select wallet to charge</h5>
                                             <div class="d-none text-center" id="btc_show">
                                                 <span class="text-center" style="color: #000080;font-size: 14px;"> 1USD = {{ $rate_naira }} NGN  </span> &nbsp;
                                                 <span class="text-center" style="color: #000080;font-size: 14px;"> 1BTC = {{ $btc_rate }} USD </span>
-                                            </div>
+                                            </div> --}}
 
                                                 {{-- <span class="btn" style="background-color: #ffffff; border:1px solid lightgray"> --}}
-                                                <div class="pl-5 pr-5">
+                                                {{-- <div class="pl-5 pr-5">
                                                     <ul class="nav nav-tabs nav-justified mb-3 ">
                                                         <li class="nav-item" onclick="showRate()"><a data-toggle="tab" href="#tab-eg11-1" class="active nav-link btn rounded-pill dantown-btn-init"> Naira (NGN) </a>
                                                         </li>
                                                         <li class="nav-item" onclick="showRate('btcRecharge')"><a data-toggle="tab" href="#tab-eg11-0"
                                                                 class=" nav-link btn rounded-pill dantown-btn-init">Bitcoin   </a></li>
                                                     </ul>
-                                                </div>
+                                                </div> --}}
                                                 {{-- </span> --}}
                                         {{-- //////////////////////naira airtime///////////////////////// --}}
                                             <div class="" id="nairaAirtimePurchase">
                                                 <form action="{{ route('user.airtime') }}" method="post" class="disable-form"> @csrf
-                                                    <input type="hidden" id="airtimechoice" name="network" value="">
+                                                    <input type="hidden" class="airtimechoice" name="network" value="">
                                                     <input type="hidden" name="reference"
                                                         value="{{ \Str::random(6) . time() }}">
                                                     <div class="d-flex flex-column align-items-center justify-content-around">
@@ -205,7 +205,7 @@
                                                                             fill="black" />
                                                                     </svg>
                                                                 </span>
-                                                                <input type="password" maxlength="4" class="form-control"
+                                                                <input type="password" class="form-control"
                                                                     name="password" id="pinfortrx"
                                                                     style="padding-right: 30px;" />
                                                             </div>
@@ -223,21 +223,21 @@
                                         {{-- ///////////////////////btc airtime///////////////////////// --}}
                                             <div class="d-none" id="btcAirtimePurchase">
                                                 <form action="{{ route('user.bitcoin-airtime') }}" method="post" class="disable-form"> @csrf
-                                                    <input type="hidden" id="airtimechoice" name="network" value="">
+                                                    <input type="hidden" class="airtimechoice" name="network" value="">
                                                     <input type="hidden" name="reference"
                                                         value="{{ \Str::random(6) . time() }}">
                                                     <div class="d-flex flex-column align-items-center justify-content-around">
                                                         <div class="d-flex flex-column flex-md-row">
-                                                            <div  onclick="toggleOthers('btcBuydata')"
+                                                            <div
                                                                 class="custom-control custom-radio custom-control-inline my-2 px-1 px-lg-5 py-2 buyairtime_choice_layer">
-                                                                <input  type="radio" id="btcBuydata" name="btcRechargetype"
+                                                                <input type="radio" id="buydata" name="rechargetype"
                                                                     value="self" class="custom-control-input" checked>
                                                                 <label class="custom-control-label rechargemyself_labeltext"
                                                                     for="buydata">Recharging for myself</label>
                                                             </div>
-                                                            <div onclick="toggleOthers('btcBuyother')"
+                                                            <div
                                                                 class="custom-control custom-radio custom-control-inline my-2 px-5 py-2 buyairtime_choice_layer">
-                                                                <input  type="radio" id="btcBuyother" name="btcRechargetype"
+                                                                <input type="radio" id="buyother" name="rechargetype"
                                                                     value="other" class="custom-control-input">
                                                                 <label class="custom-control-label rechargemyself_labeltext"
                                                                     for="buyother">Other</label>
@@ -247,7 +247,8 @@
                                                             style="width: 240px;height:0px;border:1px solid #DBDBEE;">
                                                         </div>
 
-                                                        <div id="btcOtherphonenumber" class="col-12 col-md-11 mt-3 d-none">
+                                                        <div id="otherphonenumber" class="col-12 col-md-11 mt-3"
+                                                            style="display: none;">
                                                             <div class="form-group mb-3">
                                                                 <label for="amount" style="color: #000070;">Phone</label>
                                                                 <input type="text" id="phonenumber" name="phone"

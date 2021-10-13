@@ -17,6 +17,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.utility-transactions' ? 'active' : '' }}  ">
+        <a href="{{route('admin.utility-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="bulb"></ion-icon>
+                <span>Utility Transactions</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'active' : '' }}  ">
         <a href="{{route('admin.wallet-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
