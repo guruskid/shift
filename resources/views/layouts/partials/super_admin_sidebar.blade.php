@@ -56,7 +56,7 @@
 
 
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
-        <a href="{{route('admin.bitcoin-summary')}}"  aria-expanded="false" class="dropdown-toggle">
+        <a href="{{route('admin.crypto-summary', 1)}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="logo-bitcoin"></ion-icon>
                 <span>Bitcoin Summary </span>

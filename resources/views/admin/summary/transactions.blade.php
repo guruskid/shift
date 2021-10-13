@@ -47,7 +47,7 @@
                             <i class="pe-7s-graph1 icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Transactions
+                        <div>{{ $cur }} Transactions
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
-                           <form action="{{ route('admin.bitcoin-summary-txns.sort') }}" method="post">@csrf
+                           <form action="{{ route('admin.crypto-summary-txns.sort', $card_id) }}" method="post">@csrf
                                 <div class="form-inline mb-3">
                                     <label class="mr-2">Start</label>
                                     <input type="datetime-local" name="start" class="form-control mr-4">
@@ -84,7 +84,7 @@
                                                     <th>Id</th>
                                                     <th>User</th>
                                                     <th>Type</th>
-                                                    <th>BTC</th>
+                                                    <th>{{ $cur }}</th>
                                                     <th>USD</th>
                                                     <th>NGN</th>
                                                     <th>Rate</th>
@@ -110,15 +110,15 @@
                                                     <td colspan="10" ></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Total BTC</strong></td>
-                                                    <td>{{ number_format((float)$sell_btc, 8) }} BTC</td>
+                                                    <td><strong>Total {{ $cur }}</strong></td>
+                                                    <td>{{ number_format((float)$sell_btc, 8) }} {{ $cur }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td><strong>Total USD</strong></td>
                                                     <td>${{ number_format($sell_usd) }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Average BTC Price</strong></td>
+                                                    <td><strong>Average {{ $cur }} Price</strong></td>
                                                     <td>${{ number_format($sell_average) }}</td>
                                                 </tr>
                                             </tfoot>
@@ -136,7 +136,7 @@
                                                     <th>Id</th>
                                                     <th>User</th>
                                                     <th>Type</th>
-                                                    <th>BTC</th>
+                                                    <th>{{ $cur }}</th>
                                                     <th>USD</th>
                                                     <th>NGN</th>
                                                     <th>Rate</th>
@@ -162,15 +162,15 @@
                                                     <td colspan="10" ></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Total BTC</strong></td>
-                                                    <td>{{ number_format((float)$buy_btc, 8) }} BTC</td>
+                                                    <td><strong>Total {{ $cur }}</strong></td>
+                                                    <td>{{ number_format((float)$buy_btc, 8) }} {{ $cur }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td><strong>Total USD</strong></td>
                                                     <td>${{ number_format($buy_usd) }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Average BTC Price</strong></td>
+                                                    <td><strong>Average {{ $cur }} Price</strong></td>
                                                     <td>${{ number_format($buy_average) }}</td>
                                                 </tr>
                                             </tfoot>

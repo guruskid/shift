@@ -48,7 +48,8 @@
                             </i>
                         </div>
                         <div>Ethereum Wallet <br>
-                            <a href="{{ route('admin.ethereum.settings') }}">Settings</a>
+                            <a class="btn btn-primary" href="{{ route('admin.ethereum.settings') }}">Settings</a>
+                            <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 2) }}">Summary</a>
                         </div>
                     </div>
                 </div>

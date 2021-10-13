@@ -80,7 +80,7 @@
 
             @if (in_array(Auth::user()->role, [999, 889, 777] ))
             <li class="my-3">
-                <a href="{{route('admin.bitcoin-summary')}}"
+                <a href="{{route('admin.crypto-summary', 1)}}"
                     class=" {{ Route::currentRouteName() == 'admin.bitcoin-summary' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-wallet"></i>
                     Bitcoin Summary

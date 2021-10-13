@@ -47,9 +47,11 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::put('/confirm-migration/{migration}', 'BtcWalletController@confirmMigration')->name('admin.migration.confirm');
 
 
-    Route::get('/bitcoin-summary', 'SummaryController@index')->name('admin.bitcoin-summary');
-    Route::get('/bitcoin-summary-txns/{summary}', 'SummaryController@transactions')->name('admin.bitcoin-summary-txns');
-    Route::post('/bitcoin-summary-txns/sort', 'SummaryController@sortTransactions')->name('admin.bitcoin-summary-txns.sort');
+    Route::get('/summary/{id}', 'SummaryController@index')->name('admin.crypto-summary');
+    Route::get('/summary-txns/{summary}/{card_id}', 'SummaryController@transactions')->name('admin.crypto-summary-txns');
+    Route::post('/summary-txns/sort/{card_id}', 'SummaryController@sortTransactions')->name('admin.crypto-summary-txns.sort');
+
+
     Route::get('/bitcoin-users-balance', 'SummaryController@ledgerBalance');
     Route::view('/bitcoin-new-txn', 'admin.bitcoin_wallet.new_txn');
     Route::POST('/bitcoin-new-txn', 'BitcoinWalletController@addTxn')->name('admin.bitcoin.add-txn');
