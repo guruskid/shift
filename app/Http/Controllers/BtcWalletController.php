@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BtcMigration;
 use App\Card;
 use App\CardCurrency;
+use App\CryptoRate;
 use App\HdWallet;
 use App\NairaTransaction;
 use App\NairaWallet;
@@ -128,9 +129,8 @@ class BtcWalletController extends Controller
 
     public function getBitcoinNgn()
     {
-        $card = Card::find(102);
-        $rates = $card->currency->first();
 
+        $rates = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
@@ -145,10 +145,10 @@ class BtcWalletController extends Controller
         $btc_wallet_bal = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
 
-        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        // $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
-        $btc_ngn = $btc_usd * $rates->sell[0]->rate;
+        $btc_ngn = $btc_usd * $rates;
 
         return response()->json([
             'data' => (int)$btc_ngn
@@ -302,11 +302,13 @@ class BtcWalletController extends Controller
 
             $card = Card::find(102);
             $card_id = 102;
-            $rates = $card->currency->first();
+            // $rates = $card->currency->first();
 
-            $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-            $trade_rate = json_decode($sell->pivot->payment_range_settings);
-            $trade_rate = $trade_rate[0]->rate;
+            // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+            // $trade_rate = json_decode($sell->pivot->payment_range_settings);
+            // $trade_rate = $trade_rate[0]->rate;
+
+            $trade_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
             $client = new Client();
             $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
