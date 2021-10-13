@@ -5,15 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\BitcoinTransaction;
 use App\Card;
 use App\CardCurrency;
+use App\Country;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTransaction;
 use App\Notification;
-// use App\Http\Controllers\BillsPaymentController as BillsPayment;
+use App\UtilityTransaction;
+use App\Http\Controllers\BillsPaymentController as BillsPayment;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+// use GuzzleHttp\Client;
 
 class BillsPaymentController extends Controller
 {
@@ -59,37 +62,306 @@ class BillsPaymentController extends Controller
         }
     }
 
-    public function buyAirtime(Request $request)
+    public function purchase($postData = [])
     {
+        $ch = curl_init(env('LIVE_VTPASS_PURCHASE_URL'));
+        \curl_setopt_array($ch,[
+            CURLOPT_HEADER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERPWD=> env('VTPASS_USERNAME').':'.env('VTPASS_PASSWORD'),
+            CURLOPT_TIMEOUT=> 120,
+            CURLOPT_POST=>true,
+            CURLOPT_POSTFIELDS=>$postData
+        ]);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $response = json_decode($response,true);
+        return $response;
+    }
 
-        $data = Validator::make($request->all(),[
-            'network' => 'required',
-            'reference' => 'required',
-            'amount' => 'required',
-            'rechargetype' => 'string',
-            'password' => 'required'
+    // Data Buy
+    public function data() {
+        $products = BillsPayment::getProducts('data');
+        foreach ($products as $key => $value) {
+            if ($value['serviceID'] == 'smile-direct') {
+                unset($products[$key]);
+            }
+            unset($products[$key]['minimium_amount']);
+            unset($products[$key]['maximum_amount']);
+            unset($products[$key]['convinience_fee']);
+            unset($products[$key]['product_type']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $products,
         ]);
 
+    }
 
+    public function buyData(Request $request)
+    {
 
+        $rule = [
+            'service_id' => 'required',
+            'bundle'       => 'required',
+            'amount'      => 'required',
+            'phone'  => 'required',
+            'password' => 'required'
+        ];
 
-        if ($request->rechargetype == 'self') {
-            $phone = Auth::user()->country->phonecode . Auth::user()->phone;
-        } else{
-            $request->validate([
-                'phone' => 'required'
-            ]);
-
-            $phone = $request->phone;
-        }
+        $data = Validator::make($request->all(),$rule);
 
         if ($data->fails())
         {
             return response()->json([
                 'success' => false,
                 'message' => $data->errors()
-                ]);
+            ]);
+        }
+
+        $phone = $request->phone;
+
+        $user = Auth::user();
+
+        $naira_wallet = $user->nairaWallet;
+        $balance = $naira_wallet->amount;
+        $pin = $user->pin;
+        $put_pin = $request->password;
+        $hash = Hash::check($put_pin, $pin);
+
+        if(!$hash)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect Pin',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        if(!$hash)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect Pin',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        if($request->amount > $balance){
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        if($request->amount < 49){
+            return response()->json([
+                'success' => false,
+                'message' => 'Minimium amount is ₦50',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        if($request->amount > 25000){
+            return response()->json([
+                'success' => false,
+                'message' => 'Maximium amount is ₦25000',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        $priceDeduction = $balance - $request->amount;
+
+        $new_balance = $naira_wallet->update([
+            "amount" => $priceDeduction,
+        ]);
+
+        // dd('stop here');
+        $reference = rand(111111,999999).time();
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->narration = $phone. ' ' . 'Payment for mobile data';
+        $nt->amount = $request->amount;
+        $nt->user_id = Auth::user()->id;
+        $nt->type = 'mobile data';
+        $nt->previous_balance = $balance;
+        $nt->current_balance = $new_balance;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 9;
+
+
+        $nt->dr_user_id = Auth::user()->id;
+        $nt->dr_wallet_id = $naira_wallet->id;
+        $nt->dr_acct_name = $naira_wallet->account_name;
+        $nt->cr_acct_name = $request->network . ' ' . $phone;
+        $nt->trans_msg = 'done';
+        $nt->status = 'pending';
+        $nt->save();
+
+        $reference = rand(111111,999999).time();
+        $postData['serviceID'] = $request->service_id;
+        $postData['variation_code'] = $request->bundle;
+        $postData['amount'] = $request->amount;
+        $postData['phone'] = $phone;
+        $postData['request_id'] = $reference;
+
+
+        $body = $this->purchase($postData);
+
+        // $data = '{"code":"000","content":{"transactions":{"status":"delivered","product_name":"Airtel Data","unique_element":"09027452545","unit_price":49.99,"quantity":1,"service_verification":null,"channel":"api","commission":2,"total_amount":47.99,"discount":null,"type":"Data Services","email":"dantownrec2@gmail.com","phone":"09012435013","name":null,"convinience_fee":0,"amount":49.99,"platform":"api","method":"api","transactionId":"16326998482745635385910878"}},"response_description":"TRANSACTION SUCCESSFUL","requestId":"4898001632699847","amount":"49.99","transaction_date":{"date":"2021-09-27 00:44:08.000000","timezone_type":3,"timezone":"Africa\/Lagos"},"purchased_code":""}';
+
+        // $body = json_decode($data,true);
+
+        if ($body['code'] == 000) {
+            $nt->status = 'success';
+            $nt->charge = $body['content']['transactions']['commission'];
+            $nt->save();
+
+            $charge = 0;
+            $amount = $request->amount;
+            $total_charge = $amount + $charge;
+
+            $extras = json_encode([
+                'phone' => $phone
+            ]);
+
+            UtilityTransaction::create([
+                'user_id'          => Auth::user()->id,
+                'reference_id'     => $reference,
+                'amount'           => $amount,
+                'convenience_fee'  => $charge,
+                'total'            => $total_charge,
+                'type'             => 'Data purchase',
+                'status'           => 'success',
+                'extras'           => $extras
+            ]);
+
+            $title = 'Data purchase';
+            $msg_body = 'Your Dantown wallet has been debited with N' . $request->amount . ' for data purchase';
+
+            $not = Notification::create([
+                'user_id' => Auth::user()->id,
+                'title' => $title,
+                'body' => $msg_body,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'response_description' => 'TRANSACTION SUCCESSFUL',
+                'message' => 'Your data purchase to '.$phone.' was successful'
+            ]);
+        }
+
+       elseif($body['code'] == 016){
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Your data purchase failed'
+            ]);
+        }
+
+        elseif ($body['code'] == 021){
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is locked'
+            ]);
+        }
+
+        elseif ($body['code'] == 022){
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is suspended'
+            ]);
+        }
+
+        elseif ($body['code'] == 024) {
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is inactive'
+            ]);
+         }
+
+        else{
+            $nt->status ='failed';
+            $nt->save();
+            $new_balance = $naira_wallet->update([
+                "amount" => $balance,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Please Try again later'
+            ]);
+
+        }
+    }
+
+    // Aritime Buy
+    public function airtime() {
+        $products = BillsPayment::getProducts('airtime');
+        foreach ($products as $key => $value) {
+            if ($value['serviceID'] == 'etisalat-pin') {
+                unset($products[$key]);
             }
+            unset($products[$key]['minimium_amount']);
+            unset($products[$key]['maximum_amount']);
+            unset($products[$key]['convinience_fee']);
+            unset($products[$key]['product_type']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $products,
+        ]);
+
+    }
+
+    public function buyAirtime(Request $request)
+    {
+
+        $rule = [
+            'service_id' => 'required',
+            'amount' => 'required',
+            'phone'  => 'required',
+            'password' => 'required'
+        ];
+
+        $data = Validator::make($request->all(),$rule);
+
+        if ($data->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $data->errors()
+            ]);
+        }
+
+        $phone = $request->phone;
 
         $user = Auth::user();
         $naira_wallet = $user->nairaWallet;
@@ -107,8 +379,6 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        // dd($balance);
-
         if($request->amount > $balance){
             return response()->json([
                 'success' => false,
@@ -117,10 +387,10 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        if($request->amount < 100){
+        if($request->amount < 50){
             return response()->json([
                 'success' => false,
-                'message' => 'Minimium amount is ₦100',
+                'message' => 'Minimium amount is ₦50',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         }
@@ -139,8 +409,9 @@ class BillsPaymentController extends Controller
         ]);
 
         // dd('stop here');
+        $reference = rand(111111,999999).time();
         $nt = new NairaTransaction();
-        $nt->reference = $request->reference;
+        $nt->reference = $reference;
         $nt->narration = $phone. ' ' . 'Payment for recharge card';
         $nt->amount = $request->amount;
         $nt->user_id = Auth::user()->id;
@@ -163,24 +434,41 @@ class BillsPaymentController extends Controller
         $url =  "https://vtpass.com/api/pay";
         $response = $client->request('POST', $url, [
             'json' => [
-                // 'request_id' => Str::random(6),
-                'request_id' => $request->reference,
-                'serviceID' => $request->network,
+                'request_id' => $reference,
+                'serviceID' => $request->service_id,
                 'amount' => $request->amount,
                 'phone' => $request->phone
             ]
         ]);
-        $body = json_decode($response->getBody()->getContents());
-        // dd($body);
+        $body = json_decode($response->getBody()->getContents(),true);
 
+        // $data = '{"code":"000","content":{"transactions":{"status":"delivered","product_name":"Airtel Airtime VTU","unique_element":"09027452545","unit_price":50,"quantity":1,"service_verification":null,"channel":"api","commission":2,"total_amount":48,"discount":null,"type":"Airtime Recharge","email":"dantownrec2@gmail.com","phone":"09012435013","name":null,"convinience_fee":0,"amount":50,"platform":"api","method":"api","transactionId":"16326975138207511123747964"}},"response_description":"TRANSACTION SUCCESSFUL","requestId":"1491161632697512","amount":"50.00","transaction_date":{"date":"2021-09-27 00:05:13.000000","timezone_type":3,"timezone":"Africa\/Lagos"},"purchased_code":""}';
 
-        if ($body->code == 000) {
+        // $body = json_decode($data,true);
+
+        if ($body['code'] == 000) {
             $nt->status = 'success';
+            $nt->charge = $body['content']['transactions']['commission'];
             $nt->save();
-            // dd('success');
 
-            $nt->charge = $body->content->transactions->commission;
-            $nt->save();
+            $charge = 0;
+            $amount = $request->amount;
+            $total_charge = $amount + $charge;
+
+            $extras = json_encode([
+                'phone' => $phone
+            ]);
+
+            UtilityTransaction::create([
+                'user_id'          => Auth::user()->id,
+                'reference_id'     => $reference,
+                'amount'           => $amount,
+                'convenience_fee'  => $charge,
+                'total'            => $total_charge,
+                'type'             => 'Recharge card purchase',
+                'status'           => 'success',
+                'extras'           => $extras
+            ]);
 
             $title = 'Recharge card purchase';
             $msg_body = 'Your Dantown wallet has been debited with N' . $request->amount . ' for recharge card purchase';
@@ -191,21 +479,14 @@ class BillsPaymentController extends Controller
                 'body' => $msg_body,
             ]);
 
-            //  Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body));
-
-            $token = env('SMS_TOKEN');
-            $to = Auth::user()->phone;
-            $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-            $snd_sms = $client->request('GET', $sms_url);
-
             return response()->json([
                 'success' => true,
                 'response_description' => 'TRANSACTION SUCCESSFUL',
-                'message' => 'Your recharge is successful'
+                'message' => 'Your airtime purchase to '.$phone.' was successful'
             ]);
         }
 
-       elseif ($body->code == 016){
+       elseif ($body['code'] == 016){
             $nt->status ='failed';
             $nt->save();
             $new_balance = $naira_wallet->update([
@@ -219,7 +500,7 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        elseif ($body->code == 021){
+        elseif ($body['code'] == 021){
             $nt->status ='failed';
             $nt->save();
             $new_balance = $naira_wallet->update([
@@ -233,7 +514,7 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        elseif ($body->code == 022){
+        elseif ($body['code'] == 022){
             $nt->status ='failed';
             $nt->save();
             $new_balance = $naira_wallet->update([
@@ -247,7 +528,7 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        elseif ($body->code == 024) {
+        elseif ($body['code'] == 024) {
             $nt->status ='failed';
             $nt->save();
             $new_balance = $naira_wallet->update([
@@ -276,13 +557,33 @@ class BillsPaymentController extends Controller
         }
     }
 
+    // Power Buy
+    public function power() {
+        $products = BillsPayment::getProducts();
+        foreach ($products as $key => $value) {
+            unset($products[$key]['minimium_amount']);
+            unset($products[$key]['maximum_amount']);
+            unset($products[$key]['convinience_fee']);
+            unset($products[$key]['product_type']);
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $products,
+        ]);
+    }
 
     public function payElectricityVtpass(Request $r)
     {
+        $charge = 0;
+        $settings = GeneralSettings::getSetting('POWER_CONVENIENCE_FEE');
+        if ($settings) {
+            $charge = $settings['settings_value'];
+        }
+
         $data = Validator::make($r->all(),[
-            'electricity_board' => 'required',
+            'service_id' => 'required',
             'amount' => 'required',
-            'password' => 'required',
+            'pin' => 'required',
             'metre_type' => 'required',
             'metre_number'  => 'required',
             'email'  => 'required',
@@ -297,11 +598,13 @@ class BillsPaymentController extends Controller
         }
 
         $user = Auth::user();
-        $naira_wallet = $user->nairaWallet;
-        $balance = $naira_wallet->amount;
+        $n = $user->nairaWallet;
+        $balance = $n->amount;
         $pin = $user->pin;
-        $put_pin = $r->password;
+        $put_pin = $r->pin;
         $hash = Hash::check($put_pin, $pin);
+
+        $amount = $r->amount;
 
         if(!$hash){
             return response()->json([
@@ -319,7 +622,7 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        if($r->amount < 500){
+        if($r->amount < 5000){
             return response()->json([
                 'success' => false,
                 'message' => 'Minimium amount is ₦500',
@@ -334,9 +637,9 @@ class BillsPaymentController extends Controller
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         }
-        
+
         $reference = rand(111111,999999).time();
-        $postData['serviceID'] = $r->electricity_board;
+        $postData['serviceID'] = $r->service_id;
         $postData['variation_code'] = $r->metre_type;
         $postData['amount'] = $r->amount;
         $postData['billersCode'] = $r->metre_number;
@@ -349,20 +652,21 @@ class BillsPaymentController extends Controller
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERPWD=> env('VTPASS_USERNAME').':'.env('VTPASS_PASSWORD'),
-            CURLOPT_TIMEOUT=> 120, 
+            CURLOPT_TIMEOUT=> 120,
             CURLOPT_POST=>true,
-            CURLOPT_POSTFIELDS=>$postData 
+            CURLOPT_POSTFIELDS=>$postData
         ]);
         $response = curl_exec($ch);
         curl_close($ch);
         $response = json_decode($response,true);
 
-        // dd($response);
 
         if(isset($response['content']) && isset($response['content']['transactions'])) {
             if($response['content']['transactions']['status'] == 'delivered') {
+                $total_charge = $amount + $charge;
+
                 $prev_bal = $n->amount;
-                $n->amount -= $amount;
+                $n->amount -= $total_charge;
                 $n->save();
 
                 $nt = new NairaTransaction();
@@ -394,7 +698,18 @@ class BillsPaymentController extends Controller
                 $nt->extras = $extras;
                 $nt->save();
 
-                $phone = Auth::user()->country->phonecode . Auth::user()->phone;
+                UtilityTransaction::create([
+                    'user_id'          => Auth::user()->id,
+                    'reference_id'     => $reference,
+                    'amount'           => $amount,
+                    'convenience_fee'  => $charge,
+                    'total'            => $total_charge,
+                    'type'             => 'Electricity purchase',
+                    'status'           => 'success',
+                    'extras'           => $extras
+                ]);
+
+                $phone = $r->phone_number;
 
                 if (isset(Auth::user()->phone)) {
                     $client = new Client();
@@ -402,7 +717,7 @@ class BillsPaymentController extends Controller
                     $country = Country::find(Auth::user()->country_id);
                     $phone_number = $country->phonecode . $phone;
 
-                    $response = $client->request('POST', $url, [
+                    $response_sms = $client->request('POST', $url, [
                         'json' => [
                             'api_key' => env('TERMII_API_KEY'),
                             "type" => "plain",
@@ -412,11 +727,11 @@ class BillsPaymentController extends Controller
                             "sms" => "Your electricity purchase from Dantown was successful. Token : ".$response['token'].", Units : ".$response['units'].", Reference code:".$reference."."
                         ],
                     ]);
-                    $body = json_decode($response->getBody()->getContents());   
+                    $body = json_decode($response_sms->getBody()->getContents());
                 }
 
                 $title = 'Electricity purchase';
-                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge. 
+                 $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N'.$charge.' for convenience fee.
                 Token: '.$response['token']. ',
                 Unit: '. $response['units']. ',
                 Reference code:'. $reference;
@@ -442,9 +757,6 @@ class BillsPaymentController extends Controller
             ]);
         }
     }
-
-
-
 
     // public function bitcoinAirtime(Request $request)
     // {
@@ -529,7 +841,7 @@ class BillsPaymentController extends Controller
     //     if($request->amount > 25000){
     //         return response()->json([
     //             'success' => false,
-    //             'message' => 'Maximium amount is ₦25000',
+    //             'message' => 'Minimium amount is ₦25000',
     //             'response_description' => 'TRANSACTION FAILURE',
     //         ]);
     //     }
@@ -558,7 +870,7 @@ class BillsPaymentController extends Controller
     //     $bt->save();
 
     //     $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
-    //     $url = "https://vtpass.com/api/pay";
+    //     $url = "https://sandbox.vtpass.com/api/pay";
     //     $response = $client->request('POST', $url, [
     //         'json' => [
     //             // 'request_id' => Str::random(6),
