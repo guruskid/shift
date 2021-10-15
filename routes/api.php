@@ -106,7 +106,14 @@ Route::group(['prefix' => 'v1'], function () {
             Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
             Route::POST('/send', 'BtcWalletController@send');
 
-            
+        });
+
+        Route::prefix('ethereum')->group(function () {
+            Route::post('/create', 'EthWalletController@create');
+            Route::get('/wallet', 'Api\EthWalletController@wallet');
+            Route::get('/fees/{address}/{amount}', 'EthWalletController@fees');
+            Route::post('/send', 'EthWalletController@send');
+            Route::post('/sell', 'EthWalletController@sell');
         });
 
 
