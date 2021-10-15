@@ -175,11 +175,11 @@ class EthWalletController extends Controller
         $amount = number_format((float) $amount, 5);
 
         $url = env('TATUM_URL') . '/ethereum/gas';
-
+        $hd_wallet = HdWallet::where('currency_id', 2)->first();
         $get_fees = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' =>  [
-                "from" => Auth::user()->ethWallet->address,
+                "from" => Auth::user()->ethWallet->address ?? $hd_wallet->address ,
                 "to" => $address,
                 "amount" => $amount,
             ]
