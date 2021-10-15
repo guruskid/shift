@@ -151,7 +151,7 @@ class EthWalletController extends Controller
         $fees = ($res->gasPrice * 100000) / 1e18;
 
         if ($request->amount + $fees > $wallet->balance) {
-           // return back()->with(['error' => 'Insufficient balance']);
+           return back()->with(['error' => 'Insufficient balance']);
         }
 
 
