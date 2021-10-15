@@ -108,6 +108,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         });
 
+        //Eth Wallet
         Route::prefix('ethereum')->group(function () {
             Route::post('/create', 'EthWalletController@create');
             Route::get('/wallet', 'Api\EthWalletController@wallet');
