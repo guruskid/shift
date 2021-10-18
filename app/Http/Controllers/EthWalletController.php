@@ -166,7 +166,9 @@ class EthWalletController extends Controller
         $eth_wallet->balance = $accounts->balance->availableBalance;
         $eth_wallet->usd = $eth_wallet->balance  * $eth_usd;
 
-        return view('newpages.trade_ethereum', compact('sell_rate', 'eth_usd', 'charge'));
+        $hd_wallet = HdWallet::where('currency_id', 2)->first()->add;
+
+        return view('newpages.trade_ethereum', compact('sell_rate', 'eth_usd', 'hd_wallet', 'charge'));
     }
 
     public function fees($address, $amount)

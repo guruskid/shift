@@ -18,7 +18,7 @@
                     equivalent</label>
                 </div>
 
-                <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group mb-0 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
                         <div class="input-group-text input_label">
                             ETH</div>
@@ -26,6 +26,10 @@
                     <input type="number" required step="any" min="0" name="quantity"
                     v-model="eth" @keyup="getRateeth()"
                         class="form-control bitcoin-input-radius"  >
+                </div>
+                <div class="d-flex justify-content-between">
+                    <small><strong>Fee: </strong>{{ fee.toFixed(5) }}</small>
+                    <small><strong>Total: </strong>{{ total.toFixed(5) }}</small>
                 </div>
             </div>
             <div class="form-group mb-4">
@@ -61,7 +65,7 @@
 
 <script>
     export default {
-        props: ['rate', 'eth_usd', 'charge'],
+        props: ['rate', 'eth_usd', 'charge', 'hd'],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -76,6 +80,9 @@
                 usdToNaira: this.rate, //our rate
                 ethToNaira: '',
                 loading: false,
+                fee: 0,
+                total: 0,
+                address: this.hd
             }
         },
         mounted () {
@@ -87,16 +94,40 @@
             getRateUsd() {
                 this.naira = this.usd * this.usdToNaira
                 this.eth = this.usd / this.ethUsd
+                this.getFees()
             },
             /* When eth is updated */
             getRateeth(){
                 this.usd = this.ethUsd * this.eth
                 this.naira = this.eth * this.ethToNaira
+                this.getFees()
             },
             /* When ngn is updated */
             getRateNgn(){
                 this.eth = this.naira / this.ethToNaira;
                 this.usd = this.naira / this.usdToNaira;
+                this.getFees()
+            },
+
+            getTotal() {
+                if (this.eth == 0) {
+                    this.total = this.fee;
+                    return true;
+                }
+                this.total = parseFloat(this.eth) + parseFloat(this.fee);
+            },
+
+            getFees(){
+                if (this.eth <= 0) {
+                    return false;
+                }
+                alert(this.address)
+                this.loading = true;
+                axios.get(`/user/ethereum/fees/${this.address}/${this.eth}`)
+                    .then((res) => {
+                        this.fee = res.data.fee;
+                    })
+                    .finally(() => {this.getTotal(); this.loading = false});
             },
 
             sell(){
