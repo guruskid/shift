@@ -9,6 +9,7 @@ use App\NairaTradePop;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class TradeController extends Controller
 {
@@ -72,6 +73,7 @@ class TradeController extends Controller
         $txn->agent_id = $agent->id;
         $txn->amount = $request->amount;
         $txn->status = 'waiting';
+        $txn->type = 'buy';
         $txn->save();
 
         $agent_wallet->amount -= $request->amount;
@@ -83,6 +85,82 @@ class TradeController extends Controller
             'id' => $txn->id
         ]);
 
+    }
+
+    public function sellNaira(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'agent_id' => 'required',
+            'amount' => 'integer|required',
+            'pin' => 'string|required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $user = Auth::user();
+        $user_wallet = $user->nairaWallet;
+        $agent = User::find($request->agent_id);
+
+
+        $pin = $user->pin;
+        $input_pin = $request->pin;
+        $hash = Hash::check($input_pin, $pin);
+
+        if(!$hash)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect Pin',
+            ], 401);
+        }
+       
+        $ref = \Str::random(3).time();
+        if ($agent->role != 777) {
+            return response()->json([
+                'success' =>  false,
+                'msg' => 'Invalid agent'
+            ]);
+        }
+        $min = $agent->agentLimits->min;
+        $max = $agent->agentLimits->max;
+
+        if ($request->amount < $min || $request->amount > $max ) {
+            return response()->json([
+                'success' =>  false,
+                'msg' => 'Trade range not met'
+            ]);
+        }
+
+        if ($request->amount < $min || $request->amount > $max ) {
+            return response()->json([
+                'success' =>  false,
+                'msg' => 'Trade range not met'
+            ]);
+        }
+
+        //create TXN here
+        $txn = new NairaTrade();
+        $txn->reference = $ref;
+        $txn->user_id = Auth::user()->id;
+        $txn->agent_id = $agent->id;
+        $txn->amount = $request->amount;
+        $txn->status = 'waiting';
+        $txn->type = 'sell';
+        $txn->save();
+
+        $user_wallet->amount -= $request->amount;
+        $user_wallet->save();
+
+        return response()->json([
+            'success' => true,
+            'reference' => $ref,
+            'id' => $txn->id
+        ]);
     }
 
     public function transactions()
