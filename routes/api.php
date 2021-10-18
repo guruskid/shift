@@ -12,9 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/faqs', 'FaqController@getFaqs');
-
-
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -28,7 +25,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/general-settings/{name}', 'Api\GeneralSettings@getSetting');
 
 
-    Route::post('/engage', 'testController@engage');
     Route::post('/register', 'Api\AuthController@register');
     Route::post('/login', 'Api\AuthController@login');
     Route::get('/banks', 'Api\AuthController@bankList' );
@@ -44,9 +40,21 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
 
-        Route::GET('/airtime', 'Api\BillsPaymentController@nairaRate');
-        Route::post('/airtime', 'Api\BillsPaymentController@buyAirtime');
-        Route::post('/bitcoin-airtime', 'Api\BillsPaymentController@bitcoinAirtime');
+        // Route::GET('/airtime', 'Api\BillsPaymentController@nairaRate');
+        // Route::post('/airtime', 'Api\BillsPaymentController@buyAirtime');
+        // Route::post('/bitcoin-airtime', 'Api\BillsPaymentController@bitcoinAirtime');
+
+        // Airtime
+        Route::get('/airtime', 'Api\BillsPaymentController@airtime');
+        Route::post('/buy-airtime', 'Api\BillsPaymentController@buyAirtime');
+        // Route::post('/bitcoin-airtime', 'Api\BillsPaymentController@bitcoinAirtime');
+
+
+        // Data
+        Route::get('/data', 'Api\BillsPaymentController@data');
+        Route::post('/buy-data', 'Api\BillsPaymentController@buyData');
+        
+        Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
 
         Route::post('/send-otp', 'Api\AuthController@sendOtp');
         Route::post('/resend-otp', 'Api\AuthController@resendOtp');
@@ -85,8 +93,13 @@ Route::group(['prefix' => 'v1'], function () {
         Route::POST('/withdraw-cash', 'Api\NairaWalletController@transfer');
 
             //Pay electricity
-        Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
-        Route::post('/electricity', 'BillsPaymentController@payElectricity');
+        // Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
+        // Route::post('/electricity', 'BillsPaymentController@payElectricity');
+
+        Route::get('/power/{category?}', 'Api\BillsPaymentController@power');
+        Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+        Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
+        
             //Pay Cable
         Route::post('/get-dec-user', 'BillsPaymentController@getUser');
         Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
@@ -96,14 +109,11 @@ Route::group(['prefix' => 'v1'], function () {
 
             Route::POST('/create', 'Api\BtcWalletController@create');
             Route::GET('/balance', 'Api\BtcWalletController@balance');
-            Route::GET('/transactions', 'Api\BtcWalletController@transactions');
-            Route::GET('/send-charges', 'Api\BtcWalletController@fees');
-
+            Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');
+            Route::GET('/transactions', 'Api\BitcoinWalletController@transactions');
             Route::POST('/trade', 'BtcWalletController@sell');
             Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
-            Route::POST('/send', 'BtcWalletController@send');
-
-            
+            Route::POST('/send', 'Api\BitcoinWalletController@send');
         });
 
 
