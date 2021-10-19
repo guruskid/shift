@@ -92,7 +92,7 @@ class TradeController extends Controller
         $validator = Validator::make($request->all(), [
             'agent_id' => 'required',
             'amount' => 'integer|required',
-            'password' => 'string|required',
+            'pin' => 'string|required'
         ]);
 
         if ($validator->fails()) {
@@ -107,8 +107,10 @@ class TradeController extends Controller
         $agent = User::find($request->agent_id);
 
 
-        $pin = $user_wallet->password;
-        $input_pin = $request->password;
+
+        $pin = $user->pin;
+        $input_pin = $request->pin;
+
         $hash = Hash::check($input_pin, $pin);
 
         if(!$hash)
