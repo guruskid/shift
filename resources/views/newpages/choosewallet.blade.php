@@ -166,7 +166,7 @@
 
 
                                 {{-- Ethereum Wallet --}}
-                                @if (!Auth::user()->ethWallet)
+                                {{-- @if (!Auth::user()->ethWallet)
                                 <div class="row">
                                     <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
                                         style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
@@ -204,7 +204,7 @@
                                         </div>
                                     </div>
                                 </a>
-                                @endif
+                                @endif --}}
 
                             </div>
                         </div>

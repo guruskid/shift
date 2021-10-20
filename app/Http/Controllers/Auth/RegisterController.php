@@ -111,7 +111,7 @@ class RegisterController extends Controller
         $btc_hd = HdWallet::where('currency_id', 1)->first();
         $btc_xpub = $btc_hd->xpub;
 
-        $eth_hd = HdWallet::where('currency_id', 2)->first();
+        // $eth_hd = HdWallet::where('currency_id', 2)->first();
 
         $client = new Client();
         $url = env('TATUM_URL') . "/ledger/account/batch";
@@ -132,19 +132,19 @@ class RegisterController extends Controller
                         ],
                         "compliant" => false,
                         "accountingCurrency" => "USD"
-                    ],
-                    [
-                        "currency" => "ETH",
-                        "xpub" => $eth_hd->xpub,
-                        "customer" => [
-                            "accountingCurrency" => "USD",
-                            "customerCountry" => "NG",
-                            "externalId" => $external_id,
-                            "providerCountry" => "NG"
-                        ],
-                        "compliant" => false,
-                        "accountingCurrency" => "USD"
                     ]
+                    // [
+                    //     "currency" => "ETH",
+                    //     "xpub" => $eth_hd->xpub,
+                    //     "customer" => [
+                    //         "accountingCurrency" => "USD",
+                    //         "customerCountry" => "NG",
+                    //         "externalId" => $external_id,
+                    //         "providerCountry" => "NG"
+                    //     ],
+                    //     "compliant" => false,
+                    //     "accountingCurrency" => "USD"
+                    // ]
                 ]
             ],
         ]);
@@ -153,7 +153,7 @@ class RegisterController extends Controller
 
 
         $btc_account_id = $body[0]->id;
-        $eth_account_id = $body[1]->id;
+        // $eth_account_id = $body[1]->id;
 
         $user->customer_id = $body[0]->customerId;
         $user->save();
@@ -165,10 +165,10 @@ class RegisterController extends Controller
                 "addresses" => [
                     [
                         "accountId" => $btc_account_id
-                    ],
-                    [
-                        "accountId" => $eth_account_id,
                     ]
+                    // [
+                    //     "accountId" => $eth_account_id,
+                    // ]
                 ]
             ],
         ]);
@@ -184,13 +184,13 @@ class RegisterController extends Controller
         //End BTC wallet SETUP
 
 
-        $user->ethWallet()->create([
-            'account_id' => $eth_account_id,
-            'currency_id' => 2,
-            'name' => $user->username,
-            'address' => $address_body[1]->address,
-            'pin' => $address_body[1]->derivationKey
-        ]);
+        // $user->ethWallet()->create([
+        //     'account_id' => $eth_account_id,
+        //     'currency_id' => 2,
+        //     'name' => $user->username,
+        //     'address' => $address_body[1]->address,
+        //     'pin' => $address_body[1]->derivationKey
+        // ]);
 
         $title = 'Crypto Wallets created';
         $msg_body = 'Congratulations your Dantown Crypto Wallet has been created successfully, you can now send, receive, buy and sell cryptocurrencies in the wallet. ';
