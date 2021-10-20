@@ -110,7 +110,7 @@
 
                                         </div>
 
-                                        <ethereum-sell-component :rate="{{ $sell_rate }}" :eth_usd="{{ $eth_usd }}"  :charge={{ $charge }} ></ethereum-sell-component>
+                                        <ethereum-sell-component :rate="{{ $sell_rate }}" :eth_usd="{{ $eth_usd }}"  :charge={{ $charge }} :hd="'{{ $hd_wallet }}'" ></ethereum-sell-component>
 
                                     </div>
                                 </div>

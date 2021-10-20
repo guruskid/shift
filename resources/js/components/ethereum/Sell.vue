@@ -86,7 +86,6 @@
             }
         },
         mounted () {
-            //console.log(this.eth_usd);
             this.ethToNaira = this.ethUsd * this.usdToNaira;
         },
         methods: {
@@ -121,7 +120,6 @@
                 if (this.eth <= 0) {
                     return false;
                 }
-                alert(this.address)
                 this.loading = true;
                 axios.get(`/user/ethereum/fees/${this.address}/${this.eth}`)
                     .then((res) => {

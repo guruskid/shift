@@ -166,7 +166,7 @@ class EthWalletController extends Controller
         $eth_wallet->balance = $accounts->balance->availableBalance;
         $eth_wallet->usd = $eth_wallet->balance  * $eth_usd;
 
-        $hd_wallet = HdWallet::where('currency_id', 2)->first()->add;
+        $hd_wallet = HdWallet::where('currency_id', 2)->first()->address;
 
         return view('newpages.trade_ethereum', compact('sell_rate', 'eth_usd', 'hd_wallet', 'charge'));
     }
@@ -181,7 +181,7 @@ class EthWalletController extends Controller
         $get_fees = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' =>  [
-                "from" => Auth::user()->ethWallet->address ?? $hd_wallet->address ,
+                "from" => Auth::user()->ethWallet->address ?? $hd_wallet->address,
                 "to" => $address,
                 "amount" => $amount,
             ]
@@ -204,7 +204,6 @@ class EthWalletController extends Controller
             'amount' => 'required|min:0',
             'address' => 'required|string',
             'pin' => 'required',
-
         ]);
 
         if ($validator->fails()) {
@@ -324,7 +323,6 @@ class EthWalletController extends Controller
                     'success' => true,
                     'msg' => 'Ethereum sent successfully'
                 ]);
-
             } else {
                 return response()->json([
                     'success' => false,
@@ -462,8 +460,6 @@ class EthWalletController extends Controller
             }
 
             $send_res = json_decode($send->getBody());
-
-
         } catch (\Exception $e) {
             report($e);
             return response()->json(['success' => false, 'msg' => 'An error occured, please try again']);

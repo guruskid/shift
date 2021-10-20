@@ -53,7 +53,7 @@ Route::group(['prefix' => 'v1'], function () {
         // Data
         Route::get('/data', 'Api\BillsPaymentController@data');
         Route::post('/buy-data', 'Api\BillsPaymentController@buyData');
-        
+
         Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
 
         Route::post('/send-otp', 'Api\AuthController@sendOtp');
@@ -117,7 +117,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::GET('/transactions', 'Api\BitcoinWalletController@transactions');
             Route::POST('/trade', 'BtcWalletController@sell');
             Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
-<<<<<<< HEAD
+
             Route::POST('/send', 'BtcWalletController@send');
 
         });
@@ -129,9 +129,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/fees/{address}/{amount}', 'EthWalletController@fees');
             Route::post('/send', 'EthWalletController@send');
             Route::post('/sell', 'EthWalletController@sell');
-=======
+
             Route::POST('/send', 'Api\BitcoinWalletController@send');
->>>>>>> fd7eec6d93b054d3b78a17cfbe99d9c9f4fb9255
+
         });
 
 
