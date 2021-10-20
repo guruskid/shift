@@ -15,14 +15,17 @@ class VerificationCodeMail extends Mailable
      * Create a new message instance.
      *
      * @return void
-     * 
+     *
      *
      */
-
-    public $code;
-    public function __construct(String $code)
+    public $code, $title, $body, $btn_text, $btn_url;
+    public function __construct(String $code, String $title, String $body, String $btn_text, String $btn_url)
     {
         $this->code = $code;
+        $this->title = $title;
+        $this->body = $body;
+        $this->btn_text = $btn_text;
+        $this->btn_url = $btn_url;
     }
 
     /**
@@ -32,6 +35,6 @@ class VerificationCodeMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Email Verification Code')->markdown('emails.users.verification_email');
+        return $this->subject($this->title)->markdown('emails.users.verification_email');
     }
 }

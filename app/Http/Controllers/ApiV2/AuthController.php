@@ -49,7 +49,11 @@ class AuthController extends Controller
             'user_id' => $userId,
             'verification_code' => $otpCode
         ]);
-        Mail::to($email)->send(new VerificationCodeMail($otpCode));
+        $title = 'Email Verification Code2';
+        $body = 'is your verification code, valid for 5 minutes. to keep your account safe, do not share this code with anyone.';
+        $btn_text = '';
+        $btn_url = '';
+        Mail::to($email)->send(new VerificationCodeMail($otpCode, $title, $body, $btn_text, $btn_url));
     }
 
 

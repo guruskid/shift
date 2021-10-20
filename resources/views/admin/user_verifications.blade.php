@@ -126,11 +126,46 @@
                     <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
                         Confirm
                     </button>
+                    <span onclick="decline_reason('reason_for_decline_verification_div{{ $v->id }}')" class="btn btn-warning rounded-pill btn-block m-1">Decline</span>
                 </form>
 
+
                 <form action="{{ route('admin.cancel-verification', $v) }}" method="post">@csrf @method('put')
-                    <button class="btn btn-danger">Cancel verification</button>
+                    {{-- <button class="btn btn-danger">Cancel verification</button> --}}
+
+                    @if($v->type == 'ID Card')
+                        <div class="col-12 d-none" id="reason_for_decline_verification_div{{ $v->id }}">
+                            <div class="form-group mt-5">
+                                <label for="reason" class="text-danger">Reason for card declination </label>
+                                <select name="reason" id="" class="form-control">
+                                    <option value="Uploaded a wrong information">Uploaded a wrong information</option>
+                                    <option value="Unclear uploaded document">Unclear uploaded document</option>
+                                    <option value="Full image of the document was not uploaded">Full image of the document was not uploaded</option>
+                                    <option value="A mismatch of information">A mismatch of information</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-danger btn-block rounded-pill">Cancel verification</button>
+                            </div>
+                        </div>
+                    @else
+                        <div class="col-12 d-none" id="reason_for_decline_verification_div{{ $v->id }}">
+                            <div class="form-group mt-5">
+                                <label for="reason" class="text-danger">Reason for address declination</label>
+                                <select name="reason" id="" class="form-control">
+                                    <option value="Uploaded a wrong information">Uploaded a wrong information</option>
+                                    <option value="Unclear uploaded document">Unclear uploaded document</option>
+                                    <option value="Full image of the document was not uploaded">Full image of the document was not uploaded</option>
+                                    <option value="A mismatch of information">A mismatch of information</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-danger btn-block rounded-pill">Cancel verification</button>
+                            </div>
+                        </div>
+                    @endif
                 </form>
+
             </div>
         </div>
     </div>

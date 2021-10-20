@@ -1,14 +1,14 @@
 @component('mail::message')
 @component('mail::panel')
-Verification Code
+{{$title}}
 @endcomponent
 
-{{$code}} is your verification code, valid for 5 minutes. to keep your account safe, do not share this code with anyone.
+{{$code}} {{$body}}
 
 
 
-@component('mail::button', ['url' => env('APP_URL')])
+{{-- @component('mail::button', ['url' => env('APP_URL')])
 Visit Us
-@endcomponent
+@endcomponent --}}
 
 @endcomponent
