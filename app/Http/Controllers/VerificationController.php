@@ -49,7 +49,7 @@ class VerificationController extends Controller
             return back()->with(['error' => 'Address verification already in progress']);
             dd('hi ');
         }
-        
+
         $file = $request->address;
         $extension = $file->getClientOriginalExtension();
         $filenametostore =  $user->email . uniqid(). '.' . $extension;
@@ -62,8 +62,7 @@ class VerificationController extends Controller
             'type' => 'Address',
             'status' => 'Waiting'
         ]);
-        
-        
+
         return back()->with(['success' => 'Address uploaded, please hold on while we verify your account']);
     }
 }

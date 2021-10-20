@@ -2,6 +2,7 @@
 
 use App\Jobs\RegistrationEmailJob;
 use App\Mail\UserRegistered;
+use App\Mail\VerificationCodeMail;
 use App\NairaTransaction;
 use Illuminate\Support\Facades\Mail;
 
@@ -19,6 +20,21 @@ use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('email', function () {
+    $rad = rand(1000, 9999);
+    $otpCode = rand(1000, 9999);
+        // VerificationCode::create([
+        //     'user_id' => $userId,
+        //     'verification_code' => $otpCode
+        // ]);
+        $title = 'Email Verification Code1';
+        $body = 'is your verification code, valid for 5 minutes. to keep your account safe, do not share this code with anyone.';
+        $btn_text = '';
+        $btn_url = '';
+
+    return new VerificationCodeMail($rad, $title, $body, $btn_text, $btn_url);
 });
 
 //Done
@@ -179,6 +195,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     Route::get('/get-bank/{id}', 'UserController@getBank');
     Route::get('/delete-bank/{id}', 'UserController@deleteBank');
     Route::get('/read-not/{id}', 'UserController@readNot');
+
     /* ajax ends here */
 
     Route::get('/', 'UserController@dashboard')->name('user.dashboard');
@@ -290,7 +307,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ], function () {
     Route::post('/cards', 'AdminController@addCard' )->name('admin.add_card');
 
-
     Route::post('/transactions', 'AdminController@addTransaction' )->name('admin.add_transaction');
     Route::GET('/delete-transaction/{id}', 'AdminController@deleteTransac');
 
@@ -349,6 +365,7 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
 
     Route::get('/users', 'AdminController@users')->name('admin.users');
     Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
+
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
     Route::post('/chat-agents', 'ChatAgentController@addChatAgent' )->name('admin.add_chat_agent');

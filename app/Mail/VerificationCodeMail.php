@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class DantownNotification extends Mailable
+class VerificationCodeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -15,10 +15,13 @@ class DantownNotification extends Mailable
      * Create a new message instance.
      *
      * @return void
+     *
+     *
      */
-    public  $title, $body, $btn_text, $btn_url;
-    public function __construct(String $title, String $body, String $btn_text, String $btn_url)
+    public $code, $title, $body, $btn_text, $btn_url;
+    public function __construct(String $code, String $title, String $body, String $btn_text, String $btn_url)
     {
+        $this->code = $code;
         $this->title = $title;
         $this->body = $body;
         $this->btn_text = $btn_text;
@@ -29,10 +32,9 @@ class DantownNotification extends Mailable
      * Build the message.
      *
      * @return $this
-     *
      */
     public function build()
     {
-        return $this->markdown('emails.DantownNotification');
+        return $this->subject($this->title)->markdown('emails.users.verification_email');
     }
 }

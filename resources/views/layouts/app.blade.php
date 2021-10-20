@@ -331,6 +331,10 @@ $not = $nots->last();
              }
          }
 
+         const decline_reason = (selectedOption) => {
+            showit(selectedOption)
+         }
+
 
     </script>
 
