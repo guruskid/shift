@@ -72,14 +72,14 @@ class AdminController extends Controller
         $approved_transactions = Transaction::where('status', 'approved')->get()->take(5);
 
         $users = User::latest()->get()->take(4);
-        $verified_users = User::where('email_verified_at', '!=', null )->count();
+        $verified_users = User::where('email_verified_at', '!=', null)->count();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
         $users_count = User::all()->count();
 
 
 
 
-       /*  $client = new Client();
+        /*  $client = new Client();
         $url = env('RUBBIES_API') . "/balanceenquiry";
 
         $response = $client->request('POST', $url, [
@@ -126,7 +126,8 @@ class AdminController extends Controller
 
 
         if (Auth::user()->role == 999) { //Super admin
-            return view( 'admin.super_dashboard',
+            return view(
+                'admin.super_dashboard',
                 compact([
                     'transactions', 'users', 'verified_users', 'users_count', 'notifications', 'usersChart',
                     'withdraw_txns', 'airtime_txns', 'buy_txns_wallet',
@@ -330,10 +331,10 @@ class AdminController extends Controller
     /* Old transfer charges before the database was remodified to include seperate wallets for charges */
     public function oldTransferCharges(Request $r)
     {
-        if (!$r->start || !$r->end ) {
+        if (!$r->start || !$r->end) {
             $transactions = NairaTransaction::latest()->get();
             $total = $transactions->sum('charge');
-        }else{
+        } else {
 
             $transactions = NairaTransaction::where('created_at', '>=', $r->start)->where('created_at', '<=', $r->end)->get();
             $total = $transactions->sum('charge');
@@ -417,28 +418,34 @@ class AdminController extends Controller
             }
         }
 
-        $btc_wallet = $user->btcWallet;
-        $client = new Client();
+        if ($user->btcWallet) {
+            $btc_wallet = $user->btcWallet;
 
-        $url = env('TATUM_URL') . '/ledger/account/' . $btc_wallet->account_id;
-        $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
-        ]);
-        $res = json_decode($res->getBody());
-        $btc_wallet->balance = $res->balance->availableBalance;
+            $client = new Client();
+
+            $url = env('TATUM_URL') . '/ledger/account/' . $btc_wallet->account_id;
+            $res = $client->request('GET', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')]
+            ]);
+            $res = json_decode($res->getBody());
+            $btc_wallet->balance = $res->balance->availableBalance;
 
 
-        $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
-        $get_txns = $client->request('POST', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
-            "json" => ["id" => $btc_wallet->account_id]
-        ]);
+            $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+            $get_txns = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                "json" => ["id" => $btc_wallet->account_id]
+            ]);
 
-        $btc_transactions = json_decode($get_txns->getBody());
-        foreach ($btc_transactions as $t) {
-            $x = \Str::limit($t->created, 10, '');
-            $time = \Carbon\Carbon::parse((int)$x);
-            $t->created = $time->setTimezone('Africa/Lagos');
+            $btc_transactions = json_decode($get_txns->getBody());
+            foreach ($btc_transactions as $t) {
+                $x = \Str::limit($t->created, 10, '');
+                $time = \Carbon\Carbon::parse((int)$x);
+                $t->created = $time->setTimezone('Africa/Lagos');
+            }
+        }else {
+            $btc_wallet = null;
+            $btc_transactions = [];
         }
 
         return view('admin.user', compact(['user', 'transactions', 'wallet_txns', 'btc_wallet', 'btc_transactions', 'dr_total', 'cr_total']));

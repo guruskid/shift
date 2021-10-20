@@ -9,8 +9,6 @@
                 <P>Hi DANTOWN ADMIN, good to see you again Boss.</P>
             </div>
         </div>
-        
-        {{-- updated --}}
         <div class="row">
             <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-table-two mb-4">

@@ -1,4 +1,5 @@
 <div class="container-fluid mt-3 mt-lg-0 wallet_trx_tabs" id="bitcoin_wallet_receive_tab" style="display: none;">
+    @if($receive_btc_setting['settings_value'] == 1)
     <form action="" method="post">
         @csrf
         <div class="row">
@@ -25,4 +26,8 @@
             </div>
         </div>
     </form>
+    @else
+    <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i>
+        {{$receive_btc_setting['notice']}}</h4>
+    @endif
 </div>

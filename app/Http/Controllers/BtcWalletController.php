@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\BtcMigration;
 use App\Card;
 use App\CardCurrency;
+use App\CryptoRate;
 use App\HdWallet;
 use App\NairaTransaction;
 use App\NairaWallet;
@@ -128,9 +129,8 @@ class BtcWalletController extends Controller
 
     public function getBitcoinNgn()
     {
-        $card = Card::find(102);
-        $rates = $card->currency->first();
 
+        $rates = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
@@ -145,10 +145,10 @@ class BtcWalletController extends Controller
         $btc_wallet_bal = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
 
-        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        // $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
-        $btc_ngn = $btc_usd * $rates->sell[0]->rate;
+        $btc_ngn = $btc_usd * $rates;
 
         return response()->json([
             'data' => (int)$btc_ngn
@@ -213,8 +213,11 @@ class BtcWalletController extends Controller
             }
         }
 
+        $send_btc_setting = GeneralSettings::getSetting('SEND_BTC');
+        $receive_btc_setting = GeneralSettings::getSetting('RECEIVE_BTC');
 
-        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees'));
+
+        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees','send_btc_setting','receive_btc_setting'));
     }
 
     public function fees($address, $amount)
@@ -299,11 +302,13 @@ class BtcWalletController extends Controller
 
             $card = Card::find(102);
             $card_id = 102;
-            $rates = $card->currency->first();
+            // $rates = $card->currency->first();
 
-            $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-            $trade_rate = json_decode($sell->pivot->payment_range_settings);
-            $trade_rate = $trade_rate[0]->rate;
+            // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+            // $trade_rate = json_decode($sell->pivot->payment_range_settings);
+            // $trade_rate = $trade_rate[0]->rate;
+
+            $trade_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
             $client = new Client();
             $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
@@ -336,7 +341,7 @@ class BtcWalletController extends Controller
 
 
 
-        //Convert the charge t0 naira and subtract it from the amount paid
+        //Convert the charge to naira and subtract it from the amount paid
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
         $charge = ($charge / 100) * $r->quantity;
         $charge_ngn = $charge * $r->current_rate * $trade_rate;
@@ -388,35 +393,39 @@ class BtcWalletController extends Controller
                 ]
             ]);
 
-            $send_charge = $client->request('POST', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
-                'json' =>  [
-                    "senderAccountId" => $hd_wallet->account_id,
-                    "recipientAccountId" => $service_wallet->account_id,
-                    "amount" => number_format((float) $charge, 9),
-                    "anonymous" => false,
-                    "compliant" => false,
-                    "transactionCode" => uniqid(),
-                    "paymentId" => uniqid(),
-                    "baseRate" => 1,
-                    "senderNote" => 'hidden'
-                ]
-            ]);
+            if ($charge > 0.0000001) {
+                $send_charge = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $hd_wallet->account_id,
+                        "recipientAccountId" => $charges_wallet->account_id,
+                        "amount" => number_format((float) $charge, 9),
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => uniqid(),
+                        "paymentId" => uniqid(),
+                        "baseRate" => 1,
+                        "senderNote" => 'hidden'
+                    ]
+                ]);
+            }
 
-            $send_service = $client->request('POST', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
-                'json' =>  [
-                    "senderAccountId" => $hd_wallet->account_id,
-                    "recipientAccountId" => $charges_wallet->account_id,
-                    "amount" => number_format((float) $service_fee, 9),
-                    "anonymous" => false,
-                    "compliant" => false,
-                    "transactionCode" => uniqid(),
-                    "paymentId" => uniqid(),
-                    "baseRate" => 1,
-                    "senderNote" => 'hidden'
-                ]
-            ]);
+            if ($service_fee > 0.0000001) {
+                $send_service = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $hd_wallet->account_id,
+                        "recipientAccountId" => $service_wallet->account_id,
+                        "amount" => number_format((float) $service_fee, 9),
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => uniqid(),
+                        "paymentId" => uniqid(),
+                        "baseRate" => 1,
+                        "senderNote" => 'hidden'
+                    ]
+                ]);
+            }
             $t->status = 'success';
             $t->save();
         } catch (\Exception $e) {
@@ -444,7 +453,7 @@ class BtcWalletController extends Controller
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $nt->charge = 0;
-        $nt->transaction_type_id = 4;
+        $nt->transaction_type_id = 20;
         $nt->dr_wallet_id = $n->id;
         $nt->cr_wallet_id = $user_naira_wallet->id;
         $nt->dr_acct_name = 'Dantown';
@@ -568,7 +577,6 @@ class BtcWalletController extends Controller
                     'success' => true,
                     'msg' => 'Bitcoin sent successfully'
                 ]);
-                
             } else {
                 return response()->json([
                     'success' => false,
