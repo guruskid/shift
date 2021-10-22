@@ -133,6 +133,47 @@ $(document).ready(function () {
         })
     })
 
+    $('#electricy_board').on('change',function (e) {
+        var serviceId = e.currentTarget.value
+        $.post('/user/get-variations/'+serviceId,null,function (result,status) {
+            var option = "<option>Select Metre Type</option>";
+            result.forEach(variation => {
+                option += "<option value="+variation.variation_code+">"+variation.variation_name+"</option>"
+            });
+            $('#metre_type').html(option)
+        })
+    })
+
+    $('#cable_provider').on('change',function (e) {
+        var serviceId = e.currentTarget.value
+        $.post('/user/get-variations/'+serviceId,null,function (result,status) {
+            console.log(result);
+            var option = "<option>Select Subscription Plan</option>";
+            result.forEach(variation => {
+                option += "<option value="+variation.variation_code+" data-amount='"+variation.variation_amount+"'>"+variation.variation_name+"</option>"
+            });
+            $('#subscription_plan').html(option)
+        })
+    })
+
+    $('#subscription_plan').on('change',function (e) {
+        var amt = $(this).find(':selected').attr('data-amount');
+        $('#s_amount').val(amt)
+        $('#s_amount').attr('readonly',true)
+    })
+
+    $('#smartcard_number').on('input',function (e) {
+        var billercode = $(this).val()
+        var serviceId = $('#cable_provider').val()
+        $.post('/user/get-merchant/'+serviceId+'/'+billercode,null,function (result,status) {
+            if (result.length != 0) {
+                $('#owner').val(result.Customer_Name)
+            }else {
+                $('#owner').val("")
+            }
+            $('#owner').attr('readonly',true)
+        })
+    })
 });
 
 //Update wallet balance
@@ -547,7 +588,27 @@ $("#naira_deposit").on("click", function () {
 $(".airtime_network_card").on("click", function () {
     $(".airtime_network_card").removeClass("active_airtime_choice");
     $(this).addClass("active_airtime_choice");
-    $("#airtimechoice").val($(this).attr("alt"));
+    $(".airtimechoice").val($(this).attr("alt"));
+});
+
+$(".airtime_network_card").on("click", function () {
+    $(".airtime_network_card").removeClass("active_airtime_choice");
+    $(this).addClass("active_airtime_choice");
+    $(".airtimechoice").val($(this).attr("alt"));
+
+    var serviceId = $(this).attr("alt")
+    $.post('/user/get-variations/'+serviceId,null,function (result,status) {
+        var option = "<option>Select Bundle</option>";
+        result.forEach(variation => {
+            option += "<option value="+variation.variation_code+" data-amount='"+variation.variation_amount+"'>"+variation.variation_name+"</option>"
+        });
+        $('.data-bundle').html(option)
+    })
+});
+
+$(".data-bundle").on("change", function () {
+    var amt = $(this).find(':selected').attr('data-amount');
+    $('.bundle-amt').val(amt)
 });
 
 $("#swapcountrycode").on("change", function () {

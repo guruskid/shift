@@ -53,6 +53,11 @@ Route::group(['prefix' => 'v1'], function () {
         // Data
         Route::get('/data', 'Api\BillsPaymentController@data');
         Route::post('/buy-data', 'Api\BillsPaymentController@buyData');
+
+        // Data
+        Route::get('/cable', 'Api\BillsPaymentController@cable');
+        Route::post('/recharge-cable', 'Api\BillsPaymentController@rechargeCable');
+        Route::post('/get-merchant/{serviveId}/{billercode}', 'BillsPaymentController@merchantVerify');
         
         Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
 

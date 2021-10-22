@@ -70,6 +70,40 @@ class BillsPaymentController extends Controller
         return response()->json("Error occur");
     }
 
+    public function merchantVerify($serviceID,$billersCode) {
+        
+        $response = [];
+        if(!empty($serviceID) && !empty($billersCode)) {
+            $post_data = [
+                'serviceID' => $serviceID,
+                'billersCode' => $billersCode
+            ];
+
+            $ch = curl_init(env('LIVE_VTPASS_MERCHANT_VERIFICATION_URL'));
+            \curl_setopt_array($ch,[
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_USERPWD=> env('VTPASS_USERNAME').':'.env('VTPASS_PASSWORD'),
+                CURLOPT_TIMEOUT=> 120, 
+                CURLOPT_POST=>true,
+                CURLOPT_POSTFIELDS=>$post_data  
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response,true);
+            
+            if(isset($response['code']) && $response['code'] != "000") {
+                $response = [];
+            }else{
+                if(isset($response['content']['error'])){
+                    $response = [];
+                }else{
+                    $response = isset($response['content']) ? $response['content']: [];
+                }
+            }
+        }
+        return $response;
+    }
 
     public function CableView()
     {
@@ -88,6 +122,8 @@ class BillsPaymentController extends Controller
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
         }
     }
+
+
     public function paytv(Request $r)
     {
         //uncommeting this line will make real transaction
@@ -173,6 +209,152 @@ class BillsPaymentController extends Controller
             return back()->with(['success' => 'Purchase made successfully']);
         } else {
             return back()->with(['error' => 'Oops! ' . $body->responsemessage]);
+        }
+    }
+
+
+    public function CableRechargeView()
+    {
+
+        $content = $this->getProducts("tv-subscription");
+        if (!empty($content)) {
+            $boards = $content;
+            return view('newpages.cable-recharge', compact(['boards']));
+        } else {
+            return back()->with(['error' => 'Oops! an error ocurred, please try again']);
+        }
+    }
+
+    public function rechargeCable(Request $r)
+    {
+        $charge = 0;
+        $settings = GeneralSettings::getSetting('CABLE_CONVENIENCE_FEE');
+        if (!empty(($settings))) {
+            $charge = $settings['settings_value'];
+        }
+
+        $r->validate([
+            'cable_provider' => 'required',
+            'subscription_plan' => 'required',
+            'smartcard_number'  => 'required',
+            'owner' => 'required',
+            'password' => 'required',
+            'email'  => 'required',
+            'phone_number'  => 'required'
+        ]);
+
+        $user = Auth::user();
+        $n = $user->nairaWallet;
+
+        if (Hash::check($r->password, $user->pin) == false) {
+            return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
+        }
+
+        $amount = $r->amount;
+
+        $phone = $r->phone_number .''. $r->phone;
+
+        if ($amount > $n->amount) {
+            return redirect()->back()->with(['error' => 'Insufficient funds']);
+        }
+
+        $reference = rand(111111,999999).time();
+        $postData['serviceID'] = $r->cable_provider;
+        $postData['variation_code'] = $r->subscription_plan;
+        $postData['billersCode'] = $r->smartcard_number;
+        $postData['phone'] = $phone;
+        $postData['email'] = $r->email;
+        $postData['request_id'] = $reference;
+
+        $response = $this->purchase($postData);
+
+        // dd($response);
+
+        if(isset($response['content']) && isset($response['content']['transactions'])) {
+            if($response['content']['transactions']['status'] == 'delivered') {
+                $total_charge = $amount + $charge;
+
+                $prev_bal = $n->amount;
+                $n->amount -= $total_charge;
+                $n->save();
+
+                $nt = new NairaTransaction();
+                $nt->reference = $reference;
+                $nt->amount = $total_charge;
+                $nt->user_id = Auth::user()->id;
+                // $nt->type = 'cable';
+
+                $nt->previous_balance = $prev_bal;
+                $nt->current_balance = $n->amount;
+                $nt->charge = $charge;
+                $nt->transaction_type_id = 12;
+
+
+                $nt->dr_user_id = Auth::user()->id;
+                $nt->dr_wallet_id = $n->id;
+                $nt->dr_acct_name = $n->account_name;
+                $nt->cr_acct_name = $r->provider;
+                $nt->narration = 'Payment for Cable Subscription';
+                $nt->trans_msg = 'done';
+                $nt->status = 'success';
+
+                $extras = json_encode([
+                    'type' => $response['content']['transactions']['product_name'],
+                    'subscription_plan' => $r->subscription_plan,
+                    'decoder_number' => $response['content']['transactions']['unique_element'],
+                    'price' => $response['content']['transactions']['unit_price'],
+                ]);
+
+                $nt->extras = $extras;
+                $nt->save();
+
+                UtilityTransaction::create([
+                    'user_id'          => Auth::user()->id,
+                    'reference_id'     => $reference,
+                    'amount'           => $amount,
+                    'convenience_fee'  => $charge,
+                    'total'            => $total_charge,
+                    'type'             => 'Cable subscription',
+                    'status'           => 'success',
+                    'extras'           => $extras
+                ]);
+
+                $phone = $r->phone_number;
+
+                if (isset(Auth::user()->phone)) {
+                    $client = new Client();
+                    $url = env('TERMII_SMS_URL') . "/send";
+                    $country = Country::find(Auth::user()->country_id);
+                    $phone_number = $country->phonecode . $phone;
+
+                    $response_sms = $client->request('POST', $url, [
+                        'json' => [
+                            'api_key' => env('TERMII_API_KEY'),
+                            "type" => "plain",
+                            "to" => $phone_number,
+                            "from" => "N-Alert",
+                            "channel" => "dnd",
+                            "sms" => "Your cable subscription from Dantown was successful."
+                        ],
+                    ]);
+                    $body = json_decode($response_sms->getBody()->getContents());   
+                }
+
+                $title = 'Cable subscription';
+                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for cable subscription and N'.$charge.' for convenience fee.';
+
+                $not = Notification::create([
+                    'user_id' => Auth::user()->id,
+                    'title' => $title,
+                    'body' => $msg_body,
+                ]);
+
+                return back()->with(['success' => 'Purchase made successfully.']);
+            }else{
+                return back()->with(['error' => 'Oops! An error occured, please try again']);
+            }
+        }else {
+            return back()->with(['error' => 'Oops! An error occured, please try again']);
         }
     }
 
@@ -1247,7 +1429,7 @@ class BillsPaymentController extends Controller
                 $nt->reference = $reference;
                 $nt->amount = $total_charge;
                 $nt->user_id = Auth::user()->id;
-                $nt->type = 'elecriciy bills';
+                $nt->type = 'elecricity bills';
 
                 $nt->previous_balance = $prev_bal;
                 $nt->current_balance = $n->amount;
@@ -1317,6 +1499,8 @@ class BillsPaymentController extends Controller
                 ]);
 
                 return back()->with(['success' => 'Purchase made successfully. Token : '.$response['token']]);
+            }else {
+                return back()->with(['error' => 'Oops! An error occured, please try again']);
             }
         }else {
             return back()->with(['error' => 'Oops! An error occured, please try again']);
@@ -1330,11 +1514,11 @@ class BillsPaymentController extends Controller
 
     public function purchase($postData = [])
     {
-        $ch = curl_init(env('LIVE_VTPASS_PURCHASE_URL'));
+        $ch = curl_init(env('SANDBOX_VTPASS_PURCHASE_URL'));
         \curl_setopt_array($ch,[
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERPWD=> env('VTPASS_USERNAME').':'.env('VTPASS_PASSWORD'),
+            CURLOPT_USERPWD=> env('VTPASS_SANDBOX_USERNAME').':'.env('VTPASS_SANDBOX_PASSWORD'),
             CURLOPT_TIMEOUT=> 120, 
             CURLOPT_POST=>true,
             CURLOPT_POSTFIELDS=>$postData 
