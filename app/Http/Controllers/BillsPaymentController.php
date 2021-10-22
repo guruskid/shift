@@ -1514,11 +1514,11 @@ class BillsPaymentController extends Controller
 
     public function purchase($postData = [])
     {
-        $ch = curl_init(env('SANDBOX_VTPASS_PURCHASE_URL'));
+        $ch = curl_init(env('LIVE_VTPASS_PURCHASE_URL'));
         \curl_setopt_array($ch,[
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERPWD=> env('VTPASS_SANDBOX_USERNAME').':'.env('VTPASS_SANDBOX_PASSWORD'),
+            CURLOPT_USERPWD=> env('VTPASS_USERNAME').':'.env('VTPASS_PASSWORD'),
             CURLOPT_TIMEOUT=> 120, 
             CURLOPT_POST=>true,
             CURLOPT_POSTFIELDS=>$postData 
