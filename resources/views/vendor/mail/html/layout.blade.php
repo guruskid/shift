@@ -181,12 +181,22 @@
                   margin-top: -300px;
                   background-color: #ffffff;
                 ">
+                <br><br>
               <p style="margin: 0">
+
                 {{ Illuminate\Mail\Markdown::parse($slot) }}
+
               </p>
+              <br>
+              <p>
+                <span>Warm Regards</span><br>
+                <span style="color: #000070; font-weight:bolder">Dantown Team</span>
+            </p>
+            <br><br><br>
             </td>
 
           </tr>
+
           <tr>
             <td bgcolor="#ffffff" align="center" style="padding:0px">
                 <table border="0" cellpadding="0" cellspacing="0" width="450">
@@ -200,18 +210,21 @@
                             height:120px;
                           ">
 
-                        <div style="display: flex; justify-content:center">
-                            <a href="https://play.google.com/store/apps/details?id=com.dantown.Dantownapp">
-                                <img src="images/GOOGLE_PLAY.png" style="width: 115px; margin:10px" alt="">
-                            </a>
-                            <a href="https://apps.apple.com/US/app/id1575600937?mt=8">
-                                <img src="images/APPSTORE.png" style="width: 115px; margin:10px" alt="">
-                            </a>
-                        </div>
-
-
-
                     </td>
+
+                    <tr>
+                        <td>
+                            <div style="display: flex; justify-content:center">
+                                <a href="https://play.google.com/store/apps/details?id=com.dantown.Dantownapp">
+                                    <img src="images/GOOGLE_PLAY.png" style="width: 115px; margin:10px" alt="">
+                                </a>
+                                <a href="https://apps.apple.com/US/app/id1575600937?mt=8">
+                                    <img src="images/APPSTORE.png" style="width: 115px; margin:10px" alt="">
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
                     <tr>
                         <td>
                             <hr style="height:3px; background-color: #000070">
@@ -234,13 +247,27 @@
                             font-weight: 400;
                             line-height: 25px;
                           ">
-                            <img src="images/socail_icon.png" alt="">
+                            <div style="display: flex; justify-content:center">
+                                <a href="http://www.facebook.com/godantown">
+                                    <img src="images/facebook.png" style="height: 13px; margin:10px" alt="">
+                                </a>
+                                <a href="https://twitter.com/godantown">
+                                    <img src="images/twitter.png" style="height: 13px; margin:10px" alt="">
+                                </a>
+                                <a href="https://instagram.com/godantown">
+                                    <img src="images/instagram.png" style="height: 13px; margin:10px" alt="">
+                                </a>
+                                <a href="https://www.linkedin.com/company/dantown">
+                                    <img src="images/linkedin.png" style="height: 13px; margin:10px" alt="">
+                                </a>
+
+                            </div>
                       <h2 style="
                               font-size: 14px;
                               font-weight: 400;
                               color: #000070;
                               margin: auto;
-                            ">Office 6, No 152 NTA/Ozouba Road Port Harcourt Rivers State NG</h2>
+                            "> No 152 NTA/Ozouba Road Port Harcourt Rivers State NG</h2>
                       {{-- <p style="margin: 0">
                         <a href="#" target="_blank" style="color: #e4e3e3">We &rsquo; re here, ready to talk</a>
                       </p> --}}
@@ -294,5 +321,4 @@
     {{ $footer ?? '' }}
   </table>
 </body>
-
 </html>

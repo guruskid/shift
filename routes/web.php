@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\RegistrationEmailJob;
+use App\Mail\GeneralTemplateOne;
 use App\Mail\UserRegistered;
 use App\Mail\VerificationCodeMail;
 use App\NairaTransaction;
@@ -35,6 +36,36 @@ Route::get('email', function () {
         $btn_url = '';
 
     return new VerificationCodeMail($rad, $title, $body, $btn_text, $btn_url);
+});
+
+Route::get('gm', function () {
+    $rad = rand(1000, 9999);
+    $otpCode = rand(1000, 9999);
+        // VerificationCode::create([
+        //     'user_id' => $userId,
+        //     'verification_code' => $otpCode
+        // ]);
+        $title = 'Email Verification Code1';
+        $body = 'Please upload any national approved identity verification document with your name.
+        IDs accepted are; <br>
+        National identity card,<br>
+        NIMC slip,<br>
+        International Passport, Permanent Voter’s card,<br>
+        Driver’s license.<br>
+';
+
+$name = 'akdjfladfla';
+        $btn_text = '';
+        $btn_url = '';
+        // $p = ;
+
+
+        // $p = array('National identity card', 'skjfkfaf', 'jadfldfdf');
+        $paragraph = array('National identity card','NIMC slip',
+            'International Passport, Permanent Voter’s card'
+        );
+
+    return new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name);
 });
 
 //Done

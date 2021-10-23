@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\GeneralTemplateOne;
 use App\Notification;
 use App\User;
 use App\Verification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -45,10 +47,59 @@ class UserController extends Controller
 
     public function verify(Verification $verification)
     {
+
         if ($verification->type == 'ID Card') {
             $verification->user->idcard_verified_at = now();
+
+            $title = 'LEVEL 3 VERIFICATION SUCCESSFUL';
+            $body = 'Congrats '. $verification->user->first_name.', you have successfully completed your L2 verification.
+            Below is a breakdown of level 2 privileges. <br><br>
+
+            Address Verification<br>
+
+            Daily withdrawal limit: N2,000,000<br>
+
+            Montly withdrawal limit: N10,000,000<br>
+
+            Crypto withdrawal limit: unlimited<br>
+
+            Crypto deposit: Unlimited<br>
+
+            Transactions: Unlimited<br>
+            ';
+
+            $btn_text = '';
+            $btn_url = '';
+
+            $name = $verification->user->first_name;
+            Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
+
         } elseif($verification->type == 'Address') {
             $verification->user->address_verified_at = now();
+
+            $title = 'LEVEL 2 VERIFICATION SUCCESSFUL';
+            $body = 'Congrats '. $verification->user->first_name.', you have successfully completed your L2 verification.
+            Below is a breakdown of level 2 privileges. <br><br>
+
+            Address Verification<br>
+
+            Daily withdrawal limit: N2,000,000<br>
+
+            Montly withdrawal limit: N10,000,000<br>
+
+            Crypto withdrawal limit: unlimited<br>
+
+            Crypto deposit: Unlimited<br>
+
+            Transactions: Unlimited<br>
+            ';
+
+            $btn_text = '';
+            $btn_url = '';
+
+            $name = $verification->user->first_name;
+            Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
         }
 
         $verification->user->save();
@@ -64,8 +115,62 @@ class UserController extends Controller
         return back()->with(['success' => 'User verified']);
     }
 
-    public function cancelVerification(Verification $verification)
+    public function cancelVerification(Verification $verification, Request $dt)
     {
+        // dd($verification->user->email);
+        if($dt->type == 'Address'){
+            $title = "LEVEL 2 VERIFICATION DENIED";
+            $bodyTitle = 'level 2 verification';
+            if($dt->reason == 'Uploaded a wrong information'){
+                $suggestion = 'You are required to upload your bank statement that contains  your name on Dantown.
+                ';
+            }elseif($dt->reason == 'Unclear uploaded document'){
+                $suggestion = 'Please upload a clear image of your bank statement where your name and home address is clearly visible.
+                ';
+            }elseif($dt->reason == 'Full image of the document was not uploaded'){
+                $suggestion = 'The image of your bank statement you uploaded has some missing data. Please upload the full image of the statement.
+                ';
+            }elseif($dt->reason == 'A mismatch of information'){
+                $suggestion = 'Please ensure that the address you inputted is similar with the address on the bank statement you uploaded.
+                ';
+            }
+        }else{
+            $title = "LEVEL 3 VERIFICATION DENIED";
+            $bodyTitle = 'level 3 verification';
+            if($dt->reason == 'Uploaded a wrong information'){
+                 $suggestion =
+                 'Please upload any national approved identity       verification document with your name.<br>
+                        IDs accepted are; <br>
+                        National identity card, <br>
+                        NIMC slip, <br>
+                        International Passport, Permanent Voter’s card, <br>
+                        Driver’s license.<br>
+                ';
+
+            }elseif($dt->reason == 'Unclear uploaded document'){
+                $suggestion = 'Please  upload a clear image of the required document that clearly shows your name and other relevant information.
+                ';
+            }elseif($dt->reason == 'Full image of the document was not uploaded'){
+                $suggestion = 'The image of the document you uploaded has some data missing. Please upload a full image of the document.
+                ';
+            }elseif($dt->reason == 'A mismatch of information'){
+                $suggestion = 'Please upload a document that contains your name on Dantown.
+                ';
+            }
+        }
+
+        $body = "We cannot proceed with your ".$bodyTitle.".<br><br>
+        This is because: <br>".$dt->reason." <br><br>". $suggestion;
+        $name = $verification->user->first_name;
+
+        $btn_text = '';
+        $btn_url = '';
+
+        // dd($paragraph);
+
+        Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+        // return back()->with(['success' => 'User verification cancelled']);
+
         $verification->status = 'failed';
         $verification->save();
 

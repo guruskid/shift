@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\GeneralTemplateOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -63,6 +64,17 @@ class VerificationController extends Controller
             'status' => 'Waiting'
         ]);
 
+        $title = 'LEVEL 2 VERIFICATION DOCUMENTS RECEIVED
+        ';
+        $body = 'We have successfully received your document for level 2 verification.
+        Your verification request is currently on-review, and you will get a feedback from us within 24-48 hours.
+        ';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = $user->first_name;
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
         return back()->with(['success' => 'Address uploaded, please hold on while we verify your account']);
     }
 }

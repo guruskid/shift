@@ -34,7 +34,7 @@ class UserController extends Controller
         if (!Auth::user()->notificationsetting) {
             Auth::user()->notificationSetting()->create();
         }
-        //$this->verificationProgress();
+        //$this->verificationParogress();
         \Artisan::call('naira:limit');
         $s = Auth::user()->transactions->where('status', 'success')->count();
         $w = Auth::user()->transactions->where('status', 'waiting')->count();
