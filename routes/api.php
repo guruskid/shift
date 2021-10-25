@@ -59,6 +59,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/recharge-cable', 'Api\BillsPaymentController@rechargeCable');
         Route::post('/get-merchant/{serviveId}/{billercode}', 'BillsPaymentController@merchantVerify');
 
+
+        
         Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
 
         Route::post('/send-otp', 'Api\AuthController@sendOtp');
