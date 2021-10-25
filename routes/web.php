@@ -61,7 +61,10 @@ Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
 
-Route::get('/paytv','BillsPaymentController@CableView')->name('user.paytv');
+// Route::get('/paytv','BillsPaymentController@CableView')->name('user.paytv');
+
+// Route::get('/paytv','BillsPaymentController@CableRechargeView')->name('user.paytv');
+
 //    return view('newpages.paytv');
 //});
 
@@ -209,8 +212,10 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     Route::post('/get-dec-user', 'BillsPaymentController@getUser');
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
     // Route::view('/paytv', 'newpages.smartbudget')->name('user.paytv');
-    Route::get('/paytv', 'BillsPaymentController@disabledView')->name('user.paytv');
-    Route::post('/paytv', 'BillsPaymentController@paytv')->name('user.paytv');
+    // Route::get('/paytv', 'BillsPaymentController@disabledView')->name('user.paytv');
+    Route::get('/paytv','BillsPaymentController@CableRechargeView')->name('user.paytv');
+    Route::post('/paytv', 'BillsPaymentController@rechargeCable')->name('user.paytv');
+    
     // Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge'); //for naira wallet Airtime view
     Route::get('/airtime', 'BillsPaymentController@nairaRate')->name('user.airtime'); // for the naira rate for the bitcoin
 
@@ -227,6 +232,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
 
     Route::post('/electricity', 'BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
     Route::post('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+    Route::post('/get-merchant/{serviveId}/{billercode}', 'BillsPaymentController@merchantVerify');
 
     /* Routes for the new calculator */
     Route::get('/assets/{asset_type?}', 'TradeController@assets')->name('user.assets');
