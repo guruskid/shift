@@ -139,15 +139,6 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        if(!$hash)
-        {
-            return response()->json([
-                'success' => false,
-                'message' => 'Incorrect Pin',
-                'response_description' => 'TRANSACTION FAILURE',
-            ]);
-        }
-
         if($request->amount > $balance){
             return response()->json([
                 'success' => false,
@@ -754,6 +745,176 @@ class BillsPaymentController extends Controller
                 'message' => 'An error occured, please try again',
                 'response_description' => 'TRANSACTION FAILURE',
                 'debug_response' => $response['response_description']
+            ]);
+        }
+    }
+
+    // Cable Buy
+    public function cable() {
+        $products = BillsPayment::getProducts("tv-subscription");
+        foreach ($products as $key => $value) {
+            unset($products[$key]['minimium_amount']);
+            unset($products[$key]['maximum_amount']);
+            unset($products[$key]['convinience_fee']);
+            unset($products[$key]['product_type']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $products,
+        ]);
+    }
+
+    public function rechargeCable(Request $r)
+    {
+        $charge = 0;
+        $settings = GeneralSettings::getSetting('CABLE_CONVENIENCE_FEE');
+        if (!empty(($settings))) {
+            // $charge = $settings['settings_value'];
+        }
+
+        $data = Validator::make($r->all(),[
+            'cable_provider' => 'required',
+            'subscription_plan' => 'required',
+            'smartcard_number'  => 'required',
+            'owner' => 'required',
+            'pin' => 'required',
+            'email'  => 'required',
+            'phone_number'  => 'required'
+        ]);
+
+        $user = Auth::user();
+        $n = $user->nairaWallet;
+        $amount = $r->amount;
+        $phone = $r->phone_number .''. $r->phone;
+
+        if ($data->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => $data->errors()
+            ]);
+        }
+
+        if (Hash::check($r->pin, $user->pin) == false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect Pin',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        if($amount > $n->amount){
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        $reference = rand(111111,999999).time();
+        $postData['serviceID'] = $r->cable_provider;
+        $postData['variation_code'] = $r->subscription_plan;
+        $postData['billersCode'] = $r->smartcard_number;
+        $postData['phone'] = $phone;
+        $postData['email'] = $r->email;
+        $postData['request_id'] = $reference;
+
+        $response = $this->purchase($postData);
+
+        if(isset($response['content']) && isset($response['content']['transactions'])) {
+            if($response['content']['transactions']['status'] == 'delivered') {
+                $total_charge = $amount + $charge;
+
+                $prev_bal = $n->amount;
+                $n->amount -= $total_charge;
+                $n->save();
+
+                $nt = new NairaTransaction();
+                $nt->reference = $reference;
+                $nt->amount = $total_charge;
+                $nt->user_id = Auth::user()->id;
+                // $nt->type = 'cable';
+
+                $nt->previous_balance = $prev_bal;
+                $nt->current_balance = $n->amount;
+                $nt->charge = $charge;
+                $nt->transaction_type_id = 12;
+
+
+                $nt->dr_user_id = Auth::user()->id;
+                $nt->dr_wallet_id = $n->id;
+                $nt->dr_acct_name = $n->account_name;
+                $nt->cr_acct_name = $r->provider;
+                $nt->narration = 'Payment for Cable Subscription';
+                $nt->trans_msg = 'done';
+                $nt->status = 'success';
+
+                $extras = json_encode([
+                    'type' => $response['content']['transactions']['product_name'],
+                    'subscription_plan' => $r->subscription_plan,
+                    'decoder_number' => $response['content']['transactions']['unique_element'],
+                    'price' => $response['content']['transactions']['unit_price'],
+                ]);
+
+                $nt->extras = $extras;
+                $nt->save();
+
+                UtilityTransaction::create([
+                    'user_id'          => Auth::user()->id,
+                    'reference_id'     => $reference,
+                    'amount'           => $amount,
+                    'convenience_fee'  => $charge,
+                    'total'            => $total_charge,
+                    'type'             => 'Cable subscription',
+                    'status'           => 'success',
+                    'extras'           => $extras
+                ]);
+
+                $phone = $r->phone_number;
+
+                if (isset(Auth::user()->phone)) {
+                    $client = new Client();
+                    $url = env('TERMII_SMS_URL') . "/send";
+                    $country = Country::find(Auth::user()->country_id);
+                    $phone_number = $country->phonecode . $phone;
+
+                    $response_sms = $client->request('POST', $url, [
+                        'json' => [
+                            'api_key' => env('TERMII_API_KEY'),
+                            "type" => "plain",
+                            "to" => $phone_number,
+                            "from" => "N-Alert",
+                            "channel" => "dnd",
+                            "sms" => "Your cable subscription from Dantown was successful."
+                        ],
+                    ]);
+                    $body = json_decode($response_sms->getBody()->getContents());   
+                }
+
+                $title = 'Cable subscription';
+                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for cable subscription and N'.$charge.' for convenience fee.';
+
+                $not = Notification::create([
+                    'user_id' => Auth::user()->id,
+                    'title' => $title,
+                    'body' => $msg_body,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'response_description' => 'TRANSACTION SUCCESSFUL',
+                    'message' => 'Your cable purchase was successful'
+                ]);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Oops! An error occured, please try again'
+                ]);
+            }
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Oops! An error occured, please try again'
             ]);
         }
     }
