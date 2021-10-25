@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiV2;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\GeneralTemplateOne;
 use App\Mail\VerificationCodeMail;
 use App\NairaWallet;
 use App\Notification;
@@ -49,8 +50,8 @@ class AuthController extends Controller
             'user_id' => $userId,
             'verification_code' => $otpCode
         ]);
-        $title = 'Email Verification Code2';
-        $body = 'is your verification code, valid for 5 minutes. to keep your account safe, do not share this code with anyone.';
+        $title = 'Email Verification Code';
+        $body = 'is your verification code. This code expires after 10 minutes';
         $btn_text = '';
         $btn_url = '';
         Mail::to($email)->send(new VerificationCodeMail($otpCode, $title, $body, $btn_text, $btn_url));
@@ -208,6 +209,31 @@ class AuthController extends Controller
         $user->update([
             'email_verified_at' => now()
         ]);
+
+        $title = 'LEVEL 1 VERIFICATION SUCCESSFUL';
+        $body = 'Congrats Kar-Chee, you have successfully completed your L1 verification. <br><br>
+                Below is a breakdown of level 1 privileges.<br>
+
+                Phone Number Verification<br>
+
+                Daily Withdrawal limit: NGN2000<br>
+
+                Montly withdrawal limit: NGN5000<br>
+
+                Crypto withdrawal limit: No crypto withdrawals<br>
+
+                Crypto deposit: Unlimited<br>
+
+                Transactions: Unlimited<br>
+        ';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = $user->first_name;
+
+
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
 
         return response()->json([
             'success' => true,

@@ -3,7 +3,12 @@
 {{$title}}
 @endcomponent
 
-{{$code}} {{$body}}
+
+<span style="color: #000070; font-weight:bolder">{{$code}}</span> {{$body}}
+
+{{-- @component('emails.users.general_first_template')
+
+@endcomponent --}}
 
 
 

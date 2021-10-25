@@ -136,6 +136,8 @@
                     @if($v->type == 'ID Card')
                         <div class="col-12 d-none" id="reason_for_decline_verification_div{{ $v->id }}">
                             <div class="form-group mt-5">
+                                <input type="hidden" name="user_id" value="{{$v->user_id}}">
+                                <input type="hidden" name="type" value="{{$v->type}}">
                                 <label for="reason" class="text-danger">Reason for card declination </label>
                                 <select name="reason" id="" class="form-control">
                                     <option value="Uploaded a wrong information">Uploaded a wrong information</option>
@@ -151,6 +153,8 @@
                     @else
                         <div class="col-12 d-none" id="reason_for_decline_verification_div{{ $v->id }}">
                             <div class="form-group mt-5">
+                                <input type="hidden" name="user_id" value="{{$v->user_id}}">
+                                <input type="hidden" name="type" value="{{$v->type}}">
                                 <label for="reason" class="text-danger">Reason for address declination</label>
                                 <select name="reason" id="" class="form-control">
                                     <option value="Uploaded a wrong information">Uploaded a wrong information</option>
