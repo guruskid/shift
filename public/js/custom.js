@@ -144,6 +144,7 @@ $(document).ready(function () {
         })
     })
 
+    
     $('#cable_provider').on('change',function (e) {
         var serviceId = e.currentTarget.value
         $.post('/user/get-variations/'+serviceId,null,function (result,status) {

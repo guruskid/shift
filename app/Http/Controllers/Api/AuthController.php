@@ -33,8 +33,6 @@ class AuthController extends Controller
             \Artisan::call('naira:limit');
 
 
-
-
             return response()->json([
                 'success' => true,
                 'token' => $success,
@@ -42,6 +40,7 @@ class AuthController extends Controller
                 'naira_wallet' => $user->nairaWallet,
                 'bank_accounts' => $user->accounts,
             ]);
+            
         } else {
             //if authentication is unsuccessfull, notice how I return json parameters
             return response()->json([

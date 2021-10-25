@@ -50,7 +50,7 @@ class UserController extends Controller
         } elseif($verification->type == 'Address') {
             $verification->user->address_verified_at = now();
         }
-        
+
         $verification->user->save();
         $verification->status = 'success';
         $verification->save();
