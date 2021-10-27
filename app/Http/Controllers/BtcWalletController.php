@@ -10,6 +10,7 @@ use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
 use App\Setting;
+use App\User;
 use App\Wallet;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -476,7 +477,10 @@ class BtcWalletController extends Controller
             'address' => 'required|string',
             'pin' => 'required',
             'fees' => 'required',
+            'email' => 'nullable|email',
+            'type' => 'nullable|integer',
         ]);
+
 
 
         if (!Auth::user()->btcWallet) {
@@ -512,6 +516,11 @@ class BtcWalletController extends Controller
                 'success' => false,
                 'msg' => 'Insufficient balance'
             ]);
+        }
+
+        // Perform internal transactions
+        if ($r->type == 1) {
+            return $this->sendInternal($r);
         }
 
         $charge_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
@@ -586,5 +595,57 @@ class BtcWalletController extends Controller
                 'msg' => 'An error occured while processing the transaction, please confirm the details and try again'
             ]);
         }
+    }
+
+    public function sendInternal(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'User not found, please try again'
+            ]);
+        }
+
+        $btc_wallet = $user->btcWallet;
+        if (!$btc_wallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'No BTC wallet attached to the recepient email'
+            ]);
+        }
+
+        $client = new Client();
+        $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
+        $reference = \Str::random(5) . Auth::user()->id;
+        $url = env('TATUM_URL') . '/ledger/transaction';
+
+        try {
+            $send = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "senderAccountId" => Auth::user()->btcWallet->account_id,
+                    "recipientAccountId" => $btc_wallet->account_id,
+                    "amount" => number_format((float) $request->amount, 8),
+                    "anonymous" => false,
+                    "compliant" => false,
+                    "transactionCode" => $reference,
+                    "paymentId" => $reference,
+                    "baseRate" => 1,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::info($e->getResponse()->getBody());
+            //report($e);
+            return response()->json([
+                'success' => false,
+                'msg' => 'An error occured, please try again'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Bitcoin sent successfully'
+        ]);
     }
 }

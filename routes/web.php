@@ -179,6 +179,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName'] ], funct
     Route::get('/get-bank/{id}', 'UserController@getBank');
     Route::get('/delete-bank/{id}', 'UserController@deleteBank');
     Route::get('/read-not/{id}', 'UserController@readNot');
+
+    Route::get('/user-details/{email}', 'UserController@getUser');
     /* ajax ends here */
 
     Route::get('/', 'UserController@dashboard')->name('user.dashboard');
