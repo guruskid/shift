@@ -615,6 +615,13 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        if ($request->amount < 0.000000001) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient amout to transfer'
+            ]);
+        }
+
         $client = new Client();
         $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
         $reference = \Str::random(5) . Auth::user()->id;
