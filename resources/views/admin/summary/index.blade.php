@@ -47,7 +47,7 @@
                             <i class="pe-7s-graph1 icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Bitcoin Summary Page
+                        <div>{{ $currency->name }} Summary Page
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
             <div class="row mb-4">
                 @foreach ($summaries as $summary)
                 <div class="col-md-2">
-                    <a href="{{ route('admin.bitcoin-summary-txns', $summary) }}">
+                    <a href="{{ route('admin.crypto-summary-txns', [$summary, $card_id]) }}">
                         <div class="card mb-2 widget-content ">
                             <div class="widget-content-wrapper">
                                 <div class="widget-heading">

@@ -55,7 +55,7 @@
 
             <div class="d-flex justify-content-around mb-2">
                 <span class="text-primary">Charges</span>
-                <span class="text-primary">{{ chargeBtc.toFixed(5) }}</span>
+                <span class="text-primary">{{ chargeBtc.toFixed(5) }} BTC</span>
                 <span class="text-primary">{{ charge }}%</span>
                 <span class="text-primary">${{ chargeNgn.toLocaleString() }}</span>
             </div>
@@ -68,7 +68,7 @@
 
 <script>
     export default {
-        props: ['rate', 'real_btc', 'card_id'],
+        props: ['rate', 'real_btc', 'card_id', 'charge'],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -78,7 +78,7 @@
                 btc: '',
                 chargeBtc: 0,
                 chargeNgn: 0,
-                //rates
+                //charge:
                 btcToUsd:  this.real_btc,
                 usdToNaira: this.rate.sell[0].rate, //our rate
                 btcToNaira: '',
@@ -123,7 +123,7 @@
                 }
 
                 ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
-                ajax.send(); 
+                ajax.send();
             },
             sell(){
                 if (this.btc < 0) {
@@ -141,7 +141,7 @@
                         swal('oops!!', res.data.msg, 'error');
                     }
                 })
-                .catch((e)=>{
+                .catch((r, e)=>{
                     console.log(e);
                     swal('Oops', 'An error occured, please reload and try again', 'error');
                 })
@@ -152,6 +152,7 @@
             }
         },
         updated () {
+            //alert('updated');
             this.chargeBtc = (this.charge/100) * this.btc
             this.chargeNgn = this.chargeBtc * this.btcToUsd
         },
