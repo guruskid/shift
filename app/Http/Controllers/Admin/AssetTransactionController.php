@@ -10,6 +10,7 @@ use App\Events\TransactionUpdated;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Mail\DantownNotification;
+use App\Mail\GeneralTemplateOne;
 use App\Mail\WalletAlert;
 use App\NairaTransaction;
 use App\NairaWallet;
@@ -72,6 +73,22 @@ class AssetTransactionController extends Controller
         if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1) {
             $title = 'Transaction Successful';
             Mail::to($user->email)->send(new DantownNotification($title, $body, 'Go to Wallet', route('user.naira-wallet')));
+
+
+            // ///////////////////////////////////////////////////////////
+        $title = 'Sell Order Successful';
+        $body = 'Your order to '.$t->type.'  an '.$t->card.'  worth '. number_format($t->amount_paid) .' is currently  pending. NGN'. number_format($t->amount_paid) .' will be debited from your  naira wallet once the transaction is successful.
+        Date: '. now() . '.
+
+        ';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = $user()->first_name;
+        Mail::to($user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+// /////////////////////////////////////////////
+
         }
 
         /* Broadcast to all active accountants if approved for payment */

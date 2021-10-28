@@ -366,6 +366,23 @@ class BtcWalletController extends Controller
             'body' => $body,
         ]);
 
+// ///////////////////////////////////////////////////////////
+        $title = 'Sell Order Successful';
+        $body = 'Your order to sell 0.07 '.$t->card.' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+        Your new  balance is '. Auth::user()->nairaWallet->amount + $t->amount_paid.'.<br>
+        Date: '.now().'.<br><br>
+
+         Thank you for Trading with Dantown.
+
+        ';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = Auth::user()->first_name;
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+// /////////////////////////////////////////////
+
         $reference = \Str::random(5) . Auth::user()->id;
         $url = env('TATUM_URL') . '/ledger/transaction';
 
@@ -464,6 +481,9 @@ class BtcWalletController extends Controller
             'msg' => 'Bitcoin sold successfully'
         ]);
     }
+
+
+
 
     public function send(Request $r)
     {
@@ -568,7 +588,26 @@ class BtcWalletController extends Controller
                     'success' => true,
                     'msg' => 'Bitcoin sent successfully'
                 ]);
-                
+
+                // ///////////////////////////////////////////////////////////
+                $title = 'Sell Order Successful';
+                $body = 'You have successfully sent out '.$total.' BTC to the <br>
+                        Address:'.$data['address'].'.<br>
+                        Date: '. now() .'.<br><br>
+
+                        Thank you for Trading with Dantown.
+
+                ';
+
+                $btn_text = '';
+                $btn_url = '';
+
+                $name = Auth::user()->first_name;
+                Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+        // /////////////////////////////////////////////
+
+
+
             } else {
                 return response()->json([
                     'success' => false,
