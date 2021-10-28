@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use \App\Http\Controllers\GeneralSettings;
+use App\Mail\GeneralTemplateOne;
 
 class TradeController extends Controller
 {
@@ -186,7 +187,17 @@ class TradeController extends Controller
         ]);
         if (Auth::user()->notificationSetting->trade_email == 1) {
             Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+
+            $title = 'Transaction Successful';
+
+            $btn_text = '';
+            $btn_url = '';
+
+            $name = Auth::user()->first_name;
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
         }
+
 
         return redirect()->route('user.transactions')->with(['success' => 'Transaction initiated']);
     }
@@ -247,6 +258,12 @@ class TradeController extends Controller
         ]);
         if (Auth::user()->notificationSetting->trade_email == 1) {
             Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+            $btn_text = '';
+            $btn_url = '';
+
+            $name = Auth::user()->first_name;
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
         }
 
         return redirect()->route('user.transactions');

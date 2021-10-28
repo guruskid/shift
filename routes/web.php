@@ -43,6 +43,8 @@ Route::get('gm', function () {
     $otpCode = rand(1000, 9999);
         // VerificationCode::create([
         //     'user_id' => $userId,
+
+        
         //     'verification_code' => $otpCode
         // ]);
         $title = 'Email Verification Code1';

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Bank;
 use App\Mail\DantownNotification;
+use App\Mail\GeneralTemplateOne;
 use App\Mail\WalletAlert;
 use App\NairaTransaction;
 use App\NairaWallet;
@@ -486,6 +487,17 @@ class NairaWalletController extends Controller
         if (Auth::user()->notificationSetting->wallet_email == 1) {
             // Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
         }
+
+        $title = 'Withdrawal Successful';
+        $body = 'Your Dantown wallet has been debited with N' . $amount . ' for transfer to ' . $nt->cr_acct_name . ' desc: ' . $r->narration;
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = Auth::user()->first_name;
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
+
 
         return back()->with(['success' => 'Your withdrawal order has been placed, it will be processed in 3-4 hours']);
     }

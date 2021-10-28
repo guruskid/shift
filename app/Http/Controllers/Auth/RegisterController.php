@@ -9,6 +9,7 @@ use App\User;
 use App\Http\Controllers\Controller;
 use App\Jobs\RegistrationEmailJob;
 use App\Mail\DantownNotification;
+use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -199,6 +200,21 @@ class RegisterController extends Controller
             'title' => $title,
             'body' => $msg_body,
         ]);
+
+        $title = 'Welcome to Dantown,';
+        $body = 'Congratulations '.$user->username.' on signing up on Dantown.<br>
+        We are excited to share this journey with you. A new world of boundless possibilities where you can trade cryptocurrencies and gift-cards with ease.
+        <br><br>
+
+        If you have enquiries about our products or issues regarding your account, kindly contact our customer happiness team via support@godantown.com.<br>
+        ';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = $user->username;
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
 
         //Mail::to($user->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.bitcoin-wallet')));
 

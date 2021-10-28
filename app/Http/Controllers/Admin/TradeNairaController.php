@@ -101,7 +101,6 @@ class TradeNairaController extends Controller
         $user_wallet->amount += $transaction->amount;
         $user_wallet->save();
 
-
         $nt = new NairaTransaction();
         $nt->reference = $transaction->reference;
         $nt->amount = $transaction->amount;
