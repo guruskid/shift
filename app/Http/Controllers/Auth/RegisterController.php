@@ -186,7 +186,7 @@ class RegisterController extends Controller
 
         $user->bnbWallet()->create([
             'account_id' => $bnb_account_id,
-            'currency_id' => 2,
+            'currency_id' => 4,
             'name' => $user->username,
             'address' => $address_body[1]->address,
             'pin' => $address_body[1]->memo
