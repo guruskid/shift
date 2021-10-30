@@ -13,6 +13,7 @@ class SummaryController extends Controller
 {
     public function index($currency_id)
     {
+
         $today = Summary::whereDate('created_at', now())->where('crypto_currency_id', $currency_id)->first();
         if (!$today) {
             Summary::create([
@@ -27,6 +28,9 @@ class SummaryController extends Controller
                 break;
             case 2:
                 $card_id = 137;
+                break;
+            case 4:
+                $card_id = 140;
                 break;
             default:
                 return back()->with(['error' => 'There is an error with this page']);
@@ -64,6 +68,9 @@ class SummaryController extends Controller
             case 137:
                 $cur = 'ETH';
                 break;
+            case 140:
+                $cur = 'BNB';
+                break;
             default:
                 return back()->with(['error' => 'There is an error with this page']);
                 break;
@@ -78,7 +85,8 @@ class SummaryController extends Controller
             'sell_btc',
             'sell_usd',
             'sell_average',
-            'cur', 'card_id'
+            'cur',
+            'card_id'
         ));
     }
 
@@ -134,7 +142,9 @@ class SummaryController extends Controller
             'sell_transactions',
             'sell_btc',
             'sell_usd',
-            'sell_average', 'cur', 'card_id'
+            'sell_average',
+            'cur',
+            'card_id'
         ));
     }
 

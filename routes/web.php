@@ -265,7 +265,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     // Route::get('/paytv', 'BillsPaymentController@disabledView')->name('user.paytv');
     Route::get('/paytv','BillsPaymentController@CableRechargeView')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@rechargeCable')->name('user.paytv');
-    
+
     // Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge'); //for naira wallet Airtime view
     Route::get('/airtime', 'BillsPaymentController@nairaRate')->name('user.airtime'); // for the naira rate for the bitcoin
 
@@ -308,6 +308,16 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
         Route::post('/send', 'EthWalletController@send')->name('ethereum.send');
         Route::get('/trade', 'EthWalletController@trade')->name('ethereum.trade');
         Route::post('/sell', 'EthWalletController@sell')->name('ethereum.sell');
+    });
+
+    // Binance Coin
+    Route::prefix('binance')->group(function () {
+        Route::post('/create', 'BnbWalletController@create')->name('binance.create');
+        Route::get('/wallet', 'BnbWalletController@wallet')->name('user.binance-wallet');
+        Route::get('/fees/{address}/{amount}', 'EthWalletController@fees')->name('user.binance-fees');
+        Route::post('/send', 'EthWalletController@send')->name('binance.send');
+        Route::get('/trade', 'BnbWalletController@trade')->name('binance.trade');
+        Route::post('/sell', 'BnbWalletController@sell')->name('binance.sell');
     });
 
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */

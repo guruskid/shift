@@ -14,24 +14,17 @@
             </div>
             <div class="form-group mb-4">
                <div class="d-flex justify-content-between" >
-                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Bitcoin
+                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Binance coin
                     equivalent</label>
-
-                    <!-- <div>
-                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(25)"> 25% </span>
-                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(50)"> 50% </span>
-                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(75)"> 75% </span>
-                        <span class="btn btn-sm btn-primary rounded-pill" @click="btcPercentage(100)"> 100% </span>
-                    </div> -->
                 </div>
 
-                <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group mb-0 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
                         <div class="input-group-text input_label">
-                            BTC</div>
+                            BNB</div>
                     </div>
                     <input type="number" required step="any" min="0" name="quantity"
-                    v-model="btc" @keyup="getRateBtc()"
+                    v-model="bnb" @keyup="getRateBnb()"
                         class="form-control bitcoin-input-radius"  >
                 </div>
             </div>
@@ -55,7 +48,7 @@
 
             <div class="d-flex justify-content-around mb-2">
                 <span class="text-primary">Charges</span>
-                <span class="text-primary">{{ chargeBtc.toFixed(5) }} BTC</span>
+                <span class="text-primary">{{ chargeBnb.toFixed(5) }}</span>
                 <span class="text-primary">{{ charge }}%</span>
                 <span class="text-primary">${{ chargeNgn.toLocaleString() }}</span>
             </div>
@@ -68,80 +61,70 @@
 
 <script>
     export default {
-        props: ['rate', 'real_btc', 'card_id', 'charge'],
+        props: ['rate', 'bnb_usd', 'charge', 'hd'],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 //Input fields
                 naira: '',
                 usd: '',
-                btc: '',
-                chargeBtc: 0,
+                bnb: '',
+                chargeBnb: 0,
                 chargeNgn: 0,
-                //charge:
-                btcToUsd:  this.real_btc,
+                //rates
+                bnbUsd:  this.bnb_usd,
                 usdToNaira: this.rate, //our rate
-                btcToNaira: '',
+                bnbToNaira: '',
                 loading: false,
+                fee: 0,
+                total: 0,
+                address: this.hd
             }
         },
         mounted () {
-            //console.log(this.real_btc);
-            this.btcToNaira = this.btcToUsd * this.usdToNaira;
+            this.bnbToNaira = this.bnbUsd * this.usdToNaira;
         },
         methods: {
             //When USD field is updated
             getRateUsd() {
                 this.naira = this.usd * this.usdToNaira
-                this.btc = this.usd / this.btcToUsd
+                this.bnb = this.usd / this.bnbUsd
             },
-            /* When btc is updated */
-            getRateBtc(){
-                this.usd = this.btcToUsd * this.btc
-                this.naira = this.btc * this.btcToNaira
+            /* When bnb is updated */
+            getRateBnb(){
+                this.usd = this.bnbUsd * this.bnb
+                this.naira = this.bnb * this.bnbToNaira
             },
             /* When ngn is updated */
             getRateNgn(){
-                this.btc = this.naira / this.btcToNaira;
+                this.bnb = this.naira / this.bnbToNaira;
                 this.usd = this.naira / this.usdToNaira;
             },
 
-            btcPercentage(percentage) {
-                const userFraction = percentage / 100
-
-                const ajax = new XMLHttpRequest;
-                ajax.onload = ()=>{
-
-                    const userWallet = JSON.parse(ajax.responseText)
-                    const balance = userWallet.btcBalance[0].balance
-                     setTimeout(()=>{
-                        // console.log(balance)
-                        this.btc = balance * userFraction
-                        this.usd = this.btcToUsd * this.btc
-                        this.naira = this.btc * this.btcToNaira
-                    }, 100)
+            getTotal() {
+                if (this.bnb == 0) {
+                    this.total = this.fee;
+                    return true;
                 }
-
-                ajax.open("GET","http://localhost:8000/user/user-bitcoin-balance");
-                ajax.send();
+                this.total = parseFloat(this.bnb) + parseFloat(this.fee);
             },
+
             sell(){
-                if (this.btc < 0) {
-                    swal('Oops', 'BTC amount should be greater than 0', 'error');
+                if (this.bnb < 0) {
+                    swal('Oops', 'BNB amount should be greater than 0', 'error');
                     return false;
                 }
-
                 this.loading = true;
-                axios.post('/user/sell-bitcoin', {"quantity" : this.btc })
+                axios.post('/user/binance/sell', {"amount" : this.bnb })
                 .then((res)=>{
                     if (res.data.success) {
-                        swal('Great!!', 'Bitcoin traded successfully', 'success');
+                        swal('Great!!', 'binance traded successfully', 'success');
                         window.location = '/user/transactions';
                     } else {
                         swal('oops!!', res.data.msg, 'error');
                     }
                 })
-                .catch((r, e)=>{
+                .catch((e)=>{
                     console.log(e);
                     swal('Oops', 'An error occured, please reload and try again', 'error');
                 })
@@ -152,9 +135,8 @@
             }
         },
         updated () {
-            //alert('updated');
-            this.chargeBtc = (this.charge/100) * this.btc
-            this.chargeNgn = this.chargeBtc * this.btcToUsd
+            this.chargeBnb = (this.charge/100) * this.bnb
+            this.chargeNgn = this.chargeBnb * this.bnbUsd
         },
     }
 </script>

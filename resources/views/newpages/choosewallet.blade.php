@@ -165,38 +165,38 @@
                                 @endif
 
 
-                                {{-- Ethereum Wallet --}}
-                                {{-- @if (!Auth::user()->ethWallet)
+                                {{-- Binance Wallet --}}
+                                @if (!Auth::user()->bnbWallet)
                                 <div class="row">
                                     <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
                                         style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
                                         <div class="d-flex align-items-center">
                                             <div class="mx-3">
-                                                <img src="/svg/ethereum.svg" alt="">
+                                                <img src="/svg/bnb.png" height="40" alt="">
                                             </div>
                                             <div>
-                                                <span class="d-block pb-0 mb-0 choosewallet_selection">Ethereum</span>
+                                                <span class="d-block pb-0 mb-0 choosewallet_selection">Binance Coin</span>
                                                 <a data-toggle="modal" data-target="#new-ethereum-wallet" href="#">Create
-                                                    Ethereum Wallet</a>
+                                                    BNB Wallet</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 @else
-                                <a href="{{ route('user.ethereum-wallet') }}">
+                                <a href="{{ route('user.binance-wallet') }}">
                                     <div class="row">
                                         <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
                                             style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
                                             <div class="d-flex align-items-center">
                                                 <div class="mx-3">
-                                                    <img src="/svg/ethereum.svg" alt="">
+                                                    <img src="/svg/bnb.png" height="40" alt="">
                                                 </div>
                                                 <div>
                                                     <span
-                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->ethWallet ? number_format((float)$eth_wallet->balance, 5) : '' }} ETH</span>
+                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{  number_format((float)$bnb_wallet->balance, 5)  }} BNB</span>
                                                     <div>
                                                         <span
-                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Ethereum
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">BNB
                                                             Wallet</span></span>
                                                     </div>
                                                 </div>
@@ -204,7 +204,7 @@
                                         </div>
                                     </div>
                                 </a>
-                                @endif --}}
+                                @endif
 
                             </div>
                         </div>
@@ -296,7 +296,7 @@
 </div>
 
 {{-- Ethereum Modal --}}
-<ethereum-create-component></ethereum-create-component>
+<binance-create-component></binance-create-component>
 
 @endsection
 @section('scripts')
