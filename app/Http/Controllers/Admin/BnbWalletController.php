@@ -6,6 +6,7 @@ use App\FeeWallet;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LiveRateController;
 use GuzzleHttp\Client;
 
 class BnbWalletController extends Controller
@@ -56,5 +57,11 @@ class BnbWalletController extends Controller
         }
 
         return view('admin.binance.index', compact('service_wallet', 'charges_wallet',  'hd_wallet', 'transactions'));
+    }
+
+    public function settings()
+    {
+        $sell_rate = LiveRateController::usdRate();
+        return view('admin.binance.settings', compact('sell_rate'));
     }
 }

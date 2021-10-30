@@ -102,6 +102,14 @@
                     <i class="metismenu-state-icon "></i>
                 </a>
             </li>
+
+            <li>
+                <a href="{{ route('admin.binance') }}">
+                    <i class="metismenu-icon pe-7s-cash"></i>
+                    Binance Wallet
+                    <i class="metismenu-state-icon "></i>
+                </a>
+            </li>
             @endif
 
             <li class="my-3">

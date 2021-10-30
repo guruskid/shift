@@ -48,8 +48,8 @@
                             </i>
                         </div>
                         <div>Binance Wallet <br>
-                            <a class="btn btn-primary" href="{{ route('admin.ethereum.settings') }}">Settings</a>
-                            <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 2) }}">Summary</a>
+                            <a class="btn btn-primary" href="{{ route('admin.binance.settings') }}">Settings</a>
+                            <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 4) }}">Summary</a>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>HD Wallets Balance</h5>
-                                        <span>{{number_format((float)$hd_wallet->balance, 8) }}ETH</span>
+                                        <span>{{number_format((float)$hd_wallet->balance, 8) }} BNB</span>
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>Charges</h5>
-                                        <span>{{number_format((float)$charges_wallet->balance, 8) }}ETH</span>
+                                        <span>{{number_format((float)$charges_wallet->balance, 8) }} BNB</span>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>Service fee</h5>
-                                        <span>{{number_format((float)$service_wallet->balance, 8) }}ETH</span>
+                                        <span>{{number_format((float)$service_wallet->balance, 8) }} BNB</span>
                                     </div>
                                 </div>
                             </div>
@@ -101,7 +101,7 @@
             </div>
 
             <div class="row mb-5">
-                <div class="col-md-6 mb-5" >
+                <div class="col-md-6 mb-5">
                     <div class="card card-body">
                         @foreach ($errors->all() as $err)
                         <p class="text-danger text-center">{{ $err }}</p>
@@ -114,7 +114,6 @@
                                     <option value="hd">{{ $hd_wallet->name }}</option>
                                     <option value="{{ $charges_wallet->id }}">{{ $charges_wallet->name }}</option>
                                     <option value="{{ $service_wallet->id }}">{{ $service_wallet->name }}</option>
-                                    {{-- <option value="{{ $fees_wallet->id }}">{{ $fees_wallet->name }}</option> --}}
                                 </select>
                             </div>
                             <div class="form-group">
@@ -146,98 +145,93 @@
                 <div class="col-md-6">
                     <div class="card card-body mb-3">
                         <h5>Hd Wallet</h5>
-                        <p>{{ $hd_wallet->address }}</p>
+                        <p>{{ $hd_wallet->address }} (Memo: {{ $hd_wallet->pin }})</p>
                     </div>
 
                     <div class="card card-body mb-3">
                         <h5>Charges Wallet</h5>
-                        <p>{{ $charges_wallet->address }}</p>
+                        <p>{{ $charges_wallet->address }} (Memo: {{ $charges_wallet->pin }})</p>
                     </div>
 
                     <div class="card card-body mb-3">
                         <h5>Service Wallet</h5>
-                        <p>{{ $service_wallet->address }}</p>
-                    </div>
-
-                    {{-- <div class="card card-body mb-3">
-                <h5>Fees Wallet</h5>
-                <p>{{ $fees_wallet->address }}</p>
-                </div> --}}
-            </div>
-        </div>
-
-        {{-- //Transactions --}}
-        <div class="row">
-            <div class="col-md-12">
-                <div class="main-card mb-3 card">
-                    <div class="card-header justify-content-between ">
-                        All Transactions
-
-                    </div>
-                    <div class="table-responsive p-3">
-
-                        <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Trans. Type</th>
-                                    <th>Amount</th>
-                                    <th>USD</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($transactions as $key => $t)
-                                <tr>
-                                    <td>{{$key += 1}} </td>
-                                    <td>{{ $t->transactionType }}</td>
-                                    <td>{{ number_format((float) $t->amount, 8) }}</td>
-                                    <td>{{ number_format($t->marketValue->amount, 2) }}</td>
-                                    <td>{{ $t->created->format('d M Y h:ia') }}</td>
-                                    <td>Completed</td>
-                                    <td class="transaction_content">
-                                        @if (isset($t->txId))
-                                        <a target="_blank"
-                                            href="https://blockexplorer.one/ETH/mainnet/tx/{{ $t->txId }}"
-                                            class="">Explorer</a>
-
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-
-                        </table>
-                        {{-- {{$transactions->links()}} --}}
+                        <p>{{ $service_wallet->address }} (Memo: {{ $service_wallet->pin }})</p>
                     </div>
                 </div>
             </div>
-        </div>
-        @endsection
 
-        @section('script-2')
-        <script>
-            function getFees() {
-                var address = $('#address').val()
-                var amount = $('#amount').val()
-                var btn = $('#send-btn')
-                var fee = $('#fee')
+            {{-- //Transactions --}}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="main-card mb-3 card">
+                        <div class="card-header justify-content-between ">
+                            All Transactions
 
-                if (address == '' || amount == '' ) {
-                    return false;
+                        </div>
+                        <div class="table-responsive p-3">
+
+                            <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Trans. Type</th>
+                                        <th>Amount</th>
+                                        <th>USD</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($transactions as $key => $t)
+                                    <tr>
+                                        <td>{{$key += 1}} </td>
+                                        <td>{{ $t->transactionType }}</td>
+                                        <td>{{ number_format((float) $t->amount, 8) }}</td>
+                                        <td>{{ number_format($t->marketValue->amount, 2) }}</td>
+                                        <td>{{ $t->created->format('d M Y h:ia') }}</td>
+                                        <td>Completed</td>
+                                        <td class="transaction_content">
+                                            @if (isset($t->txId))
+                                            <a target="_blank"
+                                                href="https://blockexplorer.one/ETH/mainnet/tx/{{ $t->txId }}"
+                                                class="">Explorer</a>
+
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+
+                            </table>
+                            {{-- {{$transactions->links()}} --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endsection
+
+            @section('script-2')
+            <script>
+                function getFees() {
+                    var address = $('#address').val()
+                    var amount = $('#amount').val()
+                    var btn = $('#send-btn')
+                    var fee = $('#fee')
+
+                    if (address == '' || amount == '') {
+                        return false;
+                    }
+                    btn.addClass('disabled')
+                    btn.text('Loading')
+                    fee.text('loading')
+                    $.get(`/user/ethereum/fees/${address}/${amount}`)
+                        .done(function (res) {
+                            btn.removeClass('disabled')
+                            btn.text('Send')
+                            fee.text(res.fee)
+                        })
                 }
-                btn.addClass('disabled')
-                btn.text('Loading')
-                fee.text('loading')
-                $.get(`/user/ethereum/fees/${address}/${amount}`)
-                .done(function (res){
-                    btn.removeClass('disabled')
-                    btn.text('Send')
-                    fee.text(res.fee)
-                })
-            }
 
-        </script>
-        @endsection
+            </script>
+            @endsection
