@@ -314,8 +314,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
         Route::get('/wallet', 'BnbWalletController@wallet')->name('user.binance-wallet');
         Route::get('/fees/{address}/{amount}', 'EthWalletController@fees')->name('user.binance-fees');
         Route::post('/send', 'EthWalletController@send')->name('binance.send');
-        Route::get('/trade', 'EthWalletController@trade')->name('binance.trade');
-        Route::post('/sell', 'EthWalletController@sell')->name('binance.sell');
+        Route::get('/trade', 'BnbWalletController@trade')->name('binance.trade');
+        Route::post('/sell', 'BnbWalletController@sell')->name('binance.sell');
     });
 
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */

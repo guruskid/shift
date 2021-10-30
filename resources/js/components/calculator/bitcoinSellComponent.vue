@@ -80,7 +80,7 @@
                 chargeNgn: 0,
                 //charge:
                 btcToUsd:  this.real_btc,
-                usdToNaira: this.rate.sell[0].rate, //our rate
+                usdToNaira: this.rate, //our rate
                 btcToNaira: '',
                 loading: false,
             }

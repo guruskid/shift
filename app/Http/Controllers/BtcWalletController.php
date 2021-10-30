@@ -130,7 +130,7 @@ class BtcWalletController extends Controller
     public function getBitcoinNgn()
     {
 
-        $rates = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $rates = LiveRateController::usdRate();
 
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
@@ -308,7 +308,7 @@ class BtcWalletController extends Controller
             // $trade_rate = json_decode($sell->pivot->payment_range_settings);
             // $trade_rate = $trade_rate[0]->rate;
 
-            $trade_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+            $trade_rate =  LiveRateController::usdRate();
 
             $client = new Client();
             $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
@@ -342,7 +342,7 @@ class BtcWalletController extends Controller
 
 
         //Convert the charge to naira and subtract it from the amount paid
-        $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+        $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value;
         $charge = ($charge / 100) * $r->quantity;
         $charge_ngn = $charge * $r->current_rate * $trade_rate;
 

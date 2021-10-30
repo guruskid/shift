@@ -99,6 +99,12 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::post('/update-rate', 'EthWalletController@updateRate')->name('admin.eth.update-rate');
     });
 
+    Route::prefix('binance')->group(function () {
+        Route::get('/', 'BnbWalletController@index')->name('admin.binance');
+        Route::get('/settings', 'EthWalletController@settings')->name('admin.binance.settings');
+        Route::post('/update-rate', 'EthWalletController@updateRate')->name('admin.eth.update-rate');
+    });
+
     //Trade Naira
     Route::prefix('trade-naira')->group(function () {
 
