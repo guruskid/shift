@@ -106,12 +106,12 @@
                                     <div
                                         class="walletpage_menu d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
                                         <div class="mb-4 mb-lg-0">
-                                            <span class="d-block" style="color: #565656;font-size: 16px;">Ethereum wallet
+                                            <span class="d-block" style="color: #565656;font-size: 16px;">Binance coin wallet
                                                 Balance</span>
                                             <span class="d-block">
                                                 <span
                                                     style="color: #000070;font-size: 30px;">{{ number_format((float) $bnb_wallet->balance, 6) }}</span>
-                                                <span style="color: #000070;font-size: 30px;">ETH</span>
+                                                <span style="color: #000070;font-size: 30px;">BNB</span>
                                             </span>
                                             <span class="d-block"
                                                 style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$bnb_wallet->usd  , 2) }}
