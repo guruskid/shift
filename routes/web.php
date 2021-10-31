@@ -171,7 +171,7 @@ Route::get('/newsignup', function () {
 Route::get('test', function () {
     /* $emailJob = (); */
         // dispatch(new RegistrationEmailJob('shean@gmail.com'));
-    // Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
+    Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
     return new UserRegistered();
     /* $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
     return new App\Mail\WalletAlert($txn, 'Debit'); */
