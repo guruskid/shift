@@ -118,10 +118,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Wallet::class)->where('currency_id', 2);
     }
 
-    public function bnbWallet(): HasOne
-    {
-        return $this->hasOne(Wallet::class)->where('currency_id', 4);
-    }
 
     public function nairaTrades()
     {

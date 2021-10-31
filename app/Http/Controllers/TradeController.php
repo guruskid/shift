@@ -72,15 +72,12 @@ class TradeController extends Controller
     public function bitcoin($card_id, $buy_sell = 1)
     {
         $card = Card::find($card_id);
-        // $rates = $card->currency->first();
-        // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        $rates = $card->currency->first();
+        $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
-        $rates = LiveRateController::usdRate();
-
-
-        // $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
-        // $rates->buy = json_decode($buy->pivot->payment_range_settings);
+        $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
+        $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';

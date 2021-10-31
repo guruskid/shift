@@ -96,12 +96,6 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::prefix('ethereum')->group(function () {
         Route::get('/', 'EthWalletController@index')->name('admin.ethereum');
         Route::get('/settings', 'EthWalletController@settings')->name('admin.ethereum.settings');
-        Route::post('/update-rate', 'EthWalletController@updateRate')->name('admin.eth.update-rate'); //Special
-    });
-
-    Route::prefix('binance')->group(function () {
-        Route::get('/', 'BnbWalletController@index')->name('admin.binance');
-        Route::get('/settings', 'BnbWalletController@settings')->name('admin.binance.settings');
         Route::post('/update-rate', 'EthWalletController@updateRate')->name('admin.eth.update-rate');
     });
 
