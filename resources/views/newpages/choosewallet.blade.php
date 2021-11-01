@@ -164,6 +164,48 @@
                                 </a>
                                 @endif
 
+
+                                {{-- Ethereum Wallet --}}
+                                {{-- @if (!Auth::user()->ethWallet)
+                                <div class="row">
+                                    <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
+                                        style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
+                                        <div class="d-flex align-items-center">
+                                            <div class="mx-3">
+                                                <img src="/svg/ethereum.svg" alt="">
+                                            </div>
+                                            <div>
+                                                <span class="d-block pb-0 mb-0 choosewallet_selection">Ethereum</span>
+                                                <a data-toggle="modal" data-target="#new-ethereum-wallet" href="#">Create
+                                                    Ethereum Wallet</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @else
+                                <a href="{{ route('user.ethereum-wallet') }}">
+                                    <div class="row">
+                                        <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
+                                            style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="mx-3">
+                                                    <img src="/svg/ethereum.svg" alt="">
+                                                </div>
+                                                <div>
+                                                    <span
+                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->ethWallet ? number_format((float)$eth_wallet->balance, 5) : '' }} ETH</span>
+                                                    <div>
+                                                        <span
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Ethereum
+                                                            Wallet</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endif --}}
+
                             </div>
                         </div>
                     </div>
@@ -252,6 +294,9 @@
         </div>
     </div>
 </div>
+
+{{-- Ethereum Modal --}}
+<ethereum-create-component></ethereum-create-component>
 
 @endsection
 @section('scripts')

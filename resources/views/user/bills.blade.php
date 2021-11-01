@@ -139,8 +139,8 @@
                 <div class="tab-content">
                     <div id="tab-animated1-0" role="tabpanel" class="tab-pane active">
                         <form method="post" action="{{route('user.airtime')}}" id="airtime-form" >
-                            {{-- <input type="hidden" name="ref" value="{{ $ref }}"> --}}
-                            {{-- @csrf --}}
+                            <input type="hidden" name="ref" value="{{$ref}}">
+                            @csrf
                             <div class="form-group mx-4">
                                 <label for="asset">Network Provider</label>
                                 <select id="a-network-provider" name="network" onchange="getAirtimedetails()"

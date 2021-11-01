@@ -27,19 +27,29 @@ class PortfolioController extends Controller
         $btc_rate = $res->value;
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id;
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
         ]);
-
-        $accounts = json_decode($res->getBody());
+        $btc = json_decode($res->getBody());
 
         $btc_wallet = Auth::user()->btcWallet;
-        $btc_wallet->balance = $accounts[0]->balance->availableBalance;
+        $btc_wallet->balance = $btc->balance->availableBalance;
         $btc_wallet->usd = $btc_wallet->balance  * $btc_rate;
 
+        $eth_wallet = null;
+        if (Auth::user()->ethWallet) {
+            $eth_url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->ethWallet->account_id;
+            $res = $client->request('GET', $eth_url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')]
+            ]);
+            $eth = json_decode($res->getBody());
 
-        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'nw']));
+            $eth_wallet = Auth::user()->ethWallet;
+            $eth_wallet->balance = $eth->balance->availableBalance;
+        }
+
+        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'eth_wallet', 'nw']));
     }
 
 
