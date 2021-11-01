@@ -150,7 +150,7 @@
                 margin-top:-30px;
                 ">
               <a href="#" target="_blank">
-                <img alt="Logo" src="/images/email_logo.png" width="480" height="300" style="
+                <img src="{{url('images/email_logo.png')}}" width="480" height="300" style="
                       display: block;
                       font-family: 'Lato', Helvetica, Arial, sans-serif;
                       color: #ffffff;
@@ -205,7 +205,7 @@
                     <td bgcolor="" align="center" style="
 
                             font-family: 'Lato', Helvetica, Arial, sans-serif;
-                            background-image: url('images/footer_img.png');
+                            background-image: url('{{url('/images/footer_img.png')}}');
                             background-size:cover;
                             height:120px;
                           ">
@@ -216,10 +216,10 @@
                         <td>
                             <div style="display: flex; justify-content:center">
                                 <a href="https://play.google.com/store/apps/details?id=com.dantown.Dantownapp">
-                                    <img src="images/GOOGLE_PLAY.png" style="width: 115px; margin:10px" alt="">
+                                    <img src="{{url('images/GOOGLE_PLAY.png')}}" style="width: 115px; margin:10px" alt="">
                                 </a>
                                 <a href="https://apps.apple.com/US/app/id1575600937?mt=8">
-                                    <img src="images/APPSTORE.png" style="width: 115px; margin:10px" alt="">
+                                    <img src="{{url('images/APPSTORE.png')}}" style="width: 115px; margin:10px" alt="">
                                 </a>
                             </div>
                         </td>
@@ -249,16 +249,16 @@
                           ">
                             <div style="display: flex; justify-content:center">
                                 <a href="http://www.facebook.com/godantown">
-                                    <img src="images/facebook.png" style="height: 13px; margin:10px" alt="">
+                                    <img src="{{url('images/facebook.png')}}" style="height: 13px; margin:10px" alt="">
                                 </a>
                                 <a href="https://twitter.com/godantown">
-                                    <img src="images/twitter.png" style="height: 13px; margin:10px" alt="">
+                                    <img src="{{url('images/twitter.png')}}" style="height: 13px; margin:10px" alt="">
                                 </a>
                                 <a href="https://instagram.com/godantown">
-                                    <img src="images/instagram.png" style="height: 13px; margin:10px" alt="">
+                                    <img src="{{url('images/instagram.png')}}" style="height: 13px; margin:10px" alt="">
                                 </a>
                                 <a href="https://www.linkedin.com/company/dantown">
-                                    <img src="images/linkedin.png" style="height: 13px; margin:10px" alt="">
+                                    <img src="{{url('images/linkedin.png')}}" style="height: 13px; margin:10px" alt="">
                                 </a>
 
                             </div>

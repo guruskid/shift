@@ -34,6 +34,16 @@ class VerificationController extends Controller
             'status' => 'Waiting'
         ]);
 
+        $title = 'LEVEL 3 VERIFICATION DOCUMENTS RECEIVED';
+        $body = 'We have successfully received your document for level 3 verification.
+        Your verification request is currently on-review, and you will get feedback from us within 24-48 hours.';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = $user->first_name;
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
         return back()->with(['success' => 'Id card uploaded, please hold on while we verify your account']);
     }
 

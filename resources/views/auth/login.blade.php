@@ -10,7 +10,7 @@
         </div>
         <div class="col-12 col-md-6">
             <div class="position_form">
-                <span class="d-block mt-5 mb-0" style="color: #676B87;font-size: 18px;">Hello!</span>
+                <span class="d-block mt-5 mb-0" style="color: #676B87;font-size: 18px;">Hello!  </span>
                 <div class="d-block mb-3 login_welcomeText">Welcome Back</div>
                 <form method="POST" action="{{route('login')}}">
                     @csrf
