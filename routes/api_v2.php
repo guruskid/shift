@@ -29,6 +29,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/upload-address', 'VerificationController@uploadAddress');
     Route::post('/update-dp', 'ProfileController@updateDp');
 
+    Route::post('/update-birthday', 'ProfileController@updateBirthday');
+
     // profile
     Route::get('/profile', 'ProfileController@index');
 

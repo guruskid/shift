@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -60,6 +61,30 @@ class ProfileController extends Controller
             'dp' => 'storage/avatar/'. Auth::user()->dp,
             'user' => Auth::user(),
         ]);
+    }
+
+    public function updateBirthday(Request $r)
+    {
+        $validator = Validator::make($r->all(), [
+            'month' => 'required',
+            'year' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $user = Auth::user()->birthday = $r->month .'/'. $r->year;
+        Auth::user()->save();
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Birthday updated successfully'
+        ]);
+
     }
 
     public function updateDp(Request $r)
