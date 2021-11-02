@@ -66,8 +66,8 @@ class ProfileController extends Controller
     public function updateBirthday(Request $r)
     {
         $validator = Validator::make($r->all(), [
+            'date' => 'required',
             'month' => 'required',
-            'year' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -77,7 +77,7 @@ class ProfileController extends Controller
             ], 401);
         }
 
-        $user = Auth::user()->birthday = $r->month .'/'. $r->year;
+        $user = Auth::user()->birthday = $r->date .'/'. $r->month;
         Auth::user()->save();
 
         return response()->json([
