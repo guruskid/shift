@@ -64,7 +64,6 @@ class ProfileController extends Controller
 
     public function updateDp(Request $r)
     {
-
         if ($r->has('image')) {
             $file = $r->image;
             $folderPath = public_path('storage/avatar/');
