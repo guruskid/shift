@@ -19,14 +19,15 @@ class BtcWalletController extends Controller
     {
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
-        $res = json_decode($res->getBody());
-        $btc_rate = (int)$res->value;
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        // $res = json_decode($res->getBody());
+        // $btc_rate = (int)$res->value;
 
-        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        $tp = ($trading_per / 100) * $btc_rate;
-        $btc_rate -= $tp;
+        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        // $tp = ($trading_per / 100) * $btc_rate;
+        // $btc_rate -= $tp;
+        $btc_rate = LiveRateController::btcRate();
 
         $card = Card::find(102);
         $rates = $card->currency->first();
@@ -175,14 +176,15 @@ class BtcWalletController extends Controller
 
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
-        $res = json_decode($res->getBody());
-        $btc_rate = (int)$res->value;
+        // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        // $res = json_decode($res->getBody());
+        // $btc_rate = (int)$res->value;
 
 
-        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        $tp = ($trading_per / 100) * $btc_rate;
-        $btc_rate -= $tp;
+        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        // $tp = ($trading_per / 100) * $btc_rate;
+        // $btc_rate -= $tp;
+        $btc_rate = LiveRateController::btcRate();
 
 
         $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';

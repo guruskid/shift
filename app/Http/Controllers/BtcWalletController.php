@@ -134,14 +134,16 @@ class BtcWalletController extends Controller
 
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        $res = json_decode($res->getBody());
-        $btc_rate = $res->value;
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        // $res = json_decode($res->getBody());
+        // $btc_rate = $res->value;
 
-        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        $tp = ($trading_per / 100) * $btc_rate;
-        $btc_rate -= $tp;
+        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        // $tp = ($trading_per / 100) * $btc_rate;
+        // $btc_rate -= $tp;
+
+        $btc_rate = LiveRateController::btcRate();
 
         $btc_wallet_bal = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
@@ -176,14 +178,15 @@ class BtcWalletController extends Controller
 
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        $res = json_decode($res->getBody());
-        $btc_rate = $res->value;
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        // $res = json_decode($res->getBody());
+        // $btc_rate = $res->value;
 
-        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        $tp = ($trading_per / 100) * $btc_rate;
-        $btc_rate -= $tp;
+        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        // $tp = ($trading_per / 100) * $btc_rate;
+        // $btc_rate -= $tp;
+        $btc_rate = LiveRateController::btcRate();
 
         $client = new Client();
         $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
@@ -286,17 +289,17 @@ class BtcWalletController extends Controller
         try {
 
             $client = new Client();
-            $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-            $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-            $res = json_decode($res->getBody());
-            $current_btc_rate = $res->value;
+            // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+            // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+            // $res = json_decode($res->getBody());
+            $current_btc_rate =  LiveRateController::btcRate();
 
             $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
             $service_fee = ($trading_per / 100) * $r->quantity;
-            $tp = ($trading_per / 100) * $current_btc_rate;
+            // $tp = ($trading_per / 100) * $current_btc_rate;
 
-            $main_rate = $current_btc_rate;
-            $current_btc_rate -= $tp;
+            // $main_rate = $current_btc_rate;
+            // $current_btc_rate -= $tp;
 
             $card = Card::find(102);
             $card_id = 102;
