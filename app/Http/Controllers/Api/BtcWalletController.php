@@ -7,6 +7,7 @@ use App\CardCurrency;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LiveRateController;
 use App\Setting;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -175,7 +176,7 @@ class BtcWalletController extends Controller
         $rates = $card->currency->first();
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
         // $res = json_decode($res->getBody());
         // $btc_rate = (int)$res->value;
