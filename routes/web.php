@@ -44,7 +44,7 @@ Route::get('gm', function () {
         // VerificationCode::create([
         //     'user_id' => $userId,
 
-        
+
         //     'verification_code' => $otpCode
         // ]);
         $title = 'Email Verification Code1';
@@ -170,8 +170,9 @@ Route::get('/newsignup', function () {
 
 Route::get('test', function () {
     /* $emailJob = (); */
-        dispatch(new RegistrationEmailJob('shean@gmail.com'));
-    /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() ); */
+        // dispatch(new RegistrationEmailJob('shean@gmail.com'));
+    Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
+    return new UserRegistered();
     /* $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
     return new App\Mail\WalletAlert($txn, 'Debit'); */
 });
@@ -265,7 +266,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     // Route::get('/paytv', 'BillsPaymentController@disabledView')->name('user.paytv');
     Route::get('/paytv','BillsPaymentController@CableRechargeView')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@rechargeCable')->name('user.paytv');
-    
+
     // Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge'); //for naira wallet Airtime view
     Route::get('/airtime', 'BillsPaymentController@nairaRate')->name('user.airtime'); // for the naira rate for the bitcoin
 
