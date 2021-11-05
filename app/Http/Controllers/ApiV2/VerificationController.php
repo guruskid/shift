@@ -1,24 +1,40 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiV2;
 
-use App\Mail\GeneralTemplateOne;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Mail\GeneralTemplateOne;
+use Dotenv\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\Unique;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
 
 class VerificationController extends Controller
 {
     public function uploadId(Request $request)
     {
-        $this->validate($request, [
-            'id_card' => 'image|mimes:jpeg,JPEG,png,jpg|max:5048|required',
-        ]);
+
         $user = Auth::user();
 
+        $validator = FacadesValidator::make($request->all(), [
+            'id_card' => 'image|mimes:jpeg,JPEG,png,jpg|max:5048|required',
+            'location' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
         if ($user->verifications()->where(['type' => 'ID Card', 'status' => 'Waiting'])->exists()) {
-            return back()->with(['error' => 'ID Card verification already in progress']);
+            return response()->json([
+                'success' => false,
+                'error' => 'ID Card verification already in progress'
+            ]);
         }
 
         $file = $request->id_card;
@@ -44,21 +60,34 @@ class VerificationController extends Controller
         $name = $user->first_name;
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
 
-        return back()->with(['success' => 'Id card uploaded, please hold on while we verify your account']);
+        return response()->json([
+            'success' => 'Id card uploaded, please hold on while we verify your account'
+        ]);
     }
 
 
     public function uploadAddress(Request $request)
     {
-        $this->validate($request, [
-            'address' => 'required',
-            'location' => 'required',
 
+        $validator = FacadesValidator::make($request->all(), [
+            'address' => 'image|mimes:jpeg,JPEG,png,jpg|max:5048|required',
+            // 'address' => 'required',
+            'location' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
         $user = Auth::user();
         if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
-            return back()->with(['error' => 'Address verification already in progress']);
-            dd('hi ');
+            return response()->json([
+                'error' => 'Address verification already in progress'
+            ]);
+            dd('hi');
         }
 
         $file = $request->address;
@@ -85,6 +114,9 @@ class VerificationController extends Controller
 
         $name = $user->first_name;
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
-        return back()->with(['success' => 'Address uploaded, please hold on while we verify your account']);
+        return response()->json([
+            'success' => 'Address uploaded, please hold on while we verify your account'
+        ]);
     }
 }
+

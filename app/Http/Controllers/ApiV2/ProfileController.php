@@ -4,17 +4,16 @@ namespace App\Http\Controllers\ApiV2;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class ProfileController extends Controller
 {
-
-    public function dashboard()
+    public function index()
     {
+
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
@@ -51,43 +50,7 @@ class UserController extends Controller
 
         $data = json_decode($res,true);
 
-        $currencies = [
-            [
-                'name' => 'Tether',
-                'short_name' => 'USDT',
-                'rate' => $data['tether']['ngn'],
-                '24h_change' => $data['tether']['ngn_24h_change'],
-                'img' => url('/crypto/tether.png')
-            ],
-            [
-                'name' => 'Bitcoin',
-                'short_name' => 'BTC',
-                'rate' => $data['bitcoin']['ngn'],
-                '24h_change' => $data['bitcoin']['ngn_24h_change'],
-                'img' => url('/crypto/bitcoin.png')
-            ],
-            [
-                'name' => 'Ethereum',
-                'short_name' => 'ETH',
-                'rate' => $data['ethereum']['ngn'],
-                '24h_change' => $data['ethereum']['ngn_24h_change'],
-                'img' => url('/crypto/ethereum.png')
-            ],
-            [
-                'name' => 'Litecoin',
-                'short_name' => 'LTC',
-                'rate' => $data['litecoin']['ngn'],
-                '24h_change' => $data['litecoin']['ngn_24h_change'],
-                'img' => url('/crypto/litecoin.png')
-            ],
-            [
-                'name' => 'Ripple',
-                'short_name' => 'XRP',
-                'rate' => $data['ripple']['ngn'],
-                '24h_change' => $data['ripple']['ngn_24h_change'],
-                'img' => url('/crypto/xrp.png')
-            ]
-        ];
+
 
         return response()->json([
             'success' => true,
@@ -95,8 +58,60 @@ class UserController extends Controller
             'btc_balance_in_naira' => $naira_balance,
             'btc_balnace_in_usd' => $btc_wallet->usd,
             'btc_rate' => $btc_real_time,
-            'featured_coins' => $currencies
+            'dp' => 'storage/avatar/'. Auth::user()->dp,
+            'user' => Auth::user(),
         ]);
     }
-    
+
+    public function updateBirthday(Request $r)
+    {
+        $validator = Validator::make($r->all(), [
+            'date' => 'required',
+            'month' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $user = Auth::user()->birthday = $r->date .'/'. $r->month;
+        Auth::user()->save();
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Birthday updated successfully'
+        ]);
+
+    }
+
+    public function updateDp(Request $r)
+    {
+        if ($r->has('image')) {
+            $file = $r->image;
+            $folderPath = public_path('storage/avatar/');
+            $image_base64 = base64_decode($file);
+
+            $imageName = time() . uniqid() . '.png';
+            $imageFullPath = $folderPath . $imageName;
+
+            file_put_contents($imageFullPath, $image_base64);
+
+            Auth::user()->dp = $imageName;
+            Auth::user()->save();
+
+            return response()->json([
+                'success' => true,
+                'data' => Auth::user(),
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Image file not present'
+            ]);
+        }
+    }
+
 }
