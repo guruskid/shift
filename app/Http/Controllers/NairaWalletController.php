@@ -659,6 +659,10 @@ class NairaWalletController extends Controller
         $t->status = 'refunded';
         $t->save();
 
+        $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        $transfer_charges_wallet->amount -= $t->transfer_charge;
+        $transfer_charges_wallet->save();
+
         $title = 'Dantown wallet Debit';
         $msg_body = 'Your Dantown wallet has been ' . $tt . ' with N' . $amount . ' for the refund of transaction with id ' . $t->reference;
         /* Send notification */
