@@ -54,8 +54,9 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div> {{$segment}} Transactions
                             <div class="page-title-subheading">
                                 <h6 class="d-inline">₦{{ number_format($total) }} </h6>
-                                <a href="{{ route('admin.naira-transaction.create') }}"><button
-                                        class="btn btn-primary">Add new transaction</button></a>
+                                {{-- <a href="{{ route('admin.naira-transaction.create') }}"> --}}
+                                <button class="btn btn-primary">Add new transaction</button>
+                                {{-- </a> --}}
                             </div>
                         </div>
                     </div>
@@ -133,6 +134,15 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                                 Refund
                                             </button>
 
+                                            <button data-toggle="modal" data-target="#query-modal"
+                                                onclick="queryTransaction({{$t->id}})"
+                                                class="btn mb-1 btn-sm btn-outline-success">
+                                                Query
+                                            </button>
+                                        </td>
+
+                                        @elseif (Auth::user()->role == 777 && $t->status == 'pending' )
+                                        <td>
                                             <button data-toggle="modal" data-target="#query-modal"
                                                 onclick="queryTransaction({{$t->id}})"
                                                 class="btn mb-1 btn-sm btn-outline-success">

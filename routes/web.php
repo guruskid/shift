@@ -336,12 +336,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant']]
     Route::post('/clear-transfer-charges', 'AdminController@clearTransferCharges')->name('admin.clear-transfer-charges');
     Route::post('/clear-sms-charges', 'AdminController@clearSmsCharges')->name('admin.clear-sms-charges');
 
-    Route::get('/query-transaction/{id}', 'NairaWalletController@query')->name('admin.query-transaction');
-    Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus')->name('admin.update-naira-transaction');
+
 });
 
 /* for super admin and all accountants */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant']], function () {
+    Route::get('/query-transaction/{id}', 'NairaWalletController@query')->name('admin.query-transaction');
+    Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus')->name('admin.update-naira-transaction');
 
     Route::post('/admin-refund', 'NairaWalletController@adminRefund')->name('admin.refund');
     Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
