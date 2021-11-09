@@ -10,7 +10,6 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
 class TradeController extends Controller
 {
@@ -31,105 +30,6 @@ class TradeController extends Controller
             'success' => true,
             'data' => $agents
         ]);
-    }
-
-    public function getAgent(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'amount' => 'integer|required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors(),
-            ], 401);
-        }
-
-        $user = Auth::user();
-        $withdrawalToday = $this->getTodaysTotalTransactions('sell');
-        $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
-        
-        $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->select('id','first_name','last_name')->inRandomOrder()->limit(1)->get();
-        $user_wallet = $user->nairaWallet;
-
-        $user_data = [
-            'total_withdrawal_today' => $withdrawalToday,
-            'total_withdrawal_this_month' => $withdrawalThisMonth,
-            'amount_to_withdraw' => $request['amount'],
-            'daily_max' => $user->daily_max,
-            'monthly_max' => $user->monthly_max
-        ];
-
-        $agent[0]['user'] = $user_data;
-
-        return response()->json([
-            'success' => true,
-            'data' => $agent
-        ]);
-    }
-
-    public function getTodaysTotalTransactions($type) {
-        $user = Auth::user();
-        $total = NairaTrade::where(['type' => $type, 'user_id' => $user->id,'status' => 'success'])->whereDay('created_at', date('d'))->select('amount')->sum('amount');
-        return $total;
-    }
-
-    public function getThisMonthTotalTransactions($type) {
-        $user = Auth::user();
-        $total = NairaTrade::where(['type' => $type, 'user_id' => $user->id,'status' => 'success'])->whereMonth('created_at', date('m'))->select('amount')->sum('amount');
-        return $total;
-    }
-
-    public function completeWihtdrawal(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'agent_id'  => 'integer|required', 
-            'amount'   => 'integer|required',
-            'pin'      => 'integer|required|min:4'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors(),
-            ], 401);
-        }
-
-        if (!Hash::check($request->pin, Auth::user()->pin)) {
-            return response()->json([
-                'success' => false,
-                'msg' => 'Incorrect wallet pin'
-            ]);
-        }
-
-        $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $request->agent_id])->limit(1)->get();
-
-        if (count($agent) < 1) {
-            return response()->json([
-                'success' => false,
-                'message' => "Invalid agent ID",
-            ]);
-        }
-
-        $ref = \Str::random(3).time();
-
-        //create TXN here
-        $txn = new NairaTrade();
-        $txn->reference = $ref;
-        $txn->user_id = Auth::user()->id;
-        $txn->agent_id = $request->agent_id;
-        $txn->amount = $request->amount;
-        $txn->status = 'waiting';
-        $txn->type = 'sell';
-        $txn->save();
-
-        $user_wallet = Auth::user()->nairaWallet;
-        $user_wallet->amount -= $request->amount;
-        $user_wallet->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => "Congratulations! You have successfully withdrawn the sum of $request->amount from your Dantown naira wallet",
-        ], 200);
     }
 
 
@@ -205,6 +105,8 @@ class TradeController extends Controller
         $user = Auth::user();
         $user_wallet = $user->nairaWallet;
         $agent = User::find($request->agent_id);
+
+
 
         $pin = $user->pin;
         $input_pin = $request->pin;

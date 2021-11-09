@@ -98,5 +98,4 @@ class UserController extends Controller
             'featured_coins' => $currencies
         ]);
     }
-    
 }
