@@ -55,6 +55,31 @@
 
             <div class="row">
                 <div class="col-md-12">
+                    <div class="card card-body mb-3">
+                        <table class="table ">
+                            <thead>
+                                <tr>
+                                    <th>No. Trades</th>
+                                    <th>Total BTC</th>
+                                    <th>Total USD</th>
+                                    <th>Total Naira</th>
+                                    <th>AVG. BTC Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ $sell_transactions->count() }} </td>
+                                    <td>{{ number_format((float)$sell_btc, 8) }} BTC</td>
+                                    <td>${{ number_format($sell_usd) }}</td>
+                                    <td>₦{{ number_format($sell_transactions->sum('amount_paid')) }}</td>
+                                    <td>${{ number_format($sell_average) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
                            <form action="{{ route('admin.bitcoin-summary-txns.sort') }}" method="post">@csrf
