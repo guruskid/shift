@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\NairaTrade;
 use App\NairaTradePop;
 use App\User;
+use App\Account;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -53,9 +54,9 @@ class TradeController extends Controller
         $user_wallet = $user->nairaWallet;
 
         $user_data = [
-            'total_withdrawal_today' => $withdrawalToday,
-            'total_withdrawal_this_month' => $withdrawalThisMonth,
-            'amount_to_withdraw' => $request['amount'],
+            'total_withdrawn_today' => $withdrawalToday,
+            'total_withdrawn_this_month' => $withdrawalThisMonth,
+            'amount' => $request['amount'],
             'daily_max' => $user->daily_max,
             'monthly_max' => $user->monthly_max
         ];
@@ -110,6 +111,15 @@ class TradeController extends Controller
             ]);
         }
 
+        $account = Account::where('user_id',$request->account_id)->first();
+
+        if (!$account) {
+            return response()->json([
+                'success' => false,
+                'message' => "Invalid account id",
+            ]);
+        }
+
         $ref = \Str::random(3).time();
 
         //create TXN here
@@ -120,6 +130,7 @@ class TradeController extends Controller
         $txn->amount = $request->amount;
         $txn->status = 'waiting';
         $txn->type = 'sell';
+        $txn->account_id = $request->account_id;
         $txn->save();
 
         $user_wallet = Auth::user()->nairaWallet;
@@ -130,6 +141,61 @@ class TradeController extends Controller
             'success' => true,
             'message' => "Congratulations! You have successfully withdrawn the sum of $request->amount from your Dantown naira wallet",
         ], 200);
+    }
+
+    public function completeDeposit(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'agent_id'  => 'integer|required', 
+            'amount'   => 'integer|required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $request->agent_id])->limit(1)->get();
+
+        if (count($agent) < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => "Invalid agent ID",
+            ]);
+        }
+
+        $ref = \Str::random(3).time();
+
+        //create TXN here
+        $txn = new NairaTrade();
+        $txn->reference = $ref;
+        $txn->user_id = Auth::user()->id;
+        $txn->agent_id = $request->agent_id;
+        $txn->amount = $request->amount;
+        $txn->status = 'waiting';
+        $txn->type = 'buy';
+        $txn->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Congratulations! You have successfully deposited $request->amount, your Dantown wallet would be credited once payment is confirmed.",
+        ], 200);
+    }
+
+    public function getStat() {
+        $user = Auth::user();
+        $withdrawalToday = $this->getTodaysTotalTransactions('sell');
+        $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
+
+        $user_data = [
+            'total_withdrawn_today' => $withdrawalToday,
+            'total_withdrawn_this_month' => $withdrawalThisMonth,
+            'daily_max' => $user->daily_max,
+            'monthly_max' => $user->monthly_max
+        ];
+
+        return $user_data;
     }
 
 
