@@ -35,16 +35,6 @@ class TradeController extends Controller
     }
 
     public function getAgent(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'amount' => 'integer|required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors(),
-            ], 401);
-        }
 
         $user = Auth::user();
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
@@ -56,7 +46,6 @@ class TradeController extends Controller
         $user_data = [
             'total_withdrawn_today' => $withdrawalToday,
             'total_withdrawn_this_month' => $withdrawalThisMonth,
-            'amount' => $request['amount'],
             'daily_max' => $user->daily_max,
             'monthly_max' => $user->monthly_max
         ];
