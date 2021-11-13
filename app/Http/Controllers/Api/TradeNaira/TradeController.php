@@ -100,7 +100,7 @@ class TradeController extends Controller
             ]);
         }
 
-        $account = Account::where('user_id',$request->account_id)->first();
+        $account = Account::where('id',$request->account_id)->first();
 
         if (!$account) {
             return response()->json([
