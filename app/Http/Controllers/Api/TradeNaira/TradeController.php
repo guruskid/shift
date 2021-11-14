@@ -109,6 +109,13 @@ class TradeController extends Controller
             ]);
         }
 
+        if (Auth::user()->nairaWallet->amount < $request->amount) {
+            return response()->json([
+                'success' => false,
+                'message' => "Low wallet balance",
+            ]);
+        }
+
         $ref = \Str::random(3).time();
 
         //create TXN here
@@ -181,7 +188,8 @@ class TradeController extends Controller
             'total_withdrawn_today' => $withdrawalToday,
             'total_withdrawn_this_month' => $withdrawalThisMonth,
             'daily_max' => $user->daily_max,
-            'monthly_max' => $user->monthly_max
+            'monthly_max' => $user->monthly_max,
+            'naira_balance' => $user->nairaWallet->amount
         ];
 
         return $user_data;
