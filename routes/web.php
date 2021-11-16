@@ -311,6 +311,15 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
         Route::post('/sell', 'EthWalletController@sell')->name('ethereum.sell');
     });
 
+    Route::prefix('tron')->group(function () {
+        Route::post('/create', 'TronWalletController@create')->name('tron.create');
+        Route::get('/wallet', 'TronWalletController@wallet')->name('user.tron-wallet');
+        Route::get('/fees/{address}/{amount}', 'TronWalletController@fees')->name('user.tron-fees');
+        Route::post('/send', 'TronWalletController@send')->name('tron.send');
+        Route::get('/trade', 'TronWalletController@trade')->name('tron.trade');
+        Route::post('/sell', 'TronWalletController@sell')->name('tron.sell');
+    });
+
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */
 
 });
