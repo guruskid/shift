@@ -4990,21 +4990,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['rate', 'eth_usd', 'charge', 'hd'],
+  props: ['rate', 'trx_usd', 'charge', 'hd'],
   data: function data() {
     return {
       csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
       //Input fields
       naira: '',
       usd: '',
-      eth: '',
-      chargeEth: 0,
+      trx: '',
+      chargeTrx: 0,
       chargeNgn: 0,
       //rates
-      ethUsd: this.eth_usd,
+      trxUsd: this.trx_usd,
       usdToNaira: this.rate,
       //our rate
-      ethToNaira: '',
+      trxToNaira: '',
       loading: false,
       fee: 0,
       total: 0,
@@ -5012,46 +5012,43 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.ethToNaira = this.ethUsd * this.usdToNaira;
+    this.trxToNaira = this.trxUsd * this.usdToNaira;
   },
   methods: {
     //When USD field is updated
     getRateUsd: function getRateUsd() {
       this.naira = this.usd * this.usdToNaira;
-      this.eth = this.usd / this.ethUsd;
-      this.getFees();
+      this.trx = this.usd / this.trxUsd; // this.getFees()
     },
 
-    /* When eth is updated */
-    getRateeth: function getRateeth() {
-      this.usd = this.ethUsd * this.eth;
-      this.naira = this.eth * this.ethToNaira;
-      this.getFees();
+    /* When trx is updated */
+    getRatetrx: function getRatetrx() {
+      this.usd = this.trxUsd * this.trx;
+      this.naira = this.trx * this.trxToNaira; // this.getFees()
     },
 
     /* When ngn is updated */
     getRateNgn: function getRateNgn() {
-      this.eth = this.naira / this.ethToNaira;
-      this.usd = this.naira / this.usdToNaira;
-      this.getFees();
+      this.trx = this.naira / this.trxToNaira;
+      this.usd = this.naira / this.usdToNaira; // this.getFees()
     },
     getTotal: function getTotal() {
-      if (this.eth == 0) {
+      if (this.trx == 0) {
         this.total = this.fee;
         return true;
       }
 
-      this.total = parseFloat(this.eth) + parseFloat(this.fee);
+      this.total = parseFloat(this.trx) + parseFloat(this.fee);
     },
     getFees: function getFees() {
       var _this = this;
 
-      if (this.eth <= 0) {
+      if (this.trx <= 0) {
         return false;
       }
 
       this.loading = true;
-      axios.get("/user/ethereum/fees/".concat(this.address, "/").concat(this.eth)).then(function (res) {
+      axios.get("/user/Tron/fees/".concat(this.address, "/").concat(this.trx)).then(function (res) {
         _this.fee = res.data.fee;
       })["finally"](function () {
         _this.getTotal();
@@ -5062,17 +5059,17 @@ __webpack_require__.r(__webpack_exports__);
     sell: function sell() {
       var _this2 = this;
 
-      if (this.eth < 0) {
-        swal('Oops', 'eth amount should be greater than 0', 'error');
+      if (this.trx < 0) {
+        swal('Oops', 'trx amount should be greater than 0', 'error');
         return false;
       }
 
       this.loading = true;
-      axios.post('/user/ethereum/sell', {
-        "amount": this.eth
+      axios.post('/user/tron/sell', {
+        "amount": this.trx
       }).then(function (res) {
         if (res.data.success) {
-          swal('Great!!', 'Ethereum traded successfully', 'success');
+          swal('Great!!', 'Tron traded successfully', 'success');
           window.location = '/user/transactions';
         } else {
           swal('oops!!', res.data.msg, 'error');
@@ -5086,8 +5083,8 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   updated: function updated() {
-    this.chargeEth = this.charge / 100 * this.eth;
-    this.chargeNgn = this.chargeEth * this.ethUsd;
+    this.chargeTrx = this.charge / 100 * this.trx;
+    this.chargeNgn = this.chargeTrx * this.trxUsd;
   }
 });
 
@@ -53376,7 +53373,7 @@ var render = function() {
       _c(
         "form",
         {
-          attrs: { method: "post" },
+          attrs: { mtrxod: "post" },
           on: {
             submit: function($event) {
               $event.preventDefault()
@@ -53442,8 +53439,8 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.eth,
-                    expression: "eth"
+                    value: _vm.trx,
+                    expression: "trx"
                   }
                 ],
                 staticClass: "form-control bitcoin-input-radius",
@@ -53454,16 +53451,16 @@ var render = function() {
                   min: "0",
                   name: "quantity"
                 },
-                domProps: { value: _vm.eth },
+                domProps: { value: _vm.trx },
                 on: {
                   keyup: function($event) {
-                    return _vm.getRateeth()
+                    return _vm.getRatetrx()
                   },
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.eth = $event.target.value
+                    _vm.trx = $event.target.value
                   }
                 }
               })
@@ -53543,7 +53540,7 @@ var render = function() {
             _c("span", { staticClass: "text-primary" }, [_vm._v("Charges")]),
             _vm._v(" "),
             _c("span", { staticClass: "text-primary" }, [
-              _vm._v(_vm._s(_vm.chargeEth.toFixed(5)))
+              _vm._v(_vm._s(_vm.chargeTrx.toFixed(5)))
             ]),
             _vm._v(" "),
             _c("span", { staticClass: "text-primary" }, [
@@ -53607,7 +53604,7 @@ var staticRenderFns = [
           staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
           attrs: { for: "inlineFormInputGroupUsername2" }
         },
-        [_vm._v("Ethereum\n                equivalent")]
+        [_vm._v("Tron\n                equivalent")]
       )
     ])
   },
@@ -53623,7 +53620,7 @@ var staticRenderFns = [
       },
       [
         _c("div", { staticClass: "input-group-text input_label" }, [
-          _vm._v("\n                        ETH")
+          _vm._v("\n                        TRX")
         ])
       ]
     )

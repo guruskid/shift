@@ -31,7 +31,7 @@ class LiveRateController extends Controller
         $res = json_decode($res->getBody());
         $eth_rate = $res->value;
 
-        $trading_per = Setting::where('name', 'trading_eth_per')->first()->value ?? 0;
+        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value ?? 0;
         $tp = ($trading_per / 100) * $eth_rate;
         $eth_rate -= $tp;
 

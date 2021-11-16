@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Contract;
+use App\CryptoRate;
+use App\FeeWallet;
+use App\HdWallet;
+use App\NairaTransaction;
+use App\NairaWallet;
+use App\Setting;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class TronWalletController extends Controller
 {
@@ -138,5 +145,214 @@ class TronWalletController extends Controller
 
 
         return view('newpages.tron-wallet', compact('tron_wallet', 'transactions', 'tron_rate'));
+    }
+
+
+    public function trade()
+    {
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $tron_usd = LiveRateController::tronRate();
+        $tron_wallet = Auth::user()->tronWallet;
+        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+
+        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
+        $tp = ($trading_per / 100) * $tron_usd;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $tron_wallet->balance = $accounts->balance->availableBalance;
+        $tron_wallet->usd = $tron_wallet->balance  * $tron_usd;
+
+        $hd_wallet = HdWallet::where('currency_id', 5)->first();
+
+        return view('newpages.trade_tron', compact('sell_rate', 'tron_wallet', 'hd_wallet', 'tron_usd', 'charge'));
+    }
+
+
+    public function sell(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        if (!Auth::user()->tronWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please create an Ethereum wallet to continue'
+            ]);
+        }
+
+
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->tronWallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $user_wallet = Auth::user()->tronWallet;
+        $user_wallet->balance = $accounts->balance->availableBalance;
+
+        $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
+
+        if ($request->amount > $user_wallet->balance) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient balance'
+            ]);
+        }
+
+        // $fees_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
+        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
+        $service_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_service'])->first();
+
+        // percentage deduction in price
+        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
+        $service_fee = ($trading_per/100) * $request->amount;
+
+        //Get fees for the txn on the chain
+
+
+        //percentage charge
+        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+        $charge = ($charge / 100) * $request->amount;
+
+        //Current eth price
+        $eth_usd = LiveRateController::tronRate();
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+
+        $total = $request->amount - $charge - $service_fee;
+        $usd = $request->amount * $eth_usd;
+        $ngn = $usd * $usd_ngn;
+
+        if ($total <= 0) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient trade amount when fee was deducted'
+            ]);
+        }
+
+        $reference = \Str::random(5) . Auth::user()->id;
+        $url = env('TATUM_URL') . '/ledger/transaction';
+
+
+        try {
+            $send = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "senderAccountId" => Auth::user()->tronWallet->account_id,
+                    "recipientAccountId" => $hd_wallet->account_id,
+                    "amount" => number_format((float) $request->amount, 8),
+                    "anonymous" => false,
+                    "compliant" => false,
+                    "transactionCode" => $reference,
+                    "paymentId" => $reference,
+                    "baseRate" => 1,
+                ]
+            ]);
+
+            if ($charge > 0.0000001) {
+                $send_charge = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $hd_wallet->account_id,
+                        "recipientAccountId" => $charge_wallet->account_id,
+                        "amount" => number_format((float) $charge, 9),
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => uniqid(),
+                        "paymentId" => uniqid(),
+                        "baseRate" => 1,
+                        "senderNote" => 'hidden'
+                    ]
+                ]);
+            }
+
+            if ($service_fee > 0.0000001) {
+                $send_service = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $hd_wallet->account_id,
+                        "recipientAccountId" => $service_wallet->account_id,
+                        "amount" => number_format((float) $service_fee, 9),
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => uniqid(),
+                        "paymentId" => uniqid(),
+                        "baseRate" => 1,
+                        "senderNote" => 'hidden'
+                    ]
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::info($e->getResponse()->getBody());
+            //report($e);
+            return response()->json([
+                'success' => false,
+                'msg' => 'An error occured, please try again'
+            ]);
+        }
+
+        $t = Auth::user()->transactions()->create([
+            'card_id' => 141,
+            'type' => 'sell',
+            'amount' => $usd,
+            'amount_paid' => $ngn,
+            'quantity' => number_format((float) $request->amount, 8),
+            'card_price' => $eth_usd,
+            'status' => 'success',
+            'uid' => uniqid(),
+            'user_email' => Auth::user()->email,
+            'card' => 'tron',
+            'agent_id' => 1
+        ]);
+
+        $user_naira_wallet = Auth::user()->nairaWallet;
+        $user = Auth::user();
+        $reference = \Str::random(2) . '-' . $t->id;
+        $n = NairaWallet::find(1);
+
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->amount = $t->amount_paid;
+        $nt->user_id = Auth::user()->id;
+        $nt->type = 'naira wallet';
+        $nt->previous_balance = Auth::user()->nairaWallet->amount;
+        $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 23;
+        $nt->dr_wallet_id = $n->id;
+        $nt->cr_wallet_id = $user_naira_wallet->id;
+        $nt->dr_acct_name = 'Dantown';
+        $nt->cr_acct_name = $user->first_name . ' ' . $user->last_name;
+        $nt->narration = 'Credit for sell transaction with id ' . $t->uid;
+        $nt->trans_msg = 'This transaction was handled automatically ';
+        $nt->cr_user_id = $user->id;
+        $nt->dr_user_id = 1;
+        $nt->status = 'success';
+        $nt->save();
+
+        Auth::user()->nairaWallet->amount += $t->amount_paid;
+        Auth::user()->nairaWallet->save();
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Tron sold successfully'
+        ]);
     }
 }

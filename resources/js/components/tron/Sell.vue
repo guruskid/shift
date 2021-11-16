@@ -1,6 +1,6 @@
 <template>
     <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home" role="tabpanel" aria-labelledby="home-tab">
-        <form @submit.prevent="sell()"  method="post">
+        <form @submit.prevent="sell()"  mtrxod="post">
             <div class="form-group mb-4">
                 <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
                 <div class="input-group mb-2 mr-sm-2">
@@ -14,17 +14,17 @@
             </div>
             <div class="form-group mb-4">
                <div class="d-flex justify-content-between" >
-                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Ethereum
+                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Tron
                     equivalent</label>
                 </div>
 
                 <div class="input-group mb-0 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
                         <div class="input-group-text input_label">
-                            ETH</div>
+                            TRX</div>
                     </div>
                     <input type="number" required step="any" min="0" name="quantity"
-                    v-model="eth" @keyup="getRateeth()"
+                    v-model="trx" @keyup="getRatetrx()"
                         class="form-control bitcoin-input-radius"  >
                 </div>
                 <div class="d-flex justify-content-between">
@@ -52,7 +52,7 @@
 
             <div class="d-flex justify-content-around mb-2">
                 <span class="text-primary">Charges</span>
-                <span class="text-primary">{{ chargeEth.toFixed(5) }}</span>
+                <span class="text-primary">{{ chargeTrx.toFixed(5) }}</span>
                 <span class="text-primary">{{ charge }}%</span>
                 <span class="text-primary">${{ chargeNgn.toLocaleString() }}</span>
             </div>
@@ -65,20 +65,20 @@
 
 <script>
     export default {
-        props: ['rate', 'eth_usd', 'charge', 'hd'],
+        props: ['rate', 'trx_usd', 'charge', 'hd'],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 //Input fields
                 naira: '',
                 usd: '',
-                eth: '',
-                chargeEth: 0,
+                trx: '',
+                chargeTrx: 0,
                 chargeNgn: 0,
                 //rates
-                ethUsd:  this.eth_usd,
+                trxUsd:  this.trx_usd,
                 usdToNaira: this.rate, //our rate
-                ethToNaira: '',
+                trxToNaira: '',
                 loading: false,
                 fee: 0,
                 total: 0,
@@ -86,42 +86,42 @@
             }
         },
         mounted () {
-            this.ethToNaira = this.ethUsd * this.usdToNaira;
+            this.trxToNaira = this.trxUsd * this.usdToNaira;
         },
         methods: {
             //When USD field is updated
             getRateUsd() {
                 this.naira = this.usd * this.usdToNaira
-                this.eth = this.usd / this.ethUsd
-                this.getFees()
+                this.trx = this.usd / this.trxUsd
+                // this.getFees()
             },
-            /* When eth is updated */
-            getRateeth(){
-                this.usd = this.ethUsd * this.eth
-                this.naira = this.eth * this.ethToNaira
-                this.getFees()
+            /* When trx is updated */
+            getRatetrx(){
+                this.usd = this.trxUsd * this.trx
+                this.naira = this.trx * this.trxToNaira
+                // this.getFees()
             },
             /* When ngn is updated */
             getRateNgn(){
-                this.eth = this.naira / this.ethToNaira;
+                this.trx = this.naira / this.trxToNaira;
                 this.usd = this.naira / this.usdToNaira;
-                this.getFees()
+                // this.getFees()
             },
 
             getTotal() {
-                if (this.eth == 0) {
+                if (this.trx == 0) {
                     this.total = this.fee;
                     return true;
                 }
-                this.total = parseFloat(this.eth) + parseFloat(this.fee);
+                this.total = parseFloat(this.trx) + parseFloat(this.fee);
             },
 
             getFees(){
-                if (this.eth <= 0) {
+                if (this.trx <= 0) {
                     return false;
                 }
                 this.loading = true;
-                axios.get(`/user/ethereum/fees/${this.address}/${this.eth}`)
+                axios.get(`/user/Tron/fees/${this.address}/${this.trx}`)
                     .then((res) => {
                         this.fee = res.data.fee;
                     })
@@ -129,16 +129,16 @@
             },
 
             sell(){
-                if (this.eth < 0) {
-                    swal('Oops', 'eth amount should be greater than 0', 'error');
+                if (this.trx < 0) {
+                    swal('Oops', 'trx amount should be greater than 0', 'error');
                     return false;
                 }
 
                 this.loading = true;
-                axios.post('/user/ethereum/sell', {"amount" : this.eth })
+                axios.post('/user/tron/sell', {"amount" : this.trx })
                 .then((res)=>{
                     if (res.data.success) {
-                        swal('Great!!', 'Ethereum traded successfully', 'success');
+                        swal('Great!!', 'Tron traded successfully', 'success');
                         window.location = '/user/transactions';
                     } else {
                         swal('oops!!', res.data.msg, 'error');
@@ -155,8 +155,8 @@
             }
         },
         updated () {
-            this.chargeEth = (this.charge/100) * this.eth
-            this.chargeNgn = this.chargeEth * this.ethUsd
+            this.chargeTrx = (this.charge/100) * this.trx
+            this.chargeNgn = this.chargeTrx * this.trxUsd
         },
     }
 </script>
