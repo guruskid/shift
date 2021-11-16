@@ -235,14 +235,11 @@
                                                 <div
                                                     class="mx-2 asset_card_container py-3 py-0 d-flex flex-column justify-content-center align-items-center">
                                                     <span class="d-block text-center mb-4">
-                                                        <img class="img-fluid logos_assets"
-                                                            src="{{asset('svg/tetherwallet_logo.svg')}}">
+                                                        <img height="56px" width="56px" class="img-fluid logos_assets"
+                                                            src="{{asset('images/tron.png')}}">
                                                     </span>
-                                                    <span class="d-block text-center asset_card_title">Stable
-                                                        coin</span>
-                                                    <span class="d-block text-center asset_card_description px-1">DSTV,
-                                                        GoTV, PHCN
-                                                        and more</span>
+                                                    <span class="d-block text-center asset_card_title">Tron</span>
+                                                    <span class="d-block text-center asset_card_description px-1">Coming soon</span>
                                                 </div>
                                             </a>
                                         </div>

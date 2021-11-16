@@ -149,6 +149,16 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                     </a> --}}
                                                 </div>
                                             </div>
+                                            <div>
+                                                <div class="text-center p-3 text-white h5 rounded" style="background-color: #000070">
+                                                    <h4><i class="fas fa-info-circle"></i> Notice:</h4>
+                                                    Dantown have partnered with Pay-bridge for naira payments.
+                                                    please download the Dantown app to withdraw 
+                                                </div>
+                                                <div class="text-center p-3 text-white h5 rounded">
+                                                    <a href="https://bit.ly/3ngtcEN" class="text-center p-1 text-white h5 rounded" style="background-color: #000070">Download App</a>
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-md-12 text-center">
                                                     <p><strong class="text-primary mb-0">Daily Limit:</strong>
