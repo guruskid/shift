@@ -59,10 +59,10 @@ class TradeNairaController extends Controller
 
     public function agentTransactions(User $user)
     {
-        $transactions = $user->agentNairaTrades()->paginate(20);
+        $transactions = $user->agentNairaTrades()->orderBy('created_at','desc')->paginate(20);
 
         foreach ($transactions as $t) {
-            if ($t->type == 'sell') {
+            if ($t->type == 'withdrawal') {
                 $a = Auth::user($t->user_id)->accounts->where('id',$t->account_id)->first();
                 $account = $a['account_name'].', '.$a['bank_name'].', '.$a['account_number'];
                 $t->acct_details = $account; 

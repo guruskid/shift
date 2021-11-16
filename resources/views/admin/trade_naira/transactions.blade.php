@@ -91,7 +91,7 @@
                                         <td>₦{{ number_format($t->amount) }}</td>
                                         <td>{{ $t->reference }}</td>
                                         <td>{{ $t->type }}
-                                        @if($t->type == 'sell')
+                                        @if($t->type == 'withdrawal')
                                             <br><br>
                                             {{ $t->acct_details }}
                                         @endif
@@ -123,7 +123,7 @@
     @foreach ($transactions as $t)
     <div class="modal fade " id="confirm-modal-{{ $t->id }}">
         <div class="modal-dialog  ">
-            @if($t->type == 'sell')
+            @if($t->type == 'withdrawal')
                 <form action="{{route('admin.naira-p2p.confirm-sell', $t)}}" id="freeze-form" method="post"> @method('put')
             @else
                 <form action="{{route('admin.naira-p2p.confirm', $t)}}" id="freeze-form" method="post"> @method('put')

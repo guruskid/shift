@@ -125,7 +125,7 @@ class TradeController extends Controller
         $txn->agent_id = $request->agent_id;
         $txn->amount = $request->amount;
         $txn->status = 'waiting';
-        $txn->type = 'sell';
+        $txn->type = 'withdrawal';
         $txn->account_id = $request->account_id;
         $txn->save();
 
@@ -170,7 +170,7 @@ class TradeController extends Controller
         $txn->agent_id = $request->agent_id;
         $txn->amount = $request->amount;
         $txn->status = 'waiting';
-        $txn->type = 'buy';
+        $txn->type = 'deposit';
         $txn->save();
 
         return response()->json([
@@ -236,7 +236,7 @@ class TradeController extends Controller
         $txn->agent_id = $agent->id;
         $txn->amount = $request->amount;
         $txn->status = 'waiting';
-        $txn->type = 'buy';
+        $txn->type = 'deposit';
         $txn->save();
 
         $agent_wallet->amount -= $request->amount;
@@ -313,7 +313,7 @@ class TradeController extends Controller
         $txn->agent_id = $agent->id;
         $txn->amount = $request->amount;
         $txn->status = 'waiting';
-        $txn->type = 'sell';
+        $txn->type = 'withdrawal';
         $txn->save();
 
         $user_wallet->amount -= $request->amount;
