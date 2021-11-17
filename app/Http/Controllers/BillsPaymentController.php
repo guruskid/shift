@@ -1398,8 +1398,8 @@ class BillsPaymentController extends Controller
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
-        if($r->amount < 500){
-            return redirect()->back()->with(['error' => 'Minimium amount is ₦500']);
+        if($r->amount < 100){
+            return redirect()->back()->with(['error' => 'Minimium amount is ₦100']);
         }
 
         if($r->amount > 100000){
@@ -1429,7 +1429,7 @@ class BillsPaymentController extends Controller
                 $nt->reference = $reference;
                 $nt->amount = $total_charge;
                 $nt->user_id = Auth::user()->id;
-                $nt->type = 'elecricity bills';
+                $nt->type = 'elecriciy bills';
 
                 $nt->previous_balance = $prev_bal;
                 $nt->current_balance = $n->amount;
