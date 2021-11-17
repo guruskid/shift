@@ -170,7 +170,7 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 /* Bitcoin Wallet Callback */
 Route::post('/wallet-webhook', 'BitcoinWalletController@webhook')->name('user.wallet-webhook');
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName']], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName']], function () {
 
     /* ajax calls */
     Route::POST('/add_transaction', 'UserController@addTransaction');
