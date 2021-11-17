@@ -71,6 +71,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
     //Eth
     Route::POST('/ethereum/send', 'EthWalletController@send')->name('admin.eth.send');
+    Route::POST('/tron/send', 'TronController@send')->name('admin.tron.send');
 });
 
 
@@ -97,6 +98,12 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::get('/', 'EthWalletController@index')->name('admin.ethereum');
         Route::get('/settings', 'EthWalletController@settings')->name('admin.ethereum.settings');
         Route::post('/update-rate', 'EthWalletController@updateRate')->name('admin.eth.update-rate');
+    });
+
+    Route::prefix('tron')->group(function () {
+        Route::get('/', 'TronController@index')->name('admin.tron');
+        Route::get('/settings', 'TronController@settings')->name('admin.tron.settings');
+        Route::post('/update-rate', 'TronController@updateRate')->name('admin.eth.update-rate');
     });
 
     //Trade Naira
