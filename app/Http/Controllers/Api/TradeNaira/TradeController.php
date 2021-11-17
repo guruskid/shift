@@ -326,6 +326,16 @@ class TradeController extends Controller
         ]);
     }
 
+    public function getTransactions()
+    {
+        $transactions = Auth::user()->nairaTrades()->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $transactions
+        ]);
+    }
+
     public function transactions()
     {
         $transactions = Auth::user()->nairaTrades()->with('pops')->get();

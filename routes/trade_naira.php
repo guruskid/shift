@@ -15,4 +15,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/complete_deposit', 'TradeController@completeDeposit');
     Route::get('/get_stat', 'TradeController@getStat');
 
+    Route::get('/get_transactions', 'TradeController@getTransactions');
+
 });
