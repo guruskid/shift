@@ -3813,6 +3813,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+<<<<<<< HEAD
+=======
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['usd_btc'],
   data: function data() {
@@ -3823,7 +3846,14 @@ __webpack_require__.r(__webpack_exports__);
       address: '',
       pin: '',
       fee: 0.0005,
+<<<<<<< HEAD
       loading: false
+=======
+      loading: false,
+      type: 2,
+      email: '',
+      user: ''
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
     };
   },
   mounted: function mounted() {},
@@ -3843,7 +3873,11 @@ __webpack_require__.r(__webpack_exports__);
     getFees: function getFees() {
       var _this = this;
 
+<<<<<<< HEAD
       if (this.btc <= 0 || this.address == '') {
+=======
+      if (this.btc < 0 || this.address == '' || this.type == 2) {
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
         return false;
       }
 
@@ -3855,10 +3889,33 @@ __webpack_require__.r(__webpack_exports__);
         _this.loading = false;
       });
     },
+<<<<<<< HEAD
     send: function send() {
       var _this2 = this;
 
       if (this.btc <= 0) {
+=======
+    getUser: function getUser() {
+      var _this2 = this;
+
+      if (this.email == '') {
+        return false;
+      }
+
+      this.user = 'Getting user details, please wait';
+      axios.get("/user/user-details/".concat(this.email)).then(function (res) {
+        if (res.data.success) {
+          _this2.user = res.data.user;
+        } else {
+          _this2.user = res.data.msg;
+        }
+      });
+    },
+    send: function send() {
+      var _this3 = this;
+
+      if (this.btc < 0) {
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
         swal('Oops', 'BTC amount should be greater than 0', 'error');
         return false;
       }
@@ -3868,7 +3925,13 @@ __webpack_require__.r(__webpack_exports__);
         "amount": this.btc,
         "address": this.address,
         "pin": this.pin,
+<<<<<<< HEAD
         "fees": this.fee
+=======
+        "fees": this.fee,
+        "email": this.email,
+        'type': this.type
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
       }).then(function (res) {
         if (res.data.success) {
           swal('Great!!', 'Bitcoin sent successfully', 'success');
@@ -3880,7 +3943,11 @@ __webpack_require__.r(__webpack_exports__);
         console.log(e);
         swal('Oops', 'An error occured, please reload and try again', 'error');
       })["finally"](function () {
+<<<<<<< HEAD
         _this2.loading = false;
+=======
+        _this3.loading = false;
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
       });
     }
   }
@@ -4441,6 +4508,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ethereum/CreateWallet.vue?vue&type=script&lang=js&":
 /*!********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ethereum/CreateWallet.vue?vue&type=script&lang=js& ***!
@@ -4845,6 +4913,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+=======
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
 /***/ "./node_modules/bootstrap/dist/js/bootstrap.js":
 /*!*****************************************************!*\
   !*** ./node_modules/bootstrap/dist/js/bootstrap.js ***!
@@ -50474,11 +50544,25 @@ var render = function() {
                         "d-flex flex-column mx-auto networkfee_container"
                     },
                     [
+<<<<<<< HEAD
                       _c(
                         "span",
                         { staticClass: "d-block align-self-end btctext" },
                         [_vm._v(_vm._s(_vm.fee) + " BTC")]
                       ),
+=======
+                      _vm.type == 2
+                        ? _c(
+                            "span",
+                            { staticClass: "d-block align-self-end btctext" },
+                            [_vm._v(_vm._s(_vm.fee) + " BTC")]
+                          )
+                        : _c(
+                            "span",
+                            { staticClass: "d-block align-self-end btctext" },
+                            [_vm._v("Free")]
+                          ),
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
                       _vm._v(" "),
                       _c(
                         "span",
@@ -50491,7 +50575,11 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "col-12 col-md-10 mx-auto" }, [
                   _c("span", { staticClass: "address_input_label" }, [
+<<<<<<< HEAD
                     _vm._v("Address")
+=======
+                    _vm._v("Transaction Type")
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
                   ]),
                   _vm._v(" "),
                   _c(
@@ -50501,6 +50589,7 @@ var render = function() {
                         "input-group col-12 col-md-7 mx-auto mb-3 mt-4"
                     },
                     [
+<<<<<<< HEAD
                       _c("input", {
                         directives: [
                           {
@@ -50568,6 +50657,174 @@ var render = function() {
                     ]
                   )
                 ]),
+=======
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.type,
+                              expression: "type"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          on: {
+                            change: [
+                              function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.type = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              },
+                              function($event) {
+                                return _vm.getFees()
+                              }
+                            ]
+                          }
+                        },
+                        [
+                          _c("option", { attrs: { value: "2" } }, [
+                            _vm._v("External")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "1" } }, [
+                            _vm._v("Dantown to Dantown")
+                          ])
+                        ]
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _vm.type == 1
+                  ? _c("div", { staticClass: "col-12 col-md-10 mx-auto" }, [
+                      _c("span", { staticClass: "address_input_label" }, [
+                        _vm._v("User Email")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: " col-12 col-md-7 mx-auto mb-3 mt-4" },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.email,
+                                expression: "email"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "email" },
+                            domProps: { value: _vm.email },
+                            on: {
+                              change: function($event) {
+                                return _vm.getUser()
+                              },
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.email = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("small", [_vm._v(_vm._s(_vm.user))])
+                        ]
+                      )
+                    ])
+                  : _c("div", { staticClass: "col-12 col-md-10 mx-auto" }, [
+                      _c("span", { staticClass: "address_input_label" }, [
+                        _vm._v("Address")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "input-group col-12 col-md-7 mx-auto mb-3 mt-4"
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.address,
+                                expression: "address"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text" },
+                            domProps: { value: _vm.address },
+                            on: {
+                              change: function($event) {
+                                return _vm.getFees()
+                              },
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.address = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "input-group-append" }, [
+                            _c(
+                              "span",
+                              {
+                                staticClass: "input-group-text",
+                                staticStyle: {
+                                  cursor: "pointer",
+                                  background: "#000070"
+                                },
+                                attrs: {
+                                  onclick:
+                                    "copywalletaddress('receipientAddress')",
+                                  id: "basic-addon2"
+                                }
+                              },
+                              [
+                                _c(
+                                  "svg",
+                                  {
+                                    attrs: {
+                                      width: "17",
+                                      height: "19",
+                                      viewBox: "0 0 17 19",
+                                      fill: "none",
+                                      xmlns: "http://www.w3.org/2000/svg"
+                                    }
+                                  },
+                                  [
+                                    _c("path", {
+                                      attrs: {
+                                        d:
+                                          "M12.0909 0H1.72727C0.777273 0 0 0.777273 0 1.72727V13.8182H1.72727V1.72727H12.0909V0ZM14.6818 3.45455H5.18182C4.23182 3.45455 3.45455 4.23182 3.45455 5.18182V17.2727C3.45455 18.2227 4.23182 19 5.18182 19H14.6818C15.6318 19 16.4091 18.2227 16.4091 17.2727V5.18182C16.4091 4.23182 15.6318 3.45455 14.6818 3.45455ZM14.6818 17.2727H5.18182V5.18182H14.6818V17.2727Z",
+                                        fill: "white"
+                                      }
+                                    })
+                                  ]
+                                )
+                              ]
+                            )
+                          ])
+                        ]
+                      )
+                    ]),
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
                 _vm._v(" "),
                 _c("div", { staticClass: "col-10 mx-auto" }, [
                   _c("span", { staticClass: "address_input_label" }, [
@@ -52098,6 +52355,7 @@ render._withStripped = true
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ethereum/CreateWallet.vue?vue&type=template&id=002c6392&scoped=true&":
 /*!************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ethereum/CreateWallet.vue?vue&type=template&id=002c6392&scoped=true& ***!
@@ -52842,6 +53100,8 @@ render._withStripped = true
 
 /***/ }),
 
+=======
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
 /***/ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js":
 /*!********************************************************************!*\
   !*** ./node_modules/vue-loader/lib/runtime/componentNormalizer.js ***!
@@ -65146,9 +65406,12 @@ Vue.component('upload-modal-component', __webpack_require__(/*! ./components/cal
 Vue.component('bitcoin-sell-component', __webpack_require__(/*! ./components/calculator/bitcoinSellComponent.vue */ "./resources/js/components/calculator/bitcoinSellComponent.vue")["default"]);
 Vue.component('bitcoin-buy-component', __webpack_require__(/*! ./components/calculator/bitcoinBuyComponent.vue */ "./resources/js/components/calculator/bitcoinBuyComponent.vue")["default"]);
 Vue.component('bitcoin-send-component', __webpack_require__(/*! ./components/calculator/bitcoinSendComponent.vue */ "./resources/js/components/calculator/bitcoinSendComponent.vue")["default"]);
+<<<<<<< HEAD
 Vue.component('ethereum-create-component', __webpack_require__(/*! ./components/ethereum/CreateWallet.vue */ "./resources/js/components/ethereum/CreateWallet.vue")["default"]);
 Vue.component('ethereum-send-component', __webpack_require__(/*! ./components/ethereum/Send.vue */ "./resources/js/components/ethereum/Send.vue")["default"]);
 Vue.component('ethereum-sell-component', __webpack_require__(/*! ./components/ethereum/Sell.vue */ "./resources/js/components/ethereum/Sell.vue")["default"]);
+=======
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -66853,6 +67116,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./resources/js/components/ethereum/CreateWallet.vue":
 /*!***********************************************************!*\
   !*** ./resources/js/components/ethereum/CreateWallet.vue ***!
@@ -67060,6 +67324,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+=======
+>>>>>>> a570a846d7d235d83152f5941643b9c3588cf9f0
 /***/ "./resources/js/echo.js":
 /*!******************************!*\
   !*** ./resources/js/echo.js ***!

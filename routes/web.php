@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LiveRateController;
 use App\Jobs\RegistrationEmailJob;
 use App\Mail\GeneralTemplateOne;
 use App\Mail\UserRegistered;
@@ -100,7 +101,7 @@ Route::get('/newprofile', function () {
 });
 
 //mobile and web done
-Route::get('/btc-transaction-hash', function(){
+Route::get('/btc-transaction-hash', function () {
     return view('newpages.btc_payment_transaction2');
 });
 
@@ -110,16 +111,20 @@ Route::get('/smartbudget', function () {
     return view('newpages.smartbudget');
 });
 
+
 // Route::get('/paytv','BillsPaymentController@CableView')->name('user.paytv');
 
 // Route::get('/paytv','BillsPaymentController@CableRechargeView')->name('user.paytv');
 
+
+Route::get('/paytv', 'BillsPaymentController@CableView')->name('user.paytv');
+
 //    return view('newpages.paytv');
 //});
 
-Route::get('/paybills','BillsPaymentController@electricityView')->name('newpages.paybills');
+Route::get('/paybills', 'BillsPaymentController@electricityView')->name('newpages.paybills');
 
-Route::get('/notifications', function(){
+Route::get('/notifications', function () {
     return view('newpages.notifications');
 });
 
@@ -147,7 +152,6 @@ Route::get('/newlogin', function () {
 //mobile and tab done
 Route::get('/newsignup', function () {
     return view('newpages.newsignup');
-
 });
 
 // buy airtime with bitcoin
@@ -169,10 +173,16 @@ Route::get('/newsignup', function () {
 
 
 Route::get('test', function () {
+    dd(LiveRateController::btcRate());
     /* $emailJob = (); */
+
         // dispatch(new RegistrationEmailJob('shean@gmail.com'));
     Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
     return new UserRegistered();
+
+    // dispatch(new RegistrationEmailJob('shean@gmail.com'));
+    /* Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() ); */
+
     /* $txn = NairaTransaction::where('reference', 'Ln1599637572')->first();
     return new App\Mail\WalletAlert($txn, 'Debit'); */
 });
@@ -220,9 +230,11 @@ Route::post('/naira/recharge/dhfhd-q23-nfnd-dnf', 'BillsPaymentController@rechar
 Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@electricityCallback')->name('electricity.callback');
 
 /* Bitcoin Wallet Callback */
-Route::post('/wallet-webhook', 'BitcoinWalletController@webhook' )->name('user.wallet-webhook');
+Route::post('/wallet-webhook', 'BitcoinWalletController@webhook')->name('user.wallet-webhook');
+
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName'] ], function () {
+
 
     /* ajax calls */
     Route::POST('/add_transaction', 'UserController@addTransaction');
@@ -232,6 +244,9 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     Route::get('/get-bank/{id}', 'UserController@getBank');
     Route::get('/delete-bank/{id}', 'UserController@deleteBank');
     Route::get('/read-not/{id}', 'UserController@readNot');
+
+
+    Route::get('/user-details/{email}', 'UserController@getUser');
 
     /* ajax ends here */
 
@@ -312,11 +327,10 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     });
 
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */
-
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
     /* ajax calls */
     Route::GET('/get-user/{email}', 'AdminController@getUser');
     Route::GET('/get-rate/{id}', 'AdminController@getRate');
@@ -336,7 +350,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
     Route::get('/transactions/agent/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
     Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
 
-    Route::post('/edit-transactions', 'Admin\AssetTransactionController@editTransaction' )->name('admin.edit_transaction');
+    Route::post('/edit-transactions', 'Admin\AssetTransactionController@editTransaction')->name('admin.edit_transaction');
     Route::post('/asset-transactions', 'AdminController@assetTransactionsSortByDate')->name('admin.transactions-by-date');
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
@@ -344,61 +358,74 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin'] ], function
 });
 
 /* For Super Admins Only */
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']  ], function () {
-    Route::post('/cards', 'AdminController@addCard' )->name('admin.add_card');
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
+    Route::post('/cards', 'AdminController@addCard')->name('admin.add_card');
 
-    Route::post('/transactions', 'AdminController@addTransaction' )->name('admin.add_transaction');
+
+
+    Route::post('/transactions', 'AdminController@addTransaction')->name('admin.add_transaction');
+
     Route::GET('/delete-transaction/{id}', 'AdminController@deleteTransac');
 
     Route::GET('/delete-card/{id}', 'AdminController@deleteCard');
     Route::get('/cards', 'AdminController@cards')->name('admin.cards');
-    Route::post('/wallet_id', 'AdminController@walletId' )->name('admin.wallet');
+    Route::post('/wallet_id', 'AdminController@walletId')->name('admin.wallet');
 
 
 
     Route::get('/verify', 'AdminController@verify')->name('admin.verify');
-    Route::post('/verify', 'AdminController@verifyUser' )->name('admin.verify_user');
+    Route::post('/verify', 'AdminController@verifyUser')->name('admin.verify_user');
 
 
     Route::get('/verified-users', 'AdminController@verifiedUsers')->name('admin.verified-users');
 
     Route::get('/notifications', 'AdminController@notification')->name('admin.notification');
-    Route::post('/notifications', 'AdminController@addNotification' )->name('admin.add_notification');
-    Route::post('/edit-notifications', 'AdminController@editNotification' )->name('admin.edit_notification');
+    Route::post('/notifications', 'AdminController@addNotification')->name('admin.add_notification');
+    Route::post('/edit-notifications', 'AdminController@editNotification')->name('admin.edit_notification');
     Route::GET('/delete-notification/{id}', 'AdminController@deleteNotification');
 
-    Route::post('/search', 'AdminController@searchUser' )->name('admin.search');
+    Route::post('/search', 'AdminController@searchUser')->name('admin.search');
 
     Route::get('/general-settings', 'GeneralSettings@index')->name('admin.general_settings');
     Route::post('/general-settings', 'GeneralSettings@updateConfig')->name('admin.general_settings');
     Route::post('/update-setting', 'GeneralSettings@updateSettings');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager'] ], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']], function () {
 
 
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
+
+    Route::get('/faq', 'FaqController@index')->name('admin.faq');
+    Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
+    Route::get('/edit-faq/{id}/{title}', 'FaqController@editFaqView')->name('admin.edit-faq');
+    Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
+    Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
+    Route::GET('/download-database', 'AdminController@downloadUserDb')->name('admin.userdb');
+    Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
+
 });
 
 
 /* for Senior accountant */
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant'] ], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant']], function () {
     Route::get('/junior-accountants', 'AccountantController@juniorAccountants')->name('admin.accountants');
-    Route::get('/accountant-action/{id}/{action}', 'AccountantController@action' )->name('accountant.action');
-    Route::post('/add-junior-accountant', 'AccountantController@addJunior' )->name('accountant.add-junior');
-    Route::post('/admin-naira-refund', 'NairaWalletController@adminNairaRefund' )->name('admin.naira-refund');
+    Route::get('/accountant-action/{id}/{action}', 'AccountantController@action')->name('accountant.action');
+    Route::post('/add-junior-accountant', 'AccountantController@addJunior')->name('accountant.add-junior');
+    Route::post('/admin-naira-refund', 'NairaWalletController@adminNairaRefund')->name('admin.naira-refund');
 
-    Route::post('/clear-transfer-charges', 'AdminController@clearTransferCharges' )->name('admin.clear-transfer-charges');
-    Route::post('/clear-sms-charges', 'AdminController@clearSmsCharges' )->name('admin.clear-sms-charges');
+    Route::post('/clear-transfer-charges', 'AdminController@clearTransferCharges')->name('admin.clear-transfer-charges');
+    Route::post('/clear-sms-charges', 'AdminController@clearSmsCharges')->name('admin.clear-sms-charges');
 
-    Route::get('/query-transaction/{id}', 'NairaWalletController@query' )->name('admin.query-transaction');
-    Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus' )->name('admin.update-naira-transaction');
+
 });
 
 /* for super admin and all accountants */
-Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountant'] ], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant']], function () {
+    Route::get('/query-transaction/{id}', 'NairaWalletController@query')->name('admin.query-transaction');
+    Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus')->name('admin.update-naira-transaction');
 
-    Route::post('/admin-refund', 'NairaWalletController@adminRefund' )->name('admin.refund');
+    Route::post('/admin-refund', 'NairaWalletController@adminRefund')->name('admin.refund');
     Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
     Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');
     Route::get('/admin-wallet', 'AdminController@adminWallet')->name('admin.admin-wallet');
@@ -408,7 +435,7 @@ Route::group(['prefix' => 'admin' , 'middleware' => ['auth', 'admin', 'accountan
 
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
-    Route::post('/chat-agents', 'ChatAgentController@addChatAgent' )->name('admin.add_chat_agent');
+    Route::post('/chat-agents', 'ChatAgentController@addChatAgent')->name('admin.add_chat_agent');
     Route::get('/change-agent/{id}/{action}', 'ChatAgentController@changeStatus');
 
     Route::any('/transfer-charges', 'AdminController@transferCharges')->name('admin.wallet-charges');

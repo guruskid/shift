@@ -444,9 +444,7 @@ class NairaWalletController extends Controller
             'title' => $title,
             'body' => $msg_body,
         ]);
-        if (Auth::user()->notificationSetting->wallet_email == 1) {
-            // Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
-        }
+        
 
         return response()->json([
             'success' => true,

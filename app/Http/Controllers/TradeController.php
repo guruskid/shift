@@ -80,13 +80,14 @@ class TradeController extends Controller
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        $res = json_decode($res->getBody());
-        $btc_real_time = $res->value;
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        // $res = json_decode($res->getBody());
+        // $btc_real_time = $res->value;
 
-        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        $tp = ($trading_per / 100) * $btc_real_time;
+        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        // $tp = ($trading_per / 100) * $btc_real_time;
+        $btc_real_time = LiveRateController::btcRate();
 
 
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id;
@@ -106,7 +107,9 @@ class TradeController extends Controller
 
         $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
+
         return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
+
     }
 
     public function ethereum($card_id)
