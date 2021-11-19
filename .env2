@@ -61,6 +61,7 @@ VTPASS_SANDBOX_PASSWORD=80802472@Bills
 
 LIVE_VTPASS_GET_PRODUCTS_URL=https://vtpass.com/api/services?identifier=
 LIVE_VTPASS_GET_VARIATIONS_URL=https://vtpass.com/api/service-variations?serviceID=
+LIVE_VTPASS_MERCHANT_VERIFICATION_URL=https://vtpass.com/api/merchant-verify
 SANDBOX_VTPASS_GET_PRODUCTS_URL=https://sandbox.vtpass.com/api/services?identifier=
 SANDBOX_VTPASS_GET_VARIATIONS_URL=https://sandbox.vtpass.com/api/service-variations?serviceID=
 
