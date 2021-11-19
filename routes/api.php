@@ -114,6 +114,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-dec-user', 'BillsPaymentController@getUser');
         Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
 
+        // Get all transactions
+        Route::get('/get_all_transactions', 'NairaWalletController@getAllTransactions');
+
         //BTC Wallet
         Route::group(['prefix' => 'bitcoin-wallet'], function () {
 

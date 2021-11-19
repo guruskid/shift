@@ -60,10 +60,12 @@
                                 Transactions
                             </div>
                             @if ($show_limit)
-                            <div>
-                                <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
-                            <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Set account details</button>
-                            </div>
+                                @if(auth()->user()->role == 777)
+                                    <div>
+                                        <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
+                                        <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Set account details</button>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                         <div class="table-responsive p-3">

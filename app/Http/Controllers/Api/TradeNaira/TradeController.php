@@ -8,6 +8,7 @@ use App\NairaTrade;
 use App\NairaTradePop;
 use App\User;
 use App\Account;
+use App\NairaTransaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -129,9 +130,28 @@ class TradeController extends Controller
         $txn->account_id = $request->account_id;
         $txn->save();
 
+        $user = Auth::user();
         $user_wallet = Auth::user()->nairaWallet;
         $user_wallet->amount -= $request->amount;
         $user_wallet->save();
+
+        $nt = new NairaTransaction();
+        $nt->reference = $ref;
+        $nt->amount = $request->amount;
+        $nt->user_id = $user->id;
+        $nt->type = 'withdrawal';
+        $nt->previous_balance = $user_wallet->amount;
+        $nt->current_balance = $user_wallet->amount;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 3;
+        $nt->cr_wallet_id = $user_wallet->id;
+        $nt->cr_acct_name = $user->first_name;
+        $nt->narration = 'Withdrawal ' . $ref;
+        $nt->trans_msg = '';
+        $nt->cr_user_id = $user->id;
+        $nt->dr_user_id = 1;
+        $nt->status = 'pending';
+        $nt->save();
 
         return response()->json([
             'success' => true,
@@ -163,6 +183,9 @@ class TradeController extends Controller
 
         $ref = \Str::random(3).time();
 
+        $user = Auth::user();
+        $user_wallet = $user->nairaWallet;
+
         //create TXN here
         $txn = new NairaTrade();
         $txn->reference = $ref;
@@ -172,6 +195,24 @@ class TradeController extends Controller
         $txn->status = 'waiting';
         $txn->type = 'deposit';
         $txn->save();
+
+        $nt = new NairaTransaction();
+        $nt->reference = $ref;
+        $nt->amount = $request->amount;
+        $nt->user_id = $user->id;
+        $nt->type = 'deposit';
+        $nt->previous_balance = $user_wallet->amount;
+        $nt->current_balance = $user_wallet->amount;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 3;
+        $nt->cr_wallet_id = $user_wallet->id;
+        $nt->cr_acct_name = $user->first_name;
+        $nt->narration = 'Deposit ' . $ref;
+        $nt->trans_msg = '';
+        $nt->cr_user_id = 1;
+        $nt->dr_user_id = $user->id;
+        $nt->status = 'pending';
+        $nt->save();
 
         return response()->json([
             'success' => true,
@@ -184,12 +225,27 @@ class TradeController extends Controller
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
 
+        $pendingWithdrawal = false;
+        $pendingDeposit = false;
+
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal', 'status' => 'waiting'])->get();
+        if (count($trade) > 0) {
+           $pendingWithdrawal = true;
+        }
+
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'deposit', 'status' => 'waiting'])->get();
+        if (count($trade) > 0) {
+           $pendingWithdrawal = true;
+        }
+
         $user_data = [
             'total_withdrawn_today' => $withdrawalToday,
             'total_withdrawn_this_month' => $withdrawalThisMonth,
             'daily_max' => $user->daily_max,
             'monthly_max' => $user->monthly_max,
-            'naira_balance' => $user->nairaWallet->amount
+            'naira_balance' => $user->nairaWallet->amount,
+            'pending_withdrawal' => $pendingWithdrawal,
+            'pending_deposit' => $pendingDeposit
         ];
 
         return $user_data;

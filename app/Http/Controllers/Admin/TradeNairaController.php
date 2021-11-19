@@ -59,7 +59,7 @@ class TradeNairaController extends Controller
 
     public function agentTransactions(User $user)
     {
-        $transactions = $user->agentNairaTrades()->orderBy('created_at','desc')->paginate(20);
+        $transactions = $user->agentNairaTrades()->orderBy('created_at','asc')->paginate(20);
 
         foreach ($transactions as $t) {
             if ($t->type == 'withdrawal') {
@@ -98,27 +98,21 @@ class TradeNairaController extends Controller
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
         }
-        $user_wallet->amount += $transaction->amount;
-        $user_wallet->save();
 
-        $nt = new NairaTransaction();
-        $nt->reference = $transaction->reference;
-        $nt->amount = $transaction->amount;
-        $nt->user_id = $user->id;
-        $nt->type = 'naira wallet';
+        $nt = NairaTransaction::where('reference',$transaction->reference)->first();
+
+        if (!$nt) {
+            return back()->with(['error' => 'Invalid transaction']);
+        }
+        
         $nt->previous_balance = $user_wallet->amount;
         $nt->current_balance = $user_wallet->amount + $transaction->amount;
-        $nt->charge = 0;
-        $nt->transaction_type_id = 1;
-        $nt->cr_wallet_id = $user_wallet->id;
-        $nt->cr_acct_name = $user->first_name;
-        $nt->narration = 'Deposit ' . $transaction->reference;
         $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
-        $nt->cr_user_id = $user->id;
-        $nt->dr_user_id = 1;
         $nt->status = 'success';
         $nt->save();
-        //dd($user_wallet);
+
+        $user_wallet->amount += $transaction->amount;
+        $user_wallet->save();
 
         $transaction->status = 'success';
         $transaction->save();
@@ -139,28 +133,15 @@ class TradeNairaController extends Controller
             return back()->with(['error' => 'Invalid transaction']);
         }
 
-        $user_wallet->amount += $transaction->amount;
-        $user_wallet->save();
+        $nt = NairaTransaction::where('reference',$transaction->reference)->first();
 
-
-        $nt = new NairaTransaction();
-        $nt->reference = $transaction->reference;
-        $nt->amount = $transaction->amount;
-        $nt->user_id = $user->id;
-        $nt->type = 'naira wallet';
-        $nt->previous_balance = $user_wallet->amount + $transaction->amount;
-        $nt->current_balance = $user_wallet->amount;
-        $nt->charge = 0;
-        $nt->transaction_type_id = 3;
-        $nt->cr_wallet_id = $user_wallet->id;
-        $nt->cr_acct_name = $user->first_name;
-        $nt->narration = 'Withdraw ' . $transaction->reference;
+        if (!$nt) {
+            return back()->with(['error' => 'Invalid transaction']);
+        }
+        
         $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
-        $nt->cr_user_id = 1;
-        $nt->dr_user_id = $user->id;
         $nt->status = 'success';
         $nt->save();
-        //dd($user_wallet);
 
         $transaction->status = 'success';
         $transaction->save();
