@@ -716,7 +716,7 @@ class BillsPaymentController extends Controller
                 $nt->reference = $reference;
                 $nt->amount = $amount;
                 $nt->user_id = Auth::user()->id;
-                $nt->type = 'elecriciy bills';
+                $nt->type = 'electricity bills';
 
                 $nt->previous_balance = $prev_bal;
                 $nt->current_balance = $n->amount;

@@ -69,7 +69,7 @@ class TradeNairaController extends Controller
             }
         }
 
-        $show_limit = false;
+        $show_limit = true;
 
         return view('admin.trade_naira.transactions', compact('transactions', 'show_limit'));
     }
@@ -84,6 +84,38 @@ class TradeNairaController extends Controller
         Auth::user()->agentLimits()->update($data);
 
         return back()->with(['success' => 'Limits uppdated']);
+    }
+
+    public function declineTrade(Request $request, NairaTrade $transaction)
+    {
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return back()->with(['error' => 'Incorrect pin']);
+        }
+
+        $user = $transaction->user;
+        $user_wallet = $transaction->user->nairaWallet;
+
+        if ($transaction->status != 'waiting') {
+            return back()->with(['error' => 'Invalid transaction']);
+        }
+
+        $nt = NairaTransaction::where('reference',$transaction->reference)->first();
+
+        if ($nt) {
+            $nt->previous_balance = $user_wallet->amount;
+            $nt->current_balance = $user_wallet->amount + $transaction->amount;
+            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+            $nt->status = 'failed';
+            $nt->save();
+        }
+
+        $user_wallet->amount += $transaction->amount;
+        $user_wallet->save();
+
+        $transaction->status = 'cancelled';
+        $transaction->save();
+
+        return back()->with(['success' => 'Transaction cancelled']);
     }
 
     public function confirm(Request $request, NairaTrade $transaction)
@@ -101,15 +133,13 @@ class TradeNairaController extends Controller
 
         $nt = NairaTransaction::where('reference',$transaction->reference)->first();
 
-        if (!$nt) {
-            return back()->with(['error' => 'Invalid transaction']);
+        if ($nt) {
+            $nt->previous_balance = $user_wallet->amount;
+            $nt->current_balance = $user_wallet->amount + $transaction->amount;
+            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+            $nt->status = 'success';
+            $nt->save();
         }
-        
-        $nt->previous_balance = $user_wallet->amount;
-        $nt->current_balance = $user_wallet->amount + $transaction->amount;
-        $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
-        $nt->status = 'success';
-        $nt->save();
 
         $user_wallet->amount += $transaction->amount;
         $user_wallet->save();
@@ -135,13 +165,11 @@ class TradeNairaController extends Controller
 
         $nt = NairaTransaction::where('reference',$transaction->reference)->first();
 
-        if (!$nt) {
-            return back()->with(['error' => 'Invalid transaction']);
+        if ($nt) {
+            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+            $nt->status = 'success';
+            $nt->save();
         }
-        
-        $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
-        $nt->status = 'success';
-        $nt->save();
 
         $transaction->status = 'success';
         $transaction->save();

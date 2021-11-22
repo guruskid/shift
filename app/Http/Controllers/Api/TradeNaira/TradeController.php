@@ -92,6 +92,14 @@ class TradeController extends Controller
             ]);
         }
 
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal', 'status' => 'waiting'])->get();
+        if (count($trade) > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => "You currently have a pending withdrawal request",
+            ]);
+        }
+
         $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $request->agent_id])->limit(1)->get();
 
         if (count($agent) < 1) {
@@ -178,6 +186,14 @@ class TradeController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => "Invalid agent ID",
+            ]);
+        }
+
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'deposit', 'status' => 'waiting'])->get();
+        if (count($trade) > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => "You currently have a pending deposit request",
             ]);
         }
 
