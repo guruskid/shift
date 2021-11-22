@@ -81,6 +81,22 @@ class UserController extends Controller
         return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
     }
 
+    public function getUser($email)
+    {
+        $user = User::where('email', $email)->first();
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'user' => $user->first_name . ' '.$user->last_name
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'msg' => "User not found"
+        ]);
+    }
+
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)
