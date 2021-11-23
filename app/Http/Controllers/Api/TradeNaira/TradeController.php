@@ -251,7 +251,7 @@ class TradeController extends Controller
 
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'deposit', 'status' => 'waiting'])->get();
         if (count($trade) > 0) {
-           $pendingWithdrawal = true;
+           $pendingDeposit = true;
         }
 
         $user_data = [
