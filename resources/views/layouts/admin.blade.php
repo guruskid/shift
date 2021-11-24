@@ -207,6 +207,9 @@
                                     @case(666)
                                     Manager
                                     @break
+                                    @case(444)
+                                    Chinese
+                                    @break
                                 @default
                                 Hi! there
 
@@ -278,7 +281,7 @@
         });
     </script>
     <script src="{{asset('admin_assets/js/custom.js?v=45')}} "></script>
-    
+
     <!-- END GLOBAL MANDATORY SCRIPTS -->
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

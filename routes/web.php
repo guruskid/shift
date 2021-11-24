@@ -249,9 +249,15 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName']], functi
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']], function () {
     /* ajax calls */
     Route::GET('/get-user/{email}', 'AdminController@getUser');
+    Route::GET('/dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
+    Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
+    // To be move to super Admin dashboard later
+    Route::GET('/payout-transactions', 'ChineseController@payouthistory')->name('admin.payout_history');
+    ////////////
+    Route::GET('/get-transaction-count', 'AdminController@countTransaction');
     Route::GET('/get-rate/{id}', 'AdminController@getRate');
     Route::GET('/get-transac/{id}', 'AdminController@getTransac');
     Route::GET('/get-card/{id}', 'AdminController@getCard');
@@ -260,12 +266,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 
     /* ajax ends here */
     Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
-
-
-    Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
-    Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
-    Route::get('/transactions/sell', 'AdminController@sellTransac')->name('admin.sell_transac');
-    Route::get('/transactions/{status}', 'AdminController@txnByStatus')->name('admin.transactions-status');
+    Route::get('/transactions', 'AdminController@transactionsChinese')->name('admin.transactions');
+    Route::get('/transactions/buy', 'ChineseController@buyTransac')->name('admin.buy_transac');
+    Route::get('/transactions/sell', 'ChineseController@sellTransac')->name('admin.sell_transac');
+    Route::get('/transactions/{status}', 'AdminController@txnByStatusChinese')->name('admin.transactions-status');
     Route::get('/transactions/agent/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
     Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
 

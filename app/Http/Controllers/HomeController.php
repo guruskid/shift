@@ -26,7 +26,7 @@ class HomeController extends Controller
     }
 
 
-    
+
 
     public function test()
     {
@@ -68,6 +68,8 @@ class HomeController extends Controller
             return redirect()->route('admin.assigned-transactions');
         } elseif ($user->role == 1 or $user->role == 2) {
             return redirect()->route('user.dashboard');
+        }elseif($user->role == 444){
+            return redirect()->route('admin.chinese_dashboard');
         } else {
             abort(404);
         }

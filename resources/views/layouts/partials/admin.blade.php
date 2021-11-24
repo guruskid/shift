@@ -140,7 +140,7 @@
                     Users
                 </a>
             </li>
-            
+
             <li class="my-3">
                 <a href="{{route('admin.user-verifications')}}"
                     class=" {{ Route::currentRouteName() == 'admin.user-verifications' ? 'mm-active' : '' }} ">
@@ -183,6 +183,17 @@
                     class=" {{ Route::currentRouteName() == 'admin.accountants' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-users"></i>
                     Accountants
+                </a>
+            </li>
+            @endif
+
+            @if(Auth::user()->role == 444)
+            <li class="my-3">
+                <a href="{{route('admin.payout_transactions')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.payout_transactions' ? 'mm-active' : '' }} ">
+                    {{-- <i class="metismenu-icon pe-7s-users"></i> --}}
+                    <i class="fas fa-broom metismenu-icon"></i>
+                    Paid out
                 </a>
             </li>
             @endif
