@@ -17,6 +17,7 @@ use App\NairaTransaction;
 use App\Exports\DownloadUsers;
 use Excel;
 use App\NairaWallet;
+use App\Payout;
 use App\TransactionType;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -210,6 +211,7 @@ class AdminController extends Controller
         }
     }
 
+
     public function payoutTransactions()
     {
 
@@ -332,6 +334,77 @@ class AdminController extends Controller
                     'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
                 ]));
         }
+    }
+
+    public function payOutHistory()
+    {
+        $s = Transaction::where('status', 'success')->count();
+        $w = Transaction::where('status', 'waiting')->count();
+        $d = Transaction::where('status', 'declined')->count();
+        $f = Transaction::where('status', 'failed')->count();
+
+        $borderColors = [
+            "rgba(255, 99, 132, 1.0)",
+            "rgba(22,160,133, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(51,105,232, 1.0)"
+        ];
+        $fillColors = [
+            "rgba(255, 99, 132, 1.0)",
+            "rgba(22,160,133, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(51,105,232, 1.0)"
+
+        ];
+        $usersChart = new UserChart;
+        $usersChart->minimalist(true);
+        $usersChart->labels(['Failed', 'Successful', 'Declined', 'Waiting']);
+        $usersChart->dataset('Users by trimester', 'pie', [$f, $s, $d, $w])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+
+
+            $twentyFourHrsTransactions = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+            $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
+            $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
+            $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
+
+            $nairaTwentyFourHrs = number_format($nairaTwentyFourHr);
+            $dollarTwentyFourHrs = number_format($dollarTwentyFourHr);
+
+            $countWaiting = Transaction::where('status', 'waiting')->count();
+            $countProgreses = Transaction::where('status', 'in progress')->count();
+            $countSuccess = Transaction::where('status', 'success')->count();
+            $countApproved = Transaction::where('status', 'approved')->count();
+            $failedAndDeclined = Transaction::where('status', 'failed')->where('status', 'declined')->count();
+
+            $waiting_transactions_chinese = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->get()->take(5);
+            $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->get()->take(5);
+            $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->get()->take(5);
+            $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->get()->take(5);
+            $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->get()->take(5);
+
+
+            // dd($cardTwentyFourHrs);
+
+            return view(
+                'admin.payout_history',
+                compact([
+                    'success_transactions_chinese', 'waiting_transactions_chinese', 'failed_transactions_chinese',
+                    'in_progress_transactions_chinese', 'approved_transactions_chinese',
+                    'cardTwentyFourHrscount', 'nairaTwentyFourHrs', 'dollarTwentyFourHrs',
+                    'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined', 'usersChart',
+                ]));
+
+    }
+
+    public function payout()
+    {
+        // $payoutVolume = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+
+        $payout = Payout::create([
+
+        ]);
     }
 
     public function countTransaction()

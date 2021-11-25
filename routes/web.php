@@ -4,6 +4,7 @@ use App\Http\Controllers\LiveRateController;
 use App\Jobs\RegistrationEmailJob;
 use App\Mail\UserRegistered;
 use App\NairaTransaction;
+//use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -254,8 +255,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']]
     Route::GET('/get-user/{email}', 'AdminController@getUser');
     Route::GET('/dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
     Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
+    Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
+    Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
     // To be move to super Admin dashboard later
-    Route::GET('/payout-transactions', 'ChineseController@payouthistory')->name('admin.payout_history');
+    // Route::GET('/payout-history', 'ChineseController@payouthistory')->name('admin.payout_history');
     ////////////
     Route::GET('/get-transaction-count', 'AdminController@countTransaction');
     Route::GET('/get-rate/{id}', 'AdminController@getRate');

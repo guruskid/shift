@@ -41,7 +41,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
     </div>
     <div class="app-main__outer">
         <div class="app-main__inner">
-            <div class="app-page-title d-none">
+            <div class="app-page-title">
                 <div class="page-title-wrapper">
                     <div class="page-title-heading">
                         <div class="page-title-icon">
@@ -57,49 +57,18 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                 </div>
             </div>
             <div class="row">
-
-                <div class="col-md-6 col-xl-6">
-                    <div class="card mb-3 widget-content bg-ripe-malin">
-                        <div class="widget-content-wrapper py-2 text-white">
-                            <div class="widget-content-actions mx-auto ">
-                                <div class="widget-heading text-center">
-                                    <h5>Gift cards Asset volume</h5>
-                                    <h6>{{$cardTwentyFourHrscount}}</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-xl-6">
-                    <div class="card mb-3 widget-content bg-happy-fisher">
-                        <div class="widget-content-wrapper py-2 text-white">
-                            <div class="widget-content-actions mx-auto ">
-                                <div class="widget-heading text-center">
-                                    <h5>Total card volume in Naira </h5>
-                                    <h6>N{{$nairaTwentyFourHrs}}</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="row">
                 {{-- Recent Transactions --}}
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
-                        <div class="card-header">Payout Transactions </div>
+                        <div class="card-header">Payout History </div>
 
                         <div class="col-md-12">
                             <div class="col-md-12">
                                 <div class="main-card mb-3 card">
                                     <div class="card-header d-flex justify-content-between">
-                                        <span>Succcessful Transactions</span>
+                                        <span>payout History</span>
                                         <div class="page-title-subheading">
-                                            <a href="#" class="btn btn-primary"> Wipe History </a>
-                                            <a href="#" class="btn btn-primary"> Wipe transactions </a>
+                                            <a href="{{route('admin.payout_history')}}" class="btn btn-primary"> Refresh </a>
                                         </div>
                                     </div>
                                     <div class="table-responsive">
@@ -107,47 +76,15 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                             <thead>
                                                 <tr>
                                                     <th class="text-center">ID</th>
-                                                    <th class="text-center">Asset type</th>
-                                                    <th class="text-center">Tran. type</th>
-                                                    <th class="text-center">Asset value</th>
-                                                    <th class="text-center">Cash value</th>
-                                                    <th class="text-center">User</th>
-                                                    <th class="text-center">Agent</th>
-                                                    <th class="text-center">Status</th>
+                                                    <th class="text-center">Total Asset Volume</th>
+                                                    <th class="text-center">Total card volume in Naira </th>
+                                                    <th class="text-center"> card volume in Dollars</th>
+                                                    <th class="text-center"> Total successful transactions</th>
+                                                    <th class="text-center">Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($success_transactions as $t)
-                                                <tr>
-                                                    <td class="text-center text-muted">{{$t->uid}}</td>
-                                                    <td class="text-center">{{ucwords($t->card)}}</td>
-                                                    <td class="text-center">{{$t->type}}</td>
-                                                    <td class="text-center">{{$t->amount}}</td>
-                                                    <td class="text-center">{{number_format($t->amount_paid)}}
-                                                    </td>
-                                                    <td class="text-center"> {{$t->user->first_name}} </td>
-                                                    <td class="text-center"> {{$t->agent->first_name}} </td>
-                                                    <td class="text-center">
-                                                        @switch($t->status)
-                                                        @case('success')
-                                                        <div class="badge badge-success">{{$t->status}}</div>
-                                                        @break
-                                                        @case("failed")
-                                                        <div class="badge badge-danger">{{$t->status}}</div>
-                                                        @break
-                                                        @case('declined')
-                                                        <div class="badge badge-warning">{{$t->status}}</div>
-                                                        @break
-                                                        @case('waiting')
-                                                        <div class="badge badge-info">{{$t->status}}</div>
-                                                        @break
-                                                        @default
-                                                        <div class="badge badge-success">{{$t->status}}</div>
 
-                                                        @endswitch
-                                                    </td>
-                                                </tr>
-                                                @endforeach
                                             </tbody>
                                         </table>
                                         <tfoot>

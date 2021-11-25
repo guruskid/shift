@@ -13,6 +13,7 @@ class ChineseController extends Controller
 
         return view('admin.transactions', compact(['transactions', 'segment']));
     }
+    
 
     public function payoutHistory()
     {
