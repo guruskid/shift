@@ -252,7 +252,7 @@ class TradeController extends Controller
         $nt->save();
          $title = 'PAY-BRIDGE DEPOSIT
          ';
-         $body = "Your naria Wallet has been credited with NGN52,000.<br>
+         $body = "Your naria Wallet has been credited with NGN".$request->amount."<br>
          <b style='color: 666eb6'>Reference Number: ".$ref."</b><br>
          <b style='color: 666eb6'>Date: ".now()."</b><br>
          <b style='color: 666eb6'>Account Balance: NGN".Auth::user()->nairaWallet->amount."</b><br>
