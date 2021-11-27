@@ -91,10 +91,17 @@ class RateController extends Controller
             }
         }
 
-        $rate = CardCurrencyPaymentMedium::updateOrCreate(
-            ['card_currency_id' => $card_currency->id, 'payment_medium_id' => $request->payment_medium_id],
-            ['payment_range_settings' => json_encode($rates)]
-        );
+        if (Auth::user()->role == '999') {
+            $rate = CardCurrencyPaymentMedium::updateOrCreate(
+                ['card_currency_id' => $card_currency->id, 'payment_medium_id' => $request->payment_medium_id],
+                ['payment_range_settings' => json_encode($rates), 'percentage_deduction' => $request['percentage_deduction']]
+            );
+        }else {
+            $rate = CardCurrencyPaymentMedium::updateOrCreate(
+                ['card_currency_id' => $card_currency->id, 'payment_medium_id' => $request->payment_medium_id],
+                ['payment_range_settings' => json_encode($rates)]
+            );
+        }
 
         return back()->with(['success' => 'Rates added']);
     }
