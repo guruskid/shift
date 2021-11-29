@@ -1359,6 +1359,10 @@ input[type="file"]::-webkit-file-upload-button {
     display: none;
 }
 
+#loader,#loader-d {
+    display: none;
+}
+
 
 
 

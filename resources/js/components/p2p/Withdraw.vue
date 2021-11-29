@@ -4,7 +4,7 @@
         <div id="w-naira-form">
             <div class="form-group">
                 <div class="d-flex justify-content-between align-items-center">
-                <label style="color: #8D8D93;" for="input-deposit-amount">Input amount</label>
+                <label style="color: #8D8D93;" for="input-withdraw-amount">Input amount</label>
                 <div style="color: #00B9CD;">Minimum is 1000 NGN</div>
                 </div>
                 <input
@@ -59,16 +59,17 @@
                 <div class="text-right">Add new account</div>
                 <div class="d-flex justify-content-between align-items-center">
                 <div style="color: #1040BA;">Payment window</div>
-                <div id="timer">15 Minutes</div>
                 </div>
 
                 <div class="form-group">
                 <button
+                    id="complete_withdrawal"
                     type="submit"
-                    class="btn py-3 rounded-pill w-100 my-3"
+                    class="btn py-3 rounded-pill w-100 my-3 d-flex justify-content-center"
                     style="background-color: #000070; color: #fff"
                     @click="completeWithdrawal">
-                    Complete Deposit
+                    <span>Complete Withdrawal</span>
+                    <span class="ml-2" id="loader"><img src="/images/loader.gif" width="20" height="20px" id="loader" style="display: block;" alt=""></span>
                 </button>
                 </div>
             </div>
@@ -98,17 +99,6 @@
         methods: {
             withdraw() {
                 alert('process withdrawal');
-                // axios
-                //     .get("/admin/update-transaction/" + id + "/" + status)
-                //     .then(response => {
-                //     if (response.data["success"]) {
-                //         this.transactions.splice(this.transactions.indexOf(t), 1);
-                //         alert('Trade accepted');
-                //     } else {
-                //         alert("An error occured");
-                //     }
-                //     });
-                // }
             },
            getStat() {
                 axios.get("/trade_naira_api/user/get_stat").then(response => {
@@ -135,14 +125,14 @@
             processWithdrawal() {
                 var amount = $('#input-withdraw-amount').val()
                 if (isNaN(amount) || amount == '') {
-                    swal('Error!', "Please enter the amount you want to deposit" ,'error')
+                    swal('Error!', "Please enter the amount you want to withdrawal" ,'error')
                     return;
                 }
                  if (amount < 1000) {
-                    swal('Error!', "Minimum deposit is 1000 NGN" ,'error')
+                    swal('Error!', "Minimum withdrawal is 1000 NGN" ,'error')
                     return;
                 }
-                if (this.pending_deposit == true ) {
+                if (this.pending_withdrawal == true ) {
                     swal('Error!', "You currently have a pending withdrawal" ,'error')
                     return;
                 }
@@ -150,17 +140,20 @@
                     this.accounts = response.data.data;
                     $('#w-naira-form').hide()
                     $('#account-list').show()
-                    this.timer()
                 }).catch((error) => {
                     if (error.response) {
                         swal('An Error Occured!', error.response.message, 'error')
                     }
                 });
             },
-            completeWithdrawal() {
+            completeWithdrawal($e) {
+                $("#loader").show()
+                $('#complete_withdrawal').prop('disabled',true)
                 var pin = $('#pin').val()
                 if (isNaN(pin) || pin == '') {
                     swal('Error!', "Please enter the pin" ,'error')
+                    $("#loader").hide()
+                    $('#complete_withdrawal').removeAttr('disabled')
                     return;
                 }
                 axios.post("/trade_naira_api/user/complete_withdrawal",{
@@ -179,10 +172,14 @@
                             swal('Error!', response.data.message ,'error')
                         }
                     }
+                    $("#loader").hide()
+                    $('#complete_withdrawal').removeAttr('disabled')
                 }).catch((error) => {
                     if (error.response) {
                         swal('An Error Occured!', error.response.message, 'error')
                     }
+                    $("#loader").hide()
+                    $('#complete_withdrawal').removeAttr('disabled')
                 });
             },
             onAmountInput($e) {

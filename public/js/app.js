@@ -4987,6 +4987,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5057,6 +5058,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     completeDeposit: function completeDeposit() {
+      $("#loader-d").show();
+      $('#complete_deposit').prop('disabled', true);
       axios.post("/trade_naira_api/user/complete_deposit", {
         agent_id: this.agent_id,
         amount: this.amount,
@@ -5067,10 +5070,16 @@ __webpack_require__.r(__webpack_exports__);
         } else {
           swal('Error!', response.data.message, 'error');
         }
+
+        $("#loader-d").hide();
+        $('#complete_deposit').removeAttr('disabled');
       })["catch"](function (error) {
         if (error.response) {
           swal('An Error Occured!', error.response.message, 'error');
         }
+
+        $("#loader-d").hide();
+        $('#complete_deposit').removeAttr('disabled');
       });
     },
     timer: function timer() {
@@ -5343,6 +5352,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5363,17 +5373,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     withdraw: function withdraw() {
-      alert('process withdrawal'); // axios
-      //     .get("/admin/update-transaction/" + id + "/" + status)
-      //     .then(response => {
-      //     if (response.data["success"]) {
-      //         this.transactions.splice(this.transactions.indexOf(t), 1);
-      //         alert('Trade accepted');
-      //     } else {
-      //         alert("An error occured");
-      //     }
-      //     });
-      // }
+      alert('process withdrawal');
     },
     getStat: function getStat() {
       var _this = this;
@@ -5406,16 +5406,16 @@ __webpack_require__.r(__webpack_exports__);
       var amount = $('#input-withdraw-amount').val();
 
       if (isNaN(amount) || amount == '') {
-        swal('Error!', "Please enter the amount you want to deposit", 'error');
+        swal('Error!', "Please enter the amount you want to withdrawal", 'error');
         return;
       }
 
       if (amount < 1000) {
-        swal('Error!', "Minimum deposit is 1000 NGN", 'error');
+        swal('Error!', "Minimum withdrawal is 1000 NGN", 'error');
         return;
       }
 
-      if (this.pending_deposit == true) {
+      if (this.pending_withdrawal == true) {
         swal('Error!', "You currently have a pending withdrawal", 'error');
         return;
       }
@@ -5424,19 +5424,21 @@ __webpack_require__.r(__webpack_exports__);
         _this3.accounts = response.data.data;
         $('#w-naira-form').hide();
         $('#account-list').show();
-
-        _this3.timer();
       })["catch"](function (error) {
         if (error.response) {
           swal('An Error Occured!', error.response.message, 'error');
         }
       });
     },
-    completeWithdrawal: function completeWithdrawal() {
+    completeWithdrawal: function completeWithdrawal($e) {
+      $("#loader").show();
+      $('#complete_withdrawal').prop('disabled', true);
       var pin = $('#pin').val();
 
       if (isNaN(pin) || pin == '') {
         swal('Error!', "Please enter the pin", 'error');
+        $("#loader").hide();
+        $('#complete_withdrawal').removeAttr('disabled');
         return;
       }
 
@@ -5457,10 +5459,16 @@ __webpack_require__.r(__webpack_exports__);
             swal('Error!', response.data.message, 'error');
           }
         }
+
+        $("#loader").hide();
+        $('#complete_withdrawal').removeAttr('disabled');
       })["catch"](function (error) {
         if (error.response) {
           swal('An Error Occured!', error.response.message, 'error');
         }
+
+        $("#loader").hide();
+        $('#complete_withdrawal').removeAttr('disabled');
       });
     },
     onAmountInput: function onAmountInput($e) {
@@ -53897,11 +53905,27 @@ var staticRenderFns = [
       _c(
         "button",
         {
-          staticClass: "btn py-3 rounded-pill w-100 my-3",
+          staticClass:
+            "btn py-3 rounded-pill w-100 my-3 d-flex justify-content-center",
           staticStyle: { "background-color": "#000070", color: "#fff" },
           attrs: { id: "complete_deposit", type: "submit", disabled: "" }
         },
-        [_vm._v("\n                Complete Deposit\n                ")]
+        [
+          _c("span", [_vm._v("Complete Deposit")]),
+          _vm._v(" "),
+          _c("span", { staticClass: "ml-2", attrs: { id: "loader-d" } }, [
+            _c("img", {
+              staticStyle: { display: "block" },
+              attrs: {
+                src: "/images/loader.gif",
+                width: "20",
+                height: "20px",
+                id: "loader",
+                alt: ""
+              }
+            })
+          ])
+        ]
       )
     ])
   }
@@ -54295,12 +54319,17 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn py-3 rounded-pill w-100 my-3",
+                staticClass:
+                  "btn py-3 rounded-pill w-100 my-3 d-flex justify-content-center",
                 staticStyle: { "background-color": "#000070", color: "#fff" },
-                attrs: { type: "submit" },
+                attrs: { id: "complete_withdrawal", type: "submit" },
                 on: { click: _vm.completeWithdrawal }
               },
-              [_vm._v("\n                Complete Deposit\n            ")]
+              [
+                _c("span", [_vm._v("Complete Withdrawal")]),
+                _vm._v(" "),
+                _vm._m(4)
+              ]
             )
           ])
         ],
@@ -54322,7 +54351,7 @@ var staticRenderFns = [
           "label",
           {
             staticStyle: { color: "#8D8D93" },
-            attrs: { for: "input-deposit-amount" }
+            attrs: { for: "input-withdraw-amount" }
           },
           [_vm._v("Input amount")]
         ),
@@ -54373,11 +54402,26 @@ var staticRenderFns = [
       [
         _c("div", { staticStyle: { color: "#1040BA" } }, [
           _vm._v("Payment window")
-        ]),
-        _vm._v(" "),
-        _c("div", { attrs: { id: "timer" } }, [_vm._v("15 Minutes")])
+        ])
       ]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "ml-2", attrs: { id: "loader" } }, [
+      _c("img", {
+        staticStyle: { display: "block" },
+        attrs: {
+          src: "/images/loader.gif",
+          width: "20",
+          height: "20px",
+          id: "loader",
+          alt: ""
+        }
+      })
+    ])
   }
 ]
 render._withStripped = true

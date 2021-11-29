@@ -80,9 +80,10 @@
                     <button
                     id="complete_deposit"
                     type="submit"
-                    class="btn py-3 rounded-pill w-100 my-3"
+                    class="btn py-3 rounded-pill w-100 my-3 d-flex justify-content-center"
                     style="background-color: #000070; color: #fff" disabled>
-                    Complete Deposit
+                    <span>Complete Deposit</span>
+                    <span class="ml-2" id="loader-d"><img src="/images/loader.gif" width="20" height="20px" id="loader" style="display: block;" alt=""></span>
                     </button>
                 </div>
             </form>
@@ -154,6 +155,8 @@
             },
 
             completeDeposit() {
+                $("#loader-d").show()
+                $('#complete_deposit').prop('disabled',true)
                 axios.post("/trade_naira_api/user/complete_deposit",{
                     agent_id:this.agent_id,
                     amount:this.amount,
@@ -164,10 +167,14 @@
                     }else{
                         swal('Error!', response.data.message ,'error')
                     }
+                    $("#loader-d").hide()
+                    $('#complete_deposit').removeAttr('disabled')
                 }).catch((error) => {
                     if (error.response) {
                         swal('An Error Occured!', error.response.message, 'error')
                     }
+                    $("#loader-d").hide()
+                    $('#complete_deposit').removeAttr('disabled')
                 });
             },
             timer() {
