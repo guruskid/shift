@@ -73,7 +73,7 @@ class TradeController extends Controller
         return $total;
     }
 
-    public function completeWihtdrawal(Request $request) {
+    public function completeWihtdrawal(Request $request) {  
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'integer|required', 
             'amount'   => 'integer|required',
@@ -162,8 +162,7 @@ class TradeController extends Controller
         $nt->status = 'pending';
         $nt->save();
         //? how do i get bank name and Pay-bridge Agent
-        $title = 'PAY-BRIDGE WITHDRAWAL 
-        ';
+        $title = 'PAY-BRIDGE WITHDRAWAL(Pending)';
         $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
         <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
         <b style='color: 666eb6'>Bank Name: Dantown</b><br>
@@ -250,13 +249,12 @@ class TradeController extends Controller
         $nt->dr_user_id = $user->id;
         $nt->status = 'pending';
         $nt->save();
-         $title = 'PAY-BRIDGE DEPOSIT
-         ';
-         $body = "Your naria Wallet has been credited with NGN".$request->amount."<br>
-         <b style='color: 666eb6'>Reference Number: ".$ref."</b><br>
-         <b style='color: 666eb6'>Date: ".now()."</b><br>
-         <b style='color: 666eb6'>Account Balance: NGN".Auth::user()->nairaWallet->amount."</b><br>
-         ";
+         $title = 'PAY-BRIDGE DEPOSIT(Pending)';
+         $body = "Your Deposit of NGN$request->amount with reference code $ref has been received by the Pay-bridge agent
+         <br><br>
+         If your sure that your payment went through, please send your bank statement as proof of payment to 
+         <a style='text-decoration:none' href='mailto:support@godantown.com'>support@godantown.com</a> and also contact our customer happiness team via our Instagram handle @godantown or call 09068633429.<br><br>
+         The system will automatically cancel the deposit transaction if no action is taken within 3 days";
  
          $btn_text = '';
          $btn_url = '';
@@ -538,6 +536,8 @@ class TradeController extends Controller
         $txn->status = 'pending';
         $txn->save();
 
+        //?mail
+
         return response()->json([
             'success' => true,
             'msg' => 'Transaction updated'
@@ -567,6 +567,22 @@ class TradeController extends Controller
 
         $txn->status = 'cancelled';
         $txn->save();
+        $user = User::find($txn->user_id);
+        $title = 'PAY-BRIDGE DEPOSIT(Cancelled by the system)';
+        $body = "Your Deposit of NGN$txn->amount with reference code $txn->reference has been cancelled by the system because the
+        Pay-bridge agent did not receive your payment.
+        <br><br>
+        <span style='color:blue'>Date of transaction: $txn->created_at</span>
+        <br><br>
+        Kindly contact our customer happiness team via our Instagram handle @godantown or call 09068633429 If you have a complaint";
+ 
+         $btn_text = '';
+         $btn_url = '';
+ 
+         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+         $name = explode(' ', $name);
+         $firstname = ucfirst($name[0]);
+         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return response()->json([
             'success' => true,
