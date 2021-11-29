@@ -12,6 +12,8 @@ use App\NairaTransaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\GeneralTemplateOne;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
 class TradeController extends Controller
@@ -84,7 +86,6 @@ class TradeController extends Controller
                 'message' => $validator->errors(),
             ], 401);
         }
-
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return response()->json([
                 'success' => false,
@@ -160,6 +161,26 @@ class TradeController extends Controller
         $nt->dr_user_id = 1;
         $nt->status = 'pending';
         $nt->save();
+        //? how do i get bank name and Pay-bridge Agent
+        $title = 'PAY-BRIDGE WITHDRAWAL 
+        ';
+        $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
+        <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
+        <b style='color: 666eb6'>Bank Name: Dantown</b><br>
+        <b style='color: 666eb6'>Status:<span style='color: red'>pending</span></b><br>
+        <b style='color: 666eb6'>Reference No : ".$ref."</b><br>
+        <b style='color: 666eb6'>Date: ".now()."</b><br>
+        <b style='color: 666eb6'>Account Balance: NGN".Auth::user()->nairaWallet->amount."</b><br>
+        <b></b><br><br>
+        ";
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return response()->json([
             'success' => true,
@@ -229,6 +250,21 @@ class TradeController extends Controller
         $nt->dr_user_id = $user->id;
         $nt->status = 'pending';
         $nt->save();
+         $title = 'PAY-BRIDGE DEPOSIT
+         ';
+         $body = "Your naria Wallet has been credited with NGN".$request->amount."<br>
+         <b style='color: 666eb6'>Reference Number: ".$ref."</b><br>
+         <b style='color: 666eb6'>Date: ".now()."</b><br>
+         <b style='color: 666eb6'>Account Balance: NGN".Auth::user()->nairaWallet->amount."</b><br>
+         ";
+ 
+         $btn_text = '';
+         $btn_url = '';
+ 
+         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+         $name = explode(' ', $name);
+         $firstname = ucfirst($name[0]);
+         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return response()->json([
             'success' => true,
