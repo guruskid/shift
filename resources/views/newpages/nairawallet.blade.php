@@ -174,13 +174,13 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                 </div>
                                             </div>
 
-                                            @include('newpages.tabs.naira-transfer-tab')
+                                            {{-- @include('newpages.tabs.naira-transfer-tab')
                                             @if($setting['settings_value'] == 1)
                                                 @include('newpages.tabs.naira-withdraw-tab')
-                                            @else
+                                            @else --}}
                                                 {{-- <h5 class="text-center p-2 text-center w-100 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$setting['notice']}}</h5> --}}
-                                            @endif
-                                            @include('newpages.tabs.naira-deposit-tab')
+                                            {{-- @endif
+                                            @include('newpages.tabs.naira-deposit-tab') --}}
 
                                             <div id="root" class="container">
                                                 <tabs>
