@@ -537,4 +537,12 @@ class TradeController extends Controller
             'msg' => 'Transaction cancelled'
         ]);
     }
+
+    public function accounts() {
+        $accts = Auth::user()->accounts;
+        return response()->json([
+            'success' => true,
+            'data' => $accts
+        ]);
+    }
 }

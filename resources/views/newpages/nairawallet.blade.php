@@ -149,7 +149,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                     </a> --}}
                                                 </div>
                                             </div>
-                                            <div>
+                                            <div class="d-none">
                                                 <div class="text-center p-3 text-white h5 rounded" style="background-color: #000070">
                                                     <h4><i class="fas fa-info-circle"></i> Notice:</h4>
                                                     Dantown have partnered with Pay-bridge for naira payments.
@@ -175,12 +175,23 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                             </div>
 
                                             @include('newpages.tabs.naira-transfer-tab')
-                                                @if($setting['settings_value'] == 1)
-                                                    @include('newpages.tabs.naira-withdraw-tab')
-                                                @else
-                                                    <h5 class="text-center p-2 text-center w-100 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$setting['notice']}}</h5>
-                                                @endif
+                                            @if($setting['settings_value'] == 1)
+                                                @include('newpages.tabs.naira-withdraw-tab')
+                                            @else
+                                                {{-- <h5 class="text-center p-2 text-center w-100 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$setting['notice']}}</h5> --}}
+                                            @endif
                                             @include('newpages.tabs.naira-deposit-tab')
+
+                                            <div id="root" class="container">
+                                                <tabs>
+                                                    <tab name="Deposit via Pay-bridge" at="deposit" :selected="true">
+                                                        <deposit-component></deposit-component>
+                                                    </tab>
+                                                    <tab name="Withdraw via Pay-bridge" at="withdraw">
+                                                        <withdraw-component></withdraw-component>
+                                                    </tab>
+                                                </tabs>
+                                            </div>
 
 
                                             {{-- Naira transfer modal --}}
