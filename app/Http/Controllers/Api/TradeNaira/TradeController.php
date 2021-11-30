@@ -165,7 +165,7 @@ class TradeController extends Controller
         $title = 'PAY-BRIDGE WITHDRAWAL(Pending)';
         $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
         <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
-        <b style='color: 666eb6'>Bank Name: Dantown</b><br>
+        <b style='color: 666eb6'>Bank Name: ".$agent->accounts->bank_name."</b><br>
         <b style='color: 666eb6'>Status:<span style='color: red'>pending</span></b><br>
         <b style='color: 666eb6'>Reference No : ".$ref."</b><br>
         <b style='color: 666eb6'>Date: ".now()."</b><br>
@@ -249,20 +249,20 @@ class TradeController extends Controller
         $nt->dr_user_id = $user->id;
         $nt->status = 'pending';
         $nt->save();
-         $title = 'PAY-BRIDGE DEPOSIT(Pending)';
-         $body = "Your Deposit of NGN$request->amount with reference code $ref has been received by the Pay-bridge agent
-         <br><br>
-         If your sure that your payment went through, please send your bank statement as proof of payment to 
-         <a style='text-decoration:none' href='mailto:support@godantown.com'>support@godantown.com</a> and also contact our customer happiness team via our Instagram handle @godantown or call 09068633429.<br><br>
-         The system will automatically cancel the deposit transaction if no action is taken within 3 days";
+        //  $title = 'PAY-BRIDGE DEPOSIT(Pending)';
+        //  $body = "Your Deposit of NGN$request->amount with reference code $ref has been received by the Pay-bridge agent
+        //  <br><br>
+        //  If your sure that your payment went through, please send your bank statement as proof of payment to 
+        //  <a style='text-decoration:none' href='mailto:support@godantown.com'>support@godantown.com</a> and also contact our customer happiness team via our Instagram handle @godantown or call 09068633429.<br><br>
+        //  The system will automatically cancel the deposit transaction if no action is taken within 3 days";
  
-         $btn_text = '';
-         $btn_url = '';
+        //  $btn_text = '';
+        //  $btn_url = '';
  
-         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-         $name = explode(' ', $name);
-         $firstname = ucfirst($name[0]);
-         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        //  $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        //  $name = explode(' ', $name);
+        //  $firstname = ucfirst($name[0]);
+        //  Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return response()->json([
             'success' => true,
