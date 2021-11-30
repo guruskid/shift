@@ -65,7 +65,7 @@ class TradeNairaController extends Controller
             if ($t->type == 'withdrawal') {
                 $a = Auth::user($t->user_id)->accounts->where('id',$t->account_id)->first();
                 $account = $a['account_name'].', '.$a['bank_name'].', '.$a['account_number'];
-                $t->acct_details = $account; 
+                $t->acct_details = $account;
             }
         }
 
@@ -92,9 +92,6 @@ class TradeNairaController extends Controller
             return back()->with(['error' => 'Incorrect pin']);
         }
 
-        $user = $transaction->user;
-        $user_wallet = $transaction->user->nairaWallet;
-
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
         }
@@ -102,15 +99,9 @@ class TradeNairaController extends Controller
         $nt = NairaTransaction::where('reference',$transaction->reference)->first();
 
         if ($nt) {
-            $nt->previous_balance = $user_wallet->amount;
-            $nt->current_balance = $user_wallet->amount + $transaction->amount;
-            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
             $nt->status = 'failed';
             $nt->save();
         }
-
-        $user_wallet->amount += $transaction->amount;
-        $user_wallet->save();
 
         $transaction->status = 'cancelled';
         $transaction->save();

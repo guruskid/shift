@@ -4966,32 +4966,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      amount: 100,
+      amount: '',
+      pin: '',
       pending_withdrawal: false,
       pending_deposit: false,
       account_name: '',
@@ -5024,14 +5003,12 @@ __webpack_require__.r(__webpack_exports__);
     getAgent: function getAgent() {
       var _this2 = this;
 
-      var amount = $('#input-deposit-amount').val();
-
-      if (isNaN(amount) || amount == '') {
+      if (isNaN(this.amount) || this.amount == '') {
         swal('Error!', "Please enter the amount you want to deposit", 'error');
         return;
       }
 
-      if (amount < 1000) {
+      if (this.amount < 1000) {
         swal('Error!', "Minimum deposit is 1000 NGN", 'error');
         return;
       }
@@ -5041,7 +5018,6 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      this.amount = amount;
       axios.get("/trade_naira_api/user/agents").then(function (response) {
         if (response.data['success']) {
           _this2.account_name = response.data.data[0].accounts[0].account_name;
@@ -5062,11 +5038,12 @@ __webpack_require__.r(__webpack_exports__);
       $('#complete_deposit').prop('disabled', true);
       axios.post("/trade_naira_api/user/complete_deposit", {
         agent_id: this.agent_id,
-        amount: this.amount,
-        pin: $('#pin').val()
+        amount: this.amount // pin: this.pin
+
       }).then(function (response) {
         if (response.data['success']) {
           swal('Good Job!', response.data.message, 'success');
+          window.location.reload();
         } else {
           swal('Error!', response.data.message, 'error');
         }
@@ -5339,25 +5316,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      amount: 100,
+      amount: '',
+      pin: '',
       pending_withdrawal: false,
       pending_deposit: false,
       account_name: '',
@@ -5404,15 +5367,13 @@ __webpack_require__.r(__webpack_exports__);
     processWithdrawal: function processWithdrawal() {
       var _this3 = this;
 
-      var amount = $('#input-withdraw-amount').val();
-
-      if (isNaN(amount) || amount == '') {
+      if (isNaN(this.amount) || this.amount == '') {
         swal('Error!', "Please enter the amount you want to withdrawal", 'error');
         return;
       }
 
-      if (amount < 1000) {
-        swal('Error!', "Minimum withdrawal is 1000 NGN", 'error');
+      if (this.amount < 1000) {
+        swal('Error!', "Minimum withdrawal is ₦1,000", 'error');
         return;
       }
 
@@ -5434,9 +5395,8 @@ __webpack_require__.r(__webpack_exports__);
     completeWithdrawal: function completeWithdrawal($e) {
       $("#loader").show();
       $('#complete_withdrawal').prop('disabled', true);
-      var pin = $('#pin').val();
 
-      if (isNaN(pin) || pin == '') {
+      if (isNaN(this.pin) || this.pin == '') {
         swal('Error!', "Please enter the pin", 'error');
         $("#loader").hide();
         $('#complete_withdrawal').removeAttr('disabled');
@@ -5446,11 +5406,12 @@ __webpack_require__.r(__webpack_exports__);
       axios.post("/trade_naira_api/user/complete_withdrawal", {
         agent_id: this.agent_id,
         amount: this.amount,
-        pin: $('#pin').val(),
+        pin: this.pin,
         account_id: this.account_id
       }).then(function (response) {
         if (response.data['success']) {
           swal('Good Job!', response.data.message, 'success');
+          window.location.reload();
         } else {
           if (response.data['msg']) {
             swal('Error!', response.data.msg, 'error');
@@ -5471,9 +5432,6 @@ __webpack_require__.r(__webpack_exports__);
         $("#loader").hide();
         $('#complete_withdrawal').removeAttr('disabled');
       });
-    },
-    onAmountInput: function onAmountInput($e) {
-      $('#amt').html($e.target.value);
     },
     onSelectAcct: function onSelectAcct($e) {
       this.account_id = $e.target.value;
@@ -53630,7 +53588,41 @@ var render = function() {
             }
           }
         },
-        [_vm._m(0), _vm._v(" "), _vm._m(1)]
+        [
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.amount,
+                  expression: "amount"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "number",
+                id: "input-deposit-amount",
+                placeholder: "8000"
+              },
+              domProps: { value: _vm.amount },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.amount = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm._m(1)
+          ]),
+          _vm._v(" "),
+          _vm._m(2)
+        ]
       )
     ]),
     _vm._v(" "),
@@ -53768,9 +53760,9 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _vm._m(2),
-          _vm._v(" "),
           _vm._m(3),
+          _vm._v(" "),
+          _vm._m(4),
           _vm._v(" "),
           _c("div", { staticClass: "form-check" }, [
             _c("input", {
@@ -53787,13 +53779,13 @@ var render = function() {
               },
               [
                 _vm._v(
-                  "\n                By clicking, you agree to have made payment to the Pay-bridge agent\n                "
+                  "\n                    By clicking, you agree to have made payment to the Pay-bridge agent\n                "
                 )
               ]
             )
           ]),
           _vm._v(" "),
-          _vm._m(4)
+          _vm._m(5)
         ]
       )
     ])
@@ -53804,44 +53796,37 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c(
-        "div",
-        { staticClass: "d-flex justify-content-between align-items-center" },
-        [
-          _c(
-            "label",
-            {
-              staticStyle: { color: "#8D8D93" },
-              attrs: {
-                for: "input-deposit-amount",
-                "aria-required": "true",
-                required: ""
-              }
-            },
-            [_vm._v("Input amount")]
-          ),
-          _vm._v(" "),
-          _c("div", { staticStyle: { color: "#00B9CD" } }, [
-            _vm._v("Minimum is 1000 NGN")
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control",
-        attrs: {
-          type: "number",
-          id: "input-deposit-amount",
-          placeholder: "8000"
-        }
-      }),
-      _vm._v(" "),
-      _c("div", [
-        _vm._v("Please note that "),
-        _c("span", { staticClass: "font-weight-bold" }, [_vm._v("Pay-bridge")]),
-        _vm._v(" agents are verified by Dantown.")
-      ])
+    return _c(
+      "div",
+      { staticClass: "d-flex justify-content-between align-items-center" },
+      [
+        _c(
+          "label",
+          {
+            staticStyle: { color: "#8D8D93" },
+            attrs: {
+              for: "input-deposit-amount",
+              "aria-required": "true",
+              required: ""
+            }
+          },
+          [_vm._v("Input\n                        amount")]
+        ),
+        _vm._v(" "),
+        _c("div", { staticStyle: { color: "#00B9CD" } }, [
+          _vm._v("Minimum is ₦1,000 ")
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [
+      _vm._v("Please note that "),
+      _c("span", { staticClass: "font-weight-bold" }, [_vm._v("Pay-bridge")]),
+      _vm._v(" agents are verified by\n                    Dantown.")
     ])
   },
   function() {
@@ -53856,7 +53841,7 @@ var staticRenderFns = [
           staticStyle: { "background-color": "#000070", color: "#fff" },
           attrs: { type: "submit" }
         },
-        [_vm._v("\n                Continue\n                ")]
+        [_vm._v("\n                    Continue\n                ")]
       )
     ])
   },
@@ -53893,7 +53878,7 @@ var staticRenderFns = [
           [_vm._v("Note:")]
         ),
         _vm._v(
-          " Deposits must come from a name that matches your Dantown’s account\n                name\n            "
+          " Deposits must come from a name\n                that matches your Dantown’s account\n                name\n            "
         )
       ]
     )
@@ -54019,7 +54004,7 @@ var render = function() {
                     "div",
                     {
                       staticClass:
-                        "d-flex justify-content-center align-items-center rounded py-4 tab-in mb-4"
+                        "d-flex justify-content-center align-items-center rounded  tab-in mb-4"
                     },
                     [
                       _c("div", { staticClass: "text-center my-2" }, [
@@ -54069,37 +54054,66 @@ var render = function() {
         _vm._m(0),
         _vm._v(" "),
         _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.amount,
+              expression: "amount"
+            }
+          ],
           staticClass: "form-control",
           attrs: {
             type: "number",
             id: "input-withdraw-amount",
             placeholder: "8000"
           },
-          on: { input: _vm.onAmountInput }
+          domProps: { value: _vm.amount },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.amount = $event.target.value
+            }
+          }
         })
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "my-2", staticStyle: { color: "#8D8D93" } }, [
-        _vm._m(1),
-        _vm._v(" "),
-        _c("div", { staticStyle: { color: "#8D8D93" } }, [
-          _vm._v("\n            Pay-bridge agent: "),
-          _c(
-            "span",
-            { staticClass: "font-bold", staticStyle: { color: "#000070" } },
-            [_vm._v(_vm._s(_vm.account_name))]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticStyle: { color: "#8D8D93" } }, [
-          _vm._v("Bank: "),
-          _c(
-            "span",
-            { staticClass: "font-bold", staticStyle: { color: "#000070" } },
-            [_vm._v(_vm._s(_vm.bank_name))]
-          )
-        ])
-      ]),
+      _c(
+        "div",
+        { staticClass: "mt-2 mb-4", staticStyle: { color: "#8D8D93" } },
+        [
+          _c("div", [
+            _vm._v("Kindly note that you are receiving the sum of "),
+            _c("span", { staticClass: "font-weight-bold" }, [
+              _c("span", { attrs: { id: "amt" } }, [
+                _vm._v(_vm._s(_vm.amount >= 1000 ? _vm.amount - 100 : "0"))
+              ]),
+              _vm._v(" NGN")
+            ]),
+            _vm._v(" from")
+          ]),
+          _vm._v(" "),
+          _c("div", { staticStyle: { color: "#8D8D93" } }, [
+            _vm._v("\n                Pay-bridge agent: "),
+            _c(
+              "span",
+              { staticClass: "font-bold", staticStyle: { color: "#000070" } },
+              [_vm._v(_vm._s(_vm.account_name))]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticStyle: { color: "#8D8D93" } }, [
+            _vm._v("Bank: "),
+            _c(
+              "span",
+              { staticClass: "font-bold", staticStyle: { color: "#000070" } },
+              [_vm._v(_vm._s(_vm.bank_name))]
+            )
+          ])
+        ]
+      ),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
         _c(
@@ -54122,7 +54136,7 @@ var render = function() {
         [
           _c("h4", { staticClass: "text-center" }, [
             _vm._v(
-              "\n            Kindly select the account to receive payment\n            "
+              "\n                Kindly select the account to receive payment\n            "
             )
           ]),
           _vm._v(" "),
@@ -54155,13 +54169,13 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n                    " +
+                        "\n                        " +
                           _vm._s(account.bank_name) +
                           " "
                       ),
                       _c("br"),
                       _vm._v(
-                        "\n                    " +
+                        "\n                        " +
                           _vm._s(account.account_number) +
                           ", " +
                           _vm._s(account.account_name) +
@@ -54174,11 +54188,45 @@ var render = function() {
             )
           }),
           _vm._v(" "),
-          _vm._m(2),
+          _c("div", { staticClass: "form-group" }, [
+            _c(
+              "label",
+              {
+                staticStyle: { color: "#8D8D93" },
+                attrs: { for: "bank-name" }
+              },
+              [_vm._v("Pin")]
+            ),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.pin,
+                  expression: "pin"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "password",
+                maxlength: "4",
+                id: "pin",
+                placeholder: "Pin"
+              },
+              domProps: { value: _vm.pin },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.pin = $event.target.value
+                }
+              }
+            })
+          ]),
           _vm._v(" "),
           _c("div", { staticClass: "text-right" }, [_vm._v("Add new account")]),
-          _vm._v(" "),
-          _vm._m(3),
           _vm._v(" "),
           _c("div", { staticClass: "form-group" }, [
             _c(
@@ -54193,7 +54241,7 @@ var render = function() {
               [
                 _c("span", [_vm._v("Complete Withdrawal")]),
                 _vm._v(" "),
-                _vm._m(4)
+                _vm._m(1)
               ]
             )
           ])
@@ -54222,51 +54270,7 @@ var staticRenderFns = [
         ),
         _vm._v(" "),
         _c("div", { staticStyle: { color: "#00B9CD" } }, [
-          _vm._v("Minimum is 1000 NGN")
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _vm._v("Kindly note that you are receiving the sum of "),
-      _c("span", { staticClass: "font-weight-bold" }, [
-        _c("span", { attrs: { id: "amt" } }, [_vm._v("0")]),
-        _vm._v(" NGN")
-      ]),
-      _vm._v(" from")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c(
-        "label",
-        { staticStyle: { color: "#8D8D93" }, attrs: { for: "bank-name" } },
-        [_vm._v("Pin")]
-      ),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "text", id: "pin", placeholder: "Pin" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "d-flex justify-content-between align-items-center" },
-      [
-        _c("div", { staticStyle: { color: "#1040BA" } }, [
-          _vm._v("Payment window")
+          _vm._v("Minimum is ₦1,000")
         ])
       ]
     )
@@ -68848,8 +68852,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\godantown\app_dantownms_prod\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\godantown\app_dantownms_prod\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/winston/Desktop/Whitehat_innovative/clients/Dantown/dantownms/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/winston/Desktop/Whitehat_innovative/clients/Dantown/dantownms/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

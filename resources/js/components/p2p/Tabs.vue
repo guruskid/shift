@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-sm" v-for="tab in tabs" :class="{ 'is-active': tab.isActive }" v-bind:key="tab">
                     <div class="col-sm" @click="selectTab(tab)">
-                        <div class="d-flex justify-content-center align-items-center rounded py-4 tab-in mb-4">
+                        <div class="d-flex justify-content-center align-items-center rounded  tab-in mb-4">
                             <!-- <span v-if="tab.at == 'withdraw'">
                                 <svg
                                     width="24"
@@ -76,7 +76,7 @@
                             </span> -->
                             <div class="text-center my-2">{{tab.name}}</div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -93,11 +93,11 @@
         data() {
             return {tabs: [] };
         },
-        
+
         created() {
-            
+
             this.tabs = this.$children;
-            
+
         },
         methods: {
             selectTab(selectedTab) {
