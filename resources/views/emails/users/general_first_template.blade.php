@@ -5,8 +5,11 @@
 
 
 <h1 style="font-size: 24px">{{$title ?? ''}}</h1> <br>
-
-<h2 style="color: #000070; font-size:20px;"> Hello {{$name}},</h2>
+{{-- 
+@if (strlen($name) > 1)
+    <h2 style="color: #000070; font-size:20px;"> Hello {{$name}},</h2>
+@endif --}}
+<h2 style="font-weight: normal"> Dear {{$name}},</h2>
 <p style="font-size: 16px">
 @php
     $pattern = array('<br/>');

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\NariaLimitController;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,56 +39,6 @@ class NairaWalletLimit extends Command
      */
     public function handle()
     {
-        $v_progress = 0;
-        if (Auth::user()->email_verified_at) {
-            $v_progress += 25;
-        }
-        if (Auth::user()->phone_verified_at) {
-            $v_progress += 25;
-        }
-        if (Auth::user()->address_verified_at) {
-            $v_progress += 25;
-        }
-        if (Auth::user()->idcard_verified_at) {
-            $v_progress += 25;
-        }
-
-        Auth::user()->v_progress = $v_progress;
-
-        switch ($v_progress) {
-            case 25:
-                Auth::user()->daily_max = 0;
-                Auth::user()->monthly_max = 0;
-                Auth::user()->save();
-                break;
-
-            case 50:
-                Auth::user()->daily_max = 500000;
-                Auth::user()->monthly_max = 5000000;
-                Auth::user()->save();
-                break;
-
-            case 75:
-                Auth::user()->daily_max = 2000000;
-                Auth::user()->monthly_max = 60000000;
-                Auth::user()->save();
-                break;
-
-            case 100:
-                Auth::user()->daily_max = 10000000;
-                Auth::user()->monthly_max = 99000000;
-                Auth::user()->save();
-                break;
-
-            default:
-                Auth::user()->daily_max = 30000;
-                Auth::user()->monthly_max = 300000;
-                Auth::user()->save();
-                break;
-        }
-
-        Auth::user()->save();
-
-        return true;
+       return NariaLimitController::nariaLimit(Auth::user());
     }
 }
