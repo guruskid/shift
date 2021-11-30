@@ -1351,6 +1351,10 @@ input[type="file"]::-webkit-file-upload-button {
     background-color: #000070;
 }
 
+.p-tabs .is-active .tab-in * {
+    color: #fff;
+}
+
 .p-tabs .tab-in{
     border: 1px solid #000070;
 }

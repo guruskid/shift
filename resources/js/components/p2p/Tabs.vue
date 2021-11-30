@@ -4,8 +4,8 @@
             <div class="row">
                 <div class="col-sm" v-for="tab in tabs" :class="{ 'is-active': tab.isActive }" v-bind:key="tab">
                     <div class="col-sm" @click="selectTab(tab)">
-                        <div class="d-flex justify-content-center align-items-center rounded py-4 tab-in">
-                            <span v-if="tab.at == 'withdraw'">
+                        <div class="d-flex justify-content-center align-items-center rounded py-4 tab-in mb-4">
+                            <!-- <span v-if="tab.at == 'withdraw'">
                                 <svg
                                     width="24"
                                     height="24"
@@ -73,9 +73,10 @@
                                     <rect width="24" height="24" fill="white" />
                                 </g>
                                 </svg>
-                            </span>
+                            </span> -->
+                            <div class="text-center my-2">{{tab.name}}</div>
                         </div>
-                        <div class="text-center my-2">{{tab.name}}</div>
+                        
                     </div>
                 </div>
             </div>
