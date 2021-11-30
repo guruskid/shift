@@ -38,6 +38,14 @@ class TradeNairaController extends Controller
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
 
+        foreach ($transactions as $t) {
+            if ($t->type == 'withdrawal') {
+                $a = Account::find($t->account_id);
+                $acct = $a['account_name'].', '.$a['bank_name'].', '.$a['account_number'];
+                $t->acct_details = $acct;
+            }
+        }
+
         return view('admin.trade_naira.transactions', compact('transactions', 'show_limit', 'banks', 'account'));
     }
 
@@ -63,7 +71,7 @@ class TradeNairaController extends Controller
 
         foreach ($transactions as $t) {
             if ($t->type == 'withdrawal') {
-                $a = Auth::user($t->user_id)->accounts->where('id',$t->account_id)->first();
+                $a = Account::find($t->account_id);
                 $account = $a['account_name'].', '.$a['bank_name'].', '.$a['account_number'];
                 $t->acct_details = $account;
             }
