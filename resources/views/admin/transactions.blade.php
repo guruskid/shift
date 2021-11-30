@@ -132,10 +132,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
                                         <td class="text-center">{{$t->wallet_id}}</td>
                                         <td class="text-center">
-                                            adkjfalkdjf
-                                            {{-- <a href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                            {{-- adkjfalkdjf --}}
+                                            <a href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
                                                 {{$t->user->first_name." ".$t->user->last_name}}
-                                            </a> --}}
+                                            </a>
                                         </td>
                                         <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
                                         <td class="text-center">

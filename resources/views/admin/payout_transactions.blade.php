@@ -64,20 +64,21 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                             <div class="widget-content-actions mx-auto ">
                                 <div class="widget-heading text-center">
                                     <h5>Gift cards Asset volume</h5>
-                                    <h6>{{$cardTwentyFourHrscount}}</h6>
+                                    <h6>{{$payoutVolume}}</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                {{-- payoutVolume
+                assetsInNaira --}}
                 <div class="col-md-6 col-xl-6">
                     <div class="card mb-3 widget-content bg-happy-fisher">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
                                 <div class="widget-heading text-center">
                                     <h5>Total card volume in Naira </h5>
-                                    <h6>N{{$nairaTwentyFourHrs}}</h6>
+                                    <h6>N{{ number_format($assetsInNaira) }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -97,9 +98,13 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                 <div class="main-card mb-3 card">
                                     <div class="card-header d-flex justify-content-between">
                                         <span>Succcessful Transactions</span>
-                                        <div class="page-title-subheading">
-                                            <a href="#" class="btn btn-primary"> Wipe History </a>
-                                            <a href="#" class="btn btn-primary"> Wipe transactions </a>
+                                        <div class="page-title-subheading d-flex">
+                                            <a href="{{route('admin.payout_history')}}" class="btn btn-primary mr-2"> Wipe History </a>
+                                            @if(Auth::user()->role == 999)
+                                            <form action="{{route('admin.payout')}}" method="POST">@csrf
+                                                <button class="btn btn-primary">WIPE TRANSACTIONS</button>
+                                            </form>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="table-responsive">
@@ -161,120 +166,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                 </div>
             </div>
 
-            {{-- Transactions and Users Overview --}}
-            @if (Auth::user()->role == 888)
-            <div class="row">
-                <div class="main-card mb-3 card col-md-12">
-                    <div class="no-gutters row">
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Total Transactions</div>
-                                                        <div class="widget-subheading">Total cash value </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Total Transactions</div>
-                                                        <div class="widget-subheading">Total Count of succcessful
-                                                            transactions</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Buy</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-info">
-                                                            N{{number_format($pBuyCash)}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Buy</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-info">{{$pBuyCount}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="pt-0 pb-0 card-body">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Sell</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-success">
-                                                            N{{number_format($pSellCash)}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <div class="widget-content p-0">
-                                            <div class="widget-content-outer">
-                                                <div class="widget-content-wrapper">
-                                                    <div class="widget-content-left">
-                                                        <div class="widget-heading">Sell</div>
-                                                        <div class="widget-subheading">Transactions</div>
-                                                    </div>
-                                                    <div class="widget-content-right">
-                                                        <div class="widget-numbers text-success">{{$pSellCount}}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endif
+
 
         </div>
     </div>

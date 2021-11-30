@@ -62,14 +62,12 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666) {
+        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666 || $user->role == 444) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->role == 888) {
             return redirect()->route('admin.assigned-transactions');
         } elseif ($user->role == 1 or $user->role == 2) {
             return redirect()->route('user.dashboard');
-        }elseif($user->role == 444){
-            return redirect()->route('admin.chinese_dashboard');
         } else {
             abort(404);
         }

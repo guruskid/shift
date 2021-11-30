@@ -363,7 +363,7 @@ $not = $nots->last();
     });
 </script>
 
-@if(Auth::user()->role == 444)
+@if(Auth::user()->role == 444 OR Auth::user()->role == 999)
     <script>
 
         const _e = (e) => document.getElementById(e)

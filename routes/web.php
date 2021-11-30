@@ -250,13 +250,18 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'checkName']], functi
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']], function () {
+
+
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
     /* ajax calls */
     Route::GET('/get-user/{email}', 'AdminController@getUser');
     Route::GET('/dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
-    Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
-    Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
-    Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
+    Route::GET('/chinese-dashboard', 'ChineseController@dashboard')->name('admin.chinese_dashboard_page');
+
+    // Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
+    // Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
+
     // To be move to super Admin dashboard later
     // Route::GET('/payout-history', 'ChineseController@payouthistory')->name('admin.payout_history');
     ////////////
@@ -269,13 +274,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']]
 
     /* ajax ends here */
     Route::get('/', 'AdminController@dashboard')->name('admin.dashboard');
-    Route::get('/transactions', 'AdminController@transactionsChinese')->name('admin.transactions');
-    Route::get('/transactions/buy', 'ChineseController@buyTransac')->name('admin.buy_transac');
-    Route::get('/transactions/sell', 'ChineseController@sellTransac')->name('admin.sell_transac');
-    Route::get('/transactions/{status}', 'AdminController@txnByStatusChinese')->name('admin.transactions-status');
+    Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
+
+
+
+
+    Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
+    Route::get('/transactions/sell', 'AdminController@sellTransac')->name('admin.sell_transac');
+    Route::get('/transactions/{status}', 'AdminController@txnByStatus')->name('admin.transactions-status');
     Route::get('/transactions/agent/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
     Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
-
     Route::post('/edit-transactions', 'Admin\AssetTransactionController@editTransaction')->name('admin.edit_transaction');
     Route::post('/asset-transactions', 'AdminController@assetTransactionsSortByDate')->name('admin.transactions-by-date');
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
@@ -286,10 +294,23 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']]
     Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 });
 
-/* For Super Admins Only */
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
-    Route::post('/cards', 'AdminController@addCard')->name('admin.add_card');
 
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']], function () {
+    /* ajax calls */
+    Route::GET('/chinese-dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
+    Route::GET('/chinese-dashboard', 'ChineseController@dashboard')->name('admin.chinese_dashboard_page');
+    Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
+    Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
+    // To be move to super Admin dashboard later
+});
+
+
+/* For Super Admins Only */
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super', 'chinese']], function () {
+    Route::post('/cards', 'AdminController@addCard')->name('admin.add_card');
+    // Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
+    // Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
+    Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
 
     Route::post('/transactions', 'AdminController@addTransaction')->name('admin.add_transaction');
     Route::GET('/delete-transaction/{id}', 'AdminController@deleteTransac');
@@ -355,8 +376,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant
     Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
     Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');
     Route::get('/admin-wallet', 'AdminController@adminWallet')->name('admin.admin-wallet');
-
-
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
     Route::post('/chat-agents', 'ChatAgentController@addChatAgent')->name('admin.add_chat_agent');

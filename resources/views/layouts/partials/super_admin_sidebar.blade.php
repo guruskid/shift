@@ -139,6 +139,26 @@
         </a>
     </li>
 
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.chinese_dashboard_page' ? 'active' : '' }}">
+        <a href="{{route('admin.chinese_dashboard_page')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Chinese dashboard</span>
+            </div>
+        </a>
+    </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.payout_transactions' ? 'active' : '' }}">
+        <a href="{{route('admin.payout_transactions')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Payout Page</span>
+            </div>
+        </a>
+    </li>
+
+
      <li class="menu {{ Route::currentRouteName() == 'admin.accountants' ? 'active' : '' }}">
         <a href="{{route('admin.general_settings')}}" aria-expanded="false" class="dropdown-toggle" >
             <div class="">
