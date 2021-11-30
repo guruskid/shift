@@ -54,7 +54,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/data', 'Api\BillsPaymentController@data');
         Route::post('/buy-data', 'Api\BillsPaymentController@buyData');
 
-        
+
         // Data
         Route::get('/cable', 'Api\BillsPaymentController@cable');
         Route::post('/recharge-cable', 'Api\BillsPaymentController@rechargeCable');
@@ -122,7 +122,8 @@ Route::group(['prefix' => 'v1'], function () {
 
             Route::POST('/create', 'Api\BtcWalletController@create');
             Route::GET('/balance', 'Api\BtcWalletController@balance');
-            Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');
+            Route::GET('/send-charges', 'Api\BtcWalletController@fees');
+            Route::get('/send-charges/{address}/{amount}', 'BtcWalletController@fees');
             Route::GET('/transactions', 'Api\BitcoinWalletController@transactions');
             Route::POST('/trade', 'BtcWalletController@sell');
             Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url

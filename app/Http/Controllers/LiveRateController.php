@@ -22,6 +22,7 @@ class LiveRateController extends Controller
         $eth_rate -= $tp;
 
         return $eth_rate;
+    }
 
     public static function btcRate()
     {
