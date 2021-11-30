@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\GeneralTemplateOne;
+use App\NairaWallet;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
@@ -144,6 +145,8 @@ class TradeController extends Controller
         $user_wallet->amount -= $request->amount;
         $user_wallet->save();
 
+
+
         $nt = new NairaTransaction();
         $nt->reference = $ref;
         $nt->amount = $request->amount;
@@ -161,6 +164,12 @@ class TradeController extends Controller
         $nt->dr_user_id = 1;
         $nt->status = 'pending';
         $nt->save();
+
+        //Transfer the charges
+        $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        $transfer_charges_wallet->amount += $nt->charge;
+        $transfer_charges_wallet->save();
+
         //? how do i get bank name and Pay-bridge Agent
         $title = 'PAY-BRIDGE WITHDRAWAL
         ';
