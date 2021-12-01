@@ -16,6 +16,12 @@ use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
+//! things to ask
+/**
+ * todo: 1. pb withdrawal success where is the agent viewing and accepting transactions 
+ * ?things that will be worked on withdrawal pending success and deposit success.
+ * ?withdrawal pending is after 1 hour of no action withdrawal cancelled by system after 3 days of no action 
+ */
 class TradeController extends Controller
 {
     public function agents()
@@ -161,15 +167,14 @@ class TradeController extends Controller
         $nt->dr_user_id = 1;
         $nt->status = 'pending';
         $nt->save();
-        //? how do i get bank name and Pay-bridge Agent
-        $title = 'PAY-BRIDGE WITHDRAWAL 
+        $title = 'PAY-BRIDGE WITHDRAWAL(pending)
         ';
         $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
         <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
-        <b style='color: 666eb6'>Bank Name: Dantown</b><br>
+        <b style='color: 666eb6'>Bank Name: ".$agent->accounts->bank_name."</b><br>
         <b style='color: 666eb6'>Status:<span style='color: red'>pending</span></b><br>
         <b style='color: 666eb6'>Reference No : ".$ref."</b><br>
-        <b style='color: 666eb6'>Date: ".now()."</b><br>
+        <b style='color: 666eb6'>Date: ".date("Y-m-d; h:ia")."</b><br>
         <b style='color: 666eb6'>Account Balance: NGN".Auth::user()->nairaWallet->amount."</b><br>
         <b></b><br><br>
         ";

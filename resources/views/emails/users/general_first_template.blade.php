@@ -9,6 +9,13 @@
 @if (strlen($name) > 1)
     <h2 style="color: #000070; font-size:20px;"> Hello {{$name}},</h2>
 @endif --}}
+{{-- incase the nams has a colon --}}
+@if ( strpos($name,','))
+    @php
+        $name = explode(',', $name);
+        $name = $name[0];
+    @endphp
+@endif
 <h2 style="font-weight: normal"> Dear {{$name}},</h2>
 <p style="font-size: 16px">
 @php

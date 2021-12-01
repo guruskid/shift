@@ -11,6 +11,8 @@ use App\NairaTransaction;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\GeneralTemplateOne;
+use Illuminate\Support\Facades\Mail;
 
 class TradeNairaController extends Controller
 {
@@ -60,13 +62,16 @@ class TradeNairaController extends Controller
     public function agentTransactions(User $user)
     {
         $transactions = $user->agentNairaTrades()->orderBy('created_at','asc')->paginate(20);
-
+        // dd($transactions[4]->type == "withdrawal");
         foreach ($transactions as $t) {
-            if ($t->type == 'withdrawal') {
+            if ($t->type == "withdrawal") {
                 $a = Auth::user($t->user_id)->accounts->where('id',$t->account_id)->first();
-                $account = $a['account_name'].', '.$a['bank_name'].', '.$a['account_number'];
-                $t->acct_details = $account; 
-            }
+                if(isset($a)){
+                    $account = $a['account_name'].', '.$a['bank_name'].', '.$a['account_number'];
+                    $t->acct_details = $account; 
+            }   
+                }
+
         }
 
         $show_limit = true;
@@ -119,7 +124,7 @@ class TradeNairaController extends Controller
     }
 
     public function confirm(Request $request, NairaTrade $transaction)
-    {
+    {   
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
@@ -146,6 +151,24 @@ class TradeNairaController extends Controller
 
         $transaction->status = 'success';
         $transaction->save();
+        //?mail for deposit successfull
+        $title = 'PAY-BRIDGE DEPOSIT SUCCESSFUL
+        ';
+        $body ="Your naria wallet has been credited with <b>NGN".number_format($transaction->amount)."</b><br><br>
+        <b style='color:00070'>
+        Reference Number: $transaction->reference<br><br>
+        Date: ".date("Y-m-d; h:ia")."<br><br>
+        Account Balance: NGN ".number_format($user_wallet->amount)." 
+        </b>";
+
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = explode(' ', $name);       
+        $firstname = ucfirst($name[0]);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return back()->with(['success' => 'Transaction confirmed']);
     }
@@ -173,6 +196,29 @@ class TradeNairaController extends Controller
 
         $transaction->status = 'success';
         $transaction->save();
+        //? mail for withdrawal
+        $title = 'PAY-BRIDGE WITHDRAWAL(SUCCESSFUL)
+        ';
+        $body ="You have successfully withdrawn the sum of ".number_format($transaction->amount)." to ".$user->accounts->first()->account_name."<br>
+        (".$user->accounts->first()->bank_name.", ".$user->accounts->first()->account_number." ). <br><br>
+        <b style='color:00070'>
+            Pay-bridge Agent: ".Auth::user()->first_name."<br><br>
+            Bank Name: ".Auth::user()->accounts->first()->bank_name."<br><br>
+            Status: <span style='color:green'>success</span><br><br>
+            Reference Number: $transaction->reference <br><br>
+            Date: ".date("Y-m-d; h:ia")."<br><br>
+            Account Balance: ".number_format($user_wallet->amount)."
+        </b>
+        ";
+
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = explode(' ', $name);       
+        $firstname = ucfirst($name[0]);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return back()->with(['success' => 'Transaction confirmed']);
     }
