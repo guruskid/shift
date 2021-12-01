@@ -96,7 +96,7 @@
                 }
             },
             getStat() {
-                axios.get("/trade_naira_api/user/get_stat").then(response => {
+                axios.get("/trade_naira_web/user/get_stat").then(response => {
                     if (response.data) {
                         this.pending_withdrawal = response.data.pending_withdrawal
                         this.pending_deposit = response.data.pending_deposit
@@ -116,7 +116,7 @@
                     swal('Error!', "You currently have a pending deposit", 'error')
                     return;
                 }
-                axios.get("/trade_naira_api/user/agents").then(response => {
+                axios.get("/trade_naira_web/user/agents").then(response => {
                     if (response.data['success']) {
                         this.account_name = response.data.data[0].accounts[0].account_name
                         this.account_number = response.data.data[0].accounts[0].account_number
@@ -134,7 +134,7 @@
             completeDeposit() {
                 $("#loader-d").show()
                 $('#complete_deposit').prop('disabled', true)
-                axios.post("/trade_naira_api/user/complete_deposit", {
+                axios.post("/trade_naira_web/user/complete_deposit", {
                     agent_id: this.agent_id,
                     amount: this.amount,
                     // pin: this.pin
@@ -175,7 +175,7 @@
 
                     if (distance < 0) {
                         clearInterval(x);
-                        document.getElementById("timer").innerHTML = "EXPIRED";
+                        document.getElementById("timer-d").innerHTML = "EXPIRED";
                     }
                 }, 1000);
             }

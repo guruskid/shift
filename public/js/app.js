@@ -4993,7 +4993,7 @@ __webpack_require__.r(__webpack_exports__);
     getStat: function getStat() {
       var _this = this;
 
-      axios.get("/trade_naira_api/user/get_stat").then(function (response) {
+      axios.get("/trade_naira_web/user/get_stat").then(function (response) {
         if (response.data) {
           _this.pending_withdrawal = response.data.pending_withdrawal;
           _this.pending_deposit = response.data.pending_deposit;
@@ -5018,7 +5018,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      axios.get("/trade_naira_api/user/agents").then(function (response) {
+      axios.get("/trade_naira_web/user/agents").then(function (response) {
         if (response.data['success']) {
           _this2.account_name = response.data.data[0].accounts[0].account_name;
           _this2.account_number = response.data.data[0].accounts[0].account_number;
@@ -5036,7 +5036,7 @@ __webpack_require__.r(__webpack_exports__);
     completeDeposit: function completeDeposit() {
       $("#loader-d").show();
       $('#complete_deposit').prop('disabled', true);
-      axios.post("/trade_naira_api/user/complete_deposit", {
+      axios.post("/trade_naira_web/user/complete_deposit", {
         agent_id: this.agent_id,
         amount: this.amount // pin: this.pin
 
@@ -5073,7 +5073,7 @@ __webpack_require__.r(__webpack_exports__);
 
         if (distance < 0) {
           clearInterval(x);
-          document.getElementById("timer").innerHTML = "EXPIRED";
+          document.getElementById("timer-d").innerHTML = "EXPIRED";
         }
       }, 1000);
     }
@@ -5342,7 +5342,7 @@ __webpack_require__.r(__webpack_exports__);
     getStat: function getStat() {
       var _this = this;
 
-      axios.get("/trade_naira_api/user/get_stat").then(function (response) {
+      axios.get("/trade_naira_web/user/get_stat").then(function (response) {
         if (response.data) {
           _this.pending_withdrawal = response.data.pending_withdrawal;
           _this.pending_deposit = response.data.pending_deposit;
@@ -5352,7 +5352,7 @@ __webpack_require__.r(__webpack_exports__);
     getAgent: function getAgent() {
       var _this2 = this;
 
-      axios.get("/trade_naira_api/user/agents").then(function (response) {
+      axios.get("/trade_naira_web/user/agents").then(function (response) {
         if (response.data['success']) {
           _this2.account_name = response.data.data[0].accounts[0].account_name;
           _this2.account_number = response.data.data[0].accounts[0].account_number;
@@ -5382,7 +5382,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      axios.get("/trade_naira_api/user/accounts").then(function (response) {
+      axios.get("/trade_naira_web/user/accounts").then(function (response) {
         _this3.accounts = response.data.data;
         $('#w-naira-form').hide();
         $('#account-list').show();
@@ -5403,7 +5403,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      axios.post("/trade_naira_api/user/complete_withdrawal", {
+      axios.post("/trade_naira_web/user/complete_withdrawal", {
         agent_id: this.agent_id,
         amount: this.amount,
         pin: this.pin,
@@ -68852,8 +68852,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/winston/Desktop/Whitehat_innovative/clients/Dantown/dantownms/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/winston/Desktop/Whitehat_innovative/clients/Dantown/dantownms/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\godantown\app_dantownms_prod\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\godantown\app_dantownms_prod\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

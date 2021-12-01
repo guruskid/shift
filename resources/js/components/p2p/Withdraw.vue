@@ -88,7 +88,7 @@
             },
 
             getStat() {
-                axios.get("/trade_naira_api/user/get_stat").then(response => {
+                axios.get("/trade_naira_web/user/get_stat").then(response => {
                     if (response.data) {
                         this.pending_withdrawal = response.data.pending_withdrawal
                         this.pending_deposit = response.data.pending_deposit
@@ -97,7 +97,7 @@
             },
 
             getAgent() {
-                axios.get("/trade_naira_api/user/agents").then(response => {
+                axios.get("/trade_naira_web/user/agents").then(response => {
                     if (response.data['success']) {
                         this.account_name = response.data.data[0].accounts[0].account_name
                         this.account_number = response.data.data[0].accounts[0].account_number
@@ -125,7 +125,7 @@
                     swal('Error!', "You currently have a pending withdrawal", 'error')
                     return;
                 }
-                axios.get("/trade_naira_api/user/accounts").then(response => {
+                axios.get("/trade_naira_web/user/accounts").then(response => {
                     this.accounts = response.data.data;
                     $('#w-naira-form').hide()
                     $('#account-list').show()
@@ -146,7 +146,7 @@
                     $('#complete_withdrawal').removeAttr('disabled')
                     return;
                 }
-                axios.post("/trade_naira_api/user/complete_withdrawal", {
+                axios.post("/trade_naira_web/user/complete_withdrawal", {
                     agent_id: this.agent_id,
                     amount: this.amount,
                     pin: this.pin,
