@@ -92,7 +92,7 @@ class TradeNairaController extends Controller
 
     public function agentTransactions(User $user)
     {
-        $transactions = $user->agentNairaTrades()->orderBy('created_at', 'asc')->paginate(20);
+        $transactions = $user->agentNairaTrades()->orderBy('created_at', 'desc')->paginate(20);
 
         foreach ($transactions as $t) {
             if ($t->type == 'withdrawal') {
