@@ -5018,11 +5018,11 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      axios.get("/trade_naira_web/user/agents").then(function (response) {
+      axios.get("/trade_naira_web/user/agents?type=deposit").then(function (response) {
         if (response.data['success']) {
-          _this2.account_name = response.data.data[0].accounts[0].account_name;
-          _this2.account_number = response.data.data[0].accounts[0].account_number;
-          _this2.bank_name = response.data.data[0].accounts[0].bank_name;
+          _this2.account_name = response.data.data[0].accounts.account_name;
+          _this2.account_number = response.data.data[0].accounts.account_number;
+          _this2.bank_name = response.data.data[0].accounts.bank_name;
           _this2.agent_id = response.data.data[0].id;
           $('.deposit-amt-form').hide();
           $('.agent-form').show();
@@ -5352,11 +5352,11 @@ __webpack_require__.r(__webpack_exports__);
     getAgent: function getAgent() {
       var _this2 = this;
 
-      axios.get("/trade_naira_web/user/agents").then(function (response) {
+      axios.get("/trade_naira_web/user/agents?type=withdrawal").then(function (response) {
         if (response.data['success']) {
-          _this2.account_name = response.data.data[0].accounts[0].account_name;
-          _this2.account_number = response.data.data[0].accounts[0].account_number;
-          _this2.bank_name = response.data.data[0].accounts[0].bank_name;
+          _this2.account_name = response.data.data[0].accounts.account_name;
+          _this2.account_number = response.data.data[0].accounts.account_number;
+          _this2.bank_name = response.data.data[0].accounts.bank_name;
           _this2.agent_id = response.data.data[0].id; // $('.deposit-amt-form').hide()
           // $('.agent-form').show()
         } else {

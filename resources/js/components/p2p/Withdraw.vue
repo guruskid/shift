@@ -97,11 +97,11 @@
             },
 
             getAgent() {
-                axios.get("/trade_naira_web/user/agents").then(response => {
+                axios.get("/trade_naira_web/user/agents?type=withdrawal").then(response => {
                     if (response.data['success']) {
-                        this.account_name = response.data.data[0].accounts[0].account_name
-                        this.account_number = response.data.data[0].accounts[0].account_number
-                        this.bank_name = response.data.data[0].accounts[0].bank_name
+                        this.account_name = response.data.data[0].accounts.account_name
+                        this.account_number = response.data.data[0].accounts.account_number
+                        this.bank_name = response.data.data[0].accounts.bank_name
                         this.agent_id = response.data.data[0].id
                         // $('.deposit-amt-form').hide()
                         // $('.agent-form').show()

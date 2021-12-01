@@ -10,6 +10,7 @@ use App\NairaTrade;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\User;
+use App\PayBridgeAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -48,6 +49,29 @@ class TradeNairaController extends Controller
         }
 
         return view('admin.trade_naira.transactions', compact('transactions', 'show_limit', 'banks', 'account'));
+    }
+
+    public function accounts() {
+        $accounts = PayBridgeAccount::all();
+        return view('admin.trade_naira.accounts', compact('accounts'));
+    }
+
+    public function addAccount(Request $request) {
+        $data = $request->except('_token');
+        PayBridgeAccount::create($data);
+        return redirect()->back()->with(["success" => 'Account added']);
+    }
+
+    public function updateAccount(Request $request) {
+        $data = $request->except('_token');
+        $account = PayBridgeAccount::find($request['id']);
+        $account->account_name = $request['account_name'];
+        $account->bank_name = $request['bank_name'];
+        $account->account_number = $request['account_number'];
+        $account->account_type = $request['account_type'];
+        $account->status = $request['status'];
+        $account->save();
+        return redirect()->back()->with(["success" => 'Account Updated']);
     }
 
     public function updateBankDetails(Request $request)

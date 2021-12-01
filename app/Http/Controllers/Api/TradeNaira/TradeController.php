@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\GeneralTemplateOne;
 use App\NairaWallet;
+use App\PayBridgeAccount;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
@@ -39,6 +40,7 @@ class TradeController extends Controller
     }
 
     public function getAgent(Request $request) {
+        $transactiontype = $request['type'];
 
         $user = Auth::user();
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
@@ -47,6 +49,8 @@ class TradeController extends Controller
         $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id','first_name','last_name')->inRandomOrder()->limit(1)->get();
         $user_wallet = $user->nairaWallet;
 
+        $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => $transactiontype])->first();
+
         $user_data = [
             'total_withdrawn_today' => $withdrawalToday,
             'total_withdrawn_this_month' => $withdrawalThisMonth,
@@ -54,7 +58,10 @@ class TradeController extends Controller
             'monthly_max' => $user->monthly_max
         ];
 
+        unset($agent[0]['accounts']);
+
         $agent[0]['user'] = $user_data;
+        $agent[0]['accounts'] = $account;
 
         return response()->json([
             'success' => true,
