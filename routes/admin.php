@@ -68,6 +68,9 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
         Route::get('/', 'TradeNairaController@index')->name('admin.trade-naira.index');
         Route::get('/agent-transactions/{user}', 'TradeNairaController@agentTransactions')->name('p2p.agent-transactions');
         Route::get('/accounts', 'TradeNairaController@accounts')->name('p2p.accounts');
+        
+        Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
+        Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
     });
 
     //Eth
@@ -113,8 +116,6 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::put('/cancel-trade/{transaction}', 'TradeNairaController@declineTrade')->name('admin.naira-p2p.cancel-trade');
         Route::post('/update-bank-details', 'TradeNairaController@updateBankdetails')->name('agent.update-bank');
 
-        Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
-        Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
     });
 
 });

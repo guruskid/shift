@@ -160,7 +160,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                 </tbody>
 
                             </table>
-                            {{$transactions->links()}}
+                            {{-- {{$transactions->links()}} --}}
                         </div>
                     </div>
                 </div>
