@@ -48,7 +48,7 @@
         <a href="{{route('p2p.accounts')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="cash-outline"></ion-icon>
-                <span>Pay Birdge Accounts <span class="badge badge-warning">New</span></span>
+                <span>Pay Bridge Accounts <span class="badge badge-warning">New</span></span>
             </div>
         </a>
     </li>
