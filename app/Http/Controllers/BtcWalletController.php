@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RestApis\Blockchain\Constants;
 use App\Mail\GeneralTemplateOne;
+use Illuminate\Support\Facades\Mail;
 
 class BtcWalletController extends Controller
 {
