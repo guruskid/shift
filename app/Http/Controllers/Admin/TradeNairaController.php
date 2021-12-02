@@ -128,7 +128,7 @@ class TradeNairaController extends Controller
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
-
+        
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
 
@@ -178,9 +178,10 @@ class TradeNairaController extends Controller
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
-
+        
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
+        $Agent = User::find($transaction->agent_id);
 
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
@@ -202,8 +203,8 @@ class TradeNairaController extends Controller
         $body ="You have successfully withdrawn the sum of ".number_format($transaction->amount)." to ".$user->accounts->first()->account_name."<br>
         (".$user->accounts->first()->bank_name.", ".$user->accounts->first()->account_number." ). <br><br>
         <b style='color:00070'>
-            Pay-bridge Agent: ".Auth::user()->first_name."<br><br>
-            Bank Name: ".Auth::user()->accounts->first()->bank_name."<br><br>
+            Pay-bridge Agent: ".$Agent->first_name."<br><br>
+            Bank Name: ".$Agent->accounts->first()->bank_name."<br><br>
             Status: <span style='color:green'>success</span><br><br>
             Reference Number: $transaction->reference <br><br>
             Date: ".date("Y-m-d; h:ia")."<br><br>
