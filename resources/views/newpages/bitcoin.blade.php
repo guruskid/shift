@@ -107,7 +107,7 @@
                                         <div class="text-center text-muted mb-3 mt-3 mt-lg-1"
                                             style="margin-top: -10px;">Buy or sell
                                             cryptocurrency in less than a minute
-                                                
+
                                         </div>
 
 
@@ -115,7 +115,7 @@
                                             {{-- Sell --}}
 
                                             @if($sell_btc_setting['settings_value'] == 1)
-                                                <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time - $tp }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
+                                                <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
                                             @else
 
                                                 <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$sell_btc_setting['notice']}}</h4>

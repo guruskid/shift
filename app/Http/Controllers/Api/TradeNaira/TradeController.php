@@ -88,7 +88,6 @@ class TradeController extends Controller
     }
 
     public function completeWihtdrawal(Request $request) {
-        \Log::info($request->all());
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'required',
             'amount'   => 'required',
