@@ -53,9 +53,9 @@ $setting_airtime = \App\Http\Controllers\GeneralSettings::getSetting('AIRTIME_BU
     <link href=" {{asset('user_main.css')}} " rel="stylesheet">
     {{-- <link href=" {{asset('newpages/css/main.css')}} " rel="stylesheet"> --}}
     {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
-    <link href=" {{asset('custom.css?v={{ env('APP_STATIC_FILES_VERSION') }}')}} " rel="stylesheet">
-    <link href=" {{asset('user_assets/css/responsive-fixes.css?v={{ env('APP_STATIC_FILES_VERSION') }}')}} " rel="stylesheet">
-    <link href=" {{asset('user_assets/css/main.css?v={{ env('APP_STATIC_FILES_VERSION') }}')}} " rel="stylesheet">
+    <link href=" {{asset('custom.css?v=3.0')}} " rel="stylesheet">
+    <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
+    <link href=" {{asset('user_assets/css/main.css?v=80')}} " rel="stylesheet">
     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> --}}
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
@@ -478,7 +478,7 @@ $setting_airtime = \App\Http\Controllers\GeneralSettings::getSetting('AIRTIME_BU
     @endif
 
     <script src="/js/app.js?v={{ env('APP_STATIC_FILES_VERSION') }}"></script>
-    <script src="{{asset('assets/scripts/main.js?v={{ env('APP_STATIC_FILES_VERSION') }}')}} "></script>
+    <script src="{{asset('assets/scripts/main.js')}} "></script>
     <script src="{{asset('js/jquery-3.2.1.min.js')}} "></script>
     <script src="{{asset('js/popper.min.js')}} "></script>
     <script src="{{asset('js/bootstrap.min.js')}} "></script>
