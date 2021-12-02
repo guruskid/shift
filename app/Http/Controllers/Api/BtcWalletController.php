@@ -197,7 +197,7 @@ class BtcWalletController extends Controller
         $btc_wallet->usd = $btc_wallet->balance  * $btc_rate;
 
 
-        
+
         $btc_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         return response()->json([
