@@ -319,7 +319,7 @@ class UserController extends Controller
             if (!Auth::user()->nairaWallet || $r->pay_with != 'wallet') {
                 return response()->json([
                     'success' => false,
-                    'msg' => 'Please create a Dantown wallet before initiating a buy ransaction',
+                    'msg' => 'Please create a Dantown wallet before initiating a buy transaction',
                 ]);
             }
         }
@@ -443,9 +443,12 @@ class UserController extends Controller
 
             $btn_text = '';
             $btn_url = '';
+            
+            $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+            $name = explode(' ', $name);
+            $firstname = ucfirst($name[0]); 
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-            $name = Auth::user()->first_name;
-            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
 
             }
 
