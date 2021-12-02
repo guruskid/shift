@@ -53,3 +53,17 @@ TERMII_SMS_URL=https://termii.com/api/sms
 TERMII_API_KEY=TLVD3ug4Pc42zanrkEdR2injpxM2nYFdtk8y17MsljST4Mvz1AO2A4eEwlwLeq
 
 BITCOIN_WALLET_API_KEY=04551bdcdff70b9c8a8a398cb9a89eb9bee24502
+
+VTPASS_USERNAME=dantownrec2@gmail.com
+VTPASS_PASSWORD=D@Nto99btc
+VTPASS_SANDBOX_USERNAME=remitabills@gmail.com
+VTPASS_SANDBOX_PASSWORD=80802472@Bills
+
+LIVE_VTPASS_GET_PRODUCTS_URL=https://vtpass.com/api/services?identifier=
+LIVE_VTPASS_GET_VARIATIONS_URL=https://vtpass.com/api/service-variations?serviceID=
+LIVE_VTPASS_MERCHANT_VERIFICATION_URL=https://vtpass.com/api/merchant-verify
+SANDBOX_VTPASS_GET_PRODUCTS_URL=https://sandbox.vtpass.com/api/services?identifier=
+SANDBOX_VTPASS_GET_VARIATIONS_URL=https://sandbox.vtpass.com/api/service-variations?serviceID=
+
+LIVE_VTPASS_PURCHASE_URL=https://vtpass.com/api/pay
+SANDBOX_VTPASS_PURCHASE_URL=https://sandbox.vtpass.com/api/pay

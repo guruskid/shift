@@ -126,7 +126,9 @@
 
             //Get transfer fees
             getFees(){
+
                 if(this.btc < 0 || this.address == '' || this.type == 2 ){
+
                     return false;
                 }
                 this.loading = true;
@@ -156,7 +158,7 @@
             },
 
             send(){
-                if (this.btc < 0) {
+                if (this.btc <= 0) {
                     swal('Oops', 'BTC amount should be greater than 0', 'error');
                     return false;
                 }

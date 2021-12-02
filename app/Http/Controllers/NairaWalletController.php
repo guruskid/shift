@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Bank;
 use App\Mail\DantownNotification;
+use App\Mail\GeneralTemplateOne;
 use App\Mail\WalletAlert;
 use App\NairaTransaction;
 use App\NairaWallet;
@@ -15,9 +16,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Support\Collection;
 
 class NairaWalletController extends Controller
 {
+    public function getAllTransactions()
+    {
+        $naira_transactions = Auth::user()->nairaTransactions()->orderBy('created_at','desc')->paginate(20)->all();
+        return response()->json([
+            'success' => true,
+            'data' => $naira_transactions
+        ]);
+        // $p2p_transactions = Auth::user()->nairaTrades()->select('amount','type','status','created_at')->get();
+        // $collected = $p2p_transactions->union($naira_transactions)->sortByDesc('created_at');
+        // $items = (collect($collected))->paginate(20);
+        // return array_values($items->all());
+    }
+
     public function create(Request $r)
     {
         $callback = route('recieve-funds.callback');
@@ -486,6 +501,19 @@ class NairaWalletController extends Controller
         if (Auth::user()->notificationSetting->wallet_email == 1) {
             // Mail::to(Auth::user()->email)->send(new WalletAlert($nt, 'debit'));
         }
+
+        $title = 'Withdrawal Successful';
+        $body = 'Your Dantown wallet has been debited with N' . $amount . ' for transfer to ' . $nt->cr_acct_name . ' desc: ' . $r->narration;
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+
 
         return back()->with(['success' => 'Your withdrawal order has been placed, it will be processed in 3-4 hours']);
     }

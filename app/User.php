@@ -113,6 +113,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Wallet::class)->where('currency_id', 1);
     }
 
+    public function ethWallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class)->where('currency_id', 2);
+    }
+
+
     public function nairaTrades()
     {
         return $this->hasMany(NairaTrade::class)->latest();

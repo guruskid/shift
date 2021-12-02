@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use \App\Http\Controllers\GeneralSettings;
+use App\Mail\GeneralTemplateOne;
 
 class TradeController extends Controller
 {
@@ -89,7 +90,7 @@ class TradeController extends Controller
         $btc_real_time = LiveRateController::btcRate();
 
 
-        $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id;
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
         ]);
@@ -97,16 +98,18 @@ class TradeController extends Controller
         $accounts = json_decode($res->getBody());
 
         $btc_wallet = Auth::user()->btcWallet;
-        $btc_wallet->balance = $accounts[0]->balance->availableBalance;
+        $btc_wallet->balance = $accounts->balance->availableBalance;
         $btc_wallet->usd = $btc_wallet->balance  * $btc_real_time;
 
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value;
 
         $sell_btc_setting = GeneralSettings::getSetting('SELL_BTC');
 
-        $buy_btc_settings = GeneralSettings::getSetting('BUY_BTC');
+        $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
-        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge',  'buy_sell', 'sell_btc_setting', 'buy_btc_settings']));
+
+        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
+
     }
 
     public function ethereum($card_id)
@@ -129,9 +132,9 @@ class TradeController extends Controller
             return back()->with(['error' => 'Invalid trade details']);
         }
 
-        /*  if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+         if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
-        } */
+        }
 
         if ($r->buy_sell == 1 && Auth::user()->nairaWallet->amount < $r->amount_paid) {
             return back()->with(['error' => 'Insufficient wallet balance to complete this transaction ']);
@@ -187,7 +190,17 @@ class TradeController extends Controller
         ]);
         if (Auth::user()->notificationSetting->trade_email == 1) {
             Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+
+            $title = 'Transaction Successful';
+
+            $btn_text = '';
+            $btn_url = '';
+
+            $name = Auth::user()->first_name;
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
         }
+
 
         return redirect()->route('user.transactions')->with(['success' => 'Transaction initiated']);
     }
@@ -248,6 +261,12 @@ class TradeController extends Controller
         ]);
         if (Auth::user()->notificationSetting->trade_email == 1) {
             Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+            $btn_text = '';
+            $btn_url = '';
+
+            $name = Auth::user()->first_name;
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
         }
 
         return redirect()->route('user.transactions');

@@ -1,5 +1,5 @@
 <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="bitcoin_wallet_send_tab">
-    {{-- @if($btc_withdrawal_setting['settings_value'] == 1) --}}
+    @if($send_btc_setting['settings_value'] == 1)
     <form action="{{ route('user.send-bitcoin') }}" method="post" class="disable-form"> @csrf
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
@@ -67,10 +67,10 @@
             </div>
         </div>
     </form>
-    {{-- @else
+    @else
     <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i>
-        {{$btc_withdrawal_setting['notice']}}</h4>
-    @endif --}}
+        {{$send_btc_setting['notice']}}</h4>
+    @endif
 </div>
 
 @section('scripts')

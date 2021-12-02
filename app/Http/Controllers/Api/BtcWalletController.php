@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Card;
 use App\CardCurrency;
+use App\CryptoRate;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -30,11 +31,7 @@ class BtcWalletController extends Controller
         // $btc_rate -= $tp;
         $btc_rate = LiveRateController::btcRate();
 
-        $card = Card::find(102);
-        $rates = $card->currency->first();
-        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
-        $usd_ngn = $rates->sell[0]->rate;
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         return response()->json([
             'success' => true,
@@ -200,10 +197,8 @@ class BtcWalletController extends Controller
         $btc_wallet->usd = $btc_wallet->balance  * $btc_rate;
 
 
-        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
-
-        $btc_ngn = $btc_wallet->usd * $rates->sell[0]->rate;
+        
+        $btc_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         return response()->json([
             'success' => true,

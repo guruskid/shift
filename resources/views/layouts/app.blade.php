@@ -86,6 +86,8 @@ $not = $nots->last();
     </script>
 
 
+    @yield('script-2')
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
 
     {{-- Data tables --}}
@@ -300,6 +302,7 @@ $not = $nots->last();
 
     @yield('scripts')
 
+
     <script type="text/javascript">
         const __st_id = (activity) => document.getElementById(activity)
 
@@ -326,6 +329,10 @@ $not = $nots->last();
                 hideit("yfailed")
                 console.log("this is working")
              }
+         }
+
+         const decline_reason = (selectedOption) => {
+            showit(selectedOption)
          }
 
 

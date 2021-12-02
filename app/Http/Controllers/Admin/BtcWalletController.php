@@ -177,6 +177,10 @@ class BtcWalletController extends Controller
             return back()->with(['error' => 'Incorrect wallet pin']);
         }
 
+        if (!Hash::check($data['password'], Auth::user()->password)) {
+            return back()->with(['error' => 'Incorrect password']);
+        }
+
         if ($request->wallet == 'hd') {
             $wallet = HdWallet::where('currency_id', 1)->first();
         } else {
