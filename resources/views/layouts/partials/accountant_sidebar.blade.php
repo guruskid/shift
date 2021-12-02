@@ -37,6 +37,17 @@
     </li>
     @endif
 
+    @if (Auth::user()->role == 889)
+        <li class="menu {{ Route::currentRouteName() == 'p2p.accounts' ? 'active' : '' }}  ">
+            <a href="{{route('p2p.accounts')}}"  aria-expanded="false" class="dropdown-toggle">
+                <div class="">
+                    <ion-icon name="cash-outline"></ion-icon>
+                    <span>Pay Birdge Accounts <span class="badge badge-warning">New</span></span>
+                </div>
+            </a>
+        </li>
+    @endif
+
     <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
         <a href="{{route('admin.naira-p2p')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -93,7 +104,7 @@
     </li>
 
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
-        <a href="{{route('admin.bitcoin-summary', 1)}}"  aria-expanded="false" class="dropdown-toggle">
+        <a href="{{route('admin.crypto-summary', 1)}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="logo-bitcoin"></ion-icon>
                 <span>Bitcoin Summary </span>

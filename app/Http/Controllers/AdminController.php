@@ -292,11 +292,11 @@ class AdminController extends Controller
     public function walletTransactions($id = null)
     {
         if ($id == null) {
-            $transactions = NairaTransaction::latest()->paginate(1000);
+            $transactions = NairaTransaction::latest()->orderBy('created_at','desc')->paginate(1000);
             $segment = 'All Wallet';
             $total = $transactions->sum('amount');
         } else {
-            $transactions = NairaTransaction::where('transaction_type_id', $id)->paginate(1000);
+            $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at','desc')->paginate(1000);
             $segment = TransactionType::find($id)->name;
             $total = $transactions->sum('amount');
         }

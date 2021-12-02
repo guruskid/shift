@@ -44,6 +44,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'p2p.accounts' ? 'active' : '' }}  ">
+        <a href="{{route('p2p.accounts')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="cash-outline"></ion-icon>
+                <span>Pay Bridge Accounts <span class="badge badge-warning">New</span></span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">

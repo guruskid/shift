@@ -19,7 +19,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 });
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName']], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth']], function () {
     Route::get('/agents', 'TradeController@getAgent');
     Route::get('/transactions', 'TradeController@transactions');
     Route::post('/buy_naira', 'TradeController@buyNaira');

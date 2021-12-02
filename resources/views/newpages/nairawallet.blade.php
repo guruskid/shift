@@ -132,14 +132,14 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                     <span class="d-block"
                                                         style="color: #000000;font-size: 14px;">Transfer</span>
                                                     </a> --}}
-                                                    <a id="naira_withdraw"
+                                                    {{-- <a id="naira_withdraw"
                                                         class="btn naira_menu walletpage_menu-active">
                                                         <span class="d-block">
                                                             <img src="{{asset('svg/naira-withdraw-icon.svg')}}" alt="">
                                                         </span>
                                                         <span class="d-block"
                                                             style="color: #000000;font-size: 14px;">Withdraw</span>
-                                                    </a>
+                                                    </a> --}}
                                                     {{--  <a id="naira_deposit" class="btn naira_menu">
                                                         <span class="d-block">
                                                             <img src="{{asset('svg/naira-deposit-icon.svg')}}" alt="">
@@ -153,7 +153,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                 <div class="text-center p-3 text-white h5 rounded" style="background-color: #000070">
                                                     <h4><i class="fas fa-info-circle"></i> Notice:</h4>
                                                     Dantown have partnered with Pay-bridge for naira payments.
-                                                    please download the Dantown app to withdraw 
+                                                    please download the Dantown app to withdraw
                                                 </div>
                                                 <div class="text-center p-3 text-white h5 rounded">
                                                     <a href="https://bit.ly/3ngtcEN" class="text-center p-1 text-white h5 rounded" style="background-color: #000070">Download App</a>
