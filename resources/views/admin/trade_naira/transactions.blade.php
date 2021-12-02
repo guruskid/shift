@@ -208,7 +208,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="">Minimum</label>
-                                <input type="number" name="min" value="{{ Auth::user()->agentLimits->min }}" required
+                                <input type="number" name="min" value="{{ isset(Auth::user()->agentLimits->min) ? Auth::user()->agentLimits->min : '' }}" required
                                     class="form-control">
                             </div>
                         </div>
@@ -216,7 +216,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="">Maximum</label>
-                                <input type="number" name="max" value="{{ Auth::user()->agentLimits->max }}" required
+                                <input type="number" name="max" value="{{ isset(Auth::user()->agentLimits->max) ? Auth::user()->agentLimits->max : '' }}" required
                                     class="form-control">
                             </div>
                         </div>
