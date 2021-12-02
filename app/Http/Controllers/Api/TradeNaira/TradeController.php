@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\GeneralTemplateOne;
+use App\NairaWallet;
+use App\PayBridgeAccount;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
@@ -44,13 +46,16 @@ class TradeController extends Controller
     }
 
     public function getAgent(Request $request) {
+        $transactiontype = $request['type'];
 
         $user = Auth::user();
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
-        
+
         $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id','first_name','last_name')->inRandomOrder()->limit(1)->get();
         $user_wallet = $user->nairaWallet;
+
+        $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => $transactiontype])->first();
 
         $user_data = [
             'total_withdrawn_today' => $withdrawalToday,
@@ -59,7 +64,10 @@ class TradeController extends Controller
             'monthly_max' => $user->monthly_max
         ];
 
+        unset($agent[0]['accounts']);
+
         $agent[0]['user'] = $user_data;
+        $agent[0]['accounts'] = $account;
 
         return response()->json([
             'success' => true,
@@ -81,7 +89,7 @@ class TradeController extends Controller
 
     public function completeWihtdrawal(Request $request) {
         $validator = Validator::make($request->all(), [
-            'agent_id'  => 'integer|required', 
+            'agent_id'  => 'integer|required',
             'amount'   => 'integer|required',
             'pin'      => 'integer|required|min:4'
         ]);
@@ -139,7 +147,7 @@ class TradeController extends Controller
         $txn->reference = $ref;
         $txn->user_id = Auth::user()->id;
         $txn->agent_id = $request->agent_id;
-        $txn->amount = $request->amount;
+        $txn->amount = $request->amount - 100;
         $txn->status = 'waiting';
         $txn->type = 'withdrawal';
         $txn->account_id = $request->account_id;
@@ -150,6 +158,8 @@ class TradeController extends Controller
         $user_wallet->amount -= $request->amount;
         $user_wallet->save();
 
+
+
         $nt = new NairaTransaction();
         $nt->reference = $ref;
         $nt->amount = $request->amount;
@@ -157,7 +167,7 @@ class TradeController extends Controller
         $nt->type = 'withdrawal';
         $nt->previous_balance = $user_wallet->amount;
         $nt->current_balance = $user_wallet->amount;
-        $nt->charge = 0;
+        $nt->charge = 100;
         $nt->transaction_type_id = 3;
         $nt->cr_wallet_id = $user_wallet->id;
         $nt->cr_acct_name = $user->first_name;
@@ -167,7 +177,16 @@ class TradeController extends Controller
         $nt->dr_user_id = 1;
         $nt->status = 'pending';
         $nt->save();
-        $title = 'PAY-BRIDGE WITHDRAWAL(pending)
+
+
+        //Transfer the charges
+        $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        $transfer_charges_wallet->amount += $nt->charge;
+        $transfer_charges_wallet->save();
+
+        //? how do i get bank name and Pay-bridge Agent
+        $title = 'PAY-BRIDGE WITHDRAWAL
+
         ';
         $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
         <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
@@ -195,7 +214,7 @@ class TradeController extends Controller
 
     public function completeDeposit(Request $request) {
         $validator = Validator::make($request->all(), [
-            'agent_id'  => 'integer|required', 
+            'agent_id'  => 'integer|required',
             'amount'   => 'integer|required'
         ]);
 
@@ -246,13 +265,13 @@ class TradeController extends Controller
         $nt->previous_balance = $user_wallet->amount;
         $nt->current_balance = $user_wallet->amount;
         $nt->charge = 0;
-        $nt->transaction_type_id = 3;
+        $nt->transaction_type_id = 1;
         $nt->cr_wallet_id = $user_wallet->id;
         $nt->cr_acct_name = $user->first_name;
         $nt->narration = 'Deposit ' . $ref;
         $nt->trans_msg = '';
-        $nt->cr_user_id = 1;
-        $nt->dr_user_id = $user->id;
+        $nt->dr_user_id = 1;
+        $nt->cr_user_id = $user->id;
         $nt->status = 'pending';
         $nt->save();
          $title = 'PAY-BRIDGE DEPOSIT
@@ -262,14 +281,14 @@ class TradeController extends Controller
          <b style='color: 666eb6'>Date: ".now()."</b><br>
          <b style='color: 666eb6'>Account Balance: NGN".Auth::user()->nairaWallet->amount."</b><br>
          ";
- 
+
          $btn_text = '';
          $btn_url = '';
- 
+
          $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
          $name = explode(' ', $name);
          $firstname = ucfirst($name[0]);
-         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        //  Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return response()->json([
             'success' => true,
@@ -394,7 +413,7 @@ class TradeController extends Controller
                 'message' => 'Incorrect Pin',
             ], 401);
         }
-       
+
         $ref = \Str::random(3).time();
         if ($agent->role != 777) {
             return response()->json([
