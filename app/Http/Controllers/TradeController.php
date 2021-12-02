@@ -108,7 +108,7 @@ class TradeController extends Controller
         $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
 
-        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
+        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
 
     }
 
