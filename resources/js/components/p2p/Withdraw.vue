@@ -168,6 +168,7 @@
                     $("#loader").hide()
                     $('#complete_withdrawal').removeAttr('disabled')
                 }).catch((error) => {
+                    console.log(error);
                     if (error.response) {
                         swal('An Error Occured!', error.response.message, 'error')
                     }

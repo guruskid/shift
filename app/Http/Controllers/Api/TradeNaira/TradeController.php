@@ -90,9 +90,9 @@ class TradeController extends Controller
     public function completeWihtdrawal(Request $request) {
         \Log::info($request->all());
         $validator = Validator::make($request->all(), [
-            'agent_id'  => 'integer|required',
-            'amount'   => 'integer|required',
-            'pin'      => 'integer|required|min:4'
+            'agent_id'  => 'required',
+            'amount'   => 'required',
+            'pin'      => 'required|min:4'
         ]);
 
         if ($validator->fails()) {
