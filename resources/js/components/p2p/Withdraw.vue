@@ -153,6 +153,7 @@
                     pin: this.pin,
                     account_id: this.account_id
                 }).then(response => {
+                    console.log(response);
                     if (response.data['success']) {
                         swal('Good Job!', response.data.message, 'success')
                         window.location.reload()
