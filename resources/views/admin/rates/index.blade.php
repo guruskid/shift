@@ -40,17 +40,7 @@
     {{-- Content Starts here --}}
     <div class="app-main__outer">
         <div class="app-main__inner">
-            {{-- <div class="app-page-title">
-                <div class="page-title-wrapper">
-                    <div class="page-title-heading">
-                        <div class="page-title-icon">
-                            <i class="pe-7s-graph1 icon-gradient bg-warm-flame">
-                            </i>
-                        </div>
-                        <div>Rates</div>
-                    </div>
-                </div>
-            </div> --}}
+
 
             {{-- For Super Admins --}}
             @if (in_array(Auth::user()->role, [999, 666] ))
@@ -174,6 +164,24 @@
                 </div>
             </div>
 
+            <div class="row mb-5">
+                <div class="col-md-12">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <form action="{{ route('admin.usd.update') }}" method="POST"> @csrf
+                                    <div class="form-group">
+                                        <label for="">USD to NGN</label>
+                                        <input type="number" name="rate" value="{{ $usd_ngn }}" class="form-control">
+                                    </div>
+                                    <button class="btn btn-primary">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
@@ -195,7 +203,7 @@
                                             <div class="main-card card  mb-3">
                                                 <form action="{{ route('admin.rate.update') }}" method="POST">
                                                     <div class="card-header d-flex justify-content-between">
-                                                        <h6 class="col-lg-8">{{ $rate->card_name }} - - {{ $rate->currency_name }} - - {{ $rate->paymentMedium->name }}</h6> 
+                                                        <h6 class="col-lg-8">{{ $rate->card_name }} - - {{ $rate->currency_name }} - - {{ $rate->paymentMedium->name }}</h6>
                                                        @if(Auth()->user()->role == '999')
                                                             <div class="input-group col-lg-3">
                                                                 <input type="text" name="percentage_deduction" class="form-control"
@@ -247,7 +255,7 @@
                                             <div class="main-card card  mb-3">
                                                 <form action="{{ route('admin.rate.update') }}" method="POST">
                                                     <div class="card-header d-flex justify-content-between">
-                                                        <h6 class="col-lg-8">{{ $rate->card_name }} - - {{ $rate->currency_name }} - - {{ $rate->paymentMedium->name }}</h6> 
+                                                        <h6 class="col-lg-8">{{ $rate->card_name }} - - {{ $rate->currency_name }} - - {{ $rate->paymentMedium->name }}</h6>
                                                         @if(Auth()->user()->role == '999')
                                                             <div class="input-group col-lg-3">
                                                                 <input type="text" name="percentage_deduction" class="form-control"

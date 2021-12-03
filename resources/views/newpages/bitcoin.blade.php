@@ -115,7 +115,7 @@
                                             {{-- Sell --}}
 
                                             @if($sell_btc_setting['settings_value'] == 1)
-                                                <bitcoin-sell-component :rate="{{ $rates }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
+                                                <bitcoin-sell-component :rate="{{ $sell_rate }}" :real_btc="{{ $btc_real_time }}" :card_id="{{ $card->id }}"  :charge={{ $charge }} ></bitcoin-sell-component>
                                             @else
 
                                                 <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$sell_btc_setting['notice']}}</h4>
