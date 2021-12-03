@@ -20,9 +20,9 @@ use Carbon\Carbon;
 
 //! things to ask
 /**
- * todo: 1. pb withdrawal success where is the agent viewing and accepting transactions 
+ * todo: 1. pb withdrawal success where is the agent viewing and accepting transactions
  * ?things that will be worked on withdrawal pending success and deposit success.
- * ?withdrawal pending is after 1 hour of no action withdrawal cancelled by system after 3 days of no action 
+ * ?withdrawal pending is after 1 hour of no action withdrawal cancelled by system after 3 days of no action
  */
 class TradeController extends Controller
 {
@@ -89,9 +89,9 @@ class TradeController extends Controller
 
     public function completeWihtdrawal(Request $request) {
         $validator = Validator::make($request->all(), [
-            'agent_id'  => 'integer|required',
-            'amount'   => 'integer|required',
-            'pin'      => 'integer|required|min:4'
+            'agent_id'  => 'required',
+            'amount'   => 'required',
+            'pin'      => 'required|min:4'
         ]);
 
         if ($validator->fails()) {
@@ -117,9 +117,11 @@ class TradeController extends Controller
 
         $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $request->agent_id])->first();
 
+
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
 
         $agent['accounts'] = $account;
+
 
         if (empty($agent)) {
             return response()->json([
@@ -189,12 +191,12 @@ class TradeController extends Controller
         $transfer_charges_wallet->save();
 
         //? how do i get bank name and Pay-bridge Agent
-        $title = 'PAY-BRIDGE WITHDRAWAL
+        $title = 'PAY-BRIDGE WITHDRAWAL';
+        $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
 
-        ';
         $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
         <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
-        <b style='color: 666eb6'>Bank Name: ".$agent->accounts->bank_name."</b><br>
+        <b style='color: 666eb6'>Bank Name: ".$paybridge_account->bank_name."</b><br>
         <b style='color: 666eb6'>Status:<span style='color: red'>pending</span></b><br>
         <b style='color: 666eb6'>Reference No : ".$ref."</b><br>
         <b style='color: 666eb6'>Date: ".date("Y-m-d; h:ia")."</b><br>

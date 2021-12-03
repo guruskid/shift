@@ -55,7 +55,7 @@ $setting_airtime = \App\Http\Controllers\GeneralSettings::getSetting('AIRTIME_BU
     {{-- <link href=" {{asset('newpages/bootstrap/css/bootstrap.min.css')}} " rel="stylesheet"> --}}
     <link href=" {{asset('custom.css?v=3.0')}} " rel="stylesheet">
     <link href=" {{asset('user_assets/css/responsive-fixes.css')}} " rel="stylesheet">
-    <link href=" {{asset('user_assets/css/main.css?v=80')}} " rel="stylesheet">
+    <link href=" {{asset('user_assets/css/main.css?v='.env('APP_STATIC_FILES_VERSION')  )}} " rel="stylesheet">
     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> --}}
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 

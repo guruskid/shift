@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CryptoRate;
 use App\Setting;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -38,5 +39,11 @@ class LiveRateController extends Controller
 
         return $btc_rate;
 
+    }
+
+
+    public static function usdNgn()
+    {
+        return CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
     }
 }

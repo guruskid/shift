@@ -99,6 +99,7 @@
             getAgent() {
                 axios.get("/trade_naira_web/user/agents?type=withdrawal").then(response => {
                     if (response.data['success']) {
+                        console.log(response.data);
                         this.account_name = response.data.data[0].accounts.account_name
                         this.account_number = response.data.data[0].accounts.account_number
                         this.bank_name = response.data.data[0].accounts.bank_name
@@ -152,6 +153,7 @@
                     pin: this.pin,
                     account_id: this.account_id
                 }).then(response => {
+                    console.log(response);
                     if (response.data['success']) {
                         swal('Good Job!', response.data.message, 'success')
                         window.location.reload()
@@ -166,6 +168,7 @@
                     $("#loader").hide()
                     $('#complete_withdrawal').removeAttr('disabled')
                 }).catch((error) => {
+                    console.log(error);
                     if (error.response) {
                         swal('An Error Occured!', error.response.message, 'error')
                     }
