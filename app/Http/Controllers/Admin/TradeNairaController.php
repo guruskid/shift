@@ -38,7 +38,8 @@ class TradeNairaController extends Controller
         }
 
         $show_limit = true;
-        $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+        // $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+        $transactions = NairaTrade::orderBy('created_at', 'desc')->paginate(20);
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
 
