@@ -201,7 +201,7 @@
                                             </a>
                                         </div>
                                         <div class="col-6 col-md-4 my-1 my-md-3">
-                                            <a href="#">
+                                            <a href="{{url('user/airtime')}}">
                                                 <div
                                                     class="mx-2 asset_card_container py-3 py-0 d-flex flex-column justify-content-center align-items-center">
                                                     <span class="d-block text-center mb-4">
@@ -216,7 +216,7 @@
                                             </a>
                                         </div>
                                         <div class="col-6 col-md-4 my-1 my-md-3">
-                                            <a href="#">
+                                            <a href="{{url('user/pay-bills')}}">
                                                 <div
                                                     class="mx-2 asset_card_container py-3 py-0 d-flex flex-column justify-content-center align-items-center">
                                                     <span class="d-block text-center mb-4">

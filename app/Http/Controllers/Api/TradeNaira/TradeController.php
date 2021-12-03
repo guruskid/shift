@@ -117,6 +117,12 @@ class TradeController extends Controller
 
         $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $request->agent_id])->first();
 
+
+        $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
+
+        $agent['accounts'] = $account;
+
+
         if (empty($agent)) {
             return response()->json([
                 'success' => false,
@@ -173,8 +179,8 @@ class TradeController extends Controller
         $nt->cr_acct_name = $user->first_name;
         $nt->narration = 'Withdrawal ' . $ref;
         $nt->trans_msg = '';
-        $nt->cr_user_id = $user->id;
-        $nt->dr_user_id = 1;
+        $nt->cr_user_id = 1;
+        $nt->dr_user_id = $user->id;
         $nt->status = 'pending';
         $nt->save();
 
