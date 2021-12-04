@@ -73,11 +73,11 @@ class TradeController extends Controller
     {
         $card = Card::find($card_id);
         $rates = $card->currency->first();
-        $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
-        $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
-        $rates->buy = json_decode($buy->pivot->payment_range_settings);
+        // $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
+        // $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
         $sell_rate = LiveRateController::usdNgn();
 
