@@ -44,6 +44,158 @@ class AuthController extends Controller
         }
     }
 
+    public function checkForgotPasswordEmail(Request $r)
+    {
+        $validator = Validator::make($r->all(), [
+            'email' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $userCount = User::where('email', $r->email)->count();
+        $user = User::where('email', $r->email)->get();
+        if($userCount < 1){
+            return response()->json([
+                'success' => false,
+                'message' => 'Email does not exist',
+            ], 401);
+        }
+        // die($user[0]->email);
+        $this->verificationCodeEmail($user[0]->email, $user[0]->id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kindly check your email for your verification',
+        ], 401);
+    }
+
+
+    // checkForgotPasswordOtp
+
+
+    // public function forgotPassword(Request $r)
+    // {
+    //     $validator = Validator::make($r->all(), [
+    //         'new_password' => 'required|string|min:6'
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => $validator->errors(),
+    //         ], 401);
+    //     }
+
+    //     if (Hash::check($r->old_password, Auth::user()->password) == false) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Your current password does not match with the password you provided. Please try again.',
+    //         ]);
+    //     }
+
+    //     $user = Auth::user();
+    //     $user->password = Hash::make($r->new_password);
+    //     $user->save();
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => $user,
+    //     ]);
+    // }
+
+
+    public function checkForgotPasswordOtp(Request $r)
+    {
+        $user = User::where('email', $r->email)->get();
+        $validator = Validator::make($r->all(), [
+            'otp_code' => 'required',
+            'email' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $checkOtp = VerificationCode::where('verification_code', $r->otp_code)->where('user_id', $user[0]->id);
+        $countOtp = VerificationCode::where('verification_code', $r->otp_code)->where('user_id', $user[0]->id)->count();
+        if ($countOtp <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid reset password code'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Code verification was successful'
+        ]);
+    }
+
+    public function changePassword(Request $r)
+    {
+        $user = User::where('email', $r->email)->get();
+        $validator = Validator::make($r->all(), [
+            'email' => 'required',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $user = User::where('email', $r->email)->get();
+        $user = $user[0];
+        $user->password = Hash::make($r->password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'data' =>   'Password reset was successful',
+        ]);
+    }
+
+    public function updatePassword(Request $r)
+    {
+        $validator = Validator::make($r->all(), [
+            'old_password' => 'required',
+            'new_password' => 'required|string|min:6|different:old_password'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        if (Hash::check($r->old_password, Auth::user()->password) == false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your current password does not match with the password you provided. Please try again.',
+            ]);
+        }
+
+        $user = Auth::user();
+        $user->password = Hash::make($r->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $user,
+        ]);
+    }
+
     public function verificationCodeEmail($email, $userId)
     {
         $otpCode = rand(1000, 9999);
@@ -52,7 +204,7 @@ class AuthController extends Controller
             'verification_code' => $otpCode
         ]);
         $title = 'Email Verification Code';
-        $body = 'is your verification code. This code expires after 10 minutes';
+        $body = 'is your verification code. This code expires after 30 minutes';
         $btn_text = '';
         $btn_url = '';
         Mail::to($email)->send(new VerificationCodeMail($otpCode, $title, $body, $btn_text, $btn_url));
@@ -90,8 +242,6 @@ class AuthController extends Controller
             'external_id' => $external_id,
             'password' => Hash::make($input['password']),
         ]);
-
-
 
         // $user->sendEmailVerificationNotification();
 
@@ -165,8 +315,6 @@ class AuthController extends Controller
             'address' => $address_body[0]->address,
         ]);
 
-
-
         $title = 'Bitcoin Wallet created';
         $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';
         $not = Notification::create([
@@ -177,8 +325,12 @@ class AuthController extends Controller
 
         $this->verificationCodeEmail($user->email, $user->id);
 
+        $name = $user->first_name == " " ? $user->username : $user->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+
         $title = 'Welcome to Dantown,';
-        $body = 'Congratulations ' . $user->username . ' on signing up on Dantown.<br>
+        $body = 'Congratulations ' . $firstname . ' on signing up on Dantown.<br>
         We are excited to share this journey with you. A new world of boundless possibilities where you can trade cryptocurrencies and gift-cards with ease.
         <br><br>
 
@@ -188,8 +340,7 @@ class AuthController extends Controller
         $btn_text = '';
         $btn_url = '';
 
-        $name = $user->username;
-        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
         return response()->json([
@@ -222,34 +373,9 @@ class AuthController extends Controller
             ]);
         }
 
-        $user->update([
-            'email_verified_at' => now()
-        ]);
 
-        $title = 'LEVEL 1 VERIFICATION SUCCESSFUL';
-        $body = 'Congrats Kar-Chee, you have successfully completed your L1 verification. <br><br>
-                Below is a breakdown of level 1 privileges.<br>
-
-                Phone Number Verification<br>
-
-                Daily Withdrawal limit: NGN2000<br>
-
-                Montly withdrawal limit: NGN5000<br>
-
-                Crypto withdrawal limit: No crypto withdrawals<br>
-
-                Crypto deposit: Unlimited<br>
-
-                Transactions: Unlimited<br>
-        ';
-
-        $btn_text = '';
-        $btn_url = '';
-
-        $name = $user->first_name;
-
-
-        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+        $user->email_verified_at = now();
+        $user->save();
 
         return response()->json([
             'success' => true,
@@ -343,8 +469,8 @@ class AuthController extends Controller
                     "pin" => $r->otp
                 ],
             ]);
-            $body = json_decode($response->getBody()->getContents());
 
+            $body = json_decode($response->getBody()->getContents());
             if (!$body->verified || $body->verified != 'true') {
                 return response()->json([
                     'success' => false,
