@@ -71,7 +71,7 @@ class BillsPaymentController extends Controller
     }
 
     public function merchantVerify($serviceID,$billersCode) {
-        
+
         $response = [];
         if(!empty($serviceID) && !empty($billersCode)) {
             $post_data = [
@@ -84,14 +84,14 @@ class BillsPaymentController extends Controller
                 CURLOPT_HEADER => false,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_USERPWD=> env('VTPASS_USERNAME').':'.env('VTPASS_PASSWORD'),
-                CURLOPT_TIMEOUT=> 120, 
+                CURLOPT_TIMEOUT=> 120,
                 CURLOPT_POST=>true,
-                CURLOPT_POSTFIELDS=>$post_data  
+                CURLOPT_POSTFIELDS=>$post_data
             ]);
             $response = curl_exec($ch);
             curl_close($ch);
             $response = json_decode($response,true);
-            
+
             if(isset($response['code']) && $response['code'] != "000") {
                 $response = [];
             }else{
@@ -337,7 +337,7 @@ class BillsPaymentController extends Controller
                             "sms" => "Your cable subscription from Dantown was successful."
                         ],
                     ]);
-                    $body = json_decode($response_sms->getBody()->getContents());   
+                    $body = json_decode($response_sms->getBody()->getContents());
                 }
 
                 $title = 'Cable subscription';
@@ -498,12 +498,13 @@ class BillsPaymentController extends Controller
         $card = Card::find(102);
         $rates = $card->currency-> first();
 
-        $sell = CardCurrency::where([
-            'card_id' => 102,
-            'currency_id' => $rates->id,
-            'buy_sell' => 2])->first()->paymentMediums()->first();
-        $trade_rate = json_decode($sell->pivot->payment_range_settings);
-        $rate_naira = $trade_rate[0]->rate;
+        // $sell = CardCurrency::where([
+        //     'card_id' => 102,
+        //     'currency_id' => $rates->id,
+        //     'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $trade_rate = json_decode($sell->pivot->payment_range_settings);
+        $rate_naira = LiveRateController::usdNgn();
+
         $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
 
         $btc_rate = $res->data->amount;
