@@ -8,6 +8,7 @@ use App\NairaTrade;
 use App\NairaTradePop;
 use App\User;
 use App\Account;
+use App\Events\CustomNotification;
 use App\NairaTransaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -45,14 +46,15 @@ class TradeController extends Controller
         ]);
     }
 
-    public function getAgent(Request $request) {
+    public function getAgent(Request $request)
+    {
         $transactiontype = $request['type'];
 
         $user = Auth::user();
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
 
-        $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id','first_name','last_name')->inRandomOrder()->limit(1)->get();
+        $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->inRandomOrder()->limit(1)->get();
         $user_wallet = $user->nairaWallet;
 
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => $transactiontype])->first();
@@ -75,19 +77,22 @@ class TradeController extends Controller
         ]);
     }
 
-    public function getTodaysTotalTransactions($type) {
+    public function getTodaysTotalTransactions($type)
+    {
         $user = Auth::user();
-        $total = NairaTrade::where(['type' => $type, 'user_id' => $user->id,'status' => 'success'])->whereDay('created_at', date('d'))->select('amount')->sum('amount');
+        $total = NairaTrade::where(['type' => $type, 'user_id' => $user->id, 'status' => 'success'])->whereDay('created_at', date('d'))->select('amount')->sum('amount');
         return $total;
     }
 
-    public function getThisMonthTotalTransactions($type) {
+    public function getThisMonthTotalTransactions($type)
+    {
         $user = Auth::user();
-        $total = NairaTrade::where(['type' => $type, 'user_id' => $user->id,'status' => 'success'])->whereMonth('created_at', date('m'))->select('amount')->sum('amount');
+        $total = NairaTrade::where(['type' => $type, 'user_id' => $user->id, 'status' => 'success'])->whereMonth('created_at', date('m'))->select('amount')->sum('amount');
         return $total;
     }
 
-    public function completeWihtdrawal(Request $request) {
+    public function completeWihtdrawal(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'required',
             'amount'   => 'required',
@@ -115,7 +120,7 @@ class TradeController extends Controller
             ]);
         }
 
-        $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $request->agent_id])->first();
+        $agent = User::where(['role' => 777, 'status' => 'active', 'id' => $request->agent_id])->first();
 
 
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
@@ -146,7 +151,7 @@ class TradeController extends Controller
             ]);
         }
 
-        $ref = \Str::random(3).time();
+        $ref = \Str::random(3) . time();
         $charge = 100;
 
         //create TXN here
@@ -197,13 +202,13 @@ class TradeController extends Controller
         $title = 'PAY-BRIDGE WITHDRAWAL';
         $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
 
-        $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
-        <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
-        <b style='color: 666eb6'>Bank Name: ".$paybridge_account->bank_name."</b><br>
+        $body = "You have initiated a withdrawal of NGN" . $request->amount . " via Pay-bridge.<br><br>
+        <b style='color: 666eb6'>Pay-bridge Agent: " . $agent->first_name . "</b><br>
+        <b style='color: 666eb6'>Bank Name: " . $paybridge_account->bank_name . "</b><br>
         <b style='color: 666eb6'>Status:<span style='color: red'>pending</span></b><br>
-        <b style='color: 666eb6'>Reference No : ".$ref."</b><br>
-        <b style='color: 666eb6'>Date: ".date("Y-m-d; h:ia")."</b><br>
-        <b style='color: 666eb6'>Account Balance: NGN".Auth::user()->nairaWallet->amount."</b><br>
+        <b style='color: 666eb6'>Reference No : " . $ref . "</b><br>
+        <b style='color: 666eb6'>Date: " . date("Y-m-d; h:ia") . "</b><br>
+        <b style='color: 666eb6'>Account Balance: NGN" . Auth::user()->nairaWallet->amount . "</b><br>
         <b></b><br><br>
         ";
 
@@ -215,13 +220,20 @@ class TradeController extends Controller
         $firstname = ucfirst($name[0]);
         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
+        $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+        $message = '!!! Withdrawal Transaction !!!  A new Withdrawal transaction has been initiated ';
+        foreach ($accountants as $acct) {
+            broadcast(new CustomNotification($acct, $message))->toOthers();
+        }
+
         return response()->json([
             'success' => true,
             'message' => "Congratulations! You have successfully withdrawn the sum of $request->amount from your Dantown naira wallet",
         ], 200);
     }
 
-    public function completeDeposit(Request $request) {
+    public function completeDeposit(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'integer|required',
             'amount'   => 'integer|required'
@@ -234,7 +246,7 @@ class TradeController extends Controller
             ], 401);
         }
 
-        $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $request->agent_id])->limit(1)->get();
+        $agent = User::where(['role' => 777, 'status' => 'active', 'id' => $request->agent_id])->limit(1)->get();
 
         if (count($agent) < 1) {
             return response()->json([
@@ -251,7 +263,7 @@ class TradeController extends Controller
             ]);
         }
 
-        $ref = \Str::random(3).time();
+        $ref = \Str::random(3) . time();
 
         $user = Auth::user();
         $user_wallet = $user->nairaWallet;
@@ -283,21 +295,29 @@ class TradeController extends Controller
         $nt->cr_user_id = $user->id;
         $nt->status = 'pending';
         $nt->save();
-         $title = 'PAY-BRIDGE DEPOSIT
+        $title = 'PAY-BRIDGE DEPOSIT
          ';
-         $body = "Your naria Wallet has been credited with NGN".$request->amount."<br>
-         <b style='color: 666eb6'>Reference Number: ".$ref."</b><br>
-         <b style='color: 666eb6'>Date: ".now()."</b><br>
-         <b style='color: 666eb6'>Account Balance: NGN".Auth::user()->nairaWallet->amount."</b><br>
+        $body = "Your naria Wallet has been credited with NGN" . $request->amount . "<br>
+         <b style='color: 666eb6'>Reference Number: " . $ref . "</b><br>
+         <b style='color: 666eb6'>Date: " . now() . "</b><br>
+         <b style='color: 666eb6'>Account Balance: NGN" . Auth::user()->nairaWallet->amount . "</b><br>
          ";
 
-         $btn_text = '';
-         $btn_url = '';
+        $btn_text = '';
+        $btn_url = '';
 
-         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-         $name = explode(' ', $name);
-         $firstname = ucfirst($name[0]);
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
         //  Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+
+        $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+        $message = '!!! Deposit Transaction !!!  A new Deposit transaction has been initiated ';
+        foreach ($accountants as $acct) {
+            broadcast(new CustomNotification($acct, $message))->toOthers();
+        }
+
 
         return response()->json([
             'success' => true,
@@ -305,7 +325,8 @@ class TradeController extends Controller
         ], 200);
     }
 
-    public function getStat() {
+    public function getStat()
+    {
         $user = Auth::user();
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
@@ -315,12 +336,12 @@ class TradeController extends Controller
 
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal', 'status' => 'waiting'])->get();
         if (count($trade) > 0) {
-           $pendingWithdrawal = true;
+            $pendingWithdrawal = true;
         }
 
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'deposit', 'status' => 'waiting'])->get();
         if (count($trade) > 0) {
-           $pendingDeposit = true;
+            $pendingDeposit = true;
         }
 
         $user_data = [
@@ -353,7 +374,7 @@ class TradeController extends Controller
 
         $agent = User::find($request->agent_id);
         $agent_wallet = $agent->nairaWallet;
-        $ref = \Str::random(3).time();
+        $ref = \Str::random(3) . time();
         if ($agent->role != 777) {
             return response()->json([
                 'success' =>  false,
@@ -363,7 +384,7 @@ class TradeController extends Controller
         $min = $agent->agentLimits->min;
         $max = $agent->agentLimits->max;
 
-        if ($request->amount < $min || $request->amount > $max ) {
+        if ($request->amount < $min || $request->amount > $max) {
             return response()->json([
                 'success' =>  false,
                 'msg' => 'Trade range not met'
@@ -388,7 +409,6 @@ class TradeController extends Controller
             'reference' => $ref,
             'id' => $txn->id
         ]);
-
     }
 
     public function sellNaira(Request $request)
@@ -415,15 +435,14 @@ class TradeController extends Controller
 
         $hash = Hash::check($input_pin, $pin);
 
-        if(!$hash)
-        {
+        if (!$hash) {
             return response()->json([
                 'success' => false,
                 'message' => 'Incorrect Pin',
             ], 401);
         }
 
-        $ref = \Str::random(3).time();
+        $ref = \Str::random(3) . time();
         if ($agent->role != 777) {
             return response()->json([
                 'success' =>  false,
@@ -433,14 +452,14 @@ class TradeController extends Controller
         $min = $agent->agentLimits->min;
         $max = $agent->agentLimits->max;
 
-        if ($request->amount < $min || $request->amount > $max ) {
+        if ($request->amount < $min || $request->amount > $max) {
             return response()->json([
                 'success' =>  false,
                 'msg' => 'Trade range not met'
             ]);
         }
 
-        if ($request->amount < $min || $request->amount > $max ) {
+        if ($request->amount < $min || $request->amount > $max) {
             return response()->json([
                 'success' =>  false,
                 'msg' => 'Trade range not met'
@@ -607,7 +626,8 @@ class TradeController extends Controller
         ]);
     }
 
-    public function accounts() {
+    public function accounts()
+    {
         $accts = Auth::user()->accounts;
         return response()->json([
             'success' => true,

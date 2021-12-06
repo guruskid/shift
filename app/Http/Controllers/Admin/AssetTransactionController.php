@@ -78,13 +78,11 @@ class AssetTransactionController extends Controller
             // ///////////////////////////////////////////////////////////
             $title = 'Sell Order Successful';
             $body = 'Your order to '.$t->type.'  an '.$t->card.'  worth '. number_format($t->amount_paid) .' is currently  pending. NGN'. number_format($t->amount_paid) .' will be debited from your  naira wallet once the transaction is successful.
-            Date: '. now() . '.
-    
-            ';
-    
+            Date: '. now() . '.';
+
             $btn_text = '';
             $btn_url = '';
-    
+
             $name = ($user->first_name == " ") ? $user->username : $user->first_name;
             $name = explode(' ', $name);
             $firstname = ucfirst($name[0]);
