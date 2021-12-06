@@ -147,13 +147,14 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3).time();
+        $charge = 100;
 
         //create TXN here
         $txn = new NairaTrade();
         $txn->reference = $ref;
         $txn->user_id = Auth::user()->id;
         $txn->agent_id = $request->agent_id;
-        $txn->amount = $request->amount - 100;
+        $txn->amount = $request->amount - $charge;
         $txn->status = 'waiting';
         $txn->type = 'withdrawal';
         $txn->account_id = $request->account_id;
@@ -169,11 +170,13 @@ class TradeController extends Controller
         $nt = new NairaTransaction();
         $nt->reference = $ref;
         $nt->amount = $request->amount;
+        $nt->amount_paid = $request->amount - $charge;
         $nt->user_id = $user->id;
         $nt->type = 'withdrawal';
-        $nt->previous_balance = $user_wallet->amount;
+        $nt->previous_balance = $user_wallet->amount + $request->amount;
         $nt->current_balance = $user_wallet->amount;
-        $nt->charge = 100;
+        $nt->charge = $charge;
+        $nt->transfer_charge = $charge;
         $nt->transaction_type_id = 3;
         $nt->cr_wallet_id = $user_wallet->id;
         $nt->cr_acct_name = $user->first_name;
