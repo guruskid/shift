@@ -11,6 +11,7 @@ use App\NairaWallet;
 use App\Notification;
 use App\User;
 use App\Country;
+use App\Events\CustomNotification;
 use App\UtilityTransaction;
 
 use GuzzleHttp\Client;
@@ -1465,6 +1466,12 @@ class BillsPaymentController extends Controller
                     'status'           => 'success',
                     'extras'           => $extras
                 ]);
+
+                $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+                $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
+                foreach ($accountants as $acct) {
+                    broadcast(new CustomNotification($acct, $message))->toOthers();
+                }
 
                 $phone = $r->phone_number;
 
