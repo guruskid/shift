@@ -73,11 +73,11 @@ class TradeController extends Controller
     {
         $card = Card::find($card_id);
         $rates = $card->currency->first();
-        $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
-        $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
-        $rates->buy = json_decode($buy->pivot->payment_range_settings);
+        // $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
+        // $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
         $sell_rate = LiveRateController::usdNgn();
 
@@ -139,10 +139,10 @@ class TradeController extends Controller
         $batch_id = uniqid();
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
         $r->buy_sell == 1 ? $buy_sell = 'buy' : $buy_sell = 'sell';
-
+        $transaction_id = uniqid();
         foreach ($r->cards as $i => $total) {
             $t = new Transaction();
-            $t->uid = uniqid();
+            $t->uid = $transaction_id;
             $t->user_email = Auth::user()->email;
             $t->user_id = Auth::user()->id;
             $t->card = $card->name;
@@ -195,6 +195,23 @@ class TradeController extends Controller
             Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
 
         }
+        $user = Auth::user();
+        $title = 'TRANSACTION PENDING - BUY
+        ';
+        $body ="Your order to   $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." is currently 
+        <b style='color:red'>pending</b> and will be debited from your naria wallet once the transaction is successful<br>
+        <b>Transaction ID: $transaction_id <br>
+        Date: ".date("Y-m-d; h:ia")."</b>
+        ";
+
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = explode(' ', $name);       
+        $firstname = ucfirst($name[0]);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
         return redirect()->route('user.transactions')->with(['success' => 'Transaction initiated']);

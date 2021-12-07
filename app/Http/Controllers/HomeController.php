@@ -64,11 +64,10 @@ class HomeController extends Controller
         $user = Auth::user();
 
         $body = 'We noticed you logged in on ' . now() . '8 WAT. if this wasn\'t you, kindly change your password or contact support at support@godantown.com';
-        $title = 'Transaction Successful';
+        $title = 'Login Confirmation';
 
         $btn_text = '';
         $btn_url = '';
-
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
         $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);

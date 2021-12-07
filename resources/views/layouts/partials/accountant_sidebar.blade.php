@@ -26,6 +26,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.utility-transactions' ? 'active' : '' }}  ">
+        <a href="{{route('admin.utility-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="bulb"></ion-icon>
+                <span>Utility Transactions</span>
+            </div>
+        </a>
+    </li>
+
     @if (Auth::user()->role == 889)
     <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
         <a href="{{route('admin.trade-naira.index')}}"  aria-expanded="false" class="dropdown-toggle">

@@ -129,7 +129,7 @@
             <tr>
               <td align="center" width="480" valign="top" style="
                   background-color: #ffffff;
-                  padding: 20px;
+                  padding: 10px;
                   border-radius:0px;
                   height:10px;
                   margin-top:0px;
@@ -190,7 +190,7 @@
               <br>
               <p>
                 <span>Warm Regards</span><br>
-                <span style="color: #000070; font-weight:bolder">Dantown Team</span>
+                <span style=" font-weight:bolder">Dantown Team</span>
             </p>
             <br><br><br>
             </td>
