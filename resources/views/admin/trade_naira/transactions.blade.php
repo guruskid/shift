@@ -60,10 +60,12 @@
                                 Transactions
                             </div>
                             @if ($show_limit)
-                            <div>
-                                <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
-                            <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Set account details</button>
-                            </div>
+                                @if(auth()->user()->role == 889 || auth()->user()->role == 999)
+                                    <div>
+                                        <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
+                                        <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Set account details</button>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                         <div class="table-responsive p-3">
@@ -91,7 +93,7 @@
                                         <td>₦{{ number_format($t->amount) }}</td>
                                         <td>{{ $t->reference }}</td>
                                         <td>{{ $t->type }}
-                                        @if($t->type == 'sell')
+                                        @if($t->type == 'withdrawal')
                                             <br><br>
                                             {{ $t->acct_details }}
                                         @endif
@@ -102,7 +104,7 @@
                                             <div class="btn-group">
                                                 @if ($t->status == 'waiting')
                                                 <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
-                                                <button class="btn btn-danger">Cancel</button>
+                                                <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button>
                                                 @endif
                                             </div>
                                         </td>
@@ -123,7 +125,7 @@
     @foreach ($transactions as $t)
     <div class="modal fade " id="confirm-modal-{{ $t->id }}">
         <div class="modal-dialog  ">
-            @if($t->type == 'sell')
+            @if($t->type == 'withdrawal')
                 <form action="{{route('admin.naira-p2p.confirm-sell', $t)}}" id="freeze-form" method="post"> @method('put')
             @else
                 <form action="{{route('admin.naira-p2p.confirm', $t)}}" id="freeze-form" method="post"> @method('put')
@@ -148,6 +150,41 @@
                         </div>
                         <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
                             Confirm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endforeach
+@endif
+
+@if(!empty($transactions))
+    {{-- Confirm trade approval modal --}}
+    @foreach ($transactions as $t)
+    <div class="modal fade " id="cancel-modal-{{ $t->id }}">
+        <div class="modal-dialog">
+            <form action="{{route('admin.naira-p2p.cancel-trade', $t)}}" id="freeze-form" method="post"> @method('put')
+                @csrf
+                <div class="modal-content  c-rounded">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                        <h4 class="modal-title">Decline Trade <i class="fa fa-paper-plane"></i></h4>
+                        <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+
+                    <div class="modal-body p-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="">Wallet pin </label>
+                                    <input type="password" name="pin" required class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
+                            Decline
                         </button>
                     </div>
                 </div>
@@ -192,47 +229,47 @@
     </div>
 </div>
 
-    @if(!empty($account))
-        <div class="modal fade " id="account-modal">
-            <div class="modal-dialog modal-dialog-centered ">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <form action="{{ route('agent.update-bank') }}" method="POST" class="mb-4">@csrf
-                            <div class="form-row ">
-                                <div class="col-md-12">
-                                    <input type="hidden" value="{{ $account->id }}" name="id">
-                                    <div class="position-relative form-group">
-                                        <label>Bank Name</label>
-                                        <select name="bank_id" class="form-control">
-                                            <option value="{{ $account->bank_id }}">{{ $account->bank_name }}</option>
-                                            @foreach ($banks as $b)
-                                            <option value="{{$b->id}}">{{$b->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="position-relative form-group">
-                                        <label>Account Number</label>
-                                        <input type="text" required class="form-control" value="{{ $account->account_number }}" name="account_number">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="position-relative form-group">
-                                        <label>Account Name</label>
-                                        <input type="text" required class="form-control" value="{{ $account->account_name }}" name="account_name">
-                                    </div>
+@if(!empty($account))
+    <div class="modal fade " id="account-modal">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form action="{{ route('agent.update-bank') }}" method="POST" class="mb-4">@csrf
+                        <div class="form-row ">
+                            <div class="col-md-12">
+                                <input type="hidden" value="{{ $account->id }}" name="id">
+                                <div class="position-relative form-group">
+                                    <label>Bank Name</label>
+                                    <select name="bank_id" class="form-control">
+                                        <option value="{{ $account->bank_id }}">{{ $account->bank_name }}</option>
+                                        @foreach ($banks as $b)
+                                        <option value="{{$b->id}}">{{$b->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                            <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
-                                <i class="spinner-border spinner-border-sm" id="s-b" style="display: none;"></i>
-                                Save
-                            </button>
-                        </form>
-                    </div>
+                            <div class="col-md-12">
+                                <div class="position-relative form-group">
+                                    <label>Account Number</label>
+                                    <input type="text" required class="form-control" value="{{ $account->account_number }}" name="account_number">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="position-relative form-group">
+                                    <label>Account Name</label>
+                                    <input type="text" required class="form-control" value="{{ $account->account_name }}" name="account_name">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
+                            <i class="spinner-border spinner-border-sm" id="s-b" style="display: none;"></i>
+                            Save
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-    @endif
+    </div>
+@endif
 @endif
 @endsection

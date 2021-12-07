@@ -32,11 +32,31 @@
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end btctext">{{ fee }} BTC</span>
+                            <span class="d-block align-self-end btctext" v-if="type == 2">{{ fee }} BTC</span>
+                            <span class="d-block align-self-end btctext" v-else>Free</span>
                             <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>
                     <div class="col-12 col-md-10 mx-auto">
+                        <span class="address_input_label">Transaction Type</span>
+                        <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
+                            <select v-model="type" class="form-control" @change="getFees()">
+                                <option value="2">External</option>
+                                <option value="1">Dantown to Dantown</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-10 mx-auto" v-if="type == 1">
+                        <span class="address_input_label">User Email</span>
+                        <div class=" col-12 col-md-7 mx-auto mb-3 mt-4">
+                            <input type="email" class="form-control"  v-model="email" @change="getUser()">
+                            <small>{{ user }}</small>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-10 mx-auto" v-else>
                         <span class="address_input_label">Address</span>
                         <div class="input-group col-12 col-md-7 mx-auto mb-3 mt-4">
                             <input type="text" class="form-control"  v-model="address" @change="getFees()">
@@ -81,6 +101,9 @@
                 pin: '',
                 fee: 0.0005,
                 loading: false,
+                type: 2,
+                email: '',
+                user: ''
             }
         },
 
@@ -103,7 +126,9 @@
 
             //Get transfer fees
             getFees(){
-                if(this.btc <= 0 || this.address == '' ){
+
+                if(this.btc < 0 || this.address == '' || this.type == 2 ){
+
                     return false;
                 }
                 this.loading = true;
@@ -117,6 +142,21 @@
                 });
             },
 
+            getUser(){
+                if (this.email == '') {
+                    return false;
+                }
+                this.user = 'Getting user details, please wait'
+                axios.get(`/user/user-details/${this.email}`)
+                .then((res)=>{
+                    if (res.data.success) {
+                        this.user = res.data.user
+                    } else {
+                        this.user = res.data.msg
+                    }
+                })
+            },
+
             send(){
                 if (this.btc <= 0) {
                     swal('Oops', 'BTC amount should be greater than 0', 'error');
@@ -128,7 +168,9 @@
                     "amount" : this.btc,
                     "address" : this.address,
                     "pin" : this.pin,
-                    "fees" : this.fee
+                    "fees" : this.fee,
+                    "email": this.email,
+                    'type': this.type,
                     })
                 .then((res)=>{
                     if (res.data.success) {

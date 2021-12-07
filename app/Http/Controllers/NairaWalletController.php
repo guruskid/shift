@@ -16,9 +16,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Support\Collection;
 
 class NairaWalletController extends Controller
 {
+    public function getAllTransactions()
+    {
+        $naira_transactions = Auth::user()->nairaTransactions()->orderBy('created_at','desc')->paginate(20)->all();
+        return response()->json([
+            'success' => true,
+            'data' => $naira_transactions
+        ]);
+        // $p2p_transactions = Auth::user()->nairaTrades()->select('amount','type','status','created_at')->get();
+        // $collected = $p2p_transactions->union($naira_transactions)->sortByDesc('created_at');
+        // $items = (collect($collected))->paginate(20);
+        // return array_values($items->all());
+    }
+
     public function create(Request $r)
     {
         $callback = route('recieve-funds.callback');
@@ -670,6 +684,10 @@ class NairaWalletController extends Controller
         /* Update Transaction satus */
         $t->status = 'refunded';
         $t->save();
+
+        // $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        // $transfer_charges_wallet->amount -= $t->transfer_charge;
+        // $transfer_charges_wallet->save();
 
         $title = 'Dantown wallet Debit';
         $msg_body = 'Your Dantown wallet has been ' . $tt . ' with N' . $amount . ' for the refund of transaction with id ' . $t->reference;

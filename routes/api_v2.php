@@ -20,7 +20,6 @@ Route::post('change-password', 'AuthController@changePassword');
 Route::group(['middleware' => 'auth:api'], function () {
 
     //Authenticated routes here
-    // Email Verifiction code
     Route::post('/email-verification', 'AuthController@emailVerification');
     Route::post('/resend-code', 'AuthController@resendCode');
 
@@ -34,14 +33,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 
     Route::get('/dashboard', 'UserController@dashboard');
-    Route::post('/upload-idcard', 'VerificationController@uploadId');
-    Route::post('/upload-address', 'VerificationController@uploadAddress');
-    Route::post('/update-dp', 'ProfileController@updateDp');
-
-    Route::post('/update-birthday', 'ProfileController@updateBirthday');
-
-    // profile
-    Route::get('/profile', 'ProfileController@index');
 
 });
 

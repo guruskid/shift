@@ -8,6 +8,7 @@ use App\CryptoRate;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LiveRateController;
 use App\Setting;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -20,14 +21,15 @@ class BtcWalletController extends Controller
     {
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
-        $res = json_decode($res->getBody());
-        $btc_rate = (int)$res->value;
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        // $res = json_decode($res->getBody());
+        // $btc_rate = (int)$res->value;
 
-        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        $tp = ($trading_per / 100) * $btc_rate;
-        $btc_rate -= $tp;
+        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        // $tp = ($trading_per / 100) * $btc_rate;
+        // $btc_rate -= $tp;
+        $btc_rate = LiveRateController::btcRate();
 
         $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
@@ -171,15 +173,16 @@ class BtcWalletController extends Controller
         $rates = $card->currency->first();
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
-        $res = json_decode($res->getBody());
-        $btc_rate = (int)$res->value;
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        // $res = json_decode($res->getBody());
+        // $btc_rate = (int)$res->value;
 
 
-        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        $tp = ($trading_per / 100) * $btc_rate;
-        $btc_rate -= $tp;
+        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        // $tp = ($trading_per / 100) * $btc_rate;
+        // $btc_rate -= $tp;
+        $btc_rate = LiveRateController::btcRate();
 
 
         $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';

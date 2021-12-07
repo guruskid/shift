@@ -51,7 +51,14 @@ class CardResource extends JsonResource
     {
         $cardCurrency = CardCurrency::where(['card_id'=> $card_id, 'currency_id'=> $currency_id, 'buy_sell' => $buy_sell ])->first();
         return $cardCurrency->paymentMediums()->where('payment_range_settings', '!=', '[]' )->get()->each(function($medium){
-            $medium->pricing = json_decode($medium->pivot->payment_range_settings);
+            $pricing = json_decode($medium->pivot->payment_range_settings);
+            foreach ($pricing as $key => $value) {
+                $percentage = $medium->pivot->percentage_deduction;
+                $rate = $pricing[$key]->rate - (($percentage/100) * $pricing[$key]->rate);
+                $pricing[$key]->rate = $rate;
+            }
+            $medium->pricing = $pricing;
+            $medium->percentage_deduction = $medium->pivot->percentage_deduction;
             $this->unsetHelper($medium, ['pivot', 'created_at', 'updated_at', 'currency_id']);
         });
     }

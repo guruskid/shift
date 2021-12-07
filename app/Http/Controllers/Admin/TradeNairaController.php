@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
 use App\NairaTransaction;
+use App\NairaWallet;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,7 @@ class TradeNairaController extends Controller
     public function index()
     {
         $users = User::where('role', 777)->get();
-        $users->each(function($u){
+        $users->each(function ($u) {
             $u->success = $u->agentNairaTrades()->where('status', 'success')->count();
             $u->cancelled = $u->agentNairaTrades()->where('status', 'cancelled')->count();
             $u->pending = $u->agentNairaTrades()->whereIn('status', ['pending', 'waiting'])->count();
@@ -37,6 +38,14 @@ class TradeNairaController extends Controller
         $transactions = Auth::user()->agentNairaTrades()->paginate(20);
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
+
+        foreach ($transactions as $t) {
+            if ($t->type == 'withdrawal') {
+                $a = Account::find($t->account_id);
+                $acct = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
+                $t->acct_details = $acct;
+            }
+        }
 
         return view('admin.trade_naira.transactions', compact('transactions', 'show_limit', 'banks', 'account'));
     }
@@ -59,17 +68,17 @@ class TradeNairaController extends Controller
 
     public function agentTransactions(User $user)
     {
-        $transactions = $user->agentNairaTrades()->paginate(20);
+        $transactions = $user->agentNairaTrades()->orderBy('created_at', 'asc')->paginate(20);
 
         foreach ($transactions as $t) {
-            $a = Auth::user($t->user_id)->accounts->get(1);
-            $u['account_name'] = $a['account_name'];
-            $u['bank_name'] = $a['bank_name'];
-            $u['account_number'] = $a['account_number'];
-            $t->acct_details = json_encode($u);
+            if ($t->type == 'withdrawal') {
+                $a = Account::find($t->account_id);
+                $account = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
+                $t->acct_details = $account;
+            }
         }
 
-        $show_limit = false;
+        $show_limit = true;
 
         return view('admin.trade_naira.transactions', compact('transactions', 'show_limit'));
     }
@@ -86,6 +95,44 @@ class TradeNairaController extends Controller
         return back()->with(['success' => 'Limits uppdated']);
     }
 
+    public function declineTrade(Request $request, NairaTrade $transaction)
+    {
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return back()->with(['error' => 'Incorrect pin']);
+        }
+
+        if ($transaction->status != 'waiting') {
+            return back()->with(['error' => 'Invalid transaction']);
+        }
+
+
+
+        $nt = NairaTransaction::where('reference', $transaction->reference)->first();
+
+        // dd($transaction);
+        if ($transaction->type == 'withdrawal') {
+            # credit the user
+            $user_wallet = $nt->user->nairaWallet;
+            $user_wallet->amount += $nt->amount;
+            $user_wallet->save();
+
+            //Send back the charges
+            $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+            $transfer_charges_wallet->amount -= $nt->charge;
+            $transfer_charges_wallet->save();
+        }
+
+        if ($nt) {
+            $nt->status = 'failed';
+            $nt->save();
+        }
+
+        $transaction->status = 'cancelled';
+        $transaction->save();
+
+        return back()->with(['success' => 'Transaction cancelled']);
+    }
+
     public function confirm(Request $request, NairaTrade $transaction)
     {
         if (!Hash::check($request->pin, Auth::user()->pin)) {
@@ -98,27 +145,19 @@ class TradeNairaController extends Controller
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
         }
+
+        $nt = NairaTransaction::where('reference', $transaction->reference)->first();
+
+        if ($nt) {
+            $nt->previous_balance = $user_wallet->amount;
+            $nt->current_balance = $user_wallet->amount + $transaction->amount;
+            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+            $nt->status = 'success';
+            $nt->save();
+        }
+
         $user_wallet->amount += $transaction->amount;
         $user_wallet->save();
-
-        $nt = new NairaTransaction();
-        $nt->reference = $transaction->reference;
-        $nt->amount = $transaction->amount;
-        $nt->user_id = $user->id;
-        $nt->type = 'naira wallet';
-        $nt->previous_balance = $user_wallet->amount;
-        $nt->current_balance = $user_wallet->amount + $transaction->amount;
-        $nt->charge = 0;
-        $nt->transaction_type_id = 1;
-        $nt->cr_wallet_id = $user_wallet->id;
-        $nt->cr_acct_name = $user->first_name;
-        $nt->narration = 'Deposit ' . $transaction->reference;
-        $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
-        $nt->cr_user_id = $user->id;
-        $nt->dr_user_id = 1;
-        $nt->status = 'success';
-        $nt->save();
-        //dd($user_wallet);
 
         $transaction->status = 'success';
         $transaction->save();
@@ -139,28 +178,13 @@ class TradeNairaController extends Controller
             return back()->with(['error' => 'Invalid transaction']);
         }
 
-        $user_wallet->amount += $transaction->amount;
-        $user_wallet->save();
+        $nt = NairaTransaction::where('reference', $transaction->reference)->first();
 
-
-        $nt = new NairaTransaction();
-        $nt->reference = $transaction->reference;
-        $nt->amount = $transaction->amount;
-        $nt->user_id = $user->id;
-        $nt->type = 'naira wallet';
-        $nt->previous_balance = $user_wallet->amount + $transaction->amount;
-        $nt->current_balance = $user_wallet->amount;
-        $nt->charge = 0;
-        $nt->transaction_type_id = 3;
-        $nt->cr_wallet_id = $user_wallet->id;
-        $nt->cr_acct_name = $user->first_name;
-        $nt->narration = 'Withdraw ' . $transaction->reference;
-        $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
-        $nt->cr_user_id = 1;
-        $nt->dr_user_id = $user->id;
-        $nt->status = 'success';
-        $nt->save();
-        //dd($user_wallet);
+        if ($nt) {
+            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+            $nt->status = 'success';
+            $nt->save();
+        }
 
         $transaction->status = 'success';
         $transaction->save();

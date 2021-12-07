@@ -567,7 +567,7 @@ class BillsPaymentController extends Controller
     {
         $charge = 0;
         $settings = GeneralSettings::getSetting('POWER_CONVENIENCE_FEE');
-        if ($settings) {
+        if (!empty(($settings))) {
             $charge = $settings['settings_value'];
         }
 
@@ -592,12 +592,8 @@ class BillsPaymentController extends Controller
         $n = $user->nairaWallet;
         $balance = $n->amount;
         $pin = $user->pin;
-        $put_pin = $r->pin;
-        $hash = Hash::check($put_pin, $pin);
 
-        $amount = $r->amount;
-
-        if(!$hash){
+        if(Hash::check($r->pin, $user->pin) == false){
             return response()->json([
                 'success' => false,
                 'message' => 'Incorrect Pin',
@@ -613,10 +609,10 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        if($r->amount < 5000){
+        if($r->amount < 100){
             return response()->json([
                 'success' => false,
-                'message' => 'Minimium amount is ₦500',
+                'message' => 'Minimium amount is ₦100',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         }
@@ -628,6 +624,8 @@ class BillsPaymentController extends Controller
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         }
+
+        $amount = $r->amount;
 
         $reference = rand(111111,999999).time();
         $postData['serviceID'] = $r->service_id;
@@ -651,6 +649,60 @@ class BillsPaymentController extends Controller
         curl_close($ch);
         $response = json_decode($response,true);
 
+        // Test Response
+
+        // $response = '{
+        //     "code": "000",
+        //     "content": {
+        //         "transactions": {
+        //             "status": "delivered",
+        //             "product_name": "PHED - Port Harcourt Electric",
+        //             "unique_element": "610124000952992",
+        //             "unit_price": 100,
+        //             "quantity": 1,
+        //             "service_verification": null,
+        //             "channel": "api",
+        //             "commission": 2,
+        //             "total_amount": 98,
+        //             "discount": null,
+        //             "type": "Electricity Bill",
+        //             "email": "dantownrec2@gmail.com",
+        //             "phone": "09012435013",
+        //             "name": null,
+        //             "convinience_fee": 0,
+        //             "amount": 100,
+        //             "platform": "api",
+        //             "method": "api",
+        //             "transactionId": "16371615982053468479917114"
+        //         }
+        //     },
+        //     "response_description": "TRANSACTION SUCCESSFUL",
+        //     "requestId": "9553101637161595",
+        //     "amount": "100.00",
+        //     "transaction_date": {
+        //         "date": "2021-11-17 16:06:38.000000",
+        //         "timezone_type": 3,
+        //         "timezone": "Africa/Lagos"
+        //     },
+        //     "purchased_code": "Token : 41279616299856662444",
+        //     "customerName": "NWOKO UDOBI DIMKPA",
+        //     "address": "BLK B 152 NTA RD AFTER DO ",
+        //     "meterNumber": "0124000952992",
+        //     "customerNumber": "0124000952992",
+        //     "token": "41279616299856662444",
+        //     "tokenAmount": "100",
+        //     "tokenValue": "93.02",
+        //     "tariff": "56.79",
+        //     "businessCenter": null,
+        //     "exchangeReference": "1711202111954114",
+        //     "units": "1.7",
+        //     "energyAmt": "93.02",
+        //     "vat": "6.98",
+        //     "arrears": null,
+        //     "revenueLoss": null
+        // }';
+
+        // $response = json_decode($response,true);
 
         if(isset($response['content']) && isset($response['content']['transactions'])) {
             if($response['content']['transactions']['status'] == 'delivered') {
@@ -664,7 +716,7 @@ class BillsPaymentController extends Controller
                 $nt->reference = $reference;
                 $nt->amount = $amount;
                 $nt->user_id = Auth::user()->id;
-                $nt->type = 'elecriciy bills';
+                $nt->type = 'electricity bills';
 
                 $nt->previous_balance = $prev_bal;
                 $nt->current_balance = $n->amount;
@@ -736,7 +788,7 @@ class BillsPaymentController extends Controller
                 return response()->json([
                     'success' => true,
                     'response_description' => 'TRANSACTION SUCCESSFUL',
-                    'message' => 'Purchase made successfully'
+                    'message' => 'Purchase made successfully, Token : '.$response['token']
                 ]);
             }
         }else {

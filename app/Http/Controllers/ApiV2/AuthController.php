@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\ApiV2;
 
-use App\Country;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -22,7 +21,7 @@ class AuthController extends Controller
 {
     public function login()
     {
-        if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+            if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
             $success['token'] = $user->createToken('appToken')->accessToken;
             //After successfull authentication, notice how I return json parameters
@@ -364,9 +363,9 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $checkOtp = VerificationCode::where('verification_code', $otp->otp_code)->where('user_id', $user->id);
-        $countOtp = VerificationCode::where('verification_code', $otp->otp_code)->where('user_id', $user->id)->count();
-        if ($countOtp <= 0) {
+        $checkOtp = VerificationCode::where('verification_code', $otp->otp_code)->where('user_id',$user->id);
+        $countOtp = VerificationCode::where('verification_code', $otp->otp_code)->where('user_id',$user->id)->count();
+        if($countOtp <= 0 ){
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid OTP'
