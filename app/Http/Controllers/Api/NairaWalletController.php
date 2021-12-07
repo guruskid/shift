@@ -444,7 +444,7 @@ class NairaWalletController extends Controller
             'title' => $title,
             'body' => $msg_body,
         ]);
-        
+
 
         return response()->json([
             'success' => true,

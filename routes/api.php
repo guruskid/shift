@@ -40,10 +40,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
 
-        // Route::GET('/airtime', 'Api\BillsPaymentController@nairaRate');
-        // Route::post('/airtime', 'Api\BillsPaymentController@buyAirtime');
-        // Route::post('/bitcoin-airtime', 'Api\BillsPaymentController@bitcoinAirtime');
-
         // Airtime
         Route::get('/airtime', 'Api\BillsPaymentController@airtime');
         Route::post('/buy-airtime', 'Api\BillsPaymentController@buyAirtime');
@@ -125,6 +121,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::GET('/send-charges', 'Api\BtcWalletController@fees');
             Route::get('/send-charges/{address}/{amount}', 'BtcWalletController@fees');
             Route::GET('/transactions', 'Api\BitcoinWalletController@transactions');
+            Route::GET('/all-transactions', 'Api\BtcWalletController@transactions');
             Route::POST('/trade', 'BtcWalletController@sell');
             Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
 

@@ -147,7 +147,12 @@ class BitcoinWalletController extends Controller
 
     public function transactions()
     {
-        $transactions = Auth::user()->bitcoinWallet->transactions;
+        if (Auth::user()->bitcoinWallet) {
+            $transactions = Auth::user()->bitcoinWallet->transactions;
+        } else {
+            $transactions = [];
+        }
+
 
         return response()->json([
             'success' => true,

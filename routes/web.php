@@ -310,7 +310,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     /* Bitcoin  */
     Route::get('/bitcoin-wallet', 'BtcWalletController@wallet')->name('user.bitcoin-wallet');
     Route::post('/sell-bitcoin', 'BtcWalletController@sell')->name('user.sell-bitcoin');
-    Route::get('/get-bitcoin-ngn', 'BtcWalletController@getbitcoinNgn');
+    // Route::get('/get-bitcoin-ngn', 'BtcWalletController@getbitcoinNgn'); deprecated
     Route::post('/bitcoin-wallet-create', 'BtcWalletController@create')->name('user.bitcoin-wallet.create');
 
     Route::post('/trade-bitcoin', 'BitcoinWalletController@trade')->name('user.trade-bitcoin');

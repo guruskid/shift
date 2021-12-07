@@ -83,7 +83,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             @foreach ($errors->all() as $err)
                             <span class="text-danger">{{ $err }}</span>
                             @endforeach
-                            <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                            <table class="align-middle mb-4 table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th class="text-center">Reference ID</th>

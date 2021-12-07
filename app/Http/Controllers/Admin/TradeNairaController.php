@@ -38,7 +38,8 @@ class TradeNairaController extends Controller
         }
 
         $show_limit = true;
-        $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+        // $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+        $transactions = NairaTrade::orderBy('created_at', 'desc')->paginate(20);
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
 
@@ -162,7 +163,7 @@ class TradeNairaController extends Controller
     }
 
     public function confirm(Request $request, NairaTrade $transaction)
-    {   
+    {
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
@@ -190,13 +191,13 @@ class TradeNairaController extends Controller
         $transaction->status = 'success';
         $transaction->save();
         //?mail for deposit successfull
-        $title = 'PAY-BRIDGE DEPOSIT SUCCESSFUL
+        $title = 'Pay-Bridge deposit successful
         ';
-        $body ="Your naria wallet has been credited with <b>NGN".number_format($transaction->amount)."</b><br><br>
-        <b style='color:00070'>
+        $body ="Your naria wallet has been credited with <b>₦".number_format($transaction->amount)."</b><br><br>
+        <b>
         Reference Number: $transaction->reference<br><br>
         Date: ".date("Y-m-d; h:ia")."<br><br>
-        Account Balance: NGN ".number_format($user_wallet->amount)." 
+        Account Balance: ₦".number_format($user_wallet->amount)." 
         </b>";
 
 
@@ -219,7 +220,12 @@ class TradeNairaController extends Controller
         
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
-        $Agent = User::find($transaction->agent_id);
+
+        
+        $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $transaction->agent_id])->first();
+        $user_account = Account::find($transaction->account_id);
+        $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
+
 
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
@@ -236,17 +242,19 @@ class TradeNairaController extends Controller
         $transaction->status = 'success';
         $transaction->save();
         //? mail for withdrawal
-        $title = 'PAY-BRIDGE WITHDRAWAL(SUCCESSFUL)
+        $title = 'Pay-Bridge withdrawal(successful)
         ';
-        $body ="You have successfully withdrawn the sum of ".number_format($transaction->amount)." to ".$user->accounts->first()->account_name."<br>
-        (".$user->accounts->first()->bank_name.", ".$user->accounts->first()->account_number." ). <br><br>
-        <b style='color:00070'>
-            Pay-bridge Agent: ".$Agent->first_name."<br><br>
-            Bank Name: ".$Agent->accounts->first()->bank_name."<br><br>
-            Status: <span style='color:green'>success</span><br><br>
+
+        $body ="You have successfully withdrawn the sum of ₦".number_format($transaction->amount)." to ".$user_account->account_name."<br>
+        ( ".$user_account->bank_name.", ".$user_account->account_number." ). <br><br>
+        <b>
+            Pay-Bridge Agent: ".$paybridge_account->account_name."<br><br>
+            Bank Name: ".$paybridge_account->bank_name."<br><br>
+            Status: <span style='color:green'>Success</span><br><br>
+
             Reference Number: $transaction->reference <br><br>
             Date: ".date("Y-m-d; h:ia")."<br><br>
-            Account Balance: ".number_format($user_wallet->amount)."
+            Account Balance: ₦".number_format($user_wallet->amount)."
         </b>
         ";
 
