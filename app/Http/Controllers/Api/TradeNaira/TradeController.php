@@ -198,16 +198,17 @@ class TradeController extends Controller
         $transfer_charges_wallet->amount += $nt->charge;
         $transfer_charges_wallet->save();
 
-        
-        $title = 'PAY-BRIDGE WITHDRAWAL(Pending)';
-        $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
-        <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
-        <b style='color: 666eb6'>Bank Name: ".$agent->accounts->bank_name."</b><br>
+        $title = 'Pay-Bridge withdrawal(pending)';
+        $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
 
-        <b style='color: 666eb6'>Status:<span style='color: red'>pending</span></b><br>
-        <b style='color: 666eb6'>Reference No : " . $ref . "</b><br>
-        <b style='color: 666eb6'>Date: " . date("Y-m-d; h:ia") . "</b><br>
-        <b style='color: 666eb6'>Account Balance: NGN" . Auth::user()->nairaWallet->amount . "</b><br>
+        $body = "You have initiated a withdrawal of ₦".number_format($request->amount)." via Pay-Bridge.<br><br>
+        <b>Pay-Bridge Agent: ".$paybridge_account->account_name."</b><br><br>
+        <b>Bank Name: ".$paybridge_account->bank_name."</b><br><br>
+        <b>Status:<span style='color: red'>pending</span></b><br><br>
+        <b>Reference No : ".$ref."</b><br><br>
+        <b>Date: ".date("Y-m-d; h:ia")."</b><br><br>
+        <b>Account Balance: ₦".number_format(Auth::user()->nairaWallet->amount)."</b><br><br>
+
         <b></b><br><br>
         ";
 
