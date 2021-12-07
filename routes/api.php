@@ -40,10 +40,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
 
-        // Route::GET('/airtime', 'Api\BillsPaymentController@nairaRate');
-        // Route::post('/airtime', 'Api\BillsPaymentController@buyAirtime');
-        // Route::post('/bitcoin-airtime', 'Api\BillsPaymentController@bitcoinAirtime');
-
         // Airtime
         Route::get('/airtime', 'Api\BillsPaymentController@airtime');
         Route::post('/buy-airtime', 'Api\BillsPaymentController@buyAirtime');
