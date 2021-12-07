@@ -78,6 +78,17 @@
                 </ul>
             </li>
 
+            @if (in_array(Auth::user()->role, [777] ))
+                <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
+                    <a href="{{route('admin.naira-p2p')}}">
+                        <div class="">
+                            <i class="metismenu-icon pe-7s-timer"></i>
+                            <span>My P2P Transactions</span>
+                        </div>
+                    </a>
+                </li>
+            @endif
+
             @if (in_array(Auth::user()->role, [999, 889, 777] ))
             <li class="my-3">
                 <a href="{{route('admin.crypto-summary', 1)}}"

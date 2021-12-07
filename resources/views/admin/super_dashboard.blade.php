@@ -165,7 +165,7 @@
                                                 <td><div class="td-content product-brand">{{$t->type}}</div></td>
                                                 <td><div class="td-content">{{$t->amount}}</div></td>
                                                 <td><div class="td-content pricing"><span class="">₦{{number_format($t->amount_paid)}}</span></div></td>
-                                                <td><div class="td-content pricing"><span class="">{{$t->user->first_name}}</span></div></td>
+                                                <td><div class="td-content pricing"><span class="">{{isset($t->user->first_name) ? $t->user->first_name :''}}</span></div></td>
                                                 <td><div class="td-content">
                                                     @switch($t->status)
                                                     @case('success')
@@ -220,7 +220,7 @@
                                                 <td><div class="td-content product-brand">{{$t->type}}</div></td>
                                                 <td><div class="td-content">{{$t->amount}}</div></td>
                                                 <td><div class="td-content pricing"><span class="">₦{{number_format($t->amount_paid)}}</span></div></td>
-                                                <td><div class="td-content pricing"><span class="">{{$t->user->first_name}}</span></div></td>
+                                                <td><div class="td-content pricing"><span class="">{{isset($t->user->first_name)?$t->user->first_name:''}}</span></div></td>
                                                 <td><div class="td-content">
                                                     @switch($t->status)
                                                     @case('success')
@@ -278,7 +278,7 @@
                                     <tr>
                                         <td><div class="td-content customer-name">{{ucwords($t->transactionType->name)}}</div></td>
                                         <td><div class="td-content product-brand">₦{{number_format($t->amount) }}</div></td>
-                                        <td><div class="td-content">{{$t->user->first_name}}</div></td>
+                                        <td><div class="td-content">{{isset($t->user->first_name) ? $t->user->first_name : ''}}</div></td>
                                         <td><div class="td-content pricing"><span class="">₦{{number_format($t->previous_balance) }}</span></div></td>
                                         <td><div class="td-content pricing"><span class="">₦{{number_format($t->current_balance)}}</span></div></td>
                                         <td><div class="td-content"><span class="badge badge-success">{{$t->status}} </span></div></td>
@@ -314,7 +314,8 @@
                                 <tbody>
                                     @foreach ($users as $u)
                                     <tr>
-                                        <td><div class="td-content customer-name"><a href=" {{route('admin.user', [$u->id, $u->email ] )}} "> {{ucwords(Str::limit($u->first_name, 10, '..') )}}</a></div></td>
+                                        <td><div class="td-content customer-name"><a href=" {{route('admin.user', [$u->id, $u->email ] )}} "> {{
+                                            isset($u->first_name) ?ucwords(Str::limit($u->first_name, 10, '..') ) : ''}}</a></div></td>
                                         <td><div class="td-content product-brand">{{Str::limit($u->email, 12, '...') }}</div></td>
                                         <td><div class="td-content">{{$u->phone}}</div></td>
                                         <td><div class="td-content pricing"><span class="">₦{{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }}</span></div></td>

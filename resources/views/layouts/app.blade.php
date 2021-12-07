@@ -271,7 +271,7 @@ $not = $nots->last();
         $(document).ready(function () {
             $('.transactions-table').DataTable({
                 paging: true,
-                order: [[0, 'asc'] ]
+                order: [[0, 'desc'] ]
             });
         });
 

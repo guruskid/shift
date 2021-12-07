@@ -73,20 +73,15 @@ class TradeController extends Controller
     {
         $card = Card::find($card_id);
         $rates = $card->currency->first();
-        $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
-        $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
-        $rates->buy = json_decode($buy->pivot->payment_range_settings);
+        // $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
+        // $rates->buy = json_decode($buy->pivot->payment_range_settings);
+
+        $sell_rate = LiveRateController::usdNgn();
 
         $client = new Client();
-        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        // $res = json_decode($res->getBody());
-        // $btc_real_time = $res->value;
-
-        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        // $tp = ($trading_per / 100) * $btc_real_time;
         $btc_real_time = LiveRateController::btcRate();
 
 
@@ -108,7 +103,7 @@ class TradeController extends Controller
         $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
 
-        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
+        return view('newpages.bitcoin', compact(['sell_rate', 'card', 'btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
 
     }
 

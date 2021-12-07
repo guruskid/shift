@@ -76,18 +76,18 @@ class AssetTransactionController extends Controller
 
 
             // ///////////////////////////////////////////////////////////
-        $title = 'Sell Order Successful';
-        $body = 'Your order to '.$t->type.'  an '.$t->card.'  worth '. number_format($t->amount_paid) .' is currently  pending. NGN'. number_format($t->amount_paid) .' will be debited from your  naira wallet once the transaction is successful.
-        Date: '. now() . '.
+            $title = 'Sell Order Successful';
+            $body = 'Your order to '.$t->type.'  an '.$t->card.'  worth '. number_format($t->amount_paid) .' is currently  pending. NGN'. number_format($t->amount_paid) .' will be debited from your  naira wallet once the transaction is successful.
+            Date: '. now() . '.';
 
-        ';
+            $btn_text = '';
+            $btn_url = '';
 
-        $btn_text = '';
-        $btn_url = '';
-
-        $name = $user()->first_name;
-        Mail::to($user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
-// /////////////////////////////////////////////
+            $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+            $name = explode(' ', $name);
+            $firstname = ucfirst($name[0]);
+            Mail::to($user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+    // /////////////////////////////////////////////
 
         }
 

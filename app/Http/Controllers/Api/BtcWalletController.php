@@ -66,7 +66,7 @@ class BtcWalletController extends Controller
         $total_fees = $charge + $res->medium;
 
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
         $btc_rate = (int)$res->value;
 
@@ -197,8 +197,8 @@ class BtcWalletController extends Controller
         $btc_wallet->usd = $btc_wallet->balance  * $btc_rate;
 
 
-        
-        $btc_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $btc_ngn = $usd_ngn * $btc_wallet->usd;
 
         return response()->json([
             'success' => true,

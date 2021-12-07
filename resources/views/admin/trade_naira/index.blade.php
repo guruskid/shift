@@ -63,6 +63,9 @@
                                 <p class="text-danger">{{ $err }}</p>
                                 @endforeach
                             </div>
+                             <div class="float-right">
+                                <a href="{{url('/admin/trade-naira/accounts')}}" class="btn btn-primary">Pay Bridge Accounts</a>
+                            </div>
                         </div>
                         <div class="table-responsive p-3">
                             <table

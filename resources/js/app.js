@@ -52,6 +52,12 @@ Vue.component('bitcoin-send-component', require('./components/calculator/bitcoin
 Vue.component('ethereum-create-component', require('./components/ethereum/CreateWallet.vue').default);
 Vue.component('ethereum-send-component', require('./components/ethereum/Send.vue').default);
 Vue.component('ethereum-sell-component', require('./components/ethereum/Sell.vue').default);
+
+Vue.component('tab', require('./components/p2p/Tab.vue').default);
+Vue.component('tabs', require('./components/p2p/Tabs.vue').default);
+
+Vue.component('deposit-component', require('./components/p2p/Deposit.vue').default);
+Vue.component('withdraw-component', require('./components/p2p/Withdraw.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
