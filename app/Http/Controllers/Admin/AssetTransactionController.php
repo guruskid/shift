@@ -75,19 +75,26 @@ class AssetTransactionController extends Controller
             Mail::to($user->email)->send(new DantownNotification($title, $body, 'Go to Wallet', route('user.naira-wallet')));
 
 
-            // ///////////////////////////////////////////////////////////
-        $title = 'Sell Order Successful';
-        $body = 'Your order to '.$t->type.'  an '.$t->card.'  worth '. number_format($t->amount_paid) .' is currently  pending. NGN'. number_format($t->amount_paid) .' will be debited from your  naira wallet once the transaction is successful.
-        Date: '. now() . '.
-
+            $user = Auth::user();
+        $title = 'TRANSACTION PENDING - BUY
         ';
+        $body ="Your order to $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." was  
+        <b style='color:green'>$t->stats</b> and will be debited from your naria wallet once the transaction is successful<br>
+        <b>Transaction ID: $t->uid <br>
+        Date: ".date("Y-m-d; h:ia")."<br><br>
+        </b>
+        ";
+
 
         $btn_text = '';
         $btn_url = '';
 
-        $name = $user()->first_name;
-        Mail::to($user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
-// /////////////////////////////////////////////
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = explode(' ', $name);       
+        $firstname = ucfirst($name[0]);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+    // /////////////////////////////////////////////
 
         }
 

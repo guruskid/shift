@@ -6,6 +6,7 @@ use App\Account;
 use App\Bank;
 use App\Country;
 use App\Mail\DantownNotification;
+use App\Mail\GeneralTemplateOne;
 use App\Notification;
 use App\User;
 use GuzzleHttp\Client;
@@ -26,7 +27,7 @@ class HomeController extends Controller
     }
 
 
-    
+
 
     public function test()
     {
@@ -62,6 +63,17 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
+        $body = 'We noticed you logged in on ' . now() . '8 WAT. if this wasn\'t you, kindly change your password or contact support at support@godantown.com';
+        $title = 'Login Confirmation';
+
+        $btn_text = '';
+        $btn_url = '';
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        $email = Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+
         if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->role == 888) {
@@ -90,11 +102,11 @@ class HomeController extends Controller
     public function sendOtp($phone, $country_id)
     {
         if (Auth::user()->phone == null) {
-           if (User::where('phone', $phone)->exists()) {
-            return response()->json([
-                'msg' => 'Phone number already in use'
-            ]);
-           }
+            if (User::where('phone', $phone)->exists()) {
+                return response()->json([
+                    'msg' => 'Phone number already in use'
+                ]);
+            }
         }
 
         if (strlen($phone) > 10) {
@@ -173,7 +185,27 @@ class HomeController extends Controller
         Auth::user()->phone_verified_at = now();
         Auth::user()->username = $data['username'];
         Auth::user()->save();
+        NariaLimitController::nariaLimit(Auth::user());
 
+        $title = 'LEVEL 1 VERIFICATION SUCCESSFUL';
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        //? Get data from the backend
+        $body = "Congrats ".$firstname.", you have successfully completed your Level 1 Verification.<br>
+        Below is a breakdown of level 1 privileges<br><br>
+        <b style='color:000070'>Phone Number Verification</b><br><br>
+        <b style='color:000070'>Daily Withdrawal limit: NGN ".number_format(Auth::User()->daily_max)."</b><br><br>
+        <b style='color:000070'>Monthly Withdrawal limit: NGN ".number_format(Auth::User()->monthly_max)."</b><br><br>
+        <b style='color:000070'>Crypto Withdrawal limit: No crypto withdrawals</b><br><br>
+        <b style='color:000070'>Crypto deposit: Unlimited</b><br><br>
+        <b style='color:000070'>Transaction: Unlimited</b><br><br>";
+
+        $btn_text = '';
+        $btn_url = '';
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        
+        
         return redirect()->route('user.dashboard');
     }
 

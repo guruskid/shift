@@ -508,8 +508,10 @@ class NairaWalletController extends Controller
         $btn_text = '';
         $btn_url = '';
 
-        $name = Auth::user()->first_name;
-        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
 

@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RestApis\Blockchain\Constants;
+use App\Mail\GeneralTemplateOne;
+use Illuminate\Support\Facades\Mail;
 
 class BtcWalletController extends Controller
 {
@@ -221,7 +223,7 @@ class BtcWalletController extends Controller
         $receive_btc_setting = GeneralSettings::getSetting('RECEIVE_BTC');
 
 
-        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees','send_btc_setting','receive_btc_setting'));
+        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees', 'send_btc_setting', 'receive_btc_setting'));
     }
 
     public function fees($address, $amount)
@@ -375,22 +377,26 @@ class BtcWalletController extends Controller
             'body' => $body,
         ]);
 
-// ///////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
+        $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $title = 'Sell Order Successful';
-        $body = 'Your order to sell 0.07 '.$t->card.' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
-        Your new  balance is '. Auth::user()->nairaWallet->amount + $t->amount_paid.'.<br>
-        Date: '.now().'.<br><br>
+        $body = 'Your order to sell 0.07 ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+        Your new  balance is ' . $finalamountcredited . '.<br>
+        Date: ' . now() . '.<br><br>
 
-         Thank you for Trading with Dantown.
+        Thank you for Trading with Dantown.
 
         ';
 
         $btn_text = '';
         $btn_url = '';
 
-        $name = Auth::user()->first_name;
-        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
-// /////////////////////////////////////////////
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+        // /////////////////////////////////////////////
 
         $reference = \Str::random(5) . Auth::user()->id;
         $url = env('TATUM_URL') . '/ledger/transaction';
@@ -613,9 +619,9 @@ class BtcWalletController extends Controller
 
                 // ///////////////////////////////////////////////////////////
                 $title = 'Sell Order Successful';
-                $body = 'You have successfully sent out '.$total.' BTC to the <br>
-                        Address:'.$data['address'].'.<br>
-                        Date: '. now() .'.<br><br>
+                $body = 'You have successfully sent out ' . $total . ' BTC to the <br>
+                        Address:' . $data['address'] . '.<br>
+                        Date: ' . now() . '.<br><br>
 
                         Thank you for Trading with Dantown.
 
@@ -624,9 +630,11 @@ class BtcWalletController extends Controller
                 $btn_text = '';
                 $btn_url = '';
 
-                $name = Auth::user()->first_name;
-                Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
-        // /////////////////////////////////////////////
+                $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+                $name = explode(' ', $name);
+                $firstname = ucfirst($name[0]);
+                Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+                // /////////////////////////////////////////////
 
 
 

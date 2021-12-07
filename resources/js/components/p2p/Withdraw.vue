@@ -88,7 +88,7 @@
             },
 
             getStat() {
-                axios.get("/trade_naira_api/user/get_stat").then(response => {
+                axios.get("/trade_naira_web/user/get_stat").then(response => {
                     if (response.data) {
                         this.pending_withdrawal = response.data.pending_withdrawal
                         this.pending_deposit = response.data.pending_deposit
@@ -97,11 +97,12 @@
             },
 
             getAgent() {
-                axios.get("/trade_naira_api/user/agents").then(response => {
+                axios.get("/trade_naira_web/user/agents?type=withdrawal").then(response => {
                     if (response.data['success']) {
-                        this.account_name = response.data.data[0].accounts[0].account_name
-                        this.account_number = response.data.data[0].accounts[0].account_number
-                        this.bank_name = response.data.data[0].accounts[0].bank_name
+                        console.log(response.data);
+                        this.account_name = response.data.data[0].accounts.account_name
+                        this.account_number = response.data.data[0].accounts.account_number
+                        this.bank_name = response.data.data[0].accounts.bank_name
                         this.agent_id = response.data.data[0].id
                         // $('.deposit-amt-form').hide()
                         // $('.agent-form').show()
@@ -125,7 +126,7 @@
                     swal('Error!', "You currently have a pending withdrawal", 'error')
                     return;
                 }
-                axios.get("/trade_naira_api/user/accounts").then(response => {
+                axios.get("/trade_naira_web/user/accounts").then(response => {
                     this.accounts = response.data.data;
                     $('#w-naira-form').hide()
                     $('#account-list').show()
@@ -146,12 +147,13 @@
                     $('#complete_withdrawal').removeAttr('disabled')
                     return;
                 }
-                axios.post("/trade_naira_api/user/complete_withdrawal", {
+                axios.post("/trade_naira_web/user/complete_withdrawal", {
                     agent_id: this.agent_id,
                     amount: this.amount,
                     pin: this.pin,
                     account_id: this.account_id
                 }).then(response => {
+                    console.log(response);
                     if (response.data['success']) {
                         swal('Good Job!', response.data.message, 'success')
                         window.location.reload()
@@ -166,6 +168,7 @@
                     $("#loader").hide()
                     $('#complete_withdrawal').removeAttr('disabled')
                 }).catch((error) => {
+                    console.log(error);
                     if (error.response) {
                         swal('An Error Occured!', error.response.message, 'error')
                     }
