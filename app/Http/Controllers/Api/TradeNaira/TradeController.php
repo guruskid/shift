@@ -90,9 +90,9 @@ class TradeController extends Controller
         $total = NairaTrade::where(['type' => $type, 'user_id' => $user->id, 'status' => 'success'])->whereMonth('created_at', date('m'))->select('amount')->sum('amount');
         return $total;
     }
+  
+    public function completeWihtdrawal(Request $request) {  
 
-    public function completeWihtdrawal(Request $request)
-    {
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'required',
             'amount'   => 'required',
@@ -198,13 +198,12 @@ class TradeController extends Controller
         $transfer_charges_wallet->amount += $nt->charge;
         $transfer_charges_wallet->save();
 
-        //? how do i get bank name and Pay-bridge Agent
-        $title = 'PAY-BRIDGE WITHDRAWAL';
-        $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
+        
+        $title = 'PAY-BRIDGE WITHDRAWAL(Pending)';
+        $body = "You have initiated a withdrawal of NGN".$request->amount." via Pay-bridge.<br><br>
+        <b style='color: 666eb6'>Pay-bridge Agent: ".$agent->first_name."</b><br>
+        <b style='color: 666eb6'>Bank Name: ".$agent->accounts->bank_name."</b><br>
 
-        $body = "You have initiated a withdrawal of NGN" . $request->amount . " via Pay-bridge.<br><br>
-        <b style='color: 666eb6'>Pay-bridge Agent: " . $agent->first_name . "</b><br>
-        <b style='color: 666eb6'>Bank Name: " . $paybridge_account->bank_name . "</b><br>
         <b style='color: 666eb6'>Status:<span style='color: red'>pending</span></b><br>
         <b style='color: 666eb6'>Reference No : " . $ref . "</b><br>
         <b style='color: 666eb6'>Date: " . date("Y-m-d; h:ia") . "</b><br>
@@ -295,6 +294,7 @@ class TradeController extends Controller
         $nt->cr_user_id = $user->id;
         $nt->status = 'pending';
         $nt->save();
+
         $title = 'PAY-BRIDGE DEPOSIT
          ';
         $body = "Your naria Wallet has been credited with NGN" . $request->amount . "<br>
@@ -317,7 +317,6 @@ class TradeController extends Controller
         foreach ($accountants as $acct) {
             broadcast(new CustomNotification($acct, $message))->toOthers();
         }
-
 
         return response()->json([
             'success' => true,
@@ -590,6 +589,8 @@ class TradeController extends Controller
         $txn->status = 'pending';
         $txn->save();
 
+        //?mail
+
         return response()->json([
             'success' => true,
             'msg' => 'Transaction updated'
@@ -619,6 +620,22 @@ class TradeController extends Controller
 
         $txn->status = 'cancelled';
         $txn->save();
+        $user = User::find($txn->user_id);
+        $title = 'PAY-BRIDGE DEPOSIT(Cancelled by the system)';
+        $body = "Your Deposit of NGN$txn->amount with reference code $txn->reference has been cancelled by the system because the
+        Pay-bridge agent did not receive your payment.
+        <br><br>
+        <span style='color:blue'>Date of transaction: $txn->created_at</span>
+        <br><br>
+        Kindly contact our customer happiness team via our Instagram handle @godantown or call 09068633429 If you have a complaint";
+ 
+         $btn_text = '';
+         $btn_url = '';
+ 
+         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+         $name = explode(' ', $name);
+         $firstname = ucfirst($name[0]);
+         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return response()->json([
             'success' => true,
