@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFaqsTable extends Migration
+class CreateTicketsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class CreateFaqsTable extends Migration
      */
     public function up()
     {
-        Schema::create('faqs', function (Blueprint $table) {
+        Schema::create('tickets', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->longText('title');
-            $table->longText('body');
-            $table->string('image')->nullable();
-            $table->string('link')->nullable();
-            $table->string('icon');
-            $table->string('category');
-            $table->longText('slug')->nullable();
+            $table->string('ticketNo');
+            $table->unsignedBigInteger('user_id');
+            $table->string('description');
+            $table->string('status');
+            $table->unsignedBigInteger('agent_id')->nullable();
+            $table->unsignedBigInteger('subcategory_id');
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ class CreateFaqsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('faqs');
+        Schema::dropIfExists('tickets');
     }
 }
