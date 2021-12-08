@@ -25,7 +25,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     //?TicketCategory
     Route::get('/all-categories', "TicketCategoryController@listofCategories");
-    Route::get('/all-subcategories/{id}', "TicketCategoryController@listofsubcategories");
 
     //?ticket
     Route::post('/add-ticket' ,'TicketController@createTicket');

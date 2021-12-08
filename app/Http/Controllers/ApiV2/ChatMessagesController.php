@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ApiV2;
 
-use App\Chat_Messages;
+use App\ChatMessages;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +13,7 @@ class ChatMessagesController extends Controller
     //?showing chat
     public function Messages($ticketNo)
     {
-        $messages = Chat_Messages::where('ticket_no',$ticketNo)->oldest()->get();
+        $messages = ChatMessages::where('ticket_no',$ticketNo)->oldest()->get();
         return response()->json([
             "status" => "Success",
             "messages" => $messages,
@@ -37,7 +37,7 @@ class ChatMessagesController extends Controller
         }
         
         $is_agent = Auth::user()->role == '555' ? 1 : 0;
-        $chatmessage = Chat_Messages::create([
+        $chatmessage = ChatMessages::create([
             'ticket_no' => $r->ticketNo,
             'user_id' => Auth::user()->id,
             'message' => $r->message,

@@ -13,7 +13,7 @@ class CreateChatMessagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('chat__messages', function (Blueprint $table) {
+        Schema::create('chat_messages', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('ticket_no');
             $table->unsignedBigInteger('user_id');
@@ -30,6 +30,6 @@ class CreateChatMessagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('chat__messages');
+        Schema::dropIfExists('chat_messages');
     }
 }

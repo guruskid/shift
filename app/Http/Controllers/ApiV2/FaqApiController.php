@@ -40,6 +40,7 @@ class FaqApiController extends Controller
             'title' => 'required|min:2|max:225',
             'body' => 'required',
             'category' => 'required',
+            'icon'=>'required'
         ]);
         $file = $r->file('photo');
         $filename= "";
@@ -49,12 +50,13 @@ class FaqApiController extends Controller
             Storage::put('public/faq/'.$filename, fopen($file, 'r+'));
         }
         
-        $faq = Faq::create([
+        Faq::create([
             'title' => $r->title,
             'body' => $r->body,
             'category' => $r->category,
             'image' => $filename,
-            'link' => $r->link
+            'link' => $r->link,
+            'icon' => $r->icon
         ]);
         if(empty($faq)){
             return response()->json([
@@ -65,17 +67,17 @@ class FaqApiController extends Controller
         return response()->json([
             "status" => "success",
             "faq" => $faq,
-        ], 201);
+        ], 200);
 
     }
-
     public function updateFaq(Request $r)
     {
         $r->validate([
             'id' => 'required|min:1',
             'title' => 'required|min:2|max:225',
             'body' => 'required',
-            'category' => 'required'
+            'category' => 'required',
+            'icon' =>'required'
         ]);
 
         $faq = Faq::where('id', $r->id);
@@ -85,10 +87,32 @@ class FaqApiController extends Controller
                 "message" => "Faq Not Found",
             ], 404);
         }
+
+        if($r->photo == null){
+            $faq->update([
+                'title' => $r->title,
+                'body' => $r->body,
+                'category' => $r->category,
+                'icon' => $r->icon
+            ]);
+            return response()->json([
+            "status" => "success",
+            "message" => "Updated Successfully"
+             ], 200);
+        }
+        $file = $r->file('photo');
+        $filename= "";
+        if($file){
+            $extension = $file->getClientOriginalExtension();
+            $filename = uniqid().'.'.$extension;
+            Storage::put('public/faq/'.$filename, fopen($file, 'r+'));
+        }
         $faq->update([
             'title' => $r->title,
             'body' => $r->body,
-            'category' => $r->category
+            'category' => $r->category,
+            'icon' => $r->icon,
+            'image' =>$filename
         ]);
         return response()->json([
             "status" => "success",

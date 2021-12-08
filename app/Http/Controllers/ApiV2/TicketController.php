@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\ApiV2;
 
-use App\Chat_Messages;
+use App\ChatMessages;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Ticket;
@@ -44,7 +44,7 @@ class TicketController extends Controller
             "SubCategory: " . $subcartegory . "\n" .
             "Description: " . $r->description;
 
-        Chat_Messages::create([
+            ChatMessages::create([
             'ticket_no' => $ticket->ticketNo,
             'user_id' => Auth::user()->id,
             'message' => $message,
@@ -60,7 +60,7 @@ class TicketController extends Controller
         return response()->json([
             "status" => "Success",
             "ticketNumber" => $ticket->ticketNo,
-        ], 201);
+        ], 200);
     }
 
     public function closeTicketList()

@@ -17,9 +17,6 @@ class CreateFaqsTable extends Migration
             $table->bigIncrements('id');
             $table->longText('title');
             $table->longText('body');
-            $table->string('image')->nullable();
-            $table->string('link')->nullable();
-            $table->string('icon');
             $table->string('category');
             $table->longText('slug')->nullable();
             $table->timestamps();
