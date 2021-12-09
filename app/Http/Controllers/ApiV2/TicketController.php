@@ -24,7 +24,7 @@ class TicketController extends Controller
             return response()->json([
                 'status' => 'Error',
                 'message' => $validator->errors(),
-            ], 401);
+            ], 400);
         }
 
         $ticket = Ticket::create([

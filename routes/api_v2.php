@@ -21,7 +21,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     //?Faq
     Route::get('/all-Faq', 'FaqApiController@index');
-    Route::post('/view-Faq/{id}', 'FaqApiController@getFaq');
+    Route::get('/view-Faq/{id}', 'FaqApiController@getFaq');
 
     //?TicketCategory
     Route::get('/all-categories', "TicketCategoryController@listofCategories");

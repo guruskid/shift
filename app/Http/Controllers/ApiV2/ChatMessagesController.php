@@ -33,7 +33,7 @@ class ChatMessagesController extends Controller
             return response()->json([
                 'status' => 'Error',
                 'message' => $validator->errors(),
-            ], 401);
+            ], 404);
         }
         
         $is_agent = Auth::user()->role == '555' ? 1 : 0;
