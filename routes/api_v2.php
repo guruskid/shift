@@ -36,6 +36,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     //?Faq
     Route::get('/all-Faq', 'FaqApiController@index');
     Route::get('/view-Faq/{id}', 'FaqApiController@getFaq');
+    Route::post('/add-Faq', 'FaqApiController@addFaq');
+    Route::post('/update-faq', 'FaqApiController@updateFaq');
+    Rouute::get('/delete-faq/{id}', 'FaqApiController@deleteFaq');
 
     //?TicketCategory
     Route::post('/add-new-category', 'TicketController@addCategory');
