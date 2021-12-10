@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
 {
-    //?creating a ticket
     public function createTicket(Request $r)
     {
         $validator = Validator::make($r->all(), [
@@ -22,9 +21,9 @@ class TicketController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'Error',
+                "success" => false,
                 'message' => $validator->errors(),
-            ], 400);
+            ], 401);
         }
 
         $ticket = Ticket::create([
@@ -40,7 +39,7 @@ class TicketController extends Controller
         $category = $this->getCategory($r->subcategory_id);
         $subcartegory = $this->getSubCategory($r->subcategory_id);
 
-        $message = "Payment Problem: " . $category . "\n" .
+        $message = "Category: " . $category . "\n" .
             "SubCategory: " . $subcartegory . "\n" .
             "Description: " . $r->description;
 
@@ -53,40 +52,43 @@ class TicketController extends Controller
 
         if (empty($ticket)) {
             return response()->json([
-                "status" => "Error",
+                "success" => false,
                 "message" => "Error creating a ticket",
             ], 500);
         }
+
         return response()->json([
-            "status" => "Success",
+            "success" => true,
             "ticketNumber" => $ticket->ticketNo,
         ], 200);
     }
 
     public function closeTicketList()
     {
-        $ticketList = Ticket::where('user_id', '=', Auth::user()->id)
-            ->where('status', 'close')->latest()->get();
+        $ticketList = Ticket::where('user_id', '=', Auth::user()->id)->where('status', 'close')->latest()->get();
+
         return response()->json([
-            'status' => 'Success',
+            "success" => true,
             'ticketlist' => $ticketList,
         ], 200);
     }
 
     public function openTicketList()
     {
-        $ticketList = Ticket::where('user_id', '=', Auth::user()->id)
-            ->where('status', 'open')->latest()->get();
+        $ticketList = Ticket::where('user_id', '=', Auth::user()->id)->where('status', 'open')->latest()->get();
         return response()->json([
-            'status' => 'Success',
+            "success" => true,
             'ticketlist' => $ticketList,
         ], 200);
     }
+
     public function getCategory($subcartegory_id)
     {
         $category_id = TicketCategory::find($subcartegory_id)->ticket_category_id;
         return TicketCategory::find($category_id)->name;
     }
+
+
     public function getSubCategory($subcartegory_id)
     {
         return TicketCategory::find($subcartegory_id)->name;

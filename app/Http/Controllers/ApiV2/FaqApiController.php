@@ -13,7 +13,7 @@ class FaqApiController extends Controller
     {
         $faq = Faq::all();
         return response()->json([
-            "status" => "Success",
+            'success' => true,
             "faq" => $faq,
         ], 200);
     }
@@ -21,35 +21,44 @@ class FaqApiController extends Controller
     public function getFaq($id)
     {
         $faq = Faq::find($id);
-        if(empty($faq))
-        {
+        if (empty($faq)) {
             return response()->json([
-                "status" => "Error",
+                'success' => false,
                 "message" => "Faq Not Found",
-            ], 404); 
+            ], 404);
         }
+
         return response()->json([
-            "status" => "success",
+            'success' => true,
             "faq" => $faq,
         ], 200);
     }
 
     public function addFaq(Request $r)
     {
-        $r->validate([
+        $validator = Validator::make($r->all(), [
             'title' => 'required|min:2|max:225',
             'body' => 'required',
             'category' => 'required',
-            'icon'=>'required'
+            'icon' => 'required'
         ]);
-        $file = $r->file('photo');
-        $filename= "";
-        if($file){
-            $extension = $file->getClientOriginalExtension();
-            $filename = uniqid().'.'.$extension;
-            Storage::put('public/faq/'.$filename, fopen($file, 'r+'));
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
         }
-        
+
+        $file = $r->file('photo');
+        $filename = "";
+
+        if ($file) {
+            $extension = $file->getClientOriginalExtension();
+            $filename = uniqid() . '.' . $extension;
+            Storage::put('public/faq/' . $filename, fopen($file, 'r+'));
+        }
+
         Faq::create([
             'title' => $r->title,
             'body' => $r->body,
@@ -58,37 +67,40 @@ class FaqApiController extends Controller
             'link' => $r->link,
             'icon' => $r->icon
         ]);
-        if(empty($faq)){
+
+        if (empty($faq)) {
             return response()->json([
-                "status" => "Error",
+                'success' => false,
                 "message" => "Error creating an FAQ",
             ], 500);
         }
+
         return response()->json([
-            "status" => "success",
+            'success' => true,
             "faq" => $faq,
         ], 200);
-
     }
+
     public function updateFaq(Request $r)
     {
-        $r->validate([
-            'id' => 'required|min:1',
+        $validator = Validator::make($r->all(), [
+            'id' => 'required|min:1|exists:faqs,id',
             'title' => 'required|min:2|max:225',
             'body' => 'required',
             'category' => 'required',
-            'icon' =>'required'
+            'icon' => 'required'
         ]);
 
-        $faq = Faq::where('id', $r->id);
-        if(!$faq){
+        if ($validator->fails()) {
             return response()->json([
-                "status" => "Error",
-                "message" => "Faq Not Found",
-            ], 404);
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
         }
 
-        if($r->photo == null){
+        $faq = Faq::where('id', $r->id);
+
+        if ($r->photo == null) {
             $faq->update([
                 'title' => $r->title,
                 'body' => $r->body,
@@ -96,26 +108,30 @@ class FaqApiController extends Controller
                 'icon' => $r->icon
             ]);
             return response()->json([
-            "status" => "success",
-            "message" => "Updated Successfully"
-             ], 200);
+                'success' => true,
+                "message" => "Updated Successfully"
+            ], 200);
         }
+
         $file = $r->file('photo');
-        $filename= "";
-        if($file){
+        $filename = "";
+
+        if ($file) {
             $extension = $file->getClientOriginalExtension();
-            $filename = uniqid().'.'.$extension;
-            Storage::put('public/faq/'.$filename, fopen($file, 'r+'));
+            $filename = uniqid() . '.' . $extension;
+            Storage::put('public/faq/' . $filename, fopen($file, 'r+'));
         }
+
         $faq->update([
             'title' => $r->title,
             'body' => $r->body,
             'category' => $r->category,
             'icon' => $r->icon,
-            'image' =>$filename
+            'image' => $filename
         ]);
+
         return response()->json([
-            "status" => "success",
+            'success' => true,
             "message" => "Updated Successfully"
         ], 200);
     }
@@ -124,17 +140,16 @@ class FaqApiController extends Controller
     {
         $faq = Faq::find($id);
 
-        if(empty($faq)){
+        if (empty($faq)) {
             return response()->json([
-                "status" => "Error",
+                'success' => false,
                 "message" => "Faq Not Found"
             ], 404);
         }
         $faq->delete();
         return response()->json([
-            "status" => "Success",
+            'success' => true,
             "message" => "Faq Deleted"
         ], 200);
-
     }
 }

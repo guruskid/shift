@@ -13,29 +13,30 @@ class ChatMessagesController extends Controller
     //?showing chat
     public function Messages($ticketNo)
     {
-        $messages = ChatMessages::where('ticket_no',$ticketNo)->oldest()->get();
+        $messages = ChatMessages::where('ticket_no', $ticketNo)->latest()->get();
         return response()->json([
-            "status" => "Success",
+            "success" => true,
             "messages" => $messages,
         ], 200);
     }
 
     public function sendMessage(Request $r)
     {
-        //?ticket no ,message, checking is agent 
+        //?ticket no ,message, checking is agent
         //? agent role for customer happiness 555
-        
+
         $validator = Validator::make($r->all(),[
             'ticketNo' => 'required',
             'message' => 'required'
         ]);
+
         if($validator->fails()){
             return response()->json([
-                'status' => 'Error',
+                'success' => false,
                 'message' => $validator->errors(),
-            ], 404);
+            ], 401);
         }
-        
+
         $is_agent = Auth::user()->role == '555' ? 1 : 0;
         $chatmessage = ChatMessages::create([
             'ticket_no' => $r->ticketNo,
@@ -43,8 +44,9 @@ class ChatMessagesController extends Controller
             'message' => $r->message,
             'is_agent' => $is_agent,
         ]);
+
         return response()->json([
-            'status' => 'Success',
+            'success' => true,
             'message' => $chatmessage,
         ], 201);
 

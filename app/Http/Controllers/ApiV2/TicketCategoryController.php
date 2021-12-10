@@ -8,18 +8,18 @@ use App\TicketCategory;
 
 class TicketCategoryController extends Controller
 {
-    public function listofCategories()  
+    public function listofCategories()
     {
         $ticketcategory = TicketCategory::with('subcategories')->where('ticket_category_id', null)->get();
         if(empty($ticketcategory))
         {
             return response()->json([
-                "status" => "Error",
+                "success" => false,
                 "message" => "No Categories Available",
             ], 404);
         }
         return response()->json([
-            "status" => "Success",
+            "success" => true,
             "ticketcartegory" => $ticketcategory,
         ], 200);
     }
