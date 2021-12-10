@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/view-Faq/{id}', 'FaqApiController@getFaq');
 
     //?TicketCategory
+    Route::get('/add-new', 'TicketController@addCategory');
     Route::get('/all-categories', "TicketCategoryController@listofCategories");
 
     //?ticket
