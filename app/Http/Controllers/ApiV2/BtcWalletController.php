@@ -1,50 +1,125 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiV2;
 
-use App\BtcMigration;
 use App\Card;
 use App\CardCurrency;
 use App\CryptoRate;
 use App\HdWallet;
-use App\FeeWallet;
-use App\NairaTransaction;
-use App\NairaWallet;
 use App\Notification;
-use App\Setting;
-use App\User;
-use App\Wallet;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\LiveRateController;
+use App\Setting;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use RestApis\Blockchain\Constants;
 use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Mail;
+use App\BtcMigration;
+use App\FeeWallet;
+use App\NairaTransaction;
+use App\NairaWallet;
+use App\User;
+use App\Wallet;
 use App\Http\Controllers\GeneralSettings;
+use Illuminate\Support\Arr;
+use RestApis\Blockchain\Constants;
 
 class BtcWalletController extends Controller
 {
-    public function create(Request $request)
+    public function btcPrice()
     {
-        $request->validate([
-            'pin' => 'required|max:4'
+
+        $client = new Client();
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        // $res = json_decode($res->getBody());
+        // $btc_rate = (int)$res->value;
+
+        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+        // $tp = ($trading_per / 100) * $btc_rate;
+        // $btc_rate -= $tp;
+        $btc_rate = LiveRateController::btcRate();
+
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+
+        return response()->json([
+            'success' => true,
+            'btc_usd' => $btc_rate,
+            'usd_ngn' => $usd_ngn
+        ]);
+    }
+
+    public function fees()
+    {
+        $address = HdWallet::where('currency_id', 1)->first()->address;
+        $amount = 0.002;
+        $client = new Client();
+        $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
+        $amount = number_format((float) $amount, 8);
+
+        $url = env('TATUM_URL') . '/offchain/blockchain/estimate';
+
+        $get_fees = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'json' =>  [
+                "senderAccountId" => Auth::user()->btcWallet->account_id,
+                "address" => $address,
+                "amount" => $amount,
+                "xpub" => $hd_wallet->xpub
+            ]
         ]);
 
-        if (Auth::user()->btcWallet) {
-            return back()->with(['error' => 'New Bitcoin wallet already exists for this account']);
+
+        $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
+        $res = json_decode($get_fees->getBody());
+        $total_fees = $charge + $res->medium;
+
+        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $btc_rate = (int)$res->value;
+
+        return response()->json([
+            'success' => true,
+            'send_fee' => $total_fees,
+            'btc_to_usd' => $btc_rate,
+        ]);
+    }
+
+    public function create(Request $r)
+    {
+        $validator = Validator::make($r->all(), [
+            'wallet_password' => 'required|min:4|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
         }
 
+        if (Auth::user()->btcWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'A Bitcoin wallet exists for this account'
+            ]);
+        }
+
+        $password = Hash::make($r->wallet_password);
         $user = Auth::user();
-        $external_id = $user->username . '-' . uniqid();
+        $external_id = $user->email . '-' . uniqid();
+
         $btc_hd = HdWallet::where('currency_id', 1)->first();
         $btc_xpub = $btc_hd->xpub;
 
         $client = new Client();
         $url = env('TATUM_URL') . "/ledger/account/batch";
 
+        /* try { */
         $response = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' => [
@@ -70,8 +145,8 @@ class BtcWalletController extends Controller
 
         $btc_account_id = $body[0]->id;
         $user->customer_id = $body[0]->customerId;
+        $user->pin = $password;
         $user->external_id = $external_id;
-        $user->pin = Hash::make($request->pin);
         $user->save();
 
         $address_url = env('TATUM_URL') . "/offchain/account/address/batch";
@@ -86,113 +161,42 @@ class BtcWalletController extends Controller
 
         $address_body = json_decode($res->getBody());
 
-        $btc_wallet = $user->btcWallet()->create([
+        $user->btcWallet()->create([
             'account_id' => $btc_account_id,
-            'name' => $user->email,
+            'name' => $user->username,
             'currency_id' => 1,
             'address' => $address_body[0]->address,
         ]);
-
-        //Migrate old funds
-        if (Auth::user()->bitcoinWallet && Auth::user()->bitcoinWallet->balance > 0) {
-            $migration = BtcMigration::create([
-                'user_id' => Auth::user()->id,
-                'amount' => number_format((float) Auth::user()->bitcoinWallet->balance, 8),
-            ]);
-
-            $reference = \Str::random(5) . Auth::user()->id;
-            $url = env('TATUM_URL') . '/ledger/transaction';
-            $migration_wallet = Wallet::where('name', 'migration')->first();
-
-            try {
-                $send = $client->request('POST', $url, [
-                    'headers' => ['x-api-key' => env('TATUM_KEY')],
-                    'json' =>  [
-                        "senderAccountId" => $migration_wallet->account_id,
-                        "recipientAccountId" => $btc_wallet->account_id,
-                        "amount" => $migration->amount,
-                        "anonymous" => false,
-                        "compliant" => false,
-                        "transactionCode" => $reference,
-                        "paymentId" => $reference,
-                        "baseRate" => 1,
-                    ]
-                ]);
-                $migration->status = 'completed';
-                $migration->save();
-
-                $user->bitcoinWallet->balance = 0;
-                $user->bitcoinWallet->save();
-            } catch (\Throwable $th) {
-                //throw $th;
-                return back()->with(['success' => 'Bitcoin wallet migrated successfully']);
-            }
-        }
-
-        return back()->with(['success' => 'Bitcoin wallet migrated successfully']);
-    }
-
-    public function getBitcoinNgn()
-    {
-
-        $rates = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
-
-        $client = new Client();
-        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        // $res = json_decode($res->getBody());
-        // $btc_rate = $res->value;
-
-        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        // $tp = ($trading_per / 100) * $btc_rate;
-        // $btc_rate -= $tp;
-
-        $btc_rate = LiveRateController::btcRate();
-
-        $btc_wallet_bal = Auth::user()->bitcoinWallet->balance ?? 0;
-        $btc_usd = $btc_wallet_bal  * $btc_rate;
-
-        // $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
-
-        $btc_ngn = $btc_usd * $rates;
-
         return response()->json([
-            'data' => (int)$btc_ngn
+            'success' => true,
         ]);
     }
 
-    public function wallet(Request $r)
+
+    public function balance()
     {
-
         if (!Auth::user()->btcWallet) {
-            return redirect()->route('user.portfolio')->with(['error' => 'Please a bitcoin wallet to continue']);
+            return response()->json([
+                'success' => false,
+                'msg' => 'No bitcoin wallet exists for this account'
+            ]);
         }
-
-        $fees = 0;
-
-        $charge = Setting::where('name', 'bitcoin_charge')->first();
-        if (!$charge) {
-            $charge = 0;
-        } else {
-            $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
-        }
-        $total_fees = $fees + $charge;
-
-
+        $card = Card::find(102);
+        $rates = $card->currency->first();
 
         $client = new Client();
         // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
         // $res = json_decode($res->getBody());
-        // $btc_rate = $res->value;
+        // $btc_rate = (int)$res->value;
+
 
         // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
         // $tp = ($trading_per / 100) * $btc_rate;
         // $btc_rate -= $tp;
         $btc_rate = LiveRateController::btcRate();
 
-        $client = new Client();
+
         $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
@@ -204,6 +208,22 @@ class BtcWalletController extends Controller
         $btc_wallet->balance = $accounts[0]->balance->availableBalance;
         $btc_wallet->usd = $btc_wallet->balance  * $btc_rate;
 
+
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $btc_ngn = $usd_ngn * $btc_wallet->usd;
+
+        return response()->json([
+            'success' => true,
+            'btc_wallet' => Auth::user()->btcWallet->address,
+            'btc_value' => number_format((float)$btc_wallet->balance, 8),
+            'ngn_value' => (int)$btc_ngn,
+            'usd_value' => $btc_wallet->usd
+        ]);
+    }
+
+    public function transactions()
+    {
+        $client = new Client();
         $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
         $get_txns = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
@@ -214,48 +234,19 @@ class BtcWalletController extends Controller
         foreach ($transactions as $t) {
             $x = \Str::limit($t->created, 10, '');
             $time = \Carbon\Carbon::parse((int)$x);
-            $t->created = $time->setTimezone('Africa/Lagos');
+            $t->created_at = $time->setTimezone('Africa/Lagos');
+            $t->created_at = $t->created_at->format('d M, y');
 
             if (!isset($t->senderNote)) {
                 $t->senderNote = 'Sending BTC';
             }
         }
 
-        $send_btc_setting = GeneralSettings::getSetting('SEND_BTC');
-        $receive_btc_setting = GeneralSettings::getSetting('RECEIVE_BTC');
-
-
-        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees', 'send_btc_setting', 'receive_btc_setting'));
-    }
-
-    public function fees($address, $amount)
-    {
-        $client = new Client();
-        $hd_wallet = HdWallet::where(['currency_id' => 1])->first();
-        $amount = number_format((float) $amount, 8);
-
-        $url = env('TATUM_URL') . '/offchain/blockchain/estimate';
-        /* try { */
-        $get_fees = $client->request('POST', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
-            'json' =>  [
-                "senderAccountId" => Auth::user()->btcWallet->account_id,
-                "address" => $address,
-                "amount" => $amount,
-                "xpub" => $hd_wallet->xpub
-            ]
-        ]);
-        /*  } catch (\Exception $e) {
-            //\Log::info($e->getResponse()->getBody());
-        } */
-        $charge = Setting::where('name', 'bitcoin_charge')->first()->value;
-        $res = json_decode($get_fees->getBody());
         return response()->json([
-            "fee" => $res,
-            "charge" => $charge
+            'success' => true,
+            'transactions' => $transactions
         ]);
     }
-
 
     public function sell(Request $r)
     {
@@ -468,7 +459,9 @@ class BtcWalletController extends Controller
             ]);
         }
 
-        if (Auth::user()->referred) {
+        $status = GeneralSettings::getSetting('REFERRAL_ACTIVE')->settings_value;
+
+        if (Auth::user()->referred == 1 and $status == 1) {
             // fund referral pool wallet
             $referral_percentage = GeneralSettings::getSetting('REFERRAL_PERCENTAGE');
             $referral_wallet = FeeWallet::where('name','referral_pool')->first();
@@ -539,9 +532,6 @@ class BtcWalletController extends Controller
             'msg' => 'Bitcoin sold successfully'
         ]);
     }
-
-
-
 
     public function send(Request $r)
     {
@@ -685,6 +675,7 @@ class BtcWalletController extends Controller
             }
         } catch (\Exception $e) {
             //report($e);
+            return $e->getResponse()->getBody();
             \Log::info($e->getResponse()->getBody());
             return response()->json([
                 'success' => false,

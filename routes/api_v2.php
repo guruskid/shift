@@ -34,5 +34,26 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/dashboard', 'UserController@dashboard');
 
+    Route::post('/create_referral_code', 'ReferralController@create');
+    Route::get('/get_referral_balance', 'ReferralController@getBalance');
+    Route::post('/sell_referral_btc', 'ReferralController@sell');
+    Route::post('/referral_status', 'ReferralController@referralSystemStatus');
+
+    //BTC Wallet
+    Route::group(['prefix' => 'bitcoin-wallet'], function () {
+
+        Route::POST('/create', 'BtcWalletController@create');
+        Route::GET('/balance', 'BtcWalletController@balance');
+        Route::GET('/send-charges', 'BtcWalletController@fees');
+        Route::get('/send-charges/{address}/{amount}', 'BtcWalletController@fees');
+        Route::GET('/transactions', 'BitcoinWalletController@transactions');
+        Route::GET('/all-transactions', 'BtcWalletController@transactions');
+        Route::POST('/trade', 'BtcWalletController@sell');
+        Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
+
+        Route::POST('/send', 'BtcWalletController@send');
+
+    });
+
 });
 
