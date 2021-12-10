@@ -5,17 +5,28 @@ namespace App\Http\Controllers\ApiV2;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\TicketCategory;
+use Illuminate\Support\Facades\Validator;
 
 class TicketCategoryController extends Controller
 {
     public function addCategory(Request $r)
     {
+        $validator = Validator::make($r->all(), [
+            'name' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
         $cat_id =  TicketCategory::where('name',$r->name)->count();
         if($cat_id > 0)
         {
             return response()->json([
                 "success" => false,
-                "status" => "already added"
+                "status" => "Category Already Stored"
             ], 401);
         }
         TicketCategory::create([
@@ -30,15 +41,26 @@ class TicketCategoryController extends Controller
     }
     public function addSubCategory(Request $r)
     {
-        $cat_id =  TicketCategory::where('name',$r->name)->get();
-        if(empty($cat_id)){
+        $validator = Validator::make($r->all(), [
+            'name' => 'required',
+            'id' => 'required|min:1'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+        $cat_id =  TicketCategory::where('id',$r->id)->get();
+        if(count($cat_id) == 0){
             return response()->json([
                 "success" => false,
                 'message' => "Category does not exist",
             ], 401);
         }
         $tc =TicketCategory::create([
-            'name'=> $r->name.rand(),
+            'name'=> $r->name,
             'ticket_category_id' => $cat_id[0]->id
         ]);
         return response()->json([

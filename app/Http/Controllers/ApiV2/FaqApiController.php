@@ -6,6 +6,8 @@ use App\Faq;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\TicketCategory;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class FaqApiController extends Controller
 {
@@ -59,7 +61,7 @@ class FaqApiController extends Controller
             Storage::put('public/faq/' . $filename, fopen($file, 'r+'));
         }
 
-        Faq::create([
+        $faq = Faq::create([
             'title' => $r->title,
             'body' => $r->body,
             'category' => $r->category,
