@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 
-
 //Register and login here and other routes that dont require authentication
 
 // Route::get('test-route', 'testController@index');
@@ -34,5 +33,20 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/dashboard', 'UserController@dashboard');
 
+    //?Faq
+    Route::get('/all-Faq', 'FaqApiController@index');
+    Route::get('/view-Faq/{id}', 'FaqApiController@getFaq');
+
+    //?TicketCategory
+    Route::get('/all-categories', "TicketCategoryController@listofCategories");
+
+    //?ticket
+    Route::post('/add-ticket' ,'TicketController@createTicket');
+    Route::get('/all-user-close-tickets', 'TicketController@closeTicketList');
+    Route::get('/all-user-open-tickets', 'TicketController@openTicketList');
+
+    //?messages
+    Route::get('/ticket-messages/{ticketNo}', "ChatMessagesController@Messages");
+    Route::post('/send-message', 'ChatMessagesController@sendMessage');
 });
 

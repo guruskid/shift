@@ -1,30 +1,36 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiV2;
 
 use App\Faq;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;
+use App\TicketCategory;
 
-class FaqController extends Controller
+class FaqApiController extends Controller
 {
     public function index()
     {
-        $finances = Faq::where('category', 'finance')->latest()->get();
-        $techs = Faq::where('category', 'tech')->latest()->get();
-        $transactions = Faq::where('category', 'transactions')->latest()->get();
-        return view("admin.faq", compact("finances", "techs", "transactions"));
+        $faq = Faq::all();
+        return response()->json([
+            "status" => "Success",
+            "faq" => $faq,
+        ], 200);
     }
 
-    public function getFaqs()
+    public function getFaq($id)
     {
-        $finances = Faq::where('category', 'finance')->get();
-        $techs = Faq::where('category', 'tech')->get();
-        $transactions = Faq::where('category', 'transactions')->get();
+        $faq = Faq::find($id);
+        if(empty($faq))
+        {
+            return response()->json([
+                "status" => "Error",
+                "message" => "Faq Not Found",
+            ], 404); 
+        }
         return response()->json([
-            "finances" => $finances,
-            "techs" => $techs,
-            "transactions" => $transactions
+            "status" => "success",
+            "faq" => $faq,
         ], 200);
     }
 
@@ -52,20 +58,18 @@ class FaqController extends Controller
             'link' => $r->link,
             'icon' => $r->icon
         ]);
-        return back()->with(['success' => 'FAQ added successfully ']);
-    }
-
-    public function editFaqView($id, $title)
-    {
-        $editfaq = Faq::where('id', $id)->get();
-        $FaqsCount = Faq::where('id', $id)->count();
-
-        if($FaqsCount < 1 ){
-            return  redirect()->route("admin.faq");
+        if(empty($faq)){
+            return response()->json([
+                "status" => "Error",
+                "message" => "Error creating an FAQ",
+            ], 500);
         }
-        return view("admin.edit-faq", compact("editfaq"));
-    }
+        return response()->json([
+            "status" => "success",
+            "faq" => $faq,
+        ], 200);
 
+    }
     public function updateFaq(Request $r)
     {
         $r->validate([
@@ -75,14 +79,26 @@ class FaqController extends Controller
             'category' => 'required',
             'icon' =>'required'
         ]);
+
+        $faq = Faq::where('id', $r->id);
+        if(!$faq){
+            return response()->json([
+                "status" => "Error",
+                "message" => "Faq Not Found",
+            ], 404);
+        }
+
         if($r->photo == null){
-            Faq::where('id', $r->id)->update([
+            $faq->update([
                 'title' => $r->title,
                 'body' => $r->body,
                 'category' => $r->category,
                 'icon' => $r->icon
             ]);
-            return back()->with(['success' => 'Updated successfully ']);
+            return response()->json([
+            "status" => "success",
+            "message" => "Updated Successfully"
+             ], 200);
         }
         $file = $r->file('photo');
         $filename= "";
@@ -91,27 +107,34 @@ class FaqController extends Controller
             $filename = uniqid().'.'.$extension;
             Storage::put('public/faq/'.$filename, fopen($file, 'r+'));
         }
-        Faq::where('id', $r->id)->update([
+        $faq->update([
             'title' => $r->title,
             'body' => $r->body,
             'category' => $r->category,
             'icon' => $r->icon,
             'image' =>$filename
         ]);
-        return back()->with(['success' => 'Updated successfully ']);
-
-        
+        return response()->json([
+            "status" => "success",
+            "message" => "Updated Successfully"
+        ], 200);
     }
 
     public function deleteFaq($id)
     {
-        $FaqsCount = Faq::where('id', $id)->count();
+        $faq = Faq::find($id);
 
-        if($FaqsCount < 1 ){
-            return  redirect()->route("admin.faq");
+        if(empty($faq)){
+            return response()->json([
+                "status" => "Error",
+                "message" => "Faq Not Found"
+            ], 404);
         }
+        $faq->delete();
+        return response()->json([
+            "status" => "Success",
+            "message" => "Faq Deleted"
+        ], 200);
 
-        Faq::where('id', $id)->delete();
-        return back()->with(['success' => 'Updated deleted']);
     }
 }
