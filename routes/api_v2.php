@@ -41,8 +41,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Rouute::get('/delete-faq/{id}', 'FaqApiController@deleteFaq');
 
     //?TicketCategory
-    Route::post('/add-new-category', 'TicketController@addCategory');
-    Route::post('/add-new-subcategory', 'TicketController@addSubCategory');
+    Route::post('/add-new-category', 'TicketCategoryController@addCategory');
+    Route::post('/add-new-subcategory', 'TicketCategoryController@addSubCategory');
     Route::get('/all-categories', "TicketCategoryController@listofCategories");
 
     //?ticket
