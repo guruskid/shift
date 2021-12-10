@@ -12,17 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
 {
-    public function addCategory($r = "paypal")
-    {
-        TicketCategory::create([
-            'name'=>$r,
-            'ticket_category_id' => null
-        ]);
-        return response()->json([
-            "success" => true
-        ], 200);
-
-    }
+    
     public function createTicket(Request $r)
     {
         $validator = Validator::make($r->all(), [
