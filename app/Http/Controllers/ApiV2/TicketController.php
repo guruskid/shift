@@ -60,6 +60,7 @@ class TicketController extends Controller
         return response()->json([
             "success" => true,
             "ticketNumber" => $ticket->ticketNo,
+            "chatmessage" => $message
         ], 200);
     }
 
