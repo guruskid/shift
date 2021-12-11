@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiV2;
 
+use App\Country;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -411,21 +412,23 @@ class AuthController extends Controller
         $country = Country::find($request->country_id);
         $full_num = $country->phonecode . $request->phone;
 
-        $response = $client->request('POST', $url, [
-            'json' => [
-                'api_key' => env('TERMII_API_KEY'),
-                "message_type" => "NUMERIC",
-                "to" => $full_num,
-                "from" => "N-Alert",
-                "channel" => "dnd",
-                "pin_attempts" => 4,
-                "pin_time_to_live" =>  10,
-                "pin_length" => 6,
-                "pin_placeholder" => "< 1234 >",
-                "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
-                "pin_type" => "NUMERIC"
-            ],
-        ]);
+        // dd($url);
+
+            $response = $client->request('POST', $url, [
+                'json' => [
+                    'api_key' => env('TERMII_API_KEY'),
+                    "message_type" => "NUMERIC",
+                    "to" => $full_num,
+                    "from" => "N-Alert",
+                    "channel" => "dnd",
+                    "pin_attempts" => 4,
+                    "pin_time_to_live" =>  10,
+                    "pin_length" => 6,
+                    "pin_placeholder" => "< 1234 >",
+                    "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                    "pin_type" => "NUMERIC"
+                ],
+            ]);
         $body = json_decode($response->getBody()->getContents());
 
         if ($body->status == 200) {
@@ -433,6 +436,7 @@ class AuthController extends Controller
             Auth::user()->country_id = $request->country_id;
             Auth::user()->phone_pin_id = $body->pinId;
             Auth::user()->save();
+
             return response()->json([
                 'success' => true,
             ]);
@@ -505,6 +509,8 @@ class AuthController extends Controller
 
         $client = new Client();
         $url = env('TERMII_SMS_URL') . "/otp/send";
+
+        // dd($url);
 
         $response = $client->request('POST', $url, [
             'json' => [
