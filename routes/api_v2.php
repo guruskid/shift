@@ -44,4 +44,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/profile', 'UserController@profile');
     Route::post('/update-birthday', 'UserController@updateBirthday');
 
+    // Transactions
+    Route::GET('/bitcoin-transactions', 'TransactionController@bitcoinWalletTransactions');
+    Route::GET('/naira-transactions', 'TransactionController@nairaTransactions');
+    Route::GET('/giftcard-transactions', 'TransactionController@allCardTransactions');
+    Route::GET('/utility-transactions', 'TransactionController@utilityTransactions');
+
+
 });
