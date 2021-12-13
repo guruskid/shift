@@ -30,8 +30,18 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/resend-otp', 'AuthController@resendOtp');
     Route::post('/verify-phone', 'AuthController@verifyPhone');
 
+    // Level 2 and 3 verification
+    Route::post('/upload-idcard', 'UserController@uploadId');
+    Route::post('/upload-address', 'UserController@uploadAddress');
+
+    Route::post('/update-dp', 'UserController@updateDp');
+
+
+
 
     Route::get('/dashboard', 'UserController@dashboard');
+    Route::get('/profile', 'UserController@profile');
+    Route::post('/update-birthday', 'UserController@updateBirthday');
 
     //?Faq
     Route::get('/all-Faq', 'FaqApiController@index');
@@ -54,4 +64,3 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/ticket-messages/{ticketNo}', "ChatMessagesController@Messages");
     Route::post('/send-message', 'ChatMessagesController@sendMessage');
 });
-
