@@ -468,7 +468,9 @@ class BtcWalletController extends Controller
             ]);
         }
 
-        if (Auth::user()->referred) {
+        $status = GeneralSettings::getSetting('REFERRAL_ACTIVE')->settings_value;
+
+        if (Auth::user()->referred == 1 and $status == 1) {
             // fund referral pool wallet
             $referral_percentage = GeneralSettings::getSetting('REFERRAL_PERCENTAGE');
             $referral_wallet = FeeWallet::where('name','referral_pool')->first();

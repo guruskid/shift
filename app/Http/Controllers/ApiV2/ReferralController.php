@@ -67,14 +67,14 @@ class ReferralController extends Controller
         if (!Auth::user()->btcWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please a bitcoin wallet to continue'
+                'message' => 'Please a bitcoin wallet to continue'
             ]);
         }
 
         if (!Auth::user()->nairaWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please create a Naira wallet to continue'
+                'message' => 'Please create a Naira wallet to continue'
             ]);
         }
 
@@ -95,7 +95,7 @@ class ReferralController extends Controller
         if ($r->quantity > $referral_wallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Insufficient referral balance to initiate trade'
+                'message' => 'Insufficient referral balance to initiate trade'
             ]);
         }
 
@@ -223,7 +223,7 @@ class ReferralController extends Controller
             //report($e);
             return response()->json([
                 'success' => false,
-                'msg' => 'An error occured, please try again'
+                'message' => 'An error occured, please try again'
             ]);
         }
 
