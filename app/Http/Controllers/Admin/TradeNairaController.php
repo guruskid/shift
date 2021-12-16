@@ -162,6 +162,46 @@ class TradeNairaController extends Controller
         return back()->with(['success' => 'Transaction cancelled']);
     }
 
+    public function refundTrade(Request $request, NairaTrade $transaction)
+    {
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return back()->with(['error' => 'Incorrect pin']);
+        }
+
+        if ($transaction->status != 'success') {
+            // return back()->with(['error' => 'Invalid transaction']);
+        }
+
+        $nt = NairaTransaction::where('reference', $transaction->reference)->first();
+
+        // dd($transaction);
+        if ($transaction->status == 'success') {
+            if ($transaction->type == 'withdrawal') {
+                # credit the user
+            }else {
+                # debit the user
+                $user_wallet = $nt->user->nairaWallet;
+                $user_wallet->amount -= $nt->amount;
+                $user_wallet->save();
+    
+                //Send back the charges
+                $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+                $transfer_charges_wallet->amount -= $nt->charge;
+                $transfer_charges_wallet->save();
+            }
+        }
+
+        if ($nt) {
+            $nt->status = 'pending';
+            $nt->save();
+        }
+
+        $transaction->status = 'waiting';
+        $transaction->save();
+
+        return back()->with(['success' => 'Transaction refunded']);
+    }
+
     public function confirm(Request $request, NairaTrade $transaction)
     {
         if (!Hash::check($request->pin, Auth::user()->pin)) {

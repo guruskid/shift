@@ -105,6 +105,9 @@
                                                 @if ($t->status == 'waiting')
                                                 <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
                                                 <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button>
+                                                @elseif($t->status == 'success')
+                                                {{-- @else --}}
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#refund-modal-{{ $t->id }}">Refund</button>
                                                 @endif
                                             </div>
                                         </td>
@@ -186,6 +189,41 @@
                         </div>
                         <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
                             Decline
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endforeach
+@endif
+
+@if(!empty($transactions))
+    {{-- Confirm trade approval modal --}}
+    @foreach ($transactions as $t)
+    <div class="modal fade " id="refund-modal-{{ $t->id }}">
+        <div class="modal-dialog">
+            <form action="{{route('admin.naira-p2p.refund-trade', $t)}}" id="freeze-form" method="post"> @method('put')
+                @csrf
+                <div class="modal-content  c-rounded">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                        <h4 class="modal-title">Refund<i class="fa fa-paper-plane"></i></h4>
+                        <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+
+                    <div class="modal-body p-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="">Wallet pin </label>
+                                    <input type="password" name="pin" required class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
+                            Refund
                         </button>
                     </div>
                 </div>
