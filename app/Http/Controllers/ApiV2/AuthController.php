@@ -220,7 +220,7 @@ class AuthController extends Controller
             // 'last_name' => 'string|required',
             'username' => 'string|required|unique:users,username',
             'country_id' => 'required|integer',
-            'phone' => 'required',
+            'phone' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -232,7 +232,7 @@ class AuthController extends Controller
         $username = \Str::lower($input['username']);
         $external_id = $username . '-' . uniqid();
 
-        $user = User::create([
+        $data = [
             'first_name' => ' ',
             'last_name' => ' ',
             'phone' => $input['phone'],
@@ -241,7 +241,17 @@ class AuthController extends Controller
             'email' => $input['email'],
             'external_id' => $external_id,
             'password' => Hash::make($input['password']),
-        ]);
+        ];
+
+        if (isset($input['referral_code'])) {
+            $ref = User::where('referral_code',$input['referral_code'])->count();
+            if ($ref > 0) {
+                $data['referred'] = 1;
+                $data['referrer'] = $input['referral_code'];
+            }
+        }
+
+        $user = User::create($data);
 
         // $user->sendEmailVerificationNotification();
 

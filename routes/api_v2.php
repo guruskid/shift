@@ -43,11 +43,18 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/profile', 'UserController@profile');
     Route::post('/update-birthday', 'UserController@updateBirthday');
 
+    Route::post('/create_referral_code', 'ReferralController@create');
+    Route::get('/get_referral_balance', 'ReferralController@getBalance');
+    Route::post('/sell_referral_btc', 'ReferralController@sell');
+    Route::post('/referral_status', 'ReferralController@referralSystemStatus');
+
+});
     // Transactions
     Route::GET('/bitcoin-transactions', 'TransactionController@bitcoinWalletTransactions');
     Route::GET('/naira-transactions', 'TransactionController@nairaTransactions');
     Route::GET('/giftcard-transactions', 'TransactionController@allCardTransactions');
     Route::GET('/utility-transactions', 'TransactionController@utilityTransactions');
+
 
     //?Faq
     Route::get('/all-Faq', 'FaqApiController@index');
