@@ -96,7 +96,7 @@ class TradeNairaController extends Controller
     public function agentTransactions(User $user)
     {
 
-        $transactions = $user->agentNairaTrades()->orderBy('created_at', 'desc')->paginate(20);
+        $transactions =    $user->agentNairaTrades()->orderBy('created_at', 'desc')->paginate(20);
 
         foreach ($transactions as $t) {
             if ($t->type == 'withdrawal') {
@@ -167,7 +167,7 @@ class TradeNairaController extends Controller
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
-        
+
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
 
@@ -197,7 +197,7 @@ class TradeNairaController extends Controller
         <b>
         Reference Number: $transaction->reference<br><br>
         Date: ".date("Y-m-d; h:ia")."<br><br>
-        Account Balance: ₦".number_format($user_wallet->amount)." 
+        Account Balance: ₦".number_format($user_wallet->amount)."
         </b>";
 
 
@@ -205,7 +205,7 @@ class TradeNairaController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
+        $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
@@ -217,11 +217,11 @@ class TradeNairaController extends Controller
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
-        
+
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
 
-        
+
         $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $transaction->agent_id])->first();
         $user_account = Account::find($transaction->account_id);
         $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
@@ -263,7 +263,7 @@ class TradeNairaController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
+        $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
