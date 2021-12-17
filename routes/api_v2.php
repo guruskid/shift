@@ -48,7 +48,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/sell_referral_btc', 'ReferralController@sell');
     Route::post('/referral_status', 'ReferralController@referralSystemStatus');
 
-});
+
     // Transactions
     Route::GET('/bitcoin-transactions', 'TransactionController@bitcoinWalletTransactions');
     Route::GET('/naira-transactions', 'TransactionController@nairaTransactions');
