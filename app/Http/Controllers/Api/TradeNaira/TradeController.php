@@ -54,7 +54,7 @@ class TradeController extends Controller
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
 
-        $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->inRandomOrder()->limit(1)->get();
+        $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->limit(1)->get();
         $user_wallet = $user->nairaWallet;
         \Log::info($agent);
 
