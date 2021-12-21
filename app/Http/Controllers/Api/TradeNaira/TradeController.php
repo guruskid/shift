@@ -54,8 +54,9 @@ class TradeController extends Controller
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
 
-        $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->inRandomOrder()->limit(1)->get();
+        $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->limit(1)->get();
         $user_wallet = $user->nairaWallet;
+        \Log::info($agent);
 
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => $transactiontype])->first();
 
@@ -90,8 +91,8 @@ class TradeController extends Controller
         $total = NairaTrade::where(['type' => $type, 'user_id' => $user->id, 'status' => 'success'])->whereMonth('created_at', date('m'))->select('amount')->sum('amount');
         return $total;
     }
-  
-    public function completeWihtdrawal(Request $request) {  
+
+    public function completeWihtdrawal(Request $request) {
 
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'required',
@@ -629,10 +630,10 @@ class TradeController extends Controller
         <span style='color:blue'>Date of transaction: $txn->created_at</span>
         <br><br>
         Kindly contact our customer happiness team via our Instagram handle @godantown or call 09068633429 If you have a complaint";
- 
+
          $btn_text = '';
          $btn_url = '';
- 
+
          $name = ($user->first_name == " ") ? $user->username : $user->first_name;
          $name = explode(' ', $name);
          $firstname = ucfirst($name[0]);
