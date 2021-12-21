@@ -9,6 +9,8 @@ use App\Country;
 use App\Events\CustomNotification;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\Notification;
 use App\UtilityTransaction;
@@ -779,6 +781,17 @@ class BillsPaymentController extends Controller
                     'title' => $title,
                     'body' => $msg_body,
                 ]);
+                $body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N'.$charge.' for convenience fee.<br><br>
+                <b>Token: '.$response['token'].  '</b>,<br>
+                <b>Unit: '. $response['units']. '</b>,<br>
+                <b>Reference code:'. $reference;
+                $btn_text = '';
+                $btn_url = '';
+        
+                $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+                $name = explode(' ', $name);
+                $firstname = ucfirst($name[0]);
+                Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
                 return response()->json([
                     'success' => true,
