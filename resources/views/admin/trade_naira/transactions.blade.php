@@ -105,7 +105,7 @@
                                                 @if ($t->status == 'waiting')
                                                 <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
                                                 <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button>
-                                                @elseif($t->status == 'success')
+                                                @elseif($t->status == 'success' && in_array(Auth::user()->role, [999, 889]) )
                                                 {{-- @else --}}
                                                     <button class="btn btn-danger" data-toggle="modal" data-target="#refund-modal-{{ $t->id }}">Refund</button>
                                                 @endif
