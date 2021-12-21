@@ -413,10 +413,14 @@ class AdminController extends Controller
         foreach ($wallet_txns as $t) {
             if ($t->cr_user_id == $user->id) {
                 $t->trans_type = 'Credit';
-                $cr_total += $t->amount;
+                if ($t->status == 'success') {
+                    $cr_total += $t->amount;
+                }
             } else {
                 $t->trans_type = 'Debit';
-                $dr_total += $t->amount;
+                if ($t->status == 'success') {
+                    $dr_total += $t->amount;
+                }
             }
         }
 
