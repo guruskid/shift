@@ -169,17 +169,14 @@ class TradeNairaController extends Controller
         }
 
         if ($transaction->status != 'success') {
-            // return back()->with(['error' => 'Invalid transaction']);
+            return back()->with(['error' => 'Invalid transaction']);
         }
 
         $nt = NairaTransaction::where('reference', $transaction->reference)->first();
 
-        // dd($transaction);
         if ($transaction->status == 'success') {
             if ($transaction->type == 'withdrawal') {
-                # credit the user
 
-                // return 'yolo';
                 // return $nt->user->nairaWallet->id;
 
                 $ref = \Str::random(3) . time();
@@ -189,23 +186,26 @@ class TradeNairaController extends Controller
                 $n->amount = $nt->amount;
                 $n->amount_paid = $nt->amount_paid;
                 $n->user_id = $nt->user->id;
-                $n->type = 'withdrawal';
+                $n->type = 'refund';
                 $n->previous_balance = $nt->previous_balance;
                 $n->current_balance = $nt->current_balance;
                 $n->charge = $nt->charge;
                 $n->transfer_charge = $nt->transfer_charge;
-                $n->transaction_type_id = $nt->transaction_type_id;
+                $n->transaction_type_id = 18;
                 $n->cr_wallet_id = $nt->cr_wallet_id;
                 $n->cr_acct_name = $nt->cr_acct_name;
                 $n->narration = 'Withdrawal Refund ' . $ref;
                 $n->trans_msg = '';
                 $n->cr_user_id = $nt->dr_user_id;
                 $n->dr_user_id = $nt->cr_user_id;
-                $n->status = 'refund';
+                $n->status = 'success';
                 $n->save();
 
+                $nt->user->nairaWallet->amount += $nt->amount;
+                $nt->user->nairaWallet->save();
+
             }else {
-            
+
                 $ref = \Str::random(3) . time();
 
                 $n = new NairaTransaction();
@@ -218,34 +218,34 @@ class TradeNairaController extends Controller
                 $n->current_balance = $nt->user->nairaWallet->amount - $nt->amount;
                 $n->charge = $nt->charge;
                 $n->transfer_charge = $nt->transfer_charge;
-                $n->transaction_type_id = $nt->transaction_type_id;
+                $n->transaction_type_id = 18;
                 $n->cr_wallet_id = $nt->cr_wallet_id;
                 $n->cr_acct_name = $nt->cr_acct_name;
                 $n->narration = 'Deposit Refund ' . $ref;
                 $n->trans_msg = '';
                 $n->cr_user_id = $nt->dr_user_id;
                 $n->dr_user_id = $nt->cr_user_id;
-                $n->status = 'refund';
+                $n->status = 'success';
                 $n->save();
 
                 # debit the user
                 $user_wallet = $nt->user->nairaWallet;
                 $user_wallet->amount -= $nt->amount;
                 $user_wallet->save();
-    
-                //Send back the charges
-                $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
-                $transfer_charges_wallet->amount -= $nt->charge;
-                $transfer_charges_wallet->save();
+
             }
+            //Send back the charges
+            $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+            $transfer_charges_wallet->amount -= $nt->charge;
+            $transfer_charges_wallet->save();
         }
 
         if ($nt) {
-            $nt->status = 'pending';
+            $nt->status = 'success';
             $nt->save();
         }
 
-        $transaction->status = 'waiting';
+        $transaction->status = 'cancelled';
         $transaction->save();
 
         return back()->with(['success' => 'Transaction refunded']);
@@ -256,7 +256,7 @@ class TradeNairaController extends Controller
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
-        
+
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
 
@@ -286,7 +286,7 @@ class TradeNairaController extends Controller
         <b>
         Reference Number: $transaction->reference<br><br>
         Date: ".date("Y-m-d; h:ia")."<br><br>
-        Account Balance: ₦".number_format($user_wallet->amount)." 
+        Account Balance: ₦".number_format($user_wallet->amount)."
         </b>";
 
 
@@ -294,7 +294,7 @@ class TradeNairaController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
+        $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
@@ -306,11 +306,11 @@ class TradeNairaController extends Controller
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect pin']);
         }
-        
+
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
 
-        
+
         $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $transaction->agent_id])->first();
         $user_account = Account::find($transaction->account_id);
         $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
@@ -352,7 +352,7 @@ class TradeNairaController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
+        $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
