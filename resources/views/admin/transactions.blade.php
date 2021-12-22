@@ -133,7 +133,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         @endif
                                         <td class="text-center">{{$t->card_price}}</td>
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
-                                        <td class="text-center">{{$t->commission}}</td>
+                                        @if (in_array(Auth::user()->role, [999] ))
+                                            <td class="text-center">{{$t->commission}}</td>
+                                        @endif
                                         <td class="text-center">{{$t->wallet_id}}</td>
                                         {{-- <td class="text-center"><a
                                                 href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
