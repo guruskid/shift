@@ -12,6 +12,7 @@ use App\Pop;
 use App\Setting;
 use App\Transaction;
 use App\User;
+use App\Currency;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -141,6 +142,16 @@ class TradeController extends Controller
         $r->buy_sell == 1 ? $buy_sell = 'buy' : $buy_sell = 'sell';
         $transaction_id = uniqid();
         foreach ($r->cards as $i => $total) {
+            $rate = json_decode($card->currency->where('name',$r->currencies[0])->first()->cardCurrency->first()->cardPaymentMedia->first()->payment_range_settings);
+            $t_amount = 0;
+            foreach ($rate as $key => $value) {
+                if ($value->value == $r->values[$i]) {
+                    $t_amount = $r->quantities[$i] * $value->rate;   
+                }
+            }
+            $commission = $t_amount - $r->totals[$i];
+            // return $commission;
+
             $t = new Transaction();
             $t->uid = $transaction_id;
             $t->user_email = Auth::user()->email;
@@ -157,6 +168,7 @@ class TradeController extends Controller
             $t->card_type = $r->card_types[$i];
             $t->quantity = $r->quantities[$i];
             $t->card_price = $r->prices[$i];
+            $t->commission = $commission;
             $t->save();
         }
         /* dd($r->card_images); */

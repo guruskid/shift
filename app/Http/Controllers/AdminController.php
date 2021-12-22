@@ -179,8 +179,6 @@ class AdminController extends Controller
         $transactions = Transaction::latest('id')->paginate(1000);
         $segment = 'All';
 
-        // dd($transactions);
-
         return view('admin.transactions', compact(['transactions', 'segment']));
     }
 

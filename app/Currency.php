@@ -31,4 +31,10 @@ class Currency extends Model
     {
         return $this->hasMany(\App\CurrencyPaymentMedium::class);
     }
+
+    public function cardCurrency()
+    {
+        return $this->hasMany('\App\CardCurrency','currency_id');
+    }
+
 }
