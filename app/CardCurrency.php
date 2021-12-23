@@ -24,5 +24,10 @@ class CardCurrency extends Model
         return $this->belongsTo('App\Currency');
     }
 
+    public function cardPaymentMedia()
+    {
+        return $this->hasMany('\App\CardCurrencyPaymentMedium','card_currency_id');
+    }
+
 }
 
