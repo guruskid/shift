@@ -180,7 +180,7 @@ class TradeController extends Controller
         broadcast(new NewTransaction($t))->toOthers();
 
         $chinese = User::where(['role' => 444, 'status' => 'active'])->get();
-                $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
+                $message = '!!! New Giftcard Transaction !!!  A new Giftcard transaction has been initiated ';
                 foreach ($chinese as $acct) {
                     broadcast(new CustomNotification($acct, $message))->toOthers();
                 }
