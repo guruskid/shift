@@ -84,10 +84,10 @@
             }
         },
         created() {
+            this.getName()
             this.getStat()
         },
         methods: {
-
             depositCheck($e) {
                 if ($e.target.checked) {
                     $('#complete_deposit').removeAttr("disabled");
@@ -103,7 +103,19 @@
                     }
                 });
             },
+            getName() {
+                axios.get("/trade_naira_web/user/get_stat").then(response => {
+                    if (response.data) {
+                        this.get_name = response.data.get_name
+                    }
+                });
+            },
             getAgent() {
+                if (this.get_name == true) {
+                    swal('Error!', "Please verify your bank details before proceeding.", 'error')
+                    return;
+                }
+
                 if (isNaN(this.amount) || this.amount == '') {
                     swal('Error!', "Please enter the amount you want to deposit", 'error')
                     return;
@@ -155,7 +167,7 @@
                     $('#complete_deposit').removeAttr('disabled')
                 });
             },
-            
+
             timer() {
                 var countDownDate = new Date().getTime() + 15 * 60 * 1000;
 
