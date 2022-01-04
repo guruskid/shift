@@ -96,9 +96,9 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        <tfoot>
+                                        {{-- <tfoot>
                                             <a href=" {{route('admin.transactions-status', 'in progress')}} "><button class="m-3 btn btn-outline-info">View all</button></a>
-                                        </tfoot>
+                                        </tfoot> --}}
                                     </div>
                                 </div>
                             </div>

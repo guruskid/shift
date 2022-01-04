@@ -99,7 +99,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                     <div class="card-header d-flex justify-content-between">
                                         <span>Succcessful Transactions</span>
                                         <div class="page-title-subheading d-flex">
-                                            <a href="{{route('admin.payout_history')}}" class="btn btn-primary mr-2"> Wipe History </a>
+                                            <a href="{{route('admin.payout_history')}}" class="btn btn-primary mr-2"> History </a>
                                             @if(Auth::user()->role == 999)
                                             <form action="{{route('admin.payout')}}" method="POST">@csrf
                                                 <button class="btn btn-primary">WIPE TRANSACTIONS</button>
