@@ -4980,7 +4980,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    this.getName();
+    // this.getName()
     this.getStat();
   },
   methods: {
@@ -5001,23 +5001,20 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    getName: function getName() {
+    // getName() {
+    //     axios.get("/trade_naira_web/user/get_stat").then(response => {
+    //         if (response.data) {
+    //             this.get_name = response.data.get_name
+    //         }
+    //     });
+    // },
+    getAgent: function getAgent() {
       var _this2 = this;
 
-      axios.get("/trade_naira_web/user/get_stat").then(function (response) {
-        if (response.data) {
-          _this2.get_name = response.data.get_name;
-        }
-      });
-    },
-    getAgent: function getAgent() {
-      var _this3 = this;
-
-      if (this.get_name == true) {
-        swal('Error!', "Please verify your bank details before proceeding.", 'error');
-        return;
-      }
-
+      // if (this.get_name == true) {
+      //     swal('Error!', "Please verify your bank details before proceeding.", 'error')
+      //     return;
+      // }
       if (isNaN(this.amount) || this.amount == '') {
         swal('Error!', "Please enter the amount you want to deposit", 'error');
         return;
@@ -5035,14 +5032,14 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get("/trade_naira_web/user/agents?type=deposit").then(function (response) {
         if (response.data['success']) {
-          _this3.account_name = response.data.data[0].accounts.account_name;
-          _this3.account_number = response.data.data[0].accounts.account_number;
-          _this3.bank_name = response.data.data[0].accounts.bank_name;
-          _this3.agent_id = response.data.data[0].id;
+          _this2.account_name = response.data.data[0].accounts.account_name;
+          _this2.account_number = response.data.data[0].accounts.account_number;
+          _this2.bank_name = response.data.data[0].accounts.bank_name;
+          _this2.agent_id = response.data.data[0].id;
           $('.deposit-amt-form').hide();
           $('.agent-form').show();
 
-          _this3.timer();
+          _this2.timer();
         } else {
           swal('Error!', response.data.message, 'error');
         }
