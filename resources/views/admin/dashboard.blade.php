@@ -109,8 +109,6 @@
                 </div>
             </div>
 
-
-
             <div class="row">
                 {{-- Recent Transactions --}}
                 <div class="col-md-12">

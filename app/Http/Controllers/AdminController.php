@@ -23,6 +23,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use DB;
 
 class AdminController extends Controller
 {
@@ -179,7 +180,20 @@ class AdminController extends Controller
         $transactions = Transaction::latest('id')->paginate(1000);
         $segment = 'All';
 
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        $tranx = Transaction::where('card_id','!=','102')
+        ->where('status','success')
+        ;
+        $totalTransactions = $tranx->count();
+        $totalVol = $tranx->sum('amount');
+        $totalComm = $tranx->sum('commission');
+        $totalChineseAmt = $tranx->sum('amount_paid') - $totalComm;
+
+        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
+                ->groupBy('date')->pluck('d_total');
+
+        $totalAvgPerToday = ceil($tt->sum() / $tt->count());
+
+        return view('admin.transactions', compact(['transactions', 'segment','totalTransactions','totalVol','totalComm','totalChineseAmt','totalAvgPerToday']));
     }
 
     public function buyTransac()
