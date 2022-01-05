@@ -56,7 +56,6 @@ class TradeController extends Controller
 
         $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->limit(1)->get();
         $user_wallet = $user->nairaWallet;
-        \Log::info($agent);
 
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => $transactiontype])->first();
 
@@ -345,10 +344,10 @@ class TradeController extends Controller
         }
 
 
-        $getName = User::where('id', Auth::user()->id)->get();
-        if (strlen($getName[0]->first_name) < 3) {
-            $userName = true;
-        }
+        // $getName = User::where('id', Auth::user()->id)->get();
+        // if (strlen($getName[0]->first_name) < 3) {
+        //     $userName = true;
+        // }
 
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'deposit', 'status' => 'waiting'])->get();
         if (count($trade) > 0) {
@@ -362,8 +361,7 @@ class TradeController extends Controller
             'monthly_max' => $user->monthly_max,
             'naira_balance' => $user->nairaWallet->amount,
             'pending_withdrawal' => $pendingWithdrawal,
-            'pending_deposit' => $pendingDeposit,
-            'get_name' => $userName
+            'pending_deposit' => $pendingDeposit
         ];
 
         return $user_data;

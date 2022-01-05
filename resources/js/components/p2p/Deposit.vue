@@ -84,7 +84,6 @@
             }
         },
         created() {
-            // this.getName()
             this.getStat()
         },
         methods: {
@@ -105,7 +104,7 @@
             },
 
             getAgent() {
-                
+
 
                 if (isNaN(this.amount) || this.amount == '') {
                     swal('Error!', "Please enter the amount you want to deposit", 'error')
