@@ -165,7 +165,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
                                         <td>
                                             <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
-                                                <span class="btn btn-sm btn-success">View</span>
+                                                @if (Auth::user()->role != 888 )
+                                                    <span class="btn btn-sm btn-success">View</span>
+                                                @endif
                                             </a>
 
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
