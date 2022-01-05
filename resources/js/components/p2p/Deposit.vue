@@ -103,18 +103,9 @@
                     }
                 });
             },
-            // getName() {
-            //     axios.get("/trade_naira_web/user/get_stat").then(response => {
-            //         if (response.data) {
-            //             this.get_name = response.data.get_name
-            //         }
-            //     });
-            // },
+
             getAgent() {
-                // if (this.get_name == true) {
-                //     swal('Error!', "Please verify your bank details before proceeding.", 'error')
-                //     return;
-                // }
+                
 
                 if (isNaN(this.amount) || this.amount == '') {
                     swal('Error!', "Please enter the amount you want to deposit", 'error')

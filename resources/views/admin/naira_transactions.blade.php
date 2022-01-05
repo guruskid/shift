@@ -113,10 +113,9 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>
                                             <a
                                                 href="{{route('admin.user', [$t->user->id ?? ' ', $t->user->email ?? ' ' ] )}}">
-                                                {{-- {{$t->user->first_name ?? 'A MISSING USER'}} --}}
 
                                             @if(strlen($t->user->first_name) < 3 )
-                                                {{$t->user->username}}
+                                                {{$t->user->email}}
                                             @else
                                                 {{$t->user->first_name}}
                                             @endif
