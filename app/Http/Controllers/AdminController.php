@@ -340,10 +340,16 @@ class AdminController extends Controller
             // dd($assets->id);
         $assets = payout::orderBy('id', 'desc')->first();
 
-        $payoutVolume = Transaction::where("created_at",">=", $assets->created_at)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
-        $assetsInNaira = Transaction::where("created_at",">=", $assets->created_at)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
-        $countST = Transaction::where("created_at",">=", $assets->created_at)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-        $success_transactions = Transaction::where("created_at",">=", $assets->created_at)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->get();
+        if(!isset($assets->created_at)){
+            $payoutDate = '2020-01-13 10:03:52';
+        }else{
+            $payoutDate = $assets->created_at;
+        }
+
+        $payoutVolume = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
+        $assetsInNaira = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
+        $countST = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+        $success_transactions = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->get();
         // dd($assets->);
 
 
@@ -413,10 +419,17 @@ class AdminController extends Controller
 
         $assets = payout::orderBy('id', 'desc')->first();
 
+
+        if(!isset($assets->created_at)){
+            $payoutDate = '2020-01-13 10:03:52';
+        }else{
+            $payoutDate = $assets->created_at;
+        }
+
         // dd($assets->id);
-        $payoutVolume = Transaction::where("created_at",">=", $assets->created_at)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
-        $assetsInNaira = Transaction::where("created_at",">=", $assets->created_at)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
-        $countST = Transaction::where("created_at",">=", $assets->created_at)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+        $payoutVolume = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
+        $assetsInNaira = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
+        $countST = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
 
         // dd($countST);
 

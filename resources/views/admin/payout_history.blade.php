@@ -75,11 +75,11 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                         <table class="align-middle mb-0 table table-borderless table-striped table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center">ID</th>
-                                                    <th class="text-center">Total Asset Volume</th>
-                                                    <th class="text-center">Total card volume in Naira </th>
-                                                    <th class="text-center"> Total successful transactions</th>
-                                                    <th class="text-center">Date</th>
+                                                    <th>ID</th>
+                                                    <th>Total Asset Volume</th>
+                                                    <th>Total card volume in Naira </th>
+                                                    <th> Total successful transactions</th>
+                                                    <th>Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>@php
@@ -87,11 +87,11 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                             @endphp
                                                 @foreach ($payoutHistory as $history)
                                                     <tr>
-                                                        <td class="text-center">{{$sn++}}</td>
-                                                        <td class="text-center">{{$history->card_asset_volume}}</td>
-                                                        <td class="text-center">{{$history->card_volume_in_naira}}</td>
-                                                        <td class="text-center">{{$history->success_transactions}}</td>
-                                                        <td class="text-center">{{$history->created_at}}</td>
+                                                        <td>{{$sn++}}</td>
+                                                        <td>{{$history->card_asset_volume}}</td>
+                                                        <td>N {{number_format($history->card_volume_in_naira)}}</td>
+                                                        <td>{{number_format($history->success_transactions)}}</td>
+                                                        <td>{{$history->created_at}}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
