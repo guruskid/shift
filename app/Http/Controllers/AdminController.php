@@ -23,6 +23,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use DB;
 
 class AdminController extends Controller
 {
@@ -174,12 +175,36 @@ class AdminController extends Controller
 
     /* TRANSACTIONS */
 
-    public function transactions()
+    public function transactions(Request $request)
     {
-        $transactions = Transaction::latest('id')->paginate(1000);
+        $transactions = Transaction::latest('id');
+        $tranx = $transactions;
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $transactions = $transactions->whereBetween('created_at', [$from, $to]);
+        }
+        $transactions = $transactions->latest('id')->paginate(1000);
         $segment = 'All';
 
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        $tranx = $tranx->where('card_id','!=','102')->where('status','success');
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $tranx = $tranx->whereBetween('created_at', [$from, $to]);
+        }
+        
+        $totalTransactions = $tranx->count();
+        $totalVol = $tranx->sum('amount');
+        $totalComm = $tranx->sum(DB::raw('IFNULL(commission, 0)'));
+        $totalChineseAmt = $tranx->sum('amount_paid') - $totalComm;
+
+        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
+                ->groupBy('date')->pluck('d_total');
+
+        $totalAvgPerToday = ceil($tt->sum() / $tt->count());
+
+        return view('admin.transactions', compact(['transactions', 'segment','totalTransactions','totalVol','totalComm','totalChineseAmt','totalAvgPerToday']));
     }
 
     public function buyTransac()
