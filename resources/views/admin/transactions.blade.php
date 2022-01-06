@@ -134,7 +134,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between">{{$segment}} Transactions
-                            <form action="{{route('admin.transactions-by-date')}}" class="form-inline p-2"
+                            {{-- <form action="{{route('admin.transactions-by-date')}}" class="form-inline p-2"
                                 method="POST">
                                 @csrf
                                 <div class="form-group mr-2">
@@ -144,6 +144,19 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <div class="form-group mr-2">
                                     <label for="">End date </label>
                                     <input type="date" required name="end" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                            </form> --}}
+                            <form class="form-inline p-2"
+                                method="GET">
+                                {{-- @csrf --}}
+                                <div class="form-group mr-2">
+                                    <label for="">Start date </label>
+                                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                                </div>
+                                <div class="form-group mr-2">
+                                    <label for="">End date </label>
+                                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
@@ -163,7 +176,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <th class="text-center">Asset value</th>
                                         <th class="text-center">Quantity</th>
                                         <th class="text-center">Card price</th>
-                                        <th class="text-center">Cash value</th>
+                                        <th class="text-center">User Amount</th>
                                         @if (in_array(Auth::user()->role, [999] ))
                                             <th class="text-center">Commission</th>
                                             <th class="text-center">Chinese Amount</th>
@@ -202,10 +215,11 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center">{{ $t->quantity}}</td>
                                         @endif
                                         <td class="text-center">{{$t->card_price}}</td>
-                                        <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                        <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
                                         @if (in_array(Auth::user()->role, [999] ))
                                             <td class="text-center">{{$t->commission}}</td>
-                                            <td class="text-center">{{$t->amount_paid - $t->commission}}</td>
+                                            <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                            
                                         @endif
                                         <td class="text-center">{{$t->wallet_id}}</td>
                                         <td class="text-center">

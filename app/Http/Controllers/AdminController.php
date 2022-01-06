@@ -175,17 +175,28 @@ class AdminController extends Controller
 
     /* TRANSACTIONS */
 
-    public function transactions()
+    public function transactions(Request $request)
     {
-        $transactions = Transaction::latest('id')->paginate(1000);
+        $transactions = Transaction::latest('id');
+        $tranx = $transactions;
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $transactions = $transactions->whereBetween('created_at', [$from, $to]);
+        }
+        $transactions = $transactions->latest('id')->paginate(1000);
         $segment = 'All';
 
-        $tranx = Transaction::where('card_id','!=','102')
-        ->where('status','success')
-        ;
+        $tranx = $tranx->where('card_id','!=','102')->where('status','success');
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $tranx = $tranx->whereBetween('created_at', [$from, $to]);
+        }
+        
         $totalTransactions = $tranx->count();
         $totalVol = $tranx->sum('amount');
-        $totalComm = $tranx->sum('commission');
+        $totalComm = $tranx->sum(DB::raw('IFNULL(commission, 0)'));
         $totalChineseAmt = $tranx->sum('amount_paid') - $totalComm;
 
         $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
