@@ -133,17 +133,6 @@ class RegisterController extends Controller
                         ],
                         "compliant" => false,
                         "accountingCurrency" => "USD"
-                    ],
-                    [
-                        "currency" => "TRON",
-                        "customer" => [
-                            "accountingCurrency" => "USD",
-                            "customerCountry" => "NG",
-                            "externalId" => $external_id,
-                            "providerCountry" => "NG"
-                        ],
-                        "compliant" => false,
-                        "accountingCurrency" => "USD"
                     ]
                 ]
             ],
@@ -153,7 +142,6 @@ class RegisterController extends Controller
 
 
         $btc_account_id = $body[0]->id;
-        $tron_account_id = $body[1]->id;
 
         $user->customer_id = $body[0]->customerId;
         $user->save();
@@ -180,26 +168,6 @@ class RegisterController extends Controller
             'address' => $address_body[0]->address,
         ]);
         //End BTC wallet SETUP
-
-
-
-        //Tron Setup
-        $contract = Contract::where(['status'=> 'pending', 'currency_id' => 5])->first();
-        $tron_address = $contract->hash;
-
-        $address_url = env('TATUM_URL') . "/offchain/account/" . $tron_account_id ."/address/" . $tron_address ;
-        $res = $client->request('POST', $address_url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')], ]);
-
-        $contract->status = 'completed';
-        $contract->save();
-
-        $user->tronWallet()->create([
-            'account_id' => $tron_account_id,
-            'currency_id' => 5,
-            'name' => $user->username,
-            'address' => $tron_address,
-            //'pin' => $address_body[1]->derivationKey
-        ]);
 
 
         $title = 'Crypto Wallets created';
