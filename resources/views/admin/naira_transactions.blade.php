@@ -101,6 +101,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <th>Narration</th>
                                         <th>Date</th>
                                         <th>Status</th>
+                                        <th>Extras</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -126,6 +127,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>{{$t->narration}} </td>
                                         <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
                                         <td>{{$t->status}} </td>
+                                        <td>{{$t->extras}} </td>
                                         @if (in_array(Auth::user()->role, [999, 889] ) && $t->status == 'pending' )
                                         <td>
                                             <button data-toggle="modal" data-target="#refund-modal"
@@ -158,7 +160,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                 </tbody>
 
                             </table>
-                            {{$transactions->links()}}
+                            {{-- {{$transactions->links()}} --}}
                         </div>
                     </div>
                 </div>

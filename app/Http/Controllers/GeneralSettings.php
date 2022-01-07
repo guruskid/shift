@@ -41,9 +41,30 @@ class GeneralSettings extends Controller
         ]);
     }
 
-    public static function getSetting($name)
-    {
+    public static function getSetting($name) {
         $setting = SystemSettings::where('settings_name',$name)->first();
         return $setting;
+    }
+
+    public static function updateConfig(Request $request) {
+        $data = $request->except('_token');
+        $res = '';
+        if (!isset($data['referral_active'])) {
+            $res = SystemSettings::updateOrCreate([
+                'settings_name'   => strtoupper('referral_active'),
+                'notice' => ''
+            ],[
+                'settings_value'  => 0
+            ]);
+        }
+        foreach ($data as $key => $value) {
+            $res = SystemSettings::updateOrCreate([
+                'settings_name'   => strtoupper($key),
+                'notice' => ''
+            ],[
+                'settings_value'  => ($value == 'on') ? 1 : $value
+            ]);
+        }
+        return back()->with(['success' => 'settings updated successfully']);
     }
 }

@@ -18,6 +18,7 @@ use Intervention\Image\Facades\Image;
 use App\Charts\UserChart;
 use App\Events\NewTransaction;
 use App\Mail\DantownNotification;
+use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
 use GuzzleHttp\Client;
@@ -34,7 +35,7 @@ class UserController extends Controller
         if (!Auth::user()->notificationsetting) {
             Auth::user()->notificationSetting()->create();
         }
-        //$this->verificationProgress();
+        //$this->verificationParogress();
         \Artisan::call('naira:limit');
         $s = Auth::user()->transactions->where('status', 'success')->count();
         $w = Auth::user()->transactions->where('status', 'waiting')->count();
@@ -318,7 +319,7 @@ class UserController extends Controller
             if (!Auth::user()->nairaWallet || $r->pay_with != 'wallet') {
                 return response()->json([
                     'success' => false,
-                    'msg' => 'Please create a Dantown wallet before initiating a buy ransaction',
+                    'msg' => 'Please create a Dantown wallet before initiating a buy transaction',
                 ]);
             }
         }
@@ -436,6 +437,19 @@ class UserController extends Controller
             ]);
             if (Auth::user()->notificationSetting->trade_email == 1) {
                 Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
+
+
+                $title = 'Transaction Pending';
+
+            $btn_text = '';
+            $btn_url = '';
+            
+            $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+            $name = explode(' ', $name);
+            $firstname = ucfirst($name[0]); 
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+
             }
 
             return response()->json(['success' => true, 'data' => $t]);

@@ -25,14 +25,13 @@ class AuthController extends Controller
 
     public function login()
     {
+        die('checking something here');
 
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
             $success['token'] = $user->createToken('appToken')->accessToken;
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
-
-
 
 
             return response()->json([
@@ -42,6 +41,7 @@ class AuthController extends Controller
                 'naira_wallet' => $user->nairaWallet,
                 'bank_accounts' => $user->accounts,
             ]);
+
         } else {
             //if authentication is unsuccessfull, notice how I return json parameters
             return response()->json([

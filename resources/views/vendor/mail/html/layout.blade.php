@@ -97,25 +97,65 @@
   </style>
 </head>
 
-<body style=" background-color: #f4f4f4; margin: 0 !important; padding: 0 !important; ">
+<body style=" background-color: #fff7ea; margin: 0 !important; padding: 0 !important; ">
      <!-- HIDDEN PREHEADER TEXT -->
   <div style=" display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; ">
 
   </div>
 
-  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+  <table border="0"  cellpadding="0" cellspacing="0" width="100%">
     <!-- LOGO -->
     <tr>
-      <td bgcolor="#344966" align="center">
-        <table border="0" cellpadding="0" cellspacing="0" width="480">
+        <td bgcolor="" align="center" >
+          <table border="0" cellpadding="0"  cellspacing="0" width="480">
+            <tr>
+              <td align="center" width="480" valign="top" style="
+                  background-color: #fff7ea;
+                  padding: 30px;
+                  border-radius:0px;
+                  height:20px;
+                  margin-top:0px;
+                  ">
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <tr>
+        <td bgcolor="" align="center" >
+          <table border="0" cellpadding="0"  cellspacing="0" width="480">
+            <tr>
+              <td align="center" width="480" valign="top" style="
+                  background-color: #ffffff;
+                  padding: 10px;
+                  border-radius:0px;
+                  height:10px;
+                  margin-top:0px;
+                  ">
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+    <tr>
+      <td bgcolor="" align="center" >
+        <table border="0" cellpadding="0"  cellspacing="0" width="480">
           <tr>
-            <td align="center" valign="top" style="padding: 20px">
+            <td align="center" width="400" valign="top" style="
+                background-color: #ffffff;
+                padding: 25px;
+                margin-top:-30px;
+                ">
               <a href="#" target="_blank">
-                <img alt="Logo" src="https://app.dantownms.com/logo_bg.png" width="300" height="300" style="
+                <img src="{{url('images/email_logo.png')}}" width="480" height="300" style="
                       display: block;
                       font-family: 'Lato', Helvetica, Arial, sans-serif;
                       color: #ffffff;
                       font-size: 18px;
+                      background-color:none;
                     " border="0" />
               </a>
             </td>
@@ -127,22 +167,119 @@
     {{ $header ?? '' }}
     <!-- COPY BLOCK -->
     <tr>
-      <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px">
+      <td bgcolor="" align="center" style="padding: 0px 10px 0px 10px">
         <table border="0" cellpadding="0" cellspacing="0" width="480">
           <!-- COPY -->
           <tr>
-            <td bgcolor="#ffffff" align="left" style="
+            <td bgcolor="#FFFCF7" align="left" style="
                   padding: 20px 30px 40px 30px;
                   color: #666666;
                   font-family: 'Lato', Helvetica, Arial, sans-serif;
                   font-size: 18px;
                   font-weight: 400;
                   line-height: 25px;
+                  margin-top: -300px;
+                  background-color: #ffffff;
                 ">
+                <br><br>
               <p style="margin: 0">
+
                 {{ Illuminate\Mail\Markdown::parse($slot) }}
+
               </p>
+              <br>
+              <p>
+                <span>Warm Regards</span><br>
+                <span style=" font-weight:bolder">Dantown Team</span>
+            </p>
+            <br><br><br>
             </td>
+
+          </tr>
+
+          <tr>
+            <td bgcolor="#ffffff" align="center" style="padding:0px">
+                <table border="0" cellpadding="0" cellspacing="0" width="450">
+                  <!-- HEADLINE -->
+                  <tr>
+                    <td bgcolor="" align="center" style="
+
+                            font-family: 'Lato', Helvetica, Arial, sans-serif;
+                            background-image: url('{{url('/images/footer_img.png')}}');
+                            background-size:cover;
+                            height:120px;
+                          ">
+
+                    </td>
+
+                    <tr>
+                        <td>
+                            <div style="display: flex; justify-content:center">
+                                <a href="https://play.google.com/store/apps/details?id=com.dantown.Dantownapp">
+                                    <img src="{{url('images/GOOGLE_PLAY.png')}}" style="width: 115px; margin:10px" alt="">
+                                </a>
+                                <a href="https://apps.apple.com/US/app/id1575600937?mt=8">
+                                    <img src="{{url('images/APPSTORE.png')}}" style="width: 115px; margin:10px" alt="">
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <hr style="height:3px; background-color: #000070">
+                        </td>
+                    </tr>
+                  </tr>
+                </table>
+              </td>
+          </tr>
+
+          <tr>
+            <td bgcolor="#ffffff" align="center" style="padding: 0px; ">
+                <table border="0" cellpadding="0" cellspacing="0" width="450">
+                  <!-- HEADLINE -->
+                  <tr>
+                    <td bgcolor="#00B9CD" align="center" style="
+                            padding: 20px;
+                            font-family: 'Lato', Helvetica, Arial, sans-serif;
+                            font-size: 18px;
+                            font-weight: 400;
+                            line-height: 25px;
+                          ">
+                            <div style="display: flex; justify-content:center">
+                                <a href="http://www.facebook.com/godantown">
+                                    <img src="{{url('images/facebook.png')}}" style="height: 13px; margin:10px" alt="">
+                                </a>
+                                <a href="https://twitter.com/godantown">
+                                    <img src="{{url('images/twitter.png')}}" style="height: 13px; margin:10px" alt="">
+                                </a>
+                                <a href="https://instagram.com/godantown">
+                                    <img src="{{url('images/instagram.png')}}" style="height: 13px; margin:10px" alt="">
+                                </a>
+                                <a href="https://www.linkedin.com/company/dantown">
+                                    <img src="{{url('images/linkedin.png')}}" style="height: 13px; margin:10px" alt="">
+                                </a>
+
+                            </div>
+                      <h2 style="
+                              font-size: 14px;
+                              font-weight: 400;
+                              color: #000070;
+                              margin: auto;
+                            "> No 152 NTA/Ozouba Road Port Harcourt Rivers State NG</h2>
+                      {{-- <p style="margin: 0">
+                        <a href="#" target="_blank" style="color: #e4e3e3">We &rsquo; re here, ready to talk</a>
+                      </p> --}}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+          </tr>
+          <tr style="height: 40px">
+              <td>
+
+              </td>
           </tr>
 
         </table>
@@ -150,12 +287,14 @@
     </tr>
     <!-- COPY CALLOUT -->
 
-    <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px">
+
+
+    {{-- <td bgcolor="#f4f4f4" align="center" style="padding: 30px 10px 0px 10px">
       <table border="0" cellpadding="0" cellspacing="0" width="480">
         <!-- HEADLINE -->
         <tr>
-          <td bgcolor="#000070" align="center" style="
-                  padding: 30px 30px 30px 30px;
+          <td bgcolor="#00B9CD" align="center" style="
+                  padding: 20px;
                   border-radius: 4px 4px 4px 4px;
                   color: #e7a20d;
                   font-family: 'Lato', Helvetica, Arial, sans-serif;
@@ -163,25 +302,23 @@
                   font-weight: 400;
                   line-height: 25px;
                 ">
+                  <img src="images/socail_icon.png" alt="">
             <h2 style="
-                    font-size: 20px;
+                    font-size: 14px;
                     font-weight: 400;
-                    color: #ec982a;
-                    margin: 0;
-                  ">
-              Need more help?
-            </h2>
+                    color: #000070;
+                    margin: auto;
+                  ">Office 6, No 152 NTA/Ozouba Road Port Harcourt Rivers State NG</h2>
             <p style="margin: 0">
-              <a href="#" target="_blank" style="color: #e4e3e3">We&rsquo;re here, ready to talk</a>
+              <a href="#" target="_blank" style="color: #e4e3e3">We &rsquo; re here, ready to talk</a>
             </p>
           </td>
         </tr>
       </table>
-    </td>
+    </td> --}}
     </tr>
     <!-- FOOTER -->
     {{ $footer ?? '' }}
   </table>
 </body>
-
 </html>

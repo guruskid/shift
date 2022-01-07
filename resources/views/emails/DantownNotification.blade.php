@@ -10,6 +10,5 @@
 {{$btn_text}}
 @endcomponent
 
-
 {{ config('app.name') }}
 @endcomponent

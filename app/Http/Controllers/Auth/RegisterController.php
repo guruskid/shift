@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\BitcoinWallet;
-use App\Country;
+use App\Contract;
 use App\HdWallet;
 use App\User;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\RegistrationEmailJob;
 use App\Mail\DantownNotification;
+use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistered;
 use App\NairaWallet;
 use App\Notification;
-use Carbon\Carbon;
 use GuzzleHttp\Client;
-use RestApis\Blockchain\Constants;
 
 class RegisterController extends Controller
 {
@@ -114,6 +112,8 @@ class RegisterController extends Controller
         $btc_hd = HdWallet::where('currency_id', 1)->first();
         $btc_xpub = $btc_hd->xpub;
 
+        // $eth_hd = HdWallet::where('currency_id', 2)->first();
+
         $client = new Client();
         $url = env('TATUM_URL') . "/ledger/account/batch";
 
@@ -134,6 +134,18 @@ class RegisterController extends Controller
                         "compliant" => false,
                         "accountingCurrency" => "USD"
                     ]
+                    // [
+                    //     "currency" => "ETH",
+                    //     "xpub" => $eth_hd->xpub,
+                    //     "customer" => [
+                    //         "accountingCurrency" => "USD",
+                    //         "customerCountry" => "NG",
+                    //         "externalId" => $external_id,
+                    //         "providerCountry" => "NG"
+                    //     ],
+                    //     "compliant" => false,
+                    //     "accountingCurrency" => "USD"
+                    // ]
                 ]
             ],
         ]);
@@ -142,6 +154,8 @@ class RegisterController extends Controller
 
 
         $btc_account_id = $body[0]->id;
+        // $eth_account_id = $body[1]->id;
+
         $user->customer_id = $body[0]->customerId;
         $user->save();
 
@@ -150,7 +164,12 @@ class RegisterController extends Controller
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' => [
                 "addresses" => [
-                    ["accountId" => $btc_account_id]
+                    [
+                        "accountId" => $btc_account_id
+                    ]
+                    // [
+                    //     "accountId" => $eth_account_id,
+                    // ]
                 ]
             ],
         ]);
@@ -163,29 +182,43 @@ class RegisterController extends Controller
             'currency_id' => 1,
             'address' => $address_body[0]->address,
         ]);
+        //End BTC wallet SETUP
 
-        /* } catch (\Exception  $e) {
-            report($e);
-            return $user;
-        } */
 
-        $title = 'Bitcoin Wallet created';
-        $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';
+        // $user->ethWallet()->create([
+        //     'account_id' => $eth_account_id,
+        //     'currency_id' => 2,
+        //     'name' => $user->username,
+        //     'address' => $address_body[1]->address,
+        //     'pin' => $address_body[1]->derivationKey
+        // ]);
+
+        $title = 'Crypto Wallets created';
+        $msg_body = 'Congratulations your Dantown Crypto Wallet has been created successfully, you can now send, receive, buy and sell cryptocurrencies in the wallet. ';
         $not = Notification::create([
             'user_id' => $user->id,
             'title' => $title,
             'body' => $msg_body,
         ]);
 
+        $title = 'Welcome to Dantown,';
+        $body = 'Congratulations '.$user->username.' on signing up on Dantown.<br>
+        We are excited to share this journey with you. A new world of boundless possibilities where you can trade cryptocurrencies and gift-cards with ease.
+        <br><br>
+
+        If you have enquiries about our products or issues regarding your account, kindly contact our customer happiness team via support@godantown.com.<br>
+        ';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = $user->username;
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+
+
         //Mail::to($user->email)->send(new DantownNotification($title, $msg_body, 'Go to Wallet', route('user.bitcoin-wallet')));
 
 
-        // $engage = new \Engage\EngageClient($_SERVER['01ce2904a334879cddb2ae7e62d019a3'], $_SERVER['4595ad59cdc1a7df2af3e4a06ce1a4da']);
-        // $engage->users->identify([
-        //     'id' => $user->id,
-        //     'email' => $user->email,
-        //     'created_at' => $user->created_at
-        //   ]);
         return $user;
     }
 }

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\BtcMigration;
 use App\Card;
 use App\CardCurrency;
+use App\CryptoRate;
 use App\HdWallet;
+use App\FeeWallet;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
@@ -19,6 +21,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RestApis\Blockchain\Constants;
+use App\Mail\GeneralTemplateOne;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\GeneralSettings;
 
 class BtcWalletController extends Controller
 {
@@ -129,9 +134,8 @@ class BtcWalletController extends Controller
 
     public function getBitcoinNgn()
     {
-        $card = Card::find(102);
-        $rates = $card->currency->first();
 
+        $rates = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         $client = new Client();
         // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
@@ -148,10 +152,10 @@ class BtcWalletController extends Controller
         $btc_wallet_bal = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
 
-        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        // $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
-        $btc_ngn = $btc_usd * $rates->sell[0]->rate;
+        $btc_ngn = $btc_usd * $rates;
 
         return response()->json([
             'data' => (int)$btc_ngn
@@ -217,8 +221,11 @@ class BtcWalletController extends Controller
             }
         }
 
+        $send_btc_setting = GeneralSettings::getSetting('SEND_BTC');
+        $receive_btc_setting = GeneralSettings::getSetting('RECEIVE_BTC');
 
-        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees'));
+
+        return view('newpages.bitcoin-wallet', compact('fees', 'btc_wallet', 'transactions', 'btc_rate', 'charge', 'total_fees', 'send_btc_setting', 'receive_btc_setting'));
     }
 
     public function fees($address, $amount)
@@ -263,7 +270,6 @@ class BtcWalletController extends Controller
             ], 401);
         }
 
-
         /* if ($data['amount'] < 3) {
             return back()->with(['error' => 'Minimum trade amount is $3']);
         } */
@@ -303,11 +309,13 @@ class BtcWalletController extends Controller
 
             $card = Card::find(102);
             $card_id = 102;
-            $rates = $card->currency->first();
+            // $rates = $card->currency->first();
 
-            $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-            $trade_rate = json_decode($sell->pivot->payment_range_settings);
-            $trade_rate = $trade_rate[0]->rate;
+            // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+            // $trade_rate = json_decode($sell->pivot->payment_range_settings);
+            // $trade_rate = $trade_rate[0]->rate;
+
+            $trade_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
             $client = new Client();
             $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
@@ -369,6 +377,27 @@ class BtcWalletController extends Controller
             'title' => $title,
             'body' => $body,
         ]);
+
+        // ///////////////////////////////////////////////////////////
+        $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $title = 'Sell Order Successful';
+        $body = 'Your order to sell 0.07 ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+        Your new  balance is ' . $finalamountcredited . '.<br>
+        Date: ' . now() . '.<br><br>
+
+        Thank you for Trading with Dantown.
+
+        ';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+        // /////////////////////////////////////////////
 
         $reference = \Str::random(5) . Auth::user()->id;
         $url = env('TATUM_URL') . '/ledger/transaction';
@@ -439,6 +468,46 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        $status = GeneralSettings::getSetting('REFERRAL_ACTIVE')->settings_value;
+
+        if (Auth::user()->referred == 1 and $status == 1) {
+            // fund referral pool wallet
+            $referral_percentage = GeneralSettings::getSetting('REFERRAL_PERCENTAGE');
+            $referral_wallet = FeeWallet::where('name','referral_pool')->first();
+            $referral_bonus = ($referral_percentage['settings_value'] / 100) * $r->quantity;
+
+            $reference = \Str::random(5) . Auth::user()->id;
+
+            try {
+                $send = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $hd_wallet->account_id,
+                        "recipientAccountId" => $referral_wallet->account_id,
+                        "amount" => number_format((float) $referral_bonus, 8),
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => $reference,
+                        "paymentId" => $reference,
+                        "baseRate" => 1,
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                \Log::info($e->getResponse()->getBody());
+                //report($e);
+                // return response()->json([
+                //     'success' => false,
+                //     'msg' => 'An error occured, please try again'
+                // ]);
+            }
+
+            // fund referral wallet
+            $ref = User::where('referral_code',Auth::user()->referrer);
+            $r_wallet = $ref->first()->referral_wallet;
+            $r_wallet = $r_wallet + $referral_bonus;
+            $ref->update(['referral_wallet' => $r_wallet]);
+        }
+
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
         $reference = \Str::random(2) . '-' . $t->id;
@@ -452,7 +521,7 @@ class BtcWalletController extends Controller
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $nt->charge = 0;
-        $nt->transaction_type_id = 4;
+        $nt->transaction_type_id = 20;
         $nt->dr_wallet_id = $n->id;
         $nt->cr_wallet_id = $user_naira_wallet->id;
         $nt->dr_acct_name = 'Dantown';
@@ -472,6 +541,9 @@ class BtcWalletController extends Controller
             'msg' => 'Bitcoin sold successfully'
         ]);
     }
+
+
+
 
     public function send(Request $r)
     {
@@ -584,6 +656,29 @@ class BtcWalletController extends Controller
                     'success' => true,
                     'msg' => 'Bitcoin sent successfully'
                 ]);
+
+
+                // ///////////////////////////////////////////////////////////
+                $title = 'Sell Order Successful';
+                $body = 'You have successfully sent out ' . $total . ' BTC to the <br>
+                        Address:' . $data['address'] . '.<br>
+                        Date: ' . now() . '.<br><br>
+
+                        Thank you for Trading with Dantown.
+
+                ';
+
+                $btn_text = '';
+                $btn_url = '';
+
+                $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+                $name = explode(' ', $name);
+                $firstname = ucfirst($name[0]);
+                Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+                // /////////////////////////////////////////////
+
+
+
             } else {
                 return response()->json([
                     'success' => false,

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Mail;
 use App\BitcoinTransaction;
+use App\Mail\GeneralTemplateOne;
 use App\BitcoinWallet;
 use App\Card;
 use App\CardCurrency;
@@ -17,7 +19,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use RestApis\Blockchain\Constants;
 
 class BitcoinWalletController extends Controller
@@ -482,6 +483,20 @@ class BitcoinWalletController extends Controller
             $charge_wallet->save();
 
             //send mail
+            $title = 'SENDING CRYPTO';
+            $body = 'You have successfully sent out ' . $data['amount'] . ' to the <br><br>
+                <b>Address</b>:<b color:10bdd0>' . $data['address'] . '</b><br>
+                <b>Date</b>:<b color:10bdd0>' . now() . '</b><br>';
+
+            $btn_text = '';
+            $btn_url = '';
+
+            // $name = $user->first_name;
+            $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+            $name = explode(' ', $name);
+            $firstname = ucfirst($name[0]);
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
             return back()->with(['success' => 'Bitcoin sent successfully']);
         } catch (\Exception $e) {
             report($e);

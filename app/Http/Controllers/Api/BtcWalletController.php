@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Card;
 use App\CardCurrency;
+use App\CryptoRate;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -30,11 +31,7 @@ class BtcWalletController extends Controller
         // $btc_rate -= $tp;
         $btc_rate = LiveRateController::btcRate();
 
-        $card = Card::find(102);
-        $rates = $card->currency->first();
-        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
-        $usd_ngn = $rates->sell[0]->rate;
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         return response()->json([
             'success' => true,
@@ -69,7 +66,7 @@ class BtcWalletController extends Controller
         $total_fees = $charge + $res->medium;
 
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
         $btc_rate = (int)$res->value;
 
@@ -200,10 +197,8 @@ class BtcWalletController extends Controller
         $btc_wallet->usd = $btc_wallet->balance  * $btc_rate;
 
 
-        $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
-
-        $btc_ngn = $btc_wallet->usd * $rates->sell[0]->rate;
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $btc_ngn = $usd_ngn * $btc_wallet->usd;
 
         return response()->json([
             'success' => true,

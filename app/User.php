@@ -51,6 +51,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Transaction')->latest();
     }
 
+    public function utilityTransaction()
+    {
+        return $this->hasMany('App\UtilityTransaction')->latest();
+    }
+
     public function country()
     {
         return $this->belongsTo('App\Country');
@@ -112,6 +117,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Wallet::class)->where('currency_id', 1);
     }
+
+    public function ethWallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class)->where('currency_id', 2);
+    }
+
 
     public function nairaTrades()
     {
