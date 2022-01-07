@@ -33,7 +33,7 @@ class TronWalletController extends Controller
         if (Auth::user()->tronWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'ETH wallet already exists for this account'
+                'msg' => 'Tron wallet already exists for this account'
             ]);
         }
 
@@ -94,13 +94,13 @@ class TronWalletController extends Controller
         Auth::user()->tronWallet()->create([
             'account_id' => $tron_account_id,
             'currency_id' => 5,
-            'name' => Auth::user()->username,
+            'name' => Auth::user()->email,
             'address' => $tron_address,
         ]);
 
         return response()->json([
             'success' => true,
-            'msg' => 'Ethereum wallet created successfully'
+            'msg' => 'Tron wallet created successfully'
         ]);
 
     }

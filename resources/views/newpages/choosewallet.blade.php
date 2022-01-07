@@ -165,7 +165,7 @@
                                 @endif
 
 
-                                {{-- Ethereum Wallet --}}
+                                {{-- Tron Wallet --}}
                                 @if (!Auth::user()->tronWallet)
                                 <div class="row">
                                     <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
