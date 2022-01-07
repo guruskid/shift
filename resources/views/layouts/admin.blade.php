@@ -207,6 +207,9 @@
                                     @case(666)
                                     Manager
                                     @break
+                                    @case(444)
+                                    Chinese
+                                    @break
                                 @default
                                 Hi! there
 

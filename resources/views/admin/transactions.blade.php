@@ -131,9 +131,12 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center">{{$t->card_price}}</td>
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
                                         <td class="text-center">{{$t->wallet_id}}</td>
-                                        {{-- <td class="text-center"><a
-                                                href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
-                                                {{$t->user->first_name." ".$t->user->last_name}}</a> </td> --}}
+                                        <td class="text-center">
+                                            {{-- adkjfalkdjf --}}
+                                            <a href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name." ".$t->user->last_name}}
+                                            </a>
+                                        </td>
                                         <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
                                         <td class="text-center">
                                             @switch($t->status)
@@ -162,7 +165,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
                                         <td>
                                             <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
-                                                <span class="btn btn-sm btn-success">View</span>
+                                                @if (Auth::user()->role != 888 )
+                                                    <span class="btn btn-sm btn-success">View</span>
+                                                @endif
                                             </a>
 
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
@@ -216,7 +221,6 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
                                             @endif
 
-
                                             @if (Auth::user()->role == 777) {{-- Junior Accountant --}}
                                                 @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
                                                     <a href="#" data-toggle="modal" data-target="#edit-transac"
@@ -243,7 +247,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
                                             {{-- Junior Accountant end --}}
 
-                                            @if (Auth::user()->role == 888) {{-- Sales rep --}}
+                                            @if (Auth::user()->role == 888 OR Auth::user()->role == 444 ) {{-- Sales rep --}}
                                                 @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
                                                 <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t}})"><span
@@ -331,7 +335,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                     <div class="row">
                         <div class="col">
-<!-- ///////////// WORK IN PROGRESS ////////////// -->
+                            <!-- ///////////// WORK IN PROGRESS ////////////// -->
                             <div class="form-group">
                                 <label for="">Status</label>
                                 <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
@@ -357,7 +361,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
-<!-- //////////////////////////////////// -->
+                        <!-- //////////////////////////////////// -->
                         <div class="d-none col-12" id="yfailed">
                             <div class="form-group">
                             <label for="feedback">Feedback</label>
@@ -378,7 +382,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
-<!-- /////////////////////////////////////// -->
+                        <!-- /////////////////////////////////////// -->
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -67,8 +67,11 @@
                                         <img src="{{asset('storage/pop/'.$pop->path)}}" class="img-fluid" alt="image">
                                         <div class="d-flex justify-content-between">
                                             <a href="{{asset('storage/pop/'.$pop->path)}}">View</a>
-                                            <i>By {{$pop->user->first_name}} ({{$pop->user->phone}})</i>
-
+                                            <i>By {{$pop->user->first_name}}
+                                                @if(Auth::user()->role != 444)
+                                                    ({{$pop->user->phone}})
+                                                @endif
+                                            </i>
                                         </div>
                                     </div>
                                 @endforeach
@@ -77,24 +80,30 @@
                                         <img src="{{asset('storage/pop/'.$pop->path)}}" class="img-fluid" alt="image">
                                         <div class="d-flex justify-content-between">
                                             <a href="{{asset('storage/pop/'.$pop->path)}}">View</a>
-                                            <i>By {{$pop->user->first_name}} ({{$pop->user->phone}})</i>
 
+                                                <i>By {{$pop->user->first_name}}
+                                                    @if(Auth::user()->role != 444)
+                                                        ({{$pop->user->phone}})
+                                                    @endif
+                                                </i>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <form action="{{route('transaction.add-image')}} " method="post" enctype="multipart/form-data">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="">Upload Image(s)</label>
-                                    <input type="hidden" name="transaction_id" value="{{$transaction->id}}" >
-                                    <input type="file" name="pops[]" accept="image/*" required multiple >
-                                </div>
-                                <button type="submit" class="btn btn-success">Upload</button>
-                            </form>
-                        </div>
+                        @if(Auth::user()->role != 444)
+                            <div class="card-footer">
+                                <form action="{{route('transaction.add-image')}} " method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="">Upload Image(s)</label>
+                                        <input type="hidden" name="transaction_id" value="{{$transaction->id}}" >
+                                        <input type="file" name="pops[]" accept="image/*" required multiple >
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Upload</button>
+                                </form>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

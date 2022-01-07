@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Card;
 use App\CardCurrency;
+use App\Events\CustomNotification;
 use App\Events\NewTransaction;
 use App\Http\Resources\CardResource;
 use App\Mail\DantownNotification;
@@ -175,6 +176,12 @@ class TradeController extends Controller
         }
 
         broadcast(new NewTransaction($t))->toOthers();
+
+        $chinese = User::where(['role' => 444, 'status' => 'active'])->get();
+                $message = '!!! New Giftcard Transaction !!!  A new Giftcard transaction has been initiated ';
+                foreach ($chinese as $acct) {
+                    broadcast(new CustomNotification($acct, $message))->toOthers();
+                }
 
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
