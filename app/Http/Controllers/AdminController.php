@@ -18,6 +18,7 @@ use App\Exports\DownloadUsers;
 use Excel;
 use App\NairaWallet;
 use App\TransactionType;
+use App\UtilityTransaction;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -182,6 +183,118 @@ class AdminController extends Controller
         return view('admin.transactions', compact(['transactions', 'segment']));
     }
 
+    public function search_tnx(Request $request)
+    {
+        // dd($request);
+        if($request->segment == 'All')
+        {
+            $search = $request->search;
+            $conditions = ['uid','card','type','country','card_type','status'];                         
+            $transactions = Transaction::where(function ($query) use ($conditions, $search) {
+                foreach ($conditions as $column)                                
+                    $query->orWhere($column, 'like',"%{$search}%")
+                    ->orWhereHas('user', function($q) use($search) {
+                            $q->where('first_name', 'like', '%' . $search . '%')
+                            ->orWhere('last_name', 'like', '%' . $search . '%');
+                        });      
+            })->paginate(100); 
+            
+
+            $segment = $request->segment;
+
+            return view('admin.transactions', compact(['transactions', 'segment']));
+        }
+        if($request->segment == 'Buy' || $request->segment == 'Sell')
+        {
+            $status = $request->segment;
+            $search = $request->search;
+            $conditions = ['uid','card','country','card_type','status'];                         
+            $transactions = Transaction::where('type', $status)->latest()->where(function ($query) use ($conditions, $search) {
+                foreach ($conditions as $column)                                
+                    $query->orWhere($column, 'like',"%{$search}%")
+                    ->orWhereHas('user', function($q) use($search) {
+                            $q->where('first_name', 'like', '%' . $search . '%')
+                            ->orWhere('last_name', 'like', '%' . $search . '%');
+                        });      
+            })->paginate(100); 
+            
+
+            $segment = $status;
+            return view('admin.transactions', compact(['transactions', 'segment']));
+        }
+        
+        if($request->segment == 'Utility')
+        {
+            $search = $request->search;
+            $conditions = ['reference_id','amount','type','status'];                         
+            $transactions = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc')->where(function ($query) use ($conditions, $search) {
+                foreach ($conditions as $column)                                
+                    $query->orWhere($column, 'like',"%{$search}%")
+                    ->orWhereHas('user', function($q) use($search) {
+                            $q->where('first_name', 'like', '%' . $search . '%');
+                        });      
+            })->paginate(100); 
+            return view('admin.utility-transactions', compact('transactions'));
+        }
+        if($request->segment == 'Gift Card' || $request->segment == 'Crypto')
+        {
+            $id = $request->segment == 'Gift Card' ? 0:1;
+            $search = $request->search;
+            $conditions = ['uid','card','type','country','card_type','status'];
+            $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
+                $query->where('is_crypto', $id);
+            })->latest()->where(function ($query) use ($conditions, $search) {
+                foreach ($conditions as $column)                                
+                    $query->orWhere($column, 'like',"%{$search}%")
+                    ->orWhereHas('user', function($q) use($search) {
+                            $q->where('first_name', 'like', '%' . $search . '%')
+                            ->orWhere('last_name', 'like', '%' . $search . '%');
+                        });      
+            })->paginate(100);
+    
+            $segment = $request->segment;
+            return view('admin.transactions', compact(['transactions', 'segment']));
+        }
+
+        if($request->segment == 'All Wallet')
+        {
+            $search = $request->search;
+            $conditions = ['reference','status'];
+            $transactions = NairaTransaction::latest()->where(function ($query) use ($conditions, $search) {
+                foreach ($conditions as $column)                                
+                    $query->orWhere($column, 'like',"%{$search}%")
+                    ->orWhereHas('user', function($q) use($search) {
+                            $q->where('first_name', 'like', '%' . $search . '%');
+                        })->orWhereHas('transactionType', function($q) use($search) {
+                            $q->where('name', 'like', '%' . $search . '%');
+                        });      
+            })->paginate(100);;
+            $segment = 'All Wallet';
+            $total = NairaTransaction::latest()->sum('amount');
+
+            
+            return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
+        }   
+        if($request->segment == 'success' || $request->segment == 'approved' || $request->segment == 'in progress'
+        || $request->segment == 'waiting'|| $request->segment == 'declined' || $request->segment == 'failed')
+        {
+            $search = $request->search;
+            $conditions = ['uid','card','type','country','card_type'];
+            $status = $request->segment;
+
+            $transactions = Transaction::where('status', $status)->latest()->where(function ($query) use ($conditions, $search) {
+                foreach ($conditions as $column)                                
+                    $query->orWhere($column, 'like',"%{$search}%")
+                    ->orWhereHas('user', function($q) use($search) {
+                            $q->where('first_name', 'like', '%' . $search . '%')
+                            ->orWhere('last_name', 'like', '%' . $search . '%');
+                        });      
+                    })->paginate(100);
+            $segment = $status;
+            return view('admin.transactions', compact(['transactions', 'segment']));
+        }
+    }
+
     public function buyTransac()
     {
         $transactions = Transaction::where('type', 'buy')->latest()->paginate(1000);
@@ -222,9 +335,9 @@ class AdminController extends Controller
             $query->where('is_crypto', $id);
         })->latest()->paginate(10);
 
-        $segment = 'Crypto';
+        $segment = 'Gift Card';
         if ($id == 1) {
-            $segment = 'Gift Card';
+            $segment = 'Crypto';
         }
 
 
@@ -293,6 +406,7 @@ class AdminController extends Controller
             $transactions = NairaTransaction::latest()->orderBy('created_at','desc')->paginate(1000);
             $segment = 'All Wallet';
             $total = $transactions->sum('amount');
+            
         } else {
             $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at','desc')->paginate(1000);
             $segment = TransactionType::find($id)->name;

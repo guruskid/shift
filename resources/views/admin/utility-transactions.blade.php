@@ -65,6 +65,17 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between">Utility Transactions
+                            {{-- Search for all users --}}
+                            <form action="{{route('admin.search-tnxs')}}" class="form-inline p-2"
+                                method="POST">
+                                @csrf
+                                <div class="form-group mr-2">
+                                    <label for=""> Search </label>
+                                    <input type="text" required name="search" class="ml-2 form-control">
+                                    <input type="hidden" name="segment" value="Utility" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+                            </form>
                             <form action="{{route('admin.utility-transactions')}}" class="form-inline p-2"
                                 method="GET">
                                 @csrf
@@ -103,14 +114,23 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <tr>
                                             <td class="text-center text-muted">{{$t->reference_id}}</td>
                                             <td class="text-center text-muted">{{$t->created_at->format('d M, H:ia')}}</td>
-                                            <td class="text-center">{{$t->user->first_name}}</td>
+                                            
+                                            <td class="text-center"><a
+                                                href="{{route('admin.user', [$t->user->id ?? ' ', $t->user->email ?? ' ' ] )}}">
+                                                {{$t->user->first_name ?? 'A MISSING USER'}}
+                                                </a></td>
                                             <td class="text-center">{{$t->amount}}</td>
                                             <td class="text-center">{{$t->convenience_fee}}</td>
                                             <td class="text-center">{{$t->total}}</td>
                                             <td class="text-center">{{$t->type}}</td>
                                             <td class="text-center">{{$t->status}}</td>
                                             <td class="text-center" style="word-wrap: break-word;min-width: 160px;max-width: 160px;">
+                                                @if (auth()->user()->role == 555)
+                                                <pre>{{Hash::make($t->extras) }}</pre>
+                                                @else
                                                 <pre>{{$t->extras}}</pre>
+                                                @endif
+                                                
                                             </td>
                                             <td class="text-center"></td>
                                         </tr>
