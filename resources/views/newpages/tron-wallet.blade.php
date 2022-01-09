@@ -190,11 +190,11 @@
                                                 <td>
                                                     @if ($transaction->amount > 0)
                                                     <span class="d-block text-success"
-                                                        style="font-size: 14px;color: #000000;font-weight: 500;">eth
+                                                        style="font-size: 14px;color: #000000;font-weight: 500;">TRX
                                                         {{ number_format((float) $transaction->amount, 8) }}</span>
                                                     @else
                                                     <span class="d-block text-danger"
-                                                        style="font-size: 14px;color: #000000;font-weight: 500;">eth
+                                                        style="font-size: 14px;color: #000000;font-weight: 500;">TRX
                                                         {{ number_format((float) $transaction->amount, 8) }}  </span>
                                                     @endif
 

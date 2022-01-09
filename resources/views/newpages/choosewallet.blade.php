@@ -183,13 +183,13 @@
                                     </div>
                                 </div>
                                 @else
-                                <a href="{{ route('user.ethereum-wallet') }}">
+                                <a href="{{ route('user.tron-wallet') }}">
                                     <div class="row">
                                         <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
                                             style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
                                             <div class="d-flex align-items-center">
                                                 <div class="mx-3">
-                                                    <img src="/svg/ethereum.svg" alt="">
+                                                    <img src="/crypto/tron.png" height="50px" alt="">
                                                 </div>
                                                 <div>
                                                     <span
