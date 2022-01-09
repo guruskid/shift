@@ -119,12 +119,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Address</label>
-                                <input type="text" onchange="getFees()" name="address" id="address" required
+                                <input type="text" name="address" id="address" required
                                     class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="">Amount (TRX)</label>
-                                <input type="number" onchange="getFees()" step="any" name="amount" id="amount" required
+                                <input type="number" step="any" name="amount" id="amount" required
                                     class="form-control">
                                 <small class="text-primary"><strong>Txn Fee</strong> <span id="fee">0</span> </small>
                             </div>
@@ -217,27 +217,3 @@
         </div>
         @endsection
 
-        @section('script-2')
-        <script>
-            function getFees() {
-                var address = $('#address').val()
-                var amount = $('#amount').val()
-                var btn = $('#send-btn')
-                var fee = $('#fee')
-
-                if (address == '' || amount == '' ) {
-                    return false;
-                }
-                btn.addClass('disabled')
-                btn.text('Loading')
-                fee.text('loading')
-                $.get(`/user/ethereum/fees/${address}/${amount}`)
-                .done(function (res){
-                    btn.removeClass('disabled')
-                    btn.text('Send')
-                    fee.text(res.fee)
-                })
-            }
-
-        </script>
-        @endsection

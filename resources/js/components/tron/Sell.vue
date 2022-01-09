@@ -27,10 +27,6 @@
                     v-model="trx" @keyup="getRatetrx()"
                         class="form-control bitcoin-input-radius"  >
                 </div>
-                <div class="d-flex justify-content-between">
-                    <small><strong>Fee: </strong>{{ fee.toFixed(5) }}</small>
-                    <small><strong>Total: </strong>{{ total.toFixed(5) }}</small>
-                </div>
             </div>
             <div class="form-group mb-4">
                 <div class="d-flex justify-content-between">

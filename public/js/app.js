@@ -4985,10 +4985,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['rate', 'trx_usd', 'charge', 'hd'],
   data: function data() {
@@ -53464,18 +53460,6 @@ var render = function() {
                   }
                 }
               })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "d-flex justify-content-between" }, [
-              _c("small", [
-                _c("strong", [_vm._v("Fee: ")]),
-                _vm._v(_vm._s(_vm.fee.toFixed(5)))
-              ]),
-              _vm._v(" "),
-              _c("small", [
-                _c("strong", [_vm._v("Total: ")]),
-                _vm._v(_vm._s(_vm.total.toFixed(5)))
-              ])
             ])
           ]),
           _vm._v(" "),
