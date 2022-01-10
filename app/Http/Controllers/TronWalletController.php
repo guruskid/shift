@@ -281,20 +281,34 @@ class TronWalletController extends Controller
         }
 
         try {
-            $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
+            // $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
+            // $send = $client->request('POST', $url, [
+            //     'headers' => ['x-api-key' => env('TATUM_KEY')],
+            //     'json' =>  [
+            //         "chain" => "TRON",
+            //         "custodialAddress" => Auth::user()->tronWallet->address,
+            //         "contractType" => [3, 3, 3],
+            //         "recipient" => [$hd_wallet->address, $service_wallet->address, $charge_wallet->address],
+            //         "amount" => [number_format((float) $total, 8), number_format((float) $service_fee, 8), number_format((float) $charge, 8)],
+            //         "signatureId" => $hd_wallet->private_key,
+            //         "tokenId" => ["0", "0", "0"],
+            //         "tokenAddress" => ["0", "0", "0"],
+            //         "feeLimit" => $blockchain_fee,
+            //         "from" => $fees_wallet->address,
+            //     ]
+            // ]);
+            $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer';
             $send = $client->request('POST', $url, [
                 'headers' => ['x-api-key' => env('TATUM_KEY')],
                 'json' =>  [
                     "chain" => "TRON",
                     "custodialAddress" => Auth::user()->tronWallet->address,
-                    "contractType" => [3, 3, 3],
-                    "recipient" => [$hd_wallet->address, $service_wallet->address, $charge_wallet->address],
-                    "amount" => [number_format((float) $total, 8), number_format((float) $service_fee, 8), number_format((float) $charge, 8)],
+                    "contractType" => 3,
+                    "recipient" => $hd_wallet->address,
+                    "amount" => number_format($request->amount, 8),
                     "signatureId" => $hd_wallet->private_key,
-                    "tokenId" => ["0", "0", "0"],
-                    "tokenAddress" => ["0", "0", "0"],
-                    "feeLimit" => $blockchain_fee,
                     "from" => $fees_wallet->address,
+                    "feeLimit" => 5,
                 ]
             ]);
 
