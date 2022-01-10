@@ -812,6 +812,10 @@ $("#filter_month").on("change", function () {
     $("#filtermonthForm").trigger('submit')
 })
 
+$('#m-submit').on('submit',function (e) {
+    $(this).find('button').attr('disabled',true)
+})
+
 // const __st_id = (feedback) => document.getElementById(feedback)
 
         // function feedback_status  (){

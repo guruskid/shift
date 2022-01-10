@@ -1396,7 +1396,7 @@ class BillsPaymentController extends Controller
             return redirect()->back()->with(['error' => 'Wrong wallet pin, please contact the support team if you forgot your pin']);
         }
 
-        $amount = $r->amount;
+        $amount = $r->amount + $charge;
         if ($amount > $n->amount) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
@@ -1420,33 +1420,102 @@ class BillsPaymentController extends Controller
 
         $response = $this->purchase($postData);
 
+        // Test Response
+
+        // $response = '{
+        //     "code": "000",
+        //     "content": {
+        //         "transactions": {
+        //             "status": "pending",
+        //             "product_name": "PHED - Port Harcourt Electric",
+        //             "unique_element": "610124000952992",
+        //             "unit_price": 100,
+        //             "quantity": 1,
+        //             "service_verification": null,
+        //             "channel": "api",
+        //             "commission": 2,
+        //             "total_amount": 98,
+        //             "discount": null,
+        //             "type": "Electricity Bill",
+        //             "email": "dantownrec2@gmail.com",
+        //             "phone": "09012435013",
+        //             "name": null,
+        //             "convinience_fee": 0,
+        //             "amount": 100,
+        //             "platform": "api",
+        //             "method": "api",
+        //             "transactionId": "16371615982053468479917114"
+        //         }
+        //     },
+        //     "response_description": "TRANSACTION SUCCESSFUL",
+        //     "requestId": "9553101637161595",
+        //     "amount": "100.00",
+        //     "transaction_date": {
+        //         "date": "2021-11-17 16:06:38.000000",
+        //         "timezone_type": 3,
+        //         "timezone": "Africa/Lagos"
+        //     },
+        //     "purchased_code": "Token : 41279616299856662444",
+        //     "customerName": "NWOKO UDOBI DIMKPA",
+        //     "address": "BLK B 152 NTA RD AFTER DO ",
+        //     "meterNumber": "0124000952992",
+        //     "customerNumber": "0124000952992",
+        //     "token": "41279616299856662444",
+        //     "tokenAmount": "100",
+        //     "tokenValue": "93.02",
+        //     "tariff": "56.79",
+        //     "businessCenter": null,
+        //     "exchangeReference": "1711202111954114",
+        //     "units": "1.7",
+        //     "energyAmt": "93.02",
+        //     "vat": "6.98",
+        //     "arrears": null,
+        //     "revenueLoss": null
+        // }';
+
+        // $response = json_decode($response,true);
+
+        $tranasction_status = 'pending';
+
         if(isset($response['content']) && isset($response['content']['transactions'])) {
+            $tranasction_status = 'pending';
+            $total_charge = $amount + $charge;
+            $prev_bal = $n->amount;
+            $n->amount -= $total_charge;
+            $n->save();
+
+            $nt = new NairaTransaction();
+            $nt->reference = $reference;
+            $nt->amount = $total_charge;
+            $nt->user_id = Auth::user()->id;
+            $nt->type = 'electricity bills';
+
+            $nt->previous_balance = $prev_bal;
+            $nt->current_balance = $n->amount;
+            $nt->charge = $charge;
+            $nt->transaction_type_id = 11;
+
+            $nt->dr_user_id = Auth::user()->id;
+            $nt->dr_wallet_id = $n->id;
+            $nt->dr_acct_name = $n->account_name;
+            $nt->cr_acct_name = $r->provider;
+            $nt->narration = 'Payment for Electricity bill';
+            $nt->trans_msg = 'done';
+            $nt->status = 'pending';
+
+            $uTrax = UtilityTransaction::create([
+                'user_id'          => Auth::user()->id,
+                'reference_id'     => $reference,
+                'amount'           => $amount,
+                'convenience_fee'  => $charge,
+                'total'            => $total_charge,
+                'type'             => 'Electricity purchase',
+                'status'           => $tranasction_status,
+                'extras'           => ''
+            ]);
+
             if($response['content']['transactions']['status'] == 'delivered') {
-                $total_charge = $amount + $charge;
-
-                $prev_bal = $n->amount;
-                $n->amount -= $total_charge;
-                $n->save();
-
-                $nt = new NairaTransaction();
-                $nt->reference = $reference;
-                $nt->amount = $total_charge;
-                $nt->user_id = Auth::user()->id;
-                $nt->type = 'electricity bills';
-
-                $nt->previous_balance = $prev_bal;
-                $nt->current_balance = $n->amount;
-                $nt->charge = $charge;
-                $nt->transaction_type_id = 11;
-
-
-                $nt->dr_user_id = Auth::user()->id;
-                $nt->dr_wallet_id = $n->id;
-                $nt->dr_acct_name = $n->account_name;
-                $nt->cr_acct_name = $r->provider;
-                $nt->narration = 'Payment for Electricity bill';
-                $nt->trans_msg = 'done';
-                $nt->status = 'success';
+                $tranasction_status = 'success';
 
                 $extras = json_encode([
                     'token' => $response['token'],
@@ -1455,18 +1524,11 @@ class BillsPaymentController extends Controller
                 ]);
 
                 $nt->extras = $extras;
-                $nt->save();
 
-                UtilityTransaction::create([
-                    'user_id'          => Auth::user()->id,
-                    'reference_id'     => $reference,
-                    'amount'           => $amount,
-                    'convenience_fee'  => $charge,
-                    'total'            => $total_charge,
-                    'type'             => 'Electricity purchase',
-                    'status'           => 'success',
-                    'extras'           => $extras
-                ]);
+                $uTrax->status = $tranasction_status;
+                $uTrax->extras = $extras;
+
+                $nt->status = 'success';
 
                 $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
                 $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
@@ -1518,10 +1580,15 @@ class BillsPaymentController extends Controller
                 $firstname = ucfirst($name[0]);
                 Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-                return back()->with(['success' => 'Purchase made successfully. Token : '.$response['token']]);
+                $resp = ['success' => 'Purchase made successfully. Token : '.$response['token']];
             }else {
-                return back()->with(['error' => 'Oops! An error occured, please try again']);
+                $resp = ['success' => 'Transaction is being processed'];
             }
+
+            $uTrax->save();
+            $nt->save();
+
+            return back()->with($resp);
         }else {
             return back()->with(['error' => 'Oops! An error occured, please try again']);
         }

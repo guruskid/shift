@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class NairaTransaction extends Model
 {
+    protected $guarded = [];
+    
     public function transactionType()
     {
         return $this->belongsTo('App\TransactionType');
