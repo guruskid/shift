@@ -590,7 +590,7 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        if ($r->amount > $balance) {
+        if (($r->amount + $charge) > $balance) {
             return response()->json([
                 'success' => false,
                 'message' => 'Insufficient balance',
@@ -693,33 +693,149 @@ class BillsPaymentController extends Controller
 
         // $response = json_decode($response,true);
 
-        if (isset($response['content']) && isset($response['content']['transactions'])) {
-            if ($response['content']['transactions']['status'] == 'delivered') {
-                $total_charge = $amount + $charge;
+        // if (isset($response['content']) && isset($response['content']['transactions'])) {
+        //     if ($response['content']['transactions']['status'] == 'delivered') {
+        //         $total_charge = $amount + $charge;
 
-                $prev_bal = $n->amount;
-                $n->amount -= $total_charge;
-                $n->save();
+        //         $prev_bal = $n->amount;
+        //         $n->amount -= $total_charge;
+        //         $n->save();
 
-                $nt = new NairaTransaction();
-                $nt->reference = $reference;
-                $nt->amount = $amount;
-                $nt->user_id = Auth::user()->id;
-                $nt->type = 'electricity bills';
+        //         $nt = new NairaTransaction();
+        //         $nt->reference = $reference;
+        //         $nt->amount = $amount;
+        //         $nt->user_id = Auth::user()->id;
+        //         $nt->type = 'electricity bills';
 
-                $nt->previous_balance = $prev_bal;
-                $nt->current_balance = $n->amount;
-                $nt->charge = (1 / 100) * $amount;
-                $nt->transaction_type_id = 11;
+        //         $nt->previous_balance = $prev_bal;
+        //         $nt->current_balance = $n->amount;
+        //         $nt->charge = (1 / 100) * $amount;
+        //         $nt->transaction_type_id = 11;
 
 
-                $nt->dr_user_id = Auth::user()->id;
-                $nt->dr_wallet_id = $n->id;
-                $nt->dr_acct_name = $n->account_name;
-                $nt->cr_acct_name = $r->provider;
-                $nt->narration = 'Payment for Electricity bill';
-                $nt->trans_msg = 'done';
-                $nt->status = 'success';
+        //         $nt->dr_user_id = Auth::user()->id;
+        //         $nt->dr_wallet_id = $n->id;
+        //         $nt->dr_acct_name = $n->account_name;
+        //         $nt->cr_acct_name = $r->provider;
+        //         $nt->narration = 'Payment for Electricity bill';
+        //         $nt->trans_msg = 'done';
+        //         $nt->status = 'success';
+
+        //         $extras = json_encode([
+        //             'token' => $response['token'],
+        //             'purchased_code' => $response['purchased_code'],
+        //             'units' => $response['units'],
+        //         ]);
+
+        //         $nt->extras = $extras;
+        //         $nt->save();
+
+        //         UtilityTransaction::create([
+        //             'user_id'          => Auth::user()->id,
+        //             'reference_id'     => $reference,
+        //             'amount'           => $amount,
+        //             'convenience_fee'  => $charge,
+        //             'total'            => $total_charge,
+        //             'type'             => 'Electricity purchase',
+        //             'status'           => 'success',
+        //             'extras'           => $extras
+        //         ]);
+
+        //         $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+        //         $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
+        //         foreach ($accountants as $acct) {
+        //             broadcast(new CustomNotification($acct, $message))->toOthers();
+        //         }
+
+        //         $phone = $r->phone_number;
+
+        //         if (isset(Auth::user()->phone)) {
+        //             $client = new Client();
+        //             $url = env('TERMII_SMS_URL') . "/send";
+        //             $country = Country::find(Auth::user()->country_id);
+        //             $phone_number = $country->phonecode . $phone;
+
+        //             $response_sms = $client->request('POST', $url, [
+        //                 'json' => [
+        //                     'api_key' => env('TERMII_API_KEY'),
+        //                     "type" => "plain",
+        //                     "to" => $phone_number,
+        //                     "from" => "N-Alert",
+        //                     "channel" => "dnd",
+        //                     "sms" => "Your electricity purchase from Dantown was successful. Token : " . $response['token'] . ", Units : " . $response['units'] . ", Reference code:" . $reference . "."
+        //                 ],
+        //             ]);
+        //             $body = json_decode($response_sms->getBody()->getContents());
+        //         }
+
+        //         $title = 'Electricity purchase';
+        //         $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N' . $charge . ' for convenience fee.
+        //         Token: ' . $response['token'] . ',
+        //         Unit: ' . $response['units'] . ',
+        //         Reference code:' . $reference;
+
+        //         $not = Notification::create([
+        //             'user_id' => Auth::user()->id,
+        //             'title' => $title,
+        //             'body' => $msg_body,
+        //         ]);
+
+        //         return response()->json([
+        //             'success' => true,
+        //             'response_description' => 'TRANSACTION SUCCESSFUL',
+        //             'message' => 'Purchase made successfully, Token : ' . $response['token']
+        //         ]);
+        //     }
+        // } else {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'An error occured, please try again',
+        //         'response_description' => 'TRANSACTION FAILURE',
+        //         'debug_response' => $response['response_description']
+        //     ]);
+        // }
+
+        $tranasction_status = 'pending';
+
+        if(isset($response['content']) && isset($response['content']['transactions'])) {
+            $tranasction_status = 'pending';
+            $total_charge = $amount + $charge;
+            $prev_bal = $n->amount;
+            $n->amount -= $total_charge;
+            $n->save();
+
+            $nt = new NairaTransaction();
+            $nt->reference = $reference;
+            $nt->amount = $total_charge;
+            $nt->user_id = Auth::user()->id;
+            $nt->type = 'electricity bills';
+
+            $nt->previous_balance = $prev_bal;
+            $nt->current_balance = $n->amount;
+            $nt->charge = $charge;
+            $nt->transaction_type_id = 11;
+
+            $nt->dr_user_id = Auth::user()->id;
+            $nt->dr_wallet_id = $n->id;
+            $nt->dr_acct_name = $n->account_name;
+            $nt->cr_acct_name = $r->provider;
+            $nt->narration = 'Payment for Electricity bill';
+            $nt->trans_msg = 'done';
+            $nt->status = 'pending';
+
+            $uTrax = UtilityTransaction::create([
+                'user_id'          => Auth::user()->id,
+                'reference_id'     => $reference,
+                'amount'           => $amount,
+                'convenience_fee'  => $charge,
+                'total'            => $total_charge,
+                'type'             => 'Electricity purchase',
+                'status'           => $tranasction_status,
+                'extras'           => ''
+            ]);
+
+            if($response['content']['transactions']['status'] == 'delivered') {
+                $tranasction_status = 'success';
 
                 $extras = json_encode([
                     'token' => $response['token'],
@@ -728,18 +844,11 @@ class BillsPaymentController extends Controller
                 ]);
 
                 $nt->extras = $extras;
-                $nt->save();
 
-                UtilityTransaction::create([
-                    'user_id'          => Auth::user()->id,
-                    'reference_id'     => $reference,
-                    'amount'           => $amount,
-                    'convenience_fee'  => $charge,
-                    'total'            => $total_charge,
-                    'type'             => 'Electricity purchase',
-                    'status'           => 'success',
-                    'extras'           => $extras
-                ]);
+                $uTrax->status = $tranasction_status;
+                $uTrax->extras = $extras;
+
+                $nt->status = 'success';
 
                 $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
                 $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
@@ -762,17 +871,17 @@ class BillsPaymentController extends Controller
                             "to" => $phone_number,
                             "from" => "N-Alert",
                             "channel" => "dnd",
-                            "sms" => "Your electricity purchase from Dantown was successful. Token : " . $response['token'] . ", Units : " . $response['units'] . ", Reference code:" . $reference . "."
+                            "sms" => "Your electricity purchase from Dantown was successful. Token : ".$response['token'].", Units : ".$response['units'].", Reference code:".$reference."."
                         ],
                     ]);
                     $body = json_decode($response_sms->getBody()->getContents());
                 }
 
                 $title = 'Electricity purchase';
-                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N' . $charge . ' for convenience fee.
-                Token: ' . $response['token'] . ',
-                Unit: ' . $response['units'] . ',
-                Reference code:' . $reference;
+                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N'.$charge.' for convenience fee.
+                Token: '.$response['token']. ',
+                Unit: '. $response['units']. ',
+                Reference code:'. $reference;
 
                 $not = Notification::create([
                     'user_id' => Auth::user()->id,
@@ -780,13 +889,23 @@ class BillsPaymentController extends Controller
                     'body' => $msg_body,
                 ]);
 
-                return response()->json([
+                $resp = [
                     'success' => true,
                     'response_description' => 'TRANSACTION SUCCESSFUL',
-                    'message' => 'Purchase made successfully, Token : ' . $response['token']
-                ]);
+                    'message' => 'Purchase made successfully. Token : '.$response['token']
+                ];
+            }else {
+                $resp = [
+                    'success' => true,
+                    'response_description' => 'TRANSACTION IS BEING PROCESSED'
+                ];
             }
-        } else {
+
+            $uTrax->save();
+            $nt->save();
+
+            return response()->json($resp);
+        }else {
             return response()->json([
                 'success' => false,
                 'message' => 'An error occured, please try again',
