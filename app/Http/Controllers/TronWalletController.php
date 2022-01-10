@@ -282,7 +282,7 @@ class TronWalletController extends Controller
         \Log::info(number_format((float) $total, 8));
         \Log::info(number_format((float) $service_fee, 8));
         \Log::info(number_format((float) $charge, 8));
-        
+
         try {
             $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
             $send = $client->request('POST', $url, [
@@ -292,8 +292,8 @@ class TronWalletController extends Controller
                     "custodialAddress" => Auth::user()->tronWallet->address,
                     "contractType" => [3, 3, 3],
                     "recipient" => [$hd_wallet->address, $service_wallet->address, $charge_wallet->address],
-                    // "amount" => [number_format((float) $total, 8), number_format((float) $service_fee, 8), number_format((float) $charge, 8)],
-                    "amount" => ['0.1', '0.1', '0.1'],
+                    "amount" => [number_format((float) $total, 4), number_format((float) $service_fee, 4), number_format((float) $charge, 4)],
+                    // "amount" => ['0.1', '0.1', '0.1'],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0", "0", "0"],
                     "tokenAddress" => ["0", "0", "0"],
