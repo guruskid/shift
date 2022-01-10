@@ -20,7 +20,7 @@
                                 <a href="{{route('admin.wallet-transactions')}} ">View all</a>
                             </div>
                             <div class="widget-n">
-                                <h5>500</h5>
+                                <h5>{{ $total_user }}</h5>
                             </div>
                         </div>
                     </div>

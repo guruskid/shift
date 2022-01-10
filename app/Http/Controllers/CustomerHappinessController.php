@@ -6,6 +6,7 @@ use App\ChatMessages;
 use App\Transaction;
 use App\NairaTransaction;
 use App\Ticket;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,7 +24,13 @@ class CustomerHappinessController extends Controller
 
         $n_txns = NairaTransaction::latest()->get()->take(4);
         $tickets = Ticket::with('subcategories','user')->latest('id')->limit(4)->get();
-        return view('admin.customer_happiness.index',compact(['g_txns','c_txns','n_txns','tickets']));
+        $total_user = User::all()->count();
+        return view('admin.customer_happiness.index',compact(['g_txns','c_txns','n_txns','tickets','total_user']));
+    }
+
+    public function QuarterlyInactive()
+    {
+        //?getting difference for users transactions 
     }
 
     public function chatDetails($status = null,$ticket = null)
