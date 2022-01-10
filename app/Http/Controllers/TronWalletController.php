@@ -279,7 +279,10 @@ class TronWalletController extends Controller
                 'msg' => 'An error occured while withdrawing'
             ]);
         }
-
+        \Log::info(number_format((float) $total, 8));
+        \Log::info(number_format((float) $service_fee, 8));
+        \Log::info(number_format((float) $charge, 8));
+        
         try {
             $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
             $send = $client->request('POST', $url, [
