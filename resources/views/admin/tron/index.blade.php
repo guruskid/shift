@@ -56,7 +56,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <a href="#">
                         <div class="card mb-3 widget-content ">
                             <div class="widget-content-wrapper ">
@@ -70,7 +70,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card mb-3 widget-content">
                         <a href="#">
                             <div class="widget-content-wrapper ">
@@ -84,7 +84,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card mb-3 widget-content">
                         <a href="#">
                             <div class="widget-content-wrapper ">
@@ -98,10 +98,24 @@
                         </a>
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <div class="card mb-3 widget-content">
+                        <a href="#">
+                            <div class="widget-content-wrapper ">
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">
+                                        <h5>Blockchain fee</h5>
+                                        <span>{{number_format((float)$blockchain_fee_wallet->balance, 4) }}TRX</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="row mb-5">
-                <div class="col-md-6 mb-5" >
+                <div class="col-md-6 mb-5">
                     <div class="card card-body">
                         @foreach ($errors->all() as $err)
                         <p class="text-danger text-center">{{ $err }}</p>
@@ -119,13 +133,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Address</label>
-                                <input type="text" name="address" id="address" required
-                                    class="form-control">
+                                <input type="text" name="address" id="address" required class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="">Amount (TRX)</label>
-                                <input type="number" step="any" name="amount" id="amount" required
-                                    class="form-control">
+                                <input type="number" step="any" name="amount" id="amount" required class="form-control">
                                 <small class="text-primary"><strong>Txn Fee</strong> <span id="fee">0</span> </small>
                             </div>
                             <div class="form-group">
@@ -159,61 +171,60 @@
                         <p>{{ $service_wallet->address }}</p>
                     </div>
 
-                    {{-- <div class="card card-body mb-3">
-                <h5>Fees Wallet</h5>
-                <p>{{ $fees_wallet->address }}</p>
-                </div> --}}
-            </div>
-        </div>
-
-        {{-- //Transactions --}}
-        <div class="row">
-            <div class="col-md-12">
-                <div class="main-card mb-3 card">
-                    <div class="card-header justify-content-between ">
-                        All Transactions
-
-                    </div>
-                    <div class="table-responsive p-3">
-
-                        <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Trans. Type</th>
-                                    <th>Amount</th>
-                                    <th>USD</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($transactions as $key => $t)
-                                <tr>
-                                    <td>{{$key += 1}} </td>
-                                    <td>{{ $t->transactionType }}</td>
-                                    <td>{{ number_format((float) $t->amount, 8) }}</td>
-                                    <td>{{ number_format($t->marketValue->amount, 2) }}</td>
-                                    <td>{{ $t->created->format('d M Y h:ia') }}</td>
-                                    <td>Completed</td>
-                                    <td class="transaction_content">
-                                        @if (isset($t->txId))
-                                        <a target="_blank"
-                                            href="https://blockexplorer.one/ETH/mainnet/tx/{{ $t->txId }}"
-                                            class="">Explorer</a>
-
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-
-                        </table>
-                        {{-- {{$transactions->links()}} --}}
+                    <div class="card card-body mb-3">
+                        <h5>Fees Wallet</h5>
+                        <p>{{ $blockchain_fee_wallet->address }}</p>
                     </div>
                 </div>
             </div>
-        </div>
-        @endsection
 
+            {{-- //Transactions --}}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="main-card mb-3 card">
+                        <div class="card-header justify-content-between ">
+                            All Transactions
+
+                        </div>
+                        <div class="table-responsive p-3">
+
+                            <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Trans. Type</th>
+                                        <th>Amount</th>
+                                        <th>USD</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($transactions as $key => $t)
+                                    <tr>
+                                        <td>{{$key += 1}} </td>
+                                        <td>{{ $t->transactionType }}</td>
+                                        <td>{{ number_format((float) $t->amount, 8) }}</td>
+                                        <td>{{ number_format($t->marketValue->amount, 2) }}</td>
+                                        <td>{{ $t->created->format('d M Y h:ia') }}</td>
+                                        <td>Completed</td>
+                                        <td class="transaction_content">
+                                            @if (isset($t->txId))
+                                            <a target="_blank"
+                                                href="https://blockexplorer.one/ETH/mainnet/tx/{{ $t->txId }}"
+                                                class="">Explorer</a>
+
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+
+                            </table>
+                            {{-- {{$transactions->links()}} --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endsection

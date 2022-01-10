@@ -196,7 +196,6 @@ class TronWalletController extends Controller
         }
 
 
-
         $client = new Client();
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->tronWallet->account_id;
         $res = $client->request('GET', $url, [
@@ -214,6 +213,15 @@ class TronWalletController extends Controller
             return response()->json([
                 'success' => false,
                 'msg' => 'Insufficient balance'
+            ]);
+        }
+
+        $blockchain_fee = 10;
+        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
+        if ($fee_wallet_balance < $blockchain_fee) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Service not available, please try again later'
             ]);
         }
 
@@ -273,20 +281,6 @@ class TronWalletController extends Controller
         }
 
         try {
-            // $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer';
-            // $send = $client->request('POST', $url, [
-            //     'headers' => ['x-api-key' => env('TATUM_KEY')],
-            //     'json' =>  [
-            //         "chain" => "TRON",
-            //         "custodialAddress" => Auth::user()->tronWallet->address,
-            //         "contractType" => 3,
-            //         "recipient" => "TLXyDUU6S3A33TD7qGMkuaNeQ9UE2GTcKs",
-            //         "amount" => "1",
-            //         "signatureId" => $hd_wallet->private_key,
-            //         "feeLimit" => 5,
-            //         "from" => $fees_wallet->address
-            //     ]
-            // ]);
             $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
             $send = $client->request('POST', $url, [
                 'headers' => ['x-api-key' => env('TATUM_KEY')],
@@ -299,7 +293,7 @@ class TronWalletController extends Controller
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0", "0", "0"],
                     "tokenAddress" => ["0", "0", "0"],
-                    "feeLimit" => 10,
+                    "feeLimit" => $blockchain_fee,
                     "from" => $fees_wallet->address,
                 ]
             ]);

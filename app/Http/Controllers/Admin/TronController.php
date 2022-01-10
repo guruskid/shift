@@ -6,6 +6,7 @@ use App\FeeWallet;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CryptoHelperController;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -45,15 +46,9 @@ class TronController extends Controller
         $res_service = json_decode($res_service->getBody());
         $service_wallet->balance = $res_service->balance->availableBalance;
 
+        $blockchain_fee_wallet = FeeWallet::where('name', 'tron_fees')->first();
+        $blockchain_fee_wallet->balance = CryptoHelperController::feeWalletBalance(5);
 
-
-        // $fees_wallet = FeeWallet::where(['crypto_currency_id' => 2, 'name' => 'eth_fees'])->first();
-        // $fees_url = env('TATUM_URL') . '/ethereum/account/balance/' . $fees_wallet->address;
-        // $res_fees = $client->request('GET', $fees_url, [
-        //     'headers' => ['x-api-key' => env('TATUM_KEY')]
-        // ]);
-        // $res_fees = json_decode($res_fees->getBody());
-        // $fees_wallet->balance = $res_fees->balance;
 
 
 
@@ -73,7 +68,7 @@ class TronController extends Controller
 
 
 
-        return view('admin.tron.index', compact('service_wallet', 'charges_wallet',  'hd_wallet', 'transactions'));
+        return view('admin.tron.index', compact('service_wallet', 'blockchain_fee_wallet', 'charges_wallet',  'hd_wallet', 'transactions'));
     }
 
 
