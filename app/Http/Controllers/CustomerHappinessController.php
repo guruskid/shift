@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\ChatMessages;
+use App\Http\Controllers\Admin\UtilityTransactions;
+use App\UtilityTransaction;
 use App\Transaction;
 use App\NairaTransaction;
 use App\Ticket;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 
 class CustomerHappinessController extends Controller
 {
@@ -90,5 +94,61 @@ class CustomerHappinessController extends Controller
         ]);
 
         return back();
+    }
+
+    //! Transaction
+    public function transactions()
+    {
+        return (new AdminController)->transactions();
+    }
+
+    public function user($id, $email)
+    {
+        return(new AdminController)->user($id,$email);
+    }
+
+    public function buyTransac()
+    {
+        return(new AdminController)->buyTransac();
+    }
+
+    public function sellTransac()
+    {
+        return(new AdminController)->sellTransac();
+    }
+
+    public function assetTransac($id)
+    {
+        return(new AdminController)->assetTransac($id);
+    }
+
+    public function assetTransactionsSortByDate(Request $request)
+    {
+
+        return (new AdminController)->assetTransactionsSortByDate($request);
+    }
+
+    public function walletTransactions($id = null)
+    {
+        return (new AdminController)->walletTransactions($id);
+    }
+    public function walletTransactionsSortByDate(Request $request)
+    {
+        return (new AdminController)->walletTransactionsSortByDate($request);
+    }
+
+    public function UtilityTnx(Request $request)
+    {
+        return (new UtilityTransactions)->index($request);
+    }
+
+    public function txnByStatus($status)
+    {
+        return (new AdminController)->txnByStatus($status);
+    }
+
+    public function search_tnx(Request $request)
+    {
+        return (new AdminController) ->search_tnx($request);
     }
 }

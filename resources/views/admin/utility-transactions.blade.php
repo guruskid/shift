@@ -66,8 +66,12 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between">Utility Transactions
                             {{-- Search for all users --}}
-                            <form action="{{route('admin.search-tnxs')}}" class="form-inline p-2"
-                                method="POST">
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                            {{route('customerHappiness.search-tnxs')}}
+                                            @else
+                                            {{route('admin.search-tnxs')}}
+                                        @endif" 
+                            class="form-inline p-2" method="POST">
                                 @csrf
                                 <div class="form-group mr-2">
                                     <label for=""> Search </label>
@@ -76,8 +80,13 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
                             </form>
-                            <form action="{{route('admin.utility-transactions')}}" class="form-inline p-2"
-                                method="GET">
+                            
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                            {{route('customerHappiness.utility-transactions')}}
+                                            @else
+                                            {{route('admin.utility-transactions')}}
+                                        @endif"
+                            class="form-inline p-2" method="GET">
                                 @csrf
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
@@ -115,10 +124,18 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             <td class="text-center text-muted">{{$t->reference_id}}</td>
                                             <td class="text-center text-muted">{{$t->created_at->format('d M, H:ia')}}</td>
                                             
-                                            <td class="text-center"><a
-                                                href="{{route('admin.user', [$t->user->id ?? ' ', $t->user->email ?? ' ' ] )}}">
-                                                {{$t->user->first_name ?? 'A MISSING USER'}}
-                                                </a></td>
+                                            <td class="text-center">
+                                                @if (in_array(Auth::user()->role, [555] ))
+                                                <a
+                                                href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name ?? 'A MISSING USER'}}</a> 
+                                              @else  
+                                                <a
+                                                href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name ?? 'A MISSING USER'}}</a> 
+                                            @endif
+                                            </td>
+                                                
                                             <td class="text-center">{{$t->amount}}</td>
                                             <td class="text-center">{{$t->convenience_fee}}</td>
                                             <td class="text-center">{{$t->total}}</td>

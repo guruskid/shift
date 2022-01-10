@@ -36,87 +36,87 @@
                 </a>
                 <ul>
                     <li>
-                        <a href="{{route('admin.transactions')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.transactions' ? 'mm-active' : '' }} ">
+                        <a href="{{route('customerHappiness.transactions')}}"
+                            class=" {{ Route::currentRouteName() == 'customerHappiness.transactions' ? 'mm-active' : '' }} ">
                             <i class="metismenu-icon"></i>
                             All Transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.buy_transac')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.buy_transac' ? 'mm-active' : '' }} ">
+                        <a href="{{route('customerHappiness.buy_transac')}}"
+                            class=" {{ Route::currentRouteName() == 'customerHappiness.buy_transac' ? 'mm-active' : '' }} ">
                             <i class="metismenu-icon">
                             </i>Buy transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.sell_transac')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.sell_transac' ? 'mm-active' : '' }} ">
+                        <a href="{{route('customerHappiness.sell_transac')}}"
+                            class=" {{ Route::currentRouteName() == 'customerHappiness.sell_transac' ? 'mm-active' : '' }} ">
                             <i class="metismenu-icon">
                             </i>Sell transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.utility-transactions')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.utility-transactions' ? 'mm-active' : '' }} ">
+                        <a href="{{route('customerHappiness.utility-transactions')}}"
+                            class=" {{ Route::currentRouteName() == 'customerHappiness.utility-transactions' ? 'mm-active' : '' }} ">
                             <i class="metismenu-icon">
                             </i>Utility transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.asset-transactions', 0)}}"
-                            class=" {{ Route::currentRouteName() == 'admin.asset-transactions' ? 'mm-active' : '' }} ">
+                        <a href="{{route('customerHappiness.asset-transactions', 0)}}"
+                            class=" {{ Route::currentRouteName() == 'customerHappiness.asset-transactions' ? '' : '' }} ">
                             <i class="metismenu-icon">
                             </i>GiftCard transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.asset-transactions', 1)}}"
-                            class=" {{ Route::currentRouteName() == 'admin.asset-transactions' ? 'mm-active' : '' }} ">
+                        <a href="{{route('customerHappiness.asset-transactions', 1)}}"
+                            class=" {{ Route::currentRouteName() == 'customerHappiness.asset-transactions' ? '' : '' }} ">
                             <i class="metismenu-icon">
                             </i>Crypto transactions
                         </a>
                     </li>
                     
                     <li>
-                        <a href="{{route('admin.wallet-transactions')}}"
-                            class=" {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'mm-active' : '' }} ">
+                        <a href="{{route('customerHappiness.wallet-transactions')}}"
+                            class=" {{ Route::currentRouteName() == 'customerHappiness.wallet-transactions' ? 'mm-active' : '' }} ">
                             <i class="metismenu-icon">
                             </i>Wallet transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.transactions-status', 'success')}}" >
+                        <a href="{{route('customerHappiness.transactions-status', 'success')}}" >
                             <i class="metismenu-icon">
                             </i>Successful transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.transactions-status', 'approved')}}" >
+                        <a href="{{route('customerHappiness.transactions-status', 'approved')}}" >
                             <i class="metismenu-icon">
                             </i>Approved transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.transactions-status', 'in progress')}}" >
+                        <a href="{{route('customerHappiness.transactions-status', 'in progress')}}" >
                             <i class="metismenu-icon">
                             </i>In Progress Transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.transactions-status', 'waiting')}}" >
+                        <a href="{{route('customerHappiness.transactions-status', 'waiting')}}" >
                             <i class="metismenu-icon">
                             </i>Waiting transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.transactions-status', 'declined')}}" >
+                        <a href="{{route('customerHappiness.transactions-status', 'declined')}}" >
                             <i class="metismenu-icon">
                             </i>Declined transactions
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('admin.transactions-status', 'failed')}}" >
+                        <a href="{{route('customerHappiness.transactions-status', 'failed')}}" >
                             <i class="metismenu-icon">
                             </i>Failed transactions
                         </a>
@@ -124,7 +124,7 @@
                 </ul>
             </li>
             @else
-                <li>
+            <li>
                 <a href="#">
                     <i class="metismenu-icon pe-7s-timer"></i>
                     Transactions

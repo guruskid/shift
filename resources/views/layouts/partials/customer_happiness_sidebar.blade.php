@@ -9,7 +9,7 @@
     </li>
 
     <li class="menu {{ Route::currentRouteName() == 'admin.transactions' ? 'active' : '' }}  ">
-        <a href="{{route('admin.transactions')}}"  aria-expanded="false" class="dropdown-toggle">
+        <a href="{{route('customerHappiness.transactions')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="stats-chart-outline"></ion-icon>
                 <span>Transactions</span>

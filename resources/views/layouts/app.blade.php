@@ -227,6 +227,9 @@ $not = $nots->last();
                                             @case(888)
                                             Sales Rep.
                                             @break
+                                            @case(555)
+                                            Customer Happiness
+                                            @break
                                             @case(666)
                                             Manager
                                             @break

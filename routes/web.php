@@ -463,18 +463,21 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
     Route::get('/Chat/{status?}/{ticketNo?}', 'customerHappinessController@chatDetails')->name('customerHappiness.chatdetails');
     Route::post('/Chat', 'customerHappinessController@chat')->name('customerHappiness.chat');
 
-    Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
-    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
-    Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
-    Route::get('/transactions/sell', 'AdminController@sellTransac')->name('admin.sell_transac');
-    Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
 
-    Route::get('/wallet-transactions/{id?}', 'AdminController@walletTransactions')->name('admin.wallet-transactions');
-    Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');
-    Route::get('/utility-transactions', 'Admin\UtilityTransactions@index')->name('admin.utility-transactions');
+    //? transactions
+    Route::get('/transactions', 'customerHappinessController@transactions')->name('customerHappiness.transactions');
+    Route::get('/user/{id}/{email}', 'customerHappinessController@user')->name('customerHappiness.user');
+    Route::get('/transactions/buy', 'customerHappinessController@buyTransac')->name('customerHappiness.buy_transac');
+    Route::get('/transactions/sell', 'customerHappinessController@sellTransac')->name('customerHappiness.sell_transac');
+    Route::get('/transactions/asset/{id}', 'customerHappinessController@assetTransac')->name('customerHappiness.asset-transactions');
 
-    Route::get('/transactions/{status}', 'AdminController@txnByStatus')->name('admin.transactions-status');
+    Route::get('/wallet-transactions/{id?}', 'customerHappinessController@walletTransactions')->name('customerHappiness.wallet-transactions');
+    Route::post('/wallet-transactions', 'customerHappinessController@walletTransactionsSortByDate')->name('customerHappiness.wallet-transactions.sort.by.date');
+    Route::get('/utility-transactions', 'customerHappinessController@UtilityTnx')->name('customerHappiness.utility-transactions');
 
-    Route::any('/search-transactions','AdminController@search_tnx')->name('admin.search-tnxs');
+    Route::get('/transactions/{status}', 'customerHappinessController@txnByStatus')->name('customerHappiness.transactions-status');
+    Route::post('/asset-transactions', 'customerHappinessController@assetTransactionsSortByDate')->name('customerHappiness.transactions-by-date');
+
+    Route::any('/search-transactions','customerHappinessController@search_tnx')->name('customerHappiness.search-tnxs');
 
 });
