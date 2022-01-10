@@ -293,7 +293,7 @@ class TronWalletController extends Controller
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0", "0", "0"],
                     "tokenAddress" => ["0", "0", "0"],
-                    "feeLimit" => $blockchain_fee,
+                    "feeLimit" => 10,
                     "from" => $fees_wallet->address,
                 ]
             ]);
