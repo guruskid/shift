@@ -301,20 +301,6 @@ class TronWalletController extends Controller
                     "from" => $fees_wallet->address,
                 ]
             ]);
-            // $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer';
-            // $send = $client->request('POST', $url, [
-            //     'headers' => ['x-api-key' => env('TATUM_KEY')],
-            //     'json' =>  [
-            //         "chain" => "TRON",
-            //         "custodialAddress" => Auth::user()->tronWallet->address,
-            //         "contractType" => 3,
-            //         "recipient" => $hd_wallet->address,
-            //         "amount" => number_format($request->amount, 8),
-            //         "signatureId" => $hd_wallet->private_key,
-            //         "from" => $fees_wallet->address,
-            //         "feeLimit" => 5,
-            //     ]
-            // ]);
 
             $send_res = json_decode($send->getBody());
 
