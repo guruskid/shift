@@ -64,18 +64,65 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
             <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
+                        
                         <div class="card-header justify-content-between">{{$segment}} Transactions
                             <form action="{{route('admin.transactions-by-date')}}" class="form-inline p-2"
                                 method="POST">
                                 @csrf
-                                <div class="form-group mr-2">
-                                    <label for="">Start date </label>
-                                    <input type="date" required name="start" class="ml-2 form-control">
+                                @if (isset($type))
+                                    <div class="form-group mr-1">
+                                        <select name="type" class="ml-1 form-control">
+                                            <option value="null">Type</option>
+                                            @foreach ($type as $t)
+                                                <option value="{{ $t->type }}">{{ ucwords($t->type) }}</option>  
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+                                @if (isset($category))
+                                    <div class="form-group mr-1">
+                                        <select name="category" class="ml-1 form-control">
+                                            <option value="null">Category</option>
+                                            @foreach ($category as $c)
+                                                <option value="{{ $c->card_id }}">{{ $c->asset->name }}</option>
+                                            @endforeach
+                                            
+                                        </select>
+                                    </div>
+                                @endif
+
+                                @if (isset($accountant))
+                                <div class="form-group mr-1">
+                                    <select name="Accountant" class="ml-1 form-control">
+                                        <option value="null">Accountant</option>
+                                        @foreach ($accountant as $a) 
+                                            <option value="{{ $a->accountant_id }}">{{ $a->accountant->first_name ?:$a->accountant->email }}</option>
+                                        @endforeach
+                                      </select>
                                 </div>
-                                <div class="form-group mr-2">
-                                    <label for="">End date </label>
-                                    <input type="date" required name="end" class="ml-2 form-control">
+                                    
+                                @endif
+                                
+                                
+                                <div class="form-group mr-1">
+                                    <label for="">Start</label>
+                                    <input type="date" required name="start" class="ml-1 form-control">
                                 </div>
+                                <div class="form-group mr-1">
+                                    <label for="">End</label>
+                                    <input type="date" required name="end" class="ml-1 form-control">
+                                </div>
+                                @if (isset($status))
+                                    
+                                    <div class="form-group mr-1">
+                                        <select name="status" class="ml-1 form-control">
+                                            <option value="null">Status</option>
+                                            @foreach ($status as $s)
+                                                <option value="{{ $s->Status }}">{{ $s->Status }}</option> 
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
                         </div>
@@ -131,9 +178,12 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center">{{$t->card_price}}</td>
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
                                         <td class="text-center">{{$t->wallet_id}}</td>
-                                        <td class="text-center"><a
-                                                href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
-                                                {{$t->user->first_name." ".$t->user->last_name}}</a> </td>
+                                        <td class="text-center">
+                                            @if (isset($t->user))
+                                                <a href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name." ".$t->user->last_name}}</a>
+                                                @endif
+                                             </td>
                                         <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
                                         <td class="text-center">
                                             @switch($t->status)

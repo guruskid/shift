@@ -71,14 +71,36 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                             <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
                                 method="POST">
                                 @csrf
+                                @if (isset($type))
+                                    <div class="form-group mr-1">
+                                        <select name="type" class="ml-1 form-control">
+                                            <option value="null">Type</option>
+                                            @foreach ($type as $t)
+                                                <option value="{{ $t->transaction_type_id }}">{{ ucwords($t->transactionType->name) }}</option>  
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
-                                    <input type="date" name="start" class="ml-2 form-control">
+                                    <input type="date" name="start" class="ml-2 form-control" required>
                                 </div>
                                 <div class="form-group mr-2">
                                     <label for="">End date </label>
-                                    <input type="date" name="end" class="ml-2 form-control">
+                                    <input type="date" name="end" class="ml-2 form-control" required>
                                 </div>
+                                @if (isset($status))
+                                    
+                                    <div class="form-group mr-1">
+                                        <select name="status" class="ml-1 form-control">
+                                            <option value="null">Status</option>
+                                            @foreach ($status as $s)
+                                                <option value="{{ $s->status }}">{{ $s->status }}</option> 
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
                         </div>
