@@ -45,7 +45,7 @@ class TronWalletController extends Controller
             ]);
         }
 
-        $contract = Contract::where(['currency_id' => 5, 'status' => 'pending'])->first();
+        $contract = Contract::where(['currency_id' => 5, 'status' => 'pending', 'type' => 'address'])->first();
 
         if (!$contract) {
             return response()->json([

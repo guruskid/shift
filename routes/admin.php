@@ -104,6 +104,10 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::get('/', 'TronController@index')->name('admin.tron');
         Route::get('/settings', 'TronController@settings')->name('admin.tron.settings');
         Route::post('/update-rate', 'TronController@updateRate')->name('admin.eth.update-rate');
+
+        Route::get('/smart-contracts', 'TronController@contracts')->name('admin.tron.contracts');
+        Route::post('/deploy-contract', 'TronController@deployContract')->name('admin.tron.deploy-contract');
+        Route::get('/activate-contract/{id}', 'TronController@activate')->name('admin.tron.activate-contract');
     });
 
     //Trade Naira

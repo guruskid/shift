@@ -50,6 +50,8 @@
                         <div>Tron Wallet <br>
                             <a class="btn btn-primary" href="{{ route('admin.tron.settings') }}">Settings</a>
                             <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 5) }}">Summary</a>
+                            <a class="btn btn-secondary" href="{{ route('admin.tron.contracts') }}">Smart Contracts
+                                ({{ $addresses }})</a>
                         </div>
                     </div>
                 </div>
@@ -63,7 +65,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>HD Wallets Balance</h5>
-                                        <span>{{number_format((float)$hd_wallet->balance, 8) }}TRX</span>
+                                        <span>{{number_format((float)$hd_wallet->balance, 4) }}TRX</span>
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +79,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>Charges</h5>
-                                        <span>{{number_format((float)$charges_wallet->balance, 8) }}TRX</span>
+                                        <span>{{number_format((float)$charges_wallet->balance, 4) }}TRX</span>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +93,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>Service fee</h5>
-                                        <span>{{number_format((float)$service_wallet->balance, 8) }}TRX</span>
+                                        <span>{{number_format((float)$service_wallet->balance, 4) }}TRX</span>
                                     </div>
                                 </div>
                             </div>
@@ -227,4 +229,7 @@
                     </div>
                 </div>
             </div>
-            @endsection
+        </div>
+    </div>
+</div>
+@endsection
