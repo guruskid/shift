@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Contract;
+use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
 use Illuminate\Http\Request;
@@ -172,6 +173,12 @@ class TronController extends Controller
 
             return back()->with(['error' => 'An error occured, please try again']);
         }
+    }
+
+    public function settings()
+    {
+        $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first()->rate;
+        return view('admin.tron.settings', compact('sell_rate'));
     }
 
     public function contracts()
