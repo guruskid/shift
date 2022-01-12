@@ -17,19 +17,21 @@ use App\NairaTransaction;
 use App\Exports\DownloadUsers;
 use Excel;
 use App\NairaWallet;
+use App\Payout;
 use App\TransactionType;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use DB;
 
 class AdminController extends Controller
 {
     //All new functionalities will follow the conventional method, new controllers for each model and stored in the admin folder
     public function dashboard()
     {
-
+        $page_limit = 1000;
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
         $buyCount = Transaction::where('status', 'success')->where('type', 'buy')->count();
@@ -68,6 +70,8 @@ class AdminController extends Controller
 
         $transactions = Transaction::latest()->get()->take(5);
         $waiting_transactions = Transaction::where('status', 'waiting')->get()->take(5);
+        $success_transactions = Transaction::where('status', 'success')->get()->take(5);
+        $failed_transactions = Transaction::where('status', 'failed')->get()->take(5);
         $in_progress_transactions = Transaction::where('status', 'in progress')->get()->take(5);
         $approved_transactions = Transaction::where('status', 'approved')->get()->take(5);
 
@@ -75,8 +79,6 @@ class AdminController extends Controller
         $verified_users = User::where('email_verified_at', '!=', null)->count();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
         $users_count = User::all()->count();
-
-
 
 
         /*  $client = new Client();
@@ -91,6 +93,7 @@ class AdminController extends Controller
             ],
         ]);
         $body = json_decode($response->getBody()->getContents()); */
+
 
         $rubies_balance = 0;
         $users_wallet_balance = NairaWallet::sum('amount');
@@ -168,24 +171,352 @@ class AdminController extends Controller
                     'g_txns', 'c_txns', 'n_txns'
                 ])
             );
+        }elseif(Auth::user()->role == 444){ // Chinese Dashboard
+
+            $twentyFourHrsTransactions = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+            $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
+            $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
+            $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
+
+            $nairaTwentyFourHrs = $nairaTwentyFourHr;
+            $dollarTwentyFourHrs = $dollarTwentyFourHr;
+
+            $countWaiting = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+            $countProgreses = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+            $countSuccess = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+            $countApproved = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+            $declined = Transaction::where('status', 'declined')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+            $failed = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+            $failedAndDeclined = $failed + $declined;
+
+            $waiting_transactions_chinese = Transaction::with('asset')->where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
+            $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
+            $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
+            $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
+            $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
+
+            // dd($cardTwentyFourHrs);
+
+            return view(
+                'admin.chinese_dashboard',
+                compact([
+                    'transactions', 'waiting_transactions', 'in_progress_transactions',
+                    'users', 'users_count', 'notifications', 'usersChart',
+                    'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
+                    'success_transactions_chinese', 'waiting_transactions_chinese', 'failed_transactions_chinese', 'in_progress_transactions_chinese', 'approved_transactions_chinese',
+                    'buyCash', 'sellCash', 'buyCount', 'sellCount', 'pBuyCash',
+                    'cardTwentyFourHrscount', 'nairaTwentyFourHrs', 'dollarTwentyFourHrs',
+                    'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
+                    'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
+                ]));
         }
     }
 
 
+    public function chineseDashboard()
+    {
+
+        $chineseDashboard = $this->dashboard();
+        return view(
+            'admin.chinese_dashboard',
+            compact([
+                'transactions', 'waiting_transactions', 'in_progress_transactions',
+                'users', 'users_count', 'notifications', 'usersChart',
+                'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
+                'success_transactions_chinese', 'waiting_transactions_chinese', 'failed_transactions_chinese', 'in_progress_transactions_chinese', 'approved_transactions_chinese',
+                'buyCash', 'sellCash', 'buyCount', 'sellCount', 'pBuyCash',
+                'cardTwentyFourHrscount', 'nairaTwentyFourHrs', 'dollarTwentyFourHrs',
+                'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
+                'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
+            ]));
+
+    }
+
+
+    public function payoutTransactions()
+    {
+
+        $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
+        $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
+        $buyCount = Transaction::where('status', 'success')->where('type', 'buy')->count();
+        $sellCount = Transaction::where('status', 'success')->where('type', 'sell')->count();
+
+        $pBuyCash = Transaction::where('status', 'success')->where('type', 'buy')->where('agent_id', Auth::user()->id)->sum('amount_paid');
+        $pSellCash = Transaction::where('status', 'success')->where('type', 'sell')->where('agent_id', Auth::user()->id)->sum('amount_paid');
+        $pBuyCount = Transaction::where('status', 'success')->where('type', 'buy')->where('agent_id', Auth::user()->id)->count();
+        $pSellCount = Transaction::where('status', 'success')->where('type', 'sell')->where('agent_id', Auth::user()->id)->count();
+
+        $s = Transaction::where('status', 'success')->count();
+        $w = Transaction::where('status', 'waiting')->count();
+        $d = Transaction::where('status', 'declined')->count();
+        $f = Transaction::where('status', 'failed')->count();
+
+        $borderColors = [
+            "rgba(255, 99, 132, 1.0)",
+            "rgba(22,160,133, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(51,105,232, 1.0)"
+        ];
+        $fillColors = [
+            "rgba(255, 99, 132, 1.0)",
+            "rgba(22,160,133, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(51,105,232, 1.0)"
+
+        ];
+        $usersChart = new UserChart;
+        $usersChart->minimalist(true);
+        $usersChart->labels(['Failed', 'Successful', 'Declined', 'Waiting']);
+        $usersChart->dataset('Users by trimester', 'pie', [$f, $s, $d, $w])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+
+
+        $transactions = Transaction::latest()->get()->take(5);
+        $waiting_transactions = Transaction::where('status', 'waiting')->get()->take(5);
+        $success_transactions = Transaction::where('status', 'success')->get()->take(5);
+        $failed_transactions = Transaction::where('status', 'failed')->get()->take(5);
+        $in_progress_transactions = Transaction::where('status', 'in progress')->get()->take(5);
+        $approved_transactions = Transaction::where('status', 'approved')->get()->take(5);
+
+        $users = User::latest()->get()->take(4);
+        $verified_users = User::where('email_verified_at', '!=', null)->count();
+        $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
+        $users_count = User::all()->count();
+
+
+        $rubies_balance = 0;
+        $users_wallet_balance = NairaWallet::sum('amount');
+        $company_balance = $rubies_balance - $users_wallet_balance;
+
+        $transfer_charge = NairaWallet::where('account_number', 0000000001)->first()->amount;
+        $sms_charge = NairaWallet::where('account_number', 0000000002)->first()->amount;
+
+        $charges = $transfer_charge + $sms_charge;
+        $old_charges = NairaTransaction::sum('charge');
+
+        $withdraw_txns = NairaTransaction::where('transaction_type_id', 3)->sum('amount');
+        $airtime_txns = NairaTransaction::where('transaction_type_id', 9)->sum('amount');
+        $buy_txns_wallet = NairaTransaction::where('transaction_type_id', 5)->sum('amount');
+
+        $g_txns = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+        })->latest()->get()->take(4);
+
+        $c_txns = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 1);
+        })->latest()->get()->take(4);
+
+        $n_txns = NairaTransaction::latest()->get()->take(4);
+
+        /* Get count of transactions from when an agent was last activated */
+        $au = Auth::user();
+        $a_w_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'waiting')->count();
+        $a_i_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'in progress')->count();
+        $a_s_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'success')->count();
+        $a_a_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'approved')->count();
+        $all_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->count();
+
+
+            $twentyFourHrsTransactions = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+            $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
+            $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
+            $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
+
+            $nairaTwentyFourHrs = number_format($nairaTwentyFourHr);
+            $dollarTwentyFourHrs = number_format($dollarTwentyFourHr);
+
+            $countWaiting = Transaction::where('status', 'waiting')->count();
+            $countProgreses = Transaction::where('status', 'in progress')->count();
+            $countSuccess = Transaction::where('status', 'success')->count();
+            $countApproved = Transaction::where('status', 'approved')->count();
+            $failedAndDeclined = Transaction::where('status', 'failed')->where('status', 'declined')->count();
+
+            // $waiting_transactions_chinese = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->get()->take(5);
+            // $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->get()->take(5);
+            // $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->get()->take(5);
+            // $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->get()->take(5);
+            // $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->get()->take(5);
+
+
+            // dd($assets->id);
+        $assets = payout::orderBy('id', 'desc')->first();
+
+        if(!isset($assets->created_at)){
+            $payoutDate = '2020-01-13 10:03:52';
+        }else{
+            $payoutDate = $assets->created_at;
+        }
+
+        $payoutVolume = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
+        $assetsInNaira = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
+        $countST = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+        $success_transactions = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->get();
+        // dd($assets->);
+
+
+            // dd($cardTwentyFourHrs);
+
+            return view(
+                'admin.payout_transactions',
+                compact([
+                    'payoutVolume', 'assetsInNaira','countST',
+
+                    'transactions', 'waiting_transactions', 'in_progress_transactions',
+                    'users', 'users_count', 'notifications', 'usersChart',
+                    'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
+                    'buyCash', 'sellCash', 'buyCount', 'sellCount', 'pBuyCash',
+                    'cardTwentyFourHrscount', 'nairaTwentyFourHrs', 'dollarTwentyFourHrs',
+                    'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
+                    'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
+                ]));
+    }
+
+    public function payOutHistory()
+    {
+        $s = Transaction::where('status', 'success')->count();
+        $w = Transaction::where('status', 'waiting')->count();
+        $d = Transaction::where('status', 'declined')->count();
+        $f = Transaction::where('status', 'failed')->count();
+
+        $borderColors = [
+            "rgba(255, 99, 132, 1.0)",
+            "rgba(22,160,133, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(51,105,232, 1.0)"
+        ];
+        $fillColors = [
+            "rgba(255, 99, 132, 1.0)",
+            "rgba(22,160,133, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(51,105,232, 1.0)"
+
+        ];
+        $usersChart = new UserChart;
+        $usersChart->minimalist(true);
+        $usersChart->labels(['Failed', 'Successful', 'Declined', 'Waiting']);
+        $usersChart->dataset('Users by trimester', 'pie', [$f, $s, $d, $w])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+
+
+
+            $assets = payout::orderBy('created_at', 'desc')->first();
+
+            $payoutHistory =  payout::orderBy('id', 'desc')->get();
+
+            // dd($cardTwentyFourHrs);
+
+            return view(
+                'admin.payout_history',
+                compact([
+                    'assets', 'usersChart','payoutHistory'
+                ]));
+
+    }
+
+    public function payout()
+    {
+        // $payoutVolume = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+
+        $assets = payout::orderBy('id', 'desc')->first();
+
+
+        if(!isset($assets->created_at)){
+            $payoutDate = '2020-01-13 10:03:52';
+        }else{
+            $payoutDate = $assets->created_at;
+        }
+
+        // dd($assets->id);
+        $payoutVolume = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
+        $assetsInNaira = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
+        $countST = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+
+        // dd($countST);
+
+        if($countST < 1 ){
+            return redirect()->back()->with('error', 'Nothing to wipe');
+        }
+
+        $payout = payout::create([
+            'card_asset_volume' => $payoutVolume,
+            'card_volume_in_naira' => $assetsInNaira,
+            'success_transactions' => $countST,
+        ]);
+        return redirect()->back()->with('success', 'Transactions was wipe successfully');
+    }
+
+
+    public function countTransaction()
+    {
+        $waiting_transactions = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+        $in_progress_transactions = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+        return response()->json([
+                'waiting_transaction' => $waiting_transactions,
+                'in_progress_transactions' => $in_progress_transactions
+            ]);
+    }
+
+
+
+
+
     /* TRANSACTIONS */
 
-    public function transactions()
+    public function transactions(Request $request)
     {
-        $transactions = Transaction::latest('id')->paginate(1000);
+        $transactions = Transaction::with('user')->latest();
+
+        if(Auth::user()->role == 444){
+            $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest();
+        }
+
+        $tranx = $transactions;
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $transactions = $transactions->whereBetween('created_at', [$from, $to]);
+        }
+        // return $transactions->get();
+        $transactions = $transactions->paginate(1000);
         $segment = 'All';
 
-        // dd($transactions);
+        $tranx = $tranx->where('card_id','!=','102')->where('status','success');
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $tranx = $tranx->whereBetween('created_at', [$from, $to]);
+        }
 
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        $totalTransactions = $tranx->count();
+        $totalVol = $tranx->sum('amount');
+        $totalComm = $tranx->sum(DB::raw('IFNULL(commission, 0)'));
+        $totalChineseAmt = $tranx->sum('amount_paid') - $totalComm;
+
+        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
+                ->groupBy('date')->pluck('d_total');
+
+        $totalAvgPerToday = ceil($tt->sum() / $tt->count());
+
+        return view('admin.transactions', compact(['transactions', 'segment','totalTransactions','totalVol','totalComm','totalChineseAmt','totalAvgPerToday']));
     }
+
+    // public function transactionsChinese()
+    // {
+    //     $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
+    //     $segment = 'All';
+
+    //     return view('admin.transactions', compact(['transactions', 'segment']));
+    // }
 
     public function buyTransac()
     {
+
+        if(Auth::user()->role == 444){
+            $transactions = Transaction::with('user')->where('type', 'buy')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
+        }
+
         $transactions = Transaction::where('type', 'buy')->latest()->paginate(1000);
         $segment = 'Buy';
         return view('admin.transactions', compact(['transactions', 'segment']));
@@ -193,6 +524,11 @@ class AdminController extends Controller
 
     public function sellTransac()
     {
+        if(Auth::user()->role == 444){
+            $transactions = Transaction::with('user')->where('type', 'sell')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
+        }
+
+
         $transactions = Transaction::where('type', 'sell')->latest()->paginate(1000);
         $segment = 'Sell';
         return view('admin.transactions', compact(['transactions', 'segment']));
@@ -201,6 +537,10 @@ class AdminController extends Controller
     public function txnByStatus($status)
     {
         $transactions = Transaction::where('status', $status)->latest()->paginate(1000);
+
+        if(Auth::user()->role == 444){
+            $transactions = Transaction::with('user')->where('status', $status)->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
+        }
         $segment = $status;
         return view('admin.transactions', compact(['transactions', 'segment']));
     }

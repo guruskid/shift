@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Faq;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FaqController extends Controller
 {
@@ -33,12 +34,23 @@ class FaqController extends Controller
             'title' => 'required|min:2|max:225',
             'body' => 'required',
             'category' => 'required',
+            'icon'=>'required'
         ]);
-
+        $file = $r->file('photo');
+        $filename= "";
+        if($file){
+            $extension = $file->getClientOriginalExtension();
+            $filename = uniqid().'.'.$extension;
+            Storage::put('public/faq/'.$filename, fopen($file, 'r+'));
+        }
+        
         Faq::create([
             'title' => $r->title,
             'body' => $r->body,
-            'category' => $r->category
+            'category' => $r->category,
+            'image' => $filename,
+            'link' => $r->link,
+            'icon' => $r->icon
         ]);
         return back()->with(['success' => 'FAQ added successfully ']);
     }
@@ -51,7 +63,6 @@ class FaqController extends Controller
         if($FaqsCount < 1 ){
             return  redirect()->route("admin.faq");
         }
-
         return view("admin.edit-faq", compact("editfaq"));
     }
 
@@ -61,15 +72,35 @@ class FaqController extends Controller
             'id' => 'required|min:1',
             'title' => 'required|min:2|max:225',
             'body' => 'required',
-            'category' => 'required'
+            'category' => 'required',
+            'icon' =>'required'
         ]);
-
+        if($r->photo == null){
+            Faq::where('id', $r->id)->update([
+                'title' => $r->title,
+                'body' => $r->body,
+                'category' => $r->category,
+                'icon' => $r->icon
+            ]);
+            return back()->with(['success' => 'Updated successfully ']);
+        }
+        $file = $r->file('photo');
+        $filename= "";
+        if($file){
+            $extension = $file->getClientOriginalExtension();
+            $filename = uniqid().'.'.$extension;
+            Storage::put('public/faq/'.$filename, fopen($file, 'r+'));
+        }
         Faq::where('id', $r->id)->update([
             'title' => $r->title,
             'body' => $r->body,
-            'category' => $r->category
+            'category' => $r->category,
+            'icon' => $r->icon,
+            'image' =>$filename
         ]);
         return back()->with(['success' => 'Updated successfully ']);
+
+        
     }
 
     public function deleteFaq($id)

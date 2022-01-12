@@ -23,5 +23,9 @@ class Card extends Model
         return $this->belongsToMany(\App\Currency::class, 'card_currencies')->withPivot(['buy_sell', 'id']);
     }
 
+    public function cardCurrency()
+    {
+        return $this->hasOne('App\CardCurrency','card_id');
+    }
 
 }
