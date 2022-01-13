@@ -169,7 +169,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     <input type="date" required name="end" class="ml-2 form-control">
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
-                            </form> --}}
+                            </form>
+                            @if (!in_array(Auth::user()->role, [555] ))
                             <form class="form-inline p-2"
                                 method="GET">
                                 {{-- @csrf --}}
@@ -183,6 +184,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
+                            @endif
                         </div>
                         <div class="table-responsive p-3">
                             @foreach ($errors->all() as $err)

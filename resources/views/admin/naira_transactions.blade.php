@@ -138,7 +138,12 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>{{$t->narration}} </td>
                                         <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
                                         <td>{{$t->status}} </td>
-                                        <td>{{$t->extras}} </td>
+                                        <td>@if (in_array(Auth::user()->role, [555] ))
+                                            
+                                            @else
+                                            {{ $t->extras }}
+                                        @endif
+                                             </td>
                                         @if (in_array(Auth::user()->role, [999, 889] ) && $t->status == 'pending' )
                                         <td>
                                             <button data-toggle="modal" data-target="#refund-modal"
