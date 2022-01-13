@@ -418,7 +418,7 @@ class TronWalletController extends Controller
         $user_wallet->balance = $accounts->balance->availableBalance;
 
         $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
-        $fees = 0;
+        $fees = 15;
         $charge = Setting::where('name', 'tron_send_charge')->first()->value;
 
 
