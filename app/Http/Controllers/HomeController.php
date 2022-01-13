@@ -77,7 +77,10 @@ class HomeController extends Controller
         if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->role == 888) {
-            return redirect()->route('admin.assigned-transactions');
+            return redirect()->route('admin.assigned-transactions');  
+        } 
+        elseif($user->role == 555){
+            return redirect()->route('customerHappiness.homepage');
         } elseif ($user->role == 1 or $user->role == 2) {
             return redirect()->route('user.dashboard');
         } else {
