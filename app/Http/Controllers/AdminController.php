@@ -466,10 +466,10 @@ class AdminController extends Controller
 
     public function transactions(Request $request)
     {
-        $transactions = Transaction::with('user')->latest();
+        $transactions = Transaction::with('user')->latest()->paginate(1000);
 
         if(Auth::user()->role == 444){
-            $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest();
+            $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         }
 
         $tranx = $transactions;
@@ -478,8 +478,7 @@ class AdminController extends Controller
             $to = $request['end'];
             $transactions = $transactions->whereBetween('created_at', [$from, $to]);
         }
-        // return $transactions->get();
-        $transactions = $transactions->paginate(1000);
+        $transactions = $transactions->latest('id')->paginate(1000);
         $segment = 'All';
 
         $tranx = $tranx->where('card_id','!=','102')->where('status','success');
