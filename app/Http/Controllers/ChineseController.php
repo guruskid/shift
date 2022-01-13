@@ -30,6 +30,8 @@ class ChineseController extends Controller
     public function dashboard()
     {
 
+        $page_limit = 1000;
+
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
         $buyCount = Transaction::where('status', 'success')->where('type', 'buy')->count();
@@ -66,16 +68,16 @@ class ChineseController extends Controller
             ->backgroundcolor($fillColors);
 
 
-        $transactions = Transaction::latest()->get()->take(5);
-        $waiting_transactions = Transaction::where('status', 'waiting')->get()->take(5);
-        $success_transactions = Transaction::where('status', 'success')->get()->take(5);
-        $failed_transactions = Transaction::where('status', 'failed')->get()->take(5);
-        $in_progress_transactions = Transaction::where('status', 'in progress')->get()->take(5);
-        $approved_transactions = Transaction::where('status', 'approved')->get()->take(5);
+        $transactions = Transaction::latest()->get()->take($page_limit);
+        $waiting_transactions = Transaction::where('status', 'waiting')->get()->take($page_limit);
+        $success_transactions = Transaction::where('status', 'success')->get()->take($page_limit);
+        $failed_transactions = Transaction::where('status', 'failed')->get()->take($page_limit);
+        $in_progress_transactions = Transaction::where('status', 'in progress')->get()->take($page_limit);
+        $approved_transactions = Transaction::where('status', 'approved')->get()->take($page_limit);
 
-        $users = User::latest()->get()->take(4);
+        $users = User::latest()->get()->take($page_limit);
         $verified_users = User::where('email_verified_at', '!=', null)->count();
-        $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
+        $notifications = Notification::where('user_id', 0)->latest()->get()->take($page_limit);
         $users_count = User::all()->count();
 
 
@@ -109,13 +111,13 @@ class ChineseController extends Controller
 
         $g_txns = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-        })->latest()->get()->take(4);
+        })->latest()->get()->take($page_limit);
 
         $c_txns = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 1);
-        })->latest()->get()->take(4);
+        })->latest()->get()->take($page_limit);
 
-        $n_txns = NairaTransaction::latest()->get()->take(4);
+        $n_txns = NairaTransaction::latest()->get()->take($page_limit);
 
         /* Get count of transactions from when an agent was last activated */
         $au = Auth::user();
@@ -142,11 +144,11 @@ class ChineseController extends Controller
             $failed = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
             $failedAndDeclined = $failed + $declined;
 
-            $waiting_transactions_chinese = Transaction::with('asset')->where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
-            $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
-            $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
-            $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
-            $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
+            $waiting_transactions_chinese = Transaction::with('asset')->where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
+            $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
+            $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
+            $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
+            $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
 
             // dd($cardTwentyFourHrs);
 

@@ -350,7 +350,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{$transactions->links() ?? '' }}
+                            {{-- {{$transactions->links() ?? '' }} --}}
                         </div>
                     </div>
                 </div>

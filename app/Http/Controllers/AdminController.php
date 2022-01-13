@@ -31,6 +31,7 @@ class AdminController extends Controller
     //All new functionalities will follow the conventional method, new controllers for each model and stored in the admin folder
     public function dashboard()
     {
+        $page_limit = 1000;
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
         $buyCount = Transaction::where('status', 'success')->where('type', 'buy')->count();

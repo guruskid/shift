@@ -107,7 +107,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 countSuccess
                 countApproved --}}
 
-                <div class="col-md-3 col-xl-3 to_trans_page" onclick="window.location = '{{route('admin.transactions-status', 'success')}}'">
+                <div class="col-md-3 col-xl-3 to_trans_page" {{-- onclick="window.location = '{{route('admin.transactions-status', 'success')}}'" --}} >
                     <div class="card mb-3 widget-content bg-grow-early">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
@@ -120,7 +120,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                 </div>
 
-                <div class="col-md-3 col-xl-3 to_trans_page" onclick="window.location = '{{route('admin.transactions-status', 'declined')}}'">
+                <div class="col-md-3 col-xl-3 to_trans_page"
+                {{-- onclick="window.location = '{{route('admin.transactions-status', 'declined')}}'" --}}
+                >
                     <div class="card mb-3 widget-content bg-happy-fisher">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content- mx-auto">
@@ -133,7 +135,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-xl-3 to_trans_page" onclick="window.location = '{{route('admin.transactions-status', 'in progress')}}'">
+                <div class="col-md-3 col-xl-3 to_trans_page"
+                {{-- onclick="window.location = '{{route('admin.transactions-status', 'in progress')}}'" --}}
+                >
                     <div class="card mb-3 widget-content bg-sunny-morning">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content- mx-auto">
@@ -146,7 +150,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                 </div>
 
-                <div class="col-md-3 col-xl-3 to_trans_page" onclick="window.location = '{{route('admin.transactions-status', 'waiting')}}'">
+                <div class="col-md-3 col-xl-3 to_trans_page"
+                {{-- onclick="window.location = '{{route('admin.transactions-status', 'waiting')}}'" --}}
+                >
                     <div class="card mb-3 widget-content bg-ripe-malin">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content- mx-auto">
@@ -401,8 +407,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                     </tbody>
                                                 </table>
                                                 <tfoot>
-                                                    <a href=" {{route('admin.transactions-status', 'waiting')}} "><button
-                                                            class="m-3 btn btn-outline-info">View all</button></a>
+                                                    {{-- <a href=" {{route('admin.transactions-status', 'waiting')}} "><button
+                                                            class="m-3 btn btn-outline-info">View all</button></a> --}}
                                                 </tfoot>
                                             </div>
                                         </div>
@@ -423,7 +429,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             </div>
                                             <div class="table-responsive">
                                                 <table
-                                                    class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                    class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">ID</th>
@@ -471,8 +477,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                     </tbody>
                                                 </table>
                                                 <tfoot>
-                                                    <a href=" {{route('admin.transactions-status', 'in progress')}} "><button
-                                                            class="m-3 btn btn-outline-info">View all</button></a>
+                                                    {{-- <a href=" {{route('admin.transactions-status', 'in progress')}} "><button
+                                                            class="m-3 btn btn-outline-info">View all</button></a> --}}
                                                 </tfoot>
                                             </div>
                                         </div>
@@ -493,7 +499,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             </div>
                                             <div class="table-responsive">
                                                 <table
-                                                    class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                    class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">ID</th>
@@ -541,8 +547,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                     </tbody>
                                                 </table>
                                                 <tfoot>
-                                                    <a href=" {{route('admin.transactions-status', 'in progress')}} "><button
-                                                            class="m-3 btn btn-outline-info">View all</button></a>
+                                                    {{-- <a href=" {{route('admin.transactions-status', 'in progress')}} "><button
+                                                            class="m-3 btn btn-outline-info">View all</button></a> --}}
                                                 </tfoot>
                                             </div>
                                         </div>
@@ -561,7 +567,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             </div>
                                             <div class="table-responsive">
                                                 <table
-                                                    class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                                    class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
                                                     <thead>
                                                         <tr>
                                                             <th class="text-center">ID</th>
@@ -609,8 +615,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                     </tbody>
                                                 </table>
                                                 <tfoot>
-                                                    <a href=" {{route('admin.transactions-status', 'in progress')}} "><button
-                                                            class="m-3 btn btn-outline-info">View all</button></a>
+                                                    {{-- <a href=" {{route('admin.transactions-status', 'in progress')}} "><button
+                                                            class="m-3 btn btn-outline-info">View all</button></a> --}}
                                                 </tfoot>
                                             </div>
                                         </div>
