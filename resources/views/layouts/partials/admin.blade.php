@@ -268,6 +268,22 @@
                         Users' Verification
                     </a>
                 </li>
+
+            <li class="my-3">
+                <a href="{{route('admin.users')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.users' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Users
+                </a>
+            </li>
+
+            <li class="my-3">
+                <a href="{{route('admin.user-verifications')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.user-verifications' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-user"></i>
+                    Users' Verification
+                </a>
+            </li>
             @endif
 
             @if (in_array(Auth::user()->role, [999, 889, 777] ))
@@ -305,6 +321,27 @@
                         Accountants
                     </a>
                 </li>
+            @endif
+
+            @if(Auth::user()->role == 999 OR Auth::user()->role == 444)
+            @if(Auth::user()->role == 999)
+            <li class="my-3">
+                <a href="{{route('admin.chinese_dashboard_page')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.chinese_dashboard_page' ? 'mm-active' : '' }} ">
+                    <i class="fas fa-broom metismenu-icon"></i>
+                    Chinese dashboard
+                </a>
+            </li>
+            @endif
+
+            <li class="my-3">
+                <a href="{{route('admin.payout_transactions')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.payout_transactions' ? 'mm-active' : '' }} ">
+                    <i class="fas fa-braille metismenu-icon"></i>
+                    Payout page
+                </a>
+            </li>
+
             @endif
 
             <li class="my-3">

@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
         'accountant' => \App\Http\Middleware\Accountant::class,
         'seniorAccountant' => \App\Http\Middleware\SeniorAccountant::class,
         'manager' => \App\Http\Middleware\Manager::class,
+        'chinese' => \App\Http\Middleware\Chinese::class,
         'bvnVerified' => BvnCheck::class,
         'customerHappiness' => \App\Http\Middleware\CustomerHappiness::class,
     ];

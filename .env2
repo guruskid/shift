@@ -1,18 +1,18 @@
-  GNU nano 4.8                                                                                  .env
+
 APP_NAME="Dantown Multi Services"
 APP_ENV=production
 APP_KEY=base64:28cbuCVRUzvfcEemThMw3/cWpuAm+02YoYn+bMvku3Q=
-APP_DEBUG=false
-APP_URL= https://app.dantownms.com
+APP_DEBUG=true
+APP_URL= https://localhost:8000
 
 LOG_CHANNEL=stack
 
 DB_CONNECTION=mysql
-DB_HOST=localhost
+DB_HOST=198.199.88.180
 DB_PORT=3306
 DB_DATABASE=dantownmaindb
 DB_USERNAME=root
-DB_PASSWORD=Dantownms4_
+DB_PASSWORD=root
 
 BROADCAST_DRIVER=pusher
 CACHE_DRIVER=file
@@ -54,6 +54,8 @@ TERMII_API_KEY=TLVD3ug4Pc42zanrkEdR2injpxM2nYFdtk8y17MsljST4Mvz1AO2A4eEwlwLeq
 
 BITCOIN_WALLET_API_KEY=04551bdcdff70b9c8a8a398cb9a89eb9bee24502
 
+TATUM_URL="https://api-eu1.tatum.io/v3"
+TATUM_KEY="5fd435a1-8758-4076-8aed-ee67d45d21c0"
 VTPASS_USERNAME=dantownrec2@gmail.com
 VTPASS_PASSWORD=D@Nto99btc
 VTPASS_SANDBOX_USERNAME=remitabills@gmail.com

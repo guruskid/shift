@@ -207,8 +207,8 @@ class HomeController extends Controller
         $btn_text = '';
         $btn_url = '';
         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
-        
-        
+
+
         return redirect()->route('user.dashboard');
     }
 

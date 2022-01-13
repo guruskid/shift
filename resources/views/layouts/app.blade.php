@@ -68,6 +68,10 @@ $not = $nots->last();
             border-top-color: #000070 !important;
         }
 
+        .to_trans_page{
+            cursor: pointer;
+        }
+
     </style>
     <script>
         window.Laravel = {!! json_encode([
@@ -141,9 +145,28 @@ $not = $nots->last();
                             <div class="widget-content-wrapper">
                                 <div class="widget-content-left">
                                     <div class="btn-group">
+                                        @if(Auth::user()->role == 444)
+                                        <div class="language mt-2">
+                                            <h4 class="text-light">改变语言
+                                            </h4>
+                                        </div>
+                                        <div class="m-2">
+                                            {{-- /////// Chinese Dashboard ///////// --}}
+
+                                                <div class="mr-5" id="google_translate_element"></div>
+                                                <script type="text/javascript">
+                                                function googleTranslateElementInit() {
+                                                new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+                                                }
+                                                </script>
+                                                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+                                            {{-- ////////// --}}
+                                        </div>
+                                        @endif
                                         @auth
                                         <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
-                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 )
+                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR Auth::user()->role == 444 )
                                         <div class="dropdown">
                                             <a data-toggle="dropdown" class="p-0 btn">
                                                 <img width="42" class="rounded-circle"
@@ -232,6 +255,9 @@ $not = $nots->last();
                                             @break
                                             @case(666)
                                             Manager
+                                            @break
+                                            @case(444)
+                                            Chinese
                                             @break
                                         @default
                                         Hi! there
@@ -346,6 +372,36 @@ $not = $nots->last();
       $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
+
+@if(Auth::user()->role == 444 OR Auth::user()->role == 999)
+    <script>
+
+        const _e = (e) => document.getElementById(e)
+
+        const countInProgressTransaction = () => {
+            const ajax = new XMLHttpRequest()
+            const trans_url = "{{url('/admin/get-transaction-count')}}"
+            ajax.open('GET', trans_url)
+            ajax.onload = () => {
+                const response = ajax.response
+                const resp = JSON.parse(response)
+                _e('waiting_count').innerHTML = resp.waiting_transaction
+                _e('in_progress_count').innerHTML = resp.in_progress_transactions
+                // console.log(resp)
+            }
+
+            ajax.onprogress = () => {
+                _e('waiting_count').innerHTML = '...'
+                _e('in_progress_count').innerHTML = '...'
+            }
+            ajax.send()
+        }
+
+        setInterval(() => {
+            countInProgressTransaction()
+        }, 2000);
+    </script>
+@endif
 
 </body>
 

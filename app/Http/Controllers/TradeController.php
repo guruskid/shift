@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Card;
 use App\CardCurrency;
+use App\Events\CustomNotification;
 use App\Events\NewTransaction;
 use App\Http\Resources\CardResource;
 use App\Mail\DantownNotification;
@@ -141,16 +142,21 @@ class TradeController extends Controller
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
         $r->buy_sell == 1 ? $buy_sell = 'buy' : $buy_sell = 'sell';
         $transaction_id = uniqid();
+        // return $card;
         foreach ($r->cards as $i => $total) {
-            $rate = json_decode($card->currency->where('name',$r->currencies[0])->first()->cardCurrency->first()->cardPaymentMedia->first()->payment_range_settings);
+            // $rate = json_decode($card->currency->where('name',$r->currencies[0])->first()->cardCurrency->first()->cardPaymentMedia->first()->payment_range_settings);
+            $rate = json_decode($card->currency->where('name',$r->currencies[0])->first()->cardCurrency->where('card_id',$card->id)->first()->cardPaymentMedia->first()->payment_range_settings);
             $t_amount = 0;
+            // return $rate;
             foreach ($rate as $key => $value) {
                 if ($value->value == $r->values[$i]) {
-                    $t_amount = $r->quantities[$i] * $value->rate;   
+                    $t_amount = $r->quantities[$i] * $value->rate;
+                    break;
                 }
             }
             $commission = $t_amount - $r->totals[$i];
-            // return $commission;
+            // return 
+            // return $t_amount .' '. $commission.' '.$r->totals[$i];
 
             $t = new Transaction();
             $t->uid = $transaction_id;
@@ -187,6 +193,12 @@ class TradeController extends Controller
         }
 
         broadcast(new NewTransaction($t))->toOthers();
+
+        $chinese = User::where(['role' => 444, 'status' => 'active'])->get();
+                $message = '!!! New Giftcard Transaction !!!  A new Giftcard transaction has been initiated ';
+                foreach ($chinese as $acct) {
+                    broadcast(new CustomNotification($acct, $message))->toOthers();
+                }
 
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
