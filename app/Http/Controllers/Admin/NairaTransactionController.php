@@ -49,7 +49,7 @@ class NairaTransactionController extends Controller
      */
     public function create()
     {
-        $transaction_types = TransactionType::whereIn('id', [7, 8])->get();
+        $transaction_types = TransactionType::whereIn('id', [1, 7, 8])->get();
 
         return view('admin.new_naira_transaction', compact(['transaction_types']));
     }
@@ -62,23 +62,23 @@ class NairaTransactionController extends Controller
      */
     public function store(Request $r)
     {
-        return back()->with(['error' => 'Incorrect details']);
+        // return back()->with(['error' => 'Incorrect details']);
         $r->validate([
-            'account_number' => 'required|integer|exists:naira_wallets,account_number',
-            'reference' => 'required|string|unique:naira_transactions,reference',
-            'wallet_id' => 'required',
+            'email' => 'required|email|exists:users',
             'amount' => 'required',
             'narration' => 'required|string',
             'pin' => 'required',
         ]);
 
-        if (Hash::check($r->pin, Auth::user()->nairaWallet->password) == false) {
+        if (Hash::check($r->pin, Auth::user()->pin) == false) {
             return redirect()->back()->with(['error' => 'Incorrect Pin']);
         }
+        $user = User::where('email', $r->email)->first();
 
-        $wallet = NairaWallet::findOrFail($r->wallet_id);
+        $wallet = $user->nairaWallet;
+
         $t = new NairaTransaction();
-        $t->reference = $r->reference;
+        $t->reference = uniqid();
         $t->amount = $r->amount;
         $t->amount_paid = $r->amount;
         $t->previous_balance = $wallet->amount;
@@ -88,12 +88,12 @@ class NairaTransactionController extends Controller
         $t->narration = $r->narration;
         $t->charge = 0;
         $t->trans_msg = 'This transaction was authenticated by ' . Auth::user()->id . ' ' . Auth::user()->first_name;
-        $t->status = 'pending';
 
-        if ($r->transaction_type == 7) {
-            //Top Up
+        if ($r->transaction_type == 1 ) {
+            //Deposit
             $wallet->amount += $r->amount;
             $wallet->save();
+
             $t->current_balance = $wallet->amount;
             $t->cr_user_id = $wallet->user->id;
             $t->dr_user_id = 1;
@@ -106,27 +106,27 @@ class NairaTransactionController extends Controller
 
             $title = 'Dantown wallet Credit';
             $type = 'credit';
-        } elseif ($r->transaction_type == 8) {
-            //Deduction
-            $wallet->amount -= $r->amount;
-            $wallet->save();
-            $t->current_balance = $wallet->amount;
-            $t->dr_user_id = $wallet->user->id;
-            $t->cr_user_id = 1;
-            $t->dr_wallet_id = $wallet->id;
-            $t->cr_wallet_id = 1;
-            $t->dr_acct_name = $wallet->account_name;
-            $t->cr_acct_name = 'Dantown Assets';
-            $t->status = 'success';
-            $t->save();
+        // } elseif ($r->transaction_type == 8) {
+        //     //Deduction
+        //     $wallet->amount -= $r->amount;
+        //     $wallet->save();
+        //     $t->current_balance = $wallet->amount;
+        //     $t->dr_user_id = $wallet->user->id;
+        //     $t->cr_user_id = 1;
+        //     $t->dr_wallet_id = $wallet->id;
+        //     $t->cr_wallet_id = 1;
+        //     $t->dr_acct_name = $wallet->account_name;
+        //     $t->cr_acct_name = 'Dantown Assets';
+        //     $t->status = 'success';
+        //     $t->save();
 
-            $title = 'Dantown wallet Debit';
-            $type = 'debit';
+        //     $title = 'Dantown wallet Debit';
+        //     $type = 'debit';
         }
 
 
 
-        $msg_body = 'Your Dantown wallet has been ' . $type . 'ed with N' . $r->amount . ' from ' . $r->originatorname . ' desc: ' . $r->narration;
+        $msg_body = 'Your Dantown wallet has been ' . $type . 'ed with N' . $r->amount;
 
         $not = Notification::create([
             'user_id' => $wallet->user->id,
@@ -134,16 +134,6 @@ class NairaTransactionController extends Controller
             'body' => $msg_body,
         ]);
 
-        if ($wallet->user->notificationSetting->wallet_email == 1) {
-            Mail::to($wallet->user->email)->send(new WalletAlert($t, $type));
-        }
-
-        $client = new Client();
-        $token = env('SMS_TOKEN');
-        $to = $wallet->user->phone;
-        $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
-        $snd_sms = $client->request('GET', $sms_url);
-        dd($snd_sms->getBody()->getContents());
 
         return back()->with(['success' => 'Transaction completed']);
     }
