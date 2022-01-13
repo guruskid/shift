@@ -5166,11 +5166,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['usd_eth'],
+  props: ['usd_trx'],
   data: function data() {
     return {
-      ethToUsd: this.usd_eth,
-      eth: '',
+      trxToUsd: this.usd_trx,
+      trx: '',
       usd: '',
       address: '',
       pin: '',
@@ -5182,25 +5182,25 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     //When USD field is updated
     getRateUsd: function getRateUsd() {
-      this.eth = this.usd / this.ethToUsd;
+      this.trx = this.usd / this.trxToUsd;
       this.getFees();
     },
 
     /* When eth is updated */
-    getRateEth: function getRateEth() {
-      this.usd = this.ethToUsd * this.eth;
+    getRateTrx: function getRateTrx() {
+      this.usd = this.trxToUsd * this.trx;
       this.getFees();
     },
     //Get transfer fees
     getFees: function getFees() {
       var _this = this;
 
-      if (this.eth <= 0 || this.address == '') {
+      if (this.trx <= 0 || this.address == '') {
         return false;
       }
 
       this.loading = true;
-      axios.get("/user/ethereum/fees/".concat(this.address, "/").concat(this.eth)).then(function (res) {
+      axios.get("/user/tron/fees/".concat(this.address, "/").concat(this.trx)).then(function (res) {
         var x = parseFloat(res.data.fee);
         _this.fee = x.toFixed(5);
       })["finally"](function () {
@@ -5210,14 +5210,14 @@ __webpack_require__.r(__webpack_exports__);
     send: function send() {
       var _this2 = this;
 
-      if (this.eth <= 0) {
-        swal('Oops', 'ETH amount should be greater than 0', 'error');
+      if (this.trx <= 0) {
+        swal('Oops', 'TRX amount should be greater than 0', 'error');
         return false;
       }
 
       this.loading = true;
-      axios.post('/user/ethereum/send', {
-        "amount": this.eth,
+      axios.post('/user/tron/send', {
+        "amount": this.trx,
         "address": this.address,
         "pin": this.pin,
         "fees": this.fee
@@ -5225,8 +5225,8 @@ __webpack_require__.r(__webpack_exports__);
         console.log(res);
 
         if (res.data.success) {
-          swal('Great!!', 'ethereum sent successfully', 'success');
-          window.location = '/user/ethereum/wallet';
+          swal('Great!!', 'Tron sent successfully', 'success');
+          window.location = '/user/tron/wallet';
         } else {
           swal('oops!!', res.data.msg, 'error');
         }
@@ -53652,7 +53652,7 @@ var render = function() {
     "div",
     {
       staticClass: "container my-3 mt-lg-5 wallet_trx_tabs",
-      attrs: { id: "ethereum_wallet_send_tab" }
+      attrs: { id: "bitcoin_wallet_send_tab" }
     },
     [
       _c(
@@ -53713,8 +53713,8 @@ var render = function() {
                       {
                         name: "model",
                         rawName: "v-model",
-                        value: _vm.eth,
-                        expression: "eth"
+                        value: _vm.trx,
+                        expression: "trx"
                       }
                     ],
                     staticClass: "form-control",
@@ -53725,16 +53725,16 @@ var render = function() {
                       step: "any",
                       placeholder: "0"
                     },
-                    domProps: { value: _vm.eth },
+                    domProps: { value: _vm.trx },
                     on: {
                       keyup: function($event) {
-                        return _vm.getRateEth()
+                        return _vm.getRateTrx()
                       },
                       input: function($event) {
                         if ($event.target.composing) {
                           return
                         }
-                        _vm.eth = $event.target.value
+                        _vm.trx = $event.target.value
                       }
                     }
                   }),
@@ -53759,7 +53759,7 @@ var render = function() {
                       _c(
                         "span",
                         { staticClass: "d-block align-self-end ethtext" },
-                        [_vm._v(_vm._s(_vm.fee) + " ETH")]
+                        [_vm._v(_vm._s(_vm.fee) + " TRX")]
                       ),
                       _vm._v(" "),
                       _c(
@@ -53937,7 +53937,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "input-group-prepend" }, [
       _c("span", { staticClass: "input-group-text usd_bg_text" }, [
-        _vm._v("ETH")
+        _vm._v("TRX")
       ])
     ])
   },

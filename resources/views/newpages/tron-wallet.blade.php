@@ -153,7 +153,7 @@
                                     </div>
                                 </div>
 
-                                <tron-send-component :usd_eth="{{ $tron_rate }}" ></tron-send-component>
+                                <tron-send-component :usd_trx="{{ $tron_rate }}" ></tron-send-component>
 
                                 @include('newpages.tabs.tron-wallet-receive')
 

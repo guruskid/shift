@@ -1,5 +1,5 @@
 <template>
-   <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="ethereum_wallet_send_tab">
+   <div class="container my-3 mt-lg-5 wallet_trx_tabs" id="bitcoin_wallet_send_tab">
     <form @submit.prevent="send()" >
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
@@ -12,10 +12,10 @@
                             <img src="/svg/conversion-arrow.svg" alt="">
                         </span>
                     </div>
-                    <input type="number" required step="any" @keyup="getRateEth()" v-model="eth" placeholder="0" class="form-control"
+                    <input type="number" required step="any" @keyup="getRateTrx()" v-model="trx" placeholder="0" class="form-control"
                         style="border: 0px;border-right:0px;">
                     <div class="input-group-prepend">
-                        <span class="input-group-text usd_bg_text">ETH</span>
+                        <span class="input-group-text usd_bg_text">TRX</span>
                     </div>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end ethtext">{{ fee }} ETH</span>
+                            <span class="d-block align-self-end ethtext">{{ fee }} TRX</span>
                             <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>
@@ -70,12 +70,12 @@
 
 <script>
     export default {
-        props: ['usd_eth'],
+        props: ['usd_trx'],
 
         data() {
             return {
-                ethToUsd : this.usd_eth,
-                eth: '',
+                trxToUsd : this.usd_trx,
+                trx: '',
                 usd: '',
                 address: '',
                 pin: '',
@@ -91,23 +91,23 @@
         methods: {
             //When USD field is updated
             getRateUsd() {
-                this.eth = this.usd / this.ethToUsd;
+                this.trx = this.usd / this.trxToUsd;
                 this.getFees();
             },
 
             /* When eth is updated */
-            getRateEth(){
-                this.usd = this.ethToUsd * this.eth
+            getRateTrx(){
+                this.usd = this.trxToUsd * this.trx
                 this.getFees();
             },
 
             //Get transfer fees
             getFees(){
-                if(this.eth <= 0 || this.address == '' ){
+                if(this.trx <= 0 || this.address == '' ){
                     return false;
                 }
                 this.loading = true;
-                axios.get(`/user/ethereum/fees/${this.address}/${this.eth}`)
+                axios.get(`/user/tron/fees/${this.address}/${this.trx}`)
                 .then((res) =>{
                     let x = parseFloat(res.data.fee);
                     this.fee = x.toFixed(5);
@@ -118,14 +118,14 @@
             },
 
             send(){
-                if (this.eth <= 0) {
-                    swal('Oops', 'ETH amount should be greater than 0', 'error');
+                if (this.trx <= 0) {
+                    swal('Oops', 'TRX amount should be greater than 0', 'error');
                     return false;
                 }
 
                 this.loading = true;
-                axios.post('/user/ethereum/send', {
-                    "amount" : this.eth,
+                axios.post('/user/tron/send', {
+                    "amount" : this.trx,
                     "address" : this.address,
                     "pin" : this.pin,
                     "fees" : this.fee
@@ -133,8 +133,8 @@
                 .then((res)=>{
                     console.log(res)
                     if (res.data.success) {
-                        swal('Great!!', 'ethereum sent successfully', 'success');
-                        window.location = '/user/ethereum/wallet';
+                        swal('Great!!', 'Tron sent successfully', 'success');
+                        window.location = '/user/tron/wallet';
                     } else {
                         swal('oops!!', res.data.msg, 'error');
                     }
