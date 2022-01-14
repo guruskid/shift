@@ -499,7 +499,7 @@ class AdminController extends Controller
         $totalAvgPerToday = ceil($tt->sum() / $tt->count());
 
 
-        $tnx = Transaction::latest('id');
+        $tnx = $transactions->latest('id');
         $segment = 'All';
         $card_price_total = $tnx->sum('card_price');
         $cash_value_total = $tnx->sum('amount_paid');
