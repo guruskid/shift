@@ -105,6 +105,26 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             @foreach ($errors->all() as $err)
                             <span class="text-danger">{{ $err }}</span>
                             @endforeach
+                            @if (!in_array(Auth::user()->role, [555]))
+                            <table class="align-middle mb-4 table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Total Transactions</th>
+                                        <th class="text-center">Total Amount</th>
+                                        <th class="text-center">Convenience fee Total</th>
+                                        <th class="text-center">Total Amount Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td class="text-center text-muted">{{ number_format($total_transactions) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_amount) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_convenience_fee) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total) }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                            @endif
                             <table class="align-middle mb-4 table table-bordered table-striped">
                                 <thead>
                                     <tr>

@@ -106,6 +106,26 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         </div>
                         <div class="table-responsive p-3">
 
+                            @if (!in_array(Auth::user()->role, [555]))
+                            <table class="align-middle mb-4 table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Total Transactions</th>
+                                        <th class="text-center">Total Amount Paid</th>
+                                        <th class="text-center">Total Charges</th>
+                                        <th class="text-center">Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td class="text-center text-muted">{{ number_format($total_tnx) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_amount_paid) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_charges) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total) }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                            @endif
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>
                                     <tr>

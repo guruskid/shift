@@ -69,6 +69,12 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             <form action="{{route('admin.transactions-by-date')}}" class="form-inline p-2"
                                 method="POST">
                                 @csrf
+                                
+                                @if ($segment == 'Sell' || $segment == 'Buy')
+                                    <input type="hidden" name="type" value="{{ strtolower($segment) }}">  
+                                    @else  
+                                    <input type="hidden" name="status" value="{{ strtolower($segment) }}"> 
+                                @endif
                                 @if (isset($type))
                                     <div class="form-group mr-1">
                                         <select name="type" class="ml-1 form-control">
@@ -130,6 +136,27 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             @foreach ($errors->all() as $err)
                             <span class="text-danger">{{ $err }}</span>
                             @endforeach
+                            <table class="align-middle mb-4 table table-bordered table-striped ">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Total Transaction Number</th>
+                                        <th class="text-center">Total Asset Value</th>
+                                        <th class="text-center">Total Card Price</th>
+                                        <th class="text-center">Total Cash Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td class="text-center">{{ number_format($total_transactions) }}</td>
+                                        <td class="text-center">{{ number_format($asset_value_total) }}</td>
+                                        <td class="text-center">₦{{ number_format($card_price_total,3) }}</td>
+                                        <td class="text-center">₦{{ number_format($cash_value_total) }}</td>
+
+                                       
+                                    </tr>
+                                </tbody>
+                            </table>
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>
                                     <tr>
