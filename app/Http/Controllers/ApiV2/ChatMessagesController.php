@@ -37,7 +37,7 @@ class ChatMessagesController extends Controller
             ], 401);
         }
 
-        $is_agent = Auth::user()->role == '555' ? 1 : 0;
+        $is_agent = in_array(Auth::user()->role, [555]) ? 1 : 0;
         $chatmessage = ChatMessages::create([
             'ticket_no' => $r->ticketNo,
             'user_id' => Auth::user()->id,
