@@ -105,7 +105,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             @foreach ($errors->all() as $err)
                             <span class="text-danger">{{ $err }}</span>
                             @endforeach
-                            @if (!in_array(Auth::user()->role, [555]))
+                            @if (in_array(Auth::user()->role, [999,899]))
                             <table class="align-middle mb-4 table table-bordered table-striped">
                                 <thead>
                                     <tr>

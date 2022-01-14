@@ -106,7 +106,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         </div>
                         <div class="table-responsive p-3">
 
-                            @if (!in_array(Auth::user()->role, [555]))
+                            @if (in_array(Auth::user()->role, [999,899]))
                             <table class="align-middle mb-4 table table-bordered table-striped">
                                 <thead>
                                     <tr>
