@@ -69,32 +69,85 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div class="card-header justify-content-between ">
                             {{$segment}} Transactions
                             {{-- Search for all users --}}
-                            <form action="{{route('admin.search-tnxs')}}" class="form-inline p-2"
-                                method="POST">
-                                @csrf
-                                <div class="form-group mr-2">
-                                    <label for=""> Search </label>
-                                    <input type="text" required name="search" class="ml-2 form-control">
-                                    <input type="hidden" name="segment" value="{{ $segment }}" class="ml-2 form-control">
-                                </div>
-                                <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
-                            </form>
-                            <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
-                                method="POST">
-                                @csrf
-                                <div class="form-group mr-2">
-                                    <label for="">Start date </label>
-                                    <input type="date" name="start" class="ml-2 form-control">
-                                </div>
-                                <div class="form-group mr-2">
-                                    <label for="">End date </label>
-                                    <input type="date" name="end" class="ml-2 form-control">
-                                </div>
-                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
-                            </form>
+                            @if (in_array(Auth::user()->role, [555] ))
+                                <form action="{{route('customerHappiness.search-tnxs')}}"  
+                                    class="form-inline p-2" method="POST">
+                                    @csrf
+                                    <div class="form-group mr-2">
+                                        <label for=""> Search </label>
+                                        <input type="text" required name="search" class="ml-2 form-control">
+                                        <input type="hidden" name="segment" value="{{ $segment }}" class="ml-2 form-control">
+                                    </div>
+                                    <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+                                </form>
+                            @endif
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                    {{route('customerHappiness.utility-transactions')}}
+                                    @else
+                                    {{route('admin.utility-transactions')}}
+                                @endif" 
+                                 class="form-inline p-2" method="POST">
+                            @csrf
+                            @if (!in_array(Auth::user()->role, [555] ))
+                                @if (isset($type))
+                                    <div class="form-group mr-1">
+                                        <select name="type" class="ml-1 form-control">
+                                            <option value="null">Type</option>
+                                            @foreach ($type as $t)
+                                                <option value="{{ $t->transaction_type_id }}">{{ ucwords($t->transactionType->name) }}</option>  
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+                            @endif
+                            
+
+                            <div class="form-group mr-2">
+                                <label for="">Start date </label>
+                                <input type="date" name="start" class="ml-2 form-control" required>
+                            </div>
+                            <div class="form-group mr-2">
+                                <label for="">End date </label>
+                                <input type="date" name="end" class="ml-2 form-control" required>
+                            </div>
+                            @if (!in_array(Auth::user()->role, [555] ))
+                                @if (isset($status))
+                                    
+                                    <div class="form-group mr-1">
+                                        <select name="status" class="ml-1 form-control">
+                                            <option value="null">Status</option>
+                                            @foreach ($status as $s)
+                                                <option value="{{ $s->status }}">{{ $s->status }}</option> 
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+                            @endif
+                            
+                            <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                        </form>
                         </div>
                         <div class="table-responsive p-3">
-
+                            @if (in_array(Auth::user()->role, [999,899]))
+                            <table class="align-middle mb-4 table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Total Transactions</th>
+                                        <th class="text-center">Total Amount Paid</th>
+                                        <th class="text-center">Total Charges</th>
+                                        <th class="text-center">Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td class="text-center text-muted">{{ number_format($total_tnx) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_amount_paid) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_charges) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total) }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                            @endif
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>
                                     <tr>
