@@ -31,7 +31,7 @@ class ChineseController extends Controller
     {
 
         $page_limit = 1000;
-        
+
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
         $buyCount = Transaction::where('status', 'success')->where('type', 'buy')->count();

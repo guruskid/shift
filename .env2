@@ -1,4 +1,4 @@
-  GNU nano 4.8                                                                                  .env
+
 APP_NAME="Dantown Multi Services"
 APP_ENV=production
 APP_KEY=base64:28cbuCVRUzvfcEemThMw3/cWpuAm+02YoYn+bMvku3Q=
@@ -8,7 +8,7 @@ APP_URL= https://localhost:8000
 LOG_CHANNEL=stack
 
 DB_CONNECTION=mysql
-DB_HOST=localhost
+DB_HOST=198.199.88.180
 DB_PORT=3306
 DB_DATABASE=dantownmaindb
 DB_USERNAME=root

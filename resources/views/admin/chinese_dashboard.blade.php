@@ -107,9 +107,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 countSuccess
                 countApproved --}}
 
-                <div class="col-md-3 col-xl-3 to_trans_page" 
-                {{-- onclick="window.location = '{{route('admin.transactions-status', 'success')}}'" --}}
-                >
+                <div class="col-md-3 col-xl-3 to_trans_page" {{-- onclick="window.location = '{{route('admin.transactions-status', 'success')}}'" --}} >
                     <div class="card mb-3 widget-content bg-grow-early">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
@@ -122,7 +120,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                 </div>
 
-                <div class="col-md-3 col-xl-3 to_trans_page" 
+                <div class="col-md-3 col-xl-3 to_trans_page"
                 {{-- onclick="window.location = '{{route('admin.transactions-status', 'declined')}}'" --}}
                 >
                     <div class="card mb-3 widget-content bg-happy-fisher">
@@ -137,7 +135,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-xl-3 to_trans_page" 
+                <div class="col-md-3 col-xl-3 to_trans_page"
                 {{-- onclick="window.location = '{{route('admin.transactions-status', 'in progress')}}'" --}}
                 >
                     <div class="card mb-3 widget-content bg-sunny-morning">
@@ -152,7 +150,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                 </div>
 
-                <div class="col-md-3 col-xl-3 to_trans_page" 
+                <div class="col-md-3 col-xl-3 to_trans_page"
                 {{-- onclick="window.location = '{{route('admin.transactions-status', 'waiting')}}'" --}}
                 >
                     <div class="card mb-3 widget-content bg-ripe-malin">

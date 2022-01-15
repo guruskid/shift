@@ -61,7 +61,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 </div>
             </div>
 
-            @if (in_array(Auth::user()->role, [999] ))
+            @if (in_array(Auth::user()->role, [999] ) and isset($totalTransactions))
                 <div class="row">
                     <div class="col-md-3 col-xl-3">
                         <div class="card mb-3 widget-content bg-grow-early">
@@ -134,8 +134,31 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between">{{$segment}} Transactions
-                            {{-- <form action="{{route('admin.transactions-by-date')}}" class="form-inline p-2"
+                            {{-- Search for all users --}}
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                            {{route('customerHappiness.search-tnxs')}}
+                                            @else
+                                            {{route('admin.search-tnxs')}}
+                                        @endif" 
+                            class="form-inline p-2"
+
                                 method="POST">
+                                @csrf
+                                <div class="form-group mr-2">
+                                    <label for=""> Search </label>
+                                    <input type="text" required name="search" class="ml-2 form-control">
+                                    <input type="hidden" name="segment" value="{{ $segment }}" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+                            </form>
+
+                            
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                            {{route('customerHappiness.transactions-by-date')}}
+                                            @else
+                                            {{route('admin.transactions-by-date')}}
+                                        @endif" 
+                            class="form-inline p-2" method="POST">
                                 @csrf
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
@@ -146,7 +169,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     <input type="date" required name="end" class="ml-2 form-control">
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
-                            </form> --}}
+                            </form>
+                            @if (!in_array(Auth::user()->role, [555] ))
                             <form class="form-inline p-2"
                                 method="GET">
                                 {{-- @csrf --}}
@@ -160,6 +184,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
+                            @endif
                         </div>
                         <div class="table-responsive p-3">
                             @foreach ($errors->all() as $err)
@@ -176,6 +201,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <th class="text-center">Asset value</th>
                                         <th class="text-center">Quantity</th>
                                         <th class="text-center">Card price</th>
+                                        <th class="text-center">Cash value</th>
+
                                         <th class="text-center">User Amount</th>
                                         @if (in_array(Auth::user()->role, [999] ))
                                             <th class="text-center">Commission</th>
@@ -215,6 +242,24 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center">{{ $t->quantity}}</td>
                                         @endif
                                         <td class="text-center">{{$t->card_price}}</td>
+
+                                        <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                        <td class="text-center">{{$t->wallet_id}}</td>
+                                        @if (isset($t->user))
+                                        <td class="text-center">
+                                            @if (in_array(Auth::user()->role, [555] ))
+                                                <a
+                                                href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name." ".$t->user->last_name}}</a> 
+                                              @else  
+                                                <a
+                                                href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name." ".$t->user->last_name}}</a> 
+                                            @endif
+                                            
+                                        </td> 
+                                        @endif
+               
                                         <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
                                         @if (in_array(Auth::user()->role, [999] ))
                                             <td class="text-center">{{$t->commission}}</td>
@@ -228,6 +273,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                 {{$t->user->first_name." ".$t->user->last_name}}</a>
                                         @endif
                                         </td>
+
                                         <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
                                         <td class="text-center">
                                             @switch($t->status)
@@ -255,11 +301,13 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         @endif
 
                                         <td>
+                                            @if (!in_array(Auth::user()->role, [555] ))
                                             <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
                                                 @if (Auth::user()->role != 888 )
                                                     <span class="btn btn-sm btn-success">View</span>
                                                 @endif
                                             </a>
+                                            @endif
 
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
 

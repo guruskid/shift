@@ -70,6 +70,7 @@ class Kernel extends HttpKernel
         'manager' => \App\Http\Middleware\Manager::class,
         'chinese' => \App\Http\Middleware\Chinese::class,
         'bvnVerified' => BvnCheck::class,
+        'customerHappiness' => \App\Http\Middleware\CustomerHappiness::class,
     ];
 
     /**
