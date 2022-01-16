@@ -467,10 +467,10 @@ class AdminController extends Controller
 
     public function transactions(Request $request)
     {
-        $transactions = Transaction::with('user')->latest();
+        $transactions = Transaction::with('user')->latest()->paginate(1000);
 
         if(Auth::user()->role == 444){
-            $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest();
+            $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         }
 
         $segment = 'All';
@@ -482,7 +482,9 @@ class AdminController extends Controller
             $transactions = $transactions->whereBetween('created_at', [$from, $to]);
             $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
         }
+      
         $transactions = $transactions->paginate(1000);
+
 
         // $tranx = $tranx->where('card_id','!=','102')->where('status','success');
         // if (isset($request['start']) and isset($request['end'])) {
