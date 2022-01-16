@@ -473,21 +473,25 @@ class AdminController extends Controller
             $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         }
 
+        $segment = 'All';
+
         $tranx = $transactions;
         if (isset($request['start']) and isset($request['end'])) {
             $from = $request['start'];
             $to = $request['end'];
             $transactions = $transactions->whereBetween('created_at', [$from, $to]);
+            $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
         }
-        $transactions = $transactions->latest('id')->paginate(1000);
-        $segment = 'All';
+      
+        $transactions = $transactions->paginate(1000);
 
-        $tranx = $tranx->where('card_id','!=','102')->where('status','success');
-        if (isset($request['start']) and isset($request['end'])) {
-            $from = $request['start'];
-            $to = $request['end'];
-            $tranx = $tranx->whereBetween('created_at', [$from, $to]);
-        }
+
+        // $tranx = $tranx->where('card_id','!=','102')->where('status','success');
+        // if (isset($request['start']) and isset($request['end'])) {
+        //     $from = $request['start'];
+        //     $to = $request['end'];
+        //     $tranx = $tranx->whereBetween('created_at', [$from, $to]);
+        // }
 
         $totalTransactions = $tranx->count();
         $totalVol = $tranx->sum('amount');
@@ -497,7 +501,11 @@ class AdminController extends Controller
         $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
                 ->groupBy('date')->pluck('d_total');
 
-        $totalAvgPerToday = ceil($tt->sum() / $tt->count());
+        $totalAvgPerToday = 0;
+
+        if ($totalAvgPerToday > 0) {
+            $totalAvgPerToday = ceil($tt->sum() / $tt->count());
+        }
 
         return view('admin.transactions', compact(['transactions', 'segment','totalTransactions','totalVol','totalComm','totalChineseAmt','totalAvgPerToday']));
     }

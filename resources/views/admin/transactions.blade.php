@@ -61,7 +61,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 </div>
             </div>
 
-            @if (in_array(Auth::user()->role, [999] ))
+            @if (in_array(Auth::user()->role, [999] ) and isset($totalTransactions))
                 <div class="row">
                     <div class="col-md-3 col-xl-3">
                         <div class="card mb-3 widget-content bg-grow-early">
