@@ -52,9 +52,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             <i class="pe-7s-timer icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div class="text-capitalize">Utility Transactions
+                        <div>Utility Transactions
                             <div class="page-title-subheading">
-                                <button class="btn btn-primary" onclick="location.reload()">Refresh Page</button>
+                                <h5 class="d-inline">₦{{ number_format($total) }} </h5>
+                                 <button class="btn btn-primary" onclick="location.reload()">Refresh Page</button>
                             </div>
                         </div>
                     </div>
@@ -68,6 +69,16 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             <form action="{{route('admin.utility-transactions')}}" class="form-inline p-2"
                                 method="GET">
                                 @csrf
+                                @if (isset($type))
+                                    <div class="form-group mr-1">
+                                        <select name="type" class="ml-1 form-control">
+                                            <option value="null">Type</option>
+                                            @foreach ($type as $t)
+                                                <option value="{{ $t->type }}">{{ ucwords($t->type) }}</option>  
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
                                     <input type="date" required name="start" class="ml-2 form-control">
@@ -76,6 +87,17 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     <label for="">End date </label>
                                     <input type="date" required name="end" class="ml-2 form-control">
                                 </div>
+                                @if (isset($status))
+                                    
+                                    <div class="form-group mr-1">
+                                        <select name="status" class="ml-1 form-control">
+                                            <option value="null">Status</option>
+                                            @foreach ($status as $s)
+                                                <option value="{{ $s->status }}">{{ $s->status }}</option> 
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
                         </div>
@@ -83,6 +105,26 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             @foreach ($errors->all() as $err)
                             <span class="text-danger">{{ $err }}</span>
                             @endforeach
+                            @if (in_array(Auth::user()->role, [999,899]))
+                            <table class="align-middle mb-4 table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Total Transactions</th>
+                                        <th class="text-center">Total Amount</th>
+                                        <th class="text-center">Convenience fee Total</th>
+                                        <th class="text-center">Total Amount Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td class="text-center text-muted">{{ number_format($total_transactions) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_amount) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_convenience_fee) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total) }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                            @endif
                             <table class="align-middle mb-4 table table-bordered table-striped">
                                 <thead>
                                     <tr>

@@ -176,33 +176,108 @@ class AdminController extends Controller
 
     public function transactions()
     {
-        $transactions = Transaction::latest('id')->paginate(1000);
+        $transactions = Transaction::latest('id');
+        
+
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        
+
         $segment = 'All';
-
-        // dd($transactions);
-
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        $type = Transaction::select('type')->distinct('type')->get();
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
+        
+        $transactions = Transaction::latest('id')->paginate(1000);
+        return view('admin.transactions', compact(['transactions', 'segment','type','accountant','status','category'
+    ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function buyTransac()
     {
-        $transactions = Transaction::where('type', 'buy')->latest()->paginate(1000);
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
+        $transactions = Transaction::where('type', 'buy')->latest();
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(1000);
         $segment = 'Buy';
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        return view('admin.transactions', compact(['transactions', 'segment','accountant','status','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function sellTransac()
     {
-        $transactions = Transaction::where('type', 'sell')->latest()->paginate(1000);
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
+        $transactions = Transaction::where('type', 'sell')->latest();
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(1000);
         $segment = 'Sell';
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        return view('admin.transactions', compact(['transactions', 'segment','accountant','status','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function txnByStatus($status)
     {
-        $transactions = Transaction::where('status', $status)->latest()->paginate(1000);
+        
+        $type = Transaction::select('type')->distinct('type')->get();
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        
+        
+        $transactions = Transaction::where('status', $status)->latest();
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(1000);
         $segment = $status;
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        return view('admin.transactions', compact(['transactions', 'segment','type','accountant','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total'
+    ]));
     }
 
     public function assignedTransac()
@@ -220,9 +295,27 @@ class AdminController extends Controller
 
     public function assetTransac($id)
     {
+        $type = Transaction::select('type')->distinct('type')->get();
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
-        })->latest()->paginate(10);
+        })->latest();
+        
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(1000);
 
         $segment = 'Crypto';
         if ($id == 1) {
@@ -230,20 +323,51 @@ class AdminController extends Controller
         }
 
 
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        return view('admin.transactions', compact(['transactions', 'segment','type','accountant','status','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function assetTransactionsSortByDate(Request $request)
     {
-
+        // dd($request);
+        $type = Transaction::select('type')->distinct('type')->get();
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
         $data = $request->validate([
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = Transaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(200);
+        $transactions = Transaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end']);
+        if($request->type != 'null'){
+            $transactions = $transactions->where('type',$request->type);
+        }
+        if($request->category != 'null'){
+            $transactions = $transactions->where('card_id',$request->category);
+        }
+        if($request->Accountant != 'null'){
+            $transactions = $transactions->where('accountant_id',$request->Accountant);
+        }
+        if($request->status != 'null'){
+            $transactions = $transactions->where('status',$request->status);
+        }
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(200);
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Asset';
 
-        return view('admin.transactions', compact(['segment', 'transactions']));
+        return view('admin.transactions', compact(['segment', 'transactions','type','accountant','status','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function getTransac($id)
@@ -291,30 +415,65 @@ class AdminController extends Controller
 
     public function walletTransactions($id = null)
     {
+        $type = NairaTransaction::with('transactionType')
+        ->select('transaction_type_id')
+        ->where('transaction_type_id','!=',null)
+        ->distinct('transaction_type_id')
+        ->get();
+        $status = NairaTransaction::select('status')->distinct('status')->get();
         if ($id == null) {
-            $transactions = NairaTransaction::latest()->orderBy('created_at','desc')->paginate(1000);
+            $transactions = NairaTransaction::latest()->orderBy('created_at','desc');
             $segment = 'All Wallet';
             $total = $transactions->sum('amount');
         } else {
-            $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at','desc')->paginate(1000);
+            $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at','desc');
             $segment = TransactionType::find($id)->name;
             $total = $transactions->sum('amount');
         }
-
-        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
+        $total_tnx = $transactions->count();
+        $total_amount_paid = $transactions->sum('amount_paid');
+        $total_charges = $transactions->sum('charge');
+        $transactions = $transactions->paginate(1000);
+        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total','type','status'
+        ,'total_tnx','total_amount_paid','total_charges']));
     }
     public function walletTransactionsSortByDate(Request $request)
     {
-
+        $type = NairaTransaction::with('transactionType')
+        ->select('transaction_type_id')
+        ->where('transaction_type_id','!=',null)
+        ->distinct('transaction_type_id')
+        ->get();
+        $status = NairaTransaction::select('status')->distinct('status')->get();
         $data = $request->validate([
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(1000);
+
+        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end']);
+        
+
+        if($request->status != 'null')
+        {
+            $transactions = $transactions
+            ->where('status',$request->status);
+            // ->paginate(1000);
+        }
+        if($request->type != 'null')
+            {
+                $transactions = $transactions
+                ->where('transaction_type_id',$request->type);
+            }
+        $total_tnx = $transactions->count();
+        $total_amount_paid = $transactions->sum('amount_paid');
+        $total_charges = $transactions->sum('charge');
+        $transactions = $transactions->paginate(1000);
+        
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
         $total = $transactions->sum('amount');
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
+    return view('admin.naira_transactions', compact(['segment', 'transactions', 'total','type','status'
+    ,'total_tnx','total_amount_paid','total_charges']));
     }
 
     public function adminWallet()
