@@ -62,7 +62,7 @@ class NairaTransactionController extends Controller
      */
     public function store(Request $r)
     {
-        // return back()->with(['error' => 'Incorrect details']);
+        return back()->with(['error' => 'Incorrect details']);
         $r->validate([
             'email' => 'required|email|exists:users',
             'amount' => 'required',
