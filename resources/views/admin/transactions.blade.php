@@ -69,7 +69,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <div class="widget-content-actions mx-auto ">
                                     <div class="widget-heading text-center">
                                         <h5>Total GC Transactions </h5>
-                                        <h6>{{$totalTransactions}}</h6>
+                                        <h6>{{number_format($totalTransactions,2,".",",")}}</h6>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <div class="widget-content- mx-auto">
                                     <div class="widget-heading text-center">
                                         <h5>Total GC volume</h5>
-                                        <h6>{{$totalVol}}</h6>
+                                        <h6>{{number_format($totalVol,2,".",",")}}</h6>
                                     </div>
 
                                 </div>
@@ -153,7 +153,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             </form>
 
                             
-                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                            {{-- <form action="@if (in_array(Auth::user()->role, [555] ))
                                             {{route('customerHappiness.transactions-by-date')}}
                                             @else
                                             {{route('admin.transactions-by-date')}}
@@ -169,8 +169,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     <input type="date" required name="end" class="ml-2 form-control">
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
-                            </form>
-                            @if (!in_array(Auth::user()->role, [555] ))
+                            </form> --}}
+
+                            {{-- @if (!in_array(Auth::user()->role, [555] )) --}}
                             <form class="form-inline p-2"
                                 method="GET">
                                 {{-- @csrf --}}
@@ -184,7 +185,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
-                            @endif
+                            {{-- @endif --}}
                         </div>
                         <div class="table-responsive p-3">
                             @foreach ($errors->all() as $err)
@@ -244,8 +245,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center">{{$t->card_price}}</td>
 
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
-                                        <td class="text-center">{{$t->wallet_id}}</td>
-                                        @if (isset($t->user))
+
+                                        {{-- <td class="text-center">{{$t->wallet_id}}</td> --}}
+                                        {{-- @if (isset($t->user))
                                         <td class="text-center">
                                             @if (in_array(Auth::user()->role, [555] ))
                                                 <a
@@ -258,7 +260,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
                                             
                                         </td> 
-                                        @endif
+                                        @endif --}}
                
                                         <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
                                         @if (in_array(Auth::user()->role, [999] ))
@@ -267,13 +269,21 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
                                         @endif
                                         <td class="text-center">{{$t->wallet_id}}</td>
-                                        <td class="text-center">
-                                        @if(isset($t->user->id))
-                                             <a href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
-                                                {{$t->user->first_name." ".$t->user->last_name}}</a>
-                                        @endif
-                                        </td>
 
+                                        <td class="text-center">
+                                            @if (isset($t->user))
+                                                @if (in_array(Auth::user()->role, [555] ))
+                                                    <a
+                                                    href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
+                                                    {{$t->user->first_name." ".$t->user->last_name}}</a> 
+                                                  @else  
+                                                    <a
+                                                    href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                    {{$t->user->first_name." ".$t->user->last_name}}</a> 
+                                                @endif
+                                            @endif
+                                        </td>
+                                        
                                         <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
                                         <td class="text-center">
                                             @switch($t->status)

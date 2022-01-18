@@ -467,11 +467,7 @@ class AdminController extends Controller
 
     public function transactions(Request $request)
     {
-        $transactions = Transaction::with('user')->latest()->paginate(1000);
-
-        if(Auth::user()->role == 444){
-            $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
-        }
+        $transactions = Transaction::with('user')->latest();
 
         $segment = 'All';
 
@@ -505,6 +501,10 @@ class AdminController extends Controller
 
         if ($totalAvgPerToday > 0) {
             $totalAvgPerToday = ceil($tt->sum() / $tt->count());
+        }
+
+        if(Auth::user()->role == 444){
+            $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         }
 
         return view('admin.transactions', compact(['transactions', 'segment','totalTransactions','totalVol','totalComm','totalChineseAmt','totalAvgPerToday']));
