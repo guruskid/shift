@@ -62,7 +62,7 @@ class NairaTransactionController extends Controller
      */
     public function store(Request $r)
     {
-        return back()->with(['error' => 'Incorrect details']);
+        // return back()->with(['error' => 'Incorrect details']);
         $r->validate([
             'email' => 'required|email|exists:users',
             'amount' => 'required',
@@ -106,22 +106,22 @@ class NairaTransactionController extends Controller
 
             $title = 'Dantown wallet Credit';
             $type = 'credit';
-        // } elseif ($r->transaction_type == 8) {
-        //     //Deduction
-        //     $wallet->amount -= $r->amount;
-        //     $wallet->save();
-        //     $t->current_balance = $wallet->amount;
-        //     $t->dr_user_id = $wallet->user->id;
-        //     $t->cr_user_id = 1;
-        //     $t->dr_wallet_id = $wallet->id;
-        //     $t->cr_wallet_id = 1;
-        //     $t->dr_acct_name = $wallet->account_name;
-        //     $t->cr_acct_name = 'Dantown Assets';
-        //     $t->status = 'success';
-        //     $t->save();
+        } elseif ($r->transaction_type == 8) {
+            //Deduction
+            $wallet->amount -= $r->amount;
+            $wallet->save();
+            $t->current_balance = $wallet->amount;
+            $t->dr_user_id = $wallet->user->id;
+            $t->cr_user_id = 1;
+            $t->dr_wallet_id = $wallet->id;
+            $t->cr_wallet_id = 1;
+            $t->dr_acct_name = $wallet->account_name;
+            $t->cr_acct_name = 'Dantown Assets';
+            $t->status = 'success';
+            $t->save();
 
-        //     $title = 'Dantown wallet Debit';
-        //     $type = 'debit';
+            $title = 'Dantown wallet Debit';
+            $type = 'debit';
         }
 
 
