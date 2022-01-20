@@ -320,6 +320,15 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
         Route::post('/sell', 'TronWalletController@sell')->name('tron.sell');
     });
 
+    Route::prefix('usdt')->group(function () {
+        Route::post('/create', 'UsdtController@create')->name('usdt.create');
+        Route::get('/wallet', 'UsdtController@wallet')->name('user.usdt-wallet');
+        Route::get('/fees/{address}/{amount}', 'UsdtController@fees')->name('user.usdt-fees');
+        Route::post('/send', 'UsdtController@send')->name('usdt.send');
+        Route::get('/trade', 'UsdtController@trade')->name('usdt.trade');
+        Route::post('/sell', 'UsdtController@sell')->name('usdt.sell');
+    });
+
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */
 
 });

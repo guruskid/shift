@@ -150,7 +150,7 @@ class TronController extends Controller
                     "amount" => number_format($request->amount, 8),
                     "signatureId" => $hd_wallet->private_key,
                     "from" => $fees_wallet->address,
-                    "feeLimit" => 5,
+                    "feeLimit" => 100,
                 ]
             ]);
 

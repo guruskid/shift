@@ -24,5 +24,20 @@ class CryptoHelperController extends Controller
 
             return $balance;
         }
+
+        elseif ($currency_id == 7) {
+            $address = FeeWallet::where('name', 'usdt_fees')->first()->address;
+
+            $client = new Client();
+            $url = env('TATUM_URL') . '/tron/account/' . $address;
+            $res = $client->request('GET', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')]
+            ]);
+
+            $res = json_decode($res->getBody());
+            $balance = ($res->balance) / 1000000;
+
+            return $balance;
+        }
     }
 }

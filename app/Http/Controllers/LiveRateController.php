@@ -37,4 +37,20 @@ class LiveRateController extends Controller
 
         return $eth_rate;
     }
+
+
+    public static function usdtRate()
+    {
+        $client = new Client();
+        $url = env('TATUM_URL') . '/tatum/rate/USDT_TRON?basePair=USD';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $rate = $res->value;
+
+        $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value ?? 0;
+        $tp = ($trading_per / 100) * $rate;
+        $rate -= $tp;
+
+        return $rate;
+    }
 }

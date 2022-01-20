@@ -164,6 +164,32 @@
                                 </a>
                                 @endif
 
+                                {{-- USDT Wallet --}}
+                                @if (!Auth::user()->usdtWallet)
+                                <usdt-create-component></usdt-create-component>
+                                @else
+                                <a href="{{ route('user.tron-wallet') }}">
+                                    <div class="row">
+                                        <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
+                                            style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="mx-3">
+                                                    <img src="/crypto/tron.png" height="50px" alt="">
+                                                </div>
+                                                <div>
+                                                    <span
+                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->tronWallet ? number_format((float)$tron_wallet->balance, 5) : '' }} TRX</span>
+                                                    <div>
+                                                        <span
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Tron
+                                                            Wallet</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endif
 
                                 {{-- Tron Wallet --}}
                                 @if (!Auth::user()->tronWallet)
@@ -172,7 +198,7 @@
                                         style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
                                         <div class="d-flex align-items-center">
                                             <div class="mx-3">
-                                                <img src="/svg/ethereum.svg" alt="">
+                                                <img src="/crypto/tron.png" alt="">
                                             </div>
                                             <div>
                                                 <span class="d-block pb-0 mb-0 choosewallet_selection">Tron</span>
