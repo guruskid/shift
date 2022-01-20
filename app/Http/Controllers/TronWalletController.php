@@ -202,7 +202,7 @@ class TronWalletController extends Controller
         if (!Auth::user()->tronWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please create an Ethereum wallet to continue'
+                'msg' => 'Please create a Tron wallet to continue'
             ]);
         }
 

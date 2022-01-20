@@ -178,10 +178,10 @@
                                                 </div>
                                                 <div>
                                                     <span
-                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->tronWallet ? number_format((float)$tron_wallet->balance, 5) : '' }} TRX</span>
+                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->usdtWallet ? number_format((float)$usdt_wallet->balance, 5) : '' }} USDT</span>
                                                     <div>
                                                         <span
-                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Tron
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Tether
                                                             Wallet</span></span>
                                                     </div>
                                                 </div>

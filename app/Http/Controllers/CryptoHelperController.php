@@ -31,7 +31,7 @@ class CryptoHelperController extends Controller
             $client = new Client();
             $url = env('TATUM_URL') . '/tron/account/' . $address;
             $res = $client->request('GET', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')]
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
             ]);
 
             $res = json_decode($res->getBody());

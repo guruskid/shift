@@ -134,7 +134,7 @@
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Receive</span>
                                             </a>
-                                            <a href="{{ route('tron.trade') }}"
+                                            <a href="{{ route('usdt.trade') }}"
                                                 class="btn">
                                                 <span class="d-block">
                                                     <img class="img-fluid"
@@ -142,7 +142,7 @@
                                                 </span>
                                                 <span class="d-block" style="color: #000000;font-size: 14px;">Buy</span>
                                             </a>
-                                            <a href="{{ route('tron.trade') }}" class="btn">
+                                            <a href="{{ route('usdt.trade') }}" class="btn">
                                                 <span class="d-block">
                                                     <img class="img-fluid" src="{{asset('svg/bitcoin-sell-icon.svg')}}"
                                                         alt="">

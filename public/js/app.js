@@ -5372,21 +5372,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['rate', 'trx_usd', 'charge', 'hd'],
+  props: ['rate', 'amt_usd', 'charge', 'hd'],
   data: function data() {
     return {
       csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
       //Input fields
       naira: '',
       usd: '',
-      trx: '',
-      chargeTrx: 0,
+      amt: '',
+      chargeAmt: 0,
       chargeNgn: 0,
       //rates
-      trxUsd: this.trx_usd,
+      amtUsd: this.amt_usd,
       usdToNaira: this.rate,
       //our rate
-      trxToNaira: '',
+      amtToNaira: '',
       loading: false,
       fee: 0,
       total: 0,
@@ -5394,61 +5394,45 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.trxToNaira = this.trxUsd * this.usdToNaira;
+    this.amtToNaira = this.amtUsd * this.usdToNaira;
   },
   methods: {
     //When USD field is updated
     getRateUsd: function getRateUsd() {
       this.naira = this.usd * this.usdToNaira;
-      this.trx = this.usd / this.trxUsd; // this.getFees()
+      this.amt = this.usd / this.amtUsd;
     },
 
-    /* When trx is updated */
-    getRatetrx: function getRatetrx() {
-      this.usd = this.trxUsd * this.trx;
-      this.naira = this.trx * this.trxToNaira; // this.getFees()
+    /* When amt is updated */
+    getRateAmt: function getRateAmt() {
+      this.usd = this.amtUsd * this.amt;
+      this.naira = this.amt * this.amtToNaira;
     },
 
     /* When ngn is updated */
     getRateNgn: function getRateNgn() {
-      this.trx = this.naira / this.trxToNaira;
-      this.usd = this.naira / this.usdToNaira; // this.getFees()
+      this.amt = this.naira / this.amtToNaira;
+      this.usd = this.naira / this.usdToNaira;
     },
     getTotal: function getTotal() {
-      if (this.trx == 0) {
+      if (this.amt == 0) {
         this.total = this.fee;
         return true;
       }
 
-      this.total = parseFloat(this.trx) + parseFloat(this.fee);
-    },
-    getFees: function getFees() {
-      var _this = this;
-
-      if (this.trx <= 0) {
-        return false;
-      }
-
-      this.loading = true;
-      axios.get("/user/Tron/fees/".concat(this.address, "/").concat(this.trx)).then(function (res) {
-        _this.fee = res.data.fee;
-      })["finally"](function () {
-        _this.getTotal();
-
-        _this.loading = false;
-      });
+      this.total = parseFloat(this.amt) + parseFloat(this.fee);
     },
     sell: function sell() {
-      var _this2 = this;
+      var _this = this;
 
-      if (this.trx < 0) {
-        swal('Oops', 'trx amount should be greater than 0', 'error');
+      if (this.amt < 0) {
+        swal('Oops', 'USDT amount should be greater than 0', 'error');
         return false;
       }
 
       this.loading = true;
-      axios.post('/user/tron/sell', {
-        "amount": this.trx
+      axios.post('/user/usdt/sell', {
+        "amount": this.amt
       }).then(function (res) {
         if (res.data.success) {
           swal('Great!!', 'Tron traded successfully', 'success');
@@ -5460,13 +5444,13 @@ __webpack_require__.r(__webpack_exports__);
         console.log(e);
         swal('Oops', 'An error occured, please reload and try again', 'error');
       })["finally"](function () {
-        _this2.loading = false;
+        _this.loading = false;
       });
     }
   },
   updated: function updated() {
-    this.chargeTrx = this.charge / 100 * this.trx;
-    this.chargeNgn = this.chargeTrx * this.trxUsd;
+    this.chargeAmt = this.charge / 100 * this.amt;
+    this.chargeNgn = this.chargeAmt * this.amtUsd;
   }
 });
 
@@ -54521,8 +54505,8 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.trx,
-                    expression: "trx"
+                    value: _vm.amt,
+                    expression: "amt"
                   }
                 ],
                 staticClass: "form-control bitcoin-input-radius",
@@ -54533,16 +54517,16 @@ var render = function() {
                   min: "0",
                   name: "quantity"
                 },
-                domProps: { value: _vm.trx },
+                domProps: { value: _vm.amt },
                 on: {
                   keyup: function($event) {
-                    return _vm.getRatetrx()
+                    return _vm.getRateAmt()
                   },
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.trx = $event.target.value
+                    _vm.amt = $event.target.value
                   }
                 }
               })
@@ -54610,7 +54594,7 @@ var render = function() {
             _c("span", { staticClass: "text-primary" }, [_vm._v("Charges")]),
             _vm._v(" "),
             _c("span", { staticClass: "text-primary" }, [
-              _vm._v(_vm._s(_vm.chargeTrx.toFixed(5)))
+              _vm._v(_vm._s(_vm.chargeAmt.toFixed(5)))
             ]),
             _vm._v(" "),
             _c("span", { staticClass: "text-primary" }, [
@@ -54674,7 +54658,7 @@ var staticRenderFns = [
           staticStyle: { color: "rgba(0, 0, 112, 0.75)" },
           attrs: { for: "inlineFormInputGroupUsername2" }
         },
-        [_vm._v("Tron\n                equivalent")]
+        [_vm._v("Tether\n                equivalent")]
       )
     ])
   },
@@ -54690,7 +54674,7 @@ var staticRenderFns = [
       },
       [
         _c("div", { staticClass: "input-group-text input_label" }, [
-          _vm._v("\n                        TRX")
+          _vm._v("\n                        USDT")
         ])
       ]
     )

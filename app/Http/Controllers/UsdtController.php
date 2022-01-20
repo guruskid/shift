@@ -140,27 +140,27 @@ class UsdtController extends Controller
     public function trade()
     {
         $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
-        $tron_usd = LiveRateController::tronRate();
-        $tron_wallet = Auth::user()->tronWallet;
-        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+        $amt_usd = LiveRateController::usdtRate();
+        $wallet = Auth::user()->usdtWallet;
+        $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
 
-        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
-        $tp = ($trading_per / 100) * $tron_usd;
+        $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value;
+        $tp = ($trading_per / 100) * $amt_usd;
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $url = env('TATUM_URL') . '/ledger/account/' . $wallet->account_id;
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
         ]);
 
         $accounts = json_decode($res->getBody());
 
-        $tron_wallet->balance = $accounts->balance->availableBalance;
-        $tron_wallet->usd = $tron_wallet->balance  * $tron_usd;
+        $wallet->balance = $accounts->balance->availableBalance;
+        $wallet->usd = $wallet->balance  * $amt_usd;
 
-        $hd_wallet = HdWallet::where('currency_id', 5)->first();
+        $hd_wallet = HdWallet::where('currency_id', 7)->first();
 
-        return view('newpages.trade_tron', compact('sell_rate', 'tron_wallet', 'hd_wallet', 'tron_usd', 'charge'));
+        return view('newpages.trade_usdt', compact('sell_rate', 'wallet', 'hd_wallet', 'amt_usd', 'charge'));
     }
 
     public function fees($address, $amount)
@@ -188,26 +188,26 @@ class UsdtController extends Controller
             ], 401);
         }
 
-        if (!Auth::user()->tronWallet) {
+        if (!Auth::user()->usdtWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please create an Ethereum wallet to continue'
+                'msg' => 'Please create a Tether wallet to continue'
             ]);
         }
 
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->tronWallet->account_id;
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->usdtWallet->account_id;
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
         ]);
 
         $accounts = json_decode($res->getBody());
 
-        $user_wallet = Auth::user()->tronWallet;
+        $user_wallet = Auth::user()->usdtWallet;
         $user_wallet->balance = $accounts->balance->availableBalance;
 
-        $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
+        $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
 
         if ($request->amount > $user_wallet->balance) {
             return response()->json([
@@ -216,8 +216,8 @@ class UsdtController extends Controller
             ]);
         }
 
-        $blockchain_fee = 200;
-        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
+        $blockchain_fee = 100;
+        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $blockchain_fee) {
             return response()->json([
                 'success' => false,
@@ -225,27 +225,27 @@ class UsdtController extends Controller
             ]);
         }
 
-        $fees_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
-        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
-        $service_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_service'])->first();
+        $fees_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_fees'])->first();
+        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_charge'])->first();
+        $service_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_service'])->first();
 
         // percentage deduction in price
-        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
+        $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value;
         $service_fee = ($trading_per / 100) * $request->amount;
 
         //Get fees for the txn on the chain
 
 
         //percentage charge
-        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+        $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
         $charge = ($charge / 100) * $request->amount;
 
         //Current eth price
-        $tron_usd = LiveRateController::tronRate();
+        $amt_usd = LiveRateController::usdtRate();
         $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         $total = $request->amount - $charge - $service_fee;
-        $usd = $request->amount * $tron_usd;
+        $usd = $request->amount * $amt_usd;
         $ngn = $usd * $usd_ngn;
 
         if ($total <= 0) {
@@ -262,13 +262,13 @@ class UsdtController extends Controller
         $store = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
             'json' =>  [
-                "senderAccountId" => Auth::user()->tronWallet->account_id,
+                "senderAccountId" => Auth::user()->usdtWallet->account_id,
                 "address" => $hd_wallet->address,
                 "amount" => number_format((float) $request->amount, 8),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
-                "senderNote" => "Selling Tron 1"
+                "senderNote" => "Selling Tether 1"
             ]
         ]);
 
@@ -276,7 +276,7 @@ class UsdtController extends Controller
         if ($store->getStatusCode() != 200) {
             return response()->json([
                 'success' => false,
-                'msg' => 'An error occured while withdrawing'
+                'msg' => 'An error occured while performing operation'
             ]);
         }
 
@@ -286,13 +286,13 @@ class UsdtController extends Controller
                 'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
                 'json' =>  [
                     "chain" => "TRON",
-                    "custodialAddress" => Auth::user()->tronWallet->address,
-                    "contractType" => [3, 3, 3],
+                    "custodialAddress" => Auth::user()->usdtWallet->address,
+                    "contractType" => [0, 0, 0],
                     "recipient" => [$hd_wallet->address, $service_wallet->address, $charge_wallet->address],
-                    "amount" => [number_format((float) $total, 4), number_format((float) $service_fee, 4), number_format((float) $charge, 4)],
+                    "amount" => [number_format((float) $total, 6), number_format((float) $service_fee, 6), number_format((float) $charge, 6)],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0", "0", "0"],
-                    "tokenAddress" => ["0", "0", "0"],
+                    "tokenAddress" => ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"],
                     "feeLimit" => $blockchain_fee,
                     "from" => $fees_wallet->address,
                 ]
@@ -323,7 +323,7 @@ class UsdtController extends Controller
             'amount' => $usd,
             'amount_paid' => $ngn,
             'quantity' => number_format((float) $request->amount, 8),
-            'card_price' => $tron_usd,
+            'card_price' => $amt_usd,
             'status' => 'success',
             'uid' => uniqid(),
             'user_email' => Auth::user()->email,
@@ -422,7 +422,7 @@ class UsdtController extends Controller
         $fee_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_fees'])->first();
 
         $fee_limit = 100;
-        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
+        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $fee_limit) {
             return response()->json([
                 'success' => false,

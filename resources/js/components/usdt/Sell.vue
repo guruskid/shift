@@ -14,17 +14,17 @@
             </div>
             <div class="form-group mb-4">
                <div class="d-flex justify-content-between" >
-                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Tron
+                    <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">Tether
                     equivalent</label>
                 </div>
 
                 <div class="input-group mb-0 mr-sm-2">
                     <div class="input-group-prepend" style="border-radius: 30px;">
                         <div class="input-group-text input_label">
-                            TRX</div>
+                            USDT</div>
                     </div>
                     <input type="number" required step="any" min="0" name="quantity"
-                    v-model="trx" @keyup="getRatetrx()"
+                    v-model="amt" @keyup="getRateAmt()"
                         class="form-control bitcoin-input-radius"  >
                 </div>
             </div>
@@ -48,7 +48,7 @@
 
             <div class="d-flex justify-content-around mb-2">
                 <span class="text-primary">Charges</span>
-                <span class="text-primary">{{ chargeTrx.toFixed(5) }}</span>
+                <span class="text-primary">{{ chargeAmt.toFixed(5) }}</span>
                 <span class="text-primary">{{ charge }}%</span>
                 <span class="text-primary">${{ chargeNgn.toLocaleString() }}</span>
             </div>
@@ -61,20 +61,20 @@
 
 <script>
     export default {
-        props: ['rate', 'trx_usd', 'charge', 'hd'],
+        props: ['rate', 'amt_usd', 'charge', 'hd'],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 //Input fields
                 naira: '',
                 usd: '',
-                trx: '',
-                chargeTrx: 0,
+                amt: '',
+                chargeAmt: 0,
                 chargeNgn: 0,
                 //rates
-                trxUsd:  this.trx_usd,
+                amtUsd:  this.amt_usd,
                 usdToNaira: this.rate, //our rate
-                trxToNaira: '',
+                amtToNaira: '',
                 loading: false,
                 fee: 0,
                 total: 0,
@@ -82,56 +82,41 @@
             }
         },
         mounted () {
-            this.trxToNaira = this.trxUsd * this.usdToNaira;
+            this.amtToNaira = this.amtUsd * this.usdToNaira;
         },
         methods: {
             //When USD field is updated
             getRateUsd() {
                 this.naira = this.usd * this.usdToNaira
-                this.trx = this.usd / this.trxUsd
-                // this.getFees()
+                this.amt = this.usd / this.amtUsd
             },
-            /* When trx is updated */
-            getRatetrx(){
-                this.usd = this.trxUsd * this.trx
-                this.naira = this.trx * this.trxToNaira
-                // this.getFees()
+            /* When amt is updated */
+            getRateAmt(){
+                this.usd = this.amtUsd * this.amt
+                this.naira = this.amt * this.amtToNaira
             },
             /* When ngn is updated */
             getRateNgn(){
-                this.trx = this.naira / this.trxToNaira;
+                this.amt = this.naira / this.amtToNaira;
                 this.usd = this.naira / this.usdToNaira;
-                // this.getFees()
             },
 
             getTotal() {
-                if (this.trx == 0) {
+                if (this.amt == 0) {
                     this.total = this.fee;
                     return true;
                 }
-                this.total = parseFloat(this.trx) + parseFloat(this.fee);
-            },
-
-            getFees(){
-                if (this.trx <= 0) {
-                    return false;
-                }
-                this.loading = true;
-                axios.get(`/user/Tron/fees/${this.address}/${this.trx}`)
-                    .then((res) => {
-                        this.fee = res.data.fee;
-                    })
-                    .finally(() => {this.getTotal(); this.loading = false});
+                this.total = parseFloat(this.amt) + parseFloat(this.fee);
             },
 
             sell(){
-                if (this.trx < 0) {
-                    swal('Oops', 'trx amount should be greater than 0', 'error');
+                if (this.amt < 0) {
+                    swal('Oops', 'USDT amount should be greater than 0', 'error');
                     return false;
                 }
 
                 this.loading = true;
-                axios.post('/user/tron/sell', {"amount" : this.trx })
+                axios.post('/user/usdt/sell', {"amount" : this.amt })
                 .then((res)=>{
                     if (res.data.success) {
                         swal('Great!!', 'Tron traded successfully', 'success');
@@ -151,8 +136,8 @@
             }
         },
         updated () {
-            this.chargeTrx = (this.charge/100) * this.trx
-            this.chargeNgn = this.chargeTrx * this.trxUsd
+            this.chargeAmt = (this.charge/100) * this.amt
+            this.chargeNgn = this.chargeAmt * this.amtUsd
         },
     }
 </script>
