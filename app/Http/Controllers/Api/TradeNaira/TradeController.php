@@ -95,7 +95,7 @@ class TradeController extends Controller
 
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'required',
-            'amount'   => 'required',
+            'amount'   => 'required|min:1000',
             'pin'      => 'required|min:4'
         ]);
 
