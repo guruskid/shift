@@ -110,6 +110,16 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::get('/activate-contract/{id}', 'TronController@activate')->name('admin.tron.activate-contract');
     });
 
+    Route::prefix('tether')->group(function () {
+        Route::get('/', 'UsdtController@index')->name('admin.tether');
+        Route::get('/settings', 'UsdtController@settings')->name('admin.tether.settings');
+        Route::post('/update-rate', 'UsdtController@updateRate')->name('admin.eth.update-rate');
+
+        Route::get('/smart-contracts', 'UsdtController@contracts')->name('admin.tether.contracts');
+        Route::post('/deploy-contract', 'UsdtController@deployContract')->name('admin.tether.deploy-contract');
+        Route::get('/activate-contract/{id}', 'UsdtController@activate')->name('admin.tether.activate-contract');
+    });
+
     //Trade Naira
     Route::prefix('trade-naira')->group(function () {
 

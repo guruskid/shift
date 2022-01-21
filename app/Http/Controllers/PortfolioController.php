@@ -49,7 +49,19 @@ class PortfolioController extends Controller
             $tron_wallet->balance = $eth->balance->availableBalance;
         }
 
-        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'tron_wallet', 'nw']));
+        $usdt_wallet = null;
+        if (Auth::user()->usdtWallet) {
+            $eth_url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->usdtWallet->account_id;
+            $res = $client->request('GET', $eth_url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
+            ]);
+            $eth = json_decode($res->getBody());
+
+            $usdt_wallet = Auth::user()->usdtWallet;
+            $usdt_wallet->balance = $eth->balance->availableBalance;
+        }
+
+        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'usdt_wallet', 'tron_wallet', 'nw']));
     }
 
 
