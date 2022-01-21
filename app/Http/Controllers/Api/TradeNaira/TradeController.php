@@ -95,9 +95,16 @@ class TradeController extends Controller
 
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'required',
-            'amount'   => 'required|min:1000',
+            'amount'   => 'required',
             'pin'      => 'required|min:4'
         ]);
+
+        if ($request->amount < 1000) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Amount should be greater than N1,000'
+            ]);
+        }
 
         if ($validator->fails()) {
             return response()->json([
