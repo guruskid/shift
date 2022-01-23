@@ -216,7 +216,7 @@ class BtcWalletController extends Controller
         ]);
         $res = json_decode($get_fees->getBody());
 
-        $fees = $res->fast;
+        $fees = $res->medium;
 
         $send_total =  $request->btc - $fees;
 
