@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 
     Route::get('/dashboard', 'UserController@dashboard');
+    Route::get('/dashboard-transaction-summary', 'UserController@summary');
     Route::get('/profile', 'UserController@profile');
     Route::post('/update-birthday', 'UserController@updateBirthday');
 
