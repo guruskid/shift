@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 
     Route::get('/dashboard', 'UserController@dashboard');
+    Route::get('/naria-wallet-balance', 'UserController@nairaWalletBalance');
     Route::get('/profile', 'UserController@profile');
     Route::post('/update-birthday', 'UserController@updateBirthday');
 
