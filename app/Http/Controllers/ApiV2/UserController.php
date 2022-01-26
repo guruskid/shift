@@ -125,6 +125,19 @@ class UserController extends Controller
         ]);
     }
 
+    public function summary()
+    {
+        $pending_trans = NairaTransaction::where('user_id', Auth::user()->id)->where('status', 'pending')->count();
+        $successful_trans = NairaTransaction::where('user_id', Auth::user()->id)->where('status', 'success')->count();
+        $decline_trans = NairaTransaction::where('user_id', Auth::user()->id)->where('status', 'decline')->count();
+
+        return response()->json([
+            'pending_transaction' => $pending_trans,
+            'successful_transaction' => $successful_trans,
+            'decline_transaction' => $decline_trans,
+        ]);
+    }
+
     public function uploadId(Request $r)
     {
         $user = Auth::user();
