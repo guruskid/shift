@@ -82,11 +82,12 @@
                 <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
                     <a href="{{route('admin.naira-p2p')}}">
                         <div class="">
-                            <i class="metismenu-icon pe-7s-timer"></i>
+                            <i class="metismenu-icon pe-7s-wallet"></i>
                             <span>My P2P Transactions</span>
                         </div>
                     </a>
                 </li>
+                
             @endif
 
             @if (in_array(Auth::user()->role, [999, 889, 777] ))
@@ -95,6 +96,15 @@
                     class=" {{ Route::currentRouteName() == 'admin.bitcoin-summary' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-wallet"></i>
                     Bitcoin Summary
+                </a>
+            </li>
+
+            <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
+                <a href="{{route('admin.junior-summary')}}">
+                    <div class="">
+                        <i class="metismenu-icon pe-7s-graph2"></i>
+                        <span>Summary</span>
+                    </div>
                 </a>
             </li>
 

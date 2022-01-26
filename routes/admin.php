@@ -111,6 +111,8 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::post('/deduct', 'TradeNairaController@deduct')->name('admin.trade-naira.deduct');
 
         Route::get('/transactions', 'TradeNairaController@transactions')->name('admin.naira-p2p');
+        Route::get('/transactions/{type}/{status?}', 'TradeNairaController@transaction_type')->name('admin.naira-p2p.type');
+        Route::any('/transactions/sortbydate','TradeNairaController@sort_transaction_type')->name('admin.naira-p2p.sort');
         Route::post('/set-limits', 'TradeNairaController@setLimits')->name('admin.naira-p2p.set-limits');
         Route::put('/confirm/{transaction}', 'TradeNairaController@confirm')->name('admin.naira-p2p.confirm');
         Route::put('/confirm-sell/{transaction}', 'TradeNairaController@confirmSell')->name('admin.naira-p2p.confirm-sell');

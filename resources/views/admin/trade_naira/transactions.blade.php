@@ -47,17 +47,217 @@
                             <i class="pe-7s-users icon-gradient bg-sunny-morning">
                             </i>
                         </div>
-                        <div>Naira P2P Transactions</div>
+                        <div>@if (isset($start_date))
+                            @php
+                            $input = $start_date;
+                            $date = strtotime($input);
+                            echo date('d/M/Y h:ia', $date);
+                            @endphp
+                            -
+                            @php
+                            $input = $end_date;
+                            $date = strtotime($input);
+                            echo date('d/M/Y h:ia', $date);
+                            @endphp
+                        @endif
+                            PayBridge Transactions</div>
                     </div>
                 </div>
             </div>
-
+            <div class="card-header justify-content-between">
+                <form action="{{route('admin.naira-p2p.sort')}}" class="form-inline p-2"
+                    method="POST">
+                    @csrf
+                    <div class="form-group mr-1">
+                        <label for="">Start</label>
+                        <input type="datetime-local" required name="start" class="ml-1 form-control">
+                    </div>
+                    <div class="form-group mr-1">
+                        <label for="">End</label>
+                        <input type="datetime-local" required name="end" class="ml-1 form-control">
+                    </div>
+                    <input type="hidden" name="type" value="{{ $type }}">
+                    <input type="hidden" name="status" value="{{ $status }}">
+                    <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                </form>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit']) }}">
+                        <div class="card mb-1 widget-content @if ($type == 'deposit' AND $status == null)
+                        bg-primary
+                         @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading ">
+                                    <h5 class="text-center @if ($type == 'deposit' AND $status == null)
+                                    text-white
+                                    @endif">Total Deposit [ {{ $deposit_all_tnx }} ]</h5>
+                                    <p class="text-center @if ($type == 'deposit' AND $status == null)
+                                    text-white
+                                    @endif">Open Transactions</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal']) }}">
+                        <div class="card mb-1 widget-content @if ($type == 'withdrawal' AND $status == null)
+                            bg-primary
+                        @endif">
+                            <div class="widget-content-wrapper ">
+                                <div class="widget-heading">
+                                    <h5 class="text-center @if ($type == 'withdrawal' AND $status == null)
+                                    text-white
+                                    @endif">Total Withdrawal [ {{ $withdrawal_all_tnx }} ]</h5>
+                                    <p class="text-center @if ($type == 'withdrawal' AND $status == null)
+                                    text-white 
+                                    @endif">Open Transactions</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit','status'=>'success']) }}">
+                        <div class="card mb-1 widget-content @if ($type == 'deposit' AND $status == "success")
+                        bg-primary
+                    @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h5 class="text-center @if ($type == 'deposit' AND $status == "success")
+                                        text-white 
+                                    @endif">Successful Deposit [ {{ $deposit_success_tnx }} ]</h5>
+                                    <p class="text-center @if ($type == 'deposit' AND $status == "success")
+                                        text-white 
+                                    @endif">₦ {{ number_format($deposit_success_amount) }}</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal','status'=>'success']) }}">
+                        <div class="card mb-1 widget-content
+                        @if ($type == 'withdrawal' AND $status == "success")
+                         bg-primary
+                        @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h5 class="text-center
+                                    @if ($type == 'withdrawal' AND $status == "success")
+                                    text-white 
+                                    @endif">Successful Withdrawal <br>[ {{ $withdrawal_success_tnx }} ]</h5>
+                                    <p class="text-center
+                                    @if ($type == 'withdrawal' AND $status == "success")
+                                    text-white 
+                                    @endif">₦ {{ number_format($withdrawal_success_amount) }}</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit','status'=>'waiting']) }}">
+                        <div class="card mb-1 widget-content
+                        @if ($type == 'deposit' AND $status == "waiting")
+                         bg-primary
+                        @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h5 class="text-center @if ($type == 'deposit' AND $status == "waiting")
+                                        text-white 
+                                    @endif">Waiting Deposit [ {{ $deposit_waiting_tnx }} ]</h5>
+                                    <p class="text-center
+                                    @if ($type == 'deposit' AND $status == "waiting")
+                                        text-white 
+                                    @endif">₦ {{ number_format($deposit_waiting_amount) }}</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal','status'=>'waiting']) }}">
+                        <div class="card mb-1 widget-content @if ($type == 'withdrawal' AND $status == "waiting")
+                        bg-primary
+                       @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h5 class="text-center @if ($type == 'withdrawal' AND $status == "waiting")
+                                    text-white
+                                   @endif">Waiting Withdrawal [ {{ $withdrawal_waiting_tnx }} ]</h5>
+                                    <p class="text-center @if ($type == 'withdrawal' AND $status == "waiting")
+                                    text-white
+                                   @endif">₦ {{ number_format($withdrawal_waiting_amount) }}</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit','status'=>'cancelled']) }}">
+                        <div class="card mb-1 widget-content
+                        @if ($type == 'deposit' AND $status == "cancelled")
+                         bg-primary
+                        @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h5 class="text-center @if ($type == 'deposit' AND $status == "cancelled")
+                                    text-white 
+                                     @endif">Declined Deposit [ {{ $deposit_denied_tnx }} ]</h5>
+                                    <p class="text-center @if ($type == 'deposit' AND $status == "cancelled")
+                                    text-white 
+                                    @endif">₦ {{ number_format($deposit_denied_amount) }}</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal','status'=>'cancelled']) }}">
+                        <div class="card mb-1 widget-content @if ($type == 'withdrawal' AND $status == "cancelled")
+                        bg-primary
+                       @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h5 class="text-center @if ($type == 'withdrawal' AND $status == "cancelled")
+                                    text-white
+                                   @endif">Declined Withdrawal <br>[ {{ $withdrawal_denied_tnx }} ]</h5>
+                                    <p class="text-center @if ($type == 'withdrawal' AND $status == "cancelled")
+                                    text-white
+                                   @endif">₦ {{ number_format($withdrawal_denied_amount) }}</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
             <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 pb-3 card">
                         <div class="card-header d-flex justify-content-between">
                             <div class="">
-                                Transactions
+                                {{ $segment }} Transactions
                             </div>
                             @if ($show_limit)
                                 @if(auth()->user()->role == 889 || auth()->user()->role == 999)
@@ -79,6 +279,8 @@
                                         <th>Amount</th>
                                         <th>Reference</th>
                                         <th>Type</th>
+                                        <th>Prev Balance</th>
+                                        <th>Current Balance</th>
                                         <th>Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -93,11 +295,14 @@
                                         <td>₦{{ number_format($t->amount) }}</td>
                                         <td>{{ $t->reference }}</td>
                                         <td>{{ $t->type }}
-                                        @if($t->type == 'withdrawal')
+                                        @if($t->type == 'withdrawal' OR isset($t->acct_details))
                                             <br><br>
                                             {{ $t->acct_details }}
                                         @endif
+                                        
                                         </td>
+                                        <td>₦{{ number_format($t->prev_bal) }}</td>
+                                        <td>₦{{ number_format($t->current_bal) }}</td>
                                         <td>{{ $t->created_at->format('d m y, h:ia') }}</td>
                                         <td>{{ $t->status }}</td>
                                         <td>
@@ -115,7 +320,10 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            @if (isset($paginate) && $paginate != false)
+                            
                             {{$transactions->links()}}
+                            @endif
                         </div>
                     </div>
                 </div>

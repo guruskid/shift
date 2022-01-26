@@ -65,6 +65,16 @@
             </div>
         </a>
     </li>
+    @if ( in_array(Auth::user()->role, [889, 999, 777] ) )
+    <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
+        <a href="{{route('admin.junior-summary')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Summary</span>
+            </div>
+        </a>
+    </li>
+    @endif
 
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">
