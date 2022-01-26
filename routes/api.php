@@ -140,6 +140,14 @@ Route::group(['prefix' => 'v1'], function () {
 
         });
 
+        Route::prefix('tron')->group(function () {
+            Route::post('/create', 'TronWalletController@create')->name('tron.create');
+            Route::get('/wallet', 'TronWalletController@walletApi')->name('user.tron-wallet');
+            Route::get('/fees/{address}/{amount}', 'TronWalletController@fees')->name('user.tron-fees');
+            Route::post('/send', 'TronWalletController@send')->name('tron.send');
+            Route::get('/trade', 'TronWalletController@tradeApi')->name('tron.trade');
+            Route::post('/sell', 'TronWalletController@sell')->name('tron.sell');
+        });
 
     });
 });

@@ -147,6 +147,62 @@ class TronWalletController extends Controller
         return view('newpages.tron-wallet', compact('tron_wallet', 'transactions', 'tron_rate'));
     }
 
+    // Api
+    public function walletApi(Request $r)
+    {
+
+        // if (!Auth::user()->tronWallet) {
+        //     return redirect()->route('user.portfolio')->with(['error' => 'Please a Tron wallet to continue']);
+        // }
+
+        return response()->json([
+            'success' => false,
+            'msg' => 'Please create a Tron wallet to continue'
+        ]);
+
+        $tron_rate = LiveRateController::tronRate();
+        $tron_wallet = Auth::user()->tronWallet;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $tron_wallet->balance = $accounts->balance->availableBalance;
+        $tron_wallet->usd = $tron_wallet->balance  * $tron_rate;
+
+        $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+        $get_txns = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            "json" => ["id" => Auth::user()->tronWallet->account_id]
+        ]);
+
+        $transactions = json_decode($get_txns->getBody());
+        foreach ($transactions as $t) {
+            $x = \Str::limit($t->created, 10, '');
+            $time = \Carbon\Carbon::parse((int)$x);
+            $t->created = $time->setTimezone('Africa/Lagos');
+
+            if (!isset($t->senderNote)) {
+                $t->senderNote = 'Sending Tron';
+            }
+        }
+
+
+        // return view('newpages.tron-wallet', compact('tron_wallet', 'transactions', 'tron_rate'));
+
+        return response()->json([
+            'success' => true,
+            'date' => [
+                'tron_wallet' => $tron_wallet,
+                'tron_rate' => $tron_rate,
+                'transactions' =>$transactions
+            ]
+        ]);
+    }
 
     public function trade()
     {
@@ -172,6 +228,44 @@ class TronWalletController extends Controller
         $hd_wallet = HdWallet::where('currency_id', 5)->first();
 
         return view('newpages.trade_tron', compact('sell_rate', 'tron_wallet', 'hd_wallet', 'tron_usd', 'charge'));
+    }
+
+    // Api
+    public function tradeApi()
+    {
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $tron_usd = LiveRateController::tronRate();
+        $tron_wallet = Auth::user()->tronWallet;
+        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+
+        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
+        $tp = ($trading_per / 100) * $tron_usd;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $tron_wallet->balance = $accounts->balance->availableBalance;
+        $tron_wallet->usd = $tron_wallet->balance  * $tron_usd;
+
+        $hd_wallet = HdWallet::where('currency_id', 5)->first();
+
+        // return view('newpages.trade_tron', compact('sell_rate', 'tron_wallet', 'hd_wallet', 'tron_usd', 'charge'));
+
+        return response()->json([
+            'success' => true,
+            'date' => [
+                'sell_rate' => $sell_rate,
+                'tron_wallet' => $tron_wallet,
+                'hd_wallet' => $hd_wallet,
+                'tron_usd' => $tron_usd,
+                'charge' => $charge
+            ]
+        ]);
     }
 
     public function fees($address, $amount)
@@ -202,7 +296,7 @@ class TronWalletController extends Controller
         if (!Auth::user()->tronWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please create an Ethereum wallet to continue'
+                'msg' => 'Please create an Tron wallet to continue'
             ]);
         }
 
