@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiV2;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LiveRateController;
 use App\NairaTransaction;
 use App\Notification;
 use App\User;
@@ -14,6 +15,29 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+
+    public function nairaWalletBalance()
+    {
+        $wallet = Auth::user()->nairaWallet;
+
+        $client = new Client();
+        $url = "https://api.coinbase.com/v2/prices/spot?currency=USD";
+        $res = $client->request('GET', $url);
+        $res = json_decode($res->getBody());
+        $btc_rate = $res->data->amount;
+
+        $usdPerNairaRate = LiveRateController::usdNgn();
+
+        $usd_value = $wallet->amount/$usdPerNairaRate;
+        $btc_value = $usd_value/$btc_rate;
+
+        return response()->json([
+            'success' => true,
+            'ngn_value' => (int)$wallet->amount,
+            'btc_value' => number_format((float)$btc_value, 8),
+            'usd_value' => (int)$usd_value
+        ]);
+    }
 
     public function dashboard()
     {
@@ -32,7 +56,7 @@ class UserController extends Controller
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
         ]);
-        $accounts = json_decode($res->getBody(),true);
+        $accounts = json_decode($res->getBody(), true);
 
         if (empty($accounts)) {
             return response()->json([
@@ -51,7 +75,7 @@ class UserController extends Controller
 
         $res = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true");
 
-        $data = json_decode($res,true);
+        $data = json_decode($res, true);
 
         $currencies = [
             [
@@ -252,7 +276,6 @@ class UserController extends Controller
             'success' => true,
             'msg' => 'Your birthday was updated successfully'
         ]);
-
     }
 
     public function profile()
@@ -272,7 +295,7 @@ class UserController extends Controller
         $res = $client->request('GET', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')]
         ]);
-        $accounts = json_decode($res->getBody(),true);
+        $accounts = json_decode($res->getBody(), true);
 
         if (empty($accounts)) {
             return response()->json([
