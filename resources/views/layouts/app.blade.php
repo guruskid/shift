@@ -291,7 +291,7 @@ $not = $nots->last();
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     @auth
-    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666] ))
+    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444] ))
     <script src="{{asset('js/sa.js?v=7')}}"></script>
     @endif
     @endauth
