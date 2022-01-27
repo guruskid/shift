@@ -549,10 +549,29 @@ class AdminController extends Controller
         return response()->json($user);
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::orderBy('created_at', 'desc')->get();
+        $request->session()->forget('search');
+        $users = User::orderBy('created_at', 'desc')->paginate(1000);
         return view('admin.users', compact(['users']));
+    }
+    public function user_search(Request $request)
+    {
+        if ($request->search) {
+            $request->session()->put('search',$request->search); 
+        }
+        if($request->session()->has('search')){
+            $search = $request->session()->get('search');
+            $users = User::orderBy('created_at', 'desc')
+            ->where('first_name','LIKE','%'.$search.'%')
+            ->orWhere('email','LIKE','%'.$search.'%')
+            ->orWhere('phone','LIKE','%'.$search.'%')
+            ->orWhere('phone','LIKE','%'.$search.'%')
+            ->orWhere('id','LIKE','%'.$search.'%')
+            ->paginate(1000);
+            return view('admin.users', compact(['users']));
+        }
+        
     }
 
     public function verifiedUsers()

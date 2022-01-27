@@ -69,6 +69,8 @@ class Kernel extends HttpKernel
         'seniorAccountant' => \App\Http\Middleware\SeniorAccountant::class,
         'manager' => \App\Http\Middleware\Manager::class,
         'bvnVerified' => BvnCheck::class,
+        'frozenUserCheck' =>\App\Http\Middleware\FrozenUserMiddleware::class,
+        'frozenUserCheckApi' =>\App\Http\Middleware\FrozenUserApiMiddleware::class,
     ];
 
     /**
