@@ -128,7 +128,14 @@ class ChineseController extends Controller
         $all_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->count();
 
 
-            $twentyFourHrsTransactions = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+            $twentyFourHrsTransactions = Transaction::
+            // where('status', 'waiting')
+            where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')
+            ->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')
+            ->where("created_at",">=",Carbon::now()->subDay())
+            ->where("created_at","<=",Carbon::now())
+            ->where('status', 'success');
+            // return $twentyFourHrsTransactions->count();
             $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
             $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
             $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');

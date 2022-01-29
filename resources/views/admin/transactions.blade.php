@@ -403,6 +403,18 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                         class="btn btn-sm btn-info">Edit</span></a>
                                                 @endif
                                             @endif
+
+                                            
+
+                                            @if($t->status == 'waiting' && Auth::user()->role == 444)
+                                            <form action="{{route('admin.transfer-chinese',$t->id)}} " method="post" class="admin-action">
+                                                @csrf
+                                                <input type="hidden" name="id" value="{{$t->id}}" required class="form-control">
+                                                <button class="btn btn-block c-rounded bg-custom-gradient admin-action">
+                                                    Pay User
+                                                </button>
+                                            </form>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
@@ -489,10 +501,12 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <label for="">Status</label>
                                 <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
                                     <option value="" id="e_status"></option>
-                                    @if (in_array(Auth::user()->role, [889, 777, 999]))
+                                    @if (in_array(Auth::user()->role, [889, 777, 999, 444]))
                                     <option value="success">Success</option>
                                     @endif
+                                    {{-- @if (!in_array(Auth::user()->role, [444])) --}}
                                     <option value="approved">Approved (cleared to pay)</option>
+                                    {{-- @endif --}}
                                     <option value="waiting">Waiting</option>
                                     <option value="in progress">In progress</option>
                                     <option value="failed">Failed</option>

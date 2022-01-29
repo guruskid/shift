@@ -156,7 +156,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                             </tbody>
                                         </table>
                                         <tfoot>
-                                            <a href=" {{route('admin.transactions-status', 'in progress')}} "><button class="m-3 btn btn-outline-info">View all</button></a>
+                                            <a href=" {{route('admin.payout_transactions', 'all')}} "><button class="m-3 btn btn-outline-info">View all</button></a>
                                         </tfoot>
                                     </div>
                                 </div>

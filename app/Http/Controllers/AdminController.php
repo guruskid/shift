@@ -234,7 +234,7 @@ class AdminController extends Controller
     }
 
 
-    public function payoutTransactions()
+    public function payoutTransactions($type = '')
     {
 
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
@@ -352,7 +352,11 @@ class AdminController extends Controller
         $payoutVolume = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
         $assetsInNaira = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
         $countST = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-        $success_transactions = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->get();
+        $success_transactions = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->get();
+        if ($type != 'all') {
+            $success_transactions = $success_transactions->take(500);
+        }
+
         // dd($assets->);
 
 

@@ -379,8 +379,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']]
     /* ajax calls */
     Route::GET('/chinese-dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
     Route::GET('/chinese-dashboard', 'ChineseController@dashboard')->name('admin.chinese_dashboard_page');
-    Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
+    Route::GET('/payout-transactions/{type?}', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
     Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
+    Route::post('/admin-transfer-chinese/{id}', 'Admin\AssetTransactionController@payTransactionChinese' )->name('admin.transfer-chinese');
     // To be move to super Admin dashboard later
 });
 
