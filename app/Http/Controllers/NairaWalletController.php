@@ -11,6 +11,7 @@ use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
 use App\Transaction;
+use App\UtilityTransaction;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,16 @@ class NairaWalletController extends Controller
     public function getAllTransactions()
     {
         $naira_transactions = Auth::user()->nairaTransactions()->orderBy('created_at','desc')->paginate(20)->all();
+        foreach ($naira_transactions as $key => $tr) {
+            if ($tr->extras != null) {
+                $tr->extras = json_decode($tr->extras);
+            }else {
+                $nt = UtilityTransaction::where('reference_id',$tr->reference)->first();
+                if (!empty($nt)) {
+                    $tr->extras = json_decode($nt->extras);
+                }   
+            }
+        }
         return response()->json([
             'success' => true,
             'data' => $naira_transactions

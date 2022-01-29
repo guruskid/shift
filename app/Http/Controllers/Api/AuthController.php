@@ -25,7 +25,7 @@ class AuthController extends Controller
 
     public function login()
     {
-        die('checking something here');
+        // die('checking something here');
 
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();

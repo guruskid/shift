@@ -149,7 +149,14 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                 @endif
                                                 
                                             </td>
-                                            <td class="text-center"></td>
+                                            <td class="text-center">
+                                                @if($t->status == 'pending')
+                                                    <form action="{{route('admin.utility-requery',$t->id)}}" method="post">
+                                                        @csrf
+                                                        <button class="btn btn-primary">Requery</button>
+                                                    </form>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

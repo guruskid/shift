@@ -472,6 +472,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant
     Route::any('/old-transfer-charges', 'AdminController@oldTransferCharges')->name('admin.old-wallet-charges');
 
     Route::get('/utility-transactions', 'Admin\UtilityTransactions@index')->name('admin.utility-transactions');
+    Route::post('/utility-transactions-requery/{tranx}', 'Admin\UtilityTransactions@requery')->name('admin.utility-requery');
 });
 
 /* Customer Happiness routes*/

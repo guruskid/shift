@@ -103,7 +103,7 @@
                                                         Easy payment and quick value delivery.
                                                     </span>
                                                     <div class="row mt-2 mt-md-5">
-                                                        <form method="post" action="{{route('user.paytv')}}">
+                                                        <form method="post" action="{{route('user.paytv')}}" id="m-submit">
                                                             @csrf
                                                             <div class="row">
                                                                 <div class="col-12 my-1 my-md-0 col-md">
