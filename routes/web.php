@@ -444,8 +444,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant
     Route::get('/utility-transactions', 'Admin\UtilityTransactions@index')->name('admin.utility-transactions');
     Route::post('/utility-transactions-requery/{tranx}', 'Admin\UtilityTransactions@requery')->name('admin.utility-requery');
 
-    Route::get('/accountant-summary/{month?}','Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
-    Route::get('/accountant-summary/{month}/{day}','Admin\SummaryController@summary_tnx')->name('admin.junior-summary-details');
-    Route::any('/sort-accountant-summary','Admin\SummaryController@sort_summary_tnx')->name('admin.junior-summary-sort-details');
+    Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
+    Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
+    Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('admin.junior-summary-sort-details');
 
 });

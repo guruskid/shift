@@ -80,6 +80,17 @@
                     <input type="hidden" name="status" value="{{ $status }}">
                     <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                 </form>
+
+                <form action="{{route('admin.naira-p2p.search')}}" class="form-inline p-2"
+                    method="POST">
+                    @csrf
+                    <div class="form-group mr-1">
+                        <input type="text" required name="search" class="ml-1 form-control" placeholder="Search">
+                    </div>
+                    <input type="hidden" name="type" value="{{ $type }}">
+                    <input type="hidden" name="status" value="{{ $status }}">
+                    <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+                </form>
             </div>
             <div class="row mb-2">
                 <div class="col-md-3">
@@ -135,7 +146,12 @@
                                     @endif">Successful Deposit [ {{ $deposit_success_tnx }} ]</h5>
                                     <p class="text-center @if ($type == 'deposit' AND $status == "success")
                                         text-white 
-                                    @endif">₦ {{ number_format($deposit_success_amount) }}</p>
+                                    @endif">
+                                    
+                                    @if (Auth::user()->role != 777)
+                                            
+                                    ₦ {{ number_format($deposit_success_amount) }}</p>
+                                    @endif
                                 </div>
                                 
                             </div>
@@ -158,7 +174,11 @@
                                     <p class="text-center
                                     @if ($type == 'withdrawal' AND $status == "success")
                                     text-white 
-                                    @endif">₦ {{ number_format($withdrawal_success_amount) }}</p>
+                                    @endif">
+                                    
+                                    @if (Auth::user()->role != 777)
+                                        ₦ {{ number_format($withdrawal_success_amount) }}</p>
+                                    @endif
                                 </div>
                                 
                             </div>
@@ -292,7 +312,14 @@
                                         <td>{{ $key+1 }}</td>
                                         <td>{{ $t->user->first_name }}</td>
                                         <td>{{ $t->user->phone }}</td>
+                                        @if($t->type == 'withdrawal' AND $t->status == 'waiting')
+                                            <td class="text-danger">₦{{ number_format($t->amount) }}</td>
+                                        @elseif($t->type == 'deposit' AND $t->status == 'waiting')
+                                            <td class="text-success">₦{{ number_format($t->amount) }}</td>
+                                        @else
+
                                         <td>₦{{ number_format($t->amount) }}</td>
+                                        @endif
                                         <td>{{ $t->reference }}</td>
                                         <td>{{ $t->type }}
                                         @if($t->type == 'withdrawal' OR isset($t->acct_details))

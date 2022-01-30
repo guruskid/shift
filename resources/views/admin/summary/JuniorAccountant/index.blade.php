@@ -79,7 +79,7 @@
                 <div class="row mb-4">
                     @for ($i=1; $i<=$days; $i++)
                         <div class="col-md-2">
-                            <a href="{{ route('admin.junior-summary-details', [ $month_num , $i]) }}">
+                            <a href="{{ route('admin.junior-summary', [ $month_num , $i]) }}">
                                 <div class="card mb-2 widget-content ">
                                     <div class="widget-content-wrapper">
                                         <div class="widget-heading">
