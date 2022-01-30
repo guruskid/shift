@@ -11,7 +11,7 @@ Route::post('login', 'AuthController@login');
 Route::get('mail-check', 'AuthController@verificationCodeEmail');
 
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
 
     //Authenticated routes here
     Route::post('/email-verification', 'AuthController@emailVerification');
