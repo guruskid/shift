@@ -17,9 +17,9 @@ class UserController extends Controller
 {
     public function freezeAccount(Request $r)
     {
-        // if (!Hash::check($r->pin, Auth::user()->nairaWallet->password)) {
-        //     return back()->with(['error' => 'Wallet pin doesnt match']);
-        // }
+        if (!Hash::check($r->pin, Auth::user()->nairaWallet->password)) {
+            return back()->with(['error' => 'Wallet pin doesnt match']);
+        }
         $user_wallet = User::find($r->user_id)->nairaWallet;
         $user_wallet->status = 'freezeAccount';
         $user_wallet->save();
@@ -33,9 +33,9 @@ class UserController extends Controller
 
     public function activateAccount(Request $r)
     {
-        // if (!Hash::check($r->pin, Auth::user()->nairaWallet->password)) {
-        //     return back()->with(['error' => 'Wallet pin doesnt match']);
-        // }
+        if (!Hash::check($r->pin, Auth::user()->nairaWallet->password)) {
+            return back()->with(['error' => 'Wallet pin doesnt match']);
+        }
         $user_wallet = User::find($r->user_id)->nairaWallet;
         $user_wallet->status = 'active';
         $user_wallet->save();

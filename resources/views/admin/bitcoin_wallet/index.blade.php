@@ -143,12 +143,15 @@
                     </div>
                     <div class="form-group">
                         <label for="">Address </label>
-                        <select name="address" class="form-control">
-                            <option value="">Select Address</option>
-                            @foreach ($address as $a)
-                                <option value="{{ $a->address }}">{{ $a->address}}</option>
-                            @endforeach
-                        </select>
+                            <select name="address" class="form-control">
+                                <option value="">Select Address</option>
+                                @foreach ($address as $a)
+                                    <option value="{{ $a->address }}">{{ $a->address}}</option>
+                                @endforeach
+                            </select>
+                            @if (auth()->user()->role == 999)
+                                <a class="input-group-text float-right" data-toggle="modal" data-target="#freeze-modal" href="#"><span class="fa fa-plus"></span></a>
+                            @endif
                     </div>
                     <div class="form-group">
                         <label for="">Amount (BTC)</label>
@@ -254,4 +257,69 @@
 </div>
 </div>
 </div>
+
+
+{{-- Modal --}}
+<div class="modal fade" id="freeze-modal">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form action="{{route('admin.address')}}" id="freeze-form" method="post" >
+            @csrf
+            <div class="modal-content  c-rounded">
+                <!-- Modal Header -->
+                <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                    <h4 class="modal-title">Add Address <i class="fa fa-paper-plane"></i></h4>
+                    <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+
+                <div class="modal-body p-4">
+                    {{-- <p class="text-success">Add Address</p> --}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Crypto Currency</label>
+                                <select name="crypto" class="form-control">
+                                    <option value="">Select Address</option>
+                                    @foreach ($crypto_currencies as $a)
+                                        <option value="{{ $a->id }}">{{ $a->name}}</option>
+                                    @endforeach
+                                </select>
+
+                                <label for="">New Address </label>
+                                <input type="text" name="address" id="addressModal" required class="form-control">
+
+                                <label for="">Confirm New Address </label>
+                                <input type="text" name="confirm-address" id="confirm-addressModal" required class="form-control" onkeyup='check();'>
+                                <span id='message'></span>
+
+                                <label for="">Pin </label>
+                                <input type="password" name="pin" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn" id="buttonModal" disabled>
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    var check = function(){
+        if (document.getElementById('addressModal').value == document.getElementById('confirm-addressModal').value) 
+        {
+            document.getElementById('message').style.color = 'green';
+            document.getElementById('message').innerHTML = 'matching';
+            document.getElementById('buttonModal').disabled = false;
+        }
+        else
+        {
+            document.getElementById('message').style.color = 'red';
+            document.getElementById('message').innerHTML = 'not matching';
+            document.getElementById('buttonModal').disabled = true;  
+        }
+    }
+</script>
 @endsection

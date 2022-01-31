@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\AdminAddresses;
 use App\BtcMigration;
+use App\CryptoCurrency;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -66,7 +67,8 @@ class BtcWalletController extends Controller
             $t->created = $time->setTimezone('Africa/Lagos');
         }
         $address = AdminAddresses::all();
-        return view('admin.bitcoin_wallet.index', compact('service_wallet', 'charges_wallet', 'migration_wallet', 'hd_wallet', 'transactions','address'));
+        $crypto_currencies = CryptoCurrency::all();
+        return view('admin.bitcoin_wallet.index', compact('service_wallet', 'charges_wallet', 'migration_wallet', 'hd_wallet', 'transactions','address','crypto_currencies'));
     }
 
 
@@ -257,5 +259,28 @@ class BtcWalletController extends Controller
             //dd('wait');
             return back()->with(['error' => 'An error occured while processing the transaction please confirm the details and try again']);
         }
+    }
+
+    public function addAddress(Request $request)
+    {
+        if ($request->crypto == null) {
+            return back()->with(['error' => 'No Address Selected Try Again']);
+        }
+        $data = $request->validate([
+            'crypto' => 'required',
+            'address' => 'required',
+            'pin' => 'required',
+
+        ]);
+        if (!Hash::check($data['pin'], Auth::user()->pin)) {
+            return back()->with(['error' => 'Incorrect wallet pin']);
+        }
+
+        AdminAddresses::create([
+            'crypto_currency_id' =>$data['crypto'],
+            'address' => $data['address']
+        ]);
+
+        return back()->with(['success' => 'Successfully Added Address']);
     }
 }
