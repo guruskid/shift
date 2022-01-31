@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\AdminAddresses;
 use App\BtcMigration;
 use App\HdWallet;
 use Illuminate\Http\Request;
@@ -64,8 +65,8 @@ class BtcWalletController extends Controller
             $time = \Carbon\Carbon::parse((int)$x);
             $t->created = $time->setTimezone('Africa/Lagos');
         }
-
-        return view('admin.bitcoin_wallet.index', compact('service_wallet', 'charges_wallet', 'migration_wallet', 'hd_wallet', 'transactions'));
+        $address = AdminAddresses::all();
+        return view('admin.bitcoin_wallet.index', compact('service_wallet', 'charges_wallet', 'migration_wallet', 'hd_wallet', 'transactions','address'));
     }
 
 
@@ -172,7 +173,6 @@ class BtcWalletController extends Controller
             'password' => 'required',
 
         ]);
-
         if (!Hash::check($data['pin'], Auth::user()->pin)) {
             return back()->with(['error' => 'Incorrect wallet pin']);
         }

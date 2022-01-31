@@ -142,8 +142,13 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="">Address</label>
-                        <input type="text" name="address" required class="form-control">
+                        <label for="">Address </label>
+                        <select name="address" class="form-control">
+                            <option value="">Select Address</option>
+                            @foreach ($address as $a)
+                                <option value="{{ $a->address }}">{{ $a->address}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="">Amount (BTC)</label>
