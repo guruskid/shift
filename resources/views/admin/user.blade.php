@@ -47,7 +47,7 @@
                             <a href="{{asset('storage/avatar/'.$user->dp)}}"><img
                                     src=" {{asset('storage/avatar/'.$user->dp)}} " height="120px" alt=""></a>
                         </div>
-                        <div>{{$user->first_name." ".$user->last_name}} <br>
+                        <div>{{$user->first_name." ".$user->last_name}} <br>{{$user->username}}<br>
                             <span class="text-custom">
                                 @if ($user->nairaWallet)
                                 ₦{{number_format($user->nairaWallet->amount ) }}
