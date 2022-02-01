@@ -143,15 +143,16 @@
                     </div>
                     <div class="form-group">
                         <label for="">Address </label>
-                            <select name="address" class="form-control">
-                                <option value="">Select Address</option>
-                                @foreach ($address as $a)
-                                    <option value="{{ $a->address }}">{{ $a->address}}</option>
-                                @endforeach
-                            </select>
-                            @if (auth()->user()->role == 999)
-                                <a class="input-group-text float-right" data-toggle="modal" data-target="#freeze-modal" href="#"><span class="fa fa-plus"></span></a>
-                            @endif
+                        <select name="address" class="form-control">
+                            <option value="">Select Address</option>
+                            @foreach ($address as $a)
+                            <option value="{{ $a->address }}">{{ $a->address}}</option>
+                            @endforeach
+                        </select>
+                        @if (auth()->user()->role == 999)
+                        <a class="input-group-text float-right" data-toggle="modal" data-target="#freeze-modal"
+                            href="#"><span class="fa fa-plus"></span></a>
+                        @endif
                     </div>
                     <div class="form-group">
                         <label for="">Amount (BTC)</label>
@@ -201,18 +202,18 @@
             <div class="main-card mb-3 card">
                 <div class="card-header justify-content-between ">
                     All Transactions
-                   {{--  <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
-                        method="POST">
-                        @csrf
-                        <div class="form-group mr-2">
-                            <label for="">Start date </label>
-                            <input type="date" name="start" class="ml-2 form-control">
-                        </div>
-                        <div class="form-group mr-2">
-                            <label for="">End date </label>
-                            <input type="date" name="end" class="ml-2 form-control">
-                        </div>
-                        <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                    {{--  <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
+                    method="POST">
+                    @csrf
+                    <div class="form-group mr-2">
+                        <label for="">Start date </label>
+                        <input type="date" name="start" class="ml-2 form-control">
+                    </div>
+                    <div class="form-group mr-2">
+                        <label for="">End date </label>
+                        <input type="date" name="end" class="ml-2 form-control">
+                    </div>
+                    <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                     </form> --}}
                 </div>
                 <div class="table-responsive p-3">
@@ -240,7 +241,8 @@
                                 <td>Completed</td>
                                 <td class="transaction_content">
                                     @if (isset($t->txId))
-                                        <a target="_blank" href="https://blockexplorer.one/btc/mainnet/tx/{{ $t->txId }}" class="">Explorer</a>
+                                    <a target="_blank" href="https://blockexplorer.one/btc/mainnet/tx/{{ $t->txId }}"
+                                        class="">Explorer</a>
 
                                     @endif
                                 </td>
@@ -262,7 +264,7 @@
 {{-- Modal --}}
 <div class="modal fade" id="freeze-modal">
     <div class="modal-dialog modal-dialog-centered ">
-        <form action="{{route('admin.address')}}" id="freeze-form" method="post" >
+        <form action="{{route('admin.address')}}" id="freeze-form" method="post">
             @csrf
             <div class="modal-content  c-rounded">
                 <!-- Modal Header -->
@@ -281,17 +283,23 @@
                                 <select name="crypto" class="form-control">
                                     <option value="">Select Address</option>
                                     @foreach ($crypto_currencies as $a)
-                                        <option value="{{ $a->id }}">{{ $a->name}}</option>
+                                    <option value="{{ $a->id }}">{{ $a->name}}</option>
                                     @endforeach
                                 </select>
+                            </div>
 
+                            <div class="form-group">
                                 <label for="">New Address </label>
                                 <input type="text" name="address" id="addressModal" required class="form-control">
+                            </div>
 
+                            <div class="form-group">
                                 <label for="">Confirm New Address </label>
-                                <input type="text" name="confirm-address" id="confirm-addressModal" required class="form-control" onkeyup='check();'>
+                                <input type="text" name="confirm-address" id="confirm-addressModal" required
+                                    class="form-control" onkeyup='check();'>
                                 <span id='message'></span>
-
+                            </div>
+                            <div class="form-group">
                                 <label for="">Pin </label>
                                 <input type="password" name="pin" required class="form-control">
                             </div>
@@ -307,19 +315,18 @@
 </div>
 
 <script>
-    var check = function(){
-        if (document.getElementById('addressModal').value == document.getElementById('confirm-addressModal').value) 
-        {
+    var check = function () {
+        if (document.getElementById('addressModal').value == document.getElementById('confirm-addressModal')
+            .value) {
             document.getElementById('message').style.color = 'green';
             document.getElementById('message').innerHTML = 'matching';
             document.getElementById('buttonModal').disabled = false;
-        }
-        else
-        {
+        } else {
             document.getElementById('message').style.color = 'red';
             document.getElementById('message').innerHTML = 'not matching';
-            document.getElementById('buttonModal').disabled = true;  
+            document.getElementById('buttonModal').disabled = true;
         }
     }
+
 </script>
 @endsection
