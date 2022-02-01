@@ -401,10 +401,14 @@ class SummaryController extends Controller
                     $nw_deposit_pending_total = $nw_deposit_tnx->where('status','pending')->count();
                     $nw_deposit_pending_amount = $nw_deposit_tnx->where('status','pending')->sum('amount');
                     $nw_deposit_tnx = $nw_deposit_tnx->paginate(100);
+                    $deposit_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',1)->get();
+                    $deposit_total_pending = $deposit_total->where('status','pending')->count();
+                    $deposit_total_pending_amount = $deposit_total->where('status','pending')->sum('amount');
+
                     return view('admin.summary.JuniorAccountant.transaction',compact([
                     'segment','accountant','show_data','show_category','day','month','show_summary',
                     'nw_deposit_tnx','nw_deposit_tnx_total','nw_deposit_amount_paid','nw_deposit_tnx_charges','nw_deposit_total_amount',
-                    'nw_deposit_pending_total','nw_deposit_pending_amount'
+                    'nw_deposit_pending_total','nw_deposit_pending_amount','deposit_total_pending','deposit_total_pending_amount'
                 ]));
             }
             if($category == "paybridgewithdrawal"){
@@ -432,10 +436,13 @@ class SummaryController extends Controller
                 $nw_withdrawal_pending_amount = $nw_withdrawal_tnx->where('status','pending')->sum('amount');
                 $nw_withdrawal_tnx = $nw_withdrawal_tnx->paginate(100);
 
+                $withdrawal_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',3)->get();
+                $withdrawal_total_pending = $withdrawal_total->where('status','pending')->count();
+                $withdrawal_total_pending_amount = $withdrawal_total->where('status','pending')->sum('amount');
                 return view('admin.summary.JuniorAccountant.transaction',compact([
                     'segment','accountant','show_data','show_category','day','month','show_summary',
                     'nw_withdrawal_tnx','nw_withdrawal_tnx_total','nw_withdrawal_amount_paid','nw_withdrawal_tnx_charges','nw_withdrawal_total_amount',
-                    'nw_withdrawal_pending_total','nw_withdrawal_pending_amount'
+                    'nw_withdrawal_pending_total','nw_withdrawal_pending_amount','withdrawal_total_pending','withdrawal_total_pending_amount'
                 ]));
             }
             if($category == "paybridgeothers"){
@@ -464,10 +471,14 @@ class SummaryController extends Controller
                 $nw_other_pending_amount = $nw_other_tnx->where('status','pending')->sum('amount');
                 $nw_other_tnx = $nw_other_tnx->paginate(100);
 
+                $other_total = NairaTransaction::latest()->where('status','pending')
+                ->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3)->get();
+                $other_total_pending = $other_total->where('status','pending')->count();
+                $other_total_pending_amount = $other_total->where('status','pending')->sum('amount');
                 return view('admin.summary.JuniorAccountant.transaction',compact([
                     'segment','accountant','show_data','show_category','day','month','show_summary',
                     'nw_other_tnx','nw_other_tnx_total','nw_other_amount_paid','nw_other_tnx_charges','nw_other_total_amount',
-                    'nw_other_pending_total','nw_other_pending_amount'
+                    'nw_other_pending_total','nw_other_pending_amount','other_total_pending','other_total_pending_amount'
                 ]));
             }
 
@@ -644,10 +655,13 @@ class SummaryController extends Controller
                     $nw_deposit_pending_amount = $nw_deposit_tnx->where('status','pending')->sum('amount');
                     $nw_deposit_tnx = $nw_deposit_tnx->paginate($pagination);
 
+                    $deposit_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',1)->get();
+                    $deposit_total_pending = $deposit_total->where('status','pending')->count();
+                    $deposit_total_pending_amount = $deposit_total->where('status','pending')->sum('amount');
                     return view('admin.summary.JuniorAccountant.transaction',compact([
                         'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
                         'nw_deposit_tnx','nw_deposit_tnx_total','nw_deposit_amount_paid','nw_deposit_tnx_charges','nw_deposit_total_amount',
-                        'nw_deposit_pending_total','nw_deposit_pending_amount'
+                        'nw_deposit_pending_total','nw_deposit_pending_amount','deposit_total_pending','deposit_total_pending_amount'
                     ]));
 
                 }
@@ -663,10 +677,14 @@ class SummaryController extends Controller
                     $nw_withdrawal_pending_amount = $nw_withdrawal_tnx->where('status','pending')->sum('amount');
                     $nw_withdrawal_tnx = $nw_withdrawal_tnx->paginate($pagination);
 
+                    $withdrawal_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',3)->get();
+                    $withdrawal_total_pending = $withdrawal_total->where('status','pending')->count();
+                    $withdrawal_total_pending_amount = $withdrawal_total->where('status','pending')->sum('amount');
+
                     return view('admin.summary.JuniorAccountant.transaction',compact([
                         'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
                         'nw_withdrawal_tnx','nw_withdrawal_tnx_total','nw_withdrawal_amount_paid','nw_withdrawal_tnx_charges','nw_withdrawal_total_amount',
-                        'nw_withdrawal_pending_total','nw_withdrawal_pending_amount'
+                        'nw_withdrawal_pending_total','nw_withdrawal_pending_amount','withdrawal_total_pending','withdrawal_total_pending_amount'
                     ]));
                 }
                 if($category_session == "paybridgeothers")
@@ -681,10 +699,14 @@ class SummaryController extends Controller
                     $nw_other_pending_amount = $nw_other_tnx->where('status','pending')->sum('amount');
                     $nw_other_tnx = $nw_other_tnx->paginate($pagination);
 
+                    $other_total = NairaTransaction::latest()->where('status','pending')
+                    ->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3)->get();
+                    $other_total_pending = $other_total->where('status','pending')->count();
+                    $other_total_pending_amount = $other_total->where('status','pending')->sum('amount');
                     return view('admin.summary.JuniorAccountant.transaction',compact([
                         'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
                         'nw_other_tnx','nw_other_tnx_total','nw_other_amount_paid','nw_other_tnx_charges','nw_other_total_amount',
-                        'nw_other_pending_total','nw_other_pending_amount'
+                        'nw_other_pending_total','nw_other_pending_amount','other_total_pending','other_total_pending_amount'
                     ]));
                 }
 
