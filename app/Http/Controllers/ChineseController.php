@@ -213,8 +213,6 @@ class ChineseController extends Controller
         $user = User::find($id);
         if ($action == 'remove') {
             $user->role = 1;
-        }elseif(Auth::user()->role == 449 && $action == 'upgrade-to-senior'){
-            $user->role = 449;
         }
         else{
             $user->status = $action;

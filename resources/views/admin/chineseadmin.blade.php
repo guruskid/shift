@@ -129,9 +129,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                             <a href="{{route('admin.chinese_add_admin.action', [$u->id, 'waiting'] )}}" class="btn btn-sm btn-warning">Deactivate</a>
 											@endif
                                             <a href="{{route('admin.chinese_add_admin.action', [$u->id, 'remove'] )}} "  class="btn btn-sm btn-danger">Remove</a>
-                                            @if (Auth::user()->role == 449 AND $u->role != 449)
-                                            <a href="{{route('admin.chinese_add_admin.action', [$u->id, 'upgrade-to-senior'] )}} "  class="btn btn-sm btn-success">Upgrade</a>
-                                            @endif
+                                            
                                         </td>
                                     </tr>
                                     @endif
