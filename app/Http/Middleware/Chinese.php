@@ -18,7 +18,7 @@ class Chinese
     {
         $user = Auth::user();
 
-        if($user->role == 444 || $user->role == 999 ){
+        if($user->role == 444 || $user->role == 999 || $user->role == 449 ){
              return $next($request);
         }else{
             abort(404);

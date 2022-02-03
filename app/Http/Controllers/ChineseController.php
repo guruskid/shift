@@ -192,5 +192,35 @@ class ChineseController extends Controller
         return view('admin.transactions', compact(['transactions', 'segment']));
     }
 
+    public function chineseAdminUser()
+    {
+        $users = User::whereIn('role', [444, 449])->latest()->get();
+
+        return view('admin.chineseadmin', compact('users'));
+    }
+
+    public function addChineseAdmin(Request $r)
+    {
+        $user = User::find($r->id);
+        $user->role = 444;
+        $user->status = 'waiting';
+        $user->save();
+
+        return back()->with(['success'=>'Admin added successfully']);
+    }
+    public function action($id, $action)
+    {
+        $user = User::find($id);
+        if ($action == 'remove') {
+            $user->role = 1;
+        }elseif(Auth::user()->role == 449 && $action == 'upgrade-to-senior'){
+            $user->role = 449;
+        }
+        else{
+            $user->status = $action;
+        }
+        $user->save();
+        return back()->with(['success'=>'Action Successful']);
+    }
 
 }

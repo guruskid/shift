@@ -378,7 +378,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']], function () {
     /* ajax calls */
     Route::GET('/chinese-dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
-    Route::GET('/chinese-dashboard', 'ChineseController@dashboard')->name('admin.chinese_dashboard_page');
+    Route::GET('/chinese-admin', 'ChineseController@chineseAdminUser')->name('admin.chinese_admins');
+    Route::post('/add-chinese-admin', 'ChineseController@addChineseAdmin')->name('admin.chinese_add_admin');
+    Route::get('/admin-action/{id}/{action}', 'ChineseController@action')->name('admin.chinese_add_admin.action');
     Route::GET('/payout-transactions/{type?}', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
     Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
     Route::post('/admin-transfer-chinese/{id}', 'Admin\AssetTransactionController@payTransactionChinese' )->name('admin.transfer-chinese');

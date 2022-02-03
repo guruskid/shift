@@ -230,8 +230,7 @@
                 </li>
             @endif
             {{-- Here --}}
-            {{-- @if (!in_array(Auth::user()->role, [555])) --}}
-            @if (in_array(Auth::user()->role, [889, 777, 666, 555]))
+            @if (!in_array(Auth::user()->role, [555]))
                 <li class="my-3">
                     <a href="{{route('admin.rates')}}"
                         class=" {{ Route::currentRouteName() == 'admin.rates' ? 'mm-active' : '' }} ">
@@ -324,7 +323,7 @@
                 </li>
             @endif
 
-            @if(Auth::user()->role == 999 OR Auth::user()->role == 444)
+            @if(Auth::user()->role == 999 OR Auth::user()->role == 444 OR Auth::user()->role == 449)
             @if(Auth::user()->role == 999)
             <li class="my-3">
                 <a href="{{route('admin.chinese_dashboard_page')}}"
@@ -342,7 +341,26 @@
                     Payout page
                 </a>
             </li>
+            <li class="my-3">
+                <a href="{{route('admin.crypto-summary', 1)}}"
+                    class=" {{ Route::currentRouteName() == 'admin.bitcoin-summary' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-wallet"></i>
+                    Transaction Summary
+                </a>
+            </li> 
+            @if(Auth::user()->role == 449)
+            <li class="my-3">
+                <a href="{{route('admin.chinese_admins')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.chinese_admins' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Admin's
+                </a>
+            </li>
+            @endif
+            @endif
 
+            @if(Auth::user()->role == 449 AND Auth::user()->role == 999)
+            
             @endif
 
             <li class="my-3">
