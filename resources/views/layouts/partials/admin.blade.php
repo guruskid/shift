@@ -341,13 +341,6 @@
                     Payout page
                 </a>
             </li>
-            <li class="my-3">
-                <a href="{{route('admin.crypto-summary', 1)}}"
-                    class=" {{ Route::currentRouteName() == 'admin.bitcoin-summary' ? 'mm-active' : '' }} ">
-                    <i class="metismenu-icon pe-7s-wallet"></i>
-                    Transaction Summary
-                </a>
-            </li> 
             @if(Auth::user()->role == 449)
             <li class="my-3">
                 <a href="{{route('admin.chinese_admins')}}"
