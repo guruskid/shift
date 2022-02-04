@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 
+Route::GET('/verification-limit', 'Admin\VerificationLimitController@get');
+Route::get('/banks', 'Api\AuthController@bankList' );
+
 Route::group(['middleware' => 'auth:api'], function () {
 
     //BTC Wallet
@@ -21,7 +24,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::POST('/send', 'BtcWalletController@send');
 
     });
-
+    Route::post('/update-wallet-pin', 'Api\NairaWalletController@updateWalletPin');
+    Route::post('/bank-details', 'Api\AuthController@addBankDetails');
     Route::GET('/naira-wallet', 'Api\NairaWalletController@index');
     // Airtime
     Route::get('/airtime', 'Api\BillsPaymentController@airtime');

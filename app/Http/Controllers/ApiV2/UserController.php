@@ -39,6 +39,62 @@ class UserController extends Controller
         ]);
     }
 
+    public function netWalletBalance()
+    {
+        $wallet = Auth::user()->nairaWallet;
+
+        $client = new Client();
+        $url = "https://api.coinbase.com/v2/prices/spot?currency=USD";
+        $res = $client->request('GET', $url);
+        $res = json_decode($res->getBody());
+        $btc_rate = $res->data->amount;
+
+        $usdPerNairaRate = LiveRateController::usdNgn();
+
+        $usd_value = $wallet->amount/$usdPerNairaRate;
+        $btc_value = $usd_value/$btc_rate;
+
+
+            $ngn_bal = (int)$wallet->amount;
+            $ngn_btc_value = number_format((float)$btc_value, 8);
+            $ngn_usd_value = (int)$usd_value;
+
+
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $btc_real_time = $res->value;
+
+        $url = env('TATUM_URL') . '/tatum/rate/USD?basePair=NGN';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $naira_usd_real_time = $res->value;
+
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+        $accounts = json_decode($res->getBody(), true);
+
+        if (empty($accounts)) {
+            $btc_bal = (int)$wallet->amount;
+            $btc_ngn_value = number_format((float)$btc_value, 8);
+            $btc_usd_value = (int)$usd_value;
+        }
+
+        $btc_balance = $accounts['balance']['availableBalance'];
+
+        $btc_wallet = Auth::user()->btcWallet;
+        $btc_wallet->balance = $btc_balance;
+        $btc_wallet->usd = $btc_wallet->balance * $btc_real_time;
+
+        $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
+
+
+    }
+
     public function dashboard()
     {
         $client = new Client();
