@@ -436,6 +436,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
     Route::GET('/download-database', 'AdminController@downloadUserDb')->name('admin.userdb');
     Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
+    Route::GET('/verification-limit', 'Admin\VerificationLimitController@index')->name('admin.verification_limit');
+    Route::POST('/update-verification-limit', 'Admin\VerificationLimitController@addLimit')->name('admin.add_verification_limit');
 
 });
 
@@ -487,7 +489,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant
 
 //     Route::post('/logout','customerHappinessController@logout')->name('customerHappiness.logout');
 
-    
+
 // });
 
 Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'customerHappiness']],function(){
