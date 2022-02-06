@@ -511,7 +511,8 @@
                                                                     <th class="text-center">Total Deposit Amount Paid</th>
                                                                     <th class="text-center">Total Deposit Charges</th>
                                                                     <th class="text-center">Total Deposit Amount</th>
-                                                                    <th class="text-center">Total Pending Deposit</th>
+                                                                    <th class="text-center">Pending Deposit Today</th>
+                                                                    <th class="text-center">Pending Deposit Total</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -521,6 +522,10 @@
                                                                         <td class="text-center">₦ {{ isset($nw_deposit_tnx_charges) ? number_format($nw_deposit_tnx_charges) : 0 }}</td>
                                                                         <td class="text-center">₦ {{ isset($nw_deposit_total_amount) ? number_format($nw_deposit_total_amount) :0 }}</td>
                                                                         <td class="text-center">[{{ isset($nw_deposit_pending_total) ? number_format($nw_deposit_pending_total) :0 }}] ₦ {{ isset($nw_deposit_pending_amount) ? number_format($nw_deposit_pending_amount) :0 }}</td>
+                                                                        <td class="text-center">
+                                                                            [{{ isset($deposit_total_pending) ? number_format($deposit_total_pending) :0 }}]
+                                                                             ₦ {{ isset($deposit_total_pending_amount) ? number_format($deposit_total_pending_amount) :0 }}
+                                                                        </td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
@@ -626,7 +631,8 @@
                                                                 <th class="text-center">Total Withdrawal Amount Paid</th>
                                                                 <th class="text-center">Total Withdrawal Charges</th>
                                                                 <th class="text-center">Total Withdrawal Amount</th>
-                                                                <th class="text-center">Total Pending Withdrawal</th>
+                                                                <th class="text-center">Pending Withdrawal Today</th>
+                                                                <th class="text-center">Pending Withdrawal Total</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -636,6 +642,10 @@
                                                                     <td class="text-center">₦ {{ isset($nw_withdrawal_tnx_charges) ? number_format($nw_withdrawal_tnx_charges) : 0 }}</td>
                                                                     <td class="text-center">₦ {{ isset($nw_withdrawal_total_amount) ? number_format($nw_withdrawal_total_amount) :0 }}</td>
                                                                     <td class="text-center">[{{ isset($nw_withdrawal_pending_total) ? number_format($nw_withdrawal_pending_total) :0 }}] ₦ {{ isset($nw_withdrawal_pending_amount) ? number_format($nw_withdrawal_pending_amount) :0 }}</td>
+                                                                    <td class="text-center">
+                                                                        [{{ isset($withdrawal_total_pending) ? number_format($withdrawal_total_pending) :0 }}]
+                                                                         ₦ {{ isset($withdrawal_total_pending_amount) ? number_format($withdrawal_total_pending_amount) :0 }}
+                                                                    </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -741,7 +751,8 @@
                                                                 <th class="text-center">Total Amount Paid</th>
                                                                 <th class="text-center">Total Charges</th>
                                                                 <th class="text-center">Total Amount</th>
-                                                                <th class="text-center">Total Pending</th>
+                                                                <th class="text-center">Total Pending Today</th>
+                                                                <th class="text-center">Total Pending Total</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -751,6 +762,10 @@
                                                                     <td class="text-center">₦ {{ isset($nw_other_tnx_charges) ? number_format($nw_other_tnx_charges) : 0 }}</td>
                                                                     <td class="text-center">₦ {{ isset($nw_other_total_amount) ? number_format($nw_other_total_amount) :0 }}</td>
                                                                     <td class="text-center">[{{ isset($nw_other_pending_total) ? number_format($nw_other_pending_total) :0 }}] ₦ {{ isset($nw_other_pending_amount) ? number_format($nw_other_pending_amount) :0 }}</td>
+                                                                    <td class="text-center">
+                                                                        [{{ isset($other_total_pending) ? number_format($other_total_pending) :0 }}]
+                                                                         ₦ {{ isset($other_total_pending_amount) ? number_format($other_total_pending_amount) :0 }}
+                                                                        </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
