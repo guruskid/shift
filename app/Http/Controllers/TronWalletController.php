@@ -151,14 +151,14 @@ class TronWalletController extends Controller
     public function walletApi(Request $r)
     {
 
-        // if (!Auth::user()->tronWallet) {
-        //     return redirect()->route('user.portfolio')->with(['error' => 'Please a Tron wallet to continue']);
-        // }
+        if (!Auth::user()->tronWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please create a Tron wallet to continue'
+            ]);
+        }
 
-        return response()->json([
-            'success' => false,
-            'msg' => 'Please create a Tron wallet to continue'
-        ]);
+
 
         $tron_rate = LiveRateController::tronRate();
         $tron_wallet = Auth::user()->tronWallet;
