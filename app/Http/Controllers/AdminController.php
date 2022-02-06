@@ -172,7 +172,7 @@ class AdminController extends Controller
                     'g_txns', 'c_txns', 'n_txns'
                 ])
             );
-        }elseif(Auth::user()->role == 444){ // Chinese Dashboard
+        }elseif(Auth::user()->role == 444 OR Auth::user()->role == 449){ // Chinese Dashboard
 
             $twentyFourHrsTransactions = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
             $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
@@ -233,7 +233,7 @@ class AdminController extends Controller
 
     }
 
-
+   
     public function payoutTransactions($type = '')
     {
 
@@ -507,7 +507,7 @@ class AdminController extends Controller
             $totalAvgPerToday = ceil($tt->sum() / $tt->count());
         }
 
-        if(Auth::user()->role == 444){
+        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
             $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         }
 
@@ -629,7 +629,7 @@ class AdminController extends Controller
     public function buyTransac()
     {
 
-        if(Auth::user()->role == 444){
+        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
             $transactions = Transaction::with('user')->where('type', 'buy')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         }
 
@@ -640,7 +640,7 @@ class AdminController extends Controller
 
     public function sellTransac()
     {
-        if(Auth::user()->role == 444){
+        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
             $transactions = Transaction::with('user')->where('type', 'sell')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         }
 
@@ -654,7 +654,7 @@ class AdminController extends Controller
     {
         $transactions = Transaction::where('status', $status)->latest()->paginate(1000);
 
-        if(Auth::user()->role == 444){
+        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
             $transactions = Transaction::with('user')->where('status', $status)->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         }
         $segment = $status;
