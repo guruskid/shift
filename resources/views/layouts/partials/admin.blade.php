@@ -341,7 +341,7 @@
                     Payout page
                 </a>
             </li>
-            @if(Auth::user()->role == 449)
+            @if(Auth::user()->role == 449 AND Auth::user()->role == 999)
             <li class="my-3">
                 <a href="{{route('admin.chinese_admins')}}"
                     class=" {{ Route::currentRouteName() == 'admin.chinese_admins' ? 'mm-active' : '' }} ">
@@ -351,10 +351,10 @@
             </li>
             @endif
             @endif
-
+{{-- 
             @if(Auth::user()->role == 449 AND Auth::user()->role == 999)
             
-            @endif
+            @endif --}}
 
             <li class="my-3">
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
