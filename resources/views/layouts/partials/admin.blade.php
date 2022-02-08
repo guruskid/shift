@@ -341,7 +341,7 @@
                     Payout page
                 </a>
             </li>
-            @if(Auth::user()->role == 449 AND Auth::user()->role == 999)
+            @if(Auth::user()->role == 449 OR Auth::user()->role == 999)
             <li class="my-3">
                 <a href="{{route('admin.chinese_admins')}}"
                     class=" {{ Route::currentRouteName() == 'admin.chinese_admins' ? 'mm-active' : '' }} ">
