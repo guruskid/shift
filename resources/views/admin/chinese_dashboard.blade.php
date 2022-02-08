@@ -220,9 +220,13 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <th class="text-center">Quantity</th>
                                                             <th class="text-center">Card price</th>
                                                             <th class="text-center">Cash value</th>
+                                                            @if (!in_array(Auth::user()->role, [449, 444] ))
                                                             <th class="text-center">Wallet ID</th>
+                                                            @endif
                                                             <th class="text-center">User</th>
+                                                            @if (!in_array(Auth::user()->role, [449, 444] ))
                                                             <th class="text-center">User Phone</th>
+                                                            @endif
                                                             <th class="text-center">Date</th>
                                                             <th class="text-center">Status</th>
                                                             {{-- test//// --}}
@@ -259,17 +263,23 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <td class="text-center">{{$t->card_price}}</td>
                                                             <td class="text-center">N{{number_format($t->amount_paid)}}
                                                             </td>
+                                                            @if (!in_array(Auth::user()->role, [449, 444] ))
                                                             <td class="text-center">{{$t->wallet_id}}</td>
+                                                            @endif
                                                             <td class="text-center">
-                                                                {{-- adkjfalkdjf --}}
+                                                                @if (in_array(Auth::user()->role, [449,444] ))
+                                                                {{$t->user->first_name." ".$t->user->last_name}}
+                                                                @else
                                                                 <a
-                                                                    href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
-                                                                    {{$t->user->first_name." ".$t->user->last_name}}
-                                                                </a>
+                                                                href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                                {{$t->user->first_name." ".$t->user->last_name}}</a> 
+                                                                @endif
                                                             </td>
+                                                            @if (!in_array(Auth::user()->role, [449, 444] ))
                                                             <td class="text-center">
                                                                {{$t->user->phone}}
                                                             </td>
+                                                            @endif
                                                             <td class="text-center">{{$t->created_at->format('d M,
                                                                 H:ia')}} </td>
                                                             <td class="text-center">

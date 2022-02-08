@@ -174,7 +174,7 @@ class AdminController extends Controller
             );
         }elseif(Auth::user()->role == 444 OR Auth::user()->role == 449){ // Chinese Dashboard
 
-            $twentyFourHrsTransactions = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+            $twentyFourHrsTransactions = Transaction::where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
             $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
             $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
             $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
@@ -652,10 +652,10 @@ class AdminController extends Controller
 
     public function txnByStatus($status)
     {
-        $transactions = Transaction::where('status', $status)->latest()->paginate(1000);
+        $transactions = Transaction::where('status', $status)->orderBy('updated_at', 'desc')->paginate(1000);
 
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::with('user')->where('status', $status)->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
+            $transactions = Transaction::with('user')->where('status', $status)->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('updated_at', 'desc')->paginate(1000);
         }
         $segment = $status;
         return view('admin.transactions', compact(['transactions', 'segment']));

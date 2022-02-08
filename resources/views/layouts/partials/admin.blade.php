@@ -230,7 +230,7 @@
                 </li>
             @endif
             {{-- Here --}}
-            @if (!in_array(Auth::user()->role, [555,449,444,777,]))
+            @if (in_array(Auth::user()->role, [888,999]))
                 <li class="my-3">
                     <a href="{{route('admin.rates')}}"
                         class=" {{ Route::currentRouteName() == 'admin.rates' ? 'mm-active' : '' }} ">
@@ -240,7 +240,7 @@
                 </li>
             @endif
 
-            @if (!in_array(Auth::user()->role, [889, 777, 666, 555]))
+            @if (!in_array(Auth::user()->role, [889, 777, 666, 555, 449, 444]))
                 <li class="my-3">
                     <a href="{{route('admin.assigned-transactions')}}"
                         class=" {{ Route::currentRouteName() == 'admin.assigned-transactions' ? 'mm-active' : '' }} ">
@@ -346,7 +346,7 @@
                 <a href="{{route('admin.chinese_admins')}}"
                     class=" {{ Route::currentRouteName() == 'admin.chinese_admins' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-users"></i>
-                    Admin's
+                    Chinese Admin's
                 </a>
             </li>
             @endif

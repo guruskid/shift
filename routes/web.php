@@ -339,7 +339,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     /* ajax calls */
     Route::GET('/get-user/{email}', 'AdminController@getUser');
     Route::GET('/dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
-    Route::GET('/chinese-dashboard', 'ChineseController@dashboard')->name('admin.chinese_dashboard_page');
+    Route::GET('/chinese-dashboards', 'ChineseController@dashboard')->name('admin.chinese_dashboard_page');
 
     // Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
     // Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
