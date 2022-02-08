@@ -230,7 +230,7 @@
                 </li>
             @endif
             {{-- Here --}}
-            @if (!in_array(Auth::user()->role, [555]))
+            @if (!in_array(Auth::user()->role, [555,449,444]))
                 <li class="my-3">
                     <a href="{{route('admin.rates')}}"
                         class=" {{ Route::currentRouteName() == 'admin.rates' ? 'mm-active' : '' }} ">
