@@ -40,7 +40,7 @@ class AuthController extends Controller
                 'naira_wallet' => $user->nairaWallet,
                 'bank_accounts' => $user->accounts,
             ]);
-            
+
         } else {
             //if authentication is unsuccessfull, notice how I return json parameters
             return response()->json([
@@ -77,6 +77,7 @@ class AuthController extends Controller
             'country_id' => $input['country_id'],
             'email' => $input['email'],
             'external_id' => $external_id,
+            'status' => 'active',
             'password' => Hash::make($input['password']),
         ]);
 
@@ -129,6 +130,7 @@ class AuthController extends Controller
 
         $btc_account_id = $body[0]->id;
         $user->customer_id = $body[0]->customerId;
+        $user->status = 'active';
         $user->save();
 
         $address_url = env('TATUM_URL') . "/offchain/account/address/batch";
