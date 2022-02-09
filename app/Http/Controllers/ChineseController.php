@@ -205,9 +205,10 @@ class ChineseController extends Controller
         if(sizeof($user->get()) == null){
             return back()->with(['error'=>'Email does not exist']);  
         }
-        if(sizeof($user->get()) != null AND $user->get()[0]->role == 444){
-
-            return back()->with(['error'=>'Operator already added']);  
+        if(sizeof($user->get()) != null){
+            if ($user->get()[0]->role == 444 OR $user->get()[0]->role == 449) {
+                return back()->with(['error'=>'Operator already added']);  
+            }   
         }
         $user->update([
             'role' => 444,
