@@ -64,12 +64,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
 								@csrf
                                 <div class="form-group">
                                     <label for="">User Email</label>
-                                    <select name="id" class="form-control">
-                                        <option value=""></option>
-                                        @foreach ($all_users as $u)
-                                        <option value="{{$u->id}}"> {{ ucfirst($u->email) }} </option>
-                                        @endforeach
-                                    </select>
+                                    <input type="email" class="form-control" name="email" required>
 								</div>
 								<button class="btn btn-success">Add</button>
                             </form>

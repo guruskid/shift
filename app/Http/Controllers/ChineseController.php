@@ -201,12 +201,19 @@ class ChineseController extends Controller
 
     public function addChineseAdmin(Request $r)
     {
-        $user = User::find($r->id);
-        $user->role = 444;
-        $user->status = 'waiting';
-        $user->save();
+        $user = User::where('email',$r->email);
+        if(sizeof($user->get()) == null){
+            return back()->with(['error'=>'Email does not exist']);  
+        }
+        if(sizeof($user->get()) != null AND $user->get()[0]->role == 444){
 
-        return back()->with(['success'=>'Admin added successfully']);
+            return back()->with(['error'=>'Operator already added']);  
+        }
+        $user->update([
+            'role' => 444,
+            'status' =>'waiting',
+        ]);
+        return back()->with(['success'=>'Operator added successfully']);
     }
     public function action($id, $action)
     {
