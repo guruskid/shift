@@ -87,7 +87,6 @@
             this.getStat()
         },
         methods: {
-
             depositCheck($e) {
                 if ($e.target.checked) {
                     $('#complete_deposit').removeAttr("disabled");
@@ -103,7 +102,10 @@
                     }
                 });
             },
+
             getAgent() {
+
+
                 if (isNaN(this.amount) || this.amount == '') {
                     swal('Error!', "Please enter the amount you want to deposit", 'error')
                     return;
@@ -155,7 +157,7 @@
                     $('#complete_deposit').removeAttr('disabled')
                 });
             },
-            
+
             timer() {
                 var countDownDate = new Date().getTime() + 15 * 60 * 1000;
 

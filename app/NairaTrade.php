@@ -20,4 +20,9 @@ class NairaTrade extends Model
     {
         return $this->hasMany(NairaTradePop::class, 'transaction_id', 'id');
     }
+
+    public function naria_transactions()
+    {
+        return $this->hasMany(NairaTransaction::class,'reference','reference');
+    }
 }

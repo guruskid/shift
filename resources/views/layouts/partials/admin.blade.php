@@ -26,7 +26,7 @@
                     </a>
                 </li>
             @endif
-            
+
             @if (in_array(Auth::user()->role, [555] ))
             <li>
                 <a href="#">
@@ -77,7 +77,7 @@
                             </i>Crypto transactions
                         </a>
                     </li>
-                    
+
                     <li>
                         <a href="{{route('customerHappiness.wallet-transactions')}}"
                             class=" {{ Route::currentRouteName() == 'customerHappiness.wallet-transactions' ? 'mm-active' : '' }} ">
@@ -196,13 +196,14 @@
                 <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
                     <a href="{{route('admin.naira-p2p')}}">
                         <div class="">
-                            <i class="metismenu-icon pe-7s-timer"></i>
+                            <i class="metismenu-icon pe-7s-wallet"></i>
                             <span>My P2P Transactions</span>
                         </div>
                     </a>
                 </li>
+
             @endif
-            
+
 
             @if (in_array(Auth::user()->role, [999, 889, 777] ))
                 <li class="my-3">
@@ -213,13 +214,22 @@
                     </a>
                 </li>
 
-                <li class="my-3">
-                    <a href="{{route('admin.wallet-transactions')}}"
-                        class=" {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'mm-active' : '' }} ">
-                        <i class="metismenu-icon pe-7s-wallet"></i>
-                        Naira Wallet Transactions
-                    </a>
-                </li>
+            <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
+                <a href="{{route('admin.junior-summary')}}">
+                    <div class="">
+                        <i class="metismenu-icon pe-7s-graph2"></i>
+                        <span>Summary</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="my-3">
+                <a href="{{route('admin.wallet-transactions')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-wallet"></i>
+                    Naira Wallet Transactions
+                </a>
+            </li>
 
                 <li>
                     <a href="{{ route('admin.bitcoin') }}">
@@ -351,9 +361,9 @@
             </li>
             @endif
             @endif
-{{-- 
+{{--
             @if(Auth::user()->role == 449 AND Auth::user()->role == 999)
-            
+
             @endif --}}
 
             <li class="my-3">

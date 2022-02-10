@@ -233,7 +233,7 @@ class AdminController extends Controller
 
     }
 
-   
+
     public function payoutTransactions($type = '')
     {
 
@@ -482,7 +482,7 @@ class AdminController extends Controller
             $transactions = $transactions->whereBetween('created_at', [$from, $to]);
             $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
         }
-      
+
         $transactions = $transactions->paginate(1000);
 
 
@@ -520,16 +520,16 @@ class AdminController extends Controller
         if($request->segment == 'All')
         {
             $search = $request->search;
-            $conditions = ['uid','card','type','country','card_type','status'];                         
+            $conditions = ['uid','card','type','country','card_type','status'];
             $transactions = Transaction::where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
-                        });      
-            })->paginate(100); 
-            
+                        });
+            })->paginate(100);
+
 
             $segment = $request->segment;
 
@@ -539,32 +539,32 @@ class AdminController extends Controller
         {
             $status = $request->segment;
             $search = $request->search;
-            $conditions = ['uid','card','country','card_type','status'];                         
+            $conditions = ['uid','card','country','card_type','status'];
             $transactions = Transaction::where('type', $status)->latest()->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
-                        });      
-            })->paginate(100); 
-            
+                        });
+            })->paginate(100);
+
 
             $segment = $status;
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
-        
+
         if($request->segment == 'Utility')
         {
             $search = $request->search;
-            $conditions = ['reference_id','amount','type','status'];                         
+            $conditions = ['reference_id','amount','type','status'];
             $transactions = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc')->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%');
-                        });      
-            })->paginate(100); 
+                        });
+            })->paginate(100);
             return view('admin.utility-transactions', compact('transactions'));
         }
         if($request->segment == 'Gift Card' || $request->segment == 'Crypto')
@@ -575,14 +575,14 @@ class AdminController extends Controller
             $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
                 $query->where('is_crypto', $id);
             })->latest()->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
-                        });      
+                        });
             })->paginate(100);
-    
+
             $segment = $request->segment;
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
@@ -592,20 +592,20 @@ class AdminController extends Controller
             $search = $request->search;
             $conditions = ['reference','status'];
             $transactions = NairaTransaction::latest()->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%');
                         })->orWhereHas('transactionType', function($q) use($search) {
                             $q->where('name', 'like', '%' . $search . '%');
-                        });      
+                        });
             })->paginate(100);;
             $segment = 'All Wallet';
             $total = NairaTransaction::latest()->sum('amount');
 
-            
+
             return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
-        }   
+        }
         if($request->segment == 'success' || $request->segment == 'approved' || $request->segment == 'in progress'
         || $request->segment == 'waiting'|| $request->segment == 'declined' || $request->segment == 'failed')
         {
@@ -614,12 +614,12 @@ class AdminController extends Controller
             $status = $request->segment;
 
             $transactions = Transaction::where('status', $status)->latest()->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
-                        });      
+                        });
                     })->paginate(100);
             $segment = $status;
             return view('admin.transactions', compact(['transactions', 'segment']));
@@ -631,23 +631,60 @@ class AdminController extends Controller
 
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
             $transactions = Transaction::with('user')->where('type', 'buy')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
+        }else {
+            $transactions = Transaction::where('type', 'buy')->latest()->paginate(1000);
         }
 
-        $transactions = Transaction::where('type', 'buy')->latest()->paginate(1000);
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
+        $transactions = Transaction::where('type', 'buy')->latest();
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(1000);
         $segment = 'Buy';
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        return view('admin.transactions', compact(['transactions', 'segment','accountant','status','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function sellTransac()
     {
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
             $transactions = Transaction::with('user')->where('type', 'sell')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
+        }else{
+            $transactions = Transaction::where('type', 'sell')->latest()->paginate(1000);
         }
 
-
-        $transactions = Transaction::where('type', 'sell')->latest()->paginate(1000);
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
+        $transactions = Transaction::where('type', 'sell')->latest();
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(1000);
         $segment = 'Sell';
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        return view('admin.transactions', compact(['transactions', 'segment','accountant','status','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function txnByStatus($status)
@@ -657,8 +694,30 @@ class AdminController extends Controller
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
             $transactions = Transaction::with('user')->where('status', $status)->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('updated_at', 'desc')->paginate(1000);
         }
+
+        $type = Transaction::select('type')->distinct('type')->get();
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+
+
+        $transactions = Transaction::where('status', $status)->latest();
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(1000);
         $segment = $status;
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        return view('admin.transactions', compact(['transactions', 'segment','type','accountant','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total'
+    ]));
     }
 
     public function assignedTransac()
@@ -676,9 +735,27 @@ class AdminController extends Controller
 
     public function assetTransac($id)
     {
+        $type = Transaction::select('type')->distinct('type')->get();
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
-        })->latest()->paginate(10);
+        })->latest();
+
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(1000);
 
         $segment = 'Gift Card';
         if ($id == 1) {
@@ -686,20 +763,51 @@ class AdminController extends Controller
         }
 
 
-        return view('admin.transactions', compact(['transactions', 'segment']));
+        return view('admin.transactions', compact(['transactions', 'segment','type','accountant','status','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function assetTransactionsSortByDate(Request $request)
     {
-
+        // dd($request);
+        $type = Transaction::select('type')->distinct('type')->get();
+        $category = Transaction::with('asset')
+        ->select('card_id')
+        ->where('card_id','!=',null)
+        ->distinct('card_id')
+        ->get();
+        $accountant = Transaction::with('accountant')
+        ->select('accountant_id')
+        ->where('accountant_id','!=',null)
+        ->distinct('accountant_id')
+        ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
         $data = $request->validate([
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = Transaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(200);
+        $transactions = Transaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end']);
+        if($request->type != 'null'){
+            $transactions = $transactions->where('type',$request->type);
+        }
+        if($request->category != 'null'){
+            $transactions = $transactions->where('card_id',$request->category);
+        }
+        if($request->Accountant != 'null'){
+            $transactions = $transactions->where('accountant_id',$request->Accountant);
+        }
+        if($request->status != 'null'){
+            $transactions = $transactions->where('status',$request->status);
+        }
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        $transactions = $transactions->paginate(200);
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Asset';
 
-        return view('admin.transactions', compact(['segment', 'transactions']));
+        return view('admin.transactions', compact(['segment', 'transactions','type','accountant','status','category'
+        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
     public function getTransac($id)
@@ -747,31 +855,66 @@ class AdminController extends Controller
 
     public function walletTransactions($id = null)
     {
+        $type = NairaTransaction::with('transactionType')
+        ->select('transaction_type_id')
+        ->where('transaction_type_id','!=',null)
+        ->distinct('transaction_type_id')
+        ->get();
+        $status = NairaTransaction::select('status')->distinct('status')->get();
         if ($id == null) {
-            $transactions = NairaTransaction::latest()->orderBy('created_at','desc')->paginate(1000);
+            $transactions = NairaTransaction::latest()->orderBy('created_at','desc');
             $segment = 'All Wallet';
             $total = $transactions->sum('amount');
-            
+
         } else {
-            $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at','desc')->paginate(1000);
+            $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at','desc');
             $segment = TransactionType::find($id)->name;
             $total = $transactions->sum('amount');
         }
-
-        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
+        $total_tnx = $transactions->count();
+        $total_amount_paid = $transactions->sum('amount_paid');
+        $total_charges = $transactions->sum('charge');
+        $transactions = $transactions->paginate(1000);
+        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total','type','status'
+        ,'total_tnx','total_amount_paid','total_charges']));
     }
     public function walletTransactionsSortByDate(Request $request)
     {
-
+        $type = NairaTransaction::with('transactionType')
+        ->select('transaction_type_id')
+        ->where('transaction_type_id','!=',null)
+        ->distinct('transaction_type_id')
+        ->get();
+        $status = NairaTransaction::select('status')->distinct('status')->get();
         $data = $request->validate([
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
-        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])->paginate(1000);
+
+        $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end']);
+
+
+        if($request->status != 'null')
+        {
+            $transactions = $transactions
+            ->where('status',$request->status);
+            // ->paginate(1000);
+        }
+        if($request->type != 'null')
+            {
+                $transactions = $transactions
+                ->where('transaction_type_id',$request->type);
+            }
+        $total_tnx = $transactions->count();
+        $total_amount_paid = $transactions->sum('amount_paid');
+        $total_charges = $transactions->sum('charge');
+        $transactions = $transactions->paginate(1000);
+
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
         $total = $transactions->sum('amount');
 
-        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
+    return view('admin.naira_transactions', compact(['segment', 'transactions', 'total','type','status'
+    ,'total_tnx','total_amount_paid','total_charges']));
     }
 
     public function adminWallet()
@@ -847,10 +990,29 @@ class AdminController extends Controller
         return response()->json($user);
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::orderBy('created_at', 'desc')->get();
+        $request->session()->forget('search');
+        $users = User::orderBy('created_at', 'desc')->paginate(1000);
         return view('admin.users', compact(['users']));
+    }
+    public function user_search(Request $request)
+    {
+        if ($request->search) {
+            $request->session()->put('search',$request->search);
+        }
+        if($request->session()->has('search')){
+            $search = $request->session()->get('search');
+            $users = User::orderBy('created_at', 'desc')
+            ->where('first_name','LIKE','%'.$search.'%')
+            ->orWhere('email','LIKE','%'.$search.'%')
+            ->orWhere('phone','LIKE','%'.$search.'%')
+            ->orWhere('phone','LIKE','%'.$search.'%')
+            ->orWhere('id','LIKE','%'.$search.'%')
+            ->paginate(1000);
+            return view('admin.users', compact(['users']));
+        }
+
     }
 
     public function verifiedUsers()
@@ -870,10 +1032,14 @@ class AdminController extends Controller
         foreach ($wallet_txns as $t) {
             if ($t->cr_user_id == $user->id) {
                 $t->trans_type = 'Credit';
-                $cr_total += $t->amount;
+                if ($t->status == 'success') {
+                    $cr_total += $t->amount;
+                }
             } else {
                 $t->trans_type = 'Debit';
-                $dr_total += $t->amount;
+                if ($t->status == 'success') {
+                    $dr_total += $t->amount;
+                }
             }
         }
 

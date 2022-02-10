@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\SummaryController;
 use App\Http\Controllers\LiveRateController;
 use App\Jobs\RegistrationEmailJob;
 use App\Mail\GeneralTemplateOne;
@@ -198,7 +199,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 //Registration and verification routes
-Route::group(['middleware' => ['auth', 'verified']], function () {
+Route::group(['middleware' => ['auth', 'verified','frozenUserCheck']], function () {
     Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
     Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.add-bank');
     Route::get('/verify-phone-number', 'HomeController@phoneVerification')->name('user.verify-phone');
@@ -220,6 +221,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
 Route::view('/disabled', 'disabled')->name('disabled');
 
+Route::view('/frozen', 'frozenuser')->name('frozenUser');
+
 /* Upload Transaction image */
 Route::post('/transacion-image', 'PopController@add')->name('transaction.add-image');
 
@@ -235,7 +238,7 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 Route::post('/wallet-webhook', 'BitcoinWalletController@webhook')->name('user.wallet-webhook');
 
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName'] ], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName','frozenUserCheck'] ], function () {
 
 
     /* ajax calls */
@@ -368,6 +371,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
 
 
+
     Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
     Route::post('/search-transactions','AdminController@search_tnx')->name('admin.search-tnxs');
 
@@ -474,7 +478,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant
     Route::post('/wallet-transactions', 'AdminController@walletTransactionsSortByDate')->name('admin.wallet-transactions.sort.by.date');
     Route::get('/admin-wallet', 'AdminController@adminWallet')->name('admin.admin-wallet');
 
-    Route::get('/users', 'AdminController@users')->name('admin.users');
+    Route::any('/users', 'AdminController@users')->name('admin.users');
+    Route::any('/users/search', 'AdminController@user_search')->name('admin.user-search');
     Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 
 
@@ -522,5 +527,10 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
     Route::post('/asset-transactions', 'CustomerHappinessController@assetTransactionsSortByDate')->name('customerHappiness.transactions-by-date');
 
     Route::any('/search-transactions','CustomerHappinessController@search_tnx')->name('customerHappiness.search-tnxs');
+
+
+    Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
+    Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
+    Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('admin.junior-summary-sort-details');
 
 });

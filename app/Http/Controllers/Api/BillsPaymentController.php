@@ -9,6 +9,8 @@ use App\Country;
 use App\Events\CustomNotification;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\Notification;
 use App\UtilityTransaction;
@@ -592,9 +594,7 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        $total_charge = $r->amount + $charge;
-
-        if ($total_charge > $balance) {
+        if (($r->amount + $charge) > $balance) {
             return response()->json([
                 'success' => false,
                 'message' => 'Insufficient balance',
@@ -602,7 +602,7 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        if ($total_charge < 100) {
+        if ($r->amount < 100) {
             return response()->json([
                 'success' => false,
                 'message' => 'Minimium amount is ₦100',
@@ -610,7 +610,7 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        if ($total_charge > 100000) {
+        if ($r->amount > 100000) {
             return response()->json([
                 'success' => false,
                 'message' => 'Maximium amount is ₦100000',
@@ -868,21 +868,17 @@ class BillsPaymentController extends Controller
                     $country = Country::find(Auth::user()->country_id);
                     $phone_number = $country->phonecode . $phone;
 
-                    try {
-                        $response_sms = $client->request('POST', $url, [
-                            'json' => [
-                                'api_key' => env('TERMII_API_KEY'),
-                                "type" => "plain",
-                                "to" => $phone_number,
-                                "from" => "N-Alert",
-                                "channel" => "dnd",
-                                "sms" => "Your electricity purchase from Dantown was successful. Token : ".$response['token'].", Units : ".$response['units'].", Reference code:".$reference."."
-                            ],
-                        ]);
-                        $body = json_decode($response_sms->getBody()->getContents());
-                    } catch (\Throwable $th) {
-                        return $th;
-                    }
+                    $response_sms = $client->request('POST', $url, [
+                        'json' => [
+                            'api_key' => env('TERMII_API_KEY'),
+                            "type" => "plain",
+                            "to" => $phone_number,
+                            "from" => "N-Alert",
+                            "channel" => "dnd",
+                            "sms" => "Your electricity purchase from Dantown was successful. Token : ".$response['token'].", Units : ".$response['units'].", Reference code:".$reference."."
+                        ],
+                    ]);
+                    $body = json_decode($response_sms->getBody()->getContents());
                 }
 
                 $title = 'Electricity purchase';
@@ -896,8 +892,17 @@ class BillsPaymentController extends Controller
                     'title' => $title,
                     'body' => $msg_body,
                 ]);
+                $body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N'.$charge.' for convenience fee.<br><br>
+                <b>Token: '.$response['token'].  '</b>,<br>
+                <b>Unit: '. $response['units']. '</b>,<br>
+                <b>Reference code:'. $reference;
+                $btn_text = '';
+                $btn_url = '';
 
-                Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, '', ''));
+                $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+                $name = explode(' ', $name);
+                $firstname = ucfirst($name[0]);
+                Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
                 $resp = [
                     'success' => true,
@@ -1006,7 +1011,7 @@ class BillsPaymentController extends Controller
                 $n->amount -= $total_charge;
                 $n->save();
             if ($response['content']['transactions']['status'] == 'delivered') {
-                
+
                 $nt = new NairaTransaction();
                 $nt->reference = $reference;
                 $nt->amount = $total_charge;

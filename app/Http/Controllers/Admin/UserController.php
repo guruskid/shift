@@ -21,10 +21,14 @@ class UserController extends Controller
             return back()->with(['error' => 'Wallet pin doesnt match']);
         }
         $user_wallet = User::find($r->user_id)->nairaWallet;
-        $user_wallet->status = 'paused';
+        $user_wallet->status = 'freezeAccount';
         $user_wallet->save();
 
-        return back()->with(['success' => 'Naira wallet froozen successfully']);
+        $user = User::find($r->user_id);
+        $user->status = 'not verified';
+        $user->save();
+
+        return back()->with(['success' => 'Account frozen successfully']);
     }
 
     public function activateAccount(Request $r)
@@ -35,8 +39,10 @@ class UserController extends Controller
         $user_wallet = User::find($r->user_id)->nairaWallet;
         $user_wallet->status = 'active';
         $user_wallet->save();
-
-        return back()->with(['success' => 'Naira wallet activated successfully']);
+        $user = User::find($r->user_id);
+        $user->status = 'active';
+        $user->save();
+        return back()->with(['success' => 'Account activated successfully']);
     }
 
     public function verifications()

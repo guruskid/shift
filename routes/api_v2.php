@@ -16,7 +16,7 @@ Route::post('change-password', 'AuthController@changePassword');
 
 
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
 
     //Authenticated routes here
     Route::post('/email-verification', 'AuthController@emailVerification');

@@ -72,6 +72,8 @@ class Kernel extends HttpKernel
         'chinese' => \App\Http\Middleware\Chinese::class,
         'bvnVerified' => BvnCheck::class,
         'customerHappiness' => \App\Http\Middleware\CustomerHappiness::class,
+        'frozenUserCheck' =>\App\Http\Middleware\FrozenUserMiddleware::class,
+        'frozenUserCheckApi' =>\App\Http\Middleware\FrozenUserApiMiddleware::class,
     ];
 
     /**

@@ -73,8 +73,19 @@
         </a>
     </li>
 
-    <li class="menu {{ Route::currentRouteName() == 'admin.tron' ? 'active' : '' }}  ">
-        <a href="{{route('admin.tron')}}"  aria-expanded="false" class="dropdown-toggle">
+    @if ( in_array(Auth::user()->role, [889, 999, 777] ) )
+    <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
+        <a href="{{route('admin.junior-summary')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Summary</span>
+            </div>
+        </a>
+    </li>
+    @endif
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.ethereum' ? 'active' : '' }}  ">
+        <a href="{{route('admin.ethereum')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <img src="/svg/ethereum.svg" height="20px" class="mr-4" alt="">
                 <span>Tron Wallet <span class="badge badge-warning">New</span></span>

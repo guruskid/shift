@@ -14,6 +14,7 @@ use App\Country;
 use App\Events\CustomNotification;
 use App\UtilityTransaction;
 
+use App\Mail\GeneralTemplateOne;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -1431,6 +1432,7 @@ class BillsPaymentController extends Controller
         //     "content": {
         //         "transactions": {
         //             "status": "delivered",
+        //             "status": "pending",
         //             "product_name": "PHED - Port Harcourt Electric",
         //             "unique_element": "610124000952992",
         //             "unit_price": 100,
@@ -1578,6 +1580,17 @@ class BillsPaymentController extends Controller
                 ]);
 
                 Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, '', ''));
+                $body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N'.$charge.' for convenience fee.<br><br>
+                <b>Token: '.$response['token'].  '</b>,<br>
+                <b>Unit: '. $response['units']. '</b>,<br>
+                <b>Reference code:'. $reference;
+                $btn_text = '';
+                $btn_url = '';
+
+                $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+                $name = explode(' ', $name);
+                $firstname = ucfirst($name[0]);
+                Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
                 $resp = ['success' => 'Purchase made successfully. Token : '.$response['token']];
             }else {

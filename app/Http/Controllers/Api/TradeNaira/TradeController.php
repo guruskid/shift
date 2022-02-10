@@ -100,6 +100,13 @@ class TradeController extends Controller
             'pin'      => 'required|min:4'
         ]);
 
+        if ($request->amount < 1000) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Amount should be greater than N1,000'
+            ]);
+        }
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -240,6 +247,8 @@ class TradeController extends Controller
             'amount'   => 'integer|required'
         ]);
 
+        // dd("check");
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -332,6 +341,8 @@ class TradeController extends Controller
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
 
+
+
         $pendingWithdrawal = false;
         $pendingDeposit = false;
 
@@ -339,6 +350,12 @@ class TradeController extends Controller
         if (count($trade) > 0) {
             $pendingWithdrawal = true;
         }
+
+
+        // $getName = User::where('id', Auth::user()->id)->get();
+        // if (strlen($getName[0]->first_name) < 3) {
+        //     $userName = true;
+        // }
 
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'deposit', 'status' => 'waiting'])->get();
         if (count($trade) > 0) {
