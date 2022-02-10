@@ -315,7 +315,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                                     <span class="btn btn-sm btn-success">View</span>
                                                                 </a>
 
-                                                                @if (Auth::user()->role == 444 ) {{--test//// super accountant
+                                                                @if (Auth::user()->role == 444 OR Auth::user()->role == 449 ) {{--test//// super accountant
                                                                 options --}}
 
                                                                 <a href="#" data-toggle="modal"

@@ -68,7 +68,7 @@
                                         <div class="d-flex justify-content-between">
                                             <a href="{{asset('storage/pop/'.$pop->path)}}">View</a>
                                             <i>By {{$pop->user->first_name}}
-                                                @if(Auth::user()->role != 444)
+                                                @if(!Auth::user()->role == 444 OR !Auth::user()->role == 449)
                                                     ({{$pop->user->phone}})
                                                 @endif
                                             </i>
@@ -82,7 +82,7 @@
                                             <a href="{{asset('storage/pop/'.$pop->path)}}">View</a>
 
                                                 <i>By {{$pop->user->first_name}}
-                                                    @if(Auth::user()->role != 444)
+                                                    @if(!Auth::user()->role == 444 OR !Auth::user()->role == 449)
                                                         ({{$pop->user->phone}})
                                                     @endif
                                                 </i>
