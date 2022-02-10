@@ -105,7 +105,7 @@
                                                         Select <b>"Prepaid"</b> if you load token on your meter.
                                                     </span>
                                                     <div class="row mt-2 mt-md-5">
-                                                        <form method="post" action="{{route('user.pay-electricity')}}">
+                                                        <form method="post" action="{{route('user.pay-electricity')}}" id="m-submit">
                                                             @csrf
                                                             <div class="row">
                                                                 <div class="col-12 my-1 my-md-0 col-md">

@@ -19,6 +19,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
+        // \App\Http\Middleware\Cors::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
 
     ];
@@ -68,7 +69,9 @@ class Kernel extends HttpKernel
         'accountant' => \App\Http\Middleware\Accountant::class,
         'seniorAccountant' => \App\Http\Middleware\SeniorAccountant::class,
         'manager' => \App\Http\Middleware\Manager::class,
+        'chinese' => \App\Http\Middleware\Chinese::class,
         'bvnVerified' => BvnCheck::class,
+        'customerHappiness' => \App\Http\Middleware\CustomerHappiness::class,
     ];
 
     /**

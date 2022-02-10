@@ -11,14 +11,39 @@ use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
 use App\Transaction;
+use App\UtilityTransaction;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Support\Collection;
 
 class NairaWalletController extends Controller
 {
+    public function getAllTransactions()
+    {
+        $naira_transactions = Auth::user()->nairaTransactions()->orderBy('created_at','desc')->paginate(20)->all();
+        foreach ($naira_transactions as $key => $tr) {
+            if ($tr->extras != null) {
+                $tr->extras = json_decode($tr->extras);
+            }else {
+                $nt = UtilityTransaction::where('reference_id',$tr->reference)->first();
+                if (!empty($nt)) {
+                    $tr->extras = json_decode($nt->extras);
+                }   
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $naira_transactions
+        ]);
+        // $p2p_transactions = Auth::user()->nairaTrades()->select('amount','type','status','created_at')->get();
+        // $collected = $p2p_transactions->union($naira_transactions)->sortByDesc('created_at');
+        // $items = (collect($collected))->paginate(20);
+        // return array_values($items->all());
+    }
+
     public function create(Request $r)
     {
         $callback = route('recieve-funds.callback');
@@ -494,8 +519,10 @@ class NairaWalletController extends Controller
         $btn_text = '';
         $btn_url = '';
 
-        $name = Auth::user()->first_name;
-        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
 
@@ -670,6 +697,10 @@ class NairaWalletController extends Controller
         /* Update Transaction satus */
         $t->status = 'refunded';
         $t->save();
+
+        // $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+        // $transfer_charges_wallet->amount -= $t->transfer_charge;
+        // $transfer_charges_wallet->save();
 
         $title = 'Dantown wallet Debit';
         $msg_body = 'Your Dantown wallet has been ' . $tt . ' with N' . $amount . ' for the refund of transaction with id ' . $t->reference;

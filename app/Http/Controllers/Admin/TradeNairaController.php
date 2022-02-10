@@ -8,16 +8,20 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
 use App\NairaTransaction;
+use App\NairaWallet;
 use App\User;
+use App\PayBridgeAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\GeneralTemplateOne;
+use Illuminate\Support\Facades\Mail;
 
 class TradeNairaController extends Controller
 {
     public function index()
     {
         $users = User::where('role', 777)->get();
-        $users->each(function($u){
+        $users->each(function ($u) {
             $u->success = $u->agentNairaTrades()->where('status', 'success')->count();
             $u->cancelled = $u->agentNairaTrades()->where('status', 'cancelled')->count();
             $u->pending = $u->agentNairaTrades()->whereIn('status', ['pending', 'waiting'])->count();
@@ -34,11 +38,43 @@ class TradeNairaController extends Controller
         }
 
         $show_limit = true;
-        $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+        // $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+        $transactions = NairaTrade::orderBy('created_at', 'desc')->paginate(20);
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
 
+        foreach ($transactions as $t) {
+            if ($t->type == 'withdrawal') {
+                $a = Account::find($t->account_id);
+                $acct = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
+                $t->acct_details = $acct;
+            }
+        }
+
         return view('admin.trade_naira.transactions', compact('transactions', 'show_limit', 'banks', 'account'));
+    }
+
+    public function accounts() {
+        $accounts = PayBridgeAccount::all();
+        return view('admin.trade_naira.accounts', compact('accounts'));
+    }
+
+    public function addAccount(Request $request) {
+        $data = $request->except('_token');
+        PayBridgeAccount::create($data);
+        return redirect()->back()->with(["success" => 'Account added']);
+    }
+
+    public function updateAccount(Request $request) {
+        $data = $request->except('_token');
+        $account = PayBridgeAccount::find($request['id']);
+        $account->account_name = $request['account_name'];
+        $account->bank_name = $request['bank_name'];
+        $account->account_number = $request['account_number'];
+        $account->account_type = $request['account_type'];
+        $account->status = $request['status'];
+        $account->save();
+        return redirect()->back()->with(["success" => 'Account Updated']);
     }
 
     public function updateBankDetails(Request $request)
@@ -59,17 +95,19 @@ class TradeNairaController extends Controller
 
     public function agentTransactions(User $user)
     {
-        $transactions = $user->agentNairaTrades()->paginate(20);
+
+        $transactions =    $user->agentNairaTrades()->orderBy('created_at', 'desc')->paginate(20);
 
         foreach ($transactions as $t) {
-            if ($t->type == 'sell') {
-                $a = Auth::user($t->user_id)->accounts->where('id',$t->account_id)->first();
-                $account = $a['account_name'].', '.$a['bank_name'].', '.$a['account_number'];
-                $t->acct_details = $account; 
+            if ($t->type == 'withdrawal') {
+                $a = Account::find($t->account_id);
+                $account = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
+                $t->acct_details = $account;
             }
+
         }
 
-        $show_limit = false;
+        $show_limit = true;
 
         return view('admin.trade_naira.transactions', compact('transactions', 'show_limit'));
     }
@@ -86,6 +124,133 @@ class TradeNairaController extends Controller
         return back()->with(['success' => 'Limits uppdated']);
     }
 
+    public function declineTrade(Request $request, NairaTrade $transaction)
+    {
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return back()->with(['error' => 'Incorrect pin']);
+        }
+
+        if ($transaction->status != 'waiting') {
+            return back()->with(['error' => 'Invalid transaction']);
+        }
+
+
+
+        $nt = NairaTransaction::where('reference', $transaction->reference)->first();
+
+        // dd($transaction);
+        if ($transaction->type == 'withdrawal') {
+            # credit the user
+            $user_wallet = $nt->user->nairaWallet;
+            $user_wallet->amount += $nt->amount;
+            $user_wallet->save();
+
+            //Send back the charges
+            $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+            $transfer_charges_wallet->amount -= $nt->charge;
+            $transfer_charges_wallet->save();
+        }
+
+        if ($nt) {
+            $nt->status = 'failed';
+            $nt->save();
+        }
+
+        $transaction->status = 'cancelled';
+        $transaction->save();
+
+        return back()->with(['success' => 'Transaction cancelled']);
+    }
+
+    public function refundTrade(Request $request, NairaTrade $transaction)
+    {
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return back()->with(['error' => 'Incorrect pin']);
+        }
+
+        if ($transaction->status != 'success') {
+            // return back()->with(['error' => 'Invalid transaction']);
+        }
+
+        $nt = NairaTransaction::where('reference', $transaction->reference)->first();
+
+        // dd($transaction);
+        if ($transaction->status == 'success') {
+            if ($transaction->type == 'withdrawal') {
+                # credit the user
+
+                // return 'yolo';
+                // return $nt->user->nairaWallet->id;
+
+                $ref = \Str::random(3) . time();
+
+                $n = new NairaTransaction();
+                $n->reference = $ref;
+                $n->amount = $nt->amount;
+                $n->amount_paid = $nt->amount_paid;
+                $n->user_id = $nt->user->id;
+                $n->type = 'withdrawal';
+                $n->previous_balance = $nt->previous_balance;
+                $n->current_balance = $nt->current_balance;
+                $n->charge = $nt->charge;
+                $n->transfer_charge = $nt->transfer_charge;
+                $n->transaction_type_id = $nt->transaction_type_id;
+                $n->cr_wallet_id = $nt->cr_wallet_id;
+                $n->cr_acct_name = $nt->cr_acct_name;
+                $n->narration = 'Withdrawal Refund ' . $ref;
+                $n->trans_msg = '';
+                $n->cr_user_id = $nt->dr_user_id;
+                $n->dr_user_id = $nt->cr_user_id;
+                $n->status = 'refund';
+                $n->save();
+
+            }else {
+            
+                $ref = \Str::random(3) . time();
+
+                $n = new NairaTransaction();
+                $n->reference = $ref;
+                $n->amount = $nt->amount;
+                $n->amount_paid = $nt->amount_paid;
+                $n->user_id = $nt->user->id;
+                $n->type = 'deposit';
+                $n->previous_balance = $nt->user->nairaWallet->amount;
+                $n->current_balance = $nt->user->nairaWallet->amount - $nt->amount;
+                $n->charge = $nt->charge;
+                $n->transfer_charge = $nt->transfer_charge;
+                $n->transaction_type_id = $nt->transaction_type_id;
+                $n->cr_wallet_id = $nt->cr_wallet_id;
+                $n->cr_acct_name = $nt->cr_acct_name;
+                $n->narration = 'Deposit Refund ' . $ref;
+                $n->trans_msg = '';
+                $n->cr_user_id = $nt->dr_user_id;
+                $n->dr_user_id = $nt->cr_user_id;
+                $n->status = 'refund';
+                $n->save();
+
+                # debit the user
+                $user_wallet = $nt->user->nairaWallet;
+                $user_wallet->amount -= $nt->amount;
+                $user_wallet->save();
+    
+                //Send back the charges
+                $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+                $transfer_charges_wallet->amount -= $nt->charge;
+                $transfer_charges_wallet->save();
+            }
+        }
+
+        if ($nt) {
+            $nt->status = 'pending';
+            $nt->save();
+        }
+
+        $transaction->status = 'waiting';
+        $transaction->save();
+
+        return back()->with(['success' => 'Transaction refunded']);
+    }
+
     public function confirm(Request $request, NairaTrade $transaction)
     {
         if (!Hash::check($request->pin, Auth::user()->pin)) {
@@ -98,30 +263,40 @@ class TradeNairaController extends Controller
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
         }
+
+        $nt = NairaTransaction::where('reference', $transaction->reference)->first();
+
+        if ($nt) {
+            $nt->previous_balance = $user_wallet->amount;
+            $nt->current_balance = $user_wallet->amount + $transaction->amount;
+            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+            $nt->status = 'success';
+            $nt->save();
+        }
+
         $user_wallet->amount += $transaction->amount;
         $user_wallet->save();
 
-        $nt = new NairaTransaction();
-        $nt->reference = $transaction->reference;
-        $nt->amount = $transaction->amount;
-        $nt->user_id = $user->id;
-        $nt->type = 'naira wallet';
-        $nt->previous_balance = $user_wallet->amount;
-        $nt->current_balance = $user_wallet->amount + $transaction->amount;
-        $nt->charge = 0;
-        $nt->transaction_type_id = 1;
-        $nt->cr_wallet_id = $user_wallet->id;
-        $nt->cr_acct_name = $user->first_name;
-        $nt->narration = 'Deposit ' . $transaction->reference;
-        $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
-        $nt->cr_user_id = $user->id;
-        $nt->dr_user_id = 1;
-        $nt->status = 'success';
-        $nt->save();
-        //dd($user_wallet);
-
         $transaction->status = 'success';
         $transaction->save();
+        //?mail for deposit successfull
+        $title = 'Pay-Bridge deposit successful
+        ';
+        $body ="Your naria wallet has been credited with <b>₦".number_format($transaction->amount)."</b><br><br>
+        <b>
+        Reference Number: $transaction->reference<br><br>
+        Date: ".date("Y-m-d; h:ia")."<br><br>
+        Account Balance: ₦".number_format($user_wallet->amount)."
+        </b>";
+
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return back()->with(['success' => 'Transaction confirmed']);
     }
@@ -135,35 +310,51 @@ class TradeNairaController extends Controller
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
 
+
+        $agent = User::where(['role' => 777, 'status' => 'active', 'id'=> $transaction->agent_id])->first();
+        $user_account = Account::find($transaction->account_id);
+        $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
+
+
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
         }
 
-        $user_wallet->amount += $transaction->amount;
-        $user_wallet->save();
+        $nt = NairaTransaction::where('reference', $transaction->reference)->first();
 
-
-        $nt = new NairaTransaction();
-        $nt->reference = $transaction->reference;
-        $nt->amount = $transaction->amount;
-        $nt->user_id = $user->id;
-        $nt->type = 'naira wallet';
-        $nt->previous_balance = $user_wallet->amount + $transaction->amount;
-        $nt->current_balance = $user_wallet->amount;
-        $nt->charge = 0;
-        $nt->transaction_type_id = 3;
-        $nt->cr_wallet_id = $user_wallet->id;
-        $nt->cr_acct_name = $user->first_name;
-        $nt->narration = 'Withdraw ' . $transaction->reference;
-        $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
-        $nt->cr_user_id = 1;
-        $nt->dr_user_id = $user->id;
-        $nt->status = 'success';
-        $nt->save();
-        //dd($user_wallet);
+        if ($nt) {
+            $nt->trans_msg = 'This transaction was handled by ' . Auth::user()->first_name;
+            $nt->status = 'success';
+            $nt->save();
+        }
 
         $transaction->status = 'success';
         $transaction->save();
+        //? mail for withdrawal
+        $title = 'Pay-Bridge withdrawal(successful)
+        ';
+
+        $body ="You have successfully withdrawn the sum of ₦".number_format($transaction->amount)." to ".$user_account->account_name."<br>
+        ( ".$user_account->bank_name.", ".$user_account->account_number." ). <br><br>
+        <b>
+            Pay-Bridge Agent: ".$paybridge_account->account_name."<br><br>
+            Bank Name: ".$paybridge_account->bank_name."<br><br>
+            Status: <span style='color:green'>Success</span><br><br>
+
+            Reference Number: $transaction->reference <br><br>
+            Date: ".date("Y-m-d; h:ia")."<br><br>
+            Account Balance: ₦".number_format($user_wallet->amount)."
+        </b>
+        ";
+
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return back()->with(['success' => 'Transaction confirmed']);
     }

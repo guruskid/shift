@@ -9,6 +9,15 @@
 
 define('LARAVEL_START', microtime(true));
 
+
+if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] != ''){
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Methods: PUT,POST,DELETE,GET,OPTIONS');
+    header('Access-Control-Allow-Max-Age: 60');
+    header('Access-Control-Allow-Headers:Origin, Content-Type, X-Auth-Token, Authorization');
+}
+
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader

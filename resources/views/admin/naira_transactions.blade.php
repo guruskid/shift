@@ -54,8 +54,9 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div> {{$segment}} Transactions
                             <div class="page-title-subheading">
                                 <h6 class="d-inline">₦{{ number_format($total) }} </h6>
-                                <a href="{{ route('admin.naira-transaction.create') }}"><button
-                                        class="btn btn-primary">Add new transaction</button></a>
+                                {{-- <a href="{{ route('admin.naira-transaction.create') }}"> --}}
+                                <button class="btn btn-primary">Add new transaction</button>
+                                {{-- </a> --}}
                             </div>
                         </div>
                     </div>
@@ -67,6 +68,17 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between ">
                             {{$segment}} Transactions
+                            {{-- Search for all users --}}
+                            <form action="{{route('admin.search-tnxs')}}" class="form-inline p-2"
+                                method="POST">
+                                @csrf
+                                <div class="form-group mr-2">
+                                    <label for=""> Search </label>
+                                    <input type="text" required name="search" class="ml-2 form-control">
+                                    <input type="hidden" name="segment" value="{{ $segment }}" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+                            </form>
                             <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
                                 method="POST">
                                 @csrf
@@ -126,7 +138,12 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>{{$t->narration}} </td>
                                         <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
                                         <td>{{$t->status}} </td>
-                                        <td>{{$t->extras}} </td>
+                                        <td>@if (in_array(Auth::user()->role, [555] ))
+                                            
+                                            @else
+                                            {{ $t->extras }}
+                                        @endif
+                                             </td>
                                         @if (in_array(Auth::user()->role, [999, 889] ) && $t->status == 'pending' )
                                         <td>
                                             <button data-toggle="modal" data-target="#refund-modal"
@@ -135,6 +152,15 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                                 Refund
                                             </button>
 
+                                            <button data-toggle="modal" data-target="#query-modal"
+                                                onclick="queryTransaction({{$t->id}})"
+                                                class="btn mb-1 btn-sm btn-outline-success">
+                                                Query
+                                            </button>
+                                        </td>
+
+                                        @elseif (Auth::user()->role == 777 && $t->status == 'pending' )
+                                        <td>
                                             <button data-toggle="modal" data-target="#query-modal"
                                                 onclick="queryTransaction({{$t->id}})"
                                                 class="btn mb-1 btn-sm btn-outline-success">
@@ -150,7 +176,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                 </tbody>
 
                             </table>
-                            {{$transactions->links()}}
+                            {{-- {{$transactions->links()}} --}}
                         </div>
                     </div>
                 </div>

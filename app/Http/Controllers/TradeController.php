@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Card;
 use App\CardCurrency;
+use App\Events\CustomNotification;
 use App\Events\NewTransaction;
 use App\Http\Resources\CardResource;
 use App\Mail\DantownNotification;
@@ -12,6 +13,7 @@ use App\Pop;
 use App\Setting;
 use App\Transaction;
 use App\User;
+use App\Currency;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,20 +75,16 @@ class TradeController extends Controller
     {
         $card = Card::find($card_id);
         $rates = $card->currency->first();
-        $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        $rates->sell = json_decode($sell->pivot->payment_range_settings);
+        // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
+        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
-        $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
-        $rates->buy = json_decode($buy->pivot->payment_range_settings);
+        // $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
+        // $rates->buy = json_decode($buy->pivot->payment_range_settings);
+
+        $sell_rate = LiveRateController::usdNgn();
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        $res = json_decode($res->getBody());
-        $btc_real_time = $res->value;
-
-        $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        $tp = ($trading_per / 100) * $btc_real_time;
+        $btc_real_time = LiveRateController::btcRate();
 
 
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id;
@@ -106,7 +104,9 @@ class TradeController extends Controller
 
         $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
-        return view('newpages.bitcoin', compact(['rates', 'card', 'btc_real_time', 'charge', 'tp', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
+
+        return view('newpages.bitcoin', compact(['sell_rate', 'card', 'btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
+
     }
 
     public function ethereum($card_id)
@@ -141,10 +141,25 @@ class TradeController extends Controller
         $batch_id = uniqid();
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
         $r->buy_sell == 1 ? $buy_sell = 'buy' : $buy_sell = 'sell';
-
+        $transaction_id = uniqid();
+        // return $card;
         foreach ($r->cards as $i => $total) {
+            // $rate = json_decode($card->currency->where('name',$r->currencies[0])->first()->cardCurrency->first()->cardPaymentMedia->first()->payment_range_settings);
+            $rate = json_decode($card->currency->where('name',$r->currencies[0])->first()->cardCurrency->where('card_id',$card->id)->first()->cardPaymentMedia->first()->payment_range_settings);
+            $t_amount = 0;
+            // return $rate;
+            foreach ($rate as $key => $value) {
+                if ($value->value == $r->values[$i]) {
+                    $t_amount = $r->quantities[$i] * $value->rate;
+                    break;
+                }
+            }
+            $commission = $t_amount - $r->totals[$i];
+            // return 
+            // return $t_amount .' '. $commission.' '.$r->totals[$i];
+
             $t = new Transaction();
-            $t->uid = uniqid();
+            $t->uid = $transaction_id;
             $t->user_email = Auth::user()->email;
             $t->user_id = Auth::user()->id;
             $t->card = $card->name;
@@ -159,6 +174,7 @@ class TradeController extends Controller
             $t->card_type = $r->card_types[$i];
             $t->quantity = $r->quantities[$i];
             $t->card_price = $r->prices[$i];
+            $t->commission = $commission;
             $t->save();
         }
         /* dd($r->card_images); */
@@ -177,6 +193,12 @@ class TradeController extends Controller
         }
 
         broadcast(new NewTransaction($t))->toOthers();
+
+        $chinese = User::where(['role' => 444, 'status' => 'active'])->get();
+                $message = '!!! New Giftcard Transaction !!!  A new Giftcard transaction has been initiated ';
+                foreach ($chinese as $acct) {
+                    broadcast(new CustomNotification($acct, $message))->toOthers();
+                }
 
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
@@ -197,6 +219,23 @@ class TradeController extends Controller
             Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
 
         }
+        $user = Auth::user();
+        $title = 'TRANSACTION PENDING - BUY
+        ';
+        $body ="Your order to   $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." is currently 
+        <b style='color:red'>pending</b> and will be debited from your naria wallet once the transaction is successful<br>
+        <b>Transaction ID: $transaction_id <br>
+        Date: ".date("Y-m-d; h:ia")."</b>
+        ";
+
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = explode(' ', $name);       
+        $firstname = ucfirst($name[0]);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
         return redirect()->route('user.transactions')->with(['success' => 'Transaction initiated']);

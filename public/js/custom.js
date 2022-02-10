@@ -10,6 +10,12 @@ $(document).ready(function () {
         getWalletBalance();
     }, 3000);
 
+    $('.admin-action').on('submit',function(e){
+        if(!confirm("Are you sure?")) {
+            e.preventDefault();
+        }
+    });
+
     /*  window.oncontextmenu = function () {
         return false;
     }
@@ -810,6 +816,10 @@ $("#rechargeme").on("click", function () {
 $("#filter_month").on("change", function () {
     const selectedvalue = $(this).children("option:selected").val();
     $("#filtermonthForm").trigger('submit')
+})
+
+$('#m-submit').on('submit',function (e) {
+    $(this).find('button').attr('disabled',true)
 })
 
 // const __st_id = (feedback) => document.getElementById(feedback)

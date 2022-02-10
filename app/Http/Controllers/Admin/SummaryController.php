@@ -96,6 +96,7 @@ class SummaryController extends Controller
             'end' => 'required|date|string',
         ]);
 
+
         $sell_transactions = Transaction::where('card_id', $card_id)->where('type', 'sell')
             ->where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end'])
             ->where('status', 'success')->get();
