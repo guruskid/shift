@@ -438,6 +438,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
     Route::GET('/verification-limit', 'Admin\VerificationLimitController@index')->name('admin.verification_limit');
     Route::POST('/update-verification-limit', 'Admin\VerificationLimitController@addLimit')->name('admin.add_verification_limit');
+    Route::GET('/image-slider', 'Admin\ImageSliderController@index')->name('admin.image_slider');
+    Route::POST('/upload-image-slider', 'Admin\ImageSliderController@upload')->name('admin.upload_image_slider');
+    Route::POST('/update-image-slider', 'Admin\ImageSliderController@updateImage')->name('admin.update_image_slider');
+    Route::GET('/delete-image-slider/{id}', 'Admin\ImageSliderController@deleteImage')->name('admin.delete_image_slider');
 
 });
 

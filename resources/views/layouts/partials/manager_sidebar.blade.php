@@ -44,6 +44,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.image_slider' ? 'active' : '' }}">
+        <a href="{{route('admin.image_slider')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Image Slider</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
         <a href="{{route('admin.user-verifications')}}" aria-expanded="false" class="dropdown-toggle" >
             <div class="">

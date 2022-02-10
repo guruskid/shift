@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiV2;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LiveRateController;
+use App\ImageSlide;
 use App\NairaTransaction;
 use App\Notification;
 use App\User;
@@ -54,12 +55,9 @@ class UserController extends Controller
         $usd_value = $wallet->amount/$usdPerNairaRate;
         $btc_value = $usd_value/$btc_rate;
 
-
-            $ngn_bal = (int)$wallet->amount;
-            $ngn_btc_value = number_format((float)$btc_value, 8);
-            $ngn_usd_value = (int)$usd_value;
-
-
+        $ngn_bal = (int)$wallet->amount;
+        $ngn_btc_value = number_format((float)$btc_value, 8);
+        $ngn_usd_value = (int)$usd_value;
 
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
@@ -79,9 +77,9 @@ class UserController extends Controller
         $accounts = json_decode($res->getBody(), true);
 
         if (empty($accounts)) {
-            $btc_bal = (int)$wallet->amount;
-            $btc_ngn_value = number_format((float)$btc_value, 8);
-            $btc_usd_value = (int)$usd_value;
+            $btc_bal = 0; // (int)$wallet->amount;
+            $btc_ngn_value = 0; //number_format((float)$btc_value, 8);
+            $btc_usd_value = 0; //(int)$usd_value;
         }
 
         $btc_balance = $accounts['balance']['availableBalance'];
@@ -92,7 +90,11 @@ class UserController extends Controller
 
         $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
 
-
+        return response()->json([
+            'ngn_balance' => $naira_balance + $ngn_bal,
+            'btc_balance' => $btc_balance + $ngn_btc_value,
+            'usd_balance' => $btc_wallet->usd + $usd_value,
+        ]);
     }
 
     public function dashboard()
@@ -171,13 +173,20 @@ class UserController extends Controller
             ]
         ];
 
+        $slides = array();
+        $adImages = ImageSlide::latest()->get()->take(10);
+        foreach($adImages as $image){
+            array_push($slides, array("image" => url('storage/slider/'.$image->image)));
+        }
+
         return response()->json([
             'success' => true,
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balnace_in_usd' => $btc_wallet->usd,
             'btc_rate' => $btc_real_time,
-            'featured_coins' => $currencies
+            'featured_coins' => $currencies,
+            'advert_image' => $slides
         ]);
     }
 
