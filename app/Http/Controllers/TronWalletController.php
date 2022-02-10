@@ -275,6 +275,7 @@ class TronWalletController extends Controller
         $charge = Setting::where('name', 'tron_send_charge')->first()->value;
 
         return response()->json([
+            'success' => true,
             "fee" => $fees + $charge,
         ]);
     }
