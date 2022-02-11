@@ -60,74 +60,75 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                 </div>
             </div>
+            @if(isset($totalTransactions))
+                @if (in_array(Auth::user()->role, [999] ) and isset($totalTransactions))
+                    <div class="row">
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-grow-early">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content-actions mx-auto ">
+                                        <div class="widget-heading text-center">
+                                            <h5>Total GC Transactions </h5>
+                                            <h6>{{number_format($totalTransactions,2,".",",")}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            @if (in_array(Auth::user()->role, [999] ) and isset($totalTransactions))
-                <div class="row">
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-grow-early">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content-actions mx-auto ">
-                                    <div class="widget-heading text-center">
-                                        <h5>Total GC Transactions </h5>
-                                        <h6>{{number_format($totalTransactions,2,".",",")}}</h6>
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-happy-fisher">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content- mx-auto">
+                                        <div class="widget-heading text-center">
+                                            <h5>Total GC volume</h5>
+                                            <h6>{{number_format($totalVol,2,".",",")}}</h6>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-sunny-morning">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content- mx-auto">
+                                        <div class="widget-heading text-center">
+                                            <h5>Total Commission</h5>
+                                            <h6>{{number_format($totalComm,2,".",",")}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-ripe-malin">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content- mx-auto">
+                                        <div class="widget-heading text-center">
+                                            <h5>Total Chinese Amount</h5>
+                                            <h6>{{number_format($totalChineseAmt,2,".",",")}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-ripe-malin">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content- mx-auto">
+                                        <div class="widget-heading text-center">
+                                            <h5>Avg. num of trades per day</h5>
+                                            <h6>{{$totalAvgPerToday}}</h6>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-happy-fisher">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Total GC volume</h5>
-                                        <h6>{{number_format($totalVol,2,".",",")}}</h6>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-sunny-morning">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Total Commission</h5>
-                                        <h6>{{number_format($totalComm,2,".",",")}}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-ripe-malin">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Total Chinese Amount</h5>
-                                        <h6>{{number_format($totalChineseAmt,2,".",",")}}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-ripe-malin">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Avg. num of trades per day</h5>
-                                        <h6>{{$totalAvgPerToday}}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endif
             @endif
 
             <div class="row">

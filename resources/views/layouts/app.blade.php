@@ -145,7 +145,7 @@ $not = $nots->last();
                             <div class="widget-content-wrapper">
                                 <div class="widget-content-left">
                                     <div class="btn-group">
-                                        @if(Auth::user()->role == 444)
+                                        @if(Auth::user()->role == 444 OR Auth::user()->role == 449)
                                         <div class="language mt-2">
                                             <h4 class="text-light">改变语言
                                             </h4>
@@ -166,7 +166,7 @@ $not = $nots->last();
                                         @endif
                                         @auth
                                         <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
-                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR Auth::user()->role == 444 )
+                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR Auth::user()->role == 444 OR Auth::user()->role == 449 )
                                         <div class="dropdown">
                                             <a data-toggle="dropdown" class="p-0 btn">
                                                 <img width="42" class="rounded-circle"
@@ -233,6 +233,9 @@ $not = $nots->last();
                                     <div class="widget-heading">
                                         @auth
                                         {{Auth::user()->first_name." ".Auth::user()->last_name}}
+                                        @if (empty(Auth::user()->first_name))    
+                                            {{ Auth::user()->email }}
+                                        @endif
                                         @endauth
                                     </div>
                                     <div class="widget-subheading">
@@ -257,7 +260,10 @@ $not = $nots->last();
                                             Manager
                                             @break
                                             @case(444)
-                                            Chinese
+                                            Chinese Operator
+                                            @break
+                                            @case(449)
+                                            Chinese Admin
                                             @break
                                         @default
                                         Hi! there
@@ -291,7 +297,7 @@ $not = $nots->last();
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     @auth
-    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444] ))
+    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449] ))
     <script src="{{asset('js/sa.js?v=7')}}"></script>
     @endif
     @endauth
@@ -373,7 +379,7 @@ $not = $nots->last();
     });
 </script>
 
-@if(Auth::user()->role == 444 OR Auth::user()->role == 999)
+@if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
     <script>
 
         const _e = (e) => document.getElementById(e)

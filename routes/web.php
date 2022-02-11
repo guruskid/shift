@@ -385,6 +385,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
+    Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
+    Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
+    Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('admin.junior-summary-sort-details');
 });
 
 
@@ -533,8 +536,8 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
     Route::any('/search-transactions','CustomerHappinessController@search_tnx')->name('customerHappiness.search-tnxs');
 
 
-    Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
-    Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
-    Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('admin.junior-summary-sort-details');
+    Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('ch.junior-summary');
+    Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('ch.junior-summary-details');
+    Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
 
 });

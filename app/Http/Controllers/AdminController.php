@@ -471,7 +471,7 @@ class AdminController extends Controller
 
     public function transactions(Request $request)
     {
-        $transactions = Transaction::with('user')->latest();
+        $transactions = Transaction::with('user')->orderBy('updated_at', 'desc');
 
         $segment = 'All';
 
@@ -479,19 +479,14 @@ class AdminController extends Controller
         if (isset($request['start']) and isset($request['end'])) {
             $from = $request['start'];
             $to = $request['end'];
-            $transactions = $transactions->whereBetween('created_at', [$from, $to]);
+            $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
+            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                $transactions = $transactions->WhereHas('asset', function($q){
+                    $q->where('is_crypto', 0);
+                });
+            }
             $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
         }
-
-        $transactions = $transactions->paginate(1000);
-
-
-        // $tranx = $tranx->where('card_id','!=','102')->where('status','success');
-        // if (isset($request['start']) and isset($request['end'])) {
-        //     $from = $request['start'];
-        //     $to = $request['end'];
-        //     $tranx = $tranx->whereBetween('created_at', [$from, $to]);
-        // }
 
         $totalTransactions = $tranx->count();
         $totalVol = $tranx->sum('amount');
@@ -508,8 +503,11 @@ class AdminController extends Controller
         }
 
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
+            $transactions = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            });
         }
+        $transactions = $transactions->paginate(1000);
 
         return view('admin.transactions', compact(['transactions', 'segment','totalTransactions','totalVol','totalComm','totalChineseAmt','totalAvgPerToday']));
     }
@@ -528,7 +526,14 @@ class AdminController extends Controller
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
                         });
-            })->paginate(100);
+            });
+                if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                $transactions = $transactions->WhereHas('asset', function($q){
+                    $q->where('is_crypto', 0);
+                })->paginate(100);
+            }
+            $transactions = $transactions->paginate(100);
+            
 
 
             $segment = $request->segment;
@@ -547,7 +552,13 @@ class AdminController extends Controller
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
                         });
-            })->paginate(100);
+            });
+            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                $transactions = $transactions->WhereHas('asset', function($q){
+                    $q->where('is_crypto', 0);
+                })->paginate(100);
+            }
+            $transactions = $transactions->paginate(100);
 
 
             $segment = $status;
@@ -564,7 +575,13 @@ class AdminController extends Controller
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%');
                         });
-            })->paginate(100);
+            });
+            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                $transactions = $transactions->WhereHas('asset', function($q){
+                    $q->where('is_crypto', 0);
+                })->paginate(100);
+            }
+            $transactions = $transactions->paginate(100);
             return view('admin.utility-transactions', compact('transactions'));
         }
         if($request->segment == 'Gift Card' || $request->segment == 'Crypto')
@@ -599,7 +616,13 @@ class AdminController extends Controller
                         })->orWhereHas('transactionType', function($q) use($search) {
                             $q->where('name', 'like', '%' . $search . '%');
                         });
-            })->paginate(100);;
+            });
+            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                $transactions = $transactions->WhereHas('asset', function($q){
+                    $q->where('is_crypto', 0);
+                })->paginate(100);
+            }
+            $transactions = $transactions->paginate(100);
             $segment = 'All Wallet';
             $total = NairaTransaction::latest()->sum('amount');
 
@@ -620,21 +643,21 @@ class AdminController extends Controller
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
                         });
-                    })->paginate(100);
+                    });
+                    if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                        $transactions = $transactions->WhereHas('asset', function($q){
+                            $q->where('is_crypto', 0);
+                        })->paginate(100);
+                    }
+                    $transactions = $transactions->paginate(100);
             $segment = $status;
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
     }
 
-    public function buyTransac()
+    public function buyTransac(Request $request)
     {
-
-        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::with('user')->where('type', 'buy')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
-        }else {
-            $transactions = Transaction::where('type', 'buy')->latest()->paginate(1000);
-        }
-
+        
         $category = Transaction::with('asset')
         ->select('card_id')
         ->where('card_id','!=',null)
@@ -646,25 +669,37 @@ class AdminController extends Controller
         ->distinct('accountant_id')
         ->get();
         $status = Transaction::select('Status')->distinct('Status')->get();
-        $transactions = Transaction::where('type', 'buy')->latest();
-        $card_price_total = $transactions->sum('card_price');
-        $cash_value_total = $transactions->sum('amount_paid');
-        $asset_value_total = $transactions->sum('amount');
-        $total_transactions = $transactions->count();
-        $transactions = $transactions->paginate(1000);
+        $transactions = Transaction::where('type', 'buy')->orderBy('updated_at', 'desc');
         $segment = 'Buy';
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
+            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                $transactions = $transactions->WhereHas('asset', function($q){
+                    $q->where('is_crypto', 0);
+                });
+            }
+            $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
+        }
+        
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+            $transactions = Transaction::with('user')->
+            whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            });
+        }
+        $transactions = $transactions->paginate(1000);
         return view('admin.transactions', compact(['transactions', 'segment','accountant','status','category'
         ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
-    public function sellTransac()
+    public function sellTransac(Request $request)
     {
-        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::with('user')->where('type', 'sell')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
-        }else{
-            $transactions = Transaction::where('type', 'sell')->latest()->paginate(1000);
-        }
-
         $category = Transaction::with('asset')
         ->select('card_id')
         ->where('card_id','!=',null)
@@ -675,26 +710,37 @@ class AdminController extends Controller
         ->where('accountant_id','!=',null)
         ->distinct('accountant_id')
         ->get();
+        $segment = 'Sell';
         $status = Transaction::select('Status')->distinct('Status')->get();
-        $transactions = Transaction::where('type', 'sell')->latest();
+        $transactions = Transaction::where('type', 'sell')->orderBy('updated_at', 'desc');
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
+            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                $transactions = $transactions->WhereHas('asset', function($q){
+                    $q->where('is_crypto', 0);
+                });
+            }
+            $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
+        }
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
+        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+            $transactions = Transaction::with('user')->
+            whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            });
+        }
         $transactions = $transactions->paginate(1000);
-        $segment = 'Sell';
         return view('admin.transactions', compact(['transactions', 'segment','accountant','status','category'
         ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
     }
 
-    public function txnByStatus($status)
+    public function txnByStatus($status, Request $request)
     {
-        $transactions = Transaction::where('status', $status)->orderBy('updated_at', 'desc')->paginate(1000);
-
-        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::with('user')->where('status', $status)->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('updated_at', 'desc')->paginate(1000);
-        }
-
         $type = Transaction::select('type')->distinct('type')->get();
         $category = Transaction::with('asset')
         ->select('card_id')
@@ -706,15 +752,30 @@ class AdminController extends Controller
         ->where('accountant_id','!=',null)
         ->distinct('accountant_id')
         ->get();
-
-
-        $transactions = Transaction::where('status', $status)->latest();
+        $segment = $status;
+        $transactions = Transaction::where('status', $status)->orderBy('updated_at', 'desc');
+        if (isset($request['start']) and isset($request['end'])) {
+            $from = $request['start'];
+            $to = $request['end'];
+            $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
+            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+                $transactions = $transactions->WhereHas('asset', function($q){
+                    $q->where('is_crypto', 0);
+                });
+            }
+            $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
+        }
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
+        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+            $transactions = Transaction::with('user')->
+            whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            });
+        }
         $transactions = $transactions->paginate(1000);
-        $segment = $status;
         return view('admin.transactions', compact(['transactions', 'segment','type','accountant','category'
         ,'total_transactions','asset_value_total','cash_value_total','card_price_total'
     ]));
