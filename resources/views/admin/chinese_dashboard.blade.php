@@ -949,9 +949,6 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <label for="">Status</label>
                                 <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
                                     <option value="{{$cwt->status}}">{{$cwt->status}}</option>
-                                    @if (in_array(Auth::user()->role, [889, 777, 999]))
-                                    <option value="success">Success</option>
-                                    @endif
                                     <option value="success">Success</option>
                                     <option value="waiting">Waiting</option>
                                     <option value="in progress">In progress</option>
@@ -1076,12 +1073,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <label for="">Status</label>
                                 <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
                                     <option value="{{$cwt->status}}">{{$cwt->status}}</option>
-                                    @if (in_array(Auth::user()->role, [889, 777, 999]))
-                                    <option value="success">Success</option>
-                                    @endif
-                                    <option value="approved">Approved (cleared to pay)</option>
-                                    <option value="waiting">Waiting</option>
                                     <option value="in progress">In progress</option>
+                                    <option value="success">Success</option>
+                                    <option value="waiting">Waiting</option>
                                     <option value="failed">Failed</option>
                                     <option value="declined">Declined</option>
                                 </select>
