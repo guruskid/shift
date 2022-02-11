@@ -220,6 +220,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <th class="text-center">Quantity</th>
                                                             <th class="text-center">Card price</th>
                                                             <th class="text-center">Cash value</th>
+                                                            <th class="text-center">User Amount</th>
+                                                            <th class="text-center">Commission</th>
+                                                            <th class="text-center">Chinese Amount</th>
                                                             @if (!in_array(Auth::user()->role, [449, 444] ))
                                                             <th class="text-center">Wallet ID</th>
                                                             @endif
@@ -263,6 +266,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <td class="text-center">{{$t->card_price}}</td>
                                                             <td class="text-center">N{{number_format($t->amount_paid)}}
                                                             </td>
+                                                            <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
+                                                            <td class="text-center">{{$t->commission}}</td>
+                                                            <td class="text-center">N{{number_format($t->amount_paid)}}</td>
                                                             @if (!in_array(Auth::user()->role, [449, 444] ))
                                                             <td class="text-center">{{$t->wallet_id}}</td>
                                                             @endif
@@ -946,7 +952,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     @if (in_array(Auth::user()->role, [889, 777, 999]))
                                     <option value="success">Success</option>
                                     @endif
-                                    <option value="approved">Approved (cleared to pay)</option>
+                                    <option value="success">Success</option>
                                     <option value="waiting">Waiting</option>
                                     <option value="in progress">In progress</option>
                                     <option value="failed">Failed</option>

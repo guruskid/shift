@@ -233,6 +233,9 @@ $not = $nots->last();
                                     <div class="widget-heading">
                                         @auth
                                         {{Auth::user()->first_name." ".Auth::user()->last_name}}
+                                        @if (empty(Auth::user()->first_name))    
+                                            {{ Auth::user()->email }}
+                                        @endif
                                         @endauth
                                     </div>
                                     <div class="widget-subheading">
@@ -257,7 +260,10 @@ $not = $nots->last();
                                             Manager
                                             @break
                                             @case(444)
-                                            Chinese
+                                            Chinese Operator
+                                            @break
+                                            @case(449)
+                                            Chinese Admin
                                             @break
                                         @default
                                         Hi! there
@@ -373,7 +379,7 @@ $not = $nots->last();
     });
 </script>
 
-@if(Auth::user()->role == 444 OR Auth::user()->role == 999)
+@if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
     <script>
 
         const _e = (e) => document.getElementById(e)
