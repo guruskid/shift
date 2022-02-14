@@ -220,7 +220,14 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <th class="text-center">Quantity</th>
                                                             <th class="text-center">Card price</th>
                                                             <th class="text-center">Cash value</th>
-                                                            @if (!in_array(Auth::user()->role, [449, 444] ))
+                                                            @if (!in_array(Auth::user()->role, [449,444] ))
+                                                            <th class="text-center">User Amount</th>
+                                                            @endif
+                                                            @if (in_array(Auth::user()->role, [999] ))
+                                                                <th class="text-center">Commission</th>
+                                                                <th class="text-center">Chinese Amount</th>
+                                                            @endif
+                                                            @if (!in_array(Auth::user()->role, [449,444] ))
                                                             <th class="text-center">Wallet ID</th>
                                                             @endif
                                                             <th class="text-center">User</th>
@@ -263,7 +270,15 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <td class="text-center">{{$t->card_price}}</td>
                                                             <td class="text-center">N{{number_format($t->amount_paid)}}
                                                             </td>
-                                                            @if (!in_array(Auth::user()->role, [449, 444] ))
+                                                            @if (!in_array(Auth::user()->role, [449,444] ))
+                                                            <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
+                                                            @endif
+                                                            @if (in_array(Auth::user()->role, [999] ))
+                                                                <td class="text-center">{{$t->commission}}</td>
+                                                                <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+
+                                                            @endif
+                                                            @if (!in_array(Auth::user()->role, [449,444] ))
                                                             <td class="text-center">{{$t->wallet_id}}</td>
                                                             @endif
                                                             <td class="text-center">
@@ -564,7 +579,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                                     <span class="btn btn-sm btn-success">View</span>
                                                                 </a>
 
-                                                                @if (Auth::user()->role == 444 ) {{--test//// super accountant
+                                                                @if (Auth::user()->role == 444  OR Auth::user()->role == 449) {{--test//// super accountant
                                                                 options --}}
 
                                                                 <a href="#" data-toggle="modal"
@@ -573,26 +588,26 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                                     ><span
                                                                         class="btn btn-sm btn-info">Edit</span></a>
 
-                                                                @if ($t->status == 'approved')
-                                                                @if (\Str::lower($t->card) == 'bitcoins')
-                                                                <button data-toggle="modal"
-                                                                    data-target="#confirm-btc-modal"
-                                                                    onclick="confirmBtcTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
-                                                                    class="btn btn-sm btn-outline-success">Pay
-                                                                    BTC</button>
-                                                                @else
-                                                                <button data-toggle="modal" data-target="#confirm-modal"
-                                                                    onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
-                                                                    class="btn btn-sm btn-outline-success">Pay</button>
-                                                                @endif
+                                                                    @if ($t->status == 'approved')
+                                                                        @if (\Str::lower($t->card) == 'bitcoins')
+                                                                        <button data-toggle="modal"
+                                                                            data-target="#confirm-btc-modal"
+                                                                            onclick="confirmBtcTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                                            class="btn btn-sm btn-outline-success">Pay
+                                                                            BTC</button>
+                                                                        @else
+                                                                        <button data-toggle="modal" data-target="#confirm-modal"
+                                                                            onclick="confirmTransfer({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                                            class="btn btn-sm btn-outline-success">Pay</button>
+                                                                        @endif
 
-                                                                @elseif($t->status == 'success' || ($t->type == 'buy' &&
-                                                                $t->status ==
-                                                                'declined' ) )
-                                                                <button data-toggle="modal" data-target="#refund-modal"
-                                                                    onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
-                                                                    class="btn btn-sm btn-outline-success">Refund</button>
-                                                                @endif
+                                                                    @elseif($t->status == 'success' || ($t->type == 'buy' &&
+                                                                    $t->status ==
+                                                                    'declined' ) )
+                                                                    <button data-toggle="modal" data-target="#refund-modal"
+                                                                        onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount_paid)}}' )"
+                                                                        class="btn btn-sm btn-outline-success">Refund</button>
+                                                                    @endif
 
                                                                 @endif
 
@@ -943,10 +958,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <label for="">Status</label>
                                 <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
                                     <option value="{{$cwt->status}}">{{$cwt->status}}</option>
-                                    @if (in_array(Auth::user()->role, [889, 777, 999]))
                                     <option value="success">Success</option>
-                                    @endif
-                                    <option value="approved">Approved (cleared to pay)</option>
                                     <option value="waiting">Waiting</option>
                                     <option value="in progress">In progress</option>
                                     <option value="failed">Failed</option>
@@ -1070,12 +1082,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <label for="">Status</label>
                                 <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
                                     <option value="{{$cwt->status}}">{{$cwt->status}}</option>
-                                    @if (in_array(Auth::user()->role, [889, 777, 999]))
-                                    <option value="success">Success</option>
-                                    @endif
-                                    <option value="approved">Approved (cleared to pay)</option>
-                                    <option value="waiting">Waiting</option>
                                     <option value="in progress">In progress</option>
+                                    <option value="success">Success</option>
+                                    <option value="waiting">Waiting</option>
                                     <option value="failed">Failed</option>
                                     <option value="declined">Declined</option>
                                 </select>

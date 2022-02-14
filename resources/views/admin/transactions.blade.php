@@ -60,74 +60,75 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     </div>
                 </div>
             </div>
+            @if(isset($totalTransactions))
+                @if (in_array(Auth::user()->role, [999] ) and isset($totalTransactions))
+                    <div class="row">
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-grow-early">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content-actions mx-auto ">
+                                        <div class="widget-heading text-center">
+                                            <h5>Total GC Transactions </h5>
+                                            <h6>{{number_format($totalTransactions,2,".",",")}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            @if (in_array(Auth::user()->role, [999] ) and isset($totalTransactions))
-                <div class="row">
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-grow-early">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content-actions mx-auto ">
-                                    <div class="widget-heading text-center">
-                                        <h5>Total GC Transactions </h5>
-                                        <h6>{{number_format($totalTransactions,2,".",",")}}</h6>
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-happy-fisher">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content- mx-auto">
+                                        <div class="widget-heading text-center">
+                                            <h5>Total GC volume</h5>
+                                            <h6>{{number_format($totalVol,2,".",",")}}</h6>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-sunny-morning">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content- mx-auto">
+                                        <div class="widget-heading text-center">
+                                            <h5>Total Commission</h5>
+                                            <h6>{{number_format($totalComm,2,".",",")}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-ripe-malin">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content- mx-auto">
+                                        <div class="widget-heading text-center">
+                                            <h5>Total Chinese Amount</h5>
+                                            <h6>{{number_format($totalChineseAmt,2,".",",")}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-xl-3">
+                            <div class="card mb-3 widget-content bg-ripe-malin">
+                                <div class="widget-content-wrapper py-2 text-white">
+                                    <div class="widget-content- mx-auto">
+                                        <div class="widget-heading text-center">
+                                            <h5>Avg. num of trades per day</h5>
+                                            <h6>{{$totalAvgPerToday}}</h6>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-happy-fisher">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Total GC volume</h5>
-                                        <h6>{{number_format($totalVol,2,".",",")}}</h6>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-sunny-morning">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Total Commission</h5>
-                                        <h6>{{number_format($totalComm,2,".",",")}}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-ripe-malin">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Total Chinese Amount</h5>
-                                        <h6>{{number_format($totalChineseAmt,2,".",",")}}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-xl-3">
-                        <div class="card mb-3 widget-content bg-ripe-malin">
-                            <div class="widget-content-wrapper py-2 text-white">
-                                <div class="widget-content- mx-auto">
-                                    <div class="widget-heading text-center">
-                                        <h5>Avg. num of trades per day</h5>
-                                        <h6>{{$totalAvgPerToday}}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endif
             @endif
 
             <div class="row">
@@ -453,7 +454,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
                                             {{-- Junior Accountant end --}}
 
-                                            @if (Auth::user()->role == 888 OR Auth::user()->role == 444 ) {{-- Sales rep --}}
+                                            @if (Auth::user()->role == 888 OR Auth::user()->role == 444 OR Auth::user()->role == 449 ) {{-- Sales rep --}}
                                                 @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
                                                 <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t}})"><span
@@ -463,7 +464,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
 
 
-                                            @if($t->status == 'waiting' && Auth::user()->role == 444)
+                                            @if($t->status == 'waiting' && (Auth::user()->role == 444 OR Auth::user()->role == 449))
                                             <form action="{{route('admin.transfer-chinese',$t->id)}} " method="post" class="admin-action">
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{$t->id}}" required class="form-control">
@@ -558,12 +559,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 <label for="">Status</label>
                                 <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
                                     <option value="" id="e_status"></option>
-                                    @if (in_array(Auth::user()->role, [889, 777, 999, 444]))
+                                    @if (in_array(Auth::user()->role, [889, 777, 999, 444, 449]))
                                     <option value="success">Success</option>
                                     @endif
-                                    {{-- @if (!in_array(Auth::user()->role, [444])) --}}
-                                    <option value="approved">Approved (cleared to pay)</option>
-                                    {{-- @endif --}}
                                     <option value="waiting">Waiting</option>
                                     <option value="in progress">In progress</option>
                                     <option value="failed">Failed</option>
