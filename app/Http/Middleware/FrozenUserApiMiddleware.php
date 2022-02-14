@@ -27,5 +27,6 @@ class FrozenUserApiMiddleware
             }
             return $next($request);
         }
+        return $next($request);
     }
 }
