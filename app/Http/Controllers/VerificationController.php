@@ -13,6 +13,9 @@ class VerificationController extends Controller
 {
     public function uploadId(Request $request)
     {
+        if(Auth::user()->first_name == ' '){
+            return back()->with(['error' => 'You must to add your bank details before proceeding for verification']);
+        }
         if(Auth::user()->phone_verified_at == null){
             return back()->with(['error' => 'Please verify your phone number first']);
         }
@@ -60,10 +63,15 @@ class VerificationController extends Controller
 
     public function uploadAddress(Request $request)
     {
+
+        if(Auth::user()->first_name == ' '){
+            return back()->with(['error' => 'You must to add your bank details before proceeding for verification']);
+        }
+
         if(Auth::user()->phone_verified_at == null){
             return back()->with(['error' => 'Please Verify your phone number first']);
         }
-        
+
         $this->validate($request, [
             'address' => 'required',
             'location' => 'required',
