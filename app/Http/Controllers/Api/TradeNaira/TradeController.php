@@ -159,7 +159,7 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3) . time();
-        $charge = 100;
+        $charge = 0;
 
         //create TXN here
         $txn = new NairaTrade();
@@ -230,7 +230,7 @@ class TradeController extends Controller
         $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
         $message = '!!! Withdrawal Transaction !!!  A new Withdrawal transaction has been initiated ';
         foreach ($accountants as $acct) {
-            broadcast(new CustomNotification($acct, $message))->toOthers();
+            // broadcast(new CustomNotification($acct, $message))->toOthers();
         }
 
         return response()->json([
