@@ -159,12 +159,14 @@
                             </i>Successful transactions
                         </a>
                     </li>
+                    @if (!in_array(Auth::user()->role, [889, 777, 666, 555, 449, 444]))
                     <li>
                         <a href="{{route('admin.transactions-status', 'approved')}}" >
                             <i class="metismenu-icon">
                             </i>Approved transactions
                         </a>
                     </li>
+                    @endif
                     <li>
                         <a href="{{route('admin.transactions-status', 'in progress')}}" >
                             <i class="metismenu-icon">

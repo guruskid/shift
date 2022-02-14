@@ -688,7 +688,7 @@ class AdminController extends Controller
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::with('user')->
+            $transactions = $transactions->with('user')->
             whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             });
@@ -729,7 +729,7 @@ class AdminController extends Controller
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::with('user')->
+            $transactions = $transactions->with('user')->
             whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             });
@@ -770,7 +770,7 @@ class AdminController extends Controller
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::with('user')->
+            $transactions = $transactions->with('user')->
             whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             });
