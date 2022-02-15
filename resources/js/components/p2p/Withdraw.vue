@@ -11,7 +11,7 @@
             </div>
             <div class="mt-2 mb-4" style="color: #8D8D93;">
                 <div>Kindly note that you are receiving the sum of <span class="font-weight-bold"><span
-                            id="amt">{{ amount >= 1000 ? amount : '0' }}</span> NGN</span> from</div>
+                            id="amt">{{ amount >= 1000 ? amount - 1000 : '0' }}</span> NGN</span> from</div>
                 <div style="color: #8D8D93;">
                     Pay-bridge agent: <span class="font-bold" style="color: #000070;">{{account_name}}</span>
                 </div>
