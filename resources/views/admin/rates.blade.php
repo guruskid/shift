@@ -47,7 +47,7 @@
                             <i class="pe-7s-graph1 icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Rates</div>
+                        <div>Rates- -</div>
                     </div>
                 </div>
             </div>

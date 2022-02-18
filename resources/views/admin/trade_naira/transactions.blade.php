@@ -108,7 +108,7 @@
                                     text-white
                                     @endif">Open Transactions</p>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </a>
@@ -125,10 +125,10 @@
                                     text-white
                                     @endif">Total Withdrawal [ {{ $withdrawal_all_tnx }} ]</h5>
                                     <p class="text-center @if ($type == 'withdrawal' AND $status == null)
-                                    text-white 
+                                    text-white
                                     @endif">Open Transactions</p>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </a>
@@ -142,18 +142,18 @@
                             <div class="widget-content-wrapper">
                                 <div class="widget-heading">
                                     <h5 class="text-center @if ($type == 'deposit' AND $status == "success")
-                                        text-white 
+                                        text-white
                                     @endif">Successful Deposit [ {{ $deposit_success_tnx }} ]</h5>
                                     <p class="text-center @if ($type == 'deposit' AND $status == "success")
-                                        text-white 
+                                        text-white
                                     @endif">
-                                    
+
                                     @if (Auth::user()->role != 777)
-                                            
+
                                     ₦ {{ number_format($deposit_success_amount) }}</p>
                                     @endif
                                 </div>
-                                
+
                             </div>
                         </div>
                     </a>
@@ -169,18 +169,18 @@
                                 <div class="widget-heading">
                                     <h5 class="text-center
                                     @if ($type == 'withdrawal' AND $status == "success")
-                                    text-white 
+                                    text-white
                                     @endif">Successful Withdrawal <br>[ {{ $withdrawal_success_tnx }} ]</h5>
                                     <p class="text-center
                                     @if ($type == 'withdrawal' AND $status == "success")
-                                    text-white 
+                                    text-white
                                     @endif">
-                                    
+
                                     @if (Auth::user()->role != 777)
                                         ₦ {{ number_format($withdrawal_success_amount) }}</p>
                                     @endif
                                 </div>
-                                
+
                             </div>
                         </div>
                     </a>
@@ -195,14 +195,14 @@
                             <div class="widget-content-wrapper">
                                 <div class="widget-heading">
                                     <h5 class="text-center @if ($type == 'deposit' AND $status == "waiting")
-                                        text-white 
+                                        text-white
                                     @endif">Waiting Deposit [ {{ $deposit_waiting_tnx }} ]</h5>
                                     <p class="text-center
                                     @if ($type == 'deposit' AND $status == "waiting")
-                                        text-white 
+                                        text-white
                                     @endif">₦ {{ number_format($deposit_waiting_amount) }}</p>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </a>
@@ -222,7 +222,7 @@
                                     text-white
                                    @endif">₦ {{ number_format($withdrawal_waiting_amount) }}</p>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </a>
@@ -237,19 +237,19 @@
                             <div class="widget-content-wrapper">
                                 <div class="widget-heading">
                                     <h5 class="text-center @if ($type == 'deposit' AND $status == "cancelled")
-                                    text-white 
+                                    text-white
                                      @endif">Declined Deposit [ {{ $deposit_denied_tnx }} ]</h5>
                                     <p class="text-center @if ($type == 'deposit' AND $status == "cancelled")
-                                    text-white 
+                                    text-white
                                     @endif">₦ {{ number_format($deposit_denied_amount) }}</p>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </a>
                 </div>
-                
-                
+
+
                 <div class="col-md-3">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal','status'=>'cancelled']) }}">
@@ -265,13 +265,13 @@
                                     text-white
                                    @endif">₦ {{ number_format($withdrawal_denied_amount) }}</p>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </a>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 pb-3 card">
@@ -326,7 +326,7 @@
                                             <br><br>
                                             {{ $t->acct_details }}
                                         @endif
-                                        
+
                                         </td>
                                         <td>₦{{ number_format($t->prev_bal) }}</td>
                                         <td>₦{{ number_format($t->current_bal) }}</td>
@@ -348,7 +348,7 @@
                                 </tbody>
                             </table>
                             @if (isset($paginate) && $paginate != false)
-                            
+
                             {{$transactions->links()}}
                             @endif
                         </div>

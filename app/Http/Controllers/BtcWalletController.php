@@ -7,6 +7,7 @@ use App\Card;
 use App\CardCurrency;
 use App\CryptoRate;
 use App\HdWallet;
+use App\FeeWallet;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 use RestApis\Blockchain\Constants;
 use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\GeneralSettings;
 
 class BtcWalletController extends Controller
 {
@@ -268,7 +270,6 @@ class BtcWalletController extends Controller
             ], 401);
         }
 
-
         /* if ($data['amount'] < 3) {
             return back()->with(['error' => 'Minimum trade amount is $3']);
         } */
@@ -396,7 +397,7 @@ class BtcWalletController extends Controller
         $firstname = ucfirst($name[0]);
         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-        // /////////////////////////////////////////////
+        // ////////////////////////////////////////////
 
         $reference = \Str::random(5) . Auth::user()->id;
         $url = env('TATUM_URL') . '/ledger/transaction';
@@ -467,6 +468,46 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        $status = GeneralSettings::getSetting('REFERRAL_ACTIVE')->settings_value;
+
+        if (Auth::user()->referred == 1 and $status == 1) {
+            // fund referral pool wallet
+            $referral_percentage = GeneralSettings::getSetting('REFERRAL_PERCENTAGE');
+            $referral_wallet = FeeWallet::where('name','referral_pool')->first();
+            $referral_bonus = ($referral_percentage['settings_value'] / 100) * $r->quantity;
+
+            $reference = \Str::random(5) . Auth::user()->id;
+
+            try {
+                $send = $client->request('POST', $url, [
+                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'json' =>  [
+                        "senderAccountId" => $hd_wallet->account_id,
+                        "recipientAccountId" => $referral_wallet->account_id,
+                        "amount" => number_format((float) $referral_bonus, 8),
+                        "anonymous" => false,
+                        "compliant" => false,
+                        "transactionCode" => $reference,
+                        "paymentId" => $reference,
+                        "baseRate" => 1,
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                \Log::info($e->getResponse()->getBody());
+                //report($e);
+                // return response()->json([
+                //     'success' => false,
+                //     'msg' => 'An error occured, please try again'
+                // ]);
+            }
+
+            // fund referral wallet
+            $ref = User::where('referral_code',Auth::user()->referrer);
+            $r_wallet = $ref->first()->referral_wallet;
+            $r_wallet = $r_wallet + $referral_bonus;
+            $ref->update(['referral_wallet' => $r_wallet]);
+        }
+
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
         $reference = \Str::random(2) . '-' . $t->id;
@@ -494,6 +535,23 @@ class BtcWalletController extends Controller
 
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
+
+        // ///////////////////////////////////////////////////////////
+        $title = 'Sell Order Successful';
+        $body = 'Your order to sell 0.07 '.$t->card.' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+        Your new  balance is '. Auth::user()->nairaWallet->amount + $t->amount_paid.'.<br>
+        Date: '.now().'.<br><br>
+
+         Thank you for Trading with Dantown.
+
+        ';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = Auth::user()->first_name;
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+// /////////////////////////////////////////////
 
         return response()->json([
             'success' => true,

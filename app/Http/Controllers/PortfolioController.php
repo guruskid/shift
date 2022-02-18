@@ -37,19 +37,19 @@ class PortfolioController extends Controller
         $btc_wallet->balance = $btc->balance->availableBalance;
         $btc_wallet->usd = $btc_wallet->balance  * $btc_rate;
 
-        $eth_wallet = null;
-        if (Auth::user()->ethWallet) {
-            $eth_url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->ethWallet->account_id;
+        $tron_wallet = null;
+        if (Auth::user()->tronWallet) {
+            $eth_url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->tronWallet->account_id;
             $res = $client->request('GET', $eth_url, [
                 'headers' => ['x-api-key' => env('TATUM_KEY')]
             ]);
             $eth = json_decode($res->getBody());
 
-            $eth_wallet = Auth::user()->ethWallet;
-            $eth_wallet->balance = $eth->balance->availableBalance;
+            $tron_wallet = Auth::user()->tronWallet;
+            $tron_wallet->balance = $eth->balance->availableBalance;
         }
 
-        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'eth_wallet', 'nw']));
+        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'tron_wallet', 'nw']));
     }
 
 

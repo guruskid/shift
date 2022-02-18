@@ -122,10 +122,10 @@
                                                     <td>{{ $transaction->id }}</td>
                                                     <td>{{ $transaction->user->first_name }}</td>
                                                     <td>{{ $transaction->type }}</td>
-                                                    <td>{{ number_format((float)$transaction->quantity, 8) }}</td>
-                                                    <td>${{ number_format($transaction->amount) }}</td>
+                                                    <td>{{ number_format((float)$transaction->quantity, 5) }}</td>
+                                                    <td>${{ number_format($transaction->amount, 2) }}</td>
                                                     <td>₦{{ number_format($transaction->amount_paid) }}</td>
-                                                    <td>${{ number_format($transaction->card_price) }}</td>
+                                                    <td>${{ number_format($transaction->card_price, 3) }}</td>
                                                     <td>{{ $transaction->created_at->format('d m y, h:ia') }}</td>
                                                 </tr>
                                                 @endforeach
@@ -140,11 +140,11 @@
                                                 </tr>
                                                 <tr>
                                                     <td><strong>Total USD</strong></td>
-                                                    <td>${{ number_format($sell_usd) }}</td>
+                                                    <td>${{ number_format($sell_usd, 4) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td><strong>Average {{ $cur }} Price</strong></td>
-                                                    <td>${{ number_format($sell_average) }}</td>
+                                                    <td>${{ number_format($sell_average, 4) }}</td>
                                                 </tr>
                                             </tfoot>
 

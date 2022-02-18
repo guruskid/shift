@@ -243,13 +243,33 @@
                                 <fieldset>
                                     <legend>Power Convenience fee</legend>
                                     <div class="row">
-                                        @if(!empty($settings['AIRTIME_BUY']))
+                                        {{-- @if(!empty($settings['POWER_CONVENIENCE_FEE'])) --}}
                                             <div class="col-md-4">
                                                 <div class="form-group form-material">
                                                     <input type="text" name="power_convenience_fee" value="{{!empty($settings['POWER_CONVENIENCE_FEE']) ? $settings['POWER_CONVENIENCE_FEE']['settings_value'] : ''}}" class="form-control" placeholder="convenience fee"/>
                                                 </div>
                                             </div>
-                                        @endif
+                                        {{-- @endif --}}
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <legend>Referral Percentage</legend>
+                                    <div class="row">
+                                        {{-- @if(!empty($settings['REFERRAL_PERCENTAGE'])) --}}
+                                            <div class="col-md-4">
+                                                <div class="form-group form-material">
+                                                    <input type="text" name="referral_percentage" value="{{!empty($settings['REFERRAL_PERCENTAGE']) ? $settings['REFERRAL_PERCENTAGE']['settings_value'] : ''}}" class="form-control" placeholder="referral percentage"/>
+                                                </div>
+                                                
+                                                <div class="custom-control mr-4 mb-3">
+                                                    <input type="checkbox" name="referral_active" class="form-check-input" id="ref" {{(!empty($settings['REFERRAL_ACTIVE']) && $settings['REFERRAL_ACTIVE']['settings_value'] == 1) ? 'checked' : '' }}>
+                                                    <label class="form-check-label " for="ref" style="color: #676B87;">Referral
+                                                     Active
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        {{-- @endif --}}
                                     </div>
                                 </fieldset>
 

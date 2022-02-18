@@ -74,10 +74,13 @@ class HomeController extends Controller
         $email = Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
-        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666) {
+        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666 || $user->role == 444 || $user->role == 449) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->role == 888) {
             return redirect()->route('admin.assigned-transactions');
+        }
+        elseif($user->role == 555){
+            return redirect()->route('customerHappiness.homepage');
         } elseif ($user->role == 1 or $user->role == 2) {
             return redirect()->route('user.dashboard');
         } else {
@@ -204,8 +207,8 @@ class HomeController extends Controller
         $btn_text = '';
         $btn_url = '';
         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
-        
-        
+
+
         return redirect()->route('user.dashboard');
     }
 

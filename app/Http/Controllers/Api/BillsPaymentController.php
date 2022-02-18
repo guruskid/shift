@@ -15,11 +15,13 @@ use App\NairaTransaction;
 use App\Notification;
 use App\UtilityTransaction;
 use App\Http\Controllers\BillsPaymentController as BillsPayment;
+use App\Mail\DantownNotification;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 // use GuzzleHttp\Client;
 
 class BillsPaymentController extends Controller
@@ -896,7 +898,7 @@ class BillsPaymentController extends Controller
                 <b>Reference code:'. $reference;
                 $btn_text = '';
                 $btn_url = '';
-        
+
                 $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
                 $name = explode(' ', $name);
                 $firstname = ucfirst($name[0]);
@@ -983,7 +985,9 @@ class BillsPaymentController extends Controller
             ]);
         }
 
-        if ($amount > $n->amount) {
+        $total_charge = $amount + $charge;
+
+        if ($total_charge > $n->amount) {
             return response()->json([
                 'success' => false,
                 'message' => 'Insufficient balance',
@@ -1002,12 +1006,11 @@ class BillsPaymentController extends Controller
         $response = $this->purchase($postData);
 
         if (isset($response['content']) && isset($response['content']['transactions'])) {
-            if ($response['content']['transactions']['status'] == 'delivered') {
                 $total_charge = $amount + $charge;
-
                 $prev_bal = $n->amount;
                 $n->amount -= $total_charge;
                 $n->save();
+            if ($response['content']['transactions']['status'] == 'delivered') {
 
                 $nt = new NairaTransaction();
                 $nt->reference = $reference;
@@ -1059,22 +1062,26 @@ class BillsPaymentController extends Controller
                 $phone = $r->phone_number;
 
                 if (isset(Auth::user()->phone)) {
-                    $client = new Client();
-                    $url = env('TERMII_SMS_URL') . "/send";
-                    $country = Country::find(Auth::user()->country_id);
-                    $phone_number = $country->phonecode . $phone;
+                    try {
+                        $client = new Client();
+                        $url = env('TERMII_SMS_URL') . "/send";
+                        $country = Country::find(Auth::user()->country_id);
+                        $phone_number = $country->phonecode . $phone;
 
-                    $response_sms = $client->request('POST', $url, [
-                        'json' => [
-                            'api_key' => env('TERMII_API_KEY'),
-                            "type" => "plain",
-                            "to" => $phone_number,
-                            "from" => "N-Alert",
-                            "channel" => "dnd",
-                            "sms" => "Your cable subscription from Dantown was successful."
-                        ],
-                    ]);
-                    $body = json_decode($response_sms->getBody()->getContents());
+                        $response_sms = $client->request('POST', $url, [
+                            'json' => [
+                                'api_key' => env('TERMII_API_KEY'),
+                                "type" => "plain",
+                                "to" => $phone_number,
+                                "from" => "N-Alert",
+                                "channel" => "dnd",
+                                "sms" => "Your cable subscription from Dantown was successful."
+                            ],
+                        ]);
+                        $body = json_decode($response_sms->getBody()->getContents());
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
                 }
 
                 $title = 'Cable subscription';
@@ -1085,6 +1092,8 @@ class BillsPaymentController extends Controller
                     'title' => $title,
                     'body' => $msg_body,
                 ]);
+
+                Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, '', ''));
 
                 return response()->json([
                     'success' => true,
