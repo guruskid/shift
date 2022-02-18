@@ -19,14 +19,13 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::POST('/trade', 'BtcWalletController@sell');
         Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
 
-
-
         Route::POST('/send', 'BtcWalletController@send');
 
     });
     Route::post('/update-wallet-pin', 'Api\NairaWalletController@updateWalletPin');
     Route::post('/bank-details', 'Api\AuthController@addBankDetails');
     Route::GET('/naira-wallet', 'Api\NairaWalletController@index');
+
     // Airtime
     Route::get('/airtime', 'Api\BillsPaymentController@airtime');
     Route::post('/buy-airtime', 'Api\BillsPaymentController@buyAirtime');
@@ -35,27 +34,21 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/data', 'Api\BillsPaymentController@data');
     Route::post('/buy-data', 'Api\BillsPaymentController@buyData');
 
-    // Data
+    //Pay Cable
     Route::get('/cable', 'Api\BillsPaymentController@cable');
     Route::post('/recharge-cable', 'Api\BillsPaymentController@rechargeCable');
     Route::post('/get-merchant/{serviveId}/{billercode}', 'BillsPaymentController@merchantVerify');
-
+    
+    //Power
     Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+    Route::get('/get-elect-boards/{category?}', 'BillsPaymentController@getProducts');
 
-    //Pay electricity
-        // Route::post('/get-elect-user', 'BillsPaymentController@getElectUser');
-        // Route::post('/electricity', 'BillsPaymentController@payElectricity');
+    Route::post('/get-dec-user', 'BillsPaymentController@getUser');
+    Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
 
-        Route::get('/get-elect-boards/{category?}', 'BillsPaymentController@getProducts');
-        Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
-        Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
+    Route::get('/power/{category?}', 'Api\BillsPaymentController@power');
+    Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+    Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
 
-        Route::get('/power/{category?}', 'Api\BillsPaymentController@power');
-        Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
-        Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
-
-            //Pay Cable
-        Route::post('/get-dec-user', 'BillsPaymentController@getUser');
-        Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
 
 });
