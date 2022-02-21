@@ -107,7 +107,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>Blockchain fee</h5>
-                                        <span>{{number_format((float)$blockchain_fee_wallet->balance, 4) }}USDT</span>
+                                        <span>{{number_format((float)$blockchain_fee_wallet->balance, 4) }}TRX</span>
                                     </div>
                                 </div>
                             </div>

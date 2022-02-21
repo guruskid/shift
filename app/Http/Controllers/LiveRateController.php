@@ -54,7 +54,8 @@ class LiveRateController extends Controller
         $rate -= $tp;
 
         return $rate;
-
+    }
+    
     public static function btcRate()
     {
         $client = new Client();

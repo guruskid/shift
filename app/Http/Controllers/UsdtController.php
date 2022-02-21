@@ -216,7 +216,7 @@ class UsdtController extends Controller
             ]);
         }
 
-        $blockchain_fee = 100;
+        $blockchain_fee = 50;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $blockchain_fee) {
             return response()->json([
@@ -300,7 +300,7 @@ class UsdtController extends Controller
 
             $send_res = json_decode($send->getBody());
 
-            if (Arr::exists($send_res, 'signatureId')) {
+            if (isset($send_res->signatureId)) {
             } else {
                 //Cancel TXN
                 $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
@@ -421,7 +421,7 @@ class UsdtController extends Controller
         $charge_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_charge'])->first();
         $fee_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_fees'])->first();
 
-        $fee_limit = 100;
+        $fee_limit = 50;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $fee_limit) {
             return response()->json([
@@ -498,7 +498,7 @@ class UsdtController extends Controller
             ]);
 
             $send_res = json_decode($send->getBody());
-            if (!Arr::exists($send_res, 'signatureId')) {
+            if (!isset($send_res->signatureId)) {
                 //Cancel TXN
                 $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
                     'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
