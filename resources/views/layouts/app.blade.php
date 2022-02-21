@@ -251,7 +251,6 @@ $not = $nots->last();
                                             </div>
                                             @endif
 
-                                            @endauth
                                         </div>
                                         @endauth
                                     </div>
