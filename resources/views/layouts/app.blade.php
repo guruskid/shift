@@ -78,7 +78,7 @@ $not = $nots->last();
         }
 
 
-        .to_trans_page{
+        .to_trans_page {
             cursor: pointer;
         }
 
@@ -148,7 +148,7 @@ $not = $nots->last();
                     </div>
                 </div>
             </div>
-            <div class="app-header__content" >
+            <div class="app-header__content">
 
                 <div class="app-header-right">
                     <div class="header-btn-lg pr-0">
@@ -164,20 +164,27 @@ $not = $nots->last();
                                         <div class="m-2">
                                             {{-- /////// Chinese Dashboard ///////// --}}
 
-                                                <div class="mr-5" id="google_translate_element"></div>
-                                                <script type="text/javascript">
+                                            <div class="mr-5" id="google_translate_element"></div>
+                                            <script type="text/javascript">
                                                 function googleTranslateElementInit() {
-                                                new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+                                                    new google.translate.TranslateElement({
+                                                        pageLanguage: 'en'
+                                                    }, 'google_translate_element');
                                                 }
-                                                </script>
-                                                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+                                            </script>
+                                            <script type="text/javascript"
+                                                src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+                                            </script>
 
                                             {{-- ////////// --}}
                                         </div>
                                         @endif
                                         @auth
-                                        <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
-                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR Auth::user()->role == 444 OR Auth::user()->role == 449 )
+                                        <notifications-component :notifications="{{$nots}}" :unread="{{0}} ">
+                                        </notifications-component>
+                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR
+                                        Auth::user()->role == 444 OR Auth::user()->role == 449 )
                                         <div class="dropdown">
                                             <a data-toggle="dropdown" class="p-0 btn">
                                                 <img width="42" class="rounded-circle"
@@ -251,56 +258,57 @@ $not = $nots->last();
                                             </div>
                                             @endif
 
-                                        @endauth
-                                    </div>
-                                </div>
-                                <div class="widget-content-left  ml-3 header-user-info">
-                                    <div class="widget-heading">
-                                        @auth
-                                        {{Auth::user()->first_name." ".Auth::user()->last_name}}
-                                        @if (empty(Auth::user()->first_name))
-                                            {{ Auth::user()->email }}
-                                        @endif
-                                        @endauth
+                                            @endauth
+                                        </div>
                                     </div>
                                     <div class="widget-content-left  ml-3 header-user-info">
                                         <div class="widget-heading">
                                             @auth
                                             {{Auth::user()->first_name." ".Auth::user()->last_name}}
+                                            @if (empty(Auth::user()->first_name))
+                                            {{ Auth::user()->email }}
+                                            @endif
                                             @endauth
                                         </div>
-                                        <div class="widget-subheading">
-                                            @auth
-                                            @switch(Auth::user()->role)
-                                            @case(999)
-                                            Super Admin
-                                            @break
-                                            @case(889)
-                                            Senior Accountant
-                                            @break
-                                            @case(777)
-                                            Junior Accountant
-                                            @break
-                                            @case(888)
-                                            Sales Rep.
-                                            @break
-                                            @case(555)
-                                            Customer Happiness
-                                            @break
-                                            @case(666)
-                                            Manager
-                                            @break
-                                            @case(444)
-                                            Chinese Operator
-                                            @break
-                                            @case(449)
-                                            Chinese Admin
-                                            @break
-                                        @default
-                                        Hi! there
+                                        <div class="widget-content-left  ml-3 header-user-info">
+                                            <div class="widget-heading">
+                                                @auth
+                                                {{Auth::user()->first_name." ".Auth::user()->last_name}}
+                                                @endauth
+                                            </div>
+                                            <div class="widget-subheading">
+                                                @auth
+                                                @switch(Auth::user()->role)
+                                                @case(999)
+                                                Super Admin
+                                                @break
+                                                @case(889)
+                                                Senior Accountant
+                                                @break
+                                                @case(777)
+                                                Junior Accountant
+                                                @break
+                                                @case(888)
+                                                Sales Rep.
+                                                @break
+                                                @case(555)
+                                                Customer Happiness
+                                                @break
+                                                @case(666)
+                                                Manager
+                                                @break
+                                                @case(444)
+                                                Chinese Operator
+                                                @break
+                                                @case(449)
+                                                Chinese Admin
+                                                @break
+                                                @default
+                                                Hi! there
 
-                                            @endswitch
-                                            @endauth
+                                                @endswitch
+                                                @endauth
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -308,12 +316,12 @@ $not = $nots->last();
                         </div>
                     </div>
                 </div>
+
+                <div id="notifications"></div>
+
+                @yield('content')
+
             </div>
-
-            <div id="notifications"></div>
-
-            @yield('content')
-
         </div>
     </div>
     <script src="/js/app.js?v=1"></script>
@@ -324,7 +332,8 @@ $not = $nots->last();
     <script src="{{asset('js/custom.js')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js">
+    </script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     @auth
@@ -411,9 +420,8 @@ $not = $nots->last();
 
     </script>
 
-@if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
+    @if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
     <script>
-
         const _e = (e) => document.getElementById(e)
 
         const countInProgressTransaction = () => {
@@ -438,8 +446,9 @@ $not = $nots->last();
         setInterval(() => {
             countInProgressTransaction()
         }, 2000);
+
     </script>
-@endif
+    @endif
 
 </body>
 
