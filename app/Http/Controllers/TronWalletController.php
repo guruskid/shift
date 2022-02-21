@@ -322,7 +322,7 @@ class TronWalletController extends Controller
             ]);
         }
 
-        $blockchain_fee = 10;
+        $blockchain_fee = 100;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
         if ($fee_wallet_balance < $blockchain_fee) {
             return response()->json([
@@ -574,7 +574,7 @@ class TronWalletController extends Controller
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0",  "0"],
                     "tokenAddress" => ["0",  "0"],
-                    "feeLimit" => 50,
+                    "feeLimit" => 100,
                     "from" => $fee_wallet->address,
                 ]
             ]);
