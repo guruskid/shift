@@ -87,7 +87,7 @@
     <li class="menu {{ Route::currentRouteName() == 'admin.tron' ? 'active' : '' }}  ">
         <a href="{{route('admin.tron')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
-                <img src="/svg/ethereum.svg" height="20px" class="mr-4" alt="">
+                <img src="/crypto/tron.png" height="20px" class="mr-4" alt="">
                 <span>Tron Wallet <span class="badge badge-warning">New</span></span>
             </div>
         </a>
