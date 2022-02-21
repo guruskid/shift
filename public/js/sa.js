@@ -86,7 +86,8 @@ function editTransac(data) {
     $('#e_trade_type').val(data['type']);
 
     $('#e_date').val(data['created_at']);
-
+    $('#e_quantity').val(data['quantity']);
+    // e_quantity
 }
 
 /* Delete Transaction */
