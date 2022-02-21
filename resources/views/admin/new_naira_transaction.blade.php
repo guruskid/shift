@@ -65,17 +65,7 @@
                                 <div class="row">
                                     <div class="col-md-4 mb-2">
                                         <label for="">Account Number</label>
-                                        <input type="number" id="account-number"  name="account_number" class="form-control" >
-                                        <input type="hidden" id="wallet-id" name="wallet_id"  >
-                                        <input type="hidden" value="{{ \Str::random(2) . time() }}" name="reference" >
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <label for="">Account Name</label>
-                                        <input type="text" id="account-name"  class="form-control" readonly >
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <label for="">Email</label>
-                                        <input type="text" id="email"  class="form-control" readonly >
+                                        <input type="email"   name="email" class="form-control" >
                                     </div>
                                     <div class="col-md-3">
                                         <label for="">Amount</label>

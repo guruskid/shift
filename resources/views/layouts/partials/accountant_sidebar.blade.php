@@ -26,6 +26,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.utility-transactions' ? 'active' : '' }}  ">
+        <a href="{{route('admin.utility-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="bulb"></ion-icon>
+                <span>Utility Transactions</span>
+            </div>
+        </a>
+    </li>
+
     @if (Auth::user()->role == 889)
     <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
         <a href="{{route('admin.trade-naira.index')}}"  aria-expanded="false" class="dropdown-toggle">
@@ -37,6 +46,17 @@
     </li>
     @endif
 
+    @if (Auth::user()->role == 889)
+        <li class="menu {{ Route::currentRouteName() == 'p2p.accounts' ? 'active' : '' }}  ">
+            <a href="{{route('p2p.accounts')}}"  aria-expanded="false" class="dropdown-toggle">
+                <div class="">
+                    <ion-icon name="cash-outline"></ion-icon>
+                    <span>Pay Birdge Accounts <span class="badge badge-warning">New</span></span>
+                </div>
+            </a>
+        </li>
+    @endif
+
     <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
         <a href="{{route('admin.naira-p2p')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -45,6 +65,16 @@
             </div>
         </a>
     </li>
+    @if ( in_array(Auth::user()->role, [889, 999, 777] ) )
+    <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
+        <a href="{{route('admin.junior-summary')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Summary</span>
+            </div>
+        </a>
+    </li>
+    @endif
 
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">

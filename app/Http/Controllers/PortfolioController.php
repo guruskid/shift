@@ -21,10 +21,10 @@ class PortfolioController extends Controller
         $nw = Auth::user()->nairaWallet;
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        $res = json_decode($res->getBody());
-        $btc_rate = $res->value;
+        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        // $res = json_decode($res->getBody());
+        $btc_rate = LiveRateController::btcRate();
 
         $client = new Client();
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id;

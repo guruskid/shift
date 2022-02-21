@@ -2,6 +2,7 @@
 /.idea
 /node_modules
 /public/hot
+/public/storage
 /storage/*.key
 /storage/logs
 /vendor
@@ -12,3 +13,4 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+app/payout.php

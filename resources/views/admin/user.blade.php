@@ -47,7 +47,7 @@
                             <a href="{{asset('storage/avatar/'.$user->dp)}}"><img
                                     src=" {{asset('storage/avatar/'.$user->dp)}} " height="120px" alt=""></a>
                         </div>
-                        <div>{{$user->first_name." ".$user->last_name}} <br>
+                        <div>{{$user->first_name." ".$user->last_name}} <br>{{$user->username}}<br>
                             <span class="text-custom">
                                 @if ($user->nairaWallet)
                                 ₦{{number_format($user->nairaWallet->amount ) }}
@@ -96,14 +96,14 @@
                                                 <div class="col-md-6">
                                                     <div class="position-relative form-group">
                                                         <label>First Name</label>
-                                                        <input type="text" class="form-control " name="first_name"
+                                                        <input type="text" class="form-control " name="first_name" {{ auth()->user()->role == 555 ? 'disabled' : '' }}
                                                             value="{{$user->first_name}}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="position-relative form-group">
                                                         <label>Last Name</label>
-                                                        <input type="text" class="form-control " name="last_name"
+                                                        <input type="text" class="form-control " name="last_name" {{ auth()->user()->role == 555 ? 'disabled' : '' }}
                                                             value="{{$user->last_name}}">
                                                     </div>
                                                 </div>
@@ -122,12 +122,12 @@
                                                 <div class="col-md-6">
                                                     <div class="position-relative form-group">
                                                         <label>Phone</label>
-                                                        <input type="text" class="form-control" name="phone"
+                                                        <input type="text" class="form-control" name="phone" {{ auth()->user()->role == 555 ? 'disabled' : '' }}
                                                             value="{{$user->phone}}">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="mt-2 btn btn-outline-primary">
+                                            <button type="submit" class="mt-2 btn btn-outline-primary" {{ auth()->user()->role == 555 ? 'disabled' : '' }}>
                                                 <i class="spinner-border spinner-border-sm" id="s-p"
                                                     style="display: none;"></i>
                                                 Save</button>
@@ -293,8 +293,12 @@
                                         </div>
 
                                         <div class="colm4">
-                                            <a href="#" data-toggle="modal" data-target="#update"><span
-                                                    class="btn  btn-primary">Change Status</span></a>
+                                            <a href="#" 
+                                            @if (!auth()->user()->role == 555)
+                                                data-toggle="modal" data-target="#update" 
+                                            @endif
+                                            ><span
+                                                 class="btn  btn-primary">Change Status</span></a>
                                         </div>
 
                                     </div>

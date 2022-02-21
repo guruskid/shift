@@ -54,8 +54,9 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div> {{$segment}} Transactions
                             <div class="page-title-subheading">
                                 <h6 class="d-inline">₦{{ number_format($total) }} </h6>
-                                <a href="{{ route('admin.naira-transaction.create') }}"><button
-                                        class="btn btn-primary">Add new transaction</button></a>
+                                {{-- <a href="{{ route('admin.naira-transaction.create') }}"> --}}
+                                <button class="btn btn-primary">Add new transaction</button>
+                                {{-- </a> --}}
                             </div>
                         </div>
                     </div>
@@ -67,22 +68,75 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between ">
                             {{$segment}} Transactions
-                            <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
+                            {{-- Search for all users --}}
+                            <form action="{{route('admin.search-tnxs')}}" class="form-inline p-2"
                                 method="POST">
                                 @csrf
                                 <div class="form-group mr-2">
+                                    <label for=""> Search </label>
+                                    <input type="text" required name="search" class="ml-2 form-control">
+                                    <input type="hidden" name="segment" value="{{ $segment }}" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+                            </form>
+                            <form action="{{route('admin.wallet-transactions.sort.by.date')}}" class="form-inline p-2"
+                                method="POST">
+                                @csrf
+                                @if (isset($type))
+                                    <div class="form-group mr-1">
+                                        <select name="type" class="ml-1 form-control">
+                                            <option value="null">Type</option>
+                                            @foreach ($type as $t)
+                                                <option value="{{ $t->transaction_type_id }}">{{ ucwords($t->transactionType->name) }}</option>  
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
+
+                                <div class="form-group mr-2">
                                     <label for="">Start date </label>
-                                    <input type="date" name="start" class="ml-2 form-control">
+                                    <input type="date" name="start" class="ml-2 form-control" required>
                                 </div>
                                 <div class="form-group mr-2">
                                     <label for="">End date </label>
-                                    <input type="date" name="end" class="ml-2 form-control">
+                                    <input type="date" name="end" class="ml-2 form-control" required>
                                 </div>
+                                @if (isset($status))
+                                    
+                                    <div class="form-group mr-1">
+                                        <select name="status" class="ml-1 form-control">
+                                            <option value="null">Status</option>
+                                            @foreach ($status as $s)
+                                                <option value="{{ $s->status }}">{{ $s->status }}</option> 
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
                         </div>
                         <div class="table-responsive p-3">
 
+                            @if (in_array(Auth::user()->role, [999,899]))
+                            <table class="align-middle mb-4 table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Total Transactions</th>
+                                        <th class="text-center">Total Amount Paid</th>
+                                        <th class="text-center">Total Charges</th>
+                                        <th class="text-center">Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td class="text-center text-muted">{{ number_format($total_tnx) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_amount_paid) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_charges) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total) }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                            @endif
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>
                                     <tr>
@@ -112,7 +166,13 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>
                                             <a
                                                 href="{{route('admin.user', [$t->user->id ?? ' ', $t->user->email ?? ' ' ] )}}">
-                                                {{$t->user->first_name ?? 'A MISSING USER'}}
+
+                                            @if(strlen($t->user->first_name) < 3 )
+                                                {{$t->user->email}}
+                                            @else
+                                                {{$t->user->first_name}}
+                                            @endif
+
                                             </a>
                                         </td>
                                         <td>{{$t->transactionType->name}} </td>
@@ -126,7 +186,12 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>{{$t->narration}} </td>
                                         <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
                                         <td>{{$t->status}} </td>
-                                        <td>{{$t->extras}} </td>
+                                        <td>@if (in_array(Auth::user()->role, [555] ))
+                                            
+                                            @else
+                                            {{ $t->extras }}
+                                        @endif
+                                             </td>
                                         @if (in_array(Auth::user()->role, [999, 889] ) && $t->status == 'pending' )
                                         <td>
                                             <button data-toggle="modal" data-target="#refund-modal"
@@ -135,6 +200,15 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                                 Refund
                                             </button>
 
+                                            <button data-toggle="modal" data-target="#query-modal"
+                                                onclick="queryTransaction({{$t->id}})"
+                                                class="btn mb-1 btn-sm btn-outline-success">
+                                                Query
+                                            </button>
+                                        </td>
+
+                                        @elseif (Auth::user()->role == 777 && $t->status == 'pending' )
+                                        <td>
                                             <button data-toggle="modal" data-target="#query-modal"
                                                 onclick="queryTransaction({{$t->id}})"
                                                 class="btn mb-1 btn-sm btn-outline-success">
@@ -150,7 +224,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                 </tbody>
 
                             </table>
-                            {{$transactions->links()}}
+                            {{-- {{$transactions->links()}} --}}
                         </div>
                     </div>
                 </div>

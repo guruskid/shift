@@ -53,6 +53,7 @@ Vue.component('ethereum-create-component', require('./components/ethereum/Create
 Vue.component('ethereum-send-component', require('./components/ethereum/Send.vue').default);
 Vue.component('ethereum-sell-component', require('./components/ethereum/Sell.vue').default);
 
+
 Vue.component('tron-create-component', require('./components/tron/CreateWallet.vue').default);
 Vue.component('tron-send-component', require('./components/tron/Send.vue').default);
 Vue.component('tron-sell-component', require('./components/tron/Sell.vue').default);
@@ -60,6 +61,12 @@ Vue.component('tron-sell-component', require('./components/tron/Sell.vue').defau
 Vue.component('usdt-create-component', require('./components/usdt/CreateWallet.vue').default);
 Vue.component('usdt-send-component', require('./components/usdt/Send.vue').default);
 Vue.component('usdt-sell-component', require('./components/usdt/Sell.vue').default);
+Vue.component('tab', require('./components/p2p/Tab.vue').default);
+Vue.component('tabs', require('./components/p2p/Tabs.vue').default);
+
+Vue.component('deposit-component', require('./components/p2p/Deposit.vue').default);
+Vue.component('withdraw-component', require('./components/p2p/Withdraw.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

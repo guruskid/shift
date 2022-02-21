@@ -12,6 +12,7 @@ Route::post('/card-type/store', 'PaymentMediumController@store')->name('admin.ca
 Route::post('/rate/update', 'RateController@update')->name('admin.rate.update');
 Route::get('/rate/delete/{id}', 'RateController@deleteRate');
 Route::get('/index', 'CurrencyController@index')->name('admin.currency.index');
+Route::post('/usd-rate/update', 'RateController@updateUsd')->name('admin.usd.update');
 
 Route::group(['middleware'=>'manager'], function(){
 
@@ -41,6 +42,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::POST('/set-bitcoin-charge', 'BitcoinWalletController@setCharge')->name('admin.set-bitcoin-charge');
     Route::POST('/send-from-hd-wallet', 'BitcoinWalletController@sendFromHd')->name('admin.btc-hd-wallet.send');
 
+    Route::post('/add-address','BtcWalletController@addAddress')->name('admin.address');
 
     Route::POST('/send-from-admin-wallet', 'BtcWalletController@send')->name('admin.btc.send');
     Route::GET('/btc-migration-wallet', 'BtcWalletController@migrationWallet')->name('admin.btc.migration');
@@ -67,6 +69,10 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::prefix('trade-naira')->group(function () {
         Route::get('/', 'TradeNairaController@index')->name('admin.trade-naira.index');
         Route::get('/agent-transactions/{user}', 'TradeNairaController@agentTransactions')->name('p2p.agent-transactions');
+        Route::get('/accounts', 'TradeNairaController@accounts')->name('p2p.accounts');
+
+        Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
+        Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
     });
 
     //Eth
@@ -127,10 +133,17 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::post('/deduct', 'TradeNairaController@deduct')->name('admin.trade-naira.deduct');
 
         Route::get('/transactions', 'TradeNairaController@transactions')->name('admin.naira-p2p');
+        Route::get('/transactions/{type}/{status?}', 'TradeNairaController@transaction_type')->name('admin.naira-p2p.type');
+        Route::any('/transactions/sortbydate','TradeNairaController@sort_transaction_type')->name('admin.naira-p2p.sort');
+        Route::post('/transactions/search','TradeNairaController@search_transaction')->name('admin.naira-p2p.search');
+
         Route::post('/set-limits', 'TradeNairaController@setLimits')->name('admin.naira-p2p.set-limits');
         Route::put('/confirm/{transaction}', 'TradeNairaController@confirm')->name('admin.naira-p2p.confirm');
         Route::put('/confirm-sell/{transaction}', 'TradeNairaController@confirmSell')->name('admin.naira-p2p.confirm-sell');
+        Route::put('/cancel-trade/{transaction}', 'TradeNairaController@declineTrade')->name('admin.naira-p2p.cancel-trade');
+        Route::put('/refund-trade/{transaction}', 'TradeNairaController@refundTrade')->name('admin.naira-p2p.refund-trade');
         Route::post('/update-bank-details', 'TradeNairaController@updateBankdetails')->name('agent.update-bank');
+
     });
 
 });

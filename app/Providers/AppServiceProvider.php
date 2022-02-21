@@ -6,6 +6,8 @@ use Laravel\Passport\Console\ClientCommand;
 use Laravel\Passport\Console\InstallCommand;
 use Laravel\Passport\Console\KeysCommand;
 use Laravel\Passport\Passport;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 use Illuminate\Support\Facades\Schema;
 
@@ -30,15 +32,29 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-{
-    Schema::defaultStringLength(191);
-    Passport::routes();
+    {
+        Schema::defaultStringLength(191);
+        Passport::routes();
 
-    /*ADD THIS LINES*/
-    $this->commands([
-        InstallCommand::class,
-        ClientCommand::class,
-        KeysCommand::class,
-    ]);
-}
+        /*ADD THIS LINES*/
+        $this->commands([
+            InstallCommand::class,
+            ClientCommand::class,
+            KeysCommand::class,
+        ]);
+
+        Collection::macro('paginate', function($perPage, $total = null, $page = null, $pageName = 'page') {
+            $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
+            return new LengthAwarePaginator(
+                $this->forPage($page, $perPage),
+                $total ?: $this->count(),
+                $perPage,
+                $page,
+                [
+                    'path' => LengthAwarePaginator::resolveCurrentPath(),
+                    'pageName' => $pageName,
+                ]
+            );
+        });
+    }
 }
