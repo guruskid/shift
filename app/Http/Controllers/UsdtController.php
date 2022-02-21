@@ -318,7 +318,7 @@ class UsdtController extends Controller
         }
 
         $t = Auth::user()->transactions()->create([
-            'card_id' => 141,
+            'card_id' => 143,
             'type' => 'sell',
             'amount' => $usd,
             'amount_paid' => $ngn,
@@ -465,21 +465,6 @@ class UsdtController extends Controller
         }
 
         try {
-            // $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer';
-            // $send = $client->request('POST', $url, [
-            //     'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
-            //     'json' =>  [
-            //         "chain" => "TRON",
-            //         "custodialAddress" => Auth::user()->usdtWallet->address,
-            //         "contractType" => 0,
-            //         "recipient" => $request->address,
-            //         "amount" => number_format($request->amount, 8),
-            //         "signatureId" => $hd_wallet->private_key,
-            //         "from" => $fee_wallet->address,
-            //         "feeLimit" => 50,
-            //         "tokenAddress" => 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-            //     ]
-            // ]);
             $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
             $send = $client->request('POST', $url, [
                 'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],

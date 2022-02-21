@@ -49,7 +49,7 @@
                         </div>
                         <div>Tron Wallet <br>
                             <a class="btn btn-primary" href="{{ route('admin.tron.settings') }}">Settings</a>
-                            <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 5) }}">Summary</a>
+                            <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 7) }}">Summary</a>
                             <a class="btn btn-secondary" href="{{ route('admin.tron.contracts') }}">Smart Contracts
                                 ({{ $addresses }})</a>
                         </div>
@@ -190,7 +190,7 @@
                         </div>
                         <div class="table-responsive p-3">
 
-                            <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                            <table class="align-middle mb-4 table table-bordered table-striped transactions-tabl ">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
