@@ -85,7 +85,7 @@
 
             <div class="row mb-5">
                 <div class="col-md-6 mb-5">
-                    <form action="{{ route('admin.tron.deploy-contract') }}" method="POST" class="form-inline mb-3">@csrf
+                    <form action="{{ route('admin.tether.deploy-contract') }}" method="POST" class="form-inline mb-3">@csrf
                         <select name="count" id="" class="form-control mr-2">
                             <option value="2">2 (60TRX)</option>
                             <option value="5">5 (110TRX)</option>
@@ -103,7 +103,7 @@
                                 {{ \Str::limit($transaction->hash, 30, '...') }}
                                 <div class="btn-group">
                                     <a target="_blank" href="https://tronscan.org/#/transaction/{{ $transaction->hash }}"><button class="btn btn-info">Explorer</button></a>
-                                    <a href="{{ route('admin.tron.activate-contract', $transaction->id) }}"><button class="btn btn-primary">Activate</button></a>
+                                    <a href="{{ route('admin.tether.activate-contract', $transaction->id) }}"><button class="btn btn-primary">Activate</button></a>
                                     {{-- <button class="btn btn-danger">Delete</button> --}}
                                 </div>
                               </li>

@@ -198,9 +198,9 @@ class UsdtController extends Controller
 
     public function deployContract(Request $request)
     {
-        $fees_wallet = FeeWallet::where('name', 'tron_fees')->first();
-        $fees_wallet->balance = CryptoHelperController::feeWalletBalance(5);
-        $key = env('TRON_KEY');
+        $fees_wallet = FeeWallet::where('name', 'usdt_fees')->first();
+        $fees_wallet->balance = CryptoHelperController::feeWalletBalance(7);
+        $key = env('USDT_KEY');
         $fee_limit = 0;
 
         switch ($request->count) {
@@ -231,7 +231,7 @@ class UsdtController extends Controller
             $res_contract = $client->request('POST', $url_contract, [
                 'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
                 'json' =>  [
-                    "chain" => "USDT_TRON",
+                    "chain" => "TRON",
                     "fromPrivateKey" => $key,
                     "batchCount" => (int)$request->count,
                     "owner" => $fees_wallet->address,
@@ -247,7 +247,7 @@ class UsdtController extends Controller
         Contract::create([
             'hash' => $res->txId,
             'type' => 'transaction',
-            'currency_id' => 5
+            'currency_id' => 7
         ]);
 
         return back()->with(['success' => 'Contract deployed successfully']);
@@ -278,7 +278,7 @@ class UsdtController extends Controller
                 Contract::create([
                     'hash' => $r,
                     'type' => 'address',
-                    'currency_id' => 5
+                    'currency_id' => 7
                 ]);
                 $count ++;
             }

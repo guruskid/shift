@@ -216,7 +216,7 @@ class UsdtController extends Controller
             ]);
         }
 
-        $blockchain_fee = 50;
+        $blockchain_fee = 100;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $blockchain_fee) {
             return response()->json([
@@ -407,7 +407,7 @@ class UsdtController extends Controller
         $user_wallet->balance = $accounts->balance->availableBalance;
 
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
-        $fees = 0.0001;
+        $fees = 1;
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
 
 
@@ -421,7 +421,7 @@ class UsdtController extends Controller
         $charge_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_charge'])->first();
         $fee_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_fees'])->first();
 
-        $fee_limit = 50;
+        $fee_limit = 100;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $fee_limit) {
             return response()->json([
