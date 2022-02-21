@@ -78,6 +78,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     //Eth
     Route::POST('/ethereum/send', 'EthWalletController@send')->name('admin.eth.send');
     Route::POST('/tron/send', 'TronController@send')->name('admin.tron.send');
+    Route::POST('/usdt/send', 'UsdtController@send')->name('admin.usdt.send');
 });
 
 

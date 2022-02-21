@@ -78,7 +78,7 @@ $not = $nots->last();
         }
 
 
-        .to_trans_page{
+        .to_trans_page {
             cursor: pointer;
         }
 
@@ -148,7 +148,7 @@ $not = $nots->last();
                     </div>
                 </div>
             </div>
-            <div class="app-header__content" >
+            <div class="app-header__content">
 
                 <div class="app-header-right">
                     <div class="header-btn-lg pr-0">
@@ -164,20 +164,27 @@ $not = $nots->last();
                                         <div class="m-2">
                                             {{-- /////// Chinese Dashboard ///////// --}}
 
-                                                <div class="mr-5" id="google_translate_element"></div>
-                                                <script type="text/javascript">
+                                            <div class="mr-5" id="google_translate_element"></div>
+                                            <script type="text/javascript">
                                                 function googleTranslateElementInit() {
-                                                new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+                                                    new google.translate.TranslateElement({
+                                                        pageLanguage: 'en'
+                                                    }, 'google_translate_element');
                                                 }
-                                                </script>
-                                                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+                                            </script>
+                                            <script type="text/javascript"
+                                                src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+                                            </script>
 
                                             {{-- ////////// --}}
                                         </div>
                                         @endif
                                         @auth
-                                        <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
-                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR Auth::user()->role == 444 OR Auth::user()->role == 449 )
+                                        <notifications-component :notifications="{{$nots}}" :unread="{{0}} ">
+                                        </notifications-component>
+                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR
+                                        Auth::user()->role == 444 OR Auth::user()->role == 449 )
                                         <div class="dropdown">
                                             <a data-toggle="dropdown" class="p-0 btn">
                                                 <img width="42" class="rounded-circle"
@@ -260,7 +267,7 @@ $not = $nots->last();
                                         @auth
                                         {{Auth::user()->first_name." ".Auth::user()->last_name}}
                                         @if (empty(Auth::user()->first_name))
-                                            {{ Auth::user()->email }}
+                                        {{ Auth::user()->email }}
                                         @endif
                                         @endauth
                                     </div>
@@ -412,9 +419,8 @@ $not = $nots->last();
 
     </script>
 
-@if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
+    @if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
     <script>
-
         const _e = (e) => document.getElementById(e)
 
         const countInProgressTransaction = () => {
@@ -439,8 +445,9 @@ $not = $nots->last();
         setInterval(() => {
             countInProgressTransaction()
         }, 2000);
+
     </script>
-@endif
+    @endif
 
 </body>
 

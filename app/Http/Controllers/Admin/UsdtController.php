@@ -18,6 +18,7 @@ class UsdtController extends Controller
 {
     public function index()
     {
+
         $client = new Client();
 
         $hd_wallet = HdWallet::where('currency_id', 7)->first();
@@ -75,7 +76,6 @@ class UsdtController extends Controller
 
     public function send(Request $request)
     {
-
         $data = $request->validate([
             'amount' => 'required|min:0',
             'wallet' => 'required',
@@ -112,8 +112,8 @@ class UsdtController extends Controller
 
         $wallet->balance = $accounts->balance->availableBalance;
 
-        $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
-        $fees_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
+        $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
+        $fees_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_fees'])->first();
 
         if ($request->amount  > $wallet->balance) {
             return back()->with(['error' => 'Insufficient balance']);
@@ -130,7 +130,7 @@ class UsdtController extends Controller
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
-                "senderNote" => "Sending Tron"
+                "senderNote" => "Sending USDT"
             ]
         ]);
 
@@ -146,10 +146,12 @@ class UsdtController extends Controller
                 'json' =>  [
                     "chain" => "TRON",
                     "custodialAddress" => $wallet->address,
-                    "contractType" => 3,
+                    "contractType" => 0,
                     "recipient" => $request->address,
                     "amount" => number_format($request->amount, 8),
                     "signatureId" => $hd_wallet->private_key,
+                    "tokenAddress" => "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+                    "tokenId" => '0',
                     "from" => $fees_wallet->address,
                     "feeLimit" => 100,
                 ]
@@ -157,8 +159,8 @@ class UsdtController extends Controller
 
             $send_res = json_decode($send->getBody());
 
-            if (Arr::exists($send_res, 'signatureId')) {
-                return back()->with(['success' => 'Tron sent successfully']);
+            if (isset($send_res->signatureId)) {
+                return back()->with(['success' => 'USDT sent successfully']);
             } else {
                 //Cancel TXN
                 $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [

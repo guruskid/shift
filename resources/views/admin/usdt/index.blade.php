@@ -123,7 +123,7 @@
                         <p class="text-danger text-center">{{ $err }}</p>
                         @endforeach
                         <h5>Send</h5>
-                        <form action="{{ route('admin.tron.send') }}" method="post"> @csrf
+                        <form action="{{ route('admin.usdt.send') }}" method="post"> @csrf
                             <div class="form-group">
                                 <label for="">Choose wallet </label>
                                 <select name="wallet" class="form-control">
