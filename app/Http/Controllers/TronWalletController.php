@@ -527,6 +527,15 @@ class TronWalletController extends Controller
         $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
         $fee_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
 
+        $blockchain_fee = 100;
+        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
+        if ($fee_wallet_balance < $blockchain_fee) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Service not available, please try again later'
+            ]);
+        }
+
 
         $total = $request->amount;
 
@@ -574,7 +583,7 @@ class TronWalletController extends Controller
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0",  "0"],
                     "tokenAddress" => ["0",  "0"],
-                    "feeLimit" => 100,
+                    "feeLimit" => $blockchain_fee,
                     "from" => $fee_wallet->address,
                 ]
             ]);
