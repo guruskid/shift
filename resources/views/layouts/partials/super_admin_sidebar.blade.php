@@ -96,7 +96,7 @@
     <li class="menu {{ Route::currentRouteName() == 'admin.tron' ? 'active' : '' }}  ">
         <a href="{{route('admin.tether')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
-                <img src="/svg/ethereum.svg" height="20px" class="mr-4" alt="">
+                <img src="/svg/tetherwallet_logo.svg" height="20px" class="mr-4" alt="">
                 <span>Tether Wallet <span class="badge badge-warning">New</span></span>
             </div>
         </a>

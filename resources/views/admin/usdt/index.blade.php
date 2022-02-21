@@ -48,9 +48,9 @@
                             </i>
                         </div>
                         <div>Tron Wallet <br>
-                            <a class="btn btn-primary" href="{{ route('admin.tron.settings') }}">Settings</a>
+                            <a class="btn btn-primary" href="{{ route('admin.tether.settings') }}">Settings</a>
                             <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 7) }}">Summary</a>
-                            <a class="btn btn-secondary" href="{{ route('admin.tron.contracts') }}">Smart Contracts
+                            <a class="btn btn-secondary" href="{{ route('admin.tether.contracts') }}">Smart Contracts
                                 ({{ $addresses }})</a>
                         </div>
                     </div>

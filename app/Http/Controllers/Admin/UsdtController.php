@@ -186,12 +186,12 @@ class UsdtController extends Controller
 
     public function contracts()
     {
-        $fees_wallet = FeeWallet::where('name', 'tron_fees')->first();
-        $fees_wallet->balance = CryptoHelperController::feeWalletBalance(5);
+        $fees_wallet = FeeWallet::where('name', 'usdt_fees')->first();
+        $fees_wallet->balance = CryptoHelperController::feeWalletBalance(7);
 
-        $addresses = Contract::where(['currency_id' => 5, 'status' => 'pending', 'type' => 'address'])->count();
+        $addresses = Contract::where(['currency_id' => 7, 'status' => 'pending', 'type' => 'address'])->count();
 
-        $pending_transactions = Contract::where(['currency_id' => 5, 'status' => 'pending', 'type' => 'transaction'])->get();
+        $pending_transactions = Contract::where(['currency_id' => 7, 'status' => 'pending', 'type' => 'transaction'])->get();
 
         return view('admin.usdt.contracts', compact('fees_wallet', 'addresses', 'pending_transactions'));
     }
@@ -231,7 +231,7 @@ class UsdtController extends Controller
             $res_contract = $client->request('POST', $url_contract, [
                 'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
                 'json' =>  [
-                    "chain" => "TRON",
+                    "chain" => "USDT_TRON",
                     "fromPrivateKey" => $key,
                     "batchCount" => (int)$request->count,
                     "owner" => $fees_wallet->address,

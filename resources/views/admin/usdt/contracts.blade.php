@@ -47,7 +47,7 @@
                             <i class="pe-7s-wallet icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Tron Wallet Contracts </div>
+                        <div>Tether Wallet Contracts </div>
                     </div>
                 </div>
             </div>

@@ -47,7 +47,7 @@
                             <i class="pe-7s-wallet icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Tron Settings <br>
+                        <div>Tether Settings <br>
                         </div>
                     </div>
                 </div>
@@ -63,9 +63,9 @@
                                     <div class="widget-heading">
                                         <form action="{{ route('admin.settings.update') }} " method="post">@csrf
                                             <h5>Sell Charges (%)</h5>
-                                            <input type="hidden" name="name" value="tron_sell_charge">
+                                            <input type="hidden" name="name" value="usdt_sell_charge">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('tron_sell_charge') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('usdt_sell_charge') }}" class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>
@@ -83,9 +83,9 @@
                                     <div class="widget-heading">
                                         <form action="{{ route('admin.settings.update') }} " method="post">@csrf
                                             <h5>Send Charges (TRON)</h5>
-                                            <input type="hidden" name="name" value="tron_send_charge">
+                                            <input type="hidden" name="name" value="usdt_send_charge">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('tron_send_charge') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('usdt_send_charge') }}" class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>
@@ -103,9 +103,9 @@
                                     <div class="widget-heading">
                                         <form action="{{ route('admin.settings.update') }} " method="post">@csrf
                                             <h5>Fees Percentage (%)</h5>
-                                            <input type="hidden" name="name" value="trading_tron_per">
+                                            <input type="hidden" name="name" value="trading_usdt_per">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('trading_tron_per') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('trading_usdt_per') }}" class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>
