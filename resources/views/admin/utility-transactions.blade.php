@@ -52,9 +52,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             <i class="pe-7s-timer icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div class="text-capitalize">Utility Transactions
+                        <div>Utility Transactions
                             <div class="page-title-subheading">
-                                <button class="btn btn-primary" onclick="location.reload()">Refresh Page</button>
+                                <h5 class="d-inline">₦{{ number_format($total) }} </h5>
+                                 <button class="btn btn-primary" onclick="location.reload()">Refresh Page</button>
                             </div>
                         </div>
                     </div>
@@ -65,9 +66,39 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between">Utility Transactions
-                            <form action="{{route('admin.utility-transactions')}}" class="form-inline p-2"
-                                method="GET">
+                            {{-- Search for all users --}}
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                            {{route('customerHappiness.search-tnxs')}}
+                                            @else
+                                            {{route('admin.search-tnxs')}}
+                                        @endif"
+                            class="form-inline p-2" method="POST">
                                 @csrf
+                                <div class="form-group mr-2">
+                                    <label for=""> Search </label>
+                                    <input type="text" required name="search" class="ml-2 form-control">
+                                    <input type="hidden" name="segment" value="Utility" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+                            </form>
+
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                            {{route('customerHappiness.utility-transactions')}}
+                                            @else
+                                            {{route('admin.utility-transactions')}}
+                                        @endif"
+                            class="form-inline p-2" method="GET">
+                                @csrf
+                                @if (isset($type))
+                                    <div class="form-group mr-1">
+                                        <select name="type" class="ml-1 form-control">
+                                            <option value="null">Type</option>
+                                            @foreach ($type as $t)
+                                                <option value="{{ $t->type }}">{{ ucwords($t->type) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
                                     <input type="date" required name="start" class="ml-2 form-control">
@@ -76,6 +107,17 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     <label for="">End date </label>
                                     <input type="date" required name="end" class="ml-2 form-control">
                                 </div>
+                                @if (isset($status))
+
+                                    <div class="form-group mr-1">
+                                        <select name="status" class="ml-1 form-control">
+                                            <option value="null">Status</option>
+                                            @foreach ($status as $s)
+                                                <option value="{{ $s->status }}">{{ $s->status }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
                         </div>
@@ -83,7 +125,27 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                             @foreach ($errors->all() as $err)
                             <span class="text-danger">{{ $err }}</span>
                             @endforeach
-                            <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                            @if (in_array(Auth::user()->role, [999,899]))
+                            <table class="align-middle mb-4 table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Total Transactions</th>
+                                        <th class="text-center">Total Amount</th>
+                                        <th class="text-center">Convenience fee Total</th>
+                                        <th class="text-center">Total Amount Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td class="text-center text-muted">{{ number_format($total_transactions) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_amount) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total_convenience_fee) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($total) }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                            @endif
+                            <table class="align-middle mb-4 table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th class="text-center">Reference ID</th>
@@ -103,16 +165,48 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <tr>
                                             <td class="text-center text-muted">{{$t->reference_id}}</td>
                                             <td class="text-center text-muted">{{$t->created_at->format('d M, H:ia')}}</td>
-                                            <td class="text-center">{{$t->user->first_name}}</td>
+
+                                            <td class="text-center">
+                                                @if (in_array(Auth::user()->role, [555] ))
+                                                <a
+                                                href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name ?? 'A MISSING USER'}}</a>
+                                              @else
+                                                <a
+                                                href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name ?? 'A MISSING USER'}}</a>
+                                            @endif
+                                            </td>
+
                                             <td class="text-center">{{$t->amount}}</td>
                                             <td class="text-center">{{$t->convenience_fee}}</td>
                                             <td class="text-center">{{$t->total}}</td>
                                             <td class="text-center">{{$t->type}}</td>
                                             <td class="text-center">{{$t->status}}</td>
                                             <td class="text-center" style="word-wrap: break-word;min-width: 160px;max-width: 160px;">
+                                                @if (auth()->user()->role == 555)
+                                                <pre>{{Hash::make($t->extras) }}</pre>
+                                                @else
                                                 <pre>{{$t->extras}}</pre>
+                                                @endif
+
                                             </td>
-                                            <td class="text-center"></td>
+                                            <td class="text-center">
+                                                @if($t->status == 'pending')
+                                                    <form action="{{route('admin.utility-requery',$t->id)}}" method="post">
+                                                        @csrf
+                                                        <button class="btn btn-primary">Requery</button>
+                                                    </form>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @if($t->status == 'pending')
+                                                    <form action="{{route('admin.utility-requery',$t->id)}}" method="post">
+                                                        @csrf
+                                                        <button class="btn btn-primary">Requery</button>
+                                                    </form>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

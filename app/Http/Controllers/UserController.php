@@ -81,6 +81,22 @@ class UserController extends Controller
         return view('newpages.dashboard', compact(['transactions', 's', 'w', 'p', 'd', 'notifications', 'usersChart', 'naira_balance']));
     }
 
+    public function getUser($email)
+    {
+        $user = User::where('email', $email)->first();
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'user' => $user->first_name . ' '.$user->last_name
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'msg' => "User not found"
+        ]);
+    }
+
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)
@@ -303,7 +319,7 @@ class UserController extends Controller
             if (!Auth::user()->nairaWallet || $r->pay_with != 'wallet') {
                 return response()->json([
                     'success' => false,
-                    'msg' => 'Please create a Dantown wallet before initiating a buy ransaction',
+                    'msg' => 'Please create a Dantown wallet before initiating a buy transaction',
                 ]);
             }
         }
@@ -428,8 +444,11 @@ class UserController extends Controller
             $btn_text = '';
             $btn_url = '';
 
-            $name = Auth::user()->first_name;
-            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+            $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+            $name = explode(' ', $name);
+            $firstname = ucfirst($name[0]);
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
 
             }
 

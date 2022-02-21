@@ -11,7 +11,7 @@ class CardCurrency extends Model
 
     public function paymentMediums()
     {
-        return $this->belongsToMany(\App\PaymentMedium::class, 'card_currency_payment_media')->withPivot(['payment_range_settings']);
+        return $this->belongsToMany(\App\PaymentMedium::class, 'card_currency_payment_media')->withPivot(['payment_range_settings','percentage_deduction']);
     }
 
     public function card()
@@ -22,6 +22,11 @@ class CardCurrency extends Model
     public function currency()
     {
         return $this->belongsTo('App\Currency');
+    }
+
+    public function cardPaymentMedia()
+    {
+        return $this->hasMany('\App\CardCurrencyPaymentMedium','card_currency_id');
     }
 
 }

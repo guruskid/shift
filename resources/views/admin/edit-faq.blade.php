@@ -13,11 +13,11 @@
             <div class="col-12 layout-spacing">
                 <div class="widget widget-table-two mb-4">
                     <div class="widget-heading">
-                        <h5 class="">ADD FAQ</h5>
+                        <h5 class="">EDIT FAQ</h5>
                     </div>
 
                     <div class="widget-content">
-                        <form action="{{ route('admin.updatefaq') }}" method="POST"> @csrf
+                        <form action="{{ route('admin.updatefaq') }}" enctype="multipart/form-data" method="POST"> @csrf
 
                             <div class="form-group">
                                 <label for="">Title</label>
@@ -28,6 +28,18 @@
                                 <label for="">Body</label>
                                 <textarea name="body" class="form-control" id="" rows="7">{{$editfaq[0]->body}}</textarea>
                             </div>
+                            <div class="form-group">
+                                <label for="">Image(if you dont want to change image you can leave empty)</label>
+                                <input type="file" name="photo" class="form-control"/>
+                              </div>
+                              <div class="form-group">
+                                <label for="">Link</label>
+                                <input type="text" name="link" class="form-control" value="{{$editfaq[0]->link}}">
+                              </div>
+                              <div class="form-group">
+                                <label for="">Icon Name</label>
+                                <input type="text" name="icon" class="form-control" value="{{$editfaq[0]->icon}}">
+                              </div>
                             <div class="form-group">
                                 <label for="">Category</label>
                                 <select name="category" id="" class="form-control">

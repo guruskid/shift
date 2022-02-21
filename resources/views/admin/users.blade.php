@@ -59,6 +59,13 @@
                             <div class="">
                                 Recent users
                             </div>
+                            <div class="text-right">
+                                <form action="{{ route('admin.user-search') }}" class="form-inline" method="POST">
+                                    @csrf
+                                    <input type="text" class="form-control mr-2" name="search" placeholder="Search">
+                                    <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                                </form>
+                            </div>
                             {{--  <div class="">
                                 <form action="{{route('admin.search')}}" method="post" class="form-inline" >
                             @csrf
@@ -72,7 +79,7 @@
                     </div>
                     <div class="table-responsive p-3">
                         <table
-                            class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
+                            class="align-middle mb-0 table table-borderless table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -121,13 +128,13 @@
                                             <a class="btn btn-alternate"
                                                 href=" {{route('admin.user', [$u->id, $u->email ] )}} ">View</a>
                                             @if ($u->nairaWallet)
-                                            @if ($u->nairaWallet->status == 'active')
-                                            <a class="btn btn-outline-danger" onclick="freezeAccount({{ $u }}, '/admin/freeze-account')"
-                                            data-toggle="modal" data-target="#freeze-modal" href="#">Freeze</a>
-                                            @else
-                                            <a class="btn btn-outline-success" onclick="freezeAccount({{ $u }}, '/admin/activate-account')"
-                                            data-toggle="modal" data-target="#freeze-modal" href="#">Activate</a>
-                                            @endif
+                                                @if ($u->nairaWallet->status == 'active')
+                                                <a class="btn btn-outline-danger" onclick="freezeAccount({{ $u }}, '/admin/freeze-account')"
+                                                data-toggle="modal" data-target="#freeze-modal" href="#">Freeze</a>
+                                                @else
+                                                <a class="btn btn-outline-success" onclick="freezeAccount({{ $u }}, '/admin/activate-account')"
+                                                data-toggle="modal" data-target="#freeze-modal" href="#">Activate</a>
+                                                @endif
                                             @endif
                                         </div>
                                     </td>
@@ -135,6 +142,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        {{ $users->links() }}
                     </div>
                 </div>
             </div>

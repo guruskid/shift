@@ -78,6 +78,10 @@ $not = $nots->last();
         }
 
 
+        .to_trans_page{
+            cursor: pointer;
+        }
+
     </style>
     <script>
         window.Laravel = {
@@ -143,23 +147,57 @@ $not = $nots->last();
                         @endauth
                     </div>
                 </div>
-                <div class="app-header__content">
+            </div>
+            <div class="app-header__content" >
 
-                    <div class="app-header-right">
-                        <div class="header-btn-lg pr-0">
-                            <div class="widget-content p-0">
-                                <div class="widget-content-wrapper">
-                                    <div class="widget-content-left">
-                                        <div class="btn-group">
-                                            @auth
-                                            <notifications-component :notifications="{{$nots}}" :unread="{{0}} ">
-                                            </notifications-component>
-                                            @if (Auth::user()->role == 999 OR Auth::user()->role == 888 )
-                                            <div class="dropdown">
-                                                <a data-toggle="dropdown" class="p-0 btn">
-                                                    <img width="42" class="rounded-circle"
-                                                        src="{{asset('storage/avatar/'.Auth::user()->dp)}} " alt="">
-                                                    <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                <div class="app-header-right">
+                    <div class="header-btn-lg pr-0">
+                        <div class="widget-content p-0">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-left">
+                                    <div class="btn-group">
+                                        @if(Auth::user()->role == 444 OR Auth::user()->role == 449)
+                                        <div class="language mt-2">
+                                            <h4 class="text-light">改变语言
+                                            </h4>
+                                        </div>
+                                        <div class="m-2">
+                                            {{-- /////// Chinese Dashboard ///////// --}}
+
+                                                <div class="mr-5" id="google_translate_element"></div>
+                                                <script type="text/javascript">
+                                                function googleTranslateElementInit() {
+                                                new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+                                                }
+                                                </script>
+                                                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+                                            {{-- ////////// --}}
+                                        </div>
+                                        @endif
+                                        @auth
+                                        <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
+                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR Auth::user()->role == 444 OR Auth::user()->role == 449 )
+                                        <div class="dropdown">
+                                            <a data-toggle="dropdown" class="p-0 btn">
+                                                <img width="42" class="rounded-circle"
+                                                    src="{{asset('storage/avatar/'.Auth::user()->dp)}} " alt="">
+                                                <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                                            </a>
+                                            <div tabindex="-1" role="menu" aria-hidden="true"
+                                                class="dropdown-menu dropdown-menu-left">
+                                                <a href=" {{route('admin.dashboard')}} "><button type="button"
+                                                        tabindex="0" class="dropdown-item">Dashboard</button></a>
+                                                <a href=" {{route('admin.transactions')}} "><button type="button"
+                                                        tabindex="0" class="dropdown-item">All
+                                                        transactions</button></a>
+                                                <a href=" {{route('admin.rates')}} "><button type="button" tabindex="0"
+                                                        class="dropdown-item">Rates</button></a>
+                                                <div tabindex="-1" class="dropdown-divider"></div>
+                                                <a href="#"
+                                                    onclick="event.preventDefault(); document.getElementById('logout-form2').submit();">
+                                                    <button type="button" tabindex="0"
+                                                        class="dropdown-item">Logout</button>
                                                 </a>
                                                 <div tabindex="-1" role="menu" aria-hidden="true"
                                                     class="dropdown-menu dropdown-menu-left">
@@ -213,8 +251,17 @@ $not = $nots->last();
                                             </div>
                                             @endif
 
-                                            @endauth
-                                        </div>
+                                        @endauth
+                                    </div>
+                                </div>
+                                <div class="widget-content-left  ml-3 header-user-info">
+                                    <div class="widget-heading">
+                                        @auth
+                                        {{Auth::user()->first_name." ".Auth::user()->last_name}}
+                                        @if (empty(Auth::user()->first_name))
+                                            {{ Auth::user()->email }}
+                                        @endif
+                                        @endauth
                                     </div>
                                     <div class="widget-content-left  ml-3 header-user-info">
                                         <div class="widget-heading">
@@ -237,11 +284,20 @@ $not = $nots->last();
                                             @case(888)
                                             Sales Rep.
                                             @break
+                                            @case(555)
+                                            Customer Happiness
+                                            @break
                                             @case(666)
                                             Manager
                                             @break
-                                            @default
-                                            Hi! there
+                                            @case(444)
+                                            Chinese Operator
+                                            @break
+                                            @case(449)
+                                            Chinese Admin
+                                            @break
+                                        @default
+                                        Hi! there
 
                                             @endswitch
                                             @endauth
@@ -272,7 +328,7 @@ $not = $nots->last();
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     @auth
-    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666] ))
+    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449] ))
     <script src="{{asset('js/sa.js?v=7')}}"></script>
     @endif
     @endauth
@@ -354,6 +410,36 @@ $not = $nots->last();
         });
 
     </script>
+
+@if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
+    <script>
+
+        const _e = (e) => document.getElementById(e)
+
+        const countInProgressTransaction = () => {
+            const ajax = new XMLHttpRequest()
+            const trans_url = "{{url('/admin/get-transaction-count')}}"
+            ajax.open('GET', trans_url)
+            ajax.onload = () => {
+                const response = ajax.response
+                const resp = JSON.parse(response)
+                _e('waiting_count').innerHTML = resp.waiting_transaction
+                _e('in_progress_count').innerHTML = resp.in_progress_transactions
+                // console.log(resp)
+            }
+
+            ajax.onprogress = () => {
+                _e('waiting_count').innerHTML = '...'
+                _e('in_progress_count').innerHTML = '...'
+            }
+            ajax.send()
+        }
+
+        setInterval(() => {
+            countInProgressTransaction()
+        }, 2000);
+    </script>
+@endif
 
 </body>
 

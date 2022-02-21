@@ -33,16 +33,12 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/check-phone/{phone}', 'Api\UserController@checkPhone');
     Route::GET('/bitcoin-wallet/price', 'Api\BtcWalletController@btcPrice');
 
-    Route::group(['middleware' => 'auth:api'], function () {
+    Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
         Route::get('email/resend', 'Api\VerificationController@resend')->name('verification.resend');
 
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
-
-        // Route::GET('/airtime', 'Api\BillsPaymentController@nairaRate');
-        // Route::post('/airtime', 'Api\BillsPaymentController@buyAirtime');
-        // Route::post('/bitcoin-airtime', 'Api\BillsPaymentController@bitcoinAirtime');
 
         // Airtime
         Route::get('/airtime', 'Api\BillsPaymentController@airtime');
@@ -54,7 +50,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/data', 'Api\BillsPaymentController@data');
         Route::post('/buy-data', 'Api\BillsPaymentController@buyData');
 
-        
+
         // Data
         Route::get('/cable', 'Api\BillsPaymentController@cable');
         Route::post('/recharge-cable', 'Api\BillsPaymentController@rechargeCable');
@@ -114,13 +110,18 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-dec-user', 'BillsPaymentController@getUser');
         Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
 
+        // Get all transactions
+        Route::get('/get_all_transactions', 'NairaWalletController@getAllTransactions');
+
         //BTC Wallet
         Route::group(['prefix' => 'bitcoin-wallet'], function () {
 
             Route::POST('/create', 'Api\BtcWalletController@create');
             Route::GET('/balance', 'Api\BtcWalletController@balance');
-            Route::GET('/send-charges', 'Api\BitcoinWalletController@sendBtcCharges');
+            Route::GET('/send-charges', 'Api\BtcWalletController@fees');
+            Route::get('/send-charges/{address}/{amount}', 'BtcWalletController@fees');
             Route::GET('/transactions', 'Api\BitcoinWalletController@transactions');
+            Route::GET('/all-transactions', 'Api\BtcWalletController@transactions');
             Route::POST('/trade', 'BtcWalletController@sell');
             Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
 

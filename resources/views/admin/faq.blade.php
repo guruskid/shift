@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="widget-content">
-                        <form action="{{ route('admin.newfaq') }}" method="POST"> @csrf
+                        <form action="{{ route('admin.newfaq') }}" enctype="multipart/form-data" method="POST"> @csrf
 
                             <div class="form-group">
                                 <label for="">Title</label>
@@ -27,6 +27,19 @@
                                 <label for="">Body</label>
                                 <textarea name="body" class="form-control" id="" rows="7"></textarea>
                             </div>
+                            <div class="form-group">
+                              <label for="">Image</label>
+                              <input type="file" name="photo"  class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                              <label for="">Link</label>
+                              <input type="text" name="link" class="form-control">
+                            </div>
+                            <div class="form-group">
+                              <label for="">Icon Name</label>
+                              <input type="text" name="icon" class="form-control">
+                            </div>
+                            
                             <div class="form-group">
                                 <label for="">Category</label>
                                 <select name="category" id="" class="form-control">

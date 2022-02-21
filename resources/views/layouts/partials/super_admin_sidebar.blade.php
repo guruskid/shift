@@ -44,6 +44,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'p2p.accounts' ? 'active' : '' }}  ">
+        <a href="{{route('p2p.accounts')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="cash-outline"></ion-icon>
+                <span>Pay Bridge Accounts <span class="badge badge-warning">New</span></span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -64,8 +73,19 @@
         </a>
     </li>
 
-    <li class="menu {{ Route::currentRouteName() == 'admin.tron' ? 'active' : '' }}  ">
-        <a href="{{route('admin.tron')}}"  aria-expanded="false" class="dropdown-toggle">
+    @if ( in_array(Auth::user()->role, [889, 999, 777] ) )
+    <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
+        <a href="{{route('admin.junior-summary')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Summary</span>
+            </div>
+        </a>
+    </li>
+    @endif
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.ethereum' ? 'active' : '' }}  ">
+        <a href="{{route('admin.ethereum')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <img src="/svg/ethereum.svg" height="20px" class="mr-4" alt="">
                 <span>Tron Wallet <span class="badge badge-warning">New</span></span>
@@ -158,6 +178,26 @@
             </div>
         </a>
     </li>
+
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.chinese_dashboard_page' ? 'active' : '' }}">
+        <a href="{{route('admin.chinese_dashboard_page')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Chinese dashboard</span>
+            </div>
+        </a>
+    </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.payout_transactions' ? 'active' : '' }}">
+        <a href="{{route('admin.payout_transactions')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Payout Page</span>
+            </div>
+        </a>
+    </li>
+
 
      <li class="menu {{ Route::currentRouteName() == 'admin.accountants' ? 'active' : '' }}">
         <a href="{{route('admin.general_settings')}}" aria-expanded="false" class="dropdown-toggle" >

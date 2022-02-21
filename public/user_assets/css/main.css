@@ -1347,8 +1347,25 @@ input[type="file"]::-webkit-file-upload-button {
     z-index: 2;
 }
 
+.p-tabs .is-active .tab-in{
+    background-color: #000070;
+}
 
+.p-tabs .is-active .tab-in * {
+    color: #fff;
+}
 
+.p-tabs .tab-in{
+    border: 1px solid #000070;
+}
+
+.agent-form,#account-list {
+    display: none;
+}
+
+#loader,#loader-d {
+    display: none;
+}
 
 
 
