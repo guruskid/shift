@@ -57,9 +57,9 @@ class TradeNairaController extends Controller
                 $t->prev_bal = $current_prev_bal->previous_balance;
                 $t->current_bal = $current_prev_bal->current_balance;
             }
-            
+
         }
-        
+
         //? top bars
         //?" all  deposit transactions
         $deposit = NairaTrade::where('type','deposit')->get();
@@ -80,7 +80,7 @@ class TradeNairaController extends Controller
         $deposit_waiting_tnx = $deposit_waiting->count();
         $deposit_waiting_amount = $deposit_waiting->sum('amount');
 
-        
+
         //?" all  withdrawal transactions
         $withdrawal = NairaTrade::where('type','withdrawal')->get();
         $withdrawal_all_tnx = $withdrawal->count();
@@ -111,7 +111,7 @@ class TradeNairaController extends Controller
             'deposit_denied_tnx','deposit_denied_amount','deposit_waiting_tnx','deposit_waiting_amount',
             'withdrawal_all_tnx','withdrawal_success_tnx','withdrawal_success_amount',
             'withdrawal_denied_tnx','withdrawal_denied_amount','withdrawal_waiting_tnx','withdrawal_waiting_amount'
-            
+
         ]));
     }
 
@@ -155,9 +155,9 @@ class TradeNairaController extends Controller
             $transactions = NairaTrade::orderBy('created_at', 'desc');
             if($type)
             {
-                $transactions = $transactions->where('type',$type); 
+                $transactions = $transactions->where('type',$type);
             }
-            
+
             if($start_date && $end_date)
             {
                 $transactions = $transactions
@@ -168,7 +168,7 @@ class TradeNairaController extends Controller
                 $transactions = $transactions
                 ->where('status',$status);
             }
-            
+
             $transactions = $transactions->paginate(20);
         }
 
@@ -233,7 +233,7 @@ class TradeNairaController extends Controller
             $deposit_waiting_tnx = $deposit_waiting->count();
             $deposit_waiting_amount = $deposit_waiting->sum('amount');
 
-            
+
             //?" all  withdrawal transactions
             $withdrawal = NairaTrade::where('type','withdrawal');
             if($start_date && $end_date)
@@ -303,7 +303,7 @@ class TradeNairaController extends Controller
         $request->session()->put('sort_end_date',str_replace("T"," ",$request->end));
 
         return $this->transaction_type($request->type,$request->status,$request);
-        
+
     }
 
     public function search_transaction(Request $request)
@@ -355,7 +355,7 @@ class TradeNairaController extends Controller
     public function agentTransactions(User $user)
     {
 
-        $transactions = $user->agentNairaTrades()->orderBy('created_at', 'desc')->paginate(20);
+        $transactions =    $user->agentNairaTrades()->orderBy('created_at', 'desc')->paginate(20);
 
         foreach ($transactions as $t) {
             if ($t->type == 'withdrawal') {
@@ -428,6 +428,7 @@ class TradeNairaController extends Controller
         }
 
         if ($transaction->status != 'success') {
+            // return back()->with(['error' => 'Invalid transaction']);
             return back()->with(['error' => 'Invalid transaction']);
         }
 

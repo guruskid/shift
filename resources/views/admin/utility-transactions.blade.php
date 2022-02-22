@@ -66,15 +66,35 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-header justify-content-between">Utility Transactions
-                            <form action="{{route('admin.utility-transactions')}}" class="form-inline p-2"
-                                method="GET">
+                            {{-- Search for all users --}}
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                            {{route('customerHappiness.search-tnxs')}}
+                                            @else
+                                            {{route('admin.search-tnxs')}}
+                                        @endif"
+                            class="form-inline p-2" method="POST">
+                                @csrf
+                                <div class="form-group mr-2">
+                                    <label for=""> Search </label>
+                                    <input type="text" required name="search" class="ml-2 form-control">
+                                    <input type="hidden" name="segment" value="Utility" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-search"></i></button>
+                            </form>
+
+                            <form action="@if (in_array(Auth::user()->role, [555] ))
+                                            {{route('customerHappiness.utility-transactions')}}
+                                            @else
+                                            {{route('admin.utility-transactions')}}
+                                        @endif"
+                            class="form-inline p-2" method="GET">
                                 @csrf
                                 @if (isset($type))
                                     <div class="form-group mr-1">
                                         <select name="type" class="ml-1 form-control">
                                             <option value="null">Type</option>
                                             @foreach ($type as $t)
-                                                <option value="{{ $t->type }}">{{ ucwords($t->type) }}</option>  
+                                                <option value="{{ $t->type }}">{{ ucwords($t->type) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -88,12 +108,12 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     <input type="date" required name="end" class="ml-2 form-control">
                                 </div>
                                 @if (isset($status))
-                                    
+
                                     <div class="form-group mr-1">
                                         <select name="status" class="ml-1 form-control">
                                             <option value="null">Status</option>
                                             @foreach ($status as $s)
-                                                <option value="{{ $s->status }}">{{ $s->status }}</option> 
+                                                <option value="{{ $s->status }}">{{ $s->status }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -145,14 +165,31 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <tr>
                                             <td class="text-center text-muted">{{$t->reference_id}}</td>
                                             <td class="text-center text-muted">{{$t->created_at->format('d M, H:ia')}}</td>
-                                            <td class="text-center">{{$t->user->first_name}}</td>
+
+                                            <td class="text-center">
+                                                @if (in_array(Auth::user()->role, [555] ))
+                                                <a
+                                                href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name ?? 'A MISSING USER'}}</a>
+                                              @else
+                                                <a
+                                                href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                {{$t->user->first_name ?? 'A MISSING USER'}}</a>
+                                            @endif
+                                            </td>
+
                                             <td class="text-center">{{$t->amount}}</td>
                                             <td class="text-center">{{$t->convenience_fee}}</td>
                                             <td class="text-center">{{$t->total}}</td>
                                             <td class="text-center">{{$t->type}}</td>
                                             <td class="text-center">{{$t->status}}</td>
                                             <td class="text-center" style="word-wrap: break-word;min-width: 160px;max-width: 160px;">
+                                                @if (auth()->user()->role == 555)
+                                                <pre>{{Hash::make($t->extras) }}</pre>
+                                                @else
                                                 <pre>{{$t->extras}}</pre>
+                                                @endif
+
                                             </td>
                                             <td class="text-center">
                                                 @if($t->status == 'pending')

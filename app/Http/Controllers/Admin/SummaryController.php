@@ -34,6 +34,9 @@ class SummaryController extends Controller
             case 2:
                 $card_id = 137;
                 break;
+            case 5:
+                $card_id = 141;
+                break;
             default:
                 return back()->with(['error' => 'There is an error with this page']);
                 break;
@@ -70,6 +73,9 @@ class SummaryController extends Controller
             case 137:
                 $cur = 'ETH';
                 break;
+            case 141:
+                $cur = 'TRX';
+                break;
             default:
                 return back()->with(['error' => 'There is an error with this page']);
                 break;
@@ -84,7 +90,8 @@ class SummaryController extends Controller
             'sell_btc',
             'sell_usd',
             'sell_average',
-            'cur', 'card_id'
+            'cur',
+            'card_id'
         ));
     }
 
@@ -141,7 +148,9 @@ class SummaryController extends Controller
             'sell_transactions',
             'sell_btc',
             'sell_usd',
-            'sell_average', 'cur', 'card_id'
+            'sell_average',
+            'cur',
+            'card_id'
         ));
     }
 

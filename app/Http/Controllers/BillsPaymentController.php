@@ -253,10 +253,11 @@ class BillsPaymentController extends Controller
         }
 
         $amount = $r->amount;
+        $total_charge = $amount + $charge;
 
         $phone = $r->phone_number .''. $r->phone;
 
-        if ($amount > $n->amount) {
+        if ($total_charge  > $n->amount) {
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
@@ -273,12 +274,10 @@ class BillsPaymentController extends Controller
         // dd($response);
 
         if(isset($response['content']) && isset($response['content']['transactions'])) {
+            $prev_bal = $n->amount;
+            $n->amount -= $total_charge;
+            $n->save();
             if($response['content']['transactions']['status'] == 'delivered') {
-                $total_charge = $amount + $charge;
-
-                $prev_bal = $n->amount;
-                $n->amount -= $total_charge;
-                $n->save();
 
                 $nt = new NairaTransaction();
                 $nt->reference = $reference;
@@ -324,26 +323,32 @@ class BillsPaymentController extends Controller
                 $phone = $r->phone_number;
 
                 if (isset(Auth::user()->phone)) {
-                    $client = new Client();
-                    $url = env('TERMII_SMS_URL') . "/send";
-                    $country = Country::find(Auth::user()->country_id);
-                    $phone_number = $country->phonecode . $phone;
+                    try {
+                        $client = new Client();
+                        $url = env('TERMII_SMS_URL') . "/send";
+                        $country = Country::find(Auth::user()->country_id);
+                        $phone_number = $country->phonecode . $phone;
 
-                    $response_sms = $client->request('POST', $url, [
-                        'json' => [
-                            'api_key' => env('TERMII_API_KEY'),
-                            "type" => "plain",
-                            "to" => $phone_number,
-                            "from" => "N-Alert",
-                            "channel" => "dnd",
-                            "sms" => "Your cable subscription from Dantown was successful."
-                        ],
-                    ]);
-                    $body = json_decode($response_sms->getBody()->getContents());
+                        $response_sms = $client->request('POST', $url, [
+                            'json' => [
+                                'api_key' => env('TERMII_API_KEY'),
+                                "type" => "plain",
+                                "to" => $phone_number,
+                                "from" => "N-Alert",
+                                "channel" => "dnd",
+                                "sms" => "Your cable subscription from Dantown was successful."
+                            ],
+                        ]);
+                        $body = json_decode($response_sms->getBody()->getContents());
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
                 }
 
                 $title = 'Cable subscription';
                 $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for cable subscription and N'.$charge.' for convenience fee.';
+
+                Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, '', ''));
 
                 $not = Notification::create([
                     'user_id' => Auth::user()->id,
@@ -1426,6 +1431,7 @@ class BillsPaymentController extends Controller
         //     "code": "000",
         //     "content": {
         //         "transactions": {
+        //             "status": "delivered",
         //             "status": "pending",
         //             "product_name": "PHED - Port Harcourt Electric",
         //             "unique_element": "610124000952992",
@@ -1544,17 +1550,21 @@ class BillsPaymentController extends Controller
                     $country = Country::find(Auth::user()->country_id);
                     $phone_number = $country->phonecode . $phone;
 
-                    $response_sms = $client->request('POST', $url, [
-                        'json' => [
-                            'api_key' => env('TERMII_API_KEY'),
-                            "type" => "plain",
-                            "to" => $phone_number,
-                            "from" => "N-Alert",
-                            "channel" => "dnd",
-                            "sms" => "Your electricity purchase from Dantown was successful. Token : ".$response['token'].", Units : ".$response['units'].", Reference code:".$reference."."
-                        ],
-                    ]);
-                    $body = json_decode($response_sms->getBody()->getContents());
+                    try {
+                        $response_sms = $client->request('POST', $url, [
+                            'json' => [
+                                'api_key' => env('TERMII_API_KEY'),
+                                "type" => "plain",
+                                "to" => $phone_number,
+                                "from" => "N-Alert",
+                                "channel" => "dnd",
+                                "sms" => "Your electricity purchase from Dantown was successful. Token : ".$response['token'].", Units : ".$response['units'].", Reference code:".$reference."."
+                            ],
+                        ]);
+                        $body = json_decode($response_sms->getBody()->getContents());
+                    } catch (\Throwable $th) {
+                        // return $th;
+                    }
                 }
 
                 $title = 'Electricity purchase';
@@ -1568,13 +1578,15 @@ class BillsPaymentController extends Controller
                     'title' => $title,
                     'body' => $msg_body,
                 ]);
+
+                Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, '', ''));
                 $body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N'.$charge.' for convenience fee.<br><br>
                 <b>Token: '.$response['token'].  '</b>,<br>
                 <b>Unit: '. $response['units']. '</b>,<br>
                 <b>Reference code:'. $reference;
                 $btn_text = '';
                 $btn_url = '';
-        
+
                 $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
                 $name = explode(' ', $name);
                 $firstname = ucfirst($name[0]);

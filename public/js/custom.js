@@ -10,6 +10,12 @@ $(document).ready(function () {
         getWalletBalance();
     }, 3000);
 
+    $('.admin-action').on('submit',function(e){
+        if(!confirm("Are you sure?")) {
+            e.preventDefault();
+        }
+    });
+
     /*  window.oncontextmenu = function () {
         return false;
     }

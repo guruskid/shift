@@ -25,6 +25,21 @@ class LiveRateController extends Controller
         return $eth_rate;
     }
 
+    public static function tronRate()
+    {
+        $client = new Client();
+        $url = env('TATUM_URL') . '/tatum/rate/TRON?basePair=USD';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $eth_rate = $res->value;
+
+        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value ?? 0;
+        $tp = ($trading_per / 100) * $eth_rate;
+        $eth_rate -= $tp;
+
+        return $eth_rate;
+    }
+    
     public static function btcRate()
     {
         $client = new Client();
@@ -45,5 +60,6 @@ class LiveRateController extends Controller
     public static function usdNgn()
     {
         return CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+
     }
 }
