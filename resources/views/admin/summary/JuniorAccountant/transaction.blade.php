@@ -128,10 +128,10 @@
                                 @csrf
                                 <div class="form-inline mb-3">
                                     <label class="mr-1">Start Date</label>
-                                    <input type="datetime-local" name="startdate" class="form-control mr-1" required>
+                                    <input type="datetime-local" name="startdate" class="form-control mr-1" >
 
                                     <label class="mr-1">End Date</label>
-                                    <input type="datetime-local" name="enddate" class="form-control mr-1" required>
+                                    <input type="datetime-local" name="enddate" class="form-control mr-1" >
 
                                     <input type="hidden" name="day" value="{{ $day }}">
                                     <input type="hidden" name="month" value="{{ $month }}">
@@ -213,25 +213,36 @@
                                 <table class="mb-2 table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">ID</th>
-                                            <th class="text-center">Asset</th>
-                                            <th class="text-center">Trade type</th>
-                                            <th class="text-center">Currency</th>
-                                            <th class="text-center">Card type</th>
-                                            <th class="text-center">Asset value</th>
-                                            <th class="text-center">Quantity</th>
-                                            <th class="text-center">Card price</th>
-                                            <th class="text-center">Cash value</th>
-                                            <th class="text-center">Wallet ID</th>
-                                            <th class="text-center">User</th>
-                                            <th class="text-center">Date</th>
-                                            <th class="text-center">Status</th>
-                                            @if (in_array(Auth::user()->role, [999, 889] ))
-                                            <th class="text-center">Last Edit</th>
-                                            <th class="text-center">Agent</th>
-                                            <th class="text-center">Accountant</th>
-                                            @endif
-                                        </tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Asset</th>
+                                        <th class="text-center">Trade type</th>
+                                        <th class="text-center">Currency</th>
+                                        <th class="text-center">Card type</th>
+                                        <th class="text-center">Asset value</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Card price</th>
+                                        @if (in_array(Auth::user()->role, [444,449] ))
+                                        <th class="text-center">Cash value</th>
+                                        @endif
+                                        @if (!in_array(Auth::user()->role, [449,444] ))
+                                        <th class="text-center">User Amount</th>
+                                        @endif
+                                        @if (in_array(Auth::user()->role, [999] ))
+                                            <th class="text-center">Commission</th>
+                                            <th class="text-center">Chinese Amount</th>
+                                        @endif
+                                        @if (!in_array(Auth::user()->role, [449,444] ))
+                                        <th class="text-center">Wallet ID</th>
+                                        @endif
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">Status</th>
+                                        @if (in_array(Auth::user()->role, [999, 889] ))
+                                        <th class="text-center">Last Edit</th>
+                                        <th class="text-center">Agent</th>
+                                        <th class="text-center">Accountant</th>
+                                        @endif
+                                    </tr>
                                     </thead>
                                     <tbody>
                                         @if (isset($all_tnx))
@@ -256,14 +267,58 @@
                                             <td class="text-center">{{ $t->quantity}}</td>
                                             @endif
                                             <td class="text-center">{{$t->card_price}}</td>
+                                            @if (in_array(Auth::user()->role, [444,449] ))
                                             <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                            @endif
+
+                                            {{-- <td class="text-center">{{$t->wallet_id}}</td> --}}
+                                            {{-- @if (isset($t->user))
+                                            <td class="text-center">
+                                                @if (in_array(Auth::user()->role, [555] ))
+                                                    <a
+                                                    href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
+                                                    {{$t->user->first_name." ".$t->user->last_name}}</a>
+                                                @else
+                                                    <a
+                                                    href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                    {{$t->user->first_name." ".$t->user->last_name}}</a>
+                                                @endif
+
+                                            </td>
+                                            @endif --}}
+
+                                            @if (!in_array(Auth::user()->role, [449,444] ))
+                                            <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
+                                            @endif
+                                            @if (in_array(Auth::user()->role, [999] ))
+                                                <td class="text-center">{{$t->commission}}</td>
+                                                <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+
+                                            @endif
+                                            @if (!in_array(Auth::user()->role, [449,444] ))
                                             <td class="text-center">{{$t->wallet_id}}</td>
+                                            @endif
+
                                             <td class="text-center">
                                                 @if (isset($t->user))
-                                                    <a href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
-                                                    {{$t->user->first_name." ".$t->user->last_name}}</a>
+                                                    @if (in_array(Auth::user()->role, [555] ))
+                                                        <a
+                                                        href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
+                                                        {{$t->user->first_name." ".$t->user->last_name}}</a>
+                                                    @else
+                                                        @if (in_array(Auth::user()->role, [449,444] ))
+                                                        {{$t->user->first_name." ".$t->user->last_name}}
+                                                        @else
+                                                        <a
+                                                        href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                        {{$t->user->first_name." ".$t->user->last_name}}</a>
+                                                        @endif
+
+
                                                     @endif
-                                                </td>
+                                                @endif
+                                            </td>
+
                                             <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
                                             <td class="text-center">
                                                 @switch($t->status)
@@ -289,8 +344,11 @@
                                             <td class="text-center"> {{$t->agent->first_name}} </td>
                                             <td class="text-center"> {{$t->accountant->first_name ?? 'None' }} </td>
                                             @endif
+
+                                            
+                                        </tr>
                                         
-                                            @endforeach
+                                        @endforeach
                                     </tbody>
                                         
                                     {{ $all_tnx->links() }}
@@ -396,7 +454,18 @@
                                                 <td class="text-center">{{$t->convenience_fee}}</td>
                                                 <td class="text-center">{{$t->total}}</td>
                                                 <td class="text-center">{{$t->type}}</td>
-                                                <td class="text-center">{{$t->status}}</td>
+                                                <td class="text-center">
+                                                    @switch($t->status)
+                                                @case('success')
+                                                <div class="text-success">{{$t->status}}</div>
+                                                @break
+                                                @case("failed")
+                                                <div class="text-danger">{{$t->status}}</div>
+                                                @break
+                                                @default
+                                                <div class="text-warning">{{$t->status}}</div>
+                                                @endswitch
+                                                </td>
                                                 <td class="text-center" style="word-wrap: break-word;min-width: 160px;max-width: 160px;">
                                                     <pre>{{$t->extras}}</pre>
                                                 </td>
@@ -580,7 +649,18 @@
                                                                 <td>{{$t->dr_acct_name}} </td>
                                                                 <td>{{$t->narration}} </td>
                                                                 <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
-                                                                <td>{{$t->status}} </td>
+                                                                <td>
+                                                                    @switch($t->status)
+                                                                    @case('success')
+                                                                    <div class="text-success">{{$t->status}}</div>
+                                                                    @break
+                                                                    @case("failed")
+                                                                    <div class="text-danger">{{$t->status}}</div>
+                                                                    @break
+                                                                    @default
+                                                                    <div class="text-warning">{{$t->status}}</div>
+                                                                    @endswitch
+                                                                </td>
                                                                 <td>{{$t->extras}} </td>
                                                             </tr>
                                                         @endforeach
@@ -700,7 +780,16 @@
                                                             <td>{{$t->dr_acct_name}} </td>
                                                             <td>{{$t->narration}} </td>
                                                             <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
-                                                            <td>{{$t->status}} </td>
+                                                            <td>@switch($t->status)
+                                                                @case('success')
+                                                                <div class="text-success">{{$t->status}}</div>
+                                                                @break
+                                                                @case("failed")
+                                                                <div class="text-danger">{{$t->status}}</div>
+                                                                @break
+                                                                @default
+                                                                <div class="text-warning">{{$t->status}}</div>
+                                                                @endswitch </td>
                                                             <td>{{$t->extras}} </td>
                                                         </tr>
                                                     @endforeach
@@ -820,7 +909,16 @@
                                                             <td>{{$t->dr_acct_name}} </td>
                                                             <td>{{$t->narration}} </td>
                                                             <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
-                                                            <td>{{$t->status}} </td>
+                                                            <td>@switch($t->status)
+                                                                @case('success')
+                                                                <div class="text-success">{{$t->status}}</div>
+                                                                @break
+                                                                @case("failed")
+                                                                <div class="text-danger">{{$t->status}}</div>
+                                                                @break
+                                                                @default
+                                                                <div class="text-warning">{{$t->status}}</div>
+                                                                @endswitch  </td>
                                                             <td>{{$t->extras}} </td>
                                                         </tr>
                                                     @endforeach

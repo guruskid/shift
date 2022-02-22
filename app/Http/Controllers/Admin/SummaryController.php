@@ -221,14 +221,14 @@ class SummaryController extends Controller
 
         $user = Auth::user();
         $accountant = User::whereIn('role', [777])->where('id','!=',$user->id)->get();
+        //?Accounatnt Timestamps
             $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$current_day_value)
             ->whereDate('created_at','<=',$current_day_value)
             ->where('user_id',$user->id)
-            ->latest('id')->first();
-            
-            
+            ->latest('id')->first(); 
+
             if($category == "all"){
-                    //?All Tnx
+                    //?All tansactions 
                 $all_tnx = Transaction::whereNotNull('id')
                 ->orderBy('created_at', 'desc');
                 if ($user->role == 777 && !empty($accountant_timestamp)) {
@@ -243,10 +243,11 @@ class SummaryController extends Controller
                 }
                 
                 $all_tnx = $all_tnx->latest()->get();
-
+                
                 $all_tnx_count = $all_tnx->where('status', 'success')->count();
                 $all_tnx = $all_tnx->paginate(100);
 
+                //? bitcoin transactions
                 $bitcoin_total_tnx = Transaction::whereNotNull('id');
                 if ($user->role == 777 && !empty($accountant_timestamp)) {
                     $bitcoin_total_tnx = $bitcoin_total_tnx
@@ -265,6 +266,7 @@ class SummaryController extends Controller
                 $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy')->sum('quantity');
                 $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
 
+                //*Gitfcard transactions 
                 $giftcards_totaltnx_buy = Transaction::whereNotNull('id')
                 ->whereHas('asset', function ($query) {
                     $query->where('is_crypto', 0);
@@ -435,7 +437,6 @@ class SummaryController extends Controller
                     ->whereDate('updated_at', '<=', $current_day_value);
                 }
                 $nw_withdrawal_tnx = $nw_withdrawal_tnx->get();
-
                 $nw_withdrawal_tnx_total = $nw_withdrawal_tnx->where('status','success')->count();
                 $nw_withdrawal_amount_paid = $nw_withdrawal_tnx->where('status','success')->sum('amount_paid');
                 $nw_withdrawal_tnx_charges = $nw_withdrawal_tnx->where('status','success')->sum('charge');
@@ -492,6 +493,39 @@ class SummaryController extends Controller
             }
 
             
+        
+    }
+
+    public function sorting(Request $request)
+    {
+        $request->session()->put('start_date',$request->startdate);
+        $request->session()->put('end_date',$request->enddate);
+        $request->session()->put('accountant_name',$request->name);
+        $request->session()->put('accountant_id',$request->Accountant);
+        $request->session()->put('category',$request->category);
+        $request->session()->put('entries',$request->entries);
+        $request->session()->put('day',$request->day);
+        $request->session()->put('month',$request->month);
+
+        $startdate_session = $request->session()->get('start_date');
+        $enddate_session = $request->session()->get('end_date');
+        $accountant_id_session = $request->session()->get('accountant_id');
+        $category_session = $request->session()->get('category');
+        $entries_session = $request->session()->get('entries');
+        $day = $request->session()->get('day');
+        $month = $request->session()->get('month');
+        
+        
+        if($request->startdate != null && $request->enddate == null && $request->Accountant == 'null')
+        {
+            return $this->sort_by_day($request,$startdate_session
+            ,$enddate_session,$accountant_id_session,$category_session,$entries_session,$day, $month);
+        }
+    }
+
+    public function sort_by_day($request,$startdate_session
+    ,$enddate_session,$accountant_id_session,$category_session,$entries_session,$day, $month)
+    {
         
     }
     public function sort_tnx(Request $request)
