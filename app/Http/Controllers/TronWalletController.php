@@ -251,6 +251,7 @@ class TronWalletController extends Controller
 
         $tron_wallet->balance = $accounts->balance->availableBalance;
         $tron_wallet->usd = $tron_wallet->balance  * $tron_usd;
+        $tron_wallet->ngn = $tron_wallet->usd * $sell_rate;
 
         $hd_wallet = HdWallet::where('currency_id', 5)->first();
 
@@ -258,10 +259,9 @@ class TronWalletController extends Controller
 
         return response()->json([
             'success' => true,
-            'date' => [
+            'data' => [
                 'sell_rate' => $sell_rate,
                 'tron_wallet' => $tron_wallet,
-                'hd_wallet' => $hd_wallet,
                 'tron_usd' => $tron_usd,
                 'charge' => $charge
             ]
