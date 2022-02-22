@@ -247,7 +247,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <th class="text-center">Asset value</th>
                                         <th class="text-center">Quantity</th>
                                         <th class="text-center">Card price</th>
+                                        @if (in_array(Auth::user()->role, [444,449] ))
                                         <th class="text-center">Cash value</th>
+                                        @endif
                                         @if (!in_array(Auth::user()->role, [449,444] ))
                                         <th class="text-center">User Amount</th>
                                         @endif
@@ -291,8 +293,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center">{{ $t->quantity}}</td>
                                         @endif
                                         <td class="text-center">{{$t->card_price}}</td>
-
+                                        @if (in_array(Auth::user()->role, [444,449] ))
                                         <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                        @endif
 
                                         {{-- <td class="text-center">{{$t->wallet_id}}</td> --}}
                                         {{-- @if (isset($t->user))
@@ -577,6 +580,13 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     <option value="buy">Buy</option>
                                     <option value="sell">Sell</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="">Quantity</label>
+                                <input type="text" placeholder="Amount paid" id="e_quantity" class="form-control"
+                                    name="quantity">
                             </div>
                         </div>
                         <!-- //////////////////////////////////// -->
