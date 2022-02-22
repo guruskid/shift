@@ -211,8 +211,13 @@ class AuthController extends Controller
     }
 
 
-    public function register(Request $request)
+    public function register(Request $request, $refcode = NULL)
     {
+
+        // if(isset($refcode)){
+        //     return($refcode);
+        // }
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
@@ -240,6 +245,7 @@ class AuthController extends Controller
             'country_id' => $input['country_id'],
             'email' => $input['email'],
             'external_id' => $external_id,
+            'referrer' => $refcode,
             'password' => Hash::make($input['password']),
         ];
 
