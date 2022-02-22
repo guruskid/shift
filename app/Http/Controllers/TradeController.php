@@ -125,6 +125,9 @@ class TradeController extends Controller
     /* Trade GiftCards */
     public function trade(Request $r)
     {
+        if ($r->buy_sell == 1) {
+            return back()->with(['error' => 'Service not available']);
+        }
         if (count($r->cards) != count($r->totals)) {
             return back()->with(['error' => 'Invalid trade details']);
         }
@@ -155,7 +158,7 @@ class TradeController extends Controller
                 }
             }
             $commission = $t_amount - $r->totals[$i];
-            // return 
+            // return
             // return $t_amount .' '. $commission.' '.$r->totals[$i];
 
             $t = new Transaction();
@@ -192,7 +195,7 @@ class TradeController extends Controller
             }
         }
 
-        broadcast(new NewTransaction($t))->toOthers();
+        // broadcast(new NewTransaction($t))->toOthers();
 
         $chinese = User::where(['role' => 444, 'status' => 'active'])->get();
                 $message = '!!! New Giftcard Transaction !!!  A new Giftcard transaction has been initiated ';
@@ -222,7 +225,7 @@ class TradeController extends Controller
         $user = Auth::user();
         $title = 'TRANSACTION PENDING - BUY
         ';
-        $body ="Your order to   $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." is currently 
+        $body ="Your order to   $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." is currently
         <b style='color:red'>pending</b> and will be debited from your naria wallet once the transaction is successful<br>
         <b>Transaction ID: $transaction_id <br>
         Date: ".date("Y-m-d; h:ia")."</b>
@@ -233,7 +236,7 @@ class TradeController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
+        $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 

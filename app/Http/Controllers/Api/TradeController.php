@@ -63,6 +63,13 @@ class TradeController extends Controller
             ]);
         }*/
 
+        if ($r->buy_sell == 'buy') {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Service not currently available ',
+            ]);
+        }
+
         if ($r->buy_sell == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
             return response()->json([
                 'success' => false,
