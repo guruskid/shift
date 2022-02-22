@@ -76,7 +76,7 @@ class AssetTransactionController extends Controller
             'body' => $body,
         ]);
 
-        broadcast(new TransactionUpdated($user))->toOthers();
+        // broadcast(new TransactionUpdated($user))->toOthers();
         if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1) {
             $title = 'Transaction Successful';
             Mail::to($user->email)->send(new DantownNotification($title, $body, 'Go to Wallet', route('user.naira-wallet')));
@@ -85,7 +85,7 @@ class AssetTransactionController extends Controller
             $user = Auth::user();
         $title = 'TRANSACTION PENDING - BUY
         ';
-        $body ="Your order to $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." was  
+        $body ="Your order to $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." was
         <b style='color:green'>$t->stats</b> and will be debited from your naria wallet once the transaction is successful<br>
         <b>Transaction ID: $t->uid <br>
         Date: ".date("Y-m-d; h:ia")."<br><br>
@@ -97,7 +97,7 @@ class AssetTransactionController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
+        $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
