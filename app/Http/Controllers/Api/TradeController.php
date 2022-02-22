@@ -116,7 +116,7 @@ class TradeController extends Controller
             }
         }
 
-        broadcast(new NewTransaction($t))->toOthers();
+        // broadcast(new NewTransaction($t))->toOthers();
 
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
