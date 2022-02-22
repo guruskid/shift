@@ -56,7 +56,6 @@ class TradeController extends Controller
 
         $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->limit(1)->get();
         $user_wallet = $user->nairaWallet;
-        \Log::info($agent);
 
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => $transactiontype])->first();
 
