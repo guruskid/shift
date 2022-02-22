@@ -494,7 +494,7 @@ class AdminController extends Controller
         $totalChineseAmt = $tranx->sum('amount_paid') - $totalComm;
 
         $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
-                ->groupBy('date')->pluck('d_total');
+                ->groupBy('created_at')->pluck('d_total');
 
         $totalAvgPerToday = 0;
 
@@ -507,9 +507,15 @@ class AdminController extends Controller
                 $query->where('is_crypto', 0);
             });
         }
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
         $transactions = $transactions->paginate(1000);
-
-        return view('admin.transactions', compact(['transactions', 'segment','totalTransactions','totalVol','totalComm','totalChineseAmt','totalAvgPerToday']));
+        return view('admin.transactions', compact([
+            'transactions', 'total_transactions','segment',
+            'totalTransactions','totalVol','totalComm','totalChineseAmt',
+            'totalAvgPerToday','card_price_total','cash_value_total','asset_value_total']));
     }
 
     public function search_tnx(Request $request)
