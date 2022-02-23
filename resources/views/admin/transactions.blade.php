@@ -380,11 +380,11 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
 
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
-
+                                                @if ($t->asset->is_crypto)
                                                 <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t}})"><span
                                                         class="btn btn-sm btn-info">Edit</span></a>
-
+                                                @endif
                                                 @if ($t->status == 'approved')
                                                     @if (\Str::lower($t->card) == 'bitcoins')
                                                         <button data-toggle="modal" data-target="#confirm-btc-modal"
@@ -555,11 +555,16 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         </div>
                     </div>
                     <div class="row">
+                        @if (Auth::user()->role != 888)
+
                         <div class="col">
                             <!-- ///////////// WORK IN PROGRESS ////////////// -->
                             <div class="form-group">
                                 <label for="">Status</label>
-                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
+                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control"
+                                @if (Auth::user()->role == 888)
+                                    {{ "disabled" }}
+                                @endif>
                                     <option value="" id="e_status"></option>
                                     @if (in_array(Auth::user()->role, [889, 777, 999, 444, 449]))
                                     <option value="success">Success</option>
@@ -571,6 +576,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
+                        @endif
                         <div class="col">
                             <div class="form-group">
                                 <label for="">Transac Type</label>

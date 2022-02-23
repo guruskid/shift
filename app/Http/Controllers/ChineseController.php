@@ -30,7 +30,7 @@ class ChineseController extends Controller
     public function dashboard()
     {
 
-        $page_limit = 1000;
+        $page_limit = 10;
 
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
