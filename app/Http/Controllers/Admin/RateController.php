@@ -73,9 +73,6 @@ class RateController extends Controller
 
     public function update(Request $request)
     {
-        if (Auth::user()->role == 888) {
-            return redirect()->route('admin.dashboard');
-        }
 
         $card_currency = CardCurrency::findOrFail($request->cc_id);
         $value = $request->values;
