@@ -381,11 +381,11 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
 
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
-
+                                                @if ($t->asset->is_crypto)
                                                 <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t}})"><span
                                                         class="btn btn-sm btn-info">Edit</span></a>
-
+                                                @endif
                                                 @if ($t->status == 'approved')
                                                     @if (\Str::lower($t->card) == 'bitcoins')
                                                         <button data-toggle="modal" data-target="#confirm-btc-modal"
