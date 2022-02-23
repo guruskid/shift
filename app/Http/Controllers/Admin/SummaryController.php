@@ -521,8 +521,29 @@ class SummaryController extends Controller
             $accountant_name = $user->first_name ?: $user->email;
         }
         $accountant = User::whereIn('role', [777])->where('id','!=',$user->id)->get();
+        if($request['startdate'] == null AND $request['enddate'] != null)
+        {
+            return back()->with(['error' => 'Pick a start date']);
+        }
+        if($request['startdate'] != null AND $request['enddate'] == null AND $request['Accountant'] == "null")
+        {
+
+        }
+        if($request['startdate'] != null AND $request['enddate'] != null AND $request['Accountant'] == "null")
+        {
+
+        }
+        if($request['startdate'] != null AND $request['enddate'] == null AND $request['Accountant'] != "null")
+        {
+
+        }
+        if($request['startdate'] != null AND $request['enddate'] != null AND $request['Accountant'] != "null")
+        {
+            
+        }
         $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$start_date[0])
         ->whereDate('created_at','<=',$end_date[0])->where('user_id',$user->id)->get();
+
     }
     
 
