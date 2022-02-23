@@ -23,9 +23,6 @@ class RateController extends Controller
 
     public function index()
     {
-        if (Auth::user()->role == 888) {
-            return redirect()->route('admin.dashboard');
-        }
 
         $cards = Card::orderBy('name', 'asc')->get();
         $currencies = Currency::orderBy('name', 'asc')->get();
