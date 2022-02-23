@@ -63,6 +63,13 @@ class TradeController extends Controller
             ]);
         }*/
 
+        if ($r->buy_sell == 'buy') {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Service not currently available ',
+            ]);
+        }
+
         if ($r->buy_sell == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
             return response()->json([
                 'success' => false,
@@ -116,7 +123,7 @@ class TradeController extends Controller
             }
         }
 
-        broadcast(new NewTransaction($t))->toOthers();
+        // broadcast(new NewTransaction($t))->toOthers();
 
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';

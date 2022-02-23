@@ -314,12 +314,11 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         @endif --}}
 
                                         @if (!in_array(Auth::user()->role, [449,444] ))
-                                        <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
+                                            <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
                                         @endif
                                         @if (in_array(Auth::user()->role, [999] ))
                                             <td class="text-center">{{$t->commission}}</td>
                                             <td class="text-center">N{{number_format($t->amount_paid)}}</td>
-
                                         @endif
                                         @if (!in_array(Auth::user()->role, [449,444] ))
                                         <td class="text-center">{{$t->wallet_id}}</td>
@@ -373,19 +372,19 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
                                         <td>
                                             @if (!in_array(Auth::user()->role, [555] ))
-                                            <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
-                                                @if (Auth::user()->role != 888 )
-                                                    <span class="btn btn-sm btn-success">View</span>
-                                                @endif
-                                            </a>
+                                                <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
+                                                    @if (Auth::user()->role != 888 )
+                                                        <span class="btn btn-sm btn-success">View</span>
+                                                    @endif
+                                                </a>
                                             @endif
 
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
-
+                                                @if ($t->asset->is_crypto)
                                                 <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t}})"><span
                                                         class="btn btn-sm btn-info">Edit</span></a>
-
+                                                @endif
                                                 @if ($t->status == 'approved')
                                                     @if (\Str::lower($t->card) == 'bitcoins')
                                                         <button data-toggle="modal" data-target="#confirm-btc-modal"
@@ -468,13 +467,13 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
 
                                             @if($t->status == 'waiting' && (Auth::user()->role == 444 OR Auth::user()->role == 449))
-                                            <form action="{{route('admin.transfer-chinese',$t->id)}} " method="post" class="admin-action">
-                                                @csrf
-                                                <input type="hidden" name="id" value="{{$t->id}}" required class="form-control">
-                                                <button class="btn btn-block c-rounded bg-custom-gradient admin-action">
-                                                    Pay User
-                                                </button>
-                                            </form>
+                                                <form action="{{route('admin.transfer-chinese',$t->id)}} " method="post" class="admin-action">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{$t->id}}" required class="form-control">
+                                                    <button class="btn btn-block c-rounded bg-custom-gradient admin-action">
+                                                        Pay User
+                                                    </button>
+                                                </form>
                                             @endif
                                         </td>
                                     </tr>
@@ -556,11 +555,16 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         </div>
                     </div>
                     <div class="row">
+                        @if (Auth::user()->role != 888)
+
                         <div class="col">
                             <!-- ///////////// WORK IN PROGRESS ////////////// -->
                             <div class="form-group">
                                 <label for="">Status</label>
-                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
+                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control"
+                                @if (Auth::user()->role == 888)
+                                    {{ "disabled" }}
+                                @endif>
                                     <option value="" id="e_status"></option>
                                     @if (in_array(Auth::user()->role, [889, 777, 999, 444, 449]))
                                     <option value="success">Success</option>
@@ -572,6 +576,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
+                        @endif
                         <div class="col">
                             <div class="form-group">
                                 <label for="">Transac Type</label>
