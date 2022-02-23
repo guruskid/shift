@@ -556,6 +556,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         </div>
                     </div>
                     <div class="row">
+                        @if (Auth::user()->role != 888)
+
                         <div class="col">
                             <!-- ///////////// WORK IN PROGRESS ////////////// -->
                             <div class="form-group">
@@ -575,6 +577,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
+                        @endif
                         <div class="col">
                             <div class="form-group">
                                 <label for="">Transac Type</label>
