@@ -124,8 +124,8 @@
                                 
                             @if ($show_category == "all")
                            {{-- all tnx start --}}
-                            <form action="{{ route('admin.junior-summary-sort-details') }}" method="POST">
-                                @csrf
+                            <form action="{{ route('admin.junior-summary-sort-details') }}" method="GET">
+                                {{-- @csrf --}}
                                 <div class="form-inline mb-3">
                                     <label class="mr-1">Start Date</label>
                                     <input type="datetime-local" name="startdate" class="form-control mr-1" >
@@ -136,11 +136,11 @@
                                     <input type="hidden" name="day" value="{{ $day }}">
                                     <input type="hidden" name="month" value="{{ $month }}">
                                     <input type="hidden" name="category" value="{{ $show_category }}">
-                                    @if (isset($accountant))
+                                    {{-- @if (isset($accountant))
                                         @foreach ($accountant as $a)
                                             <input type="hidden" name="name" value="{{ $a->first_name }}" class="form-control mr-4">
                                         @endforeach
-                                    @endif
+                                    @endif --}}
 
                                     @if (isset($accountant))
                                         <select name="Accountant" class="ml-1 form-control">
