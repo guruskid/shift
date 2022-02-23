@@ -472,19 +472,19 @@ class AdminController extends Controller
     public function transactions(Request $request)
     {
         $transactions = Transaction::with('user')->orderBy('updated_at', 'desc');
+        $tranx = Transaction::with('user')->orderBy('updated_at', 'desc');
 
         $segment = 'All';
 
-        $tranx = $transactions;
         if (isset($request['start']) and isset($request['end'])) {
             $from = $request['start'];
             $to = $request['end'];
             $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
-                    $q->where('is_crypto', 0);
-                });
-            }
+            // if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+            //     $transactions = $transactions->WhereHas('asset', function($q){
+            //         $q->where('is_crypto', 0);
+            //     });
+            // }
             $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
         }
 
@@ -493,8 +493,7 @@ class AdminController extends Controller
         $totalComm = $tranx->sum(DB::raw('IFNULL(commission, 0)'));
         $totalChineseAmt = $tranx->sum('amount_paid') - $totalComm;
 
-        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
-                ->groupBy('created_at')->pluck('d_total');
+        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')->groupBy('created_at')->pluck('d_total');
 
         $totalAvgPerToday = 0;
 
@@ -503,7 +502,7 @@ class AdminController extends Controller
         }
 
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::whereHas('asset', function ($query) {
+            $transactions = $transactions->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             });
         }
@@ -512,6 +511,7 @@ class AdminController extends Controller
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
         $transactions = $transactions->paginate(1000);
+        // return $transactions;
         return view('admin.transactions', compact([
             'transactions', 'total_transactions','segment',
             'totalTransactions','totalVol','totalComm','totalChineseAmt',

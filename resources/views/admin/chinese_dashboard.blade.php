@@ -270,14 +270,25 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <td class="text-center">{{$t->card_price}}</td>
                                                             <td class="text-center">N{{number_format($t->amount_paid)}}
                                                             </td>
-                                                            @if (!in_array(Auth::user()->role, [449,444] ))
+
+                                                            {{-- @if (!in_array(Auth::user()->role, [449,444] ))
                                                             <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
                                                             @endif
+
                                                             @if (in_array(Auth::user()->role, [999] ))
                                                                 <td class="text-center">{{$t->commission}}</td>
                                                                 <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                                            @endif --}}
 
+                                                            @if (!in_array(Auth::user()->role, [449,444] ))
+                                                                <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
                                                             @endif
+                                                            
+                                                            @if (in_array(Auth::user()->role, [999] ))
+                                                                <td class="text-center">{{$t->commission}}</td>
+                                                                <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                                            @endif
+
                                                             @if (!in_array(Auth::user()->role, [449,444] ))
                                                             <td class="text-center">{{$t->wallet_id}}</td>
                                                             @endif
@@ -325,6 +336,17 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             @endif
 
                                                             <td>
+                                                    
+                                                                @if($t->status == 'waiting' && (Auth::user()->role == 444 OR Auth::user()->role == 449))
+                                                                    <form action="{{route('admin.transfer-chinese',$t->id)}} " method="post" class="admin-action">
+                                                                        @csrf
+                                                                        <input type="hidden" name="id" value="{{$t->id}}" required class="form-control">
+                                                                        <button class="btn btn-block c-rounded bg-custom-gradient admin-action">
+                                                                            Pay User
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
+
                                                                 <a
                                                                     href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
                                                                     <span class="btn btn-sm btn-success">View</span>
@@ -582,7 +604,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                                 @if (Auth::user()->role == 444  OR Auth::user()->role == 449) {{--test//// super accountant
                                                                 options --}}
 
-                                                                <a href="#" data-toggle="modal"
+                                                                    <a href="#" data-toggle="modal"
                                                                     data-target="#edit-transac{{$t->id}}"
                                                                     {{-- onclick="editTransac({{$t}})" --}}
                                                                     ><span
@@ -612,10 +634,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                                 @endif
 
                                                                 @if (Auth::user()->role == 999) {{-- Super Admin --}}
-                                                                <a href="#" data-toggle="modal"
-                                                                    data-target="#edit-transac{{$t->id}}">
-                                                                    <span class="btn btn-sm btn-info">Edit</span>
-                                                                </a>
+                                                                    <a href="#" data-toggle="modal"
+                                                                        data-target="#edit-transac{{$t->id}}">
+                                                                        <span class="btn btn-sm btn-info">Edit</span>
+                                                                    </a>
 
                                                                 @if ($t->status == 'approved')
                                                                 @if (\Str::lower($t->card) == 'bitcoins')
