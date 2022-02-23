@@ -54,7 +54,9 @@ class AssetTransactionController extends Controller
         $t->amount = $r->amount;
         $t->amount_paid = $r->amount_paid;
         $t->commission = (int)$commision;
-        $t->status = $r->status;
+        if(Auth::user()->role !=888){
+            $t->status = $r->status;
+        }
         $t->feedback = $actualFeedback;
         $t->quantity = $r->quantity;
         $t->last_edited = Auth::user()->email;
