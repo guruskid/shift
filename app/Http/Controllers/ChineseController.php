@@ -30,7 +30,7 @@ class ChineseController extends Controller
     public function dashboard()
     {
 
-        $page_limit = 1000;
+        $page_limit = 10;
 
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
@@ -128,35 +128,51 @@ class ChineseController extends Controller
         $all_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->count();
 
 
-            $twentyFourHrsTransactions = Transaction::
-            // where('status', 'waiting')
-            where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')
-            ->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')
-            ->where("created_at",">=",Carbon::now()->subDay())
-            ->where("created_at","<=",Carbon::now())
-            ->where('status', 'success');
-            // return $twentyFourHrsTransactions->count();
-            $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
-            $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
-            $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
+        $twentyFourHrsTransactions = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+        $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
+        $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
+        $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
 
-            $nairaTwentyFourHrs = $nairaTwentyFourHr;
-            $dollarTwentyFourHrs = $dollarTwentyFourHr;
+        $nairaTwentyFourHrs = $nairaTwentyFourHr;
+        $dollarTwentyFourHrs = $dollarTwentyFourHr;
 
-            $countWaiting = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $countProgreses = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $countSuccess = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $countApproved = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $declined = Transaction::where('status', 'declined')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $failed = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $failedAndDeclined = $failed + $declined;
+        $countWaiting = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'waiting')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+        $countProgreses = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'in progress')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+        $countSuccess = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'success')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+        $countApproved = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'approved')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+        $declined = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'declined')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+        $failed = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'failed')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+        $failedAndDeclined = $failed + $declined;
 
-            $waiting_transactions_chinese = Transaction::with('asset')->where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
-            $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
-            $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
-            $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
-            $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
-
+        $waiting_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->with('asset')->where('status', 'waiting')->orderBy('id', 'desc')->get()->take($page_limit);
+        $success_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'success')->orderBy('id', 'desc')->get()->take($page_limit);
+        $failed_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'failed')->orderBy('id', 'desc')->get()->take($page_limit);
+        $in_progress_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'in progress')->orderBy('id', 'desc')->get()->take($page_limit);
+        $approved_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'approved')->orderBy('id', 'desc')->get()->take($page_limit);
             // dd($cardTwentyFourHrs);
 
             return view(
