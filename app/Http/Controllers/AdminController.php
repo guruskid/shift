@@ -519,10 +519,14 @@ class AdminController extends Controller
 
         $segment = 'All';
 
-        $tranx = $transactions;
+        $tranx =  Transaction::with('user')->WhereHas('asset', function($q){
+            $q->where('is_crypto', 0);
+        })->orderBy('updated_at', 'desc')->where('status','success');
+
         if (isset($request['start']) and isset($request['end'])) {
             $from = $request['start'];
             $to = $request['end'];
+            $tranx = $tranx->whereBetween('created_at', [$from, $to])->latest();
             $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
             if(Auth::user()->role == 444 OR Auth::user()->role == 449){
                 $transactions = $transactions->WhereHas('asset', function($q){
@@ -539,15 +543,14 @@ class AdminController extends Controller
 
         $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
                 ->groupBy('created_at')->pluck('d_total');
-
         $totalAvgPerToday = 0;
 
-        if ($totalAvgPerToday > 0) {
-            $totalAvgPerToday = ceil($tt->sum() / $tt->count());
-        }
+        // if ($totalAvgPerToday > 0) {
+        $totalAvgPerToday = ceil($tt->sum() / $tt->count());
+        // }
 
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::whereHas('asset', function ($query) {
+            $transactions = $transactions->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             });
         }
