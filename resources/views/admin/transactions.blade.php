@@ -268,6 +268,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <th class="text-center">Agent</th>
                                         <th class="text-center">Accountant</th>
                                         @endif
+                                        <th class="text-center">Feedback</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -369,7 +370,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center"> {{$t->agent->first_name}} </td>
                                         <td class="text-center"> {{$t->accountant->first_name ?? 'None' }} </td>
                                         @endif
-
+                                        <td class="text-center"> {{$t->feedback}} </td>
                                         <td>
                                             @if (!in_array(Auth::user()->role, [555] ))
                                                 <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
