@@ -464,18 +464,6 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                         class="btn btn-sm btn-info">Edit</span></a>
                                                 @endif
                                             @endif
-
-
-
-                                            @if($t->status == 'waiting' && (Auth::user()->role == 444 OR Auth::user()->role == 449))
-                                                <form action="{{route('admin.transfer-chinese',$t->id)}} " method="post" class="admin-action">
-                                                    @csrf
-                                                    <input type="hidden" name="id" value="{{$t->id}}" required class="form-control">
-                                                    <button class="btn btn-block c-rounded bg-custom-gradient admin-action">
-                                                        Pay User
-                                                    </button>
-                                                </form>
-                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
