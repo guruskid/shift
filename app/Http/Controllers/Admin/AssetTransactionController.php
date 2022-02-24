@@ -33,6 +33,10 @@ class AssetTransactionController extends Controller
     public function editTransaction(Request $r)
     {
 
+        if (Auth::user()->role and $r->status == 'success') {
+            return $this->payTransactionChinese($r->id);
+        }
+
         $actualFeedback = "";
 
             if($r->status == "failed"){

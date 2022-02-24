@@ -516,6 +516,7 @@ class AdminController extends Controller
     public function transactions(Request $request)
     {
         $transactions = Transaction::with('user')->orderBy('updated_at', 'desc');
+        $tranx = Transaction::with('user')->orderBy('updated_at', 'desc');
 
         $segment = 'All';
 
@@ -528,11 +529,11 @@ class AdminController extends Controller
             $to = $request['end'];
             $tranx = $tranx->whereBetween('created_at', [$from, $to])->latest();
             $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
-                    $q->where('is_crypto', 0);
-                });
-            }
+            // if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+            //     $transactions = $transactions->WhereHas('asset', function($q){
+            //         $q->where('is_crypto', 0);
+            //     });
+            // }
             $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
         }
 
@@ -559,6 +560,7 @@ class AdminController extends Controller
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
         $transactions = $transactions->paginate(1000);
+        // return $transactions;
         return view('admin.transactions', compact([
             'transactions', 'total_transactions','segment',
             'totalTransactions','totalVol','totalComm','totalChineseAmt',
