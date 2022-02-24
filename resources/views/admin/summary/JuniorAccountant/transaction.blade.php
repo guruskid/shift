@@ -124,14 +124,14 @@
                                 
                             @if ($show_category == "all")
                            {{-- all tnx start --}}
-                            <form action="{{ route('admin.junior-summary-sort-details') }}" method="GET">
-                                {{-- @csrf --}}
+                           <form action="{{ route('admin.junior-summary-sort-details') }}" method="POST">
+                                @csrf
                                 <div class="form-inline mb-3">
                                     <label class="mr-1">Start Date</label>
-                                    <input type="datetime-local" name="startdate" class="form-control mr-1" >
+                                    <input type="datetime-local" name="startdate"  value="{{app('request')->input('startdate')}}"class="form-control mr-1" >
 
                                     <label class="mr-1">End Date</label>
-                                    <input type="datetime-local" name="enddate" class="form-control mr-1" >
+                                    <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
 
                                     <input type="hidden" name="day" value="{{ $day }}">
                                     <input type="hidden" name="month" value="{{ $month }}">
@@ -151,7 +151,7 @@
                                         </select>
                                     @endif
                                     
-                                    <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
+                                    {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
                                     <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                                 </div>
                             </form>
@@ -210,7 +210,7 @@
                                     </table>
                                     @endif
                                 </div>
-                                <table class="mb-2 table table-bordered">
+                                <table class="mb-2 table table-bordered transactions-table">
                                     <thead>
                                         <tr>
                                         <th class="text-center">ID</th>
@@ -351,7 +351,7 @@
                                         @endforeach
                                     </tbody>
                                         
-                                    {{ $all_tnx->links() }}
+                                    {{-- {{ $all_tnx->links() }} --}}
                                     @endif
 
 

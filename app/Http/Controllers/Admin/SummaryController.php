@@ -498,9 +498,8 @@ class SummaryController extends Controller
 
     public function sorting(Request $request)
     {
-        /*
-        ? startdate  enddate day month category Accountant entries
-        */
+        $day = $request['day'];
+        $month = $request['month'];
         $show_category = $request['category'];
         $show_data = true;
         $show_summary = (Auth::user()->role != 777 || $request['Accountant'] == 'null') ? true : false;
@@ -510,7 +509,7 @@ class SummaryController extends Controller
         $start = str_replace('T',' ',$request['startdate']);
         $end = str_replace('T',' ',$request['enddate']);
 
-        $pagination = (int)$request['entries'] ?: 50; 
+        // $pagination = (int)$request['entries'] ?: 50; 
         $accountant_name = null;
         if(!isset($request['Accountant']) || $request['Accountant'] == 'null' )
         {
@@ -525,28 +524,197 @@ class SummaryController extends Controller
         {
             return back()->with(['error' => 'Pick a start date']);
         }
-        if($request['startdate'] != null AND $request['enddate'] == null AND $request['Accountant'] == "null")
+        if($request['startdate'] != null AND $request['Accountant'] == "null")
         {
+            $segment = 
+            date_format(date_create($start),"d-M-y h:ia");
+            
+            if($request['enddate'] != null){
+                $segment .= " to ". 
+                date_format(date_create($end),"d-M-y h:ia");
+            }
+            //?all transaction
+            $all_tnx = Transaction::whereNotNull('id')
+            ->where('updated_at', '>=', $start);
+            if($request['enddate'] == null){
+                $all_tnx = $all_tnx->whereDate('updated_at', '<=', $start_date[0])->latest()->get();
+            }else{
+                $all_tnx = $all_tnx->where('updated_at', '<=', $end)->latest()->get();
+            }
 
-        }
-        if($request['startdate'] != null AND $request['enddate'] != null AND $request['Accountant'] == "null")
-        {
 
-        }
-        if($request['startdate'] != null AND $request['enddate'] == null AND $request['Accountant'] != "null")
-        {
+            //?giftcard transactions buy
+            $giftcards_totaltnx_buy = Transaction::whereNotNull('id')
+            ->where('status', 'success')
+                ->whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 0);
+                })->where('type', 'buy')->where('updated_at', '>=', $start);
+                if($request['enddate'] == null){
+                    $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->whereDate('updated_at', '<=', $start_date[0])->get();
+                }else{
+                    $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->where('updated_at', '<=', $end)->get();
+                }
+            //?giftcard transaction sell
+            $giftcards_totaltnx_sell = Transaction::whereNotNull('id')
+            ->where('status', 'success')
+                ->whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 0);
+                })->where('type', 'sell')->where('updated_at', '>=', $start);
+                if($request['enddate'] == null){
+                    $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->whereDate('updated_at', '<=', $start_date[0])->get();
+                }else{
+                    $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->where('updated_at', '<=', $end)->get();
+                }
 
-        }
-        if($request['startdate'] != null AND $request['enddate'] != null AND $request['Accountant'] != "null")
-        {
+            //?crypto transaction buy
+            $crypto_totaltnx_buy = Transaction::whereNotNull('id')
+            ->where('status', 'success')
+                ->whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 1);
+                })->where('type', 'buy')->where('updated_at', '>=', $start);
+                if($request['enddate'] == null){
+                    $crypto_totaltnx_buy = $crypto_totaltnx_buy->whereDate('updated_at', '<=', $start_date[0])->get();
+                }else{
+                    $crypto_totaltnx_buy = $crypto_totaltnx_buy->where('updated_at', '<=', $end)->get();
+                }
+
+            //? crypto transaction sell
+            $crypto_totaltnx_sell = Transaction::whereNotNull('id')
+            ->where('status', 'success')
+                ->whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 1);
+                })->where('type', 'sell')->where('updated_at', '>=', $start);
+                if($request['enddate'] == null){
+                    $crypto_totaltnx_sell = $crypto_totaltnx_sell->whereDate('updated_at', '<=', $start_date[0])->get();
+                }else{
+                    $crypto_totaltnx_sell = $crypto_totaltnx_sell->where('updated_at', '<=', $end)->get();
+                }
+
             
         }
-        $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$start_date[0])
-        ->whereDate('created_at','<=',$end_date[0])->where('user_id',$user->id)->get();
+        if($request['startdate'] != null AND $request['Accountant'] != "null")
+        {
+            $segment = 
+            date_format(date_create($start),"d-M-y h:ia");
+            
+            if($request['enddate'] != null){
+                $segment .= " to ". 
+                date_format(date_create($end),"d-M-y h:ia");
+            }
+            $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$start_date[0])
+            ->where('user_id',$user->id)->get();
+            $all_transaction_Collection = collect([]);
+            $giftcard_collection = collect([]);
+            $crypto_collection = collect([]);
+            $util_collection = collect([]);
+            $nw_collection = collect([]);
+            if($accountant_timestamp){
+                
+                foreach ($accountant_timestamp  as $at) {
+                    $all_tranx = Transaction::whereNotNull('id')
+                    ->orderBy('created_at', 'desc')
+                    ->where('updated_at', '>=', $at->created_at)
+                    ->where('updated_at', '<=', $at->updated_at)->get();
+                    $all_transaction_Collection = $all_transaction_Collection->concat($all_tranx);
+
+                    $gift_tranx = Transaction::whereNotNull('id')
+                    ->orderBy('created_at', 'desc')
+                    ->where('updated_at', '>=', $at->created_at)
+                    ->where('updated_at', '<=', $at->updated_at)
+                    ->where('status', 'success')
+                    ->whereHas('asset', function ($query) {
+                        $query->where('is_crypto', 0);
+                    })->get();
+                    $giftcard_collection = $giftcard_collection->concat($gift_tranx);
+
+                    $crypto_tranx = Transaction::whereNotNull('id')
+                    ->orderBy('created_at', 'desc')
+                    ->where('updated_at', '>=', $at->created_at)
+                    ->where('updated_at', '<=', $at->updated_at)
+                    ->where('status', 'success')
+                    ->whereHas('asset', function ($query) {
+                        $query->where('is_crypto', 1);
+                    })->get();
+                    $crypto_collection = $crypto_collection->concat($crypto_tranx);
+                }
+                $all_tnx = $all_transaction_Collection;
+                $all_tnx = $all_tnx->where('updated_at', '>=', $start);
+                if($request['enddate'] == null){
+                    $all_tnx = $all_tnx->where('updated_at', '<=', $start_date[0].' 23:59:59');
+                }else{
+                    $all_tnx = $all_tnx->where('updated_at', '<=', $end);
+                }
+
+                $gift_tranx = $giftcard_collection;
+                $gift_tranx = $gift_tranx->where('updated_at', '>=', $start);
+                if($request['enddate'] == null){
+                    $gift_tranx = $gift_tranx->where('updated_at', '<=', $start_date[0].' 23:59:59');
+                }else{
+                    $gift_tranx = $gift_tranx->where('updated_at', '<=', $end);
+                }
+                $giftcards_totaltnx_buy = $gift_tranx->where('type', 'buy');
+                $giftcards_totaltnx_sell = $gift_tranx->where('type', 'sell');
+
+                $crypto_tranx = $crypto_collection;
+                $crypto_tranx = $crypto_tranx->where('updated_at', '>=', $start);
+                if($request['enddate'] == null){
+                    $crypto_tranx = $crypto_tranx->where('updated_at', '<=', $start_date[0].' 23:59:59');
+                }else{
+                    $crypto_tranx = $crypto_tranx->where('updated_at', '<=', $end);
+                }
+                $crypto_totaltnx_buy = $crypto_tranx->where('type', 'buy');
+                $crypto_totaltnx_sell = $crypto_tranx->where('type', 'sell');
+
+            }
+        }
+        return $this->sortByStartDate($show_category, $show_data, $show_summary,$start_date,$end_date,
+            $start, $end, $accountant_name,$accountant,$all_tnx, $giftcards_totaltnx_buy
+            ,$giftcards_totaltnx_sell, $crypto_totaltnx_buy,$crypto_totaltnx_sell,$segment,$day,$month);
 
     }
     
+    public function sortByStartDate($show_category, $show_data, $show_summary,$start_date,$end_date,
+        $start, $end, $accountant_name,$accountant,$all_tnx,$giftcards_totaltnx_buy,$giftcards_totaltnx_sell
+        ,$crypto_totaltnx_buy,$crypto_totaltnx_sell,$segment,$day,$month)
+    {
+        if($show_category == "all")
+        {
+            //?all transaction  
+            $all_tnx_count = $all_tnx->where('status', 'success')->count();
 
+            //?bitcoin transactions
+            $bitcoin_total_tnx = $all_tnx ->where('status', 'success')->where('card_id',102);
+            $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy')->sum('quantity');
+            $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
+
+            //?giftcard transaction buy
+            $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
+            $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
+
+            //?gifcard transaction sell
+            $giftcards_totaltnx_sell_amount = $giftcards_totaltnx_sell->sum('amount');
+            $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
+
+            //? crypto transactions buy
+            $crypto_totaltnx_buy_amount = $crypto_totaltnx_buy->sum('amount');
+            $crypto_totaltnx_buy = $crypto_totaltnx_buy->count();
+
+            //?crypto transactions sell
+            $crypto_totaltnx_sell_amount = $crypto_totaltnx_sell->sum('amount');
+            $crypto_totaltnx_sell = $crypto_totaltnx_sell->count();
+
+            return view('admin.summary.JuniorAccountant.transaction',compact([
+                'segment','accountant','all_tnx','all_tnx_count','show_data','show_category','day','month','show_summary',
+                'giftcards_totaltnx_buy','giftcards_totaltnx_sell','crypto_totaltnx_buy','crypto_totaltnx_sell',
+                'giftcards_totaltnx_buy_amount','giftcards_totaltnx_sell_amount','crypto_totaltnx_buy_amount','crypto_totaltnx_sell_amount',
+                'bitcoin_total_tnx_buy','bitcoin_total_tnx_sell','accountant_name'
+            ]));
+        }
+
+
+        
+
+    }
 
     public function sellTnx_summary($created_at,$updated_at,$card_id)
     {
