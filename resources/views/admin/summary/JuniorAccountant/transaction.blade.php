@@ -366,18 +366,18 @@
                                 @csrf
                                 <div class="form-inline mb-3">
                                     <label class="mr-1">Start Date</label>
-                                    <input type="datetime-local" name="startdate" class="form-control mr-1" required>
+                                    <input type="datetime-local" name="startdate" value="{{app('request')->input('startdate')}}" class="form-control mr-1" >
 
                                     <label class="mr-1">End Date</label>
-                                    <input type="datetime-local" name="enddate" class="form-control mr-1" required>
+                                    <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
                                     <input type="hidden" name="day" value="{{ $day }}">
                                     <input type="hidden" name="month" value="{{ $month }}">
                                     <input type="hidden" name="category" value="{{ $show_category }}">
-                                    @if (isset($accountant))
+                                    {{-- @if (isset($accountant))
                                         @foreach ($accountant as $a)
                                             <input type="hidden" name="name" value="{{ $a->first_name }}" class="form-control mr-4">
                                         @endforeach
-                                    @endif
+                                    @endif --}}
 
                                     @if (isset($accountant))
                                         <select name="Accountant" class="ml-1 form-control">
@@ -388,7 +388,7 @@
                                         </select>
                                     @endif
                                     
-                                    <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
+                                    {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
                                     <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                                 </div>
                             </form>
@@ -416,7 +416,7 @@
                                     </table>
                                     @endif
                                 </div>
-                                <table class="mb-2 table table-bordered">
+                                <table class="mb-2 table table-bordered transactions-table">
                                     <thead>
                                         <tr>
                                             <th class="text-center">Reference ID</th>
@@ -472,7 +472,7 @@
                                             </tr>
                                             @endforeach
                                         
-                                            {{ $util_tnx->links() }}
+                                            {{-- {{ $util_tnx->links() }} --}}
                                         @endif
                                     </tbody>
                                 </table>
@@ -545,18 +545,18 @@
                                             @csrf
                                             <div class="form-inline mb-3">
                                                 <label class="mr-1">Start Date</label>
-                                                <input type="datetime-local" name="startdate" class="form-control mr-1" required>
+                                                <input type="datetime-local" name="startdate" value="{{app('request')->input('startdate')}}"  class="form-control mr-1" >
             
                                                 <label class="mr-1">End Date</label>
-                                                <input type="datetime-local" name="enddate" class="form-control mr-1" required>
+                                                <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
                                                 <input type="hidden" name="day" value="{{ $day }}">
                                                 <input type="hidden" name="month" value="{{ $month }}">
                                                 <input type="hidden" name="category" value="{{ $show_category }}">
-                                                @if (isset($accountant))
+                                                {{-- @if (isset($accountant))
                                                     @foreach ($accountant as $a)
                                                         <input type="hidden" name="name" value="{{ $a->first_name }}" class="form-control mr-4">
                                                     @endforeach
-                                                @endif
+                                                @endif --}}
             
                                                 @if (isset($accountant))
                                                     <select name="Accountant" class="ml-1 form-control">
@@ -567,7 +567,7 @@
                                                     </select>
                                                 @endif
                                                 
-                                                <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
+                                                {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
                                                 <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                                             </div>
                                         </form>
@@ -601,7 +601,7 @@
                                                     @endif
                                             </div>  
                                             
-                                            <table class="mb-2 table table-bordered">
+                                            <table class="mb-2 table table-bordered transactions-table">
                                                 <thead>
                                                     <tr>
                                                         <th>ID</th>
@@ -664,7 +664,7 @@
                                                                 <td>{{$t->extras}} </td>
                                                             </tr>
                                                         @endforeach
-                                                        {{ $nw_deposit_tnx->links() }}
+                                                        {{-- {{ $nw_deposit_tnx->links() }} --}}
                                                     @endif
                                                 </tbody>
                                             </table>
@@ -676,18 +676,18 @@
                                                 @csrf
                                                 <div class="form-inline mb-3">
                                                     <label class="mr-1">Start Date</label>
-                                                    <input type="datetime-local" name="startdate" class="form-control mr-1" required>
+                                                    <input type="datetime-local" name="startdate" value="{{app('request')->input('startdate')}}" class="form-control mr-1" >
                 
                                                     <label class="mr-1">End Date</label>
-                                                    <input type="datetime-local" name="enddate" class="form-control mr-1" required>
+                                                    <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
                                                     <input type="hidden" name="day" value="{{ $day }}">
                                                     <input type="hidden" name="month" value="{{ $month }}">
                                                     <input type="hidden" name="category" value="{{ $show_category }}">
-                                                    @if (isset($accountant))
+                                                    {{-- @if (isset($accountant))
                                                         @foreach ($accountant as $a)
                                                             <input type="hidden" name="name" value="{{ $a->first_name }}" class="form-control mr-4">
                                                         @endforeach
-                                                    @endif
+                                                    @endif --}}
                 
                                                     @if (isset($accountant))
                                                         <select name="Accountant" class="ml-1 form-control">
@@ -698,7 +698,7 @@
                                                         </select>
                                                     @endif
                                                     
-                                                    <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
+                                                    {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
                                                     <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                                                 </div>
                                         </form>
@@ -732,7 +732,7 @@
                                                 @endif
                                         </div>  
                                         
-                                        <table class="mb-2 table table-bordered">
+                                        <table class="mb-2 table table-bordered transactions-table">
                                             <thead>
                                                 <tr>
                                                     <th>ID</th>
@@ -793,7 +793,7 @@
                                                             <td>{{$t->extras}} </td>
                                                         </tr>
                                                     @endforeach
-                                                    {{ $nw_withdrawal_tnx->links() }}
+                                                    {{-- {{ $nw_withdrawal_tnx->links() }} --}}
                                                 @endif
                                             </tbody>
                                         </table>
@@ -804,19 +804,19 @@
                                             @csrf
                                             <div class="form-inline mb-3">
                                                 <label class="mr-1">Start Date</label>
-                                                <input type="datetime-local" name="startdate" class="form-control mr-1" required>
+                                                <input type="datetime-local" name="startdate" value="{{app('request')->input('startdate')}}" class="form-control mr-1">
             
                                                 <label class="mr-1">End Date</label>
-                                                <input type="datetime-local" name="enddate" class="form-control mr-1" required>
+                                                <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}"class="form-control mr-1">
                                                 <input type="hidden" name="day" value="{{ $day }}">
                                                 <input type="hidden" name="month" value="{{ $month }}">
                                                 <input type="hidden" name="category" value="{{ $show_category }}">
                                                    
-                                                @if (isset($accountant))
+                                                {{-- @if (isset($accountant))
                                                     @foreach ($accountant as $a)
                                                         <input type="hidden" name="name" value="{{ $a->first_name }}" class="form-control mr-4">
                                                     @endforeach
-                                                @endif
+                                                @endif --}}
             
                                                 @if (isset($accountant))
                                                     <select name="Accountant" class="ml-1 form-control">
@@ -827,7 +827,7 @@
                                                     </select>
                                                 @endif
                                                 
-                                                <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
+                                                {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
                                                 <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                                             </div>
                                         </form>
@@ -861,7 +861,7 @@
                                                 @endif
                                          </div>  
                                         
-                                        <table class="mb-2 table table-bordered">
+                                        <table class="mb-2 table table-bordered transactions-table">
                                             <thead>
                                                 <tr>
                                                     <th>ID</th>
@@ -922,7 +922,7 @@
                                                             <td>{{$t->extras}} </td>
                                                         </tr>
                                                     @endforeach
-                                                    {{ $nw_other_tnx->links() }}
+                                                    {{-- {{ $nw_other_tnx->links() }} --}}
                                                 @endif
                                             </tbody>
                                         </table>
