@@ -542,8 +542,8 @@ class AdminController extends Controller
         $totalComm = $tranx->sum(DB::raw('IFNULL(commission, 0)'));
         $totalChineseAmt = $tranx->sum('amount_paid') - $totalComm;
 
-        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
-                ->groupBy('created_at')->pluck('d_total');
+        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')->groupBy('created_at')->pluck('d_total');
+
         $totalAvgPerToday = 0;
 
         // if ($totalAvgPerToday > 0) {
