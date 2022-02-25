@@ -20,9 +20,12 @@ use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Mail;
 use App\Wallet;
 use App\FeeWallet;
+use App\Http\Controllers\Admin\ReferralSettingsController;
 use App\NairaWallet;
 use App\NairaTransaction;
 use App\Http\Controllers\GeneralSettings;
+use App\ReferralSettings;
+use App\User;
 
 class ReferralController extends Controller
 {
@@ -271,5 +274,141 @@ class ReferralController extends Controller
             'success' => true,
             'status' => ($status == 1) ? 'active' : 'in-active'
         ]);
+    }
+
+    public function referralTransactions()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => NairaTransaction::where('user_id', Auth::user()->id)->where('type', 'referral')->latest()->get()
+        ]);
+    }
+
+    public function myReferrers()
+    {
+        if(Auth::user()->referral_code == NULL){
+            return response()->json([
+                'success' => true,
+                'data' => []
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => User::where('referrer', Auth::user()->referral_code)->latest()->get()
+        ]);
+
+    }
+
+    public function withdrawReferralBonus()
+    {
+
+
+        if(Auth::user()->referral_wallet < 300){
+            return response()->json([
+                'success' => true,
+                'mgs' => "You can't withdrawal less than N300"
+            ]);
+        }
+
+        $user = Auth::user();
+
+        $rand = \Str::random(5) . $user->id;
+        $reference = \Str::upper($rand);
+
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->amount = $user->referral_wallet;
+        $nt->user_id = $user->id;
+        $nt->type = 'referral';
+        $nt->charge = 0;
+        $nt->dr_acct_name = 'Dantown';
+        $nt->narration = 'Referral bonus withdrawal ';
+        $nt->trans_msg = 'Referral bonus withdrawal';
+        $nt->dr_user_id = 1;
+        $nt->status = 'success';
+        $nt->save();
+
+
+        $new_balance = Auth::user()->nairaWallet->amount + $user->referral_wallet;
+
+        $title = 'Referral bonus withdrawal';
+        $body = 'Your withdrawal of ' . number_format($user->referral_wallet) . ' referral bonus was successful <br>
+        Your new  balance is ' .$new_balance. '.<br>
+        Date: ' . now() . '.<br><br>
+        Thank you for choosing Dantown.
+        ';
+        $btn_text = '';
+        $btn_url = '';
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+
+        $user->referral_wallet = 0;
+        $user->save();
+
+        // $user->nairaWallet->amount = $new_balance;
+        $nWallet = NairaWallet::where('user_id', Auth::user()->id)->get()[0];
+        $nWallet->amount = $new_balance;
+        $nWallet->save();
+
+        return response()->json([
+            'success' => true,
+            'mgs' => "Your referral bonus was withdrawn successfully"
+        ]);
+    }
+
+
+    public function getReferralLink()
+    {
+        if(Auth::user()->referral_code == NULL){
+            return response()->json([
+                'success' => false,
+                'mgs' => "You don't have a referral code yet. Create one to get a referral link"
+            ]);
+        }
+        return response()->json([
+            'success' => false,
+            'link' => url('/api_v2/register/'.Auth::user()->referral_code)
+        ]);
+    }
+
+    public static function referralBonus()
+    {
+        $status = ReferralSettingsController::status();
+        if (Auth::user()->referred == 1 and $status == 1) {
+            // fund referral wallet
+            $tamount_paid = 500;
+            $referral_percentage = ReferralSettingsController::percent();
+            $referral_bonus = ($referral_percentage / 100) * $tamount_paid;
+
+            $getReferrer = User::where('referral_code', Auth::user()->referrer)->get()[0];
+            $getReferrer->referral_wallet += $referral_bonus;
+            $getReferrer->save();
+
+            $rand = \Str::random(5) . $getReferrer->id;
+            $reference = \Str::upper($rand);
+
+            $nt = new NairaTransaction();
+            $nt->reference = $reference;
+            $nt->amount = $referral_bonus;
+            $nt->user_id = $getReferrer->id;
+            $nt->type = 'referral';
+            // $nt->previous_balance = $getReferrer->referral_wallet;
+            // $nt->current_balance = $getReferrer->referral_wallet;
+            $nt->charge = 0;
+            // $nt->transaction_type_id = 20;
+            // $nt->dr_wallet_id = $n->id;
+            // $nt->cr_wallet_id = $user_naira_wallet->id;
+            $nt->dr_acct_name = 'Dantown';
+            $nt->narration = 'Referral bonus credit ';
+            $nt->trans_msg = 'Referral bonus';
+            $nt->dr_user_id = 1;
+            $nt->status = 'success';
+            $nt->save();
+
+        }
     }
 }

@@ -180,6 +180,16 @@
     </li>
 
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.referral' ? 'active' : '' }}">
+        <a href="{{route('admin.referral')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Referral Settings</span>
+            </div>
+        </a>
+    </li>
+
+
     <li class="menu {{ Route::currentRouteName() == 'admin.chinese_dashboard_page' ? 'active' : '' }}">
         <a href="{{route('admin.chinese_dashboard_page')}}" aria-expanded="false" class="dropdown-toggle" >
             <div class="">
@@ -207,6 +217,7 @@
             </div>
         </a>
     </li>
+
     @endif
 
     <li class="menu {{ Route::currentRouteName() == 'logout' ? 'active' : '' }}">

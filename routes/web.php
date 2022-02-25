@@ -407,10 +407,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']]
 /* For Super Admins Only */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super', 'chinese']], function () {
     Route::post('/cards', 'AdminController@addCard')->name('admin.add_card');
+    Route::get('/referral', 'Admin\ReferralSettingsController@index')->name('admin.referral');
+    Route::post('/change-referral-status', 'Admin\ReferralSettingsController@changeStatus')->name('admin.change_referral_status');
+    Route::post('/change-referral-percentage', 'Admin\ReferralSettingsController@changePercentage')->name('admin.set_referral_percentage');
+    Route::post('/set-referral', 'Admin\ReferralSettingsController@setReferral')->name('admin.set_referral');
+
     // Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
     // Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
     Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
-
 
     Route::post('/transactions', 'AdminController@addTransaction')->name('admin.add_transaction');
 
