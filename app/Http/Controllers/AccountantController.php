@@ -68,7 +68,7 @@ class AccountantController extends Controller
                     $endTime = Carbon::now();
                     $totalDuration =  $startTime->diff($endTime)->format('%I');
                     $totalDuration = (int) $totalDuration;
-                    if($totalDuration < 20){
+                    if($totalDuration < 5){
                         $time_stamp->delete();
                     }
                     else{
