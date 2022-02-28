@@ -199,14 +199,6 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                     </form>
                                                 @endif
                                             </td>
-                                            <td class="text-center">
-                                                @if($t->status == 'pending')
-                                                    <form action="{{route('admin.utility-requery',$t->id)}}" method="post">
-                                                        @csrf
-                                                        <button class="btn btn-primary">Requery</button>
-                                                    </form>
-                                                @endif
-                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -280,8 +272,14 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Cash Value</label>
-                                <input type="text" placeholder="Amount paid" id="e_amount_paid" class="form-control"
-                                    name="amount_paid">
+                                {{-- <input type="text" placeholder="Amount paid" id="e_amount_paid" class="form-control"
+                                    name="amount_paid"> --}}
+
+                                @if(in_array(Auth::user()->role,[444]))
+                                    <input type="text" placeholder="Amount paid" id="e_amount_paid" value="{{$cwt->amount_paid + $cwt->commission}}" class="form-control" name="amount_paid">
+                                @else
+                                    <input type="text" placeholder="Amount paid" id="e_amount_paid" value="{{$cwt->amount_paid}}" class="form-control" name="amount_paid">
+                                @endif
                             </div>
                         </div>
                     </div>

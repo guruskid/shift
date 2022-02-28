@@ -246,13 +246,19 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <th class="text-center">Card type</th>
                                         <th class="text-center">Asset value</th>
                                         <th class="text-center">Quantity</th>
-                                        <th class="text-center">Card price</th>
+                                        @if (!in_array(Auth::user()->role, [444] ))
+                                            <th class="text-center">Card price</th>
+                                        @endif
+                                        @if (in_array(Auth::user()->role, [449] ))
                                         <th class="text-center">Cash value</th>
+                                        @endif
                                         @if (!in_array(Auth::user()->role, [449,444] ))
                                         <th class="text-center">User Amount</th>
                                         @endif
                                         @if (in_array(Auth::user()->role, [999] ))
                                             <th class="text-center">Commission</th>
+                                        @endif
+                                        @if (in_array(Auth::user()->role, [444,999] ))
                                             <th class="text-center">Chinese Amount</th>
                                         @endif
                                         @if (!in_array(Auth::user()->role, [449,444] ))
@@ -266,6 +272,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <th class="text-center">Agent</th>
                                         <th class="text-center">Accountant</th>
                                         @endif
+                                        <th class="text-center">Feedback</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -290,33 +297,21 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         @else
                                         <td class="text-center">{{ $t->quantity}}</td>
                                         @endif
-                                        <td class="text-center">{{$t->card_price}}</td>
-
-                                        <td class="text-center">N{{number_format($t->amount_paid)}}</td>
-
-                                        {{-- <td class="text-center">{{$t->wallet_id}}</td> --}}
-                                        {{-- @if (isset($t->user))
-                                        <td class="text-center">
-                                            @if (in_array(Auth::user()->role, [555] ))
-                                                <a
-                                                href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
-                                                {{$t->user->first_name." ".$t->user->last_name}}</a>
-                                              @else
-                                                <a
-                                                href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
-                                                {{$t->user->first_name." ".$t->user->last_name}}</a>
-                                            @endif
-
-                                        </td>
-                                        @endif --}}
+                                        @if (!in_array(Auth::user()->role, [444] ))
+                                            <td class="text-center">{{$t->card_price}}</td>
+                                        @endif
+                                        @if (in_array(Auth::user()->role, [449] ))
+                                            <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                        @endif
 
                                         @if (!in_array(Auth::user()->role, [449,444] ))
-                                        <td class="text-center">N{{number_format($t->amount_paid - $t->commission)}}</td>
+                                            <td class="text-center">N{{number_format($t->amount_paid)}}</td>
                                         @endif
                                         @if (in_array(Auth::user()->role, [999] ))
                                             <td class="text-center">{{$t->commission}}</td>
-                                            <td class="text-center">N{{number_format($t->amount_paid)}}</td>
-
+                                        @endif
+                                        @if (in_array(Auth::user()->role, [444,999] ))
+                                            <td class="text-center">N{{number_format($t->amount_paid + $t->commission)}}</td>
                                         @endif
                                         @if (!in_array(Auth::user()->role, [449,444] ))
                                         <td class="text-center">{{$t->wallet_id}}</td>
@@ -367,22 +362,22 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center"> {{$t->agent->first_name}} </td>
                                         <td class="text-center"> {{$t->accountant->first_name ?? 'None' }} </td>
                                         @endif
-
+                                        <td class="text-center"> {{$t->feedback}} </td>
                                         <td>
                                             @if (!in_array(Auth::user()->role, [555] ))
-                                            <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
-                                                @if (Auth::user()->role != 888 )
-                                                    <span class="btn btn-sm btn-success">View</span>
-                                                @endif
-                                            </a>
+                                                <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
+                                                    @if (Auth::user()->role != 888 )
+                                                        <span class="btn btn-sm btn-success">View</span>
+                                                    @endif
+                                                </a>
                                             @endif
 
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
-
+                                                @if ($t->asset->is_crypto)
                                                 <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t}})"><span
                                                         class="btn btn-sm btn-info">Edit</span></a>
-
+                                                @endif
                                                 @if ($t->status == 'approved')
                                                     @if (\Str::lower($t->card) == 'bitcoins')
                                                         <button data-toggle="modal" data-target="#confirm-btc-modal"
@@ -461,18 +456,6 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                         class="btn btn-sm btn-info">Edit</span></a>
                                                 @endif
                                             @endif
-
-
-
-                                            @if($t->status == 'waiting' && (Auth::user()->role == 444 OR Auth::user()->role == 449))
-                                            <form action="{{route('admin.transfer-chinese',$t->id)}} " method="post" class="admin-action">
-                                                @csrf
-                                                <input type="hidden" name="id" value="{{$t->id}}" required class="form-control">
-                                                <button class="btn btn-block c-rounded bg-custom-gradient admin-action">
-                                                    Pay User
-                                                </button>
-                                            </form>
-                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
@@ -547,17 +530,28 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Cash Value</label>
-                                <input type="text" placeholder="Amount paid" id="e_amount_paid" class="form-control"
-                                    name="amount_paid">
+                                {{-- @if(in_array(Auth::user()->role,[444]))
+                                    <input type="text" placeholder="Amount paid" id="e_amount_paid" value="{{$cwt->amount_paid + $cwt->commission}}" class="form-control" name="amount_paid">
+                                @else
+                                    <input type="text" placeholder="Amount paid" id="e_amount_paid" value="{{$cwt->amount_paid}}" class="form-control" name="amount_paid">
+                                @endif --}}
+
+                                <input type="text" placeholder="Amount paid" id="e_amount_paid" class="form-control" name="amount_paid">
+                                
                             </div>
                         </div>
                     </div>
                     <div class="row">
+                        @if (Auth::user()->role != 888)
+
                         <div class="col">
                             <!-- ///////////// WORK IN PROGRESS ////////////// -->
                             <div class="form-group">
                                 <label for="">Status</label>
-                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control">
+                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control"
+                                @if (Auth::user()->role == 888)
+                                    {{ "disabled" }}
+                                @endif>
                                     <option value="" id="e_status"></option>
                                     @if (in_array(Auth::user()->role, [889, 777, 999, 444, 449]))
                                     <option value="success">Success</option>
@@ -569,6 +563,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
+                        @endif
                         <div class="col">
                             <div class="form-group">
                                 <label for="">Transac Type</label>
@@ -577,6 +572,13 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                     <option value="buy">Buy</option>
                                     <option value="sell">Sell</option>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="">Quantity</label>
+                                <input type="text" placeholder="Amount paid" id="e_quantity" class="form-control"
+                                    name="quantity">
                             </div>
                         </div>
                         <!-- //////////////////////////////////// -->

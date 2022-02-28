@@ -115,7 +115,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     <th class="text-center">Asset type</th>
                                                     <th class="text-center">Tran. type</th>
                                                     <th class="text-center">Asset value</th>
-                                                    <th class="text-center">Cash value</th>
+                                                    <th class="text-center">Chinese amount</th>
                                                     <th class="text-center">User</th>
                                                     <th class="text-center">Agent</th>
                                                     <th class="text-center">Status</th>
@@ -128,7 +128,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     <td class="text-center">{{ucwords($t->card)}}</td>
                                                     <td class="text-center">{{$t->type}}</td>
                                                     <td class="text-center">{{$t->amount}}</td>
-                                                    <td class="text-center">{{number_format($t->amount_paid)}}
+                                                    <td class="text-center">{{number_format($t->amount_paid + $t->commission)}}
                                                     </td>
                                                     <td class="text-center"> {{$t->user->first_name}} </td>
                                                     <td class="text-center"> {{$t->agent->first_name}} </td>
@@ -230,6 +230,11 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Cash Value</label>
+                                {{-- @if(in_array(Auth::user()->role,[444]))
+                                    <input type="text" placeholder="Amount paid" id="e_amount_paid" value="{{$cwt->amount_paid + $cwt->commission}}" class="form-control" name="amount_paid">
+                                @else
+                                    <input type="text" placeholder="Amount paid" id="e_amount_paid" value="{{$cwt->amount_paid}}" class="form-control" name="amount_paid">
+                                @endif --}}
                                 <input type="text" placeholder="Amount paid" id="e_amount_paid" class="form-control" name="amount_paid">
                             </div>
                         </div>
