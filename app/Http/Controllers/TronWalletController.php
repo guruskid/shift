@@ -159,7 +159,7 @@ class TronWalletController extends Controller
         }
 
 
-
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $tron_rate = LiveRateController::tronRate();
         $tron_wallet = Auth::user()->tronWallet;
 
@@ -173,6 +173,7 @@ class TronWalletController extends Controller
 
         $tron_wallet->balance = $accounts->balance->availableBalance;
         $tron_wallet->usd = $tron_wallet->balance  * $tron_rate;
+        $tron_wallet->ngn = $tron_wallet->usd * $sell_rate;
 
         $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
         $get_txns = $client->request('POST', $url, [
@@ -191,12 +192,10 @@ class TronWalletController extends Controller
             }
         }
 
-
-        // return view('newpages.tron-wallet', compact('tron_wallet', 'transactions', 'tron_rate'));
-
         return response()->json([
             'success' => true,
             'date' => [
+                'sell_rate' => $sell_rate,
                 'tron_wallet' => $tron_wallet,
                 'tron_rate' => $tron_rate,
                 'transactions' =>$transactions
@@ -252,10 +251,6 @@ class TronWalletController extends Controller
         $tron_wallet->balance = $accounts->balance->availableBalance;
         $tron_wallet->usd = $tron_wallet->balance  * $tron_usd;
         $tron_wallet->ngn = $tron_wallet->usd * $sell_rate;
-
-        $hd_wallet = HdWallet::where('currency_id', 5)->first();
-
-        // return view('newpages.trade_tron', compact('sell_rate', 'tron_wallet', 'hd_wallet', 'tron_usd', 'charge'));
 
         return response()->json([
             'success' => true,
