@@ -174,7 +174,9 @@ class AdminController extends Controller
             );
         }elseif(Auth::user()->role == 444 OR Auth::user()->role == 449){ // Chinese Dashboard
 
-            $twentyFourHrsTransactions = Transaction::where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+            $twentyFourHrsTransactions = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
             $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
             $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
             $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
@@ -182,19 +184,41 @@ class AdminController extends Controller
             $nairaTwentyFourHrs = $nairaTwentyFourHr;
             $dollarTwentyFourHrs = $dollarTwentyFourHr;
 
-            $countWaiting = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $countProgreses = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $countSuccess = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $countApproved = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $declined = Transaction::where('status', 'declined')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $failed = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+            $countWaiting = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'waiting')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            $countProgreses = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'in progress')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            $countSuccess = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'success')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            $countApproved = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'approved')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            $declined = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'declined')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            $failed = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'failed')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
             $failedAndDeclined = $failed + $declined;
 
-            $waiting_transactions_chinese = Transaction::with('asset')->where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
-            $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
-            $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
-            $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
-            $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take(5);
+            $waiting_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->with('asset')->orderBy('id', 'desc')->get()->take(5);
+            $success_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'success')->orderBy('id', 'desc')->get()->take(5);
+            $failed_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'failed')->orderBy('id', 'desc')->get()->take(5);
+            $in_progress_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'in progress')->orderBy('id', 'desc')->get()->take(5);
+            $approved_transactions_chinese = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where('status', 'approved')->orderBy('id', 'desc')->get()->take(5);
 
             // dd($cardTwentyFourHrs);
 
@@ -318,8 +342,10 @@ class AdminController extends Controller
         $a_a_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'approved')->count();
         $all_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->count();
 
-
-            $twentyFourHrsTransactions = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+            $twentyFourHrsTransactions = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success')
+            ->whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->latest();
             $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
             $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
             $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
@@ -349,10 +375,18 @@ class AdminController extends Controller
             $payoutDate = $assets->created_at;
         }
 
-        $payoutVolume = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
-        $assetsInNaira = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
-        $countST = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-        $success_transactions = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->get();
+        $payoutVolume = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('quantity');
+        $assetsInNaira = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
+        $countST = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->count();
+        $success_transactions = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->latest()->get();
         if ($type != 'all') {
             $success_transactions = $success_transactions->take(500);
         }
@@ -434,9 +468,15 @@ class AdminController extends Controller
         }
 
         // dd($assets->id);
-        $payoutVolume = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('quantity');
-        $assetsInNaira = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->sum('amount_paid');
-        $countST = Transaction::where("created_at",">=", $payoutDate)->where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+        $payoutVolume = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('quantity');
+        $assetsInNaira = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
+        $countST = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->count();
 
         // dd($countST);
 
@@ -455,8 +495,12 @@ class AdminController extends Controller
 
     public function countTransaction()
     {
-        $waiting_transactions = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-        $in_progress_transactions = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+        $waiting_transactions = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'waiting')->count();
+        $in_progress_transactions = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where('status', 'in progress')->count();
         return response()->json([
                 'waiting_transaction' => $waiting_transactions,
                 'in_progress_transactions' => $in_progress_transactions
@@ -472,19 +516,24 @@ class AdminController extends Controller
     public function transactions(Request $request)
     {
         $transactions = Transaction::with('user')->orderBy('updated_at', 'desc');
+        $tranx = Transaction::with('user')->orderBy('updated_at', 'desc');
 
         $segment = 'All';
 
-        $tranx = $transactions;
+        $tranx =  Transaction::with('user')->WhereHas('asset', function($q){
+            $q->where('is_crypto', 0);
+        })->orderBy('updated_at', 'desc')->where('status','success');
+
         if (isset($request['start']) and isset($request['end'])) {
             $from = $request['start'];
             $to = $request['end'];
+            $tranx = $tranx->whereBetween('created_at', [$from, $to])->latest();
             $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
-                    $q->where('is_crypto', 0);
-                });
-            }
+            // if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+            //     $transactions = $transactions->WhereHas('asset', function($q){
+            //         $q->where('is_crypto', 0);
+            //     });
+            // }
             $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
         }
 
@@ -493,17 +542,16 @@ class AdminController extends Controller
         $totalComm = $tranx->sum(DB::raw('IFNULL(commission, 0)'));
         $totalChineseAmt = $tranx->sum('amount_paid') - $totalComm;
 
-        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')
-                ->groupBy('created_at')->pluck('d_total');
+        $tt = $tranx->selectRaw('DATE(created_at) as date, count(id) as d_total')->groupBy('created_at')->pluck('d_total');
 
         $totalAvgPerToday = 0;
 
-        if ($totalAvgPerToday > 0) {
-            $totalAvgPerToday = ceil($tt->sum() / $tt->count());
-        }
+        // if ($totalAvgPerToday > 0) {
+        $totalAvgPerToday = ceil($tt->sum() / $tt->count());
+        // }
 
         if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = Transaction::whereHas('asset', function ($query) {
+            $transactions = $transactions->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             });
         }
@@ -512,6 +560,7 @@ class AdminController extends Controller
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
         $transactions = $transactions->paginate(1000);
+        // return $transactions;
         return view('admin.transactions', compact([
             'transactions', 'total_transactions','segment',
             'totalTransactions','totalVol','totalComm','totalChineseAmt',

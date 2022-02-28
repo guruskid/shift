@@ -23,9 +23,6 @@ class RateController extends Controller
 
     public function index()
     {
-        if (Auth::user()->role == 888) {
-            return redirect()->route('admin.dashboard');
-        }
 
         $cards = Card::orderBy('name', 'asc')->get();
         $currencies = Currency::orderBy('name', 'asc')->get();
@@ -76,9 +73,6 @@ class RateController extends Controller
 
     public function update(Request $request)
     {
-        if (Auth::user()->role == 888) {
-            return redirect()->route('admin.dashboard');
-        }
 
         $card_currency = CardCurrency::findOrFail($request->cc_id);
         $value = $request->values;

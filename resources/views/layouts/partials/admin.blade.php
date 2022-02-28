@@ -334,8 +334,17 @@
                     </a>
                 </li>
             @endif
-
-            @if(Auth::user()->role == 999 OR Auth::user()->role == 444 OR Auth::user()->role == 449)
+            @if(Auth::user()->role == 889 )
+            <li class="my-3">
+                <a href="{{route('admin.chinese_dashboard_page')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.chinese_dashboard_page' ? 'mm-active' : '' }} ">
+                    <i class="fas fa-broom metismenu-icon"></i>
+                    Chinese dashboard
+                </a>
+            </li>
+            @endif
+            
+            @if(Auth::user()->role == 999 OR  Auth::user()->role == 444 OR Auth::user()->role == 449)
             @if(Auth::user()->role == 999)
             <li class="my-3">
                 <a href="{{route('admin.chinese_dashboard_page')}}"

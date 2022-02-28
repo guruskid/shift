@@ -375,7 +375,7 @@ class ReferralController extends Controller
         ]);
     }
 
-    public static function referralBonus()
+    public static function referralBonusTest()
     {
         $status = ReferralSettingsController::status();
         if (Auth::user()->referred == 1 and $status == 1) {

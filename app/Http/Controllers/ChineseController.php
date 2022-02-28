@@ -30,7 +30,7 @@ class ChineseController extends Controller
     public function dashboard()
     {
 
-        $page_limit = 1000;
+        $page_limit = 10;
 
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
@@ -69,7 +69,7 @@ class ChineseController extends Controller
 
 
         $transactions = Transaction::latest()->get()->take($page_limit);
-        $waiting_transactions = Transaction::where('status', 'waiting')->get()->take($page_limit);
+        $waiting_transactions = Transaction::latest()->where('status', 'waiting')->get()->take($page_limit);
         $success_transactions = Transaction::where('status', 'success')->get()->take($page_limit);
         $failed_transactions = Transaction::where('status', 'failed')->get()->take($page_limit);
         $in_progress_transactions = Transaction::where('status', 'in progress')->get()->take($page_limit);
@@ -145,19 +145,31 @@ class ChineseController extends Controller
 
             $countWaiting = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
             $countProgreses = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $countSuccess = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $countApproved = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $declined = Transaction::where('status', 'declined')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
-            $failed = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+
+            $countSuccess = Transaction::where('status', 'success')->latest()->whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            })->whereDate('created_at', Carbon::today())->count();
+
+            $declined = Transaction::where('status', 'declined')->latest()->whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            })->whereDate('created_at', Carbon::today())->count();
+
+            $failed = Transaction::where('status', 'failed')->latest()->whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            })->whereDate('created_at', Carbon::today())->count();
+
             $failedAndDeclined = $failed + $declined;
 
-            $waiting_transactions_chinese = Transaction::with('asset')->where('status', 'waiting')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
+            $countApproved = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->count();
+
+            $waiting_transactions_chinese =  Transaction::latest()->whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            })->get()->take($page_limit);
+            
             $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
             $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
             $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
             $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->orderBy('id', 'desc')->get()->take($page_limit);
-
-            // dd($cardTwentyFourHrs);
 
             return view(
                 'admin.chinese_dashboard',
@@ -177,6 +189,7 @@ class ChineseController extends Controller
 
     public function transactionsChinese()
     {
+        // return 'yolo';
         $transactions = Transaction::with('user')->where('card', '!=', 'BITCOIN')->where('card', '!=', 'BITCOINS')->where('card', '!=', 'etherum')->where('card', '!=', 'ETHER')->latest()->paginate(1000);
         $segment = 'All';
 
