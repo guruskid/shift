@@ -47,10 +47,10 @@ class AssetTransactionController extends Controller
 
         $t = Transaction::find($r->id);
         $amount_paid = $r->amount_paid;
-        if (Auth::user()->role != 444) {
-            // return $r->amount_paid - $t->commission .' '. $t->amount_paid;
-            $amount_paid = $r->amount_paid + $t->commission;
-        }
+        // if (Auth::user()->role != 444) {
+        //     // return $r->amount_paid - $t->commission .' '. $t->amount_paid;
+        //     $amount_paid = $r->amount_paid;
+        // }
 
         // finding the commision percentage
         //?percentage diffrence
