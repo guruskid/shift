@@ -248,6 +248,7 @@ class AuthController extends Controller
             'country_id' => $input['country_id'],
             'email' => $input['email'],
             'external_id' => $external_id,
+            'status' => 'active',
             'referrer' => $rc,
             'password' => Hash::make($input['password']),
         ];
