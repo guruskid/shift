@@ -903,6 +903,13 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                 </select>
                             </div>
                         </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="">Quantity</label>
+                                <input type="text" placeholder="Quantity" id="e_quantity" class="form-control"
+                                    name="quantity" value="{{$cwt->quantity}}">
+                            </div>
+                        </div>
                         <!-- //////////////////////////////////// -->
                         <div class="d-none col-12" id="yfailed">
                             <div class="form-group">
