@@ -206,7 +206,7 @@ class AdminController extends Controller
 
             $waiting_transactions_chinese = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->with('asset')->orderBy('id', 'desc')->get()->take(5);
+                })->with('asset')->where('status', 'waiting')->orderBy('id', 'desc')->get()->take(20);
             $success_transactions_chinese = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
                 })->where('status', 'success')->orderBy('id', 'desc')->get()->take(5);
@@ -381,6 +381,10 @@ class AdminController extends Controller
         $assetsInNaira = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
+
+        $totalComm = Transaction::whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+                })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('commission');
         $countST = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->count();
@@ -390,6 +394,8 @@ class AdminController extends Controller
         if ($type != 'all') {
             $success_transactions = $success_transactions->take(500);
         }
+
+        $assetsInNaira = $assetsInNaira + $totalComm;
 
         // dd($assets->);
 

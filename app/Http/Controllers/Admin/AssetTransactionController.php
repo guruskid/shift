@@ -33,8 +33,8 @@ class AssetTransactionController extends Controller
     public function editTransaction(Request $r)
     {
 
-        if (Auth::user()->role and $r->status == 'success') {
-            return $this->payTransactionChinese($r->id);
+        if (Auth::user()->role == 444 and $r->status == 'success') {
+            return $this->payTransactionChinese($r);
         }
 
         $actualFeedback = "";
@@ -46,17 +46,24 @@ class AssetTransactionController extends Controller
             }
 
         $t = Transaction::find($r->id);
+        $amount_paid = $r->amount_paid;
+        // if (Auth::user()->role != 444) {
+        //     // return $r->amount_paid - $t->commission .' '. $t->amount_paid;
+        //     $amount_paid = $r->amount_paid;
+        // }
+
         // finding the commision percentage
         //?percentage diffrence
-        $percentage = (($t->commission)/($t->amount_paid));
-        $commision =($r->amount_paid * (round($percentage,2)));
+        $percentage = (($t->commission)/($t->amount_paid + $t->commission));
+        $commision =($amount_paid * (round($percentage,2)));
+        $amount_paid = $amount_paid  - $commision;
 
         $t->card = Card::find($r->card_id)->name;
         $t->card_id = $r->card_id;
         $t->type = $r->trade_type;
         $t->country = $r->country;
         $t->amount = $r->amount;
-        $t->amount_paid = $r->amount_paid;
+        $t->amount_paid = $amount_paid;
         $t->commission = (int)$commision;
         if(Auth::user()->role !=888){
             $t->status = $r->status;
@@ -224,16 +231,34 @@ class AssetTransactionController extends Controller
     }
 
 
-    public function payTransactionChinese($id)
+    public function payTransactionChinese(Request $r)
     {
         $n = NairaWallet::find(1); /* Admin general Wallet */
-        $t = Transaction::find($id);
+        $t = Transaction::find($r->id);
         $user_wallet = $t->user->nairaWallet;
+
+        $amount_paid = $r->amount_paid;
+        // $percentage = (($t->commission)/($t->amount_paid));
+        // $commision = ($amount_paid * (round($percentage,2)));
+
+        $percentage = (($t->commission)/($t->amount_paid + $t->commission));
+        $commision =($amount_paid * (round($percentage,2)));
+        $amount_paid = $amount_paid  - $commision;
 
         if ($t->status == 'success') {
             return back()->with(['error' => 'Transaction already completed']);
         }
 
+        $t->card = Card::find($r->card_id)->name;
+        $t->card_id = $r->card_id;
+        $t->type = $r->trade_type;
+        $t->country = $r->country;
+        $t->amount = $r->amount;
+        $t->amount_paid = $amount_paid;
+        $t->commission = (int)$commision;
+        $t->quantity = $r->quantity;
+        $t->last_edited = Auth::user()->email;
+        $t->commission = (int)$commision;
         $t->save();
 
         if (!$user_wallet) {
