@@ -47,15 +47,14 @@ class AssetTransactionController extends Controller
 
         $t = Transaction::find($r->id);
         $amount_paid = $r->amount_paid;
-        // if (Auth::user()->role != 444) {
-        //     // return $r->amount_paid - $t->commission .' '. $t->amount_paid;
-        //     $amount_paid = $r->amount_paid;
-        // }
 
         // finding the commision percentage
         //?percentage diffrence
-        $percentage = (($t->commission)/($t->amount_paid + $t->commission));
-        $commision =($amount_paid * (round($percentage,2)));
+        $commision = 0;
+        if ($t->commission > 0 && ($t->amount_paid + $t->commission)) {
+            $percentage = (($t->commission)/($t->amount_paid + $t->commission));
+            $commision =($amount_paid * (round($percentage,2)));   
+        }
         $amount_paid = $amount_paid  - $commision;
 
         $t->card = Card::find($r->card_id)->name;
@@ -238,11 +237,13 @@ class AssetTransactionController extends Controller
         $user_wallet = $t->user->nairaWallet;
 
         $amount_paid = $r->amount_paid;
-        // $percentage = (($t->commission)/($t->amount_paid));
-        // $commision = ($amount_paid * (round($percentage,2)));
 
-        $percentage = (($t->commission)/($t->amount_paid + $t->commission));
-        $commision =($amount_paid * (round($percentage,2)));
+        $commision = 0;
+        if ($t->commission > 0 && ($t->amount_paid + $t->commission)) {
+            $percentage = (($t->commission)/($t->amount_paid + $t->commission));
+            $commision =($amount_paid * (round($percentage,2)));   
+        }
+
         $amount_paid = $amount_paid  - $commision;
 
         if ($t->status == 'success') {

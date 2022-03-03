@@ -8,6 +8,7 @@ use App\CardCurrency;
 use App\CryptoRate;
 use App\HdWallet;
 use App\FeeWallet;
+use App\Http\Controllers\Admin\ReferralSettingsController;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
@@ -24,6 +25,7 @@ use RestApis\Blockchain\Constants;
 use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\GeneralSettings;
+use App\ReferralSettings;
 
 class BtcWalletController extends Controller
 {
@@ -370,6 +372,9 @@ class BtcWalletController extends Controller
         ]);
 
 
+
+
+
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
         Notification::create([
@@ -468,7 +473,54 @@ class BtcWalletController extends Controller
             ]);
         }
 
+<<<<<<< HEAD
+        // // Referral Transactions here
+        // $usdPerNairaRate = LiveRateController::usdNgn();
 
+        // $status = ReferralSettings::status();
+
+        // // $status = ReferralSettings::getSetting('REFERRAL_ACTIVE')->settings_value;
+
+        // if (Auth::user()->referred == 1 and $status == 1) {
+        //     // fund referral pool wallet
+        //     $referral_percentage = GeneralSettings::getSetting('REFERRAL_PERCENTAGE');
+        //     $referral_wallet = FeeWallet::where('name','referral_pool')->first();
+        //     $referral_bonus = ($referral_percentage['settings_value'] / 100) * $r->quantity;
+
+        //     $reference = \Str::random(5) . Auth::user()->id;
+
+        //     try {
+        //         $send = $client->request('POST', $url, [
+        //             'headers' => ['x-api-key' => env('TATUM_KEY')],
+        //             'json' =>  [
+        //                 "senderAccountId" => $hd_wallet->account_id,
+        //                 "recipientAccountId" => $referral_wallet->account_id,
+        //                 "amount" => number_format((float) $referral_bonus, 8),
+        //                 "anonymous" => false,
+        //                 "compliant" => false,
+        //                 "transactionCode" => $reference,
+        //                 "paymentId" => $reference,
+        //                 "baseRate" => 1,
+        //             ]
+        //         ]);
+        //     } catch (\Exception $e) {
+        //         \Log::info($e->getResponse()->getBody());
+        //         //report($e);
+        //         // return response()->json([
+        //         //     'success' => false,
+        //         //     'msg' => 'An error occured, please try again'
+        //         // ]);
+        //     }
+
+        //     // fund referral wallet
+        //     $ref = User::where('referral_code',Auth::user()->referrer);
+        //     $r_wallet = $ref->first()->referral_wallet;
+        //     $r_wallet = $r_wallet + $referral_bonus;
+        //     $ref->update(['referral_wallet' => $r_wallet]);
+        // }
+=======
+
+>>>>>>> 84b77fd7c3870f9cd9e61f5a252bfedfb0723ba7
 
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
@@ -498,6 +550,38 @@ class BtcWalletController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
+        ///////////////// REFERRAL ////////////////////////
+
+        $status = ReferralSettingsController::status();
+        if (Auth::user()->referred == 1 and $status == 1) {
+            // fund referral wallet
+            $tamount_paid = $t->amount_paid;
+            $referral_percentage = ReferralSettingsController::percent();
+            $referral_bonus = ($referral_percentage / 100) * $tamount_paid;
+
+            $getReferrer = User::where('referral_code', Auth::user()->referrer)->get()[0];
+            $getReferrer->referral_wallet += $referral_bonus;
+            $getReferrer->save();
+
+            $rand = \Str::random(5) . $getReferrer->id;
+            $reference = \Str::upper($rand);
+
+            $nt = new NairaTransaction();
+            $nt->reference = $reference;
+            $nt->amount = $referral_bonus;
+            $nt->user_id = $getReferrer->id;
+            $nt->type = 'referral';
+            $nt->charge = 0;
+            $nt->dr_acct_name = 'Dantown';
+            $nt->narration = 'Referral bonus credit ';
+            $nt->trans_msg = 'Referral bonus';
+            $nt->dr_user_id = 1;
+            $nt->status = 'success';
+            $nt->save();
+        }
+
+
+
         // ///////////////////////////////////////////////////////////
         $title = 'Sell Order Successful';
         $body = 'Your order to sell 0.07 ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
@@ -513,6 +597,10 @@ class BtcWalletController extends Controller
 
         $name = Auth::user()->first_name;
         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+<<<<<<< HEAD
+
+// /////////////////////////////////////////////
+=======
         // /////////////////////////////////////////////
 
         $status = GeneralSettings::getSetting('REFERRAL_ACTIVE')->settings_value;
@@ -554,6 +642,7 @@ class BtcWalletController extends Controller
             $r_wallet = $r_wallet + $referral_bonus;
             $ref->update(['referral_wallet' => $r_wallet]);
         }
+>>>>>>> 84b77fd7c3870f9cd9e61f5a252bfedfb0723ba7
 
         return response()->json([
             'success' => true,
