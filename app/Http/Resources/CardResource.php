@@ -55,7 +55,7 @@ class CardResource extends JsonResource
             foreach ($pricing as $key => $value) {
                 $percentage = $medium->pivot->percentage_deduction;
                 $rate = $pricing[$key]->rate - (($percentage/100) * $pricing[$key]->rate);
-                $pricing[$key]->rate = $rate;
+                $pricing[$key]->rate = ceil($rate);
             }
             $medium->pricing = $pricing;
             $medium->percentage_deduction = $medium->pivot->percentage_deduction;
