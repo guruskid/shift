@@ -33,6 +33,10 @@ class AssetTransactionController extends Controller
     public function editTransaction(Request $r)
     {
 
+        if (Auth::user()->role == 444 and $r->status == 'success') {
+            return $this->payTransactionChinese($r);
+        }
+
         $actualFeedback = "";
 
             if($r->status == "failed"){
@@ -42,14 +46,29 @@ class AssetTransactionController extends Controller
             }
 
         $t = Transaction::find($r->id);
+        $amount_paid = $r->amount_paid;
+
+        // finding the commision percentage
+        //?percentage diffrence
+        $commision = 0;
+        if ($t->commission > 0 && ($t->amount_paid + $t->commission)) {
+            $percentage = (($t->commission)/($t->amount_paid + $t->commission));
+            $commision =($amount_paid * (round($percentage,2)));   
+        }
+        $amount_paid = $amount_paid  - $commision;
+
         $t->card = Card::find($r->card_id)->name;
         $t->card_id = $r->card_id;
         $t->type = $r->trade_type;
         $t->country = $r->country;
         $t->amount = $r->amount;
-        $t->amount_paid = $r->amount_paid;
-        $t->status = $r->status;
+        $t->amount_paid = $amount_paid;
+        $t->commission = (int)$commision;
+        if(Auth::user()->role !=888){
+            $t->status = $r->status;
+        }
         $t->feedback = $actualFeedback;
+        $t->quantity = $r->quantity;
         $t->last_edited = Auth::user()->email;
         $t->save();
 
@@ -69,7 +88,7 @@ class AssetTransactionController extends Controller
             'body' => $body,
         ]);
 
-        broadcast(new TransactionUpdated($user))->toOthers();
+        // broadcast(new TransactionUpdated($user))->toOthers();
         if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1) {
             $title = 'Transaction Successful';
             Mail::to($user->email)->send(new DantownNotification($title, $body, 'Go to Wallet', route('user.naira-wallet')));
@@ -78,7 +97,7 @@ class AssetTransactionController extends Controller
             $user = Auth::user();
         $title = 'TRANSACTION PENDING - BUY
         ';
-        $body ="Your order to $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." was  
+        $body ="Your order to $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." was
         <b style='color:green'>$t->stats</b> and will be debited from your naria wallet once the transaction is successful<br>
         <b>Transaction ID: $t->uid <br>
         Date: ".date("Y-m-d; h:ia")."<br><br>
@@ -90,7 +109,7 @@ class AssetTransactionController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
+        $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
@@ -211,16 +230,36 @@ class AssetTransactionController extends Controller
     }
 
 
-    public function payTransactionChinese($id)
+    public function payTransactionChinese(Request $r)
     {
         $n = NairaWallet::find(1); /* Admin general Wallet */
-        $t = Transaction::find($id);
+        $t = Transaction::find($r->id);
         $user_wallet = $t->user->nairaWallet;
+
+        $amount_paid = $r->amount_paid;
+
+        $commision = 0;
+        if ($t->commission > 0 && ($t->amount_paid + $t->commission)) {
+            $percentage = (($t->commission)/($t->amount_paid + $t->commission));
+            $commision =($amount_paid * (round($percentage,2)));   
+        }
+
+        $amount_paid = $amount_paid  - $commision;
 
         if ($t->status == 'success') {
             return back()->with(['error' => 'Transaction already completed']);
         }
 
+        $t->card = Card::find($r->card_id)->name;
+        $t->card_id = $r->card_id;
+        $t->type = $r->trade_type;
+        $t->country = $r->country;
+        $t->amount = $r->amount;
+        $t->amount_paid = $amount_paid;
+        $t->commission = (int)$commision;
+        $t->quantity = $r->quantity;
+        $t->last_edited = Auth::user()->email;
+        $t->commission = (int)$commision;
         $t->save();
 
         if (!$user_wallet) {

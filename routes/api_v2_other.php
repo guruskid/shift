@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 
 Route::GET('/verification-limit', 'Admin\VerificationLimitController@get');
 Route::get('/banks', 'Api\AuthController@bankList' );
+// Route::get('ref', 'Admin\ReferralSettingsController@referral_bonus');
 
 Route::group(['middleware' => 'auth:api'], function () {
 
@@ -38,7 +39,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/cable', 'Api\BillsPaymentController@cable');
     Route::post('/recharge-cable', 'Api\BillsPaymentController@rechargeCable');
     Route::post('/get-merchant/{serviveId}/{billercode}', 'BillsPaymentController@merchantVerify');
-    
+
     //Power
     Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
     Route::get('/get-elect-boards/{category?}', 'BillsPaymentController@getProducts');
@@ -50,5 +51,16 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
     Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
 
+    Route::get('referral-transactions', 'ApiV2\ReferralController@referralTransactions');
+    Route::post('withdraw-referral-bonus', 'ApiV2\ReferralController@withdrawReferralBonus');
+    Route::get('my-referrers', 'ApiV2\ReferralController@myReferrers');
+    Route::get('get-referrers-link', 'ApiV2\ReferralController@getReferralLink');
+
+
+    // Notifications 
+    Route::GET('/notifications', 'Api\NotificationController@index');
+    Route::GET('/notification/read/{id}', 'Api\NotificationController@read');
+    Route::GET('/notification/settings', 'Api\NotificationController@settings');
+    Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
 
 });

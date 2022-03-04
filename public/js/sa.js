@@ -77,7 +77,7 @@ function editTransac(data) {
     $('#e_country').val(data['country']);
 
     $('#e_amount').val(data['amount']);
-    $('#e_amount_paid').val(data['amount_paid']);
+    $('#e_amount_paid').val(data['amount_paid'] + data['commission']);
 
     $('#e_status').html(data['status']);
     $('#e_status').val(data['status']);
@@ -86,7 +86,8 @@ function editTransac(data) {
     $('#e_trade_type').val(data['type']);
 
     $('#e_date').val(data['created_at']);
-
+    $('#e_quantity').val(data['quantity']);
+    // e_quantity
 }
 
 /* Delete Transaction */

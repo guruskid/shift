@@ -396,7 +396,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
     Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
-    Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('admin.junior-summary-sort-details');
+    Route::any('/sort-accountant-summary','Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
 });
 
 
@@ -416,10 +416,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']]
 /* For Super Admins Only */
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super', 'chinese']], function () {
     Route::post('/cards', 'AdminController@addCard')->name('admin.add_card');
+    Route::get('/referral', 'Admin\ReferralSettingsController@index')->name('admin.referral');
+    Route::post('/change-referral-status', 'Admin\ReferralSettingsController@changeStatus')->name('admin.change_referral_status');
+    Route::post('/change-referral-percentage', 'Admin\ReferralSettingsController@changePercentage')->name('admin.set_referral_percentage');
+    Route::post('/set-referral', 'Admin\ReferralSettingsController@setReferral')->name('admin.set_referral');
+
     // Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
     // Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
     Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
-
 
     Route::post('/transactions', 'AdminController@addTransaction')->name('admin.add_transaction');
 

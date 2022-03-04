@@ -63,6 +63,13 @@ class TradeController extends Controller
             ]);
         }*/
 
+        if ($r->buy_sell == 'buy') {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Service not currently available ',
+            ]);
+        }
+
         if ($r->buy_sell == 'buy' && Auth::user()->nairaWallet->amount < $r->amount_paid) {
             return response()->json([
                 'success' => false,
@@ -76,8 +83,20 @@ class TradeController extends Controller
         $batch_id = uniqid();
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
 
-         foreach ($r->trades as $i) {
+         foreach ($r->trades as $key => $i) {
             $card = Card::where('name', $i['cardName'])->first();
+
+            $rate = json_decode($card->currency->where('name',$i['currency'])->first()->cardCurrency->where('card_id',$card->id)->first()->cardPaymentMedia->first()->payment_range_settings);
+
+            $t_amount = 0;
+            foreach ($rate as $value) {
+                if ($value->value == $i['cardValue']) {
+                    $t_amount = $i['cardQuantity'] * $value->rate;
+                    break;
+                }
+            }
+            $commission = $t_amount - $i['cardTotal'];
+
             $t = new Transaction();
             $t->uid = uniqid();
             $t->user_email = Auth::user()->email;
@@ -94,6 +113,7 @@ class TradeController extends Controller
             $t->card_type = $i['cardType'];
             $t->quantity = $i['cardQuantity'];
             $t->card_price = $i['cardPrice'];
+            $t->commission = $commission;
             $t->save();
         }
 
@@ -116,7 +136,7 @@ class TradeController extends Controller
             }
         }
 
-        broadcast(new NewTransaction($t))->toOthers();
+        // broadcast(new NewTransaction($t))->toOthers();
 
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';

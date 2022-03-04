@@ -198,8 +198,10 @@ $not = $nots->last();
                                                 <a href=" {{route('admin.transactions')}} "><button type="button"
                                                         tabindex="0" class="dropdown-item">All
                                                         transactions</button></a>
-                                                <a href=" {{route('admin.rates')}} "><button type="button" tabindex="0"
+                                                @if(Auth::user()->role != 444)
+                                                    <a href=" {{route('admin.rates')}} "><button type="button" tabindex="0"
                                                         class="dropdown-item">Rates</button></a>
+                                                @endif
                                                 <div tabindex="-1" class="dropdown-divider"></div>
                                                 <a href="#"
                                                     onclick="event.preventDefault(); document.getElementById('logout-form2').submit();">
