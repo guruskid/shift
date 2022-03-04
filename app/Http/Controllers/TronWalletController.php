@@ -147,6 +147,61 @@ class TronWalletController extends Controller
         return view('newpages.tron-wallet', compact('tron_wallet', 'transactions', 'tron_rate'));
     }
 
+    // Api
+    public function walletApi(Request $r)
+    {
+
+        if (!Auth::user()->tronWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please create a Tron wallet to continue'
+            ]);
+        }
+
+
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $tron_rate = LiveRateController::tronRate();
+        $tron_wallet = Auth::user()->tronWallet;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $tron_wallet->balance = $accounts->balance->availableBalance;
+        $tron_wallet->usd = $tron_wallet->balance  * $tron_rate;
+        $tron_wallet->ngn = $tron_wallet->usd * $sell_rate;
+
+        $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+        $get_txns = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            "json" => ["id" => Auth::user()->tronWallet->account_id]
+        ]);
+
+        $transactions = json_decode($get_txns->getBody());
+        foreach ($transactions as $t) {
+            $x = \Str::limit($t->created, 10, '');
+            $time = \Carbon\Carbon::parse((int)$x);
+            $t->created = $time->setTimezone('Africa/Lagos');
+
+            if (!isset($t->senderNote)) {
+                $t->senderNote = 'Sending Tron';
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'date' => [
+                'sell_rate' => $sell_rate,
+                'tron_wallet' => $tron_wallet,
+                'tron_rate' => $tron_rate,
+                'transactions' =>$transactions
+            ]
+        ]);
+    }
 
     public function trade()
     {
@@ -174,6 +229,40 @@ class TronWalletController extends Controller
         return view('newpages.trade_tron', compact('sell_rate', 'tron_wallet', 'hd_wallet', 'tron_usd', 'charge'));
     }
 
+    // Api
+    public function tradeApi()
+    {
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $tron_usd = LiveRateController::tronRate();
+        $tron_wallet = Auth::user()->tronWallet;
+        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+
+        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
+        $tp = ($trading_per / 100) * $tron_usd;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $tron_wallet->balance = $accounts->balance->availableBalance;
+        $tron_wallet->usd = $tron_wallet->balance  * $tron_usd;
+        $tron_wallet->ngn = $tron_wallet->usd * $sell_rate;
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'sell_rate' => $sell_rate,
+                'tron_wallet' => $tron_wallet,
+                'tron_usd' => $tron_usd,
+                'charge' => $charge
+            ]
+        ]);
+    }
+
     public function fees($address, $amount)
     {
         $fees = 15;
@@ -181,6 +270,7 @@ class TronWalletController extends Controller
         $charge = Setting::where('name', 'tron_send_charge')->first()->value;
 
         return response()->json([
+            'success' => true,
             "fee" => $fees + $charge,
         ]);
     }
@@ -227,7 +317,7 @@ class TronWalletController extends Controller
             ]);
         }
 
-        $blockchain_fee = 10;
+        $blockchain_fee = 100;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
         if ($fee_wallet_balance < $blockchain_fee) {
             return response()->json([
@@ -429,17 +519,26 @@ class TronWalletController extends Controller
             ]);
         }
 
-        $fee_limit = 200;
+        // $fee_limit = 200;
+        // $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
+        // if ($fee_wallet_balance < $fee_limit) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'msg' => 'Service not available, please try again later'
+        //     ]);
+        // }
+
+        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
+        $fee_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
+
+        $blockchain_fee = 100;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
-        if ($fee_wallet_balance < $fee_limit) {
+        if ($fee_wallet_balance < $blockchain_fee) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Service not available, please try again later'
             ]);
         }
-
-        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
-        $fee_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
 
 
         $total = $request->amount;
@@ -486,9 +585,9 @@ class TronWalletController extends Controller
                     "recipient" => [$request->address,  $charge_wallet->address, $fee_wallet],
                     "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4), number_format((float) $fees, 4)],
                     "signatureId" => $hd_wallet->private_key,
-                    "tokenId" => ["0",  "0", "0"],
-                    "tokenAddress" => ["0",  "0", "0"],
-                    "feeLimit" => $fee_limit,
+                    "tokenId" => ["0",  "0"],
+                    "tokenAddress" => ["0",  "0"],
+                    "feeLimit" => $blockchain_fee,
                     "from" => $fee_wallet->address,
                 ]
             ]);

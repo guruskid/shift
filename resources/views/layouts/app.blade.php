@@ -260,23 +260,16 @@ $not = $nots->last();
                                             </div>
                                             @endif
 
+                                            @endauth
                                         </div>
-                                        @endauth
-                                    </div>
-                                </div>
-                                <div class="widget-content-left  ml-3 header-user-info">
-                                    <div class="widget-heading">
-                                        @auth
-                                        {{Auth::user()->first_name." ".Auth::user()->last_name}}
-                                        @if (empty(Auth::user()->first_name))
-                                        {{ Auth::user()->email }}
-                                        @endif
-                                        @endauth
                                     </div>
                                     <div class="widget-content-left  ml-3 header-user-info">
                                         <div class="widget-heading">
                                             @auth
                                             {{Auth::user()->first_name." ".Auth::user()->last_name}}
+                                            @if (empty(Auth::user()->first_name))
+                                            {{ Auth::user()->email }}
+                                            @endif
                                             @endauth
                                         </div>
                                         <div class="widget-subheading">
@@ -318,12 +311,12 @@ $not = $nots->last();
                         </div>
                     </div>
                 </div>
+
+                <div id="notifications"></div>
+
+                @yield('content')
+
             </div>
-
-            <div id="notifications"></div>
-
-            @yield('content')
-
         </div>
     </div>
     <script src="/js/app.js?v=1"></script>
@@ -334,7 +327,8 @@ $not = $nots->last();
     <script src="{{asset('js/custom.js')}}"></script>
     <script src="{{asset('js/bootstrap-notify.js')}}"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js">
+    </script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     @auth
