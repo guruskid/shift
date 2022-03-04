@@ -51,11 +51,13 @@ class AssetTransactionController extends Controller
         // finding the commision percentage
         //?percentage diffrence
         $commision = 0;
-        if ($t->commission > 0 && ($t->amount_paid + $t->commission)) {
-            $percentage = (($t->commission)/($t->amount_paid + $t->commission));
-            $commision =($amount_paid * (round($percentage,2)));   
-        }
-        $amount_paid = $amount_paid  - $commision;
+        $percentage = ($t->commission/(($t->card_price * $t->quantity)));
+        $commision = ($t->card_price * $r->quantity) * $percentage;
+        $oldComm = ($t->card_price * $t->quantity) * ($t->commission/(($t->card_price * $t->quantity)));
+        $newComm = ($t->card_price * $r->quantity) * ($commision/(($t->card_price * $r->quantity)));
+        $oldChineseAmt = ($t->card_price * $t->quantity) + $t->commission;
+        $newChineseAmt = ($t->card_price * $r->quantity) + $newComm;
+        $amount_paid = ($t->card_price * $r->quantity);
 
         $t->card = Card::find($r->card_id)->name;
         $t->card_id = $r->card_id;
@@ -63,7 +65,7 @@ class AssetTransactionController extends Controller
         $t->country = $r->country;
         $t->amount = $r->amount;
         $t->amount_paid = $amount_paid;
-        $t->commission = (int)$commision;
+        $t->commission = $newComm;
         if(Auth::user()->role !=888){
             $t->status = $r->status;
         }
@@ -236,15 +238,13 @@ class AssetTransactionController extends Controller
         $t = Transaction::find($r->id);
         $user_wallet = $t->user->nairaWallet;
 
-        $amount_paid = $r->amount_paid;
-
-        $commision = 0;
-        if ($t->commission > 0 && ($t->amount_paid + $t->commission)) {
-            $percentage = (($t->commission)/($t->amount_paid + $t->commission));
-            $commision =($amount_paid * (round($percentage,2)));   
-        }
-
-        $amount_paid = $amount_paid  - $commision;
+        $percentage = ($t->commission/(($t->card_price * $t->quantity)));
+        $commision = ($t->card_price * $r->quantity) * $percentage;
+        $oldComm = ($t->card_price * $t->quantity) * ($t->commission/(($t->card_price * $t->quantity)));
+        $newComm = ($t->card_price * $r->quantity) * ($commision/(($t->card_price * $r->quantity)));
+        $oldChineseAmt = ($t->card_price * $t->quantity) + $t->commission;
+        $newChineseAmt = ($t->card_price * $r->quantity) + $newComm;
+        $amount_paid = ($t->card_price * $r->quantity);
 
         if ($t->status == 'success') {
             return back()->with(['error' => 'Transaction already completed']);
@@ -256,7 +256,7 @@ class AssetTransactionController extends Controller
         $t->country = $r->country;
         $t->amount = $r->amount;
         $t->amount_paid = $amount_paid;
-        $t->commission = (int)$commision;
+        $t->commission = $newComm;
         $t->quantity = $r->quantity;
         $t->last_edited = Auth::user()->email;
         $t->commission = (int)$commision;

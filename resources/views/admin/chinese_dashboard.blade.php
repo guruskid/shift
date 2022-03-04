@@ -293,17 +293,17 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                                 <td class="text-center">{{$t->card_price}}</td>
                                                             @endif
                                                             @if (in_array(Auth::user()->role, [449] ))
-                                                                <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                                                <td class="text-center">N{{number_format($t->amount_paid,2, '.', ',')}}</td>
                                                             @endif
 
                                                             @if (!in_array(Auth::user()->role, [449,444] ))
-                                                                <td class="text-center">N{{number_format($t->amount_paid)}}</td>
+                                                                <td class="text-center">N{{number_format($t->amount_paid,2, '.', ',')}}</td>
                                                             @endif
                                                             @if (in_array(Auth::user()->role, [999] ))
-                                                                <td class="text-center">{{$t->commission}}</td>
+                                                                <td class="text-center">{{$t->commission,2, '.', ','}}</td>
                                                             @endif
                                                             @if (in_array(Auth::user()->role, [444,999] ))
-                                                                <td class="text-center">N{{number_format($t->amount_paid + $t->commission)}}</td>
+                                                                <td class="text-center">N{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
                                                             @endif
                                                             @if (!in_array(Auth::user()->role, [449,444] ))
                                                             <td class="text-center">{{$t->wallet_id}}</td>
