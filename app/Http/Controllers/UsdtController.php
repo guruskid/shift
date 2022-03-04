@@ -23,7 +23,7 @@ class UsdtController extends Controller
         if (Auth::user()->usdtWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Tron wallet already exists for this account'
+                'msg' => 'USDT wallet already exists for this account'
             ]);
         }
 
@@ -136,6 +136,61 @@ class UsdtController extends Controller
         return view('newpages.usdt-wallet', compact('wallet', 'transactions', 'rate'));
     }
 
+    public function walletApi(Request $r)
+    {
+
+        if (!Auth::user()->usdtWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please create a Tron wallet to continue'
+            ]);
+        }
+
+
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $rate = LiveRateController::usdtRate();
+        $wallet = Auth::user()->usdtWallet;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . $wallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $wallet->balance = $accounts->balance->availableBalance;
+        $wallet->usd = $wallet->balance  * $rate;
+        $wallet->ngn = $wallet->usd * $sell_rate;
+
+        $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+        $get_txns = $client->request('POST', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
+            "json" => ["id" => Auth::user()->usdtWallet->account_id]
+        ]);
+
+        $transactions = json_decode($get_txns->getBody());
+        foreach ($transactions as $t) {
+            $x = \Str::limit($t->created, 10, '');
+            $time = \Carbon\Carbon::parse((int)$x);
+            $t->created = $time->setTimezone('Africa/Lagos');
+
+            if (!isset($t->senderNote)) {
+                $t->senderNote = 'Sending Tron';
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'date' => [
+                'sell_rate' => $sell_rate,
+                'wallet' => $wallet,
+                'rate' => $rate,
+                'transactions' => $transactions
+            ]
+        ]);
+    }
+
 
     public function trade()
     {
@@ -163,6 +218,39 @@ class UsdtController extends Controller
         return view('newpages.trade_usdt', compact('sell_rate', 'wallet', 'hd_wallet', 'amt_usd', 'charge'));
     }
 
+    public function tradeApi()
+    {
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $tron_usd = LiveRateController::usdtRate();
+        $wallet = Auth::user()->usdtWallet;
+        $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
+
+        $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value;
+        $tp = ($trading_per / 100) * $tron_usd;
+
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . $wallet->account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
+        ]);
+
+        $accounts = json_decode($res->getBody());
+
+        $wallet->balance = $accounts->balance->availableBalance;
+        $wallet->usd = $wallet->balance  * $tron_usd;
+        $wallet->ngn = $wallet->usd * $sell_rate;
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'sell_rate' => $sell_rate,
+                'wallet' => $wallet,
+                'tron_usd' => $tron_usd,
+                'charge' => $charge
+            ]
+        ]);
+    }
+
     public function fees($address, $amount)
     {
         $fees = 1;
@@ -170,6 +258,7 @@ class UsdtController extends Controller
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
 
         return response()->json([
+            'success' => true,
             "fee" => $fees + $charge,
         ]);
     }
