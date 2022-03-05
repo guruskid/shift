@@ -33,7 +33,7 @@ class AssetTransactionController extends Controller
     public function editTransaction(Request $r)
     {
 
-        if (Auth::user()->role == 444 and $r->status == 'success') {
+        if (in_array(Auth::user()->role,[444,449,999]) and $r->status == 'success') {
             return $this->payTransactionChinese($r);
         }
 
