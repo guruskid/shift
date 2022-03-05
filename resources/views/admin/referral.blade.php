@@ -88,6 +88,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                     <label>Referral percentage</label><br>
                                                     <input type="hidden" value="{{$referralSettings[0]->id}}" name="id">
                                                     <input type="text" value="{{$referralSettings[0]->ref_percent}}" name="percent" class="form-control">
+                                                    <input type="date"  name="date" class="form-control">
                                                 </div>
                                                 <div class="form-group">
                                                     <button class="btn btn-primary btn-md">Update</button>

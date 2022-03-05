@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\UtilityTransaction;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UtilityController extends Controller
 {
@@ -16,36 +17,37 @@ class UtilityController extends Controller
         return $transactions;
     }
 
-    static function utilitySearch($start, $end)
+    public function utilitySearch($type, $start, $end)
     {
 
-        // $transactions = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc');
-        // $type = UtilityTransaction::select('type')->distinct('type')->get();
-        // $status = UtilityTransaction::select('status')->distinct('status')->get();
-        // $data = $request->validate([
-        //     'start' => 'date|string',
-        //     'end' => 'date|string',
-        // ]);
+        $transactions = UtilityTransaction::where('created_at', '>=', $end)->where('created_at', '<=', $start)->where('type', $type)->get()->paginate(100);
 
-        // if (!empty($data)) {
-        //     $transactions['transactions'] = $transactions['transactions']
-        //     ->where('created_at', '>=', $data['start'])
-        //     ->where('created_at', '<=', $data['end']);
-
-        //     if ($request->type != 'null') {
-        //         $transactions['transactions'] = $transactions['transactions']
-        //         ->where('type','=',$request->type);
-        //     }
-        //     if ($request->status != 'null') {
-        //         $transactions['transactions'] = $transactions['transactions']
-        //         ->where('status','=',$request->status);
-        //     }
-        // }
-        // $transactions = UtilityTransaction::where('type', $type)->orderBy('created_at', 'desc')->get()->paginate(1000);
-        // return $transactions;
+        return $transactions;
     }
 
-    public function airtime(Request $request)
+    public function utilitiesSearch(Request $r)
+    {
+        // return now();
+        $data = Validator::make($r->all(), [
+            'start_date' => 'required',
+            'end_date' => 'required',
+        ]);
+        if ($data->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $data->errors(),
+            ], 401);
+        }
+
+        $transactions = $this->utilitySearch($r->type, $r['end_date'], $r['start_date']);
+
+        return response()->json([
+            'success' => true,
+            'data' => $transactions,
+        ]);
+    }
+
+    public function airtime()
     {
         $ut = self::utility('Recharge card purchase');
         return response()->json([
@@ -54,7 +56,7 @@ class UtilityController extends Controller
         ]);
     }
 
-    public function data(Request $request)
+    public function data()
     {
         $ut = self::utility('Data purchase');
         return response()->json([
@@ -63,7 +65,7 @@ class UtilityController extends Controller
         ]);
     }
 
-    public function power(Request $request)
+    public function power()
     {
         $ut = self::utility('Power');
         return response()->json([
@@ -72,7 +74,7 @@ class UtilityController extends Controller
         ]);
     }
 
-    public function cable(Request $request)
+    public function cable()
     {
         $ut = self::utility('Electricity purchase');
         return response()->json([
