@@ -57,10 +57,17 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('get-referrers-link', 'ApiV2\ReferralController@getReferralLink');
 
 
-    // Notifications 
+    // Notifications
     Route::GET('/notifications', 'Api\NotificationController@index');
     Route::GET('/notification/read/{id}', 'Api\NotificationController@read');
     Route::GET('/notification/settings', 'Api\NotificationController@settings');
     Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
+
+
+
+    Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified', 'admin', 'super' ]], function () {
+        Route::get('/utility/airtime', 'UserController@deleteBank');
+        Route::get('/read-not/{id}', 'UserController@readNot');
+    });
 
 });
