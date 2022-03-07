@@ -56,7 +56,7 @@ class AuthController extends Controller
     {
 
         if(isset($refcode)){
-            return $refcode;
+            // return $refcode;
         }
 
         $validator = Validator::make($request->all(), [
