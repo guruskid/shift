@@ -52,7 +52,7 @@ class AuthController extends Controller
     }
 
 
-    public function register(Request $request, $refcode)
+    public function register(Request $request, $refcode = '')
     {
 
         if(isset($refcode)){
