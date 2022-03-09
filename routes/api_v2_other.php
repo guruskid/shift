@@ -57,10 +57,13 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('get-referrers-link', 'ApiV2\ReferralController@getReferralLink');
 
 
-    // Notifications 
+    // Notifications
     Route::GET('/notifications', 'Api\NotificationController@index');
     Route::GET('/notification/read/{id}', 'Api\NotificationController@read');
     Route::GET('/notification/settings', 'Api\NotificationController@settings');
     Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
+
+
+    
 
 });
