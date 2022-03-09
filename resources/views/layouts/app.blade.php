@@ -145,6 +145,7 @@ $not = $nots->last();
                             <div class="widget-content-wrapper">
                                 <div class="widget-content-left">
                                     <div class="btn-group">
+                                        @auth
                                         @if(Auth::user()->role == 444 OR Auth::user()->role == 449)
                                         <div class="language mt-2">
                                             <h4 class="text-light">改变语言
@@ -164,6 +165,7 @@ $not = $nots->last();
                                             {{-- ////////// --}}
                                         </div>
                                         @endif
+                                        @endauth
                                         @auth
                                         <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
                                         @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR Auth::user()->role == 444 OR Auth::user()->role == 449 )
@@ -235,7 +237,7 @@ $not = $nots->last();
                                     <div class="widget-heading">
                                         @auth
                                         {{Auth::user()->first_name." ".Auth::user()->last_name}}
-                                        @if (empty(Auth::user()->first_name))    
+                                        @if (empty(Auth::user()->first_name))
                                             {{ Auth::user()->email }}
                                         @endif
                                         @endauth
@@ -380,6 +382,7 @@ $not = $nots->last();
       $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
+@auth
 
 @if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
     <script>
@@ -410,6 +413,8 @@ $not = $nots->last();
         }, 2000);
     </script>
 @endif
+@endauth
+
 
 </body>
 

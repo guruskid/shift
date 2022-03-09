@@ -14,7 +14,7 @@ class UpdateAmountPaidFieldInTransactionsTable extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            DB::statement('ALTER TABLE transactions MODIFY COLUMN `amount_paid` Varchar(255)');
+            DB::statement('ALTER TABLE transactions MODIFY COLUMN `amount_paid` INT(255)');
         });
     }
 
