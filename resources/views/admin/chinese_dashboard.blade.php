@@ -365,11 +365,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                                 @if (Auth::user()->role == 444 OR Auth::user()->role == 449 ) {{--test//// super accountant
                                                                 options --}}
 
-                                                                <a href="#" data-toggle="modal"
+                                                                {{-- <a href="#" data-toggle="modal"
                                                                     data-target="#edit-transac{{$t->id}}"
-                                                                    {{-- onclick="editTransac({{$t}})" --}}
                                                                     ><span
-                                                                        class="btn btn-sm btn-info">Edit</span></a>
+                                                                        class="btn btn-sm btn-info">Edit</span></a> --}}
 
                                                                 @if ($t->status == 'approved')
                                                                 @if (\Str::lower($t->card) == 'bitcoins')
