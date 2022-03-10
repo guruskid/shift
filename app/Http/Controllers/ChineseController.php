@@ -31,6 +31,10 @@ class ChineseController extends Controller
     {
 
         $page_limit = 10;
+        if(Auth::user()->role == 889)
+        {
+            $page_limit = 1000;
+        }
 
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
