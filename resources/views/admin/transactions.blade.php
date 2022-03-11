@@ -373,10 +373,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
 
                                             @if (Auth::user()->role == 889 ) {{-- super accountant options --}}
-                                                @if ($t->asset->is_crypto)
-                                                <a href="#" data-toggle="modal" data-target="#edit-transac"
+                                                @if ($t->asset->is_crypto and in_array(Auth::user()->role,[444,449]))
+                                                {{-- <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t}})"><span
-                                                        class="btn btn-sm btn-info">Edit</span></a>
+                                                        class="btn btn-sm btn-info">Edit</span></a> --}}
                                                 @endif
                                                 @if ($t->status == 'approved')
                                                     @if (\Str::lower($t->card) == 'bitcoins')
@@ -399,9 +399,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
 
                                             @if (Auth::user()->role == 999) {{-- Super Admin --}}
-                                            <a href="#" data-toggle="modal" data-target="#edit-transac" onclick="editTransac({{$t}})">
+                                            {{-- <a href="#" data-toggle="modal" data-target="#edit-transac" onclick="editTransac({{$t}})">
                                                 <span class="btn btn-sm btn-info">Edit</span>
-                                            </a>
+                                            </a> --}}
 
                                             @if ($t->status == 'approved')
                                                 @if (\Str::lower($t->card) == 'bitcoins')
@@ -425,9 +425,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
                                             @if (Auth::user()->role == 777) {{-- Junior Accountant --}}
                                                 @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
-                                                    <a href="#" data-toggle="modal" data-target="#edit-transac"
+                                                    {{-- <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                         onclick="editTransac({{$t}})"><span
-                                                            class="btn btn-sm btn-info">Edit</span></a>
+                                                            class="btn btn-sm btn-info">Edit</span></a> --}}
                                                 @endif
 
                                                 @if ($t->status == 'approved')
@@ -451,9 +451,9 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
                                             @if (Auth::user()->role == 888 OR Auth::user()->role == 444 OR Auth::user()->role == 449 ) {{-- Sales rep --}}
                                                 @if ($t->status != 'success' && $t->status != 'failed' && $t->status != 'declined')
-                                                <a href="#" data-toggle="modal" data-target="#edit-transac"
+                                                {{-- <a href="#" data-toggle="modal" data-target="#edit-transac"
                                                     onclick="editTransac({{$t}})"><span
-                                                        class="btn btn-sm btn-info">Edit</span></a>
+                                                        class="btn btn-sm btn-info">Edit</span></a> --}}
                                                 @endif
                                             @endif
                                         </td>

@@ -943,7 +943,9 @@ class AdminController extends Controller
     {
         $transaction = Transaction::find($id);
 
-        return view('admin.transaction', compact(['transaction']));
+        $cards = Card::all();
+
+        return view('admin.transaction', compact(['transaction','cards']));
     }
 
     public function deleteTransac($id)

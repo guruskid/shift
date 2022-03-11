@@ -47,7 +47,7 @@
                             <i class="pe-7s-timer icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div> Transaction
+                        <div> Transaction (Status:: {{$transaction->status}})
                             <div class="page-title-subheading">
                             </div>
                         </div>
@@ -104,9 +104,167 @@
                                 </form>
                             </div>
                         @endif
+                        <div class="card-footer">
+                            {{-- <form action="{{route('transaction.add-image')}} " method="post" enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="">Upload Image(s)</label>
+                                    <input type="hidden" name="transaction_id" value="{{$transaction->id}}" >
+                                    <input type="file" name="pops[]" accept="image/*" required multiple >
+                                </div>
+                                <button type="submit" class="btn btn-success">Upload</button>
+                            </form> --}}
+                            <a href="#" class="my-2" data-toggle="modal" data-target="#edit-transac" onclick="editTransac({{$transaction}})">
+                                <span class="btn btn btn-info">Edit</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+{{-- Edit transactions Modal --}}
+<div class="modal fade  item-badge-rightm" id="edit-transac" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{route('admin.edit_transaction')}} " method="POST" class="mb-3">
+                {{ csrf_field() }}
+                <div class="modal-header">
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading" id="e_email">User Email</h4>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <input type="hidden" readonly name="id" id="e_id">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Card</label>
+                                <select name="card_id" class="form-control">
+                                    <option value="" id="e_card"></option>
+                                    @foreach ($cards as $card)
+                                    <option value="{{$card->id}}"> {{ ucfirst($card->name) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Country</label>
+                                <select name="country" class="form-control">
+                                    <option value="" id="e_country"></option>
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="AUD">AUD</option>
+                                    <option value="CAD">CAD</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Unit</label>
+                                <input type="text" placeholder="Value" id="e_amount" class="form-control" name="amount">
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Cash Value</label>
+                                {{-- @if(in_array(Auth::user()->role,[444]))
+                                    <input type="text" placeholder="Amount paid" id="e_amount_paid" value="{{$cwt->amount_paid + $cwt->commission}}" class="form-control" name="amount_paid">
+                                @else
+                                    <input type="text" placeholder="Amount paid" id="e_amount_paid" value="{{$cwt->amount_paid}}" class="form-control" name="amount_paid">
+                                @endif --}}
+
+                                <input type="text" placeholder="Amount paid" id="e_amount_paid" class="form-control" name="amount_paid">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @if (Auth::user()->role != 888)
+
+                        <div class="col">
+                            <!-- ///////////// WORK IN PROGRESS ////////////// -->
+                            <div class="form-group">
+                                <label for="">Status</label>
+                                <select onchange="feedback_status()" id="f_status" name="status" class="form-control"
+                                @if (Auth::user()->role == 888)
+                                    {{ "disabled" }}
+                                @endif>
+                                    <option value="" id="e_status"></option>
+                                    @if (in_array(Auth::user()->role, [889, 777, 999, 444, 449]))
+                                    <option value="success">Success</option>
+                                    @endif
+                                    <option value="waiting">Waiting</option>
+                                    <option value="in progress">In progress</option>
+                                    <option value="failed">Failed</option>
+                                    <option value="declined">Declined</option>
+                                </select>
+                            </div>
+                        </div>
+                        @endif
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="">Transac Type</label>
+                                <select name="trade_type" class="form-control">
+                                    <option value="" id="e_trade_type"></option>
+                                    <option value="buy">Buy</option>
+                                    <option value="sell">Sell</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="">Quantity</label>
+                                <input type="text" placeholder="Amount paid" id="e_quantity" class="form-control"
+                                    name="quantity">
+                            </div>
+                        </div>
+                        <!-- //////////////////////////////////// -->
+                        <div class="d-none col-12" id="yfailed">
+                            <div class="form-group">
+                            <label for="feedback">Feedback</label>
+                                <select name="failfeedbackstatus" class="form-control">
+                                    <option value="Your card was used">Your card was used</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-none col-12" id="ydeclined">
+                            <div class="form-group">
+                            <label for="feedback">Feedback</label>
+                                <select name="declinefeedbackstatus" class="form-control">
+                                    <option value="Your card/code was invalid">Your card/code was invalid</option>
+                                    <option value="The card/code was not clear"> The card/code was not clear  </option>
+                                    <option value="Your card/code needed more info"> Your card/code needed more info </option>
+                                    <option value="Multiple transaction was opened"> Multiple transaction was opened </option>
+                                    <option value="No image was uploaded">No image was uploaded</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- /////////////////////////////////////// -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
