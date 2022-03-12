@@ -141,7 +141,19 @@ class UserController extends Controller
     public function uploadId(Request $r)
     {
         $user = Auth::user();
-
+        if ($user->phone_verified_at == null)
+        {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please Verify your Phone Number'
+            ]);
+        }
+        if(Auth::user()->address_verified_at == null){
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please Verify your Address First'
+            ]);
+        }
         if ($user->verifications()->where(['type' => 'ID Card', 'status' => 'Waiting'])->exists()) {
             return response()->json([
                 'success' => false,
@@ -194,7 +206,13 @@ class UserController extends Controller
         }
 
         $user = Auth::user();
-
+        if ($user->phone_verified_at == null)
+        {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please Verify your Phone Number'
+            ]);
+        }
         if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
             return response()->json([
                 'success' => false,

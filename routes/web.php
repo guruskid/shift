@@ -514,6 +514,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant
     Route::post('/utility-transactions-requery/{tranx}', 'Admin\UtilityTransactions@requery')->name('admin.utility-requery');
 });
 
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountantManager']], function () {
+
+Route::any('/users', 'AdminController@users')->name('admin.users');
+Route::any('/users/search', 'AdminController@user_search')->name('admin.user-search');
+Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
+
+});
+
 /* Customer Happiness routes*/
 // Route::group([ 'prefix' => 'admin', 'middleware' =>['auth', 'customerHappiness']],function(){
 //     Route::get('/Overview', 'customerHappinessController@index')->name('customerHappiness.overview');

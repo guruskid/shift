@@ -52,12 +52,8 @@ class AuthController extends Controller
     }
 
 
-    public function register(Request $request, $refcode)
+    public function register(Request $request)
     {
-
-        if(isset($refcode)){
-            return $refcode;
-        }
 
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',

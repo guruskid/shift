@@ -215,7 +215,7 @@ import Event from "../../event.js";
                     cardPrice: this.price,
                     cardValue: this.quantities[this.selectedQuantity].value,
                     cardQuantity: this.cardQuantity,
-                    cardTotal: parseInt(this.price * this.cardQuantity),
+                    cardTotal: parseFloat(this.price * this.cardQuantity),
                 };
                 this.playSound();
                 this.trades.push(singleTrade);
@@ -233,7 +233,7 @@ import Event from "../../event.js";
             tradeTotal(){
                 let sum = 0;
                 $.each(this.trades, function (key, trade) {
-                    sum += parseInt(trade.cardTotal);
+                    sum += parseFloat(trade.cardTotal);
                 });
                 this.total = sum;
                 return sum;

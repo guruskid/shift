@@ -156,6 +156,7 @@ $not = $nots->last();
                             <div class="widget-content-wrapper">
                                 <div class="widget-content-left">
                                     <div class="btn-group">
+                                        @auth
                                         @if(Auth::user()->role == 444 OR Auth::user()->role == 449)
                                         <div class="language mt-2">
                                             <h4 class="text-light">改变语言
@@ -180,6 +181,7 @@ $not = $nots->last();
                                             {{-- ////////// --}}
                                         </div>
                                         @endif
+                                        @endauth
                                         @auth
                                         <notifications-component :notifications="{{$nots}}" :unread="{{0}} ">
                                         </notifications-component>
@@ -263,11 +265,20 @@ $not = $nots->last();
                                             @endauth
                                         </div>
                                     </div>
+<<<<<<< HEAD
                                     <div class="widget-content-left  ml-3 header-user-info">
                                         <div class="widget-heading">
                                             @auth
                                             {{Auth::user()->first_name." ".Auth::user()->last_name}}
                                             @if (empty(Auth::user()->first_name))
+=======
+                                </div>
+                                <div class="widget-content-left  ml-3 header-user-info">
+                                    <div class="widget-heading">
+                                        @auth
+                                        {{Auth::user()->first_name." ".Auth::user()->last_name}}
+                                        @if (empty(Auth::user()->first_name))
+>>>>>>> 796428c7d5fa11e82e97c07811c5293920b4d2d9
                                             {{ Auth::user()->email }}
                                             @endif
                                             @endauth
@@ -408,6 +419,14 @@ $not = $nots->last();
 
     </script>
 
+<script>
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+@auth
+
+@if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999)
     <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
@@ -443,7 +462,13 @@ $not = $nots->last();
         }, 2000);
 
     </script>
+<<<<<<< HEAD
     @endif
+=======
+@endif
+@endauth
+
+>>>>>>> 796428c7d5fa11e82e97c07811c5293920b4d2d9
 
 </body>
 
