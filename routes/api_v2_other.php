@@ -64,14 +64,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
 
 
-<<<<<<< HEAD
     
-=======
 
     Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified', 'admin', 'super' ]], function () {
         Route::get('/utility/airtime', 'UserController@deleteBank');
         Route::get('/read-not/{id}', 'UserController@readNot');
     });
->>>>>>> 8bff74a4528e62d1b90168aefc37acaecfd4be2f
 
 });
