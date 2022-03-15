@@ -74,6 +74,7 @@ class BtcWalletController extends Controller
             'success' => true,
             'send_fee' => $total_fees,
             'btc_to_usd' => $btc_rate,
+            'usd_to_ngn' => LiveRateController::usdNgn()
         ]);
     }
 
