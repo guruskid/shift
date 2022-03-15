@@ -182,7 +182,7 @@ class AuthController extends Controller
         if (Hash::check($r->old_password, Auth::user()->password) == false) {
             return response()->json([
                 'success' => false,
-                'message' => 'Your current password does not match with the password you provided. Please try again.',
+                'message' => 'Old password does not match with the password you provided. Please try again.',
             ]);
         }
 
@@ -199,6 +199,8 @@ class AuthController extends Controller
     public function verificationCodeEmail($email, $userId)
     {
         $otpCode = rand(1000, 9999);
+
+        
         VerificationCode::create([
             'user_id' => $userId,
             'verification_code' => $otpCode
