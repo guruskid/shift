@@ -522,8 +522,6 @@ class AdminController extends Controller
     public function transactions(Request $request)
     {
         $transactions = Transaction::with('user')->orderBy('updated_at', 'desc');
-        $tranx = Transaction::with('user')->orderBy('updated_at', 'desc');
-
         $segment = 'All';
 
         $tranx =  Transaction::with('user')->WhereHas('asset', function($q){
@@ -945,7 +943,9 @@ class AdminController extends Controller
     {
         $transaction = Transaction::find($id);
 
-        return view('admin.transaction', compact(['transaction']));
+        $cards = Card::all();
+
+        return view('admin.transaction', compact(['transaction','cards']));
     }
 
     public function deleteTransac($id)
