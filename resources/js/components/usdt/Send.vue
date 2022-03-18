@@ -4,20 +4,20 @@
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">
-                    <input type="number" step="any" @keyup="getRateUsd()" v-model="usd" required class="form-control" placeholder="0.00"
+                    <!-- <input type="number" step="any" @keyup="getRateUsd()" v-model="usd" required class="form-control" placeholder="0.00"
                         style="border: 0px;">
                     <div class="input-group-append">
                         <span class="input-group-text usd_bg_text pr-1">USD</span>
                         <span class="input-group-text usd_bg_text">
                             <img src="/svg/conversion-arrow.svg" alt="">
                         </span>
-                    </div>
+                    </div> -->
                     <input type="number" required step="any" @keyup="getRateAmt()" v-model="amt" placeholder="0" class="form-control"
                         style="border: 0px;border-right:0px;">
                     <div class="input-group-prepend">
                         <span class="input-group-text usd_bg_text">USDT</span>
                     </div>
-                </div>
+                </div> 
             </div>
             <div class="container mt-3m mt-lg-5">
                 <div class="row">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end ethtext">{{ fee }} TRX</span>
+                            <span class="d-block align-self-end ethtext">{{ fee }} USDT</span>
                             <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>

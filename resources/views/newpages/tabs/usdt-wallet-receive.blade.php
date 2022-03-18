@@ -3,9 +3,9 @@
         @csrf
         <div class="row">
             <div class="col-10 col-md-6 mt-md-5 mx-auto">
-                <span class="d-block mb-1" style="color: #000070;font-size: 16px;line-height: 22px;">Receiving wallet</span>
+                <span class="d-block mb-1" style="color: #000070;font-size: 16px;line-height: 22px;">My Receiving wallet</span>
                 <div class="py-3 px-2 text-center show_receiving_btc_address">
-                    My Tron wallet {{ Auth::user()->usdtWallet->address }}
+                    TRC20 USDT Wallet {{ Auth::user()->usdtWallet->address }}
                 </div>
             </div>
             <div class="col-10 mx-auto text-center mt-4">
