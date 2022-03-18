@@ -522,8 +522,6 @@ class AdminController extends Controller
     public function transactions(Request $request)
     {
         $transactions = Transaction::with('user')->orderBy('updated_at', 'desc');
-        $tranx = Transaction::with('user')->orderBy('updated_at', 'desc');
-
         $segment = 'All';
 
         $tranx =  Transaction::with('user')->WhereHas('asset', function($q){
