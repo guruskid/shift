@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CryptoHelperController;
 use App\NairaTransaction;
 use App\Notification;
 use App\Setting;
@@ -22,7 +23,14 @@ class UserController extends Controller
         $naira_wallet = Auth::user()->nairaWallet;
         $naira_wallet_transactions = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->latest()->with('transactionType')->get();
         $notification = Notification::where('user_id', 0)->latest()->first();
-        
+
+
+        $btc_wallet = CryptoHelperController::balance(1);
+        $tron_wallet = CryptoHelperController::balance(5);
+        $usdt_wallet = CryptoHelperController::balance(7);
+
+        $total_crypto_balance = $btc_wallet->usd ?? 0 + $tron_wallet->usd ?? 0 + $usdt_wallet->usd ?? 0;
+        $total_ngn_balance = $btc_wallet->ngn ?? 0 + $tron_wallet->ngn ?? 0 + $usdt_wallet->ngn ?? 0 + $naira_wallet->amount;
 
         return response()->json([
             'success' => true,
@@ -32,6 +40,8 @@ class UserController extends Controller
             'naira_wallet' => $naira_wallet,
             'naira_wallet_transactions' => $naira_wallet_transactions,
             'notification' => $notification,
+            'total_crypto_balance' => $total_crypto_balance,
+            'total_ngn_balance' => $total_ngn_balance,
         ]);
     }
 
