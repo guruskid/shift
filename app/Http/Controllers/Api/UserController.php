@@ -26,11 +26,11 @@ class UserController extends Controller
 
 
         $btc_wallet = CryptoHelperController::balance(1);
-        $tron_wallet = CryptoHelperController::balance(5);
-        $usdt_wallet = CryptoHelperController::balance(7);
+        // $tron_wallet = CryptoHelperController::balance(5);
+        // $usdt_wallet = CryptoHelperController::balance(7);
 
-        $total_crypto_balance = $btc_wallet->usd ?? 0 + $tron_wallet->usd ?? 0 + $usdt_wallet->usd ?? 0;
-        $total_ngn_balance = $btc_wallet->ngn ?? 0 + $tron_wallet->ngn ?? 0 + $usdt_wallet->ngn ?? 0 + $naira_wallet->amount;
+        $total_crypto_balance = $btc_wallet->usd; //?? 0 + $tron_wallet->usd ?? 0 + $usdt_wallet->usd ?? 0;
+        $total_ngn_balance = $btc_wallet->ngn ?? 0 + $naira_wallet->amount; // + $tron_wallet->ngn ?? 0 + $usdt_wallet->ngn ?? 0 ;
 
         return response()->json([
             'success' => true,
