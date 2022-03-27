@@ -367,8 +367,9 @@ class TradeNairaController extends Controller
         }
 
         $show_limit = true;
+        $type = '';
 
-        return view('admin.trade_naira.transactions', compact('transactions', 'show_limit'));
+        return view('admin.trade_naira.transactions', compact('transactions', 'type', 'show_limit'));
     }
 
     public function setLimits(Request $request)
