@@ -47,71 +47,68 @@
                             <i class="pe-7s-wallet icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Tron Settings <br>
-                        </div>
+                        <div>Tron Wallet Contracts </div>
                     </div>
                 </div>
             </div>
 
             <div class="row">
-
                 <div class="col-md-3">
-                    <div class="card mb-3 widget-content">
-                        <a href="#">
+                    <a href="#">
+                        <div class="card mb-3 widget-content ">
                             <div class="widget-content-wrapper ">
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
-                                        <form action="{{ route('admin.settings.update') }} " method="post">@csrf
-                                            <h5>Sell Charges (%)</h5>
-                                            <input type="hidden" name="name" value="tron_sell_charge">
-                                            <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('tron_sell_charge') }}" class="form-control mb-2">
-                                            <button class="btn btn-primary">Save</button>
-                                        </form>
+                                        <h5>Fee Wallets Balance</h5>
+                                        <span>{{number_format((float)$fees_wallet->balance, 8) }}TRX</span>
                                     </div>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
-
                 <div class="col-md-3">
-                    <div class="card mb-3 widget-content">
-                        <a href="#">
+                    <a href="#">
+                        <div class="card mb-3 widget-content ">
                             <div class="widget-content-wrapper ">
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
-                                        <form action="{{ route('admin.settings.update') }} " method="post">@csrf
-                                            <h5>Send Charges (TRON)</h5>
-                                            <input type="hidden" name="name" value="tron_send_charge">
-                                            <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('tron_send_charge') }}" class="form-control mb-2">
-                                            <button class="btn btn-primary">Save</button>
-                                        </form>
+                                        <h5>Available Addresses</h5>
+                                        <span>{{$addresses }}</span>
                                     </div>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
+            </div>
 
-                <div class="col-md-3">
-                    <div class="card mb-3 widget-content">
-                        <a href="#">
-                            <div class="widget-content-wrapper ">
-                                <div class="widget-content-left">
-                                    <div class="widget-heading">
-                                        <form action="{{ route('admin.settings.update') }} " method="post">@csrf
-                                            <h5>Fees Percentage (%)</h5>
-                                            <input type="hidden" name="name" value="trading_tron_per">
-                                            <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('trading_tron_per') }}" class="form-control mb-2">
-                                            <button class="btn btn-primary">Save</button>
-                                        </form>
-                                    </div>
+            <div class="row mb-5">
+                <div class="col-md-6 mb-5">
+                    <form action="{{ route('admin.tron.deploy-contract') }}" method="POST" class="form-inline mb-3">@csrf
+                        <select name="count" id="" class="form-control mr-2">
+                            <option value="2">2 (60TRX)</option>
+                            <option value="5">5 (110TRX)</option>
+                            <option value="10">10 (220TRX)</option>
+                            <option value="100">100 (700 TRX)</option>
+                            <option value="270">270 (2000 TRX)</option>
+                        </select>
+                        <button class="btn btn-primary ">Deploy Contract</button>
+                    </form>
+                    <div class="card card-body">
+                        <h5 class="mb-2">Pending Contracts</h5>
+                        <ul class="list-group">
+                            @foreach ($pending_transactions as $transaction)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ \Str::limit($transaction->hash, 30, '...') }}
+                                <div class="btn-group">
+                                    <a target="_blank" href="https://tronscan.org/#/transaction/{{ $transaction->hash }}"><button class="btn btn-info">Explorer</button></a>
+                                    <a href="{{ route('admin.tron.activate-contract', $transaction->id) }}"><button class="btn btn-primary">Activate</button></a>
+                                    {{-- <button class="btn btn-danger">Delete</button> --}}
                                 </div>
-                            </div>
-                        </a>
+                              </li>
+                            @endforeach
+                          </ul>
                     </div>
                 </div>
 
@@ -119,4 +116,5 @@
         </div>
     </div>
 </div>
+
 @endsection

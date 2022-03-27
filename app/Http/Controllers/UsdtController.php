@@ -16,25 +16,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class TronWalletController extends Controller
+class UsdtController extends Controller
 {
     public function create(Request $request)
     {
-        $request->validate([
-            'pin' => 'required|min:4|max:4',
-        ]);
-
-        if (!Hash::check($request->pin, Auth::user()->pin)) {
+        if (Auth::user()->usdtWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Incorrect wallet pin'
-            ]);
-        }
-
-        if (Auth::user()->tronWallet) {
-            return response()->json([
-                'success' => false,
-                'msg' => 'Tron wallet already exists for this account'
+                'msg' => 'USDT wallet already exists for this account'
             ]);
         }
 
@@ -45,7 +34,7 @@ class TronWalletController extends Controller
             ]);
         }
 
-        $contract = Contract::where(['currency_id' => 5, 'status' => 'pending', 'type' => 'address'])->first();
+        $contract = Contract::where(['currency_id' => 7, 'status' => 'pending', 'type' => 'address'])->first();
 
         if (!$contract) {
             return response()->json([
@@ -59,11 +48,11 @@ class TronWalletController extends Controller
 
         /* try { */
         $response = $client->request('POST', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
             'json' => [
                 "accounts" => [
                     [
-                        "currency" => "TRON",
+                        "currency" => "USDT_TRON",
                         "customer" => [
                             "accountingCurrency" => "USD",
                             "customerCountry" => "NG",
@@ -78,58 +67,58 @@ class TronWalletController extends Controller
         ]);
 
         $body = json_decode($response->getBody());
-        $tron_account_id = $body[0]->id;
+        $account_id = $body[0]->id;
 
-        $tron_address = $contract->hash;
+        $address = $contract->hash;
 
 
         //Link address to ledger account
-        $link_eth_url = env('TATUM_URL') . '/offchain/account/' . $tron_account_id . '/address/' . $tron_address;
+        $link_eth_url = env('TATUM_URL') . '/offchain/account/' . $account_id . '/address/' . $address;
         $res = $client->request('POST', $link_eth_url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
         ]);
 
         $contract->status = 'completed';
         $contract->save();
 
-        Auth::user()->tronWallet()->create([
-            'account_id' => $tron_account_id,
-            'currency_id' => 5,
+        Auth::user()->usdtWallet()->create([
+            'account_id' => $account_id,
+            'currency_id' => 7,
             'name' => Auth::user()->email,
-            'address' => $tron_address,
+            'address' => $address,
         ]);
 
         return response()->json([
             'success' => true,
-            'msg' => 'Tron wallet created successfully'
+            'msg' => 'USDT wallet created successfully'
         ]);
     }
 
     public function wallet(Request $r)
     {
 
-        if (!Auth::user()->tronWallet) {
+        if (!Auth::user()->usdtWallet) {
             return redirect()->route('user.portfolio')->with(['error' => 'Please a Tron wallet to continue']);
         }
 
-        $tron_rate = LiveRateController::tronRate();
-        $tron_wallet = Auth::user()->tronWallet;
+        $rate = LiveRateController::usdtRate();
+        $wallet = Auth::user()->usdtWallet;
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $url = env('TATUM_URL') . '/ledger/account/' . $wallet->account_id;
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
         ]);
 
         $accounts = json_decode($res->getBody());
 
-        $tron_wallet->balance = $accounts->balance->availableBalance;
-        $tron_wallet->usd = $tron_wallet->balance  * $tron_rate;
+        $wallet->balance = $accounts->balance->availableBalance;
+        $wallet->usd = $wallet->balance  * $rate;
 
         $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
         $get_txns = $client->request('POST', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
-            "json" => ["id" => Auth::user()->tronWallet->account_id]
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
+            "json" => ["id" => Auth::user()->usdtWallet->account_id]
         ]);
 
         $transactions = json_decode($get_txns->getBody());
@@ -144,14 +133,13 @@ class TronWalletController extends Controller
         }
 
 
-        return view('newpages.tron-wallet', compact('tron_wallet', 'transactions', 'tron_rate'));
+        return view('newpages.usdt-wallet', compact('wallet', 'transactions', 'rate'));
     }
 
-    // Api
     public function walletApi(Request $r)
     {
 
-        if (!Auth::user()->tronWallet) {
+        if (!Auth::user()->usdtWallet) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Please create a Tron wallet to continue'
@@ -159,26 +147,26 @@ class TronWalletController extends Controller
         }
 
 
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
-        $tron_rate = LiveRateController::tronRate();
-        $tron_wallet = Auth::user()->tronWallet;
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $rate = LiveRateController::usdtRate();
+        $wallet = Auth::user()->usdtWallet;
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $url = env('TATUM_URL') . '/ledger/account/' . $wallet->account_id;
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
         ]);
 
         $accounts = json_decode($res->getBody());
 
-        $tron_wallet->balance = $accounts->balance->availableBalance;
-        $tron_wallet->usd = $tron_wallet->balance  * $tron_rate;
-        $tron_wallet->ngn = $tron_wallet->usd * $sell_rate;
+        $wallet->balance = $accounts->balance->availableBalance;
+        $wallet->usd = $wallet->balance  * $rate;
+        $wallet->ngn = $wallet->usd * $sell_rate;
 
         $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
         $get_txns = $client->request('POST', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
-            "json" => ["id" => Auth::user()->tronWallet->account_id]
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
+            "json" => ["id" => Auth::user()->usdtWallet->account_id]
         ]);
 
         $transactions = json_decode($get_txns->getBody());
@@ -196,67 +184,67 @@ class TronWalletController extends Controller
             'success' => true,
             'date' => [
                 'sell_rate' => $sell_rate,
-                'tron_wallet' => $tron_wallet,
-                'tron_rate' => $tron_rate,
-                'transactions' =>$transactions
+                'wallet' => $wallet,
+                'rate' => $rate,
+                'transactions' => $transactions
             ]
         ]);
     }
 
+
     public function trade()
     {
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
-        $tron_usd = LiveRateController::tronRate();
-        $tron_wallet = Auth::user()->tronWallet;
-        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $amt_usd = LiveRateController::usdtRate();
+        $wallet = Auth::user()->usdtWallet;
+        $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
 
-        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
-        $tp = ($trading_per / 100) * $tron_usd;
+        $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value;
+        $tp = ($trading_per / 100) * $amt_usd;
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $url = env('TATUM_URL') . '/ledger/account/' . $wallet->account_id;
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
         ]);
 
         $accounts = json_decode($res->getBody());
 
-        $tron_wallet->balance = $accounts->balance->availableBalance;
-        $tron_wallet->usd = $tron_wallet->balance  * $tron_usd;
+        $wallet->balance = $accounts->balance->availableBalance;
+        $wallet->usd = $wallet->balance  * $amt_usd;
 
-        $hd_wallet = HdWallet::where('currency_id', 5)->first();
+        $hd_wallet = HdWallet::where('currency_id', 7)->first();
 
-        return view('newpages.trade_tron', compact('sell_rate', 'tron_wallet', 'hd_wallet', 'tron_usd', 'charge'));
+        return view('newpages.trade_usdt', compact('sell_rate', 'wallet', 'hd_wallet', 'amt_usd', 'charge'));
     }
 
-    // Api
     public function tradeApi()
     {
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
-        $tron_usd = LiveRateController::tronRate();
-        $tron_wallet = Auth::user()->tronWallet;
-        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $tron_usd = LiveRateController::usdtRate();
+        $wallet = Auth::user()->usdtWallet;
+        $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
 
-        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
+        $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value;
         $tp = ($trading_per / 100) * $tron_usd;
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/' . $tron_wallet->account_id;
+        $url = env('TATUM_URL') . '/ledger/account/' . $wallet->account_id;
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
         ]);
 
         $accounts = json_decode($res->getBody());
 
-        $tron_wallet->balance = $accounts->balance->availableBalance;
-        $tron_wallet->usd = $tron_wallet->balance  * $tron_usd;
-        $tron_wallet->ngn = $tron_wallet->usd * $sell_rate;
+        $wallet->balance = $accounts->balance->availableBalance;
+        $wallet->usd = $wallet->balance  * $tron_usd;
+        $wallet->ngn = $wallet->usd * $sell_rate;
 
         return response()->json([
             'success' => true,
             'data' => [
                 'sell_rate' => $sell_rate,
-                'tron_wallet' => $tron_wallet,
+                'wallet' => $wallet,
                 'tron_usd' => $tron_usd,
                 'charge' => $charge
             ]
@@ -265,9 +253,9 @@ class TronWalletController extends Controller
 
     public function fees($address, $amount)
     {
-        $fees = 15;
+        $fees = 1;
 
-        $charge = Setting::where('name', 'tron_send_charge')->first()->value;
+        $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
 
         return response()->json([
             'success' => true,
@@ -289,26 +277,26 @@ class TronWalletController extends Controller
             ], 401);
         }
 
-        if (!Auth::user()->tronWallet) {
+        if (!Auth::user()->usdtWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please create a Tron wallet to continue'
+                'msg' => 'Please create a Tether wallet to continue'
             ]);
         }
 
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->tronWallet->account_id;
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->usdtWallet->account_id;
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
         ]);
 
         $accounts = json_decode($res->getBody());
 
-        $user_wallet = Auth::user()->tronWallet;
+        $user_wallet = Auth::user()->usdtWallet;
         $user_wallet->balance = $accounts->balance->availableBalance;
 
-        $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
+        $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
 
         if ($request->amount > $user_wallet->balance) {
             return response()->json([
@@ -318,7 +306,7 @@ class TronWalletController extends Controller
         }
 
         $blockchain_fee = 100;
-        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
+        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $blockchain_fee) {
             return response()->json([
                 'success' => false,
@@ -326,27 +314,27 @@ class TronWalletController extends Controller
             ]);
         }
 
-        $fees_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
-        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
-        $service_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_service'])->first();
+        $fees_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_fees'])->first();
+        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_charge'])->first();
+        $service_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_service'])->first();
 
         // percentage deduction in price
-        $trading_per = Setting::where('name', 'trading_tron_per')->first()->value;
+        $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value;
         $service_fee = ($trading_per / 100) * $request->amount;
 
         //Get fees for the txn on the chain
 
 
         //percentage charge
-        $charge = Setting::where('name', 'tron_sell_charge')->first()->value;
+        $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
         $charge = ($charge / 100) * $request->amount;
 
         //Current eth price
-        $tron_usd = LiveRateController::tronRate();
-        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $amt_usd = LiveRateController::usdtRate();
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
 
         $total = $request->amount - $charge - $service_fee;
-        $usd = $request->amount * $tron_usd;
+        $usd = $request->amount * $amt_usd;
         $ngn = $usd * $usd_ngn;
 
         if ($total <= 0) {
@@ -361,15 +349,15 @@ class TronWalletController extends Controller
         //Store Withdrawal
         $url = env('TATUM_URL') . '/offchain/withdrawal';
         $store = $client->request('POST', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
             'json' =>  [
-                "senderAccountId" => Auth::user()->tronWallet->account_id,
+                "senderAccountId" => Auth::user()->usdtWallet->account_id,
                 "address" => $hd_wallet->address,
                 "amount" => number_format((float) $request->amount, 8),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
-                "senderNote" => "Selling Tron 1"
+                "senderNote" => "Selling Tether 1"
             ]
         ]);
 
@@ -377,54 +365,54 @@ class TronWalletController extends Controller
         if ($store->getStatusCode() != 200) {
             return response()->json([
                 'success' => false,
-                'msg' => 'An error occured while withdrawing'
+                'msg' => 'An error occured while performing operation'
             ]);
         }
 
         try {
             $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
             $send = $client->request('POST', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
                 'json' =>  [
                     "chain" => "TRON",
-                    "custodialAddress" => Auth::user()->tronWallet->address,
-                    "contractType" => [3, 3, 3],
+                    "custodialAddress" => Auth::user()->usdtWallet->address,
+                    "contractType" => [0, 0, 0],
                     "recipient" => [$hd_wallet->address, $service_wallet->address, $charge_wallet->address],
-                    "amount" => [number_format((float) $total, 4), number_format((float) $service_fee, 4), number_format((float) $charge, 4)],
+                    "amount" => [number_format((float) $total, 6), number_format((float) $service_fee, 6), number_format((float) $charge, 6)],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0", "0", "0"],
-                    "tokenAddress" => ["0", "0", "0"],
-                    "feeLimit" => 50,
+                    "tokenAddress" => ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"],
+                    "feeLimit" => $blockchain_fee,
                     "from" => $fees_wallet->address,
                 ]
             ]);
 
             $send_res = json_decode($send->getBody());
 
-            if (Arr::exists($send_res, 'signatureId')) {
+            if (isset($send_res->signatureId)) {
             } else {
                 //Cancel TXN
                 $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
-                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
                 ]);
                 return $send_res;
             }
         } catch (\Exception $e) {
             report($e);
             $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
             ]);
 
             return response()->json(['success' => false, 'msg' => 'An error occured, please try again']);
         }
 
         $t = Auth::user()->transactions()->create([
-            'card_id' => 141,
+            'card_id' => 143,
             'type' => 'sell',
             'amount' => $usd,
             'amount_paid' => $ngn,
             'quantity' => number_format((float) $request->amount, 8),
-            'card_price' => $tron_usd,
+            'card_price' => $amt_usd,
             'status' => 'success',
             'uid' => uniqid(),
             'user_email' => Auth::user()->email,
@@ -481,10 +469,10 @@ class TronWalletController extends Controller
             ], 401);
         }
 
-        if (!Auth::user()->tronWallet) {
+        if (!Auth::user()->usdtWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please create a Tron wallet to continue'
+                'msg' => 'Please create a USDT wallet to continue'
             ]);
         }
 
@@ -497,19 +485,19 @@ class TronWalletController extends Controller
         }
 
         $client = new Client();
-        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->tronWallet->account_id;
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->usdtWallet->account_id;
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
         ]);
 
         $accounts = json_decode($res->getBody());
 
-        $user_wallet = Auth::user()->tronWallet;
+        $user_wallet = Auth::user()->usdtWallet;
         $user_wallet->balance = $accounts->balance->availableBalance;
 
-        $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
-        $fees = 15;
-        $charge = Setting::where('name', 'tron_send_charge')->first()->value;
+        $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
+        $fees = 1;
+        $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
 
 
         if (($request->amount + $fees + $charge) > $user_wallet->balance) {
@@ -519,21 +507,12 @@ class TronWalletController extends Controller
             ]);
         }
 
-        // $fee_limit = 200;
-        // $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
-        // if ($fee_wallet_balance < $fee_limit) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'msg' => 'Service not available, please try again later'
-        //     ]);
-        // }
+        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_charge'])->first();
+        $fee_wallet = FeeWallet::where(['crypto_currency_id' => 7, 'name' => 'usdt_fees'])->first();
 
-        $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
-        $fee_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
-
-        $blockchain_fee = 100;
-        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
-        if ($fee_wallet_balance < $blockchain_fee) {
+        $fee_limit = 100;
+        $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
+        if ($fee_wallet_balance < $fee_limit) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Service not available, please try again later'
@@ -554,15 +533,15 @@ class TronWalletController extends Controller
         //Store Withdrawal
         $url = env('TATUM_URL') . '/offchain/withdrawal';
         $store = $client->request('POST', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')],
+            'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
             'json' =>  [
-                "senderAccountId" => Auth::user()->tronWallet->account_id,
+                "senderAccountId" => Auth::user()->usdtWallet->account_id,
                 "address" => $request->address,
                 "amount" => number_format((float) $request->amount + $fees + $charge, 8),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
-                "senderNote" => "Sending tron"
+                "senderNote" => "Sending usdt"
             ]
         ]);
 
@@ -577,27 +556,26 @@ class TronWalletController extends Controller
         try {
             $url = env('TATUM_URL') . '/blockchain/sc/custodial/transfer/batch';
             $send = $client->request('POST', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
                 'json' =>  [
                     "chain" => "TRON",
-                    "custodialAddress" => Auth::user()->tronWallet->address,
-                    "contractType" => [3, 3, 3],
-                    "recipient" => [$request->address,  $charge_wallet->address, $fee_wallet],
-                    "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4), number_format((float) $fees, 4)],
+                    "custodialAddress" => Auth::user()->usdtWallet->address,
+                    "contractType" => [0, 0],
+                    "recipient" => [$request->address,  $charge_wallet->address],
+                    "amount" => [number_format((float) $total, 4), number_format((float) $charge + $fees, 4)],
                     "signatureId" => $hd_wallet->private_key,
-                    "tokenId" => ["0",  "0"],
-                    "tokenAddress" => ["0",  "0"],
-                    "feeLimit" => $blockchain_fee,
+                    "tokenAddress" => ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",  "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"],
+                    "tokenId" => ['0', '0'],
+                    "feeLimit" => $fee_limit,
                     "from" => $fee_wallet->address,
                 ]
             ]);
 
             $send_res = json_decode($send->getBody());
-
-            if (!Arr::exists($send_res, 'signatureId')) {
+            if (!isset($send_res->signatureId)) {
                 //Cancel TXN
                 $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
-                    'headers' => ['x-api-key' => env('TATUM_KEY')],
+                    'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
                 ]);
                 return $send_res;
             }
@@ -605,12 +583,12 @@ class TronWalletController extends Controller
         } catch (\Exception $e) {
             report($e);
             $cancel = $client->request('delete', env('TATUM_URL') . '/offchain/withdrawal/' . $store_res->id, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
             ]);
 
             return response()->json(['success' => false, 'msg' => 'An error occured, please try again']);
         }
 
-        return response()->json(['success' => true, 'msg' => 'Tron sent successfully' ]);
+        return response()->json(['success' => true, 'msg' => 'USDT sent successfully' ]);
     }
 }

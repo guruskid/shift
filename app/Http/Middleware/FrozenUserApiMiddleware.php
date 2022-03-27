@@ -20,10 +20,10 @@ class FrozenUserApiMiddleware
 
         if($user->role == 1){
             if ($user->status != 'active') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Your account has been frozen, and hence you cannot Trade. To Trade reach out to our Customer Care Representative to Activate your Account. Reload the page when your account has been activated.',
-                ], 401);
+                // return response()->json([
+                //     'success' => false,
+                //     'message' => 'Your account has been frozen, and hence you cannot Trade. To Trade reach out to our Customer Care Representative to Activate your Account. Reload the page when your account has been activated.',
+                // ], 401);
             }
             return $next($request);
         }

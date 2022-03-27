@@ -49,12 +49,12 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text">Tron</span>
+                                        <span class="h3 giftcard-text">Tether</span>
                                     </div>
                                     <div class="widget-n text-center" style="justify-content: center;">
-                                        <span class="d-block" style="h6 walletbalance-text">Tron Wallet Balance</span>
+                                        <span class="d-block" style="h6 walletbalance-text">Tether Wallet Balance</span>
                                         <span
-                                            class="d-block price">{{ Auth::user()->tronWallet ? number_format((float)$tron_wallet->balance, 3) : 'No Tron wallet' }}TRX</span>
+                                            class="d-block price">{{ Auth::user()->usdtWallet ? number_format((float)$wallet->balance, 3) : 'No USDT wallet' }}USDT</span>
                                     </div>
                                 </div>
                             </div>
@@ -63,10 +63,10 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading d-flex justify-content-between mt-2">
                                     <a href="{{ route('user.tron-wallet') }}">
-                                        <button class="btn btn-primary">Send Tron</button>
+                                        <button class="btn btn-primary">Send Tether</button>
                                     </a>
                                     <a href="{{ route('user.tron-wallet') }}">
-                                        <button class="btn btn-primary">Receive Tron</button>
+                                        <button class="btn btn-primary">Receive Tether</button>
                                     </a>
                                 </div>
                             </div>
@@ -79,14 +79,14 @@
                                 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-2"
                                     style="border-bottom: 1px solid #C9CED6;">
                                     <div class="list-cards-title primary-color" style="line-height: 40px;">
-                                        <span class="ml-1" style="color: rgba(0, 0, 112, 0.75);">Buy/Sell Tron</span>
+                                        <span class="ml-1" style="color: rgba(0, 0, 112, 0.75);">Buy/Sell Tether</span>
                                     </div>
                                 </div>
                                 @foreach ($errors->all() as $err)
                                 <p class="text-danger text-center">{{ $err }}</p>
                                 @endforeach
-                                @if (!Auth::user()->tronWallet)
-                                <p class="text-danger text-center">Please create a Tron wallet before initiating a
+                                @if (!Auth::user()->usdtWallet)
+                                <p class="text-danger text-center">Please create a Tether wallet before initiating a
                                     trade. <a href="{{ route('user.portfolio') }}">Create wallet</a> </p>
                                 @endif
 
@@ -110,7 +110,7 @@
 
                                         </div>
 
-                                        <tron-sell-component :rate="{{ $sell_rate }}" :trx_usd="{{ $tron_usd }}"  :charge={{ $charge }} :hd="'{{ $hd_wallet }}'" ></tron-sell-component>
+                                        <usdt-sell-component :rate="{{ $sell_rate }}" :amt_usd="{{ $amt_usd }}"  :charge={{ $charge }} :hd="'{{ $hd_wallet }}'" ></usdt-sell-component>
 
                                     </div>
                                 </div>
