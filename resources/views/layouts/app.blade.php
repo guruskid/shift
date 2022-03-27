@@ -113,9 +113,9 @@ $not = $nots->last();
 </head>
 
 <body>
-    <div id="app">
+2    <div id="app" >
         <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header closed-sidebar">
-            <div class="app-header header-shadow header-text-light bg-night-sky ">
+            <div class="app-header header-shadow header-text-light bg-night-sky " >
                 <div class="app-header__logo">
                     <a href="https://dantownms.com">
                         <div class="logo-src"></div>
@@ -143,68 +143,60 @@ $not = $nots->last();
                 <div class="app-header__menu">
                     <div class="btn-group">
                         @auth
-                        <notifications-component :notifications="{{$nots}}" :unread="{{0}} "></notifications-component>
+                        <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
                         @endauth
                     </div>
                 </div>
-            </div>
-            <div class="app-header__content">
-
-                <div class="app-header-right">
-                    <div class="header-btn-lg pr-0">
-                        <div class="widget-content p-0">
-                            <div class="widget-content-wrapper">
-                                <div class="widget-content-left">
-                                    <div class="btn-group">
-                                        @auth
-                                        @if(Auth::user()->role == 444 OR Auth::user()->role == 449)
-                                        <div class="language mt-2">
-                                            <h4 class="text-light">改变语言
-                                            </h4>
-                                        </div>
-                                        <div class="m-2">
-                                            {{-- /////// Chinese Dashboard ///////// --}}
-
-                                            <div class="mr-5" id="google_translate_element"></div>
-                                            <script type="text/javascript">
-                                                function googleTranslateElementInit() {
-                                                    new google.translate.TranslateElement({
-                                                        pageLanguage: 'en'
-                                                    }, 'google_translate_element');
-                                                }
-
-                                            </script>
-                                            <script type="text/javascript"
-                                                src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-                                            </script>
-
-                                            {{-- ////////// --}}
-                                        </div>
-                                        @endif
-                                        @endauth
-                                        @auth
-                                        <notifications-component :notifications="{{$nots}}" :unread="{{0}} ">
-                                        </notifications-component>
-                                        @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR
-                                        Auth::user()->role == 444 OR Auth::user()->role == 449 )
-                                        <div class="dropdown">
-                                            <a data-toggle="dropdown" class="p-0 btn">
-                                                <img width="42" class="rounded-circle"
-                                                    src="{{asset('storage/avatar/'.Auth::user()->dp)}} " alt="">
-                                                <i class="fa fa-angle-down ml-2 opacity-8"></i>
-                                            </a>
-                                            <div tabindex="-1" role="menu" aria-hidden="true"
-                                                class="dropdown-menu dropdown-menu-left">
-                                                <a href=" {{route('admin.dashboard')}} "><button type="button"
-                                                        tabindex="0" class="dropdown-item">Dashboard</button></a>
-                                                <a href=" {{route('admin.transactions')}} "><button type="button"
-                                                        tabindex="0" class="dropdown-item">All
-                                                        transactions</button></a>
-                                                @if(Auth::user()->role != 444)
-                                                    <a href=" {{route('admin.rates')}} "><button type="button" tabindex="0"
-                                                        class="dropdown-item">Rates</button></a>
-                                                @endif
-                                                <div tabindex="-1" class="dropdown-divider"></div>
+                <div class="app-header__content" >
+    
+                    <div class="app-header-right">
+                        <div class="header-btn-lg pr-0">
+                            <div class="widget-content p-0">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="btn-group">
+                                            @auth
+                                            @if(Auth::user()->role == 444 OR Auth::user()->role == 449)
+                                            <div class="language mt-2">
+                                                <h4 class="text-light">改变语言
+                                                </h4>
+                                            </div>
+                                            <div class="m-2">
+                                                {{-- /////// Chinese Dashboard ///////// --}}
+    
+                                                    <div class="mr-5" id="google_translate_element"></div>
+                                                    <script type="text/javascript">
+                                                    function googleTranslateElementInit() {
+                                                    new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+                                                    }
+                                                    </script>
+                                                    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+                                                {{-- ////////// --}}
+                                            </div>
+                                            @endif
+                                            @endauth
+                                            @auth
+                                            <notifications-component :notifications = "{{$nots}}" :unread = "{{0}} " ></notifications-component>
+                                            @if (Auth::user()->role == 999 OR Auth::user()->role == 888 OR Auth::user()->role == 444 OR Auth::user()->role == 449 )
+                                            <div class="dropdown">
+                                                <a data-toggle="dropdown" class="p-0 btn">
+                                                    <img width="42" class="rounded-circle"
+                                                        src="{{asset('storage/avatar/'.Auth::user()->dp)}} " alt="">
+                                                    <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                                                </a>
+                                                <div tabindex="-1" role="menu" aria-hidden="true"
+                                                    class="dropdown-menu dropdown-menu-left">
+                                                    <a href=" {{route('admin.dashboard')}} "><button type="button"
+                                                            tabindex="0" class="dropdown-item">Dashboard</button></a>
+                                                    <a href=" {{route('admin.transactions')}} "><button type="button"
+                                                            tabindex="0" class="dropdown-item">All
+                                                            transactions</button></a>
+                                                    @if(Auth::user()->role != 444)
+                                                        <a href=" {{route('admin.rates')}} "><button type="button" tabindex="0"
+                                                            class="dropdown-item">Rates</button></a>
+                                                    @endif
+                                                    <div tabindex="-1" class="dropdown-divider"></div>
                                                 <a href="#"
                                                     onclick="event.preventDefault(); document.getElementById('logout-form2').submit();">
                                                     <button type="button" tabindex="0"
@@ -240,13 +232,14 @@ $not = $nots->last();
                                                 </a>
                                                 <div tabindex="-1" role="menu" aria-hidden="true"
                                                     class="dropdown-menu dropdown-menu-left">
-                                                    <a href=" {{route('user.profile')}} "><button type="button"
-                                                            tabindex="0" class="dropdown-item">My Account</button></a>
+                                                    <a href=" {{route('user.profile')}} "><button type="button" tabindex="0"
+                                                            class="dropdown-item">My Account</button></a>
                                                     <a href=" {{route('user.transactions')}} "><button type="button"
                                                             tabindex="0" class="dropdown-item">My
                                                             transactions</button></a>
-
+    
                                                     <a href=" {{route('user.assets')}} "><button type="button"
+    
                                                             tabindex="0" class="dropdown-item">Trade</button></a>
                                                     <div tabindex="-1" class="dropdown-divider"></div>
                                                     <a href="#"
@@ -261,17 +254,16 @@ $not = $nots->last();
                                                 </div>
                                             </div>
                                             @endif
-
+    
                                             @endauth
                                         </div>
                                     </div>
-                                </div>
-                                <div class="widget-content-left  ml-3 header-user-info">
-                                    <div class="widget-heading">
-                                        @auth
-                                        {{Auth::user()->first_name." ".Auth::user()->last_name}}
-                                        @if (empty(Auth::user()->first_name))
-                                            {{ Auth::user()->email }}
+                                    <div class="widget-content-left  ml-3 header-user-info">
+                                        <div class="widget-heading">
+                                            @auth
+                                            {{Auth::user()->first_name." ".Auth::user()->last_name}}
+                                            @if (empty(Auth::user()->first_name))
+                                                {{ Auth::user()->email }}
                                             @endif
                                             @endauth
                                         </div>
@@ -279,33 +271,33 @@ $not = $nots->last();
                                             @auth
                                             @switch(Auth::user()->role)
                                             @case(999)
-                                            Super Admin
-                                            @break
+                                                Super Admin
+                                                @break
                                             @case(889)
-                                            Senior Accountant
-                                            @break
-                                            @case(777)
-                                            Junior Accountant
-                                            @break
-                                            @case(888)
-                                            Sales Rep.
-                                            @break
-                                            @case(555)
-                                            Customer Happiness
-                                            @break
-                                            @case(666)
-                                            Manager
-                                            @break
-                                            @case(444)
-                                            Chinese Operator
-                                            @break
-                                            @case(449)
-                                            Chinese Admin
-                                            @break
+                                                Senior Accountant
+                                                @break
+                                                @case(777)
+                                                Junior Accountant
+                                                @break
+                                                @case(888)
+                                                Sales Rep.
+                                                @break
+                                                @case(555)
+                                                Customer Happiness
+                                                @break
+                                                @case(666)
+                                                Manager
+                                                @break
+                                                @case(444)
+                                                Chinese Operator
+                                                @break
+                                                @case(449)
+                                                Chinese Admin
+                                                @break
                                             @default
                                             Hi! there
-
-                                            @endswitch
+    
+                                        @endswitch
                                             @endauth
                                         </div>
                                     </div>
@@ -314,12 +306,12 @@ $not = $nots->last();
                         </div>
                     </div>
                 </div>
-
-                <div id="notifications"></div>
-
-                @yield('content')
-
             </div>
+    
+            <div id="notifications"></div>
+    
+                @yield('content')
+    
         </div>
     </div>
     <script src="/js/app.js?v=1"></script>
