@@ -166,7 +166,7 @@
 
                                 {{-- USDT Wallet --}}
                                 @if (!Auth::user()->usdtWallet)
-                                <usdt-create-component></usdt-create-component>
+                                {{-- <usdt-create-component></usdt-create-component> --}}
                                 @else
                                 <a href="{{ route('user.usdt-wallet') }}">
                                     <div class="row">
@@ -190,9 +190,6 @@
                                     </div>
                                 </a>
                                 @endif
-
-                               
-
                             </div>
                         </div>
                     </div>
