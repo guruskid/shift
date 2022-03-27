@@ -47,7 +47,7 @@
                             <i class="pe-7s-wallet icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Tron Wallet <br>
+                        <div>TRC20 USDT Wallet <br>
                             <a class="btn btn-primary" href="{{ route('admin.tether.settings') }}">Settings</a>
                             <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 7) }}">Summary</a>
                             <a class="btn btn-secondary" href="{{ route('admin.tether.contracts') }}">Smart Contracts
