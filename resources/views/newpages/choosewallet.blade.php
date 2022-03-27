@@ -193,7 +193,7 @@
 
                                 {{-- Tron Wallet --}}
                                 @if (!Auth::user()->tronWallet)
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
                                         style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
                                         <div class="d-flex align-items-center">
@@ -207,7 +207,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 @else
                                 <a href="{{ route('user.tron-wallet') }}">
                                     <div class="row">
