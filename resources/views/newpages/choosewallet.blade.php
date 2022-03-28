@@ -193,7 +193,8 @@
 
                                 {{-- Tron Wallet --}}
                                 @if (!Auth::user()->tronWallet)
-                                {{-- <div class="row">
+                                @if (in_array(Auth::user()->email, ['sheanwinston@gmail.com', 'ibife1866@gmail.com', 'igwegoodnews002@gmail.com', 'chimenechinah11@gmail.com' ]))
+                                <div class="row">
                                     <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
                                         style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
                                         <div class="d-flex align-items-center">
@@ -207,7 +208,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div>
+                                @endif
                                 @else
                                 <a href="{{ route('user.tron-wallet') }}">
                                     <div class="row">
