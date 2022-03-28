@@ -4,20 +4,20 @@
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">
-                    <input type="number" step="any" @keyup="getRateUsd()" v-model="usd" required class="form-control" placeholder="0.00"
+                    <!-- <input type="number" step="any" @keyup="getRateUsd()" v-model="usd" required class="form-control" placeholder="0.00"
                         style="border: 0px;">
                     <div class="input-group-append">
                         <span class="input-group-text usd_bg_text pr-1">USD</span>
                         <span class="input-group-text usd_bg_text">
                             <img src="/svg/conversion-arrow.svg" alt="">
                         </span>
-                    </div>
-                    <input type="number" required step="any" @keyup="getRateTrx()" v-model="trx" placeholder="0" class="form-control"
+                    </div> -->
+                    <input type="number" required step="any" @keyup="getRateAmt()" v-model="amt" placeholder="0" class="form-control"
                         style="border: 0px;border-right:0px;">
                     <div class="input-group-prepend">
-                        <span class="input-group-text usd_bg_text">TRX</span>
+                        <span class="input-group-text usd_bg_text">USDT</span>
                     </div>
-                </div>
+                </div> 
             </div>
             <div class="container mt-3m mt-lg-5">
                 <div class="row">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-6 col-md-4 mr-md-auto">
                         <div class="d-flex flex-column mx-auto networkfee_container">
-                            <span class="d-block align-self-end ethtext">{{ fee }} TRX</span>
+                            <span class="d-block align-self-end ethtext">{{ fee }} USDT</span>
                             <span class="d-block align-self-end customfee">Transaction Fee</span>
                         </div>
                     </div>
@@ -70,12 +70,12 @@
 
 <script>
     export default {
-        props: ['usd_trx'],
+        props: ['usd_amt'],
 
         data() {
             return {
-                trxToUsd : this.usd_trx,
-                trx: '',
+                amtToUsd : this.usd_amt,
+                amt: '',
                 usd: '',
                 address: '',
                 pin: '',
@@ -91,23 +91,23 @@
         methods: {
             //When USD field is updated
             getRateUsd() {
-                this.trx = this.usd / this.trxToUsd;
+                this.amt = this.usd / this.amtToUsd;
                 this.getFees();
             },
 
             /* When eth is updated */
-            getRateTrx(){
-                this.usd = this.trxToUsd * this.trx
+            getRateAmt(){
+                this.usd = this.amtToUsd * this.amt
                 this.getFees();
             },
 
             //Get transfer fees
             getFees(){
-                if(this.trx <= 0 || this.address == '' ){
+                if(this.amt <= 0 || this.address == '' ){
                     return false;
                 }
                 this.loading = true;
-                axios.get(`/user/tron/fees/${this.address}/${this.trx}`)
+                axios.get(`/user/usdt/fees/${this.address}/${this.amt}`)
                 .then((res) =>{
                     let x = parseFloat(res.data.fee);
                     this.fee = x.toFixed(5);
@@ -118,14 +118,14 @@
             },
 
             send(){
-                if (this.trx <= 0) {
-                    swal('Oops', 'TRX amount should be greater than 0', 'error');
+                if (this.amt <= 0) {
+                    swal('Oops', 'USDT amount should be greater than 0', 'error');
                     return false;
                 }
 
                 this.loading = true;
-                axios.post('/user/tron/send', {
-                    "amount" : this.trx,
+                axios.post('/user/usdt/send', {
+                    "amount" : this.amt,
                     "address" : this.address,
                     "pin" : this.pin,
                     "fees" : this.fee
@@ -134,7 +134,7 @@
                     console.log(res)
                     if (res.data.success) {
                         swal('Great!!', 'Tron sent successfully', 'success');
-                        window.location = '/user/tron/wallet';
+                        window.location = '/user/usdt/wallet';
                     } else {
                         swal('oops!!', res.data.msg, 'error');
                     }

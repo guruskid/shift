@@ -76,9 +76,10 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
         Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
     });
 
-    //Eth
+    //sending
     Route::POST('/ethereum/send', 'EthWalletController@send')->name('admin.eth.send');
     Route::POST('/tron/send', 'TronController@send')->name('admin.tron.send');
+    Route::POST('/usdt/send', 'UsdtController@send')->name('admin.usdt.send');
 });
 
 
@@ -110,7 +111,21 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::prefix('tron')->group(function () {
         Route::get('/', 'TronController@index')->name('admin.tron');
         Route::get('/settings', 'TronController@settings')->name('admin.tron.settings');
-        Route::post('/update-rate', 'TronController@updateRate')->name('admin.eth.update-rate');
+        // Route::post('/update-rate', 'TronController@updateRate')->name('admin.eth.update-rate');
+
+        Route::get('/smart-contracts', 'TronController@contracts')->name('admin.tron.contracts');
+        Route::post('/deploy-contract', 'TronController@deployContract')->name('admin.tron.deploy-contract');
+        Route::get('/activate-contract/{id}', 'TronController@activate')->name('admin.tron.activate-contract');
+    });
+
+    Route::prefix('tether')->group(function () {
+        Route::get('/', 'UsdtController@index')->name('admin.tether');
+        Route::get('/settings', 'UsdtController@settings')->name('admin.tether.settings');
+        Route::post('/update-rate', 'UsdtController@updateRate')->name('admin.tether.update-rate');
+
+        Route::get('/smart-contracts', 'UsdtController@contracts')->name('admin.tether.contracts');
+        Route::post('/deploy-contract', 'UsdtController@deployContract')->name('admin.tether.deploy-contract');
+        Route::get('/activate-contract/{id}', 'UsdtController@activate')->name('admin.tether.activate-contract');
     });
 
     //Trade Naira

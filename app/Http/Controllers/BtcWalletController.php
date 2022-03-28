@@ -136,26 +136,16 @@ class BtcWalletController extends Controller
 
     public function getBitcoinNgn()
     {
+        return false;
 
         $rates = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         $client = new Client();
-        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        // $res = json_decode($res->getBody());
-        // $btc_rate = $res->value;
-
-        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        // $tp = ($trading_per / 100) * $btc_rate;
-        // $btc_rate -= $tp;
 
         $btc_rate = LiveRateController::btcRate();
 
         $btc_wallet_bal = Auth::user()->bitcoinWallet->balance ?? 0;
         $btc_usd = $btc_wallet_bal  * $btc_rate;
-
-        // $sell =  CardCurrency::where(['card_id' => 102, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
 
         $btc_ngn = $btc_usd * $rates;
 
@@ -184,14 +174,6 @@ class BtcWalletController extends Controller
 
 
         $client = new Client();
-        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        // $res = json_decode($res->getBody());
-        // $btc_rate = $res->value;
-
-        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        // $tp = ($trading_per / 100) * $btc_rate;
-        // $btc_rate -= $tp;
         $btc_rate = LiveRateController::btcRate();
 
         $client = new Client();

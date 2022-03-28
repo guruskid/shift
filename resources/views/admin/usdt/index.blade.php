@@ -47,10 +47,10 @@
                             <i class="pe-7s-wallet icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Tron Wallet <br>
-                            <a class="btn btn-primary" href="{{ route('admin.tron.settings') }}">Settings</a>
-                            <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 5) }}">Summary</a>
-                            <a class="btn btn-secondary" href="{{ route('admin.tron.contracts') }}">Smart Contracts
+                        <div>TRC20 USDT Wallet <br>
+                            <a class="btn btn-primary" href="{{ route('admin.tether.settings') }}">Settings</a>
+                            <a class="btn btn-warning" href="{{ route('admin.crypto-summary', 7) }}">Summary</a>
+                            <a class="btn btn-secondary" href="{{ route('admin.tether.contracts') }}">Smart Contracts
                                 ({{ $addresses }})</a>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>HD Wallets Balance</h5>
-                                        <span>{{number_format((float)$hd_wallet->balance, 4) }}TRX</span>
+                                        <span>{{number_format((float)$hd_wallet->balance, 4) }}USDT</span>
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +79,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>Charges</h5>
-                                        <span>{{number_format((float)$charges_wallet->balance, 4) }}TRX</span>
+                                        <span>{{number_format((float)$charges_wallet->balance, 4) }}USDT</span>
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <h5>Service fee</h5>
-                                        <span>{{number_format((float)$service_wallet->balance, 4) }}TRX</span>
+                                        <span>{{number_format((float)$service_wallet->balance, 4) }}USDT</span>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
                         <p class="text-danger text-center">{{ $err }}</p>
                         @endforeach
                         <h5>Send</h5>
-                        <form action="{{ route('admin.tron.send') }}" method="post"> @csrf
+                        <form action="{{ route('admin.usdt.send') }}" method="post"> @csrf
                             <div class="form-group">
                                 <label for="">Choose wallet </label>
                                 <select name="wallet" class="form-control">
@@ -138,7 +138,7 @@
                                 <input type="text" name="address" id="address" required class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="">Amount (TRX)</label>
+                                <label for="">Amount (USDT)</label>
                                 <input type="number" step="any" name="amount" id="amount" required class="form-control">
                                 <small class="text-primary"><strong>Txn Fee</strong> <span id="fee">0</span> </small>
                             </div>
@@ -190,7 +190,7 @@
                         </div>
                         <div class="table-responsive p-3">
 
-                            <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                            <table class="align-middle mb-4 table table-bordered table-striped transactions-tabl ">
                                 <thead>
                                     <tr>
                                         <th>ID</th>

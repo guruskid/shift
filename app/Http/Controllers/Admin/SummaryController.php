@@ -37,6 +37,9 @@ class SummaryController extends Controller
             case 5:
                 $card_id = 141;
                 break;
+            case 7:
+                $card_id = 143;
+                break;
             default:
                 return back()->with(['error' => 'There is an error with this page']);
                 break;
@@ -75,6 +78,9 @@ class SummaryController extends Controller
                 break;
             case 141:
                 $cur = 'TRX';
+                break;
+            case 143:
+                $cur = 'USDT';
                 break;
             default:
                 return back()->with(['error' => 'There is an error with this page']);

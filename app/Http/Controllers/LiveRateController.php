@@ -65,9 +65,9 @@ class LiveRateController extends Controller
         $res = json_decode($res->getBody());
         $rate = $res->value;
 
-        $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value ?? 0;
-        $tp = ($trading_per / 100) * $rate;
-        $rate -= $tp;
+        // $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value ?? 0;
+        // $tp = ($trading_per / 100) * $rate;
+        // $rate -= $tp;
 
         return $rate;
     }

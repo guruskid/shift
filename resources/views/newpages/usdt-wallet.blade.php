@@ -49,7 +49,7 @@
                             <div class="widget widget-chart-one">
                                 <div class="widget-heading">
                                     <div>
-                                        <span class="h3 giftcard-text" style="color: #000070;">Tron Wallet</span>
+                                        <span class="h3 giftcard-text" style="color: #000070;">TRC20 USDT Wallet</span>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +91,8 @@
                                     </div>
                                     <div class="d-flex">
                                         <div class="mr-1 mr-lg-2" style="">
-                                           {{--  {{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }} --}}
+                                            {{--  {{ Auth::user()->nairaWallet ? '₦'. number_format(Auth::user()->nairaWallet->amount) : 'No naira wallet' }}
+                                            --}}
                                         </div>
                                     </div>
                                 </div>
@@ -106,15 +107,17 @@
                                     <div
                                         class="walletpage_menu d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
                                         <div class="mb-4 mb-lg-0">
-                                            <span class="d-block" style="color: #565656;font-size: 16px;">Tron wallet
+                                            <span class="d-block" style="color: #565656;font-size: 16px;">USDT wallet
                                                 Balance</span>
                                             <span class="d-block">
+                                                <span style="color: #000070;font-size: 30px;">$</span>
                                                 <span
-                                                    style="color: #000070;font-size: 30px;">{{ number_format((float) $tron_wallet->balance, 5) }}</span>
-                                                <span style="color: #000070;font-size: 30px;">TRX</span>
+                                                    style="color: #000070;font-size: 30px;">{{ number_format((float) $wallet->balance, 2) }}</span>
+
                                             </span>
-                                            <span class="d-block"
-                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$tron_wallet->usd  , 2) }}
+                                            {{-- <span class="d-block"
+                                                style="color: #565656;font-size: 16px;opacity: 0.5;">${{ number_format((float)$wallet->usd  , 2) }}
+                                            </span> --}}
                                         </div>
                                         <div class="d-flex">
                                             <a id="bitcoin_send" class="btn walletpage_menu-active">
@@ -133,15 +136,14 @@
                                                 <span class="d-block"
                                                     style="color: #000000;font-size: 14px;">Receive</span>
                                             </a>
-                                            <a href="{{ route('tron.trade') }}"
-                                                class="btn">
+                                            <a href="{{ route('usdt.trade') }}" class="btn">
                                                 <span class="d-block">
                                                     <img class="img-fluid"
                                                         src="{{asset('svg/bitcoin-buy-icon.svg')}}" />
                                                 </span>
                                                 <span class="d-block" style="color: #000000;font-size: 14px;">Buy</span>
                                             </a>
-                                            <a href="{{ route('tron.trade') }}" class="btn">
+                                            <a href="{{ route('usdt.trade') }}" class="btn">
                                                 <span class="d-block">
                                                     <img class="img-fluid" src="{{asset('svg/bitcoin-sell-icon.svg')}}"
                                                         alt="">
@@ -153,9 +155,9 @@
                                     </div>
                                 </div>
 
-                                <tron-send-component :usd_trx="{{ $tron_rate }}" ></tron-send-component>
+                                <usdt-send-component :usd_amt="{{ $rate }}"></usdt-send-component>
 
-                                @include('newpages.tabs.tron-wallet-receive')
+                                @include('newpages.tabs.usdt-wallet-receive')
 
                             </div>
                         </div>
@@ -190,12 +192,12 @@
                                                 <td>
                                                     @if ($transaction->amount > 0)
                                                     <span class="d-block text-success"
-                                                        style="font-size: 14px;color: #000000;font-weight: 500;">TRX
-                                                        {{ number_format((float) $transaction->amount, 8) }}</span>
+                                                        style="font-size: 14px;color: #000000;font-weight: 500;">
+                                                        {{ number_format((float) $transaction->amount, 8) }} USDT</span>
                                                     @else
                                                     <span class="d-block text-danger"
-                                                        style="font-size: 14px;color: #000000;font-weight: 500;">TRX
-                                                        {{ number_format((float) $transaction->amount, 8) }}  </span>
+                                                        style="font-size: 14px;color: #000000;font-weight: 500;">
+                                                        {{ number_format((float) $transaction->amount, 8) }} USDT</span>
                                                     @endif
 
                                                 </td>
@@ -208,7 +210,9 @@
                                                 </td>
                                                 <td class="transaction_content">
                                                     @if (isset($transaction->txId))
-                                                        <a target="_blank" href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->txId }}" class="btn transaction_view_link">Explorer</a>
+                                                    <a target="_blank"
+                                                        href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->txId }}"
+                                                        class="btn transaction_view_link">Explorer</a>
 
                                                     @endif
                                                 </td>
@@ -222,9 +226,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
 
@@ -233,5 +234,3 @@
 </div>
 
 @endsection
-
-
