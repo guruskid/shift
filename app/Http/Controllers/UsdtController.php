@@ -194,7 +194,7 @@ class UsdtController extends Controller
 
     public function trade()
     {
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $amt_usd = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
         $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
@@ -220,7 +220,7 @@ class UsdtController extends Controller
 
     public function tradeApi()
     {
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $tron_usd = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
         $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
@@ -331,7 +331,7 @@ class UsdtController extends Controller
 
         //Current eth price
         $amt_usd = LiveRateController::usdtRate();
-        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         $total = $request->amount - $charge - $service_fee;
         $usd = $request->amount * $amt_usd;

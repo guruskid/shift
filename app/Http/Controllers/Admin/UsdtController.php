@@ -180,14 +180,14 @@ class UsdtController extends Controller
 
     public function settings()
     {
-        $sell_rate = CryptoRate::where(['crypto_currency_id' => 7, 'type' => 'sell'])->first()->rate ?? 0;
+        $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first()->rate ?? 0;
         return view('admin.usdt.settings', compact('sell_rate'));
     }
 
     public function updateRate(Request $request)
     {
         CryptoRate::updateOrCreate(
-            ['crypto_currency_id' => 7, 'type' => 'sell'],
+            ['crypto_currency_id' => 2, 'type' => 'sell'],
             ['rate' => $request->rate]
         );
 

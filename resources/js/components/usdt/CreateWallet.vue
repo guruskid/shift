@@ -33,7 +33,7 @@
 
                     .then((res) => {
                         if (res.data.success) {
-                            swal('Great!!', 'USDT walet created successfully', 'success');
+                            swal('Great!!', 'USDT wallet created successfully', 'success');
                             window.location = '/user/usdt/wallet';
                         } else {
                             swal('oops!!', res.data.msg, 'error');
