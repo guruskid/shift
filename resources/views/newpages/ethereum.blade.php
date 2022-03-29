@@ -99,14 +99,8 @@
                                                 <input type="hidden" name="card_id" value="{{ $card->id }}">
                                                 <input type="hidden" name="type" value="sell">
                                                 <div class="form-group mb-4">
-                                                    <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                USD</div>
-                                                        </div>
-                                                        <input type="number" name="amount" class="form-control bitcoin-input-radius"
+                                                        <input type="hidden" name="amount" class="form-control bitcoin-input-radius"
                                                             id="sell_usd_field_eth">
                                                     </div>
                                                 </div>
@@ -182,14 +176,8 @@
                                                 <input type="hidden" name="card_id" value="{{ $card->id }}">
                                                 <input type="hidden" name="type" value="buy">
                                                 <div class="form-group mb-4">
-                                                    <label for="inlineFormInputGroupUsername2"
-                                                        style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
                                                     <div class="input-group mb-2 mr-sm-2">
-                                                        <div class="input-group-prepend" style="border-radius: 30px;">
-                                                            <div class="input-group-text input_label">
-                                                                USD</div>
-                                                        </div>
-                                                        <input type="number" name="amount" class="form-control bitcoin-input-radius"
+                                                        <input type="hidden" name="amount" class="form-control bitcoin-input-radius"
                                                             id="buy_usd_field_eth">
                                                     </div>
                                                 </div>

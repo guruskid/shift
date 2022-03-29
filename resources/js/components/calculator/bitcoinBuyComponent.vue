@@ -7,13 +7,8 @@
             <input type="hidden" step="any" name="current_rate" v-model="btcToUsdBuy">
             <input type="hidden" name="_token" :value="csrf">
             <div class="form-group mb-4">
-                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">USD
-                    equivalent</label>
                 <div class="input-group mb-2 mr-sm-2">
-                    <div class="input-group-prepend" style="border-radius: 30px;">
-                        <div class="input-group-text input_label"> USD</div>
-                    </div>
-                    <input type="number" required step="any" min="0" name="amount" v-model="usdBuy"
+                    <input type="hidden" required step="any" min="0" name="amount" v-model="usdBuy"
                         @keyup="getRateUsdBuy()" class="form-control bitcoin-input-radius">
                 </div>
             </div>
