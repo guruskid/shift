@@ -2,8 +2,12 @@
     <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="home" role="tabpanel" aria-labelledby="home-tab">
         <form @submit.prevent="sell()"  method="post">
             <div class="form-group mb-4">
+                <label for="inlineFormInputGroupUsername2" style="color: rgba(0, 0, 112, 0.75);">USD equivalent</label>
                 <div class="input-group mb-2 mr-sm-2">
-                    <input type="hidden" required step="any" min="0" name="amount"
+                    <div class="input-group-prepend" style="border-radius: 30px;">
+                        <div class="input-group-text input_label"> USD</div>
+                    </div>
+                    <input type="number" required step="any" min="0" name="amount"
                     v-model="usd" @keyup="getRateUsd()"
                      class="form-control bitcoin-input-radius"  >
                 </div>
