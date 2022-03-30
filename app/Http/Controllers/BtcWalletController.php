@@ -354,9 +354,6 @@ class BtcWalletController extends Controller
         ]);
 
 
-
-
-
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
         Notification::create([
@@ -371,10 +368,7 @@ class BtcWalletController extends Controller
         $body = 'Your order to sell 0.07 ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
         Your new  balance is ' . $finalamountcredited . '.<br>
         Date: ' . now() . '.<br><br>
-
-        Thank you for Trading with Dantown.
-
-        ';
+        Thank you for Trading with Dantown.';
 
         $btn_text = '';
         $btn_url = '';

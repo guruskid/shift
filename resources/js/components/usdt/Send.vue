@@ -17,7 +17,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text usd_bg_text">USDT</span>
                     </div>
-                </div> 
+                </div>
             </div>
             <div class="container mt-3m mt-lg-5">
                 <div class="row">
@@ -133,7 +133,7 @@
                 .then((res)=>{
                     console.log(res)
                     if (res.data.success) {
-                        swal('Great!!', 'Tron sent successfully', 'success');
+                        swal('Great!!', 'USDT sent successfully', 'success');
                         window.location = '/user/usdt/wallet';
                     } else {
                         swal('oops!!', res.data.msg, 'error');
