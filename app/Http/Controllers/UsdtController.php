@@ -424,7 +424,8 @@ class UsdtController extends Controller
             'uid' => uniqid(),
             'user_email' => Auth::user()->email,
             'card' => 'USDT',
-            'agent_id' => 1
+            'agent_id' => 1,
+            'ngn_rate' => $usd_ngn
         ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;
