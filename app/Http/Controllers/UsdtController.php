@@ -423,7 +423,7 @@ class UsdtController extends Controller
             'status' => 'success',
             'uid' => uniqid(),
             'user_email' => Auth::user()->email,
-            'card' => 'tron',
+            'card' => 'USDT',
             'agent_id' => 1
         ]);
 
@@ -455,9 +455,27 @@ class UsdtController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
+         // ///////////////////////////////////////////////////////////
+         $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
+         $title = 'Sell Order Successful';
+         $body = 'Your order to sell ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+         Your new  balance is ' . $finalamountcredited . '.<br>
+         Date: ' . now() . '.<br><br>
+         Thank you for Trading with Dantown.';
+
+         $btn_text = '';
+         $btn_url = '';
+
+         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+         $name = explode(' ', $name);
+         $firstname = ucfirst($name[0]);
+         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+         // ////////////////////////////////////////////
+
         return response()->json([
             'success' => true,
-            'msg' => 'Tron sold successfully'
+            'msg' => 'USDT sold successfully'
         ]);
     }
 
