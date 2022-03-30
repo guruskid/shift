@@ -60,10 +60,10 @@
                             <thead>
                                 <tr>
                                     <th>No. Trades</th>
-                                    <th>Total BTC</th>
+                                    <th>Total {{ $cur }}</th>
                                     <th>Total USD</th>
                                     <th>Total Naira</th>
-                                    <th>AVG. BTC Price</th>
+                                    <th>AVG. {{ $cur }} Price</th>
                                 </tr>
                             </thead>
                             <tbody>

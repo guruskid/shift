@@ -349,6 +349,13 @@ class TronWalletController extends Controller
         $usd = $request->amount * $tron_usd;
         $ngn = $usd * $usd_ngn;
 
+        if ($usd < 10) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Minimum trade amount is $10'
+            ]);
+        }
+
         if ($total <= 0) {
             return response()->json([
                 'success' => false,
@@ -445,7 +452,7 @@ class TronWalletController extends Controller
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $nt->charge = 0;
-        $nt->transaction_type_id = 23;
+        $nt->transaction_type_id = 25;
         $nt->dr_wallet_id = $n->id;
         $nt->cr_wallet_id = $user_naira_wallet->id;
         $nt->dr_acct_name = 'Dantown';
