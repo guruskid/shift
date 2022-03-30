@@ -4,9 +4,9 @@
         <div class="row">
             <div class="col-12 col-md-10 col-lg-8 mx-auto" style="border: 1px solid rgba(0, 0, 112, 0.25);">
                 <div class="input-group">
-                    <input type="number" step="any" @keyup="getRateUsd()" v-model="usd" required class="form-control" placeholder="0.00"
+                    <input type="hidden" step="any" @keyup="getRateUsd()" v-model="usd" required class="form-control" placeholder="0.00"
                         style="border: 0px;">
-                    <div class="input-group-append">
+                    <div class="input-group-append" style="display:none">
                         <span class="input-group-text usd_bg_text pr-1">USD</span>
                         <span class="input-group-text usd_bg_text">
                             <img src="/svg/conversion-arrow.svg" alt="">
