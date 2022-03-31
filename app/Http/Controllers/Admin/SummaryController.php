@@ -54,9 +54,17 @@ class SummaryController extends Controller
         $sell_transactions = Transaction::where('card_id', $card_id)->where('type', 'sell')->whereDate('created_at', $date)->where('status', 'success')->get();
         $sell_btc = $sell_transactions->sum('quantity');
         $sell_usd = $sell_transactions->sum('amount');
+
+        $ngn_sell_average = 0;
+        $cumulative = 0;
+        foreach ($sell_transactions as $t ) {
+            $cumulative += ($t->quantity * $t->ngn_rate);
+        }
+        $ngn_sell_average = ($cumulative == 0 ? 1 : $cumulative) / ($sell_usd == 0 ? 1 : $sell_usd);
+
         try {
             $sell_average = $sell_usd / $sell_btc;
-            // $sell_ngn_average = $sell_usd 
+            // $sell_ngn_average = $sell_usd
         } catch (\Throwable $th) {
             $sell_average = 0;
         }
@@ -98,7 +106,8 @@ class SummaryController extends Controller
             'sell_usd',
             'sell_average',
             'cur',
-            'card_id'
+            'card_id',
+            'ngn_sell_average'
         ));
     }
 
@@ -117,6 +126,14 @@ class SummaryController extends Controller
 
         $sell_btc = $sell_transactions->sum('quantity');
         $sell_usd = $sell_transactions->sum('amount');
+
+        $ngn_sell_average = 0;
+        $cumulative = 0;
+        foreach ($sell_transactions as $t ) {
+            $cumulative += ($t->quantity * $t->ngn_rate);
+        }
+        $ngn_sell_average = ($cumulative == 0 ? 1 : $cumulative) / ($sell_usd == 0 ? 1 : $sell_usd);
+        
         try {
             $sell_average = $sell_usd / $sell_btc;
         } catch (\Throwable $th) {

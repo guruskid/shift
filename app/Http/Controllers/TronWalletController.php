@@ -436,7 +436,8 @@ class TronWalletController extends Controller
             'uid' => uniqid(),
             'user_email' => Auth::user()->email,
             'card' => 'tron',
-            'agent_id' => 1
+            'agent_id' => 1,
+            'ngn_rate' => $usd_ngn
         ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;
@@ -491,7 +492,7 @@ class TronWalletController extends Controller
         ]);
     }
 
-    
+
 
     public function send(Request $request)
     {
@@ -546,14 +547,6 @@ class TronWalletController extends Controller
             ]);
         }
 
-        // $fee_limit = 200;
-        // $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
-        // if ($fee_wallet_balance < $fee_limit) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'msg' => 'Service not available, please try again later'
-        //     ]);
-        // }
 
         $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
         $fee_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();

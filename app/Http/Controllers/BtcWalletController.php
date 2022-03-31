@@ -329,30 +329,6 @@ class BtcWalletController extends Controller
 
         $ngn -= $charge_ngn;
 
-        $t = Auth::user()->transactions()->create([
-            'card_id' => 102,
-            'type' => 'sell',
-            'amount' => $usd,
-            'amount_paid' => $ngn,
-            'quantity' => number_format((float) $r->quantity, 8),
-            'card_price' => $current_btc_rate,
-            'status' => 'waiting',
-            'uid' => uniqid(),
-            'user_email' => Auth::user()->email,
-            'card' => 'bitcoin',
-            'agent_id' => 1
-        ]);
-
-
-        $title = ucwords($t->type) . ' ' . $t->card;
-        $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
-        Notification::create([
-            'user_id' => Auth::user()->id,
-            'title' => $title,
-            'body' => $body,
-        ]);
-
-
 
         $reference = \Str::random(5) . Auth::user()->id;
         $url = env('TATUM_URL') . '/ledger/transaction';
@@ -409,12 +385,8 @@ class BtcWalletController extends Controller
                     ]
                 ]);
             }
-            $t->status = 'success';
-            $t->save();
         } catch (\Exception $e) {
             //set transaction status to failed
-            $t->status = 'failed';
-            $t->save();
             \Log::info($e->getResponse()->getBody());
             //report($e);
             return response()->json([
@@ -423,6 +395,20 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        $t = Auth::user()->transactions()->create([
+            'card_id' => 102,
+            'type' => 'sell',
+            'amount' => $usd,
+            'amount_paid' => $ngn,
+            'quantity' => number_format((float) $r->quantity, 8),
+            'card_price' => $current_btc_rate,
+            'status' => 'success',
+            'uid' => uniqid(),
+            'user_email' => Auth::user()->email,
+            'card' => 'bitcoin',
+            'agent_id' => 1,
+            'ngn_rate' => $trade_rate
+        ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
