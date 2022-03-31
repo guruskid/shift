@@ -133,7 +133,7 @@ class SummaryController extends Controller
             $cumulative += ($t->quantity * $t->ngn_rate);
         }
         $ngn_sell_average = ($cumulative == 0 ? 1 : $cumulative) / ($sell_usd == 0 ? 1 : $sell_usd);
-        
+
         try {
             $sell_average = $sell_usd / $sell_btc;
         } catch (\Throwable $th) {
@@ -174,7 +174,8 @@ class SummaryController extends Controller
             'sell_usd',
             'sell_average',
             'cur',
-            'card_id'
+            'card_id',
+            'ngn_sell_average'
         ));
     }
 
