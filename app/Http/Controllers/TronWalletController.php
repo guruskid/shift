@@ -609,8 +609,8 @@ class TronWalletController extends Controller
                     "recipient" => [$request->address,  $charge_wallet->address, $fee_wallet],
                     "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4), number_format((float) $fees, 4)],
                     "signatureId" => $hd_wallet->private_key,
-                    "tokenId" => ["0",  "0"],
-                    "tokenAddress" => ["0",  "0"],
+                    "tokenId" => ["0",  "0", "0"],
+                    "tokenAddress" => ["0", "0",  "0"],
                     "feeLimit" => $blockchain_fee,
                     "from" => $fee_wallet->address,
                 ]
