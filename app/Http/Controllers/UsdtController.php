@@ -255,13 +255,13 @@ class UsdtController extends Controller
 
     public function fees($address, $amount)
     {
-        $fees = 1;
+        // $fees = 1;
 
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
 
         return response()->json([
             'success' => true,
-            "fee" => $fees + $charge,
+            "fee" => $charge,
         ]);
     }
 
@@ -524,11 +524,10 @@ class UsdtController extends Controller
         $user_wallet->balance = $accounts->balance->availableBalance;
 
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
-        $fees = 1;
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
 
 
-        if (($request->amount + $fees + $charge) > $user_wallet->balance) {
+        if (($request->amount  + $charge) > $user_wallet->balance) {
             return response()->json([
                 'success' => false,
                 'msg' => "Insufficient balance"
@@ -565,7 +564,7 @@ class UsdtController extends Controller
             'json' =>  [
                 "senderAccountId" => Auth::user()->usdtWallet->account_id,
                 "address" => $request->address,
-                "amount" => number_format((float) $request->amount + $fees + $charge, 8),
+                "amount" => number_format((float) $request->amount  + $charge, 8),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
@@ -590,7 +589,7 @@ class UsdtController extends Controller
                     "custodialAddress" => Auth::user()->usdtWallet->address,
                     "contractType" => [0, 0],
                     "recipient" => [$request->address,  $charge_wallet->address],
-                    "amount" => [number_format((float) $total, 4), number_format((float) $charge + $fees, 4)],
+                    "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4)],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenAddress" => ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",  "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"],
                     "tokenId" => ['0', '0'],

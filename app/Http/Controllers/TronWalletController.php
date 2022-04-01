@@ -267,13 +267,12 @@ class TronWalletController extends Controller
 
     public function fees($address, $amount)
     {
-        $fees = 15;
 
         $charge = Setting::where('name', 'tron_send_charge')->first()->value;
 
         return response()->json([
             'success' => true,
-            "fee" => $fees + $charge,
+            "fee" => $charge,
         ]);
     }
 
@@ -538,13 +537,11 @@ class TronWalletController extends Controller
         $user_wallet->balance = $accounts->balance->availableBalance;
 
         $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
-        $fees = 15;
         $charge = Setting::where('name', 'tron_send_charge')->first()->value;
-        $fees = 0.001;
         $charge = 0.001;
 
 
-        if (($request->amount + $fees + $charge) > $user_wallet->balance) {
+        if (($request->amount + $charge) > $user_wallet->balance) {
             return response()->json([
                 'success' => false,
                 'msg' => "Insufficient balance"
@@ -582,7 +579,7 @@ class TronWalletController extends Controller
             'json' =>  [
                 "senderAccountId" => Auth::user()->tronWallet->account_id,
                 "address" => $request->address,
-                "amount" => number_format((float) $request->amount + $fees + $charge, 8),
+                "amount" => number_format((float) $request->amount + $charge, 8),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
@@ -605,12 +602,12 @@ class TronWalletController extends Controller
                 'json' =>  [
                     "chain" => "TRON",
                     "custodialAddress" => Auth::user()->tronWallet->address,
-                    "contractType" => [3, 3, 3],
-                    "recipient" => [$request->address,  $charge_wallet->address, $fee_wallet],
-                    "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4), number_format((float) $fees, 4)],
+                    "contractType" => [3, 3],
+                    "recipient" => [$request->address,  $charge_wallet->address],
+                    "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4)],
                     "signatureId" => $hd_wallet->private_key,
-                    "tokenId" => ["0",  "0", "0"],
-                    "tokenAddress" => ["0", "0",  "0"],
+                    "tokenId" => ["0",  "0"],
+                    "tokenAddress" => ["0",  "0"],
                     "feeLimit" => $blockchain_fee,
                     "from" => $fee_wallet->address,
                 ]
