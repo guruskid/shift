@@ -351,12 +351,12 @@ class TronWalletController extends Controller
         $usd = $request->amount * $tron_usd;
         $ngn = $usd * $usd_ngn;
 
-        // if ($usd < 10) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'msg' => 'Minimum trade amount is $10'
-        //     ]);
-        // }
+        if ($usd < 10) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Minimum trade amount is $10'
+            ]);
+        }
 
         if ($total <= 0) {
             return response()->json([
