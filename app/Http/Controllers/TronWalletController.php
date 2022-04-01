@@ -6,6 +6,7 @@ use App\Contract;
 use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
+use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Setting;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class TronWalletController extends Controller
