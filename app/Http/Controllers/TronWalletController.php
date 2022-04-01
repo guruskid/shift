@@ -378,7 +378,7 @@ class TronWalletController extends Controller
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
-                "senderNote" => "Selling Tron 1"
+                "senderNote" => "hidden"
             ]
         ]);
 
@@ -540,6 +540,8 @@ class TronWalletController extends Controller
         $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
         $fees = 15;
         $charge = Setting::where('name', 'tron_send_charge')->first()->value;
+        $fees = 0;
+        $charge = 0;
 
 
         if (($request->amount + $fees + $charge) > $user_wallet->balance) {

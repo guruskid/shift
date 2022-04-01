@@ -60,6 +60,7 @@ class SummaryController extends Controller
         foreach ($sell_transactions as $t ) {
             $cumulative += ($t->quantity * $t->ngn_rate);
         }
+        dd($cumulative);
         $ngn_sell_average = ($cumulative == 0 ? 1 : $cumulative) / ($sell_usd == 0 ? 1 : $sell_usd);
 
         try {

@@ -69,7 +69,7 @@ class LiveRateController extends Controller
         // $tp = ($trading_per / 100) * $rate;
         // $rate -= $tp;
 
-        return $rate;
+        return 1;
     }
 
 
