@@ -91,7 +91,7 @@
                             <option value="5">5 (110TRX)</option>
                             <option value="10">10 (220TRX)</option>
                             <option value="100">100 (700 TRX)</option>
-                            <option value="270">270 (2000 TRX)</option>
+                            <option value="270">270 (3000 TRX)</option>
                         </select>
                         <button class="btn btn-primary ">Deploy Contract</button>
                     </form>

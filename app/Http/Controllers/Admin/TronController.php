@@ -212,7 +212,7 @@ class TronController extends Controller
             case 100:
                 $fee_limit = 700;
             case 270:
-                $fee_limit = 2000;
+                $fee_limit = 3000;
             default:
                 $fee_limit = 2000;
                 break;
