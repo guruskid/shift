@@ -88,10 +88,10 @@
                     <form action="{{ route('admin.tron.deploy-contract') }}" method="POST" class="form-inline mb-3">@csrf
                         <select name="count" id="" class="form-control mr-2">
                             <option value="2">2 (60TRX)</option>
-                            <option value="5">5 (110TRX)</option>
-                            <option value="10">10 (220TRX)</option>
-                            <option value="100">100 (700 TRX)</option>
-                            <option value="270">270 (3000 TRX)</option>
+                            <option value="5">5 (200TRX)</option>
+                            <option value="10">10 (300TRX)</option>
+                            <option value="100">100 (3,000 TRX)</option>
+                            <option value="270">270 (8,000 TRX)</option>
                         </select>
                         <button class="btn btn-primary ">Deploy Contract</button>
                     </form>
