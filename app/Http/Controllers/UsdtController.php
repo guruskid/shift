@@ -100,7 +100,7 @@ class UsdtController extends Controller
     {
 
         if (!Auth::user()->usdtWallet) {
-            return redirect()->route('user.portfolio')->with(['error' => 'Please a Tron wallet to continue']);
+            return redirect()->route('user.portfolio')->with(['error' => 'Please a USDT wallet to continue']);
         }
 
         $rate = LiveRateController::usdtRate();
