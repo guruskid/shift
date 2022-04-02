@@ -58,6 +58,7 @@ class SummaryController extends Controller
         $ngn_sell_average = 0;
         $cumulative = 0;
         foreach ($sell_transactions as $t ) {
+            dd($t->ngn_rate);
             $cumulative += ($t->quantity * $t->ngn_rate);
         }
         dd($cumulative);
