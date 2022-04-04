@@ -164,6 +164,60 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="main-card card card-body mb-3">
+                        <h5>Filter Card</h5>
+                        <form action="{{ route('admin.rate.filter') }}" method="POST"> @csrf
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <select name="card_id" id="" class="form-control  ">
+                                        
+                                        @if (isset($selected_card))
+                                            <option value="{{ $selected_card->id }}">{{ $selected_card->name }}</option> 
+                                            @else
+                                            <option value="">Select Card</option> 
+                                        @endif
+
+                                        @foreach ($cards as $card)
+                                                <option value="{{ $card->id }}">{{ $card->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <select name="currency_id" id="" class="form-control  ">
+                                        @if (isset($selected_currency))
+                                            <option value="{{ $selected_currency->id }}">{{ $selected_currency->name }}</option> 
+                                            @else
+                                            <option value="">Select Currency</option> 
+                                        @endif
+                                        @foreach ($currencies as $currency)
+                                        <option value="{{ $currency->id }}">{{ $currency->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <select name="payment_medium_id" id="" class="form-control  ">
+                                        @if (isset($selected_Payment_medium))
+                                            <option value="{{ $selected_Payment_medium->id }}">{{ $selected_Payment_medium->name }}</option> 
+                                            @else
+                                            <option value="">Select Card Type</option>
+                                        @endif
+                                        @foreach ($card_types as $card_type)
+                                        <option value="{{ $card_type->id }}">{{ $card_type->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <button class="col-md-1 btn btn-primary float-right">Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             @if (Auth::user()->role == '999')
             <div class="row mb-5">
                 <div class="col-md-12">
