@@ -161,7 +161,8 @@
                                                         </div>
                                                     </div>
                                                     @else
-                                                    <button class="btn btn-sm btn-primary">Add Bank</button>
+                                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank2</button>
+                                                    {{-- <button class="btn btn-sm btn-primary">Add Bank1</button> --}}
                                                     @endif
                                                 </div>
                                             </div>
@@ -544,7 +545,7 @@
                                         <div class="col-9">
 
                                             @if (Auth::user()->accounts->count() == 0)
-                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank</button>
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank2</button>
                                             @else
                                                 {{ Auth::user()->accounts->first()->account_number  }}
                                                 {{ Auth::user()->accounts->first()->bank_name }}

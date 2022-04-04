@@ -166,9 +166,7 @@
 
                                 {{-- USDT Wallet --}}
                                 @if (!Auth::user()->usdtWallet)
-                                @if (in_array(Auth::user()->email, ['sheanwinston@gmail.com', 'ibife1866@gmail.com', 'igwegoodnews002@gmail.com', 'chimenechinah11@gmail.com' ]))
                                 <usdt-create-component></usdt-create-component>
-                                @endif
                                 @else
                                 <a href="{{ route('user.usdt-wallet') }}">
                                     <div class="row">

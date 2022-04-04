@@ -180,14 +180,14 @@ class UsdtController extends Controller
 
     public function settings()
     {
-        $sell_rate = CryptoRate::where(['crypto_currency_id' => 7, 'type' => 'sell'])->first()->rate ?? 0;
+        $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first()->rate ?? 0;
         return view('admin.usdt.settings', compact('sell_rate'));
     }
 
     public function updateRate(Request $request)
     {
         CryptoRate::updateOrCreate(
-            ['crypto_currency_id' => 7, 'type' => 'sell'],
+            ['crypto_currency_id' => 2, 'type' => 'sell'],
             ['rate' => $request->rate]
         );
 
@@ -218,14 +218,17 @@ class UsdtController extends Controller
                 $fee_limit = 60;
                 break;
             case 5:
-                $fee_limit = 110;
+                $fee_limit = 200;
                 break;
             case 10:
-                $fee_limit = 220;
+                $fee_limit = 300;
+                break;
             case 100:
-                $fee_limit = 700;
+                $fee_limit = 3000;
+                break;
             case 270:
-                $fee_limit = 2000;
+                $fee_limit = 8000;
+                break;
             default:
                 $fee_limit = 2000;
                 break;

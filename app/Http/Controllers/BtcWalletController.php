@@ -279,25 +279,15 @@ class BtcWalletController extends Controller
         try {
 
             $client = new Client();
-            // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-            // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-            // $res = json_decode($res->getBody());
+
             $current_btc_rate =  LiveRateController::btcRate();
 
             $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
             $service_fee = ($trading_per / 100) * $r->quantity;
-            // $tp = ($trading_per / 100) * $current_btc_rate;
 
-            // $main_rate = $current_btc_rate;
-            // $current_btc_rate -= $tp;
 
-            $card = Card::find(102);
-            $card_id = 102;
-            // $rates = $card->currency->first();
-
-            // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-            // $trade_rate = json_decode($sell->pivot->payment_range_settings);
-            // $trade_rate = $trade_rate[0]->rate;
+            // $card = Card::find(102);
+            // $card_id = 102;
 
             $trade_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
@@ -339,52 +329,6 @@ class BtcWalletController extends Controller
 
         $ngn -= $charge_ngn;
 
-        $t = Auth::user()->transactions()->create([
-            'card_id' => 102,
-            'type' => 'sell',
-            'amount' => $usd,
-            'amount_paid' => $ngn,
-            'quantity' => number_format((float) $r->quantity, 8),
-            'card_price' => $current_btc_rate,
-            'status' => 'waiting',
-            'uid' => uniqid(),
-            'user_email' => Auth::user()->email,
-            'card' => 'bitcoin',
-            'agent_id' => 1
-        ]);
-
-
-
-
-
-        $title = ucwords($t->type) . ' ' . $t->card;
-        $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
-        Notification::create([
-            'user_id' => Auth::user()->id,
-            'title' => $title,
-            'body' => $body,
-        ]);
-
-        // ///////////////////////////////////////////////////////////
-        $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
-        $title = 'Sell Order Successful';
-        $body = 'Your order to sell 0.07 ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
-        Your new  balance is ' . $finalamountcredited . '.<br>
-        Date: ' . now() . '.<br><br>
-
-        Thank you for Trading with Dantown.
-
-        ';
-
-        $btn_text = '';
-        $btn_url = '';
-
-        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
-        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
-
-        // ////////////////////////////////////////////
 
         $reference = \Str::random(5) . Auth::user()->id;
         $url = env('TATUM_URL') . '/ledger/transaction';
@@ -441,12 +385,8 @@ class BtcWalletController extends Controller
                     ]
                 ]);
             }
-            $t->status = 'success';
-            $t->save();
         } catch (\Exception $e) {
             //set transaction status to failed
-            $t->status = 'failed';
-            $t->save();
             \Log::info($e->getResponse()->getBody());
             //report($e);
             return response()->json([
@@ -455,6 +395,20 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        $t = Auth::user()->transactions()->create([
+            'card_id' => 102,
+            'type' => 'sell',
+            'amount' => $usd,
+            'amount_paid' => $ngn,
+            'quantity' => number_format((float) $r->quantity, 8),
+            'card_price' => $current_btc_rate,
+            'status' => 'success',
+            'uid' => uniqid(),
+            'user_email' => Auth::user()->email,
+            'card' => 'bitcoin',
+            'agent_id' => 1,
+            'ngn_rate' => $trade_rate
+        ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
@@ -516,21 +470,23 @@ class BtcWalletController extends Controller
 
 
 
-        // ///////////////////////////////////////////////////////////
-        $title = 'Sell Order Successful';
-        $body = 'Your order to sell 0.07 ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
-        Your new  balance is ' . Auth::user()->nairaWallet->amount + $t->amount_paid . '.<br>
-        Date: ' . now() . '.<br><br>
+         // ///////////////////////////////////////////////////////////
+         $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
+         $title = 'Sell Order Successful';
+         $body = 'Your order to sell ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+         Your new  balance is ' . $finalamountcredited . '.<br>
+         Date: ' . now() . '.<br><br>
+         Thank you for Trading with Dantown.';
 
-         Thank you for Trading with Dantown.
+         $btn_text = '';
+         $btn_url = '';
 
-        ';
+         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+         $name = explode(' ', $name);
+         $firstname = ucfirst($name[0]);
+         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-        $btn_text = '';
-        $btn_url = '';
-
-        $name = Auth::user()->first_name;
-        // Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
+         // ////////////////////////////////////////////
 
 
         return response()->json([
@@ -656,7 +612,7 @@ class BtcWalletController extends Controller
 
 
                 // ///////////////////////////////////////////////////////////
-                $title = 'Sell Order Successful';
+                $title = 'Withdrawal Successful';
                 $body = 'You have successfully sent out ' . $total . ' BTC to the <br>
                         Address:' . $data['address'] . '.<br>
                         Date: ' . now() . '.<br><br>

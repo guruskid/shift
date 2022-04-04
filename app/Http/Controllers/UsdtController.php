@@ -6,6 +6,7 @@ use App\Contract;
 use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
+use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Setting;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class UsdtController extends Controller
@@ -98,7 +100,7 @@ class UsdtController extends Controller
     {
 
         if (!Auth::user()->usdtWallet) {
-            return redirect()->route('user.portfolio')->with(['error' => 'Please a Tron wallet to continue']);
+            return redirect()->route('user.portfolio')->with(['error' => 'Please a USDT wallet to continue']);
         }
 
         $rate = LiveRateController::usdtRate();
@@ -194,7 +196,7 @@ class UsdtController extends Controller
 
     public function trade()
     {
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $amt_usd = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
         $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
@@ -220,7 +222,7 @@ class UsdtController extends Controller
 
     public function tradeApi()
     {
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $tron_usd = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
         $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
@@ -253,13 +255,13 @@ class UsdtController extends Controller
 
     public function fees($address, $amount)
     {
-        $fees = 1;
+        // $fees = 1;
 
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
 
         return response()->json([
             'success' => true,
-            "fee" => $fees + $charge,
+            "fee" => $charge,
         ]);
     }
 
@@ -331,11 +333,18 @@ class UsdtController extends Controller
 
         //Current eth price
         $amt_usd = LiveRateController::usdtRate();
-        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
         $total = $request->amount - $charge - $service_fee;
         $usd = $request->amount * $amt_usd;
         $ngn = $usd * $usd_ngn;
+
+        if ($usd < 10) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Minimum trade amount is $10'
+            ]);
+        }
 
         if ($total <= 0) {
             return response()->json([
@@ -416,8 +425,9 @@ class UsdtController extends Controller
             'status' => 'success',
             'uid' => uniqid(),
             'user_email' => Auth::user()->email,
-            'card' => 'tron',
-            'agent_id' => 1
+            'card' => 'USDT',
+            'agent_id' => 1,
+            'ngn_rate' => $usd_ngn
         ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;
@@ -433,7 +443,7 @@ class UsdtController extends Controller
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $nt->charge = 0;
-        $nt->transaction_type_id = 23;
+        $nt->transaction_type_id = 24;
         $nt->dr_wallet_id = $n->id;
         $nt->cr_wallet_id = $user_naira_wallet->id;
         $nt->dr_acct_name = 'Dantown';
@@ -448,9 +458,27 @@ class UsdtController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
+         // ///////////////////////////////////////////////////////////
+         $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
+         $title = 'Sell Order Successful';
+         $body = 'Your order to sell ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+         Your new  balance is ' . $finalamountcredited . '.<br>
+         Date: ' . now() . '.<br><br>
+         Thank you for Trading with Dantown.';
+
+         $btn_text = '';
+         $btn_url = '';
+
+         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+         $name = explode(' ', $name);
+         $firstname = ucfirst($name[0]);
+         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+         // ////////////////////////////////////////////
+
         return response()->json([
             'success' => true,
-            'msg' => 'Tron sold successfully'
+            'msg' => 'USDT sold successfully'
         ]);
     }
 
@@ -496,11 +524,10 @@ class UsdtController extends Controller
         $user_wallet->balance = $accounts->balance->availableBalance;
 
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
-        $fees = 1;
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
 
 
-        if (($request->amount + $fees + $charge) > $user_wallet->balance) {
+        if (($request->amount  + $charge) > $user_wallet->balance) {
             return response()->json([
                 'success' => false,
                 'msg' => "Insufficient balance"
@@ -537,7 +564,7 @@ class UsdtController extends Controller
             'json' =>  [
                 "senderAccountId" => Auth::user()->usdtWallet->account_id,
                 "address" => $request->address,
-                "amount" => number_format((float) $request->amount + $fees + $charge, 8),
+                "amount" => number_format((float) $request->amount  + $charge, 8),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
@@ -562,7 +589,7 @@ class UsdtController extends Controller
                     "custodialAddress" => Auth::user()->usdtWallet->address,
                     "contractType" => [0, 0],
                     "recipient" => [$request->address,  $charge_wallet->address],
-                    "amount" => [number_format((float) $total, 4), number_format((float) $charge + $fees, 4)],
+                    "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4)],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenAddress" => ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",  "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"],
                     "tokenId" => ['0', '0'],

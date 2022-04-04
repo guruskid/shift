@@ -214,8 +214,8 @@
                                         <td class="transaction_content">
                                             @if (isset($t->txId))
                                             <a target="_blank"
-                                                href="https://blockexplorer.one/ETH/mainnet/tx/{{ $t->txId }}"
-                                                class="">Explorer</a>
+                                            href="https://tronscan.org/#/transaction/{{ $t->txId }}"
+                                            class="">Explorer</a>
 
                                             @endif
                                         </td>

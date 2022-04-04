@@ -184,6 +184,18 @@
                                                 </div>
                                             </a>
                                         </div>
+                                        {{-- <div class="col-6 col-md-4 my-1 my-md-3">
+                                            <a href="{{ route('user.tron-wallet') }}">
+                                                <div
+                                                    class="mx-2 asset_card_container py-3 py-0 d-flex flex-column justify-content-center align-items-center">
+                                                    <span class="d-block text-center mb-4">
+                                                        <img height="56px" width="56px" class="img-fluid logos_assets"
+                                                            src="{{asset('images/tron.png')}}">
+                                                    </span>
+                                                    <span class="d-block text-center asset_card_title">Tron</span>
+                                                </div>
+                                            </a>
+                                        </div> --}}
                                         <div class="col-6 col-md-4 my-1 my-md-3">
                                             <a href="{{ route('user.assets', 'gift cards') }}">
                                                 <div
@@ -226,18 +238,6 @@
                                                     <span class="d-block text-center asset_card_description px-1">DSTV,
                                                         GoTV, PHCN
                                                         and more</span>
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <div class="col-6 col-md-4 my-1 my-md-3">
-                                            <a href="{{ route('user.tron-wallet') }}">
-                                                <div
-                                                    class="mx-2 asset_card_container py-3 py-0 d-flex flex-column justify-content-center align-items-center">
-                                                    <span class="d-block text-center mb-4">
-                                                        <img height="56px" width="56px" class="img-fluid logos_assets"
-                                                            src="{{asset('images/tron.png')}}">
-                                                    </span>
-                                                    <span class="d-block text-center asset_card_title">Tron</span>
                                                 </div>
                                             </a>
                                         </div>

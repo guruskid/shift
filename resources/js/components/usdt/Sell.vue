@@ -119,7 +119,7 @@
                 axios.post('/user/usdt/sell', {"amount" : this.amt })
                 .then((res)=>{
                     if (res.data.success) {
-                        swal('Great!!', 'Tron traded successfully', 'success');
+                        swal('Great!!', 'USDT traded successfully', 'success');
                         window.location = '/user/transactions';
                     } else {
                         swal('oops!!', res.data.msg, 'error');

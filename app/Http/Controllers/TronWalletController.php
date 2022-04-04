@@ -6,6 +6,7 @@ use App\Contract;
 use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
+use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Setting;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class TronWalletController extends Controller
@@ -265,13 +267,12 @@ class TronWalletController extends Controller
 
     public function fees($address, $amount)
     {
-        $fees = 15;
 
         $charge = Setting::where('name', 'tron_send_charge')->first()->value;
 
         return response()->json([
             'success' => true,
-            "fee" => $fees + $charge,
+            "fee" => $charge,
         ]);
     }
 
@@ -349,6 +350,13 @@ class TronWalletController extends Controller
         $usd = $request->amount * $tron_usd;
         $ngn = $usd * $usd_ngn;
 
+        if ($usd < 10) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Minimum trade amount is $10'
+            ]);
+        }
+
         if ($total <= 0) {
             return response()->json([
                 'success' => false,
@@ -369,7 +377,7 @@ class TronWalletController extends Controller
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
-                "senderNote" => "Selling Tron 1"
+                "senderNote" => "hidden"
             ]
         ]);
 
@@ -429,7 +437,8 @@ class TronWalletController extends Controller
             'uid' => uniqid(),
             'user_email' => Auth::user()->email,
             'card' => 'tron',
-            'agent_id' => 1
+            'agent_id' => 1,
+            'ngn_rate' => $usd_ngn
         ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;
@@ -445,7 +454,7 @@ class TronWalletController extends Controller
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $nt->charge = 0;
-        $nt->transaction_type_id = 23;
+        $nt->transaction_type_id = 25;
         $nt->dr_wallet_id = $n->id;
         $nt->cr_wallet_id = $user_naira_wallet->id;
         $nt->dr_acct_name = 'Dantown';
@@ -460,11 +469,31 @@ class TronWalletController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
+         // ///////////////////////////////////////////////////////////
+         $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
+         $title = 'Sell Order Successful';
+         $body = 'Your order to sell ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+         Your new  balance is ' . $finalamountcredited . '.<br>
+         Date: ' . now() . '.<br><br>
+         Thank you for Trading with Dantown.';
+
+         $btn_text = '';
+         $btn_url = '';
+
+         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+         $name = explode(' ', $name);
+         $firstname = ucfirst($name[0]);
+         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+         // ////////////////////////////////////////////
+
         return response()->json([
             'success' => true,
             'msg' => 'Tron sold successfully'
         ]);
     }
+
+
 
     public function send(Request $request)
     {
@@ -508,25 +537,17 @@ class TronWalletController extends Controller
         $user_wallet->balance = $accounts->balance->availableBalance;
 
         $hd_wallet = HdWallet::where(['currency_id' => 5])->first();
-        $fees = 15;
         $charge = Setting::where('name', 'tron_send_charge')->first()->value;
+        $charge = 0.001;
 
 
-        if (($request->amount + $fees + $charge) > $user_wallet->balance) {
+        if (($request->amount + $charge) > $user_wallet->balance) {
             return response()->json([
                 'success' => false,
                 'msg' => "Insufficient balance"
             ]);
         }
 
-        // $fee_limit = 200;
-        // $fee_wallet_balance = CryptoHelperController::feeWalletBalance(5);
-        // if ($fee_wallet_balance < $fee_limit) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'msg' => 'Service not available, please try again later'
-        //     ]);
-        // }
 
         $charge_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_charge'])->first();
         $fee_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
@@ -558,7 +579,7 @@ class TronWalletController extends Controller
             'json' =>  [
                 "senderAccountId" => Auth::user()->tronWallet->account_id,
                 "address" => $request->address,
-                "amount" => number_format((float) $request->amount + $fees + $charge, 8),
+                "amount" => number_format((float) $request->amount + $charge, 8),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
@@ -581,9 +602,9 @@ class TronWalletController extends Controller
                 'json' =>  [
                     "chain" => "TRON",
                     "custodialAddress" => Auth::user()->tronWallet->address,
-                    "contractType" => [3, 3, 3],
-                    "recipient" => [$request->address,  $charge_wallet->address, $fee_wallet],
-                    "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4), number_format((float) $fees, 4)],
+                    "contractType" => [3, 3],
+                    "recipient" => [$request->address,  $charge_wallet->address],
+                    "amount" => [number_format((float) $total, 4), number_format((float) $charge, 4)],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0",  "0"],
                     "tokenAddress" => ["0",  "0"],
