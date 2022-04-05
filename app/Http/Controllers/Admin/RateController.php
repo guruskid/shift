@@ -154,7 +154,7 @@ class RateController extends Controller
             );
         }
 
-        return back()->with(['success' => 'Rates added']);
+        return redirect()->route('admin.rates')->with(['success' => 'Rates Updated']);
     }
 
     public function updateUsd(Request $request)
