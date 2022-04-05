@@ -161,7 +161,7 @@
                                                         </div>
                                                     </div>
                                                     @else
-                                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank2</button>
+                                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank</button>
                                                     {{-- <button class="btn btn-sm btn-primary">Add Bank1</button> --}}
                                                     @endif
                                                 </div>
@@ -395,15 +395,16 @@
 
                                             <div class="container-fluid mt-3">
                                                 <div class="row px-lg-3">
-                                                    <div class="col-12 col-lg-6">
+                                                    <!-- <div class="col-lg-2"></div> -->
+
+                                                    <div class="col-12 col-lg-10">
+
                                                         {{-- Phone verification card --}}
                                                         @if (Auth::user()->phone_verified_at == null)
                                                         <a href="{{ route('user.verify-phone') }}">
-                                                                <div
-                                                                class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
-                                                                <span class="d-block">Phone number verification</span>
-                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
-                                                                    style="position: relative;left: 22px;">
+                                                            <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                                <span class="d-block">Level 1  - Phone number verification</span>
+                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
                                                                     <svg width="20" height="20" viewBox="0 0 20 20"
                                                                         fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <path
@@ -418,7 +419,7 @@
                                                         {{-- Address verification tab --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards addressVerificationCard mt-4">
-                                                            <span class="d-block">Address verification</span>
+                                                            <span class="d-block">Level 2 - Address verification</span>
                                                             <span class="d-block ml-5 accordion_arrow"
                                                                 style="position: relative;left: 22px;">
                                                                 <svg width="20" height="20" viewBox="0 0 20 20"
@@ -442,13 +443,13 @@
                                                         @endif
                                                     </div>
 
-                                                    <div class="col-12 col-lg-6 mt-3">
+                                                    <div class="col-12 col-lg-12 mt-3">
 
                                                         @if (Auth::user()->idcard_verified_at == null)
                                                         {{-- ID verification card --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
-                                                            <span class="d-block">ID verification</span>
+                                                            <span class="d-block">Level 3 - ID verification</span>
                                                             <span
                                                                 class="d-block ml-5 accordion_arrow id_verification_arrow">
                                                                 <svg width="20" height="20" viewBox="0 0 20 20"
@@ -545,7 +546,7 @@
                                         <div class="col-9">
 
                                             @if (Auth::user()->accounts->count() == 0)
-                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank2</button>
+                                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank</button>
                                             @else
                                                 {{ Auth::user()->accounts->first()->account_number  }}
                                                 {{ Auth::user()->accounts->first()->bank_name }}
