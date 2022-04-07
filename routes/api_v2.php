@@ -15,7 +15,9 @@ Route::post('resend-forgot-password-opt', 'AuthController@checkForgotPasswordEma
 Route::post('validate-forgot-password-opt', 'AuthController@checkForgotPasswordOtp');
 Route::post('change-password', 'AuthController@changePassword');
 
-
+//User DB
+Route::get('/user-db', 'UserDbController@getNameAndEmail');
+Route::POST('/add-data', 'UserDbController@addUser');
 
 
 Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
@@ -49,7 +51,7 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
     Route::post('/update-birthday', 'UserController@updateBirthday');
 
 
-    // Referral 
+    // Referral
     Route::post('/create_referral_code', 'ReferralController@create');
     Route::get('/get_referral_balance', 'ReferralController@getBalance');
     Route::post('/sell_referral_btc', 'ReferralController@sell');
@@ -83,5 +85,7 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
     //?messages
     Route::get('/ticket-messages/{ticketNo}', "ChatMessagesController@Messages");
     Route::post('/send-message', 'ChatMessagesController@sendMessage');
+
+
 
 });
