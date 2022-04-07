@@ -14,7 +14,7 @@ class VerificationController extends Controller
     public function uploadId(Request $request)
     {
         if(Auth::user()->first_name == ' '){
-            return back()->with(['error' => 'You must to add your bank details before proceeding for verification']);
+            return back()->with(['error' => 'Please add your bank details to continue your level 2 verification']);
         }
         if(Auth::user()->phone_verified_at == null){
             return back()->with(['error' => 'Please verify your phone number first']);
