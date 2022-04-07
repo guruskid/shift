@@ -46,7 +46,7 @@ class UserDbController extends Controller
     {
         return response()->json([
             'success' => true,
-            'user_db' => UserDb::where('email', $r->email)->first()
+            'user_db' => UserDb::latest()->paginate(1000)
         ]);
     }
 }
