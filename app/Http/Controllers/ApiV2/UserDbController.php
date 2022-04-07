@@ -17,6 +17,13 @@ class UserDbController extends Controller
             'email' => 'required|email|unique:user_dbs',
         ]);
 
+        if (!filter_var($r->email, FILTER_VALIDATE_EMAIL)) {
+            return response()->json([
+                "success" => false,
+                'message' => 'Please insert a valid email address.',
+            ], 401);
+          }
+
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
