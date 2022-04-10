@@ -109,51 +109,67 @@ class UserController extends Controller
 
     public function updateBank(Request $request)
     {
-        if (Auth::user()->phone_verified_at == null) {
 
-            $validator = Validator::make($request->all(), [
-                'phone' => 'required',
-                'otp' => 'required',
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'msg' => $validator->errors(),
-                ], 401);
-            }
+        // $validator = Validator::make($request->all(), [
+        //         'account_name' => 'required',
+        //         'name' => 'required',
+        //         'account_number' => 'required',
 
-            try {
-                $client = new Client();
-                $url = env('TERMII_SMS_URL') . "/otp/verify";
+        //     ]);
 
-                $response = $client->request('POST', $url, [
-                    'json' => [
-                        'api_key' => env('TERMII_API_KEY'),
-                        "pin_id" => Auth::user()->phone_pin_id,
-                        "pin" => $request->otp
-                    ],
-                ]);
-                $body = json_decode($response->getBody()->getContents());
+        //     if ($validator->fails()) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'msg' => $validator->errors(),
+        //         ], 401);
+        //     }
 
-                if (!$body->verified || $body->verified != 'true') {
-                    return response()->json([
-                        'success' => false,
-                        'msg' => 'Phone verification failed. Please request for a new OTP'
-                    ]);
-                }
-            } catch (\Exception $e) {
-                //report($e);
-                return response()->json([
-                    'success' => false,
-                    'msg' => 'Phone verification failed. Please request new OTP'
-                ]);
-            }
 
-            Auth::user()->phone_verified_at = now();
-            Auth::user()->save();
+        // if (Auth::user()->phone_verified_at == null) {
 
-            \Artisan::call('naira:limit');
-        }
+            // $validator = Validator::make($request->all(), [
+            //     'phone' => 'required',
+            //     'otp' => 'required',
+            // ]);
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'msg' => $validator->errors(),
+            //     ], 401);
+            // }
+
+            // try {
+            //     $client = new Client();
+            //     $url = env('TERMII_SMS_URL') . "/otp/verify";
+
+            //     $response = $client->request('POST', $url, [
+            //         'json' => [
+            //             'api_key' => env('TERMII_API_KEY'),
+            //             "pin_id" => Auth::user()->phone_pin_id,
+            //             "pin" => $request->otp
+            //         ],
+            //     ]);
+            //     $body = json_decode($response->getBody()->getContents());
+
+            //     if (!$body->verified || $body->verified != 'true') {
+            //         return response()->json([
+            //             'success' => false,
+            //             'msg' => 'Phone verification failed. Please request for a new OTP'
+            //         ]);
+            //     }
+            // } catch (\Exception $e) {
+            //     //report($e);
+            //     return response()->json([
+            //         'success' => false,
+            //         'msg' => 'Phone verification failed. Please request new OTP'
+            //     ]);
+            // }
+
+            // Auth::user()->phone_verified_at = now();
+            // Auth::user()->save();
+
+            // \Artisan::call('naira:limit');
+        // }
 
         $a = new Account();
         $bank = Bank::where('code', $request->bank_code)->first();
@@ -473,6 +489,8 @@ class UserController extends Controller
 
     public function updateBankDetails(Request $request)
     {
+
+        // dd('something here');
         $a = Account::find($request->id);
         if ($a->user_id != Auth::user()->id) {
             return redirect()->back()->with(["error" => 'Invalid Operation']);
