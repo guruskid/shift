@@ -451,8 +451,8 @@
                                                         </div>
                                                         @else
                                                         <div
-                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards addressVerificationCard mt-4">
-                                                            <span class="d-block">Level 2 - Address verification</span>
+                                                            class="d-flex flex-row  align-items-center accordion_cards addressVerificationCard mt-4">
+                                                            <span class="d-block ml-3">Level 2 - Address verification</span>
                                                             <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
                                                                     <i class="fas fa-check-circle" style="color: #00C851;"></i>
                                                             </span>
@@ -495,8 +495,8 @@
                                                     @endif
                                                     @if (Auth::user()->idcard_verified_at != null)
                                                         <div
-                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
-                                                            <span class="d-block">Level 3 - ID verification</span>
+                                                            class="d-flex flex-row  align-items-center accordion_cards idVerificationCard mt-2">
+                                                            <span class="d-block ml-3">Level 3 - ID verification</span>
                                                             <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
                                                                     <i class="fas fa-check-circle" style="color: #00C851;"></i>
                                                             </span>
