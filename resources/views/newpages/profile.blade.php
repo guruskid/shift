@@ -414,6 +414,15 @@
                                                                 </span>
                                                             </div>
                                                         </a>
+                                                        @else
+                                                        {{-- <a href="{{ (Auth::user()->first_name == ' ' || strlen(Auth::user()->first_name) < 2) ? '#' : route('user.verify-phone') }}" onclick="{{(strlen(Auth::user()->first_name) < 2) ? 'show_bank()' : ''}}"> --}}
+                                                            <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                                <span class="d-block">Level 1  - Phone number verification</span>
+                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                                </span>
+                                                            </div>
+                                                        {{-- </a> --}}
                                                         @endif
                                                         @if (Auth::user()->address_verified_at == null && Auth::user()->phone_verified_at != null)
                                                         {{-- Address verification tab --}}
@@ -440,12 +449,20 @@
                                                                     style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
                                                             </div>
                                                         </div>
+                                                        @else
+                                                        <div
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards addressVerificationCard mt-4">
+                                                            <span class="d-block">Level 2 - Address verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                            </span>
+                                                        </div>
                                                         @endif
                                                     </div>
 
                                                     <div class="col-12 col-lg-12 mt-3">
 
-                                                        @if (Auth::user()->idcard_verified_at == null && Auth::user()->address_verified_at != null)
+                                                    @if (Auth::user()->idcard_verified_at == null && Auth::user()->address_verified_at != null)
                                                         {{-- ID verification card --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
@@ -475,7 +492,17 @@
                                                                 </form>
                                                             </div>
                                                         </div>
-                                                        @endif
+                                                    @endif
+                                                    @if (Auth::user()->idcard_verified_at != null)
+                                                        <div
+                                                            class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
+                                                            <span class="d-block">Level 3 - ID verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                            </span>
+                                                        </div>
+                                                    @endif
+
                                                     </div>
                                                 </div>
                                             </div>
