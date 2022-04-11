@@ -118,7 +118,7 @@
                                     style="border-left: 0.3px solid #969CBA;">
                                     <a class="nav-link d-flex justify-content-center" id="limits-tab" data-toggle="tab"
                                         style="height: 52px;" href="#limits" role="tab" aria-controls="limits"
-                                        aria-selected="false">LIMITS</a>
+                                        aria-selected="false">VERIFICATIONS</a>
                                 </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
@@ -161,7 +161,7 @@
                                                         </div>
                                                     </div>
                                                     @else
-                                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank</button>
+                                                    <button id="add_bank" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank</button>
                                                     {{-- <button class="btn btn-sm btn-primary">Add Bank1</button> --}}
                                                     @endif
                                                 </div>
@@ -180,8 +180,8 @@
                                             <div class="" style="width:56%;">
                                                 <div style="position: relative;left:35px;">
                                                     @if (!Auth::user()->phone)
-                                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Phone</button>
-                                                    @else
+                                                        {{-- <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Phone</button>
+                                                    @else --}}
                                                         {{ Auth::user()->phone }}
                                                     @endif
                                                 </div>
@@ -401,7 +401,7 @@
 
                                                         {{-- Phone verification card --}}
                                                         @if (Auth::user()->phone_verified_at == null)
-                                                        <a href="{{ route('user.verify-phone') }}">
+                                                        <a href="{{ (Auth::user()->first_name == ' ' || strlen(Auth::user()->first_name) < 2) ? '#' : route('user.verify-phone') }}" onclick="{{(strlen(Auth::user()->first_name) < 2) ? 'show_bank()' : ''}}">
                                                             <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
                                                                 <span class="d-block">Level 1  - Phone number verification</span>
                                                                 <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
@@ -414,8 +414,17 @@
                                                                 </span>
                                                             </div>
                                                         </a>
+                                                        @else
+                                                        {{-- <a href="{{ (Auth::user()->first_name == ' ' || strlen(Auth::user()->first_name) < 2) ? '#' : route('user.verify-phone') }}" onclick="{{(strlen(Auth::user()->first_name) < 2) ? 'show_bank()' : ''}}"> --}}
+                                                            <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                                <span class="d-block">Level 1  - Phone number verification</span>
+                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                                </span>
+                                                            </div>
+                                                        {{-- </a> --}}
                                                         @endif
-                                                        @if (Auth::user()->address_verified_at == null)
+                                                        @if (Auth::user()->address_verified_at == null && Auth::user()->phone_verified_at != null)
                                                         {{-- Address verification tab --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards addressVerificationCard mt-4">
@@ -440,12 +449,20 @@
                                                                     style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
                                                             </div>
                                                         </div>
+                                                        @else
+                                                        <div
+                                                            class="d-flex flex-row  align-items-center accordion_cards addressVerificationCard mt-4">
+                                                            <span class="d-block ml-3">Level 2 - Address verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                            </span>
+                                                        </div>
                                                         @endif
                                                     </div>
 
                                                     <div class="col-12 col-lg-12 mt-3">
 
-                                                        @if (Auth::user()->idcard_verified_at == null)
+                                                    @if (Auth::user()->idcard_verified_at == null && Auth::user()->address_verified_at != null)
                                                         {{-- ID verification card --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
@@ -475,7 +492,17 @@
                                                                 </form>
                                                             </div>
                                                         </div>
-                                                        @endif
+                                                    @endif
+                                                    @if (Auth::user()->idcard_verified_at != null)
+                                                        <div
+                                                            class="d-flex flex-row  align-items-center accordion_cards idVerificationCard mt-2">
+                                                            <span class="d-block ml-3">Level 3 - ID verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                            </span>
+                                                        </div>
+                                                    @endif
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -967,7 +994,7 @@
                             </div>
                         </div>
 
-                        @if (Auth::user()->phone_verified_at == null)
+                        {{-- @if (Auth::user()->phone_verified_at == null)
                         <div class="col-md-12">
                             <label for="">Phone Number</label>
                             <div class="position-relative input-group mb-0 mx-auto mx-md-0" style="">
@@ -997,7 +1024,7 @@
                             </div>
                         </div>
 
-                        @endif
+                        @endif --}}
 
 
 
@@ -1010,5 +1037,18 @@
         </div>
     </div>
 </div>
-
+@if (strlen(Auth::user()->first_name) < 2)
+    <script>
+        function show_bank() {
+            swal({
+                title: "Failed!",
+                text: "Please add your bank details to continue your level 1 verification",
+                icon: "error",
+                button: 'Add bank',
+            }).then(function() {
+                document.getElementById('add_bank').click();
+            });
+        }
+    </script>
+@endif
 @endsection
