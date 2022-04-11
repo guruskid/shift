@@ -562,3 +562,9 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
     Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
 
 });
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
+
+    Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
+    Route::GET('/users_birthdays', 'MarketingController@user_birthday')->name('admin.sales.users_birthdays');
+});

@@ -164,6 +164,10 @@ class AdminController extends Controller
                     'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges', 'old_charges'
                 ])
             );
+        } else if (Auth::user()->role == 559) { //Marketing
+            $marketing_controller =  new MarketingController();
+            return $marketing_controller->index();
+
         } else if (Auth::user()->role == 666) { //Manager
             return view(
                 'admin.manager_dashboard',

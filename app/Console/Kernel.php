@@ -2,7 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\FollowUpMail;
 use App\Console\Commands\GetCurrentRate;
+use App\Http\Controllers\MarketingController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +16,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        GetCurrentRate::class
+        GetCurrentRate::class,
+        FollowUpMail::class
     ];
 
     /**
@@ -28,6 +31,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('get:rate')->everyMinute();
+        $schedule->command('followup:mail')->everyMinute();
+        $schedule->call(MarketingController::followup())->everyMinute();
     }
 
     /**

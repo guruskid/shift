@@ -207,6 +207,9 @@
                                     @case(666)
                                     Manager
                                     @break
+                                    @case(559)
+                                    Marketing
+                                    @break
                                     @case(444)
                                     Chinese
                                     @break
@@ -241,6 +244,10 @@
 
                 @if (Auth::user()->role == 889 || Auth::user()->role == 777 )
                 @include('layouts.partials.accountant_sidebar')
+                @endif
+
+                @if (Auth::user()->role == 559)
+                @include('layouts.partials.marketing_sidebar')
                 @endif
 
             </nav>

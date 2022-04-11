@@ -123,7 +123,8 @@
                     </li>
                 </ul>
             </li>
-            @else
+            @endif
+            @if (!in_array(Auth::user()->role, [555,559] ))
             <li>
                 <a href="#">
                     <i class="metismenu-icon pe-7s-timer"></i>
@@ -194,6 +195,7 @@
                 </ul>
             </li>
             @endif
+            
             @if (in_array(Auth::user()->role, [777] ))
                 <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
                     <a href="{{route('admin.naira-p2p')}}">
@@ -252,7 +254,7 @@
                 </li>
             @endif
 
-            @if (!in_array(Auth::user()->role, [889, 777, 666, 555, 449, 444]))
+            @if (!in_array(Auth::user()->role, [889, 777, 666, 555, 449, 444,559]))
                 <li class="my-3">
                     <a href="{{route('admin.assigned-transactions')}}"
                         class=" {{ Route::currentRouteName() == 'admin.assigned-transactions' ? 'mm-active' : '' }} ">
@@ -268,6 +270,24 @@
                         class=" {{ Route::currentRouteName() == 'admin.chat_agents' ? 'mm-active' : '' }} ">
                         <i class="metismenu-icon pe-7s-users"></i>
                         Chat Agents
+                    </a>
+                </li>
+            @endif
+
+            @if (in_array(Auth::user()->role, [559] ))
+                <li class="my-3">
+                    <a href="{{route('admin.sales.users_verifications')}}"
+                        class=" {{ Route::currentRouteName() == 'admin.sales.users_verifications' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-users"></i>
+                         Users Verification
+                    </a>
+                </li>
+
+                <li class="my-3">
+                    <a href="{{route('admin.sales.users_birthdays')}}"
+                        class=" {{ Route::currentRouteName() == 'admin.sales.users_birthdays' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-users"></i>
+                         Birthday
                     </a>
                 </li>
             @endif
