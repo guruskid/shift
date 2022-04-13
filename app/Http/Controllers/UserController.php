@@ -461,8 +461,8 @@ class UserController extends Controller
             $btn_url = '';
 
             $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-            $name = explode(' ', $name);
-            $firstname = ucfirst($name[0]);
+            $name = str_replace(' ', '', $name);
+            $firstname = ucfirst($name);
             Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 

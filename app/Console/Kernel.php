@@ -31,8 +31,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('get:rate')->everyMinute();
-        $schedule->command('followup:mail')->everyMinute();
-        $schedule->call(MarketingController::followup())->everyMinute();
+        $schedule->command('followup:mail')->daily();
     }
 
     /**

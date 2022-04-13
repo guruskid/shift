@@ -47,7 +47,7 @@
                             <i class="pe-7s-users icon-gradient bg-sunny-morning">
                             </i>
                         </div>
-                        <div>All Users</div>
+                        <div>{{ $segment }}</div>
                     </div>
                 </div>
             </div>
@@ -75,55 +75,25 @@
                             class="align-middle mb-0 table table-borderless table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    {{-- <th >Last name</th> --}}
+                                    <th>Full Name</th>
+                                    <th>Username</th>
                                     <th>Email</th>
-                                    @if($segment == "Users Birthday")
-                                    <th>Birthday</th>
-                                    @else
-                                    <th>Verification Level</th>
-                                    @endif
-                                    <th>Date Of SignUp</th>
+                                    <th>Signup Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($users as $u)
+                                @foreach ($data as $t)
                                 <tr>
-                                    <td class="text-muted">{{$u->id}}</td>
-                                    <td>{{ucwords($u->first_name)}}</td>
-                                    {{-- <td >{{$u->last_name}}</td> --}}
-                                    <td>{{$u->email}}</td>
-                                    @if($segment == "Users Birthday")
-                                    <td>{{ $u->birthday}}</td>
-                                    @else
-                                    <td>
-                                        @switch($u->verification_status)
-                                        @case('Level 3')
-                                        <div class="badge badge-success">{{$u->verification_status}}</div>
-                                        @break
-                                        @case("Pending")
-                                        <div class="badge badge-danger">{{$u->verification_status}}</div>
-                                        @break
-                                        @case('Level 1')
-                                        <div class="badge badge-warning">{{$u->verification_status}}</div>
-                                        @break
-                                        @case('Level 2')
-                                        <div class="badge badge-info">{{$u->verification_status}}</div>
-                                        @break
-                                        @default
-                                        <div class="badge badge-primary">{{$u->verification_status}}</div>
-
-                                        @endswitch
-                                    </td>
-                                    <td>{{ $u->verification_status}}</td>
-                                    @endif
-                                    <td>{{$u->created_at->format('d M y')}}</td>
+                                    <td>{{$t->first_name.' '.$t->last_name}}</td>
+                                    <td>{{ $t->username }}</td>
+                                    <td>{{ $t->email }}</td>
+                                    <td>{{ $t->created_at->format('d M Y h:ia')}}</td>
+                                    
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $users->links() }}
+                        {{ $data->links() }}
                     </div>
                 </div>
             </div>

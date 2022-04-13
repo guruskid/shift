@@ -346,8 +346,8 @@ class AuthController extends Controller
         $this->verificationCodeEmail($user->email, $user->id);
 
         $name = $user->first_name == " " ? $user->username : $user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
 
         $title = 'Welcome to Dantown,';
         $body = 'Congratulations ' . $firstname . ' on signing up on Dantown.<br>
