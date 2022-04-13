@@ -449,8 +449,11 @@
                                                                     style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
                                                             </div>
                                                         </div>
-                                                        @else
-                                                        <div
+
+                                                        @endif
+
+                                                        @if (Auth::user()->address_verified_at != null)
+                                                            <div
                                                             class="d-flex flex-row  align-items-center accordion_cards addressVerificationCard mt-4">
                                                             <span class="d-block ml-3">Level 2 - Address verification</span>
                                                             <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
