@@ -65,6 +65,23 @@ function deleteRate(id) {
     }
 }
 
+//**Create Response Data for Called Users*/
+function AddResponse(data){
+    $('#e_email').html(data['email']);
+    $('#e_id').val(data['id']);
+}
+
+//**View Response Data for Called Users*/
+function ViewResponse(call_log,user,call_category){
+    $('#v_email').html(user['email']);
+    $('#v_id').val(call_log['id']);
+
+    $('#v_status').html(call_category['category']);
+    $('#v_status').val(call_category['id']);
+
+    $('#v_feedback').val(call_log['call_response']);
+}
+
 /* Edit Transaction */
 function editTransac(data) {
     $('#e_email').html(data['user_email']);

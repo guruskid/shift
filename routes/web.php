@@ -562,3 +562,20 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
     Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
 
 });
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
+
+    Route::GET('/QuarterlyInactiveUsersFromDB', 'Admin\BusinessDeveloperController@QuarterlyInactiveFromOldUsersDB');
+    Route::GET('/Categories/{type?}', 'Admin\BusinessDeveloperController@index')->name('business-developer.user-category');
+    Route::GET('/view/{type?}', 'Admin\BusinessDeveloperController@viewCategory')->name('business-developer.view-type');
+
+    Route::POST('/create-call-log', 'Admin\BusinessDeveloperController@createCallLog')->name('business-developer.create.call-log');
+    Route::POST('/update-call-log', 'Admin\BusinessDeveloperController@UpdateCallLog')->name('business-developer.update.call-log');
+
+    Route::GET('call-log','Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
+
+    Route::GET('user_profile','Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
+
+    // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRespondedUsersForQualityInactive');
+    
+});
