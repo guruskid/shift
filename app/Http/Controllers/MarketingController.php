@@ -18,29 +18,29 @@ class MarketingController extends Controller
         $total_app_signed_up = User::count();
  
         $daily_web_signed_up = User::where("created_at",">=",Carbon::now()->subDay())
-        ->where("created_at","<=",Carbon::now())->count();
+        ->where("created_at","<=",Carbon::now())->where('platform','web')->count();
  
         $daily_app_signed_up = User::where("created_at",">=",Carbon::now()->subDay())
-        ->where("created_at","<=",Carbon::now())->count();
+        ->where("created_at","<=",Carbon::now())->where('platform','app')->count();
  
          $daily_app_transactions = Transaction::where("created_at",">=",Carbon::now()->subDay())
-         ->where("created_at","<=",Carbon::now())->count();
+         ->where("created_at","<=",Carbon::now())->where('platform','app')->count();
  
          $daily_web_transactions = Transaction::where("created_at",">=",Carbon::now()->subDay())
-         ->where("created_at","<=",Carbon::now())->count();
+         ->where("created_at","<=",Carbon::now())->where('platform','web')->count();
  
          $monthly_web_signed_up = User::whereMonth('created_at', Carbon::now()->month)
-         ->whereYear('created_at', Carbon::now()->year)->count();
+         ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->count();
  
         $monthly_app_signed_up = User::whereMonth('created_at', Carbon::now()->month)
-        ->whereYear('created_at', Carbon::now()->year)->count();
+        ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->count();
  
          $monthly_app_transactions = Transaction::whereMonth('created_at', Carbon::now()->month)
-         ->whereYear('created_at', Carbon::now()->year)->count();
+         ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->count();
          $monthly_web_transactions = Transaction::whereMonth('created_at', Carbon::now()->month)
-         ->whereYear('created_at', Carbon::now()->year)->count();
+         ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->count();
  
-         $recalcitrant = 2700;
+         $recalcitrant = 4000;
  
          $recalcitrant = 2800; 
 
@@ -59,27 +59,27 @@ class MarketingController extends Controller
        $total_app_signed_up = User::count();
 
        $daily_web_signed_up = User::where("created_at",">=",Carbon::now()->subDay())
-       ->where("created_at","<=",Carbon::now())->count();
+       ->where("created_at","<=",Carbon::now())->where('platform','web')->count();
 
        $daily_app_signed_up = User::where("created_at",">=",Carbon::now()->subDay())
-       ->where("created_at","<=",Carbon::now())->count();
+       ->where("created_at","<=",Carbon::now())->where('platform','app')->count();
 
         $daily_app_transactions = Transaction::where("created_at",">=",Carbon::now()->subDay())
-        ->where("created_at","<=",Carbon::now())->count();
+        ->where("created_at","<=",Carbon::now())->where('platform','app')->count();
 
         $daily_web_transactions = Transaction::where("created_at",">=",Carbon::now()->subDay())
-        ->where("created_at","<=",Carbon::now())->count();
+        ->where("created_at","<=",Carbon::now())->where('platform','web')->count();
 
         $monthly_web_signed_up = User::whereMonth('created_at', Carbon::now()->month)
-        ->whereYear('created_at', Carbon::now()->year)->count();
+        ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->count();
 
        $monthly_app_signed_up = User::whereMonth('created_at', Carbon::now()->month)
-       ->whereYear('created_at', Carbon::now()->year)->count();
+       ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->count();
 
         $monthly_app_transactions = Transaction::whereMonth('created_at', Carbon::now()->month)
-        ->whereYear('created_at', Carbon::now()->year)->count();
+        ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->count();
         $monthly_web_transactions = Transaction::whereMonth('created_at', Carbon::now()->month)
-        ->whereYear('created_at', Carbon::now()->year)->count();
+        ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->count();
 
         $recalcitrant = 2700;
 

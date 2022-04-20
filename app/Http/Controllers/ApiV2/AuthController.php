@@ -220,7 +220,6 @@ class AuthController extends Controller
 
         $rc = $request->refcode ?? NULL;
 
-
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
@@ -251,6 +250,7 @@ class AuthController extends Controller
             'status' => 'active',
             'referrer' => $rc,
             'password' => Hash::make($input['password']),
+            'platform' => $input['platform']
         ];
 
         if (isset($input['referral_code'])) {

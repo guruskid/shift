@@ -406,6 +406,7 @@ class BtcWalletController extends Controller
             'uid' => uniqid(),
             'user_email' => Auth::user()->email,
             'card' => 'bitcoin',
+            'platform' => $r->platform,
             'agent_id' => 1,
             'ngn_rate' => $trade_rate
         ]);

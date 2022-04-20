@@ -93,6 +93,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'external_id' => $external_id,
             'password' => Hash::make($data['password']),
+            'platform' => "web"
         ]);
 
 
