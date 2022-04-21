@@ -62,7 +62,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'first_name' => 'string|required',
-            // 'last_name' => 'string',
+            'last_name' => 'string|required',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             /* 'country_id' => 'required|integer', */
@@ -86,8 +86,8 @@ class RegisterController extends Controller
         $external_id = $username . '-' . uniqid();
 
         $user =  User::create([
-            'first_name' => ' ',
-            'last_name' => ' ',
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'username' => $username,
             'status' => 'active',
             'email' => $data['email'],
