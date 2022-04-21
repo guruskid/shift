@@ -983,7 +983,7 @@
                         <div class="col-md-12">
                             <div class="position-relative form-group">
                                 <label>Account Number</label>
-                                <input type="text" onKeyPress="if(this.value.length==10) return false;" required class="form-control" name="account_number">
+                                <input type="number" onKeyPress="if(this.value.length==10) return false;" required class="form-control" name="account_number">
                             </div>
                         </div>
                         <div class="col-md-12">
