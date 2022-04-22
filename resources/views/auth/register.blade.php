@@ -24,13 +24,19 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                     @endforeach
                     <div id="step_one">
                         <div class="form-group">
-                            <input type="text" name="first_name" required placeholder="First Name" class="form-control col-11 mx-auto mx-md-0 col-lg-8">
+                            <input type="text" onkeypress="return event.charCode != 32" name="first_name" required placeholder="First Name" class="form-control col-11 mx-auto mx-md-0 col-lg-8">
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <input type="text" name="last_name"  placeholder="Lastname"
                                 class="form-control col-11 mx-auto mx-md-0 col-lg-8" />
+                        </div> --}}
+
+                        <div class="form-group">
+                            <input type="number" onKeyPress="if(this.value.length==11) return false;" name="phone_number"  placeholder="Phone number"
+                                class="form-control col-11 mx-auto mx-md-0 col-lg-8" />
                         </div>
+
                         <div class="form-group">
                             <input type="text" id="username" name="username" required placeholder="Username"
                                 class="form-control col-11 mx-auto mx-md-0 col-lg-8" />
