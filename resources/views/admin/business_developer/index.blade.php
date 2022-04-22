@@ -124,7 +124,7 @@
                                                 <tr>
                                                     <td><div class="td-content customer-name">{{$u->user->first_name}}</div></td>
                                                     <td>{{ $u->user->username }}</td>
-                                                    <td>{{ $u->user->created_at->format('d M y, H:ia') }}</td>
+                                                    <td>{{ $u->user->created_at->format('d M y, h:ia') }}</td>
                                                     <td>{{ $u->user->phone }}</td>
                                                     <td>{{ $u->last_transaction_date }}</td>
                                                     @if ($type == "Called_Users")
@@ -138,7 +138,17 @@
                                                         <td>{{ $u->updated_at }}</td>
                                                     @endif
                                                     @if ($type == "Quarterly_Inactive")
-                                                        <td>{{ ($u->Previous_Cycle == null) ? 'none' : $u->Previous_Cycle }}</td>
+                                                        <td>{{ ($u->Previous_Cycle == null) ? 'none' : $u->Previous_Cycle }}
+                                                        @if ($u->Previous_Cycle == "Responded")
+                                                            @if ($u->Responded_streak != null)
+                                                                ({{ $u->Responded_streak }})
+                                                            @endif
+                                                        @else
+                                                            @if ($u->Recalcitrant_streak != null)
+                                                                 ({{ $u->Recalcitrant_streak }})
+                                                             @endif
+                                                        @endif
+                                                        </td>
                                                     @endif
                                                     @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users")
                                                     <td>
@@ -250,7 +260,14 @@
                         <input type="hidden" readonly name="id" id="v_id">
                     </div>
                     <div class="row">
-
+                        @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users")
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="">Category</label>
+                                    <input type="text" class="form-control" id="v_status_input" disabled>
+                                </div>
+                            </div>
+                        @else
                         <div class="col">
                             <div class="form-group">
                                 <label for="">Category</label>
@@ -262,17 +279,24 @@
                                 </select>
                             </div>
                         </div>
+                        @endif
+                    
                         <div class="col-12">
                             <div class="form-group">
                             <label for="feedback">Feedback</label>
-                            <textarea class="form-control" id="v_feedback" name="feedback" rows="5" required></textarea>
+                            <textarea class="form-control" id="v_feedback" name="feedback" rows="5" required
+                            @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users")
+                                disabled
+                            @endif></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    @if (!($type =="Responded_Users" OR $type == "Recalcitrant_Users"))
                     <button type="submit" class="btn btn-primary">Update Call Log</button>
+                    @endif
                 </div>
             </form>
         </div>

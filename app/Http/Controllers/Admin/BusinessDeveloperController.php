@@ -45,7 +45,7 @@ class BusinessDeveloperController extends Controller
                 $u->last_transaction_date = 'No Transactions';
             }
             else{
-                $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, H:ia');
+                $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
         }
         return view(
@@ -90,7 +90,7 @@ class BusinessDeveloperController extends Controller
                 $u->last_transaction_date = 'No Transactions';
             }
             else{
-                $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, H:ia');
+                $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
         }
         return view(
@@ -142,12 +142,19 @@ class BusinessDeveloperController extends Controller
         return redirect()->back()->with(['success' => 'Call Log Updated']);
     }
 
-    public function CallLog()
+    public function CallLog(Request $request)
     {
-        $data_table = CallLog::latest('updated_at')->paginate(100);
+        // dd($request->status);
+        $data_table = CallLog::latest('updated_at');
         $segment = "Call Log";
         $type = "Responded_Users";
         $call_categories = CallCategory::all();
+
+        if($request->status)
+        {
+            $data_table = $data_table->where('call_category_id', $request->status);
+        }
+        $data_table = $data_table->paginate(1000);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->latest('updated_at')->get();
             if($user_tnx->count() == 0)
@@ -155,7 +162,7 @@ class BusinessDeveloperController extends Controller
                 $u->last_transaction_date = 'No Transactions';
             }
             else{
-                $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, H:ia');
+                $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
         }
         return view(
@@ -165,6 +172,8 @@ class BusinessDeveloperController extends Controller
             ])
         );
     }
+
+
 
     public function UserProfile()
     {
@@ -176,6 +185,27 @@ class BusinessDeveloperController extends Controller
                 'users','segment'
             ])
         );
+    }
+
+    public function addCallCategory(Request $r)
+    {
+        $call_category = new CallCategory();
+        $call_category->category = $r->category;
+        $call_category->save();
+
+        return back()->with(['success'=>'Added Call Category']);
+    }
+
+    public function displayCallCategory()
+    {
+        $call_category = CallCategory::latest('updated_at')->get();
+        return view('admin.business_developer.call_category', compact('call_category'));
+    }
+
+    public function deleteCallCategory($id)
+    {   
+        CallCategory::find($id)->delete();
+        return back()->with(['success'=>'Call Category deleted']);
     }
 
     
@@ -255,9 +285,10 @@ class BusinessDeveloperController extends Controller
                         'Current_Cycle'=>"QuarterlyInactive",
                         'Previous_Cycle' => "Recalcitrant",
                         'call_log_id' => null,
-                        'current_cycle_count_date' => Carbon::now()
+                        'current_cycle_count_date' => Carbon::now(),
+                        'Recalcitrant_streak' => $ru->Recalcitrant_streak + 1,
+                        'Responded_streak' => 0
                     ]);
-                    CallLog::where('user_id',$ru->user_id)->delete();
 
 
                 }
@@ -277,7 +308,7 @@ class BusinessDeveloperController extends Controller
         $responded_users = UserTracking::where('Current_Cycle','Responded')->orderBy('id','desc')->get();
         foreach ($responded_users as $ru) {
             $ru->current_cycle_count_date = Carbon::parse($ru->current_cycle_count_date);
-            $User_tnx = Transaction::where('user_id',$ru->user_id)->where('updated_at','>=',$ru->current_cycle_count_date)->count();
+            $User_tnx = Transaction::where('user_id',$ru->user_id)->where('updated_at','>',$ru->current_cycle_count_date)->count();
             $diff_in_months = $ru->current_cycle_count_date->diffInMonths(Carbon::now());
             if($diff_in_months >=2)
             {
@@ -287,10 +318,11 @@ class BusinessDeveloperController extends Controller
                         'Responded_Cycle' => $ru->Responded_Cycle + 1,
                         'Current_Cycle'=>"QuarterlyInactive",
                         'Previous_Cycle' => "Responded",
-                         'call_log_id' => null,
-                         'current_cycle_count_date' => Carbon::now()
+                        'call_log_id' => null,
+                        'current_cycle_count_date' => Carbon::now(),
+                        'Responded_streak' => $ru->Responded_streak + 1,
+                        'Recalcitrant_streak' => 0
                    ]);
-                    CallLog::where('user_id',$ru->user_id)->delete();
                 }else{
                     $last_transaction_date = Transaction::where('user_id',$ru->user_id)->where('updated_at','>=',$ru->current_cycle_count_date)->latest('updated_at')->first()->updated_at;
                     UserTracking::find($ru->id)->update([

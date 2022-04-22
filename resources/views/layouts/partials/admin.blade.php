@@ -373,7 +373,15 @@
             </li>
             @endif
             @endif
-
+            @if (in_array(Auth::user()->role, [999, 666] ))
+            <li class="my-3">
+                <a href="{{route('admin.call-categories')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.call-categories' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Call Category
+                </a>
+            </li>
+            @endif
             @if (in_array(Auth::user()->role, [999, 557] ))
                 <li class="my-3">
                     <a href="{{route('business-developer.call-log')}}"

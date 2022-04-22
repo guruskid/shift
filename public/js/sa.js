@@ -76,6 +76,8 @@ function ViewResponse(call_log,user,call_category){
     $('#v_email').html(user['email']);
     $('#v_id').val(call_log['id']);
 
+    $('#v_status_input').val(call_category['category']);
+    
     $('#v_status').html(call_category['category']);
     $('#v_status').val(call_category['id']);
 

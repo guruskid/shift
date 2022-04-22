@@ -59,17 +59,21 @@
                             <div class="">
                                 {{ $segment }}
                             </div>
-                            {{--  <div class="">
-                                <form action="{{route('admin.search')}}" method="post" class="form-inline" >
-                            @csrf
-                            <div class="form-group">
-                                <input type="text" type="email" class="form-control" name="q"
-                                    placeholder="Enter user name or email">
+                            <form class="form-inline p-2"
+                                method="GET">
+                                {{-- @csrf --}}
+                            <div class="form-group mr-2">
+                                <select name="status" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    @foreach ($call_categories as $cc)
+                                        <option value="{{ $cc->id }}">{{ $cc->category }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <button class="ml-3 btn btn-outline-secondary"> <i class="fa fa-search"></i></button>
-                            </form>
-                        </div> --}}
+                            <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                        </form>
                     </div>
+                    
                     <div class="table-responsive p-3">
                         <table
                             class="align-middle mb-0 table table-borderless table-striped table-hover text-center 
@@ -105,7 +109,7 @@
                                 <tr>
                                     <td><div class="td-content customer-name">{{$u->user->first_name}}</div></td>
                                     <td>{{ $u->user->username }}</td>
-                                    <td>{{ $u->user->created_at->format('d M y, H:ia') }}</td>
+                                    <td>{{ $u->user->created_at->format('d M y, h:ia') }}</td>
                                     <td>{{ $u->user->phone }}</td>
                                     <td>{{ $u->last_transaction_date }}</td>
                                     @if ($type == "Called_Users")
@@ -119,7 +123,17 @@
                                         <td>{{ $u->updated_at }}</td>
                                     @endif
                                     @if ($type == "Quarterly_Inactive")
-                                        <td>{{ ($u->Previous_Cycle == null) ? 'none' : $u->Previous_Cycle }}</td>
+                                    <td>{{ ($u->Previous_Cycle == null) ? 'none' : $u->Previous_Cycle }}
+                                        @if ($u->Previous_Cycle == "Responded")
+                                            @if ($u->Responded_streak != null)
+                                                ({{ $u->Responded_streak }})
+                                            @endif
+                                        @else
+                                            @if ($u->Recalcitrant_streak != null)
+                                                 ({{ $u->Recalcitrant_streak }})
+                                             @endif
+                                        @endif
+                                        </td>
                                     @endif
                                     @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users")
                                     <td>
@@ -230,7 +244,14 @@
                         <input type="hidden" readonly name="id" id="v_id">
                     </div>
                     <div class="row">
-
+                        @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $segment != "Call Log")
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="">Category</label>
+                                    <input type="text" class="form-control" id="v_status_input" disabled>
+                                </div>
+                            </div>
+                        @else
                         <div class="col">
                             <div class="form-group">
                                 <label for="">Category</label>
@@ -242,17 +263,24 @@
                                 </select>
                             </div>
                         </div>
+                        @endif
+                    
                         <div class="col-12">
                             <div class="form-group">
                             <label for="feedback">Feedback</label>
-                            <textarea class="form-control" id="v_feedback" name="feedback" rows="5" required></textarea>
+                            <textarea class="form-control" id="v_feedback" name="feedback" rows="5" required
+                            @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $segment != "Call Log")
+                                disabled
+                            @endif></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    @if (!($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $segment != "Call Log"))
                     <button type="submit" class="btn btn-primary">Update Call Log</button>
+                    @endif
                 </div>
             </form>
         </div>

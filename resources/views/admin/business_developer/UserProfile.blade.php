@@ -92,7 +92,7 @@
                                     <td>{{ $u->username }}</td>
                                     <td>{{ $u->email }}</td>
                                     <td>{{ $u->transactions->count() }}</td>
-                                    <td>{{ $u->created_at->format('d M Y, H:ia') }}</td>
+                                    <td>{{ $u->created_at->format('d M Y, h:ia') }}</td>
                                     {{-- <td><a href="#" class="my-2" data-toggle="modal" data-target="#view-user-info" onclick="UserProfile($u)">
                                         <span class="btn btn btn-info">View</span>
                                     </a></td> --}}
@@ -109,46 +109,7 @@
 </div>
 </div>
 
-{{-- Add Called User Data Modal --}}
-<div class="modal fade  item-badge-rightm" id="view-user-info" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form action="{{route('business-developer.create.call-log')}} " method="POST" class="mb-3">
-                {{ csrf_field() }}
-                <div class="modal-header">
-                    <div class="media">
-                        <div class="media-body">
-                            <h4 class="media-heading" id="e_email">User Email</h4>
-                        </div>
-                    </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                </div>
 
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <input type="hidden" readonly name="id" id="e_id">
-                    </div>
-                    <div class="row">
-
-                        
-                        <div class="d-none col-12" id="feedback-textarea">
-                            <div class="form-group">
-                            <label for="feedback">Feedback</label>
-                            <textarea class="form-control" name="feedback" rows="5" required></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Call Log</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 
 @endsection
