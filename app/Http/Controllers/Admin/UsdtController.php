@@ -126,7 +126,7 @@ class UsdtController extends Controller
             'json' =>  [
                 "senderAccountId" => $wallet->account_id,
                 "address" => $request->address,
-                "amount" => number_format((float) $request->amount, 8),
+                "amount" => $request->amount,
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
@@ -148,7 +148,7 @@ class UsdtController extends Controller
                     "custodialAddress" => $wallet->address,
                     "contractType" => 0,
                     "recipient" => $request->address,
-                    "amount" => number_format($request->amount, 8),
+                    "amount" => $request->amount,
                     "signatureId" => $hd_wallet->private_key,
                     "tokenAddress" => "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
                     "tokenId" => '0',

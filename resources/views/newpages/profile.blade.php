@@ -76,7 +76,7 @@
                                     <div class="my-2">
                                         <span class="d-block text-center labelText">Name</span>
                                         <div class="d-flex justify-content-center align-items-center details">
-                                            {{ Auth::user()->first_name }} </div>
+                                            {{ Auth::user()->first_name .' '. Auth::user()->last_name }} </div>
                                     </div>
                                     <div class="my-2">
                                         <span class="d-block text-center labelText">Email</span>
@@ -130,7 +130,7 @@
                                         <div class="d-flex align-items-center mt-0 profile_details_col">
                                             <div class="user_profile_text text-center" style="width: 14%;">Name</div>
                                             <div class="user_profile_text ml-5" style="font-size: 18px;width: 56%;">
-                                                {{ Auth::user()->first_name }}</div>
+                                                {{ Auth::user()->first_name .' '. Auth::user()->last_name }}</div>
                                             <div class="user_profile_text text-center ml-5" style="width: 30%;">
                                                 <div class="profile_verification_status_text">
                                                     {{-- Pending verification --}}
@@ -401,7 +401,7 @@
 
                                                         {{-- Phone verification card --}}
                                                         @if (Auth::user()->phone_verified_at == null)
-                                                        <a href="{{ (Auth::user()->first_name == ' ' || strlen(Auth::user()->first_name) < 2) ? '#' : route('user.verify-phone') }}" onclick="{{(strlen(Auth::user()->first_name) < 2) ? 'show_bank()' : ''}}">
+                                                        <a href="{{ (Auth::user()->accounts->count() == 0) ? '#' : route('user.verify-phone') }}" onclick="{{(Auth::user()->accounts->count() == 0) ? 'show_bank()' : ''}}">
                                                             <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
                                                                 <span class="d-block">Level 1  - Phone number verification</span>
                                                                 <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
@@ -983,17 +983,28 @@
                         <div class="col-md-12">
                             <div class="position-relative form-group">
                                 <label>Account Number</label>
-                                <input type="text" required class="form-control" name="account_number">
+                                <input type="number" onKeyPress="if(this.value.length==10) return false;" required class="form-control" name="account_number">
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="position-relative form-group">
-                                <label>Account Name</label>
-                                @if (Auth::user()->accounts->count() == 0)
-                                <input type="text" required class="form-control " name="account_name">
-                                @else
-                                <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="account_name">
-                                @endif
+                            <div class="row">
+                                <div class="position-relative form-group col-md-6">
+                                    <label>Bank Firstname</label>
+                                    @if (Auth::user()->accounts->count() == 0)
+                                    <input type="text" required class="form-control " name="first_name">
+                                    @else
+                                    <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="first_name">
+                                    @endif
+                                </div>
+
+                                <div class="position-relative form-group col-md-6">
+                                    <label>Bank Lastname</label>
+                                    @if (Auth::user()->accounts->count() == 0)
+                                    <input type="text" required class="form-control " name="last_name">
+                                    @else
+                                    <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="last_name">
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -1040,7 +1051,7 @@
         </div>
     </div>
 </div>
-@if (strlen(Auth::user()->first_name) < 2)
+@if (Auth::user()->accounts->count() == 0)
     <script>
         function show_bank() {
             swal({
