@@ -174,13 +174,14 @@ class UserController extends Controller
         $a = new Account();
         $bank = Bank::where('code', $request->bank_code)->first();
         $a->user_id = Auth::user()->id;
-        $a->account_name = $request->account_name;
+        $a->account_name = $request->first_name .' '. $request->last_name;
         $a->bank_name = $bank->name;
         $a->bank_id = $bank->id;
         $a->account_number = $request->account_number;
         $a->save();
 
-        Auth::user()->first_name = $request->account_name;
+        Auth::user()->first_name = $request->first_name;
+        Auth::user()->last_name = $request->last_name;
         Auth::user()->save();
 
         return response()->json([
@@ -495,7 +496,7 @@ class UserController extends Controller
         if ($a->user_id != Auth::user()->id) {
             return redirect()->back()->with(["error" => 'Invalid Operation']);
         }
-        $a->account_name = $request->account_name;
+        $a->account_name = $request->first_name .' '. $request->last_name;
         $a->bank_name = $request->bank_name;
         $a->account_number = $request->account_number;
         $a->save();
