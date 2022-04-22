@@ -59,6 +59,7 @@
                             <div class="">
                                 {{ $segment }}
                             </div>
+                            @if($segment == "Call Log")
                             <form class="form-inline p-2"
                                 method="GET">
                                 {{-- @csrf --}}
@@ -72,6 +73,7 @@
                             </div>
                             <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                         </form>
+                        @endif
                     </div>
                     
                     <div class="table-responsive p-3">
@@ -113,14 +115,14 @@
                                     <td>{{ $u->user->phone }}</td>
                                     <td>{{ $u->last_transaction_date }}</td>
                                     @if ($type == "Called_Users")
-                                        <td>{{ $u->call_log->created_at }}</td>
+                                        <td>{{ $u->call_log->created_at->format('d M y, h:ia') }}</td>
                                     @endif
                                     @if ($type == "Quarterly_Inactive")
                                     <td>{{ ($u->Responded_Cycle == null) ? 0 : $u->Responded_Cycle }}</td>
                                     <td>{{ ($u->Recalcitrant_Cycle == null) ? 0 : $u->Recalcitrant_Cycle  }}</td>
                                     @endif
                                     @if($type == "Recalcitrant_Users")
-                                        <td>{{ $u->updated_at }}</td>
+                                        <td>{{ $u->updated_at->format('d M y, h:ia') }}</td>
                                     @endif
                                     @if ($type == "Quarterly_Inactive")
                                     <td>{{ ($u->Previous_Cycle == null) ? 'none' : $u->Previous_Cycle }}

@@ -336,7 +336,7 @@ class BusinessDeveloperController extends Controller
 
 
     public function QuarterlyInactiveFromOldUsersDB() {
-        if(!Auth::user()->role == 557 || !Auth::user()->role == 999 ){
+        if(!Auth::user()->role == 999 ){
             abort(404);
         }
         $all_users = User::all();
