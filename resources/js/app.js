@@ -61,6 +61,7 @@ Vue.component('tron-sell-component', require('./components/tron/Sell.vue').defau
 Vue.component('usdt-create-component', require('./components/usdt/CreateWallet.vue').default);
 Vue.component('usdt-send-component', require('./components/usdt/Send.vue').default);
 Vue.component('usdt-sell-component', require('./components/usdt/Sell.vue').default);
+Vue.component('usdt-buy-component', require('./components/usdt/Buy.vue').default);
 Vue.component('tab', require('./components/p2p/Tab.vue').default);
 Vue.component('tabs', require('./components/p2p/Tabs.vue').default);
 

@@ -97,11 +97,15 @@
                                                 data-toggle="tab" href="#home" role="tab" aria-controls="home"
                                                 aria-selected="true">Sell</a>
                                         </li>
-                                        {{-- <li class="nav-item" role="presentation" style="width:50%;">
-                                            <a class="nav-link d-block text-center" id="profile-tab" data-toggle="tab"
-                                                href="#profile" role="tab" aria-controls="profile"
-                                                aria-selected="false">Buy</a>
-                                        </li> --}}
+
+                                        @if (in_array(Auth::user()->email, ['sheanwinston@gmail.com', 'ibife1866@gmail.com', 'igwegoodnews002@gmail.com', 'chimenechinah11@gmail.com'] )  )
+                                            <li class="nav-item" role="presentation" style="width:50%;">
+                                                <a class="nav-link d-block text-center" id="profile-tab" data-toggle="tab"
+                                                    href="#buy" role="tab" aria-controls="profile"
+                                                    aria-selected="false">Buy</a>
+                                            </li>
+                                        @endif
+
                                     </ul>
                                     <div class="tab-content " id="myTabContent">
                                         <div class="text-center text-muted mb-3 mt-3 mt-lg-1"
@@ -111,6 +115,8 @@
                                         </div>
 
                                         <usdt-sell-component :rate="{{ $sell_rate }}" :amt_usd="{{ $amt_usd }}"  :charge={{ $charge }} :hd="'{{ $hd_wallet }}'" ></usdt-sell-component>
+
+                                        <usdt-buy-component :rate="{{ $buy_rate }}" :amt_usd="{{ $amt_usd }}"  :charge={{ $charge }} :hd="'{{ $hd_wallet }}'" ></usdt-buy-component>
 
                                     </div>
                                 </div>
