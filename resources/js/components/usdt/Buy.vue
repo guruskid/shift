@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-pane fade show active mx-auto p-3 calculator_form" id="buy" role="tabpanel"
+    <div class="tab-pane fade mx-auto p-3 calculator_form" id="buy" role="tabpanel"
         aria-labelledby="home-tab">
         <form @submit.prevent="buy()" mtrxod="post">
             <div class="form-group mb-4">
