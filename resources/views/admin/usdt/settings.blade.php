@@ -54,24 +54,26 @@
             </div>
 
             <div class="row">
-                <div class="col-md-3">
-                    <div class="card mb-3 widget-content">
-                        <a href="#">
-                            <div class="widget-content-wrapper ">
-                                <div class="widget-content-left">
-                                    <div class="widget-heading">
-                                        <form action="{{ route('admin.tether.update-rate') }} " method="post">@csrf
-                                            <h5>USDT to Naira</h5>
-                                            <input type="number" step="any" name="rate"
-                                                value="{{ $sell_rate }}" class="form-control mb-2">
-                                            <button class="btn btn-primary">Save</button>
-                                        </form>
-                                    </div>
+                <div class="col-md-6">
+                    <div class="card card-body">
+                        <form action="{{ route('admin.tether.update-rate') }} " method="post">@csrf
+                            <div class="row">
+                                <div class="col-6">
+                                    <h6>Sell to DT</h6>
+                                    <input type="number" step="any" name="rate" value="{{ $sell_rate }}"
+                                        class="form-control mb-2">
+                                </div>
+                                <div class="col-6">
+                                    <h6>Buy from DT</h6>
+                                    <input type="number" step="any" name="buy_rate" value="{{ $buy_rate }}"
+                                        class="form-control mb-2">
                                 </div>
                             </div>
-                        </a>
+                            <button class="btn btn-primary">Save</button>
+                        </form>
                     </div>
                 </div>
+
 
                 <div class="col-md-3">
                     <div class="card mb-3 widget-content">
@@ -83,7 +85,8 @@
                                             <h5>Sell Charges (%)</h5>
                                             <input type="hidden" name="name" value="usdt_sell_charge">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('usdt_sell_charge') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('usdt_sell_charge') }}"
+                                                class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>
@@ -103,7 +106,8 @@
                                             <h5>Send Charges (TRON)</h5>
                                             <input type="hidden" name="name" value="usdt_send_charge">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('usdt_send_charge') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('usdt_send_charge') }}"
+                                                class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>
@@ -123,7 +127,8 @@
                                             <h5>Fees Percentage (%)</h5>
                                             <input type="hidden" name="name" value="trading_usdt_per">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('trading_usdt_per') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('trading_usdt_per') }}"
+                                                class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>

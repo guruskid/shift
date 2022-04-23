@@ -9,6 +9,7 @@ use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CryptoHelperController;
+use App\Http\Controllers\LiveRateController;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -181,7 +182,8 @@ class UsdtController extends Controller
     public function settings()
     {
         $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first()->rate ?? 0;
-        return view('admin.usdt.settings', compact('sell_rate'));
+        $buy_rate = LiveRateController::usdtBuy();
+        return view('admin.usdt.settings', compact('sell_rate', 'buy_rate'));
     }
 
     public function updateRate(Request $request)
@@ -189,6 +191,11 @@ class UsdtController extends Controller
         CryptoRate::updateOrCreate(
             ['crypto_currency_id' => 2, 'type' => 'sell'],
             ['rate' => $request->rate]
+        );
+
+        CryptoRate::updateOrCreate(
+            ['crypto_currency_id' => 7, 'type' => 'buy'],
+            ['rate' => $request->buy_rate]
         );
 
         return back()->with(['success' => 'Rate updated']);
