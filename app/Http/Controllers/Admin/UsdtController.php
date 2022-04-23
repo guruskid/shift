@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CryptoHelperController;
 use App\Http\Controllers\LiveRateController;
+use App\Transaction;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -74,6 +75,30 @@ class UsdtController extends Controller
         return view('admin.usdt.index', compact('service_wallet', 'addresses', 'blockchain_fee_wallet', 'charges_wallet',  'hd_wallet', 'transactions'));
     }
 
+    public function settings(Request $request)
+    {
+        $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first()->rate ?? 0;
+        $buy_rate = LiveRateController::usdtBuy();
+
+        if ($request->start and $request->end) {
+            $sell_transactions = Transaction::where('card_id', 143)->where('created_at', '>=', $request->start)
+                ->where('created_at', '<=', $request->end)->where('status', 'success')->get();
+
+            $sell_btc = $sell_transactions->sum('quantity');
+            $sell_usd = $sell_transactions->sum('amount');
+
+            $ngn_sell_average = 0;
+            $cumulative = 0;
+            foreach ($sell_transactions as $t) {
+                $cumulative += ($t->quantity * $t->ngn_rate * $t->card_price);
+            }
+            $ngn_sell_average = ($cumulative == 0 ? 1 : $cumulative) / ($sell_usd == 0 ? 1 : $sell_usd);
+
+            return view('admin.usdt.settings', compact('sell_rate', 'buy_rate', 'ngn_sell_average'));
+        }
+
+        return view('admin.usdt.settings', compact('sell_rate', 'buy_rate'));
+    }
 
     public function send(Request $request)
     {
@@ -179,12 +204,7 @@ class UsdtController extends Controller
         }
     }
 
-    public function settings()
-    {
-        $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first()->rate ?? 0;
-        $buy_rate = LiveRateController::usdtBuy();
-        return view('admin.usdt.settings', compact('sell_rate', 'buy_rate'));
-    }
+
 
     public function updateRate(Request $request)
     {
@@ -292,7 +312,7 @@ class UsdtController extends Controller
 
         $res = json_decode($res_contract->getBody());
         $count = 0;
-        foreach ($res as $r ) {
+        foreach ($res as $r) {
             // check if address already exists
             if (!Contract::where('hash', $r)->exists()) {
                 Contract::create([
@@ -300,14 +320,13 @@ class UsdtController extends Controller
                     'type' => 'address',
                     'currency_id' => 7
                 ]);
-                $count ++;
+                $count++;
             }
-
         }
 
         $contract->status = 'completed';
         $contract->save();
 
-        return back()->with(['success' => $count. ' addresses created successfully']);
+        return back()->with(['success' => $count . ' addresses created successfully']);
     }
 }

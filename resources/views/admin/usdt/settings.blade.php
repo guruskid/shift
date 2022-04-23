@@ -54,28 +54,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6">
-                    <div class="card card-body">
-                        <form action="{{ route('admin.tether.update-rate') }} " method="post">@csrf
-                            <div class="row">
-                                <div class="col-6">
-                                    <h6>Sell to DT</h6>
-                                    <input type="number" step="any" name="rate" value="{{ $sell_rate }}"
-                                        class="form-control mb-2">
-                                </div>
-                                <div class="col-6">
-                                    <h6>Buy from DT</h6>
-                                    <input type="number" step="any" name="buy_rate" value="{{ $buy_rate }}"
-                                        class="form-control mb-2">
-                                </div>
-                            </div>
-                            <button class="btn btn-primary">Save</button>
-                        </form>
-                    </div>
-                </div>
-
-
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card mb-3 widget-content">
                         <a href="#">
                             <div class="widget-content-wrapper ">
@@ -96,7 +75,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card mb-3 widget-content">
                         <a href="#">
                             <div class="widget-content-wrapper ">
@@ -117,7 +96,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card mb-3 widget-content">
                         <a href="#">
                             <div class="widget-content-wrapper ">
@@ -135,6 +114,45 @@
                                 </div>
                             </div>
                         </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-body">
+                        <form action="{{ route('admin.tether.update-rate') }} " method="post">@csrf
+                            <div class="row">
+                                <div class="col-6">
+                                    <h6>Sell to DT</h6>
+                                    <input type="number" step="any" name="rate" value="{{ $sell_rate }}"
+                                        class="form-control mb-2">
+                                </div>
+                                <div class="col-6">
+                                    <h6>Buy from DT</h6>
+                                    <input type="number" step="any" name="buy_rate" value="{{ $buy_rate }}"
+                                        class="form-control mb-2">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-body">
+                        <form action="{{ route('admin.tether.filter-sell-ngn') }} " method="post">@csrf
+                            <div class="row">
+                                <div class="col-6">
+                                    <h6>Start</h6>
+                                    <input type="datetime-local" step="any" name="start" class="form-control mb-2">
+                                </div>
+                                <div class="col-6">
+                                    <h6>End</h6>
+                                    <input type="datetime-local" step="any" name="end" class="form-control mb-2">
+                                </div>
+                            </div>
+                            <strong>N{{ $ngn_sell_average ?? 0 }}</strong>
+                            <button class="btn btn-primary float-right">Filter</button>
+                        </form>
                     </div>
                 </div>
 
