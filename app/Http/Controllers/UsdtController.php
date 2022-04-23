@@ -362,7 +362,7 @@ class UsdtController extends Controller
             'json' =>  [
                 "senderAccountId" => Auth::user()->usdtWallet->account_id,
                 "address" => $hd_wallet->address,
-                "amount" => $request->amount,
+                "amount" => (string)round($request->amount, 3),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
@@ -387,7 +387,7 @@ class UsdtController extends Controller
                     "custodialAddress" => Auth::user()->usdtWallet->address,
                     "contractType" => [0, 0, 0],
                     "recipient" => [$hd_wallet->address, $service_wallet->address, $charge_wallet->address],
-                    "amount" => [$total,  $service_fee, $charge ],
+                    "amount" => [round($total, 3),  round($service_fee, 3), round($charge, 3) ],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0", "0", "0"],
                     "tokenAddress" => ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"],
@@ -525,9 +525,9 @@ class UsdtController extends Controller
 
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
+        $sub_total = round(($request->amount  + $charge), 3);
 
-
-        if (($request->amount  + $charge) > $user_wallet->balance) {
+        if ($sub_total > $user_wallet->balance) {
             return response()->json([
                 'success' => false,
                 'msg' => "Insufficient balance"
@@ -549,13 +549,6 @@ class UsdtController extends Controller
 
         $total = $request->amount;
 
-        if ($total <= 0) {
-            return response()->json([
-                'success' => false,
-                'msg' => 'Insufficient transfer amount when fee was deducted'
-            ]);
-        }
-
 
         //Store Withdrawal
         $url = env('TATUM_URL') . '/offchain/withdrawal';
@@ -564,7 +557,7 @@ class UsdtController extends Controller
             'json' =>  [
                 "senderAccountId" => Auth::user()->usdtWallet->account_id,
                 "address" => $request->address,
-                "amount" => $request->amount  + $charge,
+                "amount" => (string)$sub_total,
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
@@ -589,7 +582,7 @@ class UsdtController extends Controller
                     "custodialAddress" => Auth::user()->usdtWallet->address,
                     "contractType" => [0, 0],
                     "recipient" => [$request->address,  $charge_wallet->address],
-                    "amount" => [$total,  $charge],
+                    "amount" => [round($total, 3),  round($charge, 3)],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenAddress" => ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",  "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"],
                     "tokenId" => ['0', '0'],
