@@ -218,7 +218,7 @@ class UsdtController extends Controller
             ['rate' => $request->buy_rate]
         );
 
-        return back()->with(['success' => 'Rate updated']);
+        return redirect()->route('admin.tether.settings')->with(['success' => 'Rate updated']);
     }
 
     public function contracts()
