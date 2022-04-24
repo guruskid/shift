@@ -347,6 +347,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
         Route::post('/send', 'UsdtController@send')->name('usdt.send');
         Route::get('/trade', 'UsdtController@trade')->name('usdt.trade');
         Route::post('/sell', 'UsdtController@sell')->name('usdt.sell');
+        Route::post('/buy', 'UsdtController@buy')->name('usdt.buy');
     });
 
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */
