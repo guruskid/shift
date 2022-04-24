@@ -121,6 +121,7 @@ Route::group(['middleware' => ['accountant'] ], function () {
     Route::prefix('tether')->group(function () {
         Route::get('/', 'UsdtController@index')->name('admin.tether');
         Route::get('/settings', 'UsdtController@settings')->name('admin.tether.settings');
+        Route::post('/filter-sell-price', 'UsdtController@settings')->name('admin.tether.filter-sell-ngn');
         Route::post('/update-rate', 'UsdtController@updateRate')->name('admin.tether.update-rate');
 
         Route::get('/smart-contracts', 'UsdtController@contracts')->name('admin.tether.contracts');
