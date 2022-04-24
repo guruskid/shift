@@ -33,7 +33,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                         </div> --}}
 
                         <div class="form-group">
-                            <input type="number" onKeyPress="if(this.value.length==11) return false;" name="phone_number"  placeholder="Phone number"
+                            <input type="number" onKeyPress="if(this.value.length==12) return false;" name="phone_number"  placeholder="Phone number"
                                 class="form-control col-11 mx-auto mx-md-0 col-lg-8" />
                         </div>
 
