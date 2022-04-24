@@ -8,6 +8,7 @@ use App\Mail\GeneralTemplateOne;
 use App\Mail\UserRegistered;
 use App\Mail\VerificationCodeMail;
 use App\NairaTransaction;
+use App\User;
 //use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Mail;
 
@@ -40,6 +41,27 @@ Route::get('email', function () {
         $btn_url = '';
 
     return new VerificationCodeMail($rad, $title, $body, $btn_text, $btn_url);
+});
+
+Route::get('users/explode/firstname-lastname/prove/init/yes', function () {
+    $users = User::orderBy('id', 'desc')->get();
+    foreach($users as $user){
+    $xUser = explode(' ', $user->first_name);
+       if(isset($xUser[1])){
+        $user->first_name = $xUser[0];
+        $user->last_name = $xUser[1];
+        if(isset($xUser[2])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2];
+        }
+        if(isset($xUser[3])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2]. ' ' . $xUser[3];
+        }
+        if(isset($xUser[4])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2]. ' ' . $xUser[3]. ' ' . $xUser[4]; // for users with plenty last names
+        }
+        $user->save();
+       }
+    }
 });
 
 Route::get('gm', function () {
