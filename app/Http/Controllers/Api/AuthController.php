@@ -99,6 +99,11 @@ class AuthController extends Controller
             'password' => $password,
             'amount_control' => 'VARIABLE',
         ]);
+        
+        UserTracking::create([
+            'user_id' =>$user->id,
+            'Current_Cycle' => "Active"
+        ]);
 
         $btc_hd = HdWallet::where('currency_id', 1)->first();
         $btc_xpub = $btc_hd->xpub;

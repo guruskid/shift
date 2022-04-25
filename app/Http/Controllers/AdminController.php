@@ -15,6 +15,7 @@ use App\Events\TransactionUpdated;
 use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\Exports\DownloadUsers;
+use App\Http\Controllers\Admin\BusinessDeveloperController;
 use Excel;
 use App\NairaWallet;
 use App\Payout;
@@ -238,6 +239,8 @@ class AdminController extends Controller
                     'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
                     'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
                 ]));
+        } else if (Auth::user()->role == 557) { //business_Developer
+            return (new BusinessDeveloperController)->index();
         }
     }
 

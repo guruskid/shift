@@ -8,6 +8,7 @@ use App\Mail\GeneralTemplateOne;
 use App\Mail\UserRegistered;
 use App\Mail\VerificationCodeMail;
 use App\NairaTransaction;
+use App\User;
 //use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Mail;
 
@@ -40,6 +41,27 @@ Route::get('email', function () {
         $btn_url = '';
 
     return new VerificationCodeMail($rad, $title, $body, $btn_text, $btn_url);
+});
+
+Route::get('users/explode/firstname-lastname/prove/init/yes', function () {
+    $users = User::orderBy('id', 'desc')->get();
+    foreach($users as $user){
+    $xUser = explode(' ', $user->first_name);
+       if(isset($xUser[1])){
+        $user->first_name = $xUser[0];
+        $user->last_name = $xUser[1];
+        if(isset($xUser[2])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2];
+        }
+        if(isset($xUser[3])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2]. ' ' . $xUser[3];
+        }
+        if(isset($xUser[4])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2]. ' ' . $xUser[3]. ' ' . $xUser[4]; // for users with plenty last names
+        }
+        $user->save();
+       }
+    }
 });
 
 Route::get('gm', function () {
@@ -473,6 +495,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::POST('/update-image-slider', 'Admin\ImageSliderController@updateImage')->name('admin.update_image_slider');
     Route::GET('/delete-image-slider/{id}', 'Admin\ImageSliderController@deleteImage')->name('admin.delete_image_slider');
 
+    //?call category
+    Route::get('/call-category', 'Admin\BusinessDeveloperController@displayCallCategory')->name('admin.call-categories');
+    Route::get('/call-category/{id}', 'Admin\BusinessDeveloperController@deleteCallCategory')->name('admin.call-categories.action');
+    Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
+
 });
 
 
@@ -571,4 +598,20 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], 
     Route::GET('/{type?}', 'MarketingController@Category')->name('admin.sales.type');
     Route::GET('/view/transactions/{type?}', 'MarketingController@viewTransactionsCategory')->name('admin.transactions.view.type');
     Route::GET('/view/users/{type?}', 'MarketingController@viewUsersCategory')->name('admin.users.view.type');
+});
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
+
+    Route::GET('/QuarterlyInactiveUsersFromDB', 'Admin\BusinessDeveloperController@QuarterlyInactiveFromOldUsersDB');
+    Route::GET('/Categories/{type?}', 'Admin\BusinessDeveloperController@index')->name('business-developer.user-category');
+    Route::GET('/view/{type?}', 'Admin\BusinessDeveloperController@viewCategory')->name('business-developer.view-type');
+
+    Route::POST('/create-call-log', 'Admin\BusinessDeveloperController@createCallLog')->name('business-developer.create.call-log');
+    Route::POST('/update-call-log', 'Admin\BusinessDeveloperController@UpdateCallLog')->name('business-developer.update.call-log');
+
+    Route::GET('call-log','Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
+
+    Route::GET('user_profile','Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
+
+    // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
+    
 });

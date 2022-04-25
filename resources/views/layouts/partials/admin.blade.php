@@ -124,7 +124,7 @@
                 </ul>
             </li>
             @endif
-            @if (!in_array(Auth::user()->role, [555,559] ))
+            @if (!in_array(Auth::user()->role, [555,559,557] ))
             <li>
                 <a href="#">
                     <i class="metismenu-icon pe-7s-timer"></i>
@@ -254,7 +254,7 @@
                 </li>
             @endif
 
-            @if (!in_array(Auth::user()->role, [889, 777, 666, 555, 449, 444,559]))
+            @if (!in_array(Auth::user()->role, [889, 777, 666, 555, 449, 444,559,557]))
                 <li class="my-3">
                     <a href="{{route('admin.assigned-transactions')}}"
                         class=" {{ Route::currentRouteName() == 'admin.assigned-transactions' ? 'mm-active' : '' }} ">
@@ -391,6 +391,32 @@
                 </a>
             </li>
             @endif
+            @endif
+            @if (in_array(Auth::user()->role, [999, 666] ))
+            <li class="my-3">
+                <a href="{{route('admin.call-categories')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.call-categories' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Call Category
+                </a>
+            </li>
+            @endif
+            @if (in_array(Auth::user()->role, [999, 557] ))
+                <li class="my-3">
+                    <a href="{{route('business-developer.call-log')}}"
+                        class=" {{ Route::currentRouteName() == 'business-developer.call-log' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-users"></i>
+                        Call Logs
+                    </a>
+                </li>
+
+                <li class="my-3">
+                    <a href="{{route('business-developer.user-profile')}}"
+                        class=" {{ Route::currentRouteName() == 'business-developer.user-profile' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-users"></i>
+                        User Profile
+                    </a>
+                </li>
             @endif
 {{--
             @if(Auth::user()->role == 449 AND Auth::user()->role == 999)

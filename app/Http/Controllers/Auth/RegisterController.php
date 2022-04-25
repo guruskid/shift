@@ -62,7 +62,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'first_name' => 'string|required',
-            'phone_number' => 'required|integer',
+            'phone_number' => 'required',
             // 'last_name' => 'string|required',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -96,6 +96,11 @@ class RegisterController extends Controller
             'external_id' => $external_id,
             'password' => Hash::make($data['password']),
             'platform' => "web"
+        ]);
+
+        UserTracking::create([
+            'user_id' =>$user->id,
+            'Current_Cycle' => "Active"
         ]);
 
 
