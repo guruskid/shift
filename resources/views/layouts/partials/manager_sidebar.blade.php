@@ -26,6 +26,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.call-categories' ? 'active' : '' }}">
+        <a href="{{route('admin.call-categories')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="cube-outline"></ion-icon>
+                <span>Call Categories</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.chat_agents' ? 'active' : '' }}">
         <a href="{{route('admin.chat_agents')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">

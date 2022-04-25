@@ -2,6 +2,10 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CheckActiveUsers;
+use App\Console\Commands\CheckCalledUsers;
+use App\Console\Commands\CheckRecalcitrantUsers;
+use App\Console\Commands\CheckRespondedUsers;
 use App\Console\Commands\GetCurrentRate;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -14,7 +18,11 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        GetCurrentRate::class
+        GetCurrentRate::class,
+        CheckActiveUsers::class,
+        CheckCalledUsers::class,
+        CheckRespondedUsers::class,
+        CheckRecalcitrantUsers::class
     ];
 
     /**
@@ -28,6 +36,10 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('get:rate')->everyMinute();
+        $schedule->command('check:active')->daily();
+        $schedule->command('check:called')->daily();
+        $schedule->command('check:Responded')->daily();
+        $schedule->command('check:Recalcitrant')->daily();
     }
 
     /**

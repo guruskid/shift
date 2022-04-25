@@ -210,6 +210,9 @@
                                     @case(444)
                                     Chinese
                                     @break
+                                    @case(557)
+                                    Business Developer
+                                    @break
                                 @default
                                 Hi! there
 
@@ -241,6 +244,10 @@
 
                 @if (Auth::user()->role == 889 || Auth::user()->role == 777 )
                 @include('layouts.partials.accountant_sidebar')
+                @endif
+
+                @if (Auth::user()->role == 557)
+                @include('layouts.partials.buisness_developer_sidebar')
                 @endif
 
             </nav>
@@ -328,6 +335,39 @@
         });
 
     </script>
+     @auth
+     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449,557] ))
+     <script src="{{asset('js/sa.js?v=7')}}"></script>
+     @endif
+     @endauth
+
+<script type="text/javascript">
+    const __st_id = (activity) => document.getElementById(activity)
+
+    const hideit = (ide) => {
+        __st_id(ide).classList.remove("d-block")
+        __st_id(ide).classList.add("d-none")
+    }
+
+    const showit = (ide) => {
+        __st_id(ide).classList.remove("d-none")
+        __st_id(ide).classList.add("d-block")
+    }
+
+    const category_status = () => {
+        const feedback = __st_id("category")
+        if (feedback.value != "") {
+        showit("feedback-textarea")
+        } else {
+            hideit("feedback-textarea")
+        }
+    }
+
+    const decline_reason = (selectedOption) => {
+        showit(selectedOption)
+    }
+
+</script>
 
 </body>
 </html>

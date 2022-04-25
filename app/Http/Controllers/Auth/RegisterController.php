@@ -97,6 +97,11 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
+        UserTracking::create([
+            'user_id' =>$user->id,
+            'Current_Cycle' => "Active"
+        ]);
+
 
         $password = '';
 

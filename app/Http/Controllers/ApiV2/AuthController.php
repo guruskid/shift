@@ -11,6 +11,7 @@ use App\Mail\VerificationCodeMail;
 use App\NairaWallet;
 use App\Notification;
 use App\User;
+use App\UserTracking;
 use App\VerificationCode;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -269,6 +270,11 @@ class AuthController extends Controller
         $success['token'] = $user->createToken('appToken')->accessToken;
         $password = '';
 
+        UserTracking::create([
+            'user_id' =>$user->id,
+            'Current_Cycle' => "Active"
+        ]);
+        
         NairaWallet::create([
             'user_id' => $user->id,
             'account_number' => time(),
