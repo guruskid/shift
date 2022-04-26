@@ -98,9 +98,14 @@ class BillsPaymentController extends Controller
             unset($products[$key]['product_type']);
         }
 
+        $data = [];
+        foreach ($products as $key => $value) {
+            array_push($data,$value);
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $products,
+            'data' => $data,
         ]);
     }
 
@@ -232,7 +237,7 @@ class BillsPaymentController extends Controller
                 'extras'           => $extras
             ]);
 
-            $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+            $accountants = User::where(['role' => 777])->orWhere(['role' => 889])->where(['status' => 'active'])->get();
             $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
             foreach ($accountants as $acct) {
                 broadcast(new CustomNotification($acct, $message))->toOthers();
@@ -466,7 +471,7 @@ class BillsPaymentController extends Controller
                 'body' => $msg_body,
             ]);
 
-            $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+            $accountants = User::where(['role' => 777])->orWhere(['role' => 889])->where(['status' => 'active'])->get();
             $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
             foreach ($accountants as $acct) {
                 broadcast(new CustomNotification($acct, $message))->toOthers();
@@ -854,7 +859,7 @@ class BillsPaymentController extends Controller
 
                 $nt->status = 'success';
 
-                $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+                $accountants = User::where(['role' => 777])->orWhere(['role' => 889])->where(['status' => 'active'])->get();
                 $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
                 foreach ($accountants as $acct) {
                     broadcast(new CustomNotification($acct, $message))->toOthers();
@@ -1053,7 +1058,7 @@ class BillsPaymentController extends Controller
                     'extras'           => $extras
                 ]);
 
-                $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+                $accountants = User::where(['role' => 777])->orWhere(['role' => 889])->where(['status' => 'active'])->get();
                 $message = '!!! Utility Transaction Transaction !!!  A new Utility transaction has been initiated ';
                 foreach ($accountants as $acct) {
                     broadcast(new CustomNotification($acct, $message))->toOthers();
