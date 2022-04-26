@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Mail\DantownNotification;
 use App\NairaWallet;
 use App\Notification;
+use App\UserTracking;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Mail;
 use RestApis\Blockchain\Constants;

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistered;
 use App\NairaWallet;
 use App\Notification;
+use App\UserTracking;
 use GuzzleHttp\Client;
 
 class RegisterController extends Controller

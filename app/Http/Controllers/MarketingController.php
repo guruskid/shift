@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\GeneralTemplateOne;
 use App\Transaction;
 use App\User;
+use App\UserTracking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -14,8 +15,8 @@ class MarketingController extends Controller
 {
     public function index()
     {
-        $total_web_signed_up = User::count();
-        $total_app_signed_up = User::count();
+        $total_web_signed_up = User::where('platform','web')->count();
+       $total_app_signed_up = User::where('platform','app')->count();
  
         $daily_web_signed_up = User::where("created_at",">=",Carbon::now()->subDay())
         ->where("created_at","<=",Carbon::now())->where('platform','web')->count();
@@ -40,23 +41,28 @@ class MarketingController extends Controller
          $monthly_web_transactions = Transaction::whereMonth('created_at', Carbon::now()->month)
          ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->count();
  
-         $recalcitrant = 4000;
- 
-         $recalcitrant = 2800; 
+         $recalcitrant_users_web = User::whereHas('userTracking', function($query){
+            $query->where('Current_Cycle','Recalcitrant');
+         })->where('platform','web')->count();
+
+         $recalcitrant_users_app = User::whereHas('userTracking', function($query){
+            $query->where('Current_Cycle','Recalcitrant');
+         })->where('platform','app')->count();
 
        $table_data = User::orderBy('id', 'DESC')->get()->take(10);
        return view('admin.marketing.index',compact([
            'table_data','total_web_signed_up','total_app_signed_up','daily_web_signed_up',
            'daily_app_signed_up','monthly_web_signed_up','monthly_app_signed_up',
            'daily_app_transactions','daily_web_transactions',
-           'monthly_app_transactions','monthly_web_transactions'
+           'monthly_app_transactions','monthly_web_transactions',
+           'recalcitrant_users_web','recalcitrant_users_app'
        ]));
     }
 
     public function Category($type = null)
     {
-       $total_web_signed_up = User::count();
-       $total_app_signed_up = User::count();
+       $total_web_signed_up = User::where('platform','web')->count();
+       $total_app_signed_up = User::where('platform','app')->count();
 
        $daily_web_signed_up = User::where("created_at",">=",Carbon::now()->subDay())
        ->where("created_at","<=",Carbon::now())->where('platform','web')->count();
@@ -81,9 +87,13 @@ class MarketingController extends Controller
         $monthly_web_transactions = Transaction::whereMonth('created_at', Carbon::now()->month)
         ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->count();
 
-        $recalcitrant = 2700;
+        $recalcitrant_users_web = User::whereHas('userTracking', function($query){
+            $query->where('Current_Cycle','Recalcitrant');
+         })->where('platform','web')->count();
 
-        $recalcitrant = 2800;
+         $recalcitrant_users_app = User::whereHas('userTracking', function($query){
+            $query->where('Current_Cycle','Recalcitrant');
+         })->where('platform','app')->count();
 
 
         $table_data = $this->tableDataForCategory($type);
@@ -91,44 +101,79 @@ class MarketingController extends Controller
             'table_data','total_web_signed_up','total_app_signed_up','daily_web_signed_up',
             'daily_app_signed_up','monthly_web_signed_up','monthly_app_signed_up',
             'daily_app_transactions','daily_web_transactions',
-            'monthly_app_transactions','monthly_web_transactions','type'
+            'monthly_app_transactions','monthly_web_transactions','type',
+            'recalcitrant_users_web','recalcitrant_users_app'
         ]));
     }
 
     public function tableDataForCategory($type)
     {
-        if($type == "All_Users_App" || $type == "All_Users_Web")
+        if($type == "All_Users_App")
         {
-            return User::all()->take(10);
+            return User::where('platform','app')->orderBy('id','desc')->get()->take(10);
+        }
+        if($type == "All_Users_Web")
+        {
+            return User::where('platform','web')->orderBy('id','desc')->get()->take(10);
         }
 
-        if($type == "Daily_Users_App" || $type == "Daily_Users_Web")
+        if($type == "Daily_Users_App" )
         {
             return User::where("created_at",">=",Carbon::now()->subDay())
-            ->where("created_at","<=",Carbon::now())->limit(10)->get();
+            ->where("created_at","<=",Carbon::now())->where('platform','app')->orderBy('id','desc')->limit(10)->get();
+        }
+        if($type == "Daily_Users_Web")
+        {
+            return User::where("created_at",">=",Carbon::now()->subDay())
+            ->where("created_at","<=",Carbon::now())->where('platform','web')->orderBy('id','desc')->limit(10)->get();
         }
 
-        if($type == "Daily_Transactions_App" || $type == "Daily_Transactions_Web")
+        if($type == "Daily_Transactions_App" )
         {
             return Transaction::where("created_at",">=",Carbon::now()->subDay())
-            ->where("created_at","<=",Carbon::now())->limit(10)->get();
+            ->where("created_at","<=",Carbon::now())->where('platform','app')->orderBy('id','desc')->limit(10)->get();
+        }
+        if($type == "Daily_Transactions_Web")
+        {
+            return Transaction::where("created_at",">=",Carbon::now()->subDay())
+            ->where("created_at","<=",Carbon::now())->where('platform','web')->orderBy('id','desc')->limit(10)->get();
         }
 
-        if($type == "Monthly_Users_App" || $type == "Monthly_Users_Web")
+        if($type == "Monthly_Users_App")
         {
             return User::whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)->limit(10)->get();
+            ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->orderBy('id','desc')->limit(10)->get();
         }
 
-        if($type == "Monthly_Transactions_Web" || $type == "Monthly_Transactions_App")
+        if( $type == "Monthly_Users_Web")
+        {
+            return User::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->orderBy('id','desc')->limit(10)->get();
+        }
+
+        if($type == "Monthly_Transactions_Web" )
         {
             return Transaction::whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)->limit(10)->get();
+            ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->orderBy('id','desc')->limit(10)->get();
         }
 
-        if($type == "Recalcitrant_App" || $type == "Recalcitrant_Web")
+        if( $type == "Monthly_Transactions_App")
         {
-            return User::limit(10)->get();
+            return Transaction::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->orderBy('id','desc')->limit(10)->get();
+        }
+
+        if($type == "Recalcitrant_App" )
+        {
+            return User::whereHas('userTracking', function($query){
+                $query->where('Current_Cycle','Recalcitrant');
+             })->where('platform','app')->orderBy('id','desc')->limit(10)->get();
+        }
+        if($type == "Recalcitrant_Web")
+        {
+            return User::whereHas('userTracking', function($query){
+                $query->where('Current_Cycle','Recalcitrant');
+             })->where('platform','web')->orderBy('id','desc')->limit(10)->get();
         }
         
     }
@@ -136,18 +181,31 @@ class MarketingController extends Controller
     public function viewTransactionsCategory($type = null)
     {
         
-        if($type == "Daily_Transactions_App" || $type == "Daily_Transactions_Web")
+        if($type == "Daily_Transactions_App")
         {
             $data = Transaction::where("created_at",">=",Carbon::now()->subDay())
-            ->where("created_at","<=",Carbon::now())->orderBy('id', 'DESC')->paginate(100);
-            $segment = "Daily Transactions";
+            ->where("created_at","<=",Carbon::now())->where('platform','web')->orderBy('id', 'DESC')->paginate(100);
+            $segment = "Daily Transactions App";
         }
 
-        if($type == "Monthly_Transactions_Web" || $type == "Monthly_Transactions_App")
+        if($type == "Daily_Transactions_Web")
+        {
+            $data = Transaction::where("created_at",">=",Carbon::now()->subDay())
+            ->where("created_at","<=",Carbon::now())->where('platform','web')->orderBy('id', 'DESC')->paginate(100);
+            $segment = "Daily Transactions Web";
+        }
+
+        if($type == "Monthly_Transactions_Web" )
         {
             $data = Transaction::whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)->orderBy('id', 'DESC')->paginate(100);
-            $segment = "Monthly Transactions";
+            ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->orderBy('id', 'DESC')->paginate(100);
+            $segment = "Monthly Transactions Web";
+        }
+        if($type == "Monthly_Transactions_App")
+        {
+            $data = Transaction::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->orderBy('id', 'DESC')->paginate(100);
+            $segment = "Monthly Transactions App";
         }
         return view('admin.marketing.transactions',compact([
             'data','segment'
@@ -158,24 +216,59 @@ class MarketingController extends Controller
     public function viewUsersCategory($type = null)
     {
         $data = null;
-        if($type == "All_Users_App" || $type == "All_Users_Web" || $type == "Recalcitrant_App" 
-            || $type == "Recalcitrant_Web" || $type == 'all_users')
+
+        if($type == "All_Users_App")
         {
-            $data = User::orderBy('id', 'DESC')->paginate(100);
-            $segment = "All Users";
+            $data =  User::where('platform','app')->orderBy('id','desc')->paginate(1000);
+            $segment = "All User App";
+        }
+        if($type == "All_Users_Web")
+        {
+            $data = User::where('platform','web')->orderBy('id','desc')->paginate(1000);
+            $segment = "All User Web";
         }
 
-        if($type == "Daily_Users_App" || $type == "Daily_Users_Web")
+        if($type == "Daily_Users_App" )
         {
-            $data = User::where("created_at",">=",Carbon::now()->subDay())
-            ->where("created_at","<=",Carbon::now())->orderBy('id', 'DESC')->paginate(100);
-            $segment = "Daily Signed Up Users";
+            $data =  User::where("created_at",">=",Carbon::now()->subDay())
+            ->where("created_at","<=",Carbon::now())->where('platform','app')->orderBy('id','desc')->paginate(1000);
+            $segment = "Daily User SignUp App";
         }
-        if($type == "Monthly_Users_App" || $type == "Monthly_Users_Web")
+        if($type == "Daily_Users_Web")
         {
-            $data = User::whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)->orderBy('id', 'DESC')->paginate(100);
-            $segment = "Monthly Signed Up Users";
+            $data =  User::where("created_at",">=",Carbon::now()->subDay())
+            ->where("created_at","<=",Carbon::now())->where('platform','web')->orderBy('id','desc')->paginate(1000);
+            $segment = "Daily User SignUp Web";
+        }
+
+        if($type == "Monthly_Users_App")
+        {
+            $data =  User::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->orderBy('id','desc')->paginate(1000);
+            $segment = "Monthly Users SignUp App";
+        }
+
+        if( $type == "Monthly_Users_Web")
+        {
+            $data =  User::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->orderBy('id','desc')->paginate(1000);
+
+            $segment = "Monthly Users SignUp Web";
+        }
+
+        if($type == "Recalcitrant_App" )
+        {
+            $data = User::whereHas('userTracking', function($query){
+                $query->where('Current_Cycle','Recalcitrant');
+             })->where('platform','app')->orderBy('id','desc')->paginate(1000);
+             $segment = "Recalcitrant Users App";
+        }
+        if($type == "Recalcitrant_Web")
+        {
+            $data = User::whereHas('userTracking', function($query){
+                $query->where('Current_Cycle','Recalcitrant');
+             })->where('platform','web')->orderBy('id','desc')->paginate(1000);
+             $segment = "Recalcitrant Users Web";
         }
         return view('admin.marketing.userCategory',compact([
             'data','segment'
@@ -183,9 +276,9 @@ class MarketingController extends Controller
 
     }
 
-    public function user_verification()
+    public function user_verification(Request $request)
     {
-        $users = User::orderBy('id', 'desc')->paginate(100);
+        $users = User::orderBy('id', 'desc')->get();
         foreach($users as $u)
         {
             $u->verification_status = ($u->	phone_verified_at == null) ? 'Pending' : 'Level 1';
@@ -198,6 +291,31 @@ class MarketingController extends Controller
                 $u->verification_status = 'Level 3';
             }
         }
+        if($request->status)
+        {
+            if($request->status == 'Pending')
+            {
+                $users = $users->where('verification_status','Pending');
+            }
+
+            if($request->status == 'Level 1')
+            {
+                $users = $users->where('verification_status','Level 1');
+            }
+
+            if($request->status == 'Level 2')
+            {
+                $users = $users->where('verification_status','Level 2');
+            }            
+
+            if($request->status == 'Level 3')
+            {
+                $users = $users->where('verification_status','Level 3');
+            } 
+        }
+
+        $users = $users->paginate(100);
+
 
         $segment = "Verification Level";
         return view('admin.marketing.users',compact([

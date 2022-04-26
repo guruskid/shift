@@ -59,6 +59,22 @@
                             <div class="">
                                 {{ $segment }}
                             </div>
+                            @if ($segment == "Verification Level")
+                            <form class="form-inline p-2"
+                                method="GET">
+                                {{-- @csrf --}}
+                            <div class="form-group mr-2">
+                                <select name="status" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                        <option value="Pending">Pending</option>
+                                        <option value="Level 1">Level 1</option>
+                                        <option value="Level 2">Level 2</option>
+                                        <option value="Level 3">Level 3</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                             </form> 
+                        @endif
                             {{--  <div class="">
                                 <form action="{{route('admin.search')}}" method="post" class="form-inline" >
                             @csrf

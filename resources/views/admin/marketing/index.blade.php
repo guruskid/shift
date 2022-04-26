@@ -163,7 +163,7 @@
                                     href="{{ route('admin.sales.type',['type'=>'Recalcitrant_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
-                                <h5>200</h5>
+                                <h5>{{ $recalcitrant_users_app }}</h5>
                             </div>
                         </div>
                     </div>
@@ -177,7 +177,7 @@
                                      href="{{ route('admin.sales.type',['type'=>'Recalcitrant_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
-                                <h5>200</h5>
+                                <h5>{{ $recalcitrant_users_web }}</h5>
                             </div>
                         </div>
                     </div>

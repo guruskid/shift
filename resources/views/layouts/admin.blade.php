@@ -251,6 +251,7 @@
 
                 @if (Auth::user()->role == 559)
                 @include('layouts.partials.marketing_sidebar')
+                @endif
                 @if (Auth::user()->role == 557)
                 @include('layouts.partials.buisness_developer_sidebar')
                 @endif
@@ -341,7 +342,7 @@
 
     </script>
      @auth
-     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449,557] ))
+     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449,557,559] ))
      <script src="{{asset('js/sa.js?v=7')}}"></script>
      @endif
      @endauth

@@ -591,7 +591,7 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
 
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing']], function () {
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
     Route::GET('/users_birthdays', 'MarketingController@user_birthday')->name('admin.sales.users_birthdays');

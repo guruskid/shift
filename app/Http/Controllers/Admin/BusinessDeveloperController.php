@@ -340,7 +340,7 @@ class BusinessDeveloperController extends Controller
             abort(404);
         }
         $all_users = User::all();
-
+        UserTracking::truncate();
         foreach ($all_users as $u) {
             if($u->transactions()->count() == 0)
             {
