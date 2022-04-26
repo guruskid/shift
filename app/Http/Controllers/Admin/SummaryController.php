@@ -37,6 +37,9 @@ class SummaryController extends Controller
             case 5:
                 $card_id = 141;
                 break;
+            case 7:
+                $card_id = 143;
+                break;
             default:
                 return back()->with(['error' => 'There is an error with this page']);
                 break;
@@ -51,8 +54,18 @@ class SummaryController extends Controller
         $sell_transactions = Transaction::where('card_id', $card_id)->where('type', 'sell')->whereDate('created_at', $date)->where('status', 'success')->get();
         $sell_btc = $sell_transactions->sum('quantity');
         $sell_usd = $sell_transactions->sum('amount');
+
+        $ngn_sell_average = 0;
+        $cumulative = 0;
+        foreach ($sell_transactions as $t ) {
+            $cumulative += ($t->quantity * $t->ngn_rate * $t->card_price );
+        }
+        // dd($cumulative);
+        $ngn_sell_average = ($cumulative == 0 ? 1 : $cumulative) / ($sell_usd == 0 ? 1 : $sell_usd);
+
         try {
             $sell_average = $sell_usd / $sell_btc;
+            // $sell_ngn_average = $sell_usd
         } catch (\Throwable $th) {
             $sell_average = 0;
         }
@@ -76,6 +89,9 @@ class SummaryController extends Controller
             case 141:
                 $cur = 'TRX';
                 break;
+            case 143:
+                $cur = 'USDT';
+                break;
             default:
                 return back()->with(['error' => 'There is an error with this page']);
                 break;
@@ -91,7 +107,8 @@ class SummaryController extends Controller
             'sell_usd',
             'sell_average',
             'cur',
-            'card_id'
+            'card_id',
+            'ngn_sell_average'
         ));
     }
 
@@ -110,6 +127,14 @@ class SummaryController extends Controller
 
         $sell_btc = $sell_transactions->sum('quantity');
         $sell_usd = $sell_transactions->sum('amount');
+
+        $ngn_sell_average = 0;
+        $cumulative = 0;
+        foreach ($sell_transactions as $t ) {
+            $cumulative += ($t->quantity * $t->ngn_rate * $t->card_price);
+        }
+        $ngn_sell_average = ($cumulative == 0 ? 1 : $cumulative) / ($sell_usd == 0 ? 1 : $sell_usd);
+
         try {
             $sell_average = $sell_usd / $sell_btc;
         } catch (\Throwable $th) {
@@ -150,7 +175,8 @@ class SummaryController extends Controller
             'sell_usd',
             'sell_average',
             'cur',
-            'card_id'
+            'card_id',
+            'ngn_sell_average'
         ));
     }
 
@@ -188,7 +214,7 @@ class SummaryController extends Controller
             $month_num = $month;
             return view('admin.summary.JuniorAccountant.index',compact('days','month_name','month_num'));
         }
-        
+
         else{
             $month = [
                 ['month'=>'january','number'=>1],
@@ -217,7 +243,7 @@ class SummaryController extends Controller
         $dates=date_create($date);
         $segment = date_format($dates, "M d");
         $current_day_value = date_format($dates,"Y-m-d") ;
-        
+
 
         $user = Auth::user();
         $accountant = User::whereIn('role', [777])->where('id','!=',$user->id)->get();
@@ -225,10 +251,10 @@ class SummaryController extends Controller
             $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$current_day_value)
             ->whereDate('created_at','<=',$current_day_value)
             ->where('user_id',$user->id)
-            ->latest('id')->first(); 
+            ->latest('id')->first();
 
             if($category == "all"){
-                    //?All tansactions 
+                    //?All tansactions
                 $all_tnx = Transaction::whereNotNull('id')
                 ->orderBy('created_at', 'desc');
                 if ($user->role == 777 && !empty($accountant_timestamp)) {
@@ -241,9 +267,9 @@ class SummaryController extends Controller
                     ->whereDate('updated_at', '>=', $current_day_value)
                     ->whereDate('updated_at', '<=', $current_day_value);
                 }
-                
+
                 $all_tnx = $all_tnx->latest()->get();
-                
+
                 $all_tnx_count = $all_tnx->where('status', 'success')->count();
                 $all_tnx = $all_tnx->paginate(100);
 
@@ -266,7 +292,7 @@ class SummaryController extends Controller
                 $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy')->sum('quantity');
                 $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
 
-                //*Gitfcard transactions 
+                //*Gitfcard transactions
                 $giftcards_totaltnx_buy = Transaction::whereNotNull('id')
                 ->whereHas('asset', function ($query) {
                     $query->where('is_crypto', 0);
@@ -284,7 +310,7 @@ class SummaryController extends Controller
                 $giftcards_totaltnx_buy = $giftcards_totaltnx_buy
                 ->where('status', 'success')
                 ->get();
-                
+
                 $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
                 $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
 
@@ -373,7 +399,7 @@ class SummaryController extends Controller
                     ->whereDate('updated_at', '<=', $current_day_value);
                 }
                 $util_tnx = $util_tnx->get();
-                
+
                 //? utility transactions calculations
                 $util_total_tnx = $util_tnx->where('status','success')->count();
                 $util_tnx_amount = $util_tnx->where('status','success')->sum('amount');
@@ -492,8 +518,8 @@ class SummaryController extends Controller
                 ]));
             }
 
-            
-        
+
+
     }
 
     public function sorting(Request $request)
@@ -505,11 +531,11 @@ class SummaryController extends Controller
         $show_summary = (Auth::user()->role != 777 || $request['Accountant'] == 'null') ? true : false;
         $start_date =  explode('T',$request['startdate']);
         $end_date = explode('T',$request['enddate']);
-        
+
         $start = str_replace('T',' ',$request['startdate']);
         $end = str_replace('T',' ',$request['enddate']);
 
-        // $pagination = (int)$request['entries'] ?: 50; 
+        // $pagination = (int)$request['entries'] ?: 50;
         $accountant_name = null;
         if(!isset($request['Accountant']) || $request['Accountant'] == 'null' )
         {
@@ -526,15 +552,15 @@ class SummaryController extends Controller
         }
         if($request['startdate'] != null AND $request['Accountant'] == "null")
         {
-            $segment = 
+            $segment =
             date_format(date_create($start),"d-M-y h:ia");
-            
+
             if($request['enddate'] == null){
-                $segment .= " to ". 
+                $segment .= " to ".
                 date_format(date_create($start),"d-M-y 11:59").'pm';
             }
             else{
-                $segment .= " to ". 
+                $segment .= " to ".
                 date_format(date_create($end),"d-M-y h:ia");
             }
             //?all transaction
@@ -593,7 +619,7 @@ class SummaryController extends Controller
                 }else{
                     $crypto_totaltnx_sell = $crypto_totaltnx_sell->where('updated_at', '<=', $end)->get();
                 }
-        
+
             //? utility transactions
             $util_tranx = UtilityTransaction::whereNotNull('id')
             ->where('updated_at', '>=', $start);
@@ -613,19 +639,19 @@ class SummaryController extends Controller
             }
 
 
-            
+
         }
         if($request['startdate'] != null AND $request['Accountant'] != "null")
         {
-            $segment = 
+            $segment =
             date_format(date_create($start),"d-M-y h:ia");
-            
+
             if($request['enddate'] == null){
-                $segment .= " to ". 
+                $segment .= " to ".
                 date_format(date_create($start),"d-M-y 11:59").'pm';
             }
             else{
-                $segment .= " to ". 
+                $segment .= " to ".
                 date_format(date_create($end),"d-M-y h:ia");
             }
             $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$start_date[0])
@@ -636,7 +662,7 @@ class SummaryController extends Controller
             $util_collection = collect([]);
             $nw_collection = collect([]);
             if($accountant_timestamp){
-                
+
                 foreach ($accountant_timestamp  as $at) {
                     $all_tranx = Transaction::whereNotNull('id')
                     ->orderBy('created_at', 'desc')
@@ -721,7 +747,7 @@ class SummaryController extends Controller
                     $nw_tranx = $nw_tranx->where('updated_at', '<=', $end);
                 }
 
-                
+
 
             }
         }
@@ -731,14 +757,14 @@ class SummaryController extends Controller
             ,$util_tranx,$nw_tranx);
 
     }
-    
+
     public function sortByStartDate($show_category, $show_data, $show_summary,$start_date,$end_date,
         $start, $end, $accountant_name,$accountant,$all_tnx,$giftcards_totaltnx_buy,$giftcards_totaltnx_sell
         ,$crypto_totaltnx_buy,$crypto_totaltnx_sell,$segment,$day,$month,$util_tranx,$nw_tranx)
     {
         if($show_category == "all")
         {
-            //?all transaction  
+            //?all transaction
             $all_tnx_count = $all_tnx->where('status', 'success')->count();
 
             //?bitcoin transactions
@@ -773,7 +799,7 @@ class SummaryController extends Controller
         {
             $util_tnx = $util_tranx;
             $util_total_tnx = $util_tranx->where('status','success')->count();
-                
+
             $util_tnx_amount = $util_tranx->where('status','success')->sum('amount');
 
             $util_tnx_fee = $util_tranx->where('status','success')->sum('convenience_fee');
@@ -786,7 +812,7 @@ class SummaryController extends Controller
 
             ]));
         }
-        if($show_category == "paybridge" OR 
+        if($show_category == "paybridge" OR
             $show_category == "paybridgewithdrawal" OR $show_category == "paybridgeothers")
         {
             if($show_category == "paybridge"){
@@ -797,7 +823,7 @@ class SummaryController extends Controller
                 $nw_deposit_total_amount = $nw_deposit_tnx->where('status','success')->sum('amount');
 
                 $nw_deposit_pending_total = $nw_deposit_tnx->where('status','pending')->count();
-                $nw_deposit_pending_amount = $nw_deposit_tnx->where('status','pending')->sum('amount'); 
+                $nw_deposit_pending_amount = $nw_deposit_tnx->where('status','pending')->sum('amount');
 
                 $deposit_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',1)->get();
                 $deposit_total_pending = $deposit_total->where('status','pending')->count();
@@ -817,7 +843,7 @@ class SummaryController extends Controller
                 $nw_withdrawal_amount_paid = $nw_withdrawal_tnx->where('status','success')->sum('amount_paid');
                 $nw_withdrawal_tnx_charges = $nw_withdrawal_tnx->where('status','success')->sum('charge');
                 $nw_withdrawal_total_amount = $nw_withdrawal_tnx->where('status','success')->sum('amount');
-                
+
                 $nw_withdrawal_pending_total = $nw_withdrawal_tnx->where('status','pending')->count();
                 $nw_withdrawal_pending_amount = $nw_withdrawal_tnx->where('status','pending')->sum('amount');
 
@@ -857,7 +883,7 @@ class SummaryController extends Controller
 
 
 
-        
+
 
     }
 
@@ -880,5 +906,5 @@ class SummaryController extends Controller
             ->where('card_id', $card_id)->where('type', 'buy')->get();
         return $crypto_tnx;
     }
-    
+
 }

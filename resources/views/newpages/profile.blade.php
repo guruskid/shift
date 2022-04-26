@@ -76,7 +76,7 @@
                                     <div class="my-2">
                                         <span class="d-block text-center labelText">Name</span>
                                         <div class="d-flex justify-content-center align-items-center details">
-                                            {{ Auth::user()->first_name }} </div>
+                                            {{ Auth::user()->first_name .' '. Auth::user()->last_name }} </div>
                                     </div>
                                     <div class="my-2">
                                         <span class="d-block text-center labelText">Email</span>
@@ -118,7 +118,7 @@
                                     style="border-left: 0.3px solid #969CBA;">
                                     <a class="nav-link d-flex justify-content-center" id="limits-tab" data-toggle="tab"
                                         style="height: 52px;" href="#limits" role="tab" aria-controls="limits"
-                                        aria-selected="false">LIMITS</a>
+                                        aria-selected="false">VERIFICATIONS</a>
                                 </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
@@ -130,7 +130,7 @@
                                         <div class="d-flex align-items-center mt-0 profile_details_col">
                                             <div class="user_profile_text text-center" style="width: 14%;">Name</div>
                                             <div class="user_profile_text ml-5" style="font-size: 18px;width: 56%;">
-                                                {{ Auth::user()->first_name }}</div>
+                                                {{ Auth::user()->first_name .' '. Auth::user()->last_name }}</div>
                                             <div class="user_profile_text text-center ml-5" style="width: 30%;">
                                                 <div class="profile_verification_status_text">
                                                     {{-- Pending verification --}}
@@ -161,7 +161,8 @@
                                                         </div>
                                                     </div>
                                                     @else
-                                                    <button class="btn btn-sm btn-primary">Add Bank</button>
+                                                    <button id="add_bank" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Bank</button>
+                                                    {{-- <button class="btn btn-sm btn-primary">Add Bank1</button> --}}
                                                     @endif
                                                 </div>
                                             </div>
@@ -179,8 +180,8 @@
                                             <div class="" style="width:56%;">
                                                 <div style="position: relative;left:35px;">
                                                     @if (!Auth::user()->phone)
-                                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Phone</button>
-                                                    @else
+                                                        {{-- <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-bank-modal">Add Phone</button>
+                                                    @else --}}
                                                         {{ Auth::user()->phone }}
                                                     @endif
                                                 </div>
@@ -394,15 +395,16 @@
 
                                             <div class="container-fluid mt-3">
                                                 <div class="row px-lg-3">
-                                                    <div class="col-12 col-lg-6">
+                                                    <!-- <div class="col-lg-2"></div> -->
+
+                                                    <div class="col-12 col-lg-10">
+
                                                         {{-- Phone verification card --}}
                                                         @if (Auth::user()->phone_verified_at == null)
-                                                        <a href="{{ route('user.verify-phone') }}">
-                                                                <div
-                                                                class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
-                                                                <span class="d-block">Phone number verification</span>
-                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow"
-                                                                    style="position: relative;left: 22px;">
+                                                        <a href="{{ (Auth::user()->accounts->count() == 0) ? '#' : route('user.verify-phone') }}" onclick="{{(Auth::user()->accounts->count() == 0) ? 'show_bank()' : ''}}">
+                                                            <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                                <span class="d-block">Level 1  - Phone number verification</span>
+                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
                                                                     <svg width="20" height="20" viewBox="0 0 20 20"
                                                                         fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <path
@@ -412,12 +414,21 @@
                                                                 </span>
                                                             </div>
                                                         </a>
+                                                        @else
+                                                        {{-- <a href="{{ (Auth::user()->first_name == ' ' || strlen(Auth::user()->first_name) < 2) ? '#' : route('user.verify-phone') }}" onclick="{{(strlen(Auth::user()->first_name) < 2) ? 'show_bank()' : ''}}"> --}}
+                                                            <div class="d-flex flex-row justify-content-center align-items-center accordion_cards phoneVerificationCard">
+                                                                <span class="d-block">Level 1  - Phone number verification</span>
+                                                                <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                                </span>
+                                                            </div>
+                                                        {{-- </a> --}}
                                                         @endif
-                                                        @if (Auth::user()->address_verified_at == null)
+                                                        @if (Auth::user()->address_verified_at == null && Auth::user()->phone_verified_at != null)
                                                         {{-- Address verification tab --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards addressVerificationCard mt-4">
-                                                            <span class="d-block">Address verification</span>
+                                                            <span class="d-block">Level 2 - Address verification</span>
                                                             <span class="d-block ml-5 accordion_arrow"
                                                                 style="position: relative;left: 22px;">
                                                                 <svg width="20" height="20" viewBox="0 0 20 20"
@@ -438,16 +449,27 @@
                                                                     style="height:35px;width:78px;position: relative;top:8px;">Verify</button>
                                                             </div>
                                                         </div>
+
+                                                        @endif
+
+                                                        @if (Auth::user()->address_verified_at != null)
+                                                            <div
+                                                            class="d-flex flex-row  align-items-center accordion_cards addressVerificationCard mt-4">
+                                                            <span class="d-block ml-3">Level 2 - Address verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                            </span>
+                                                        </div>
                                                         @endif
                                                     </div>
 
-                                                    <div class="col-12 col-lg-6 mt-3">
+                                                    <div class="col-12 col-lg-12 mt-3">
 
-                                                        @if (Auth::user()->idcard_verified_at == null)
+                                                    @if (Auth::user()->idcard_verified_at == null && Auth::user()->address_verified_at != null)
                                                         {{-- ID verification card --}}
                                                         <div
                                                             class="d-flex flex-row justify-content-center align-items-center accordion_cards idVerificationCard mt-2">
-                                                            <span class="d-block">ID verification</span>
+                                                            <span class="d-block">Level 3 - ID verification</span>
                                                             <span
                                                                 class="d-block ml-5 accordion_arrow id_verification_arrow">
                                                                 <svg width="20" height="20" viewBox="0 0 20 20"
@@ -473,7 +495,17 @@
                                                                 </form>
                                                             </div>
                                                         </div>
-                                                        @endif
+                                                    @endif
+                                                    @if (Auth::user()->idcard_verified_at != null)
+                                                        <div
+                                                            class="d-flex flex-row  align-items-center accordion_cards idVerificationCard mt-2">
+                                                            <span class="d-block ml-3">Level 3 - ID verification</span>
+                                                            <span class="d-block ml-lg-5 mr-3 mr-lg-0 accordion_arrow" style="position: relative;left: 10px;">
+                                                                    <i class="fas fa-check-circle" style="color: #00C851;"></i>
+                                                            </span>
+                                                        </div>
+                                                    @endif
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -951,21 +983,32 @@
                         <div class="col-md-12">
                             <div class="position-relative form-group">
                                 <label>Account Number</label>
-                                <input type="text" required class="form-control" name="account_number">
+                                <input type="number" onKeyPress="if(this.value.length==10) return false;" required class="form-control" name="account_number">
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="position-relative form-group">
-                                <label>Account Name</label>
-                                @if (Auth::user()->accounts->count() == 0)
-                                <input type="text" required class="form-control " name="account_name">
-                                @else
-                                <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="account_name">
-                                @endif
+                            <div class="row">
+                                <div class="position-relative form-group col-md-6">
+                                    <label>Bank Firstname</label>
+                                    @if (Auth::user()->accounts->count() == 0)
+                                    <input type="text" required class="form-control " name="first_name">
+                                    @else
+                                    <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="first_name">
+                                    @endif
+                                </div>
+
+                                <div class="position-relative form-group col-md-6">
+                                    <label>Bank Lastname</label>
+                                    @if (Auth::user()->accounts->count() == 0)
+                                    <input type="text" required class="form-control " name="last_name">
+                                    @else
+                                    <input type="text" required class="form-control" readonly value="{{ Auth::user()->first_name }}" name="last_name">
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
-                        @if (Auth::user()->phone_verified_at == null)
+                        {{-- @if (Auth::user()->phone_verified_at == null)
                         <div class="col-md-12">
                             <label for="">Phone Number</label>
                             <div class="position-relative input-group mb-0 mx-auto mx-md-0" style="">
@@ -995,7 +1038,7 @@
                             </div>
                         </div>
 
-                        @endif
+                        @endif --}}
 
 
 
@@ -1008,5 +1051,18 @@
         </div>
     </div>
 </div>
-
+@if (Auth::user()->accounts->count() == 0)
+    <script>
+        function show_bank() {
+            swal({
+                title: "Failed!",
+                text: "Please add your bank details to continue your level 1 verification",
+                icon: "error",
+                button: 'Add bank',
+            }).then(function() {
+                document.getElementById('add_bank').click();
+            });
+        }
+    </script>
+@endif
 @endsection

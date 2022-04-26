@@ -352,19 +352,86 @@ class TradeNairaController extends Controller
         return redirect()->back()->with(["success" => 'Details updated']);
     }
 
-    public function agentTransactions(User $user)
+    public function agentTransactions(User $user, Request $request)
     {
-
+        $paginate = true;
+        $show_limit = true;
+        $request->session()->forget(['sort_start_date', 'sort_end_date','search_tnx']);
+        if (!Auth::user()->agentLimits) {
+            Auth::user()->agentLimits()->create();
+        }
         $transactions =    $user->agentNairaTrades()->orderBy('created_at', 'desc')->paginate(20);
-
+        $banks = Bank::all();
+        $account = Auth::user()->accounts->first();
         foreach ($transactions as $t) {
             if ($t->type == 'withdrawal') {
                 $a = Account::find($t->account_id);
-                $account = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
-                $t->acct_details = $account;
+                if($a){
+                    $acct = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
+                    $t->acct_details = $acct;    
+                }
+            }
+            $current_prev_bal = NairaTransaction::where('reference',$t->reference)->latest()->first();
+            if(isset($current_prev_bal))
+            {
+                $t->prev_bal = $current_prev_bal->previous_balance;
+                $t->current_bal = $current_prev_bal->current_balance;
             }
 
         }
+         //? top bars
+        //?" all  deposit transactions
+        $deposit = $user->agentNairaTrades()->where('type','deposit')->get();
+        $deposit_all_tnx = $deposit->count();
+
+        //? successful Deposit
+        $deposit_success = $user->agentNairaTrades()->where('type','deposit')->where('status','success')->get();
+        $deposit_success_tnx = $deposit_success->count();
+        $deposit_success_amount = $deposit_success->sum('amount');
+
+        //? declined Deposit
+        $deposit_denied = $user->agentNairaTrades()->where('type','deposit')->where('status','cancelled')->get();
+        $deposit_denied_tnx = $deposit_denied->count();
+        $deposit_denied_amount = $deposit_denied->sum('amount');
+
+        //? waiting Deposit
+        $deposit_waiting = $user->agentNairaTrades()->where('type','deposit')->where('status','waiting')->get();
+        $deposit_waiting_tnx = $deposit_waiting->count();
+        $deposit_waiting_amount = $deposit_waiting->sum('amount');
+
+
+        //?" all  withdrawal transactions
+        $withdrawal = $user->agentNairaTrades()->where('type','withdrawal')->get();
+        $withdrawal_all_tnx = $withdrawal->count();
+
+        //? successful withdrawal
+        $withdrawal_success = $user->agentNairaTrades()->where('type','withdrawal')->where('status','success')->get();
+        $withdrawal_success_tnx = $withdrawal_success->count();
+        $withdrawal_success_amount = $withdrawal_success->sum('amount');
+
+        //? declined withdrawal
+        $withdrawal_denied = $user->agentNairaTrades()->where('type','withdrawal')->where('status','cancelled')->get();
+        $withdrawal_denied_tnx = $withdrawal_denied->count();
+        $withdrawal_denied_amount = $withdrawal_denied->sum('amount');
+
+        //? waiting withdrawal
+        $withdrawal_waiting = $user->agentNairaTrades()->where('type','withdrawal')->where('status','waiting')->get();
+        $withdrawal_waiting_tnx = $withdrawal_waiting->count();
+        $withdrawal_waiting_amount = $withdrawal_waiting->sum('amount');
+
+
+        $segment = "All";
+        $type = null;
+        $status = null;
+        return view('admin.trade_naira.transactions', compact([
+            'status','type','paginate',
+            'transactions', 'show_limit', 'banks', 'account','segment',
+            'deposit_all_tnx','deposit_success_tnx','deposit_success_amount',
+            'deposit_denied_tnx','deposit_denied_amount','deposit_waiting_tnx','deposit_waiting_amount',
+            'withdrawal_all_tnx','withdrawal_success_tnx','withdrawal_success_amount',
+            'withdrawal_denied_tnx','withdrawal_denied_amount','withdrawal_waiting_tnx','withdrawal_waiting_amount'
+
+        ]));
 
         $show_limit = true;
 

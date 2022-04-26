@@ -74,7 +74,7 @@ class HomeController extends Controller
         $email = Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
-        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666 || $user->role == 444 || $user->role == 449) {
+        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666 || $user->role == 444 || $user->role == 449|| $user->role == 557) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->role == 888) {
             return redirect()->route('admin.assigned-transactions');
@@ -157,10 +157,18 @@ class HomeController extends Controller
 
     public function verifyPhone(Request $r)
     {
+
+        if(Auth::user()->first_name == ' ' || strlen(Auth::user()->first_name) < 2){
+            $add_bank = true;
+            // return redirect()->route('user.profile', compact('add_bank'));
+            return view('newpages.profile', compact('add_bank'));
+            // return back()->with(['error' => 'Please add your bank details to continue your level 1 verification', 'add_bank']);
+        }
+
         $data = $r->validate([
             'phone' => 'required',
             'otp' => 'required',
-            'username' => 'required|string',
+            // 'username' => 'required|string',
         ]);
 
         try {
@@ -186,7 +194,7 @@ class HomeController extends Controller
 
 
         Auth::user()->phone_verified_at = now();
-        Auth::user()->username = $data['username'];
+        // Auth::user()->username = $data['username'];
         Auth::user()->save();
         NariaLimitController::nariaLimit(Auth::user());
 
@@ -263,32 +271,32 @@ class HomeController extends Controller
 
 
         //verify phone
-        if ($request->has('otp')) {
-            try {
-                $client = new Client();
-                $url = env('TERMII_SMS_URL') . "/otp/verify";
+        // if ($request->has('otp')) {
+        //     try {
+        //         $client = new Client();
+        //         $url = env('TERMII_SMS_URL') . "/otp/verify";
 
-                $response = $client->request('POST', $url, [
-                    'json' => [
-                        'api_key' => env('TERMII_API_KEY'),
-                        "pin_id" => Auth::user()->phone_pin_id,
-                        "pin" => $request->otp
-                    ],
-                ]);
-                $body = json_decode($response->getBody()->getContents());
+        //         $response = $client->request('POST', $url, [
+        //             'json' => [
+        //                 'api_key' => env('TERMII_API_KEY'),
+        //                 "pin_id" => Auth::user()->phone_pin_id,
+        //                 "pin" => $request->otp
+        //             ],
+        //         ]);
+        //         $body = json_decode($response->getBody()->getContents());
 
-                if ($body->verified != 'true') {
+        //         if ($body->verified != 'true') {
 
-                    return back()->with(['error' => 'Phone verification failed. Please request a new OTP']);
-                }
-            } catch (\Exception $e) {
-                report($e);
-                return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
-            }
+        //             return back()->with(['error' => 'Phone verification failed. Please request a new OTP']);
+        //         }
+        //     } catch (\Exception $e) {
+        //         report($e);
+        //         return back()->with(['error' => 'Phone verification failed. Please request new OTP']);
+        //     }
 
 
-            Auth::user()->phone_verified_at = now();
-        }
+        //     Auth::user()->phone_verified_at = now();
+        // }
 
 
         Auth::user()->first_name = $request->account_name;

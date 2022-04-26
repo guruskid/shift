@@ -330,7 +330,7 @@ class AssetTransactionController extends Controller
         ]);
 
         if ($t->user->notificationSetting->wallet_email == 1) {
-            Mail::to($t->user->email)->send(new WalletAlert($nt, 'credit'));
+            // Mail::to($t->user->email)->send(new WalletAlert($nt, 'credit'));
         }
 
         $client = new Client();

@@ -54,7 +54,7 @@
                                     <div class="widget-n text-center" style="justify-content: center;">
                                         <span class="d-block" style="h6 walletbalance-text">Tron Wallet Balance</span>
                                         <span
-                                            class="d-block price">{{ Auth::user()->ethWallet ? number_format((float)$tron_wallet->balance, 3) : 'No Tron wallet' }}TRX</span>
+                                            class="d-block price">{{ Auth::user()->tronWallet ? number_format((float)$tron_wallet->balance, 3) : 'No Tron wallet' }}TRX</span>
                                     </div>
                                 </div>
                             </div>

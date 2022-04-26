@@ -60,10 +60,11 @@
                             <thead>
                                 <tr>
                                     <th>No. Trades</th>
-                                    <th>Total BTC</th>
+                                    <th>Total {{ $cur }}</th>
                                     <th>Total USD</th>
                                     <th>Total Naira</th>
-                                    <th>AVG. BTC Price</th>
+                                    <th>AVG. {{ $cur }} Price</th>
+                                    <th>NGN Sell Average</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,6 +74,7 @@
                                     <td>${{ number_format($sell_usd) }}</td>
                                     <td>₦{{ number_format($sell_transactions->sum('amount_paid')) }}</td>
                                     <td>${{ number_format($sell_average) }}</td>
+                                    <td>₦{{ number_format($ngn_sell_average) }}</td>
                                 </tr>
                             </tbody>
                         </table>
