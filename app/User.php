@@ -149,4 +149,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(AgentLimit::class);
 
     }
+    public function userTracking()
+    {
+        return $this->hasOne('App\UserTracking');
+    }
 }

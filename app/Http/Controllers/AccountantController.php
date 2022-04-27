@@ -64,10 +64,8 @@ class AccountantController extends Controller
 
                     $startTime = $accountant->where('inactiveTime',null)
                     ->where('activeTime','!=',null)->first()->created_at;
-
-                    $endTime = Carbon::now();
-                    $totalDuration =  $startTime->diff($endTime)->format('%I');
-                    $totalDuration = (int) $totalDuration;
+;                   $endTime = Carbon::now();
+                    $totalDuration =  $startTime->diffInMinutes($endTime);
                     if($totalDuration < 5){
                         $time_stamp->delete();
                     }

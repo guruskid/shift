@@ -69,12 +69,12 @@ class HomeController extends Controller
         $btn_text = '';
         $btn_url = '';
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         $email = Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
-        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666 || $user->role == 444 || $user->role == 449|| $user->role == 557) {
+        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 666 || $user->role == 444 || $user->role == 449 || $user->role == 559 || $user->role == 557) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->role == 888) {
             return redirect()->route('admin.assigned-transactions');

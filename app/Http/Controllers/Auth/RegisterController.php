@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistered;
 use App\NairaWallet;
 use App\Notification;
+use App\UserTracking;
 use GuzzleHttp\Client;
 
 class RegisterController extends Controller
@@ -95,6 +96,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'external_id' => $external_id,
             'password' => Hash::make($data['password']),
+            'platform' => "web"
         ]);
 
         UserTracking::create([

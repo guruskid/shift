@@ -139,6 +139,7 @@
                 axios.post("/trade_naira_web/user/complete_deposit", {
                     agent_id: this.agent_id,
                     amount: this.amount,
+                    platform:"web"
                     // pin: this.pin
                 }).then(response => {
                     if (response.data['success']) {

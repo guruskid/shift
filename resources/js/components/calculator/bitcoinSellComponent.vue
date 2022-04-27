@@ -132,7 +132,7 @@
                 }
 
                 this.loading = true;
-                axios.post('/user/sell-bitcoin', {"quantity" : this.btc })
+                axios.post('/user/sell-bitcoin', {"quantity" : this.btc , 'platform':'web' })
                 .then((res)=>{
                     if (res.data.success) {
                         swal('Great!!', 'Bitcoin traded successfully', 'success');

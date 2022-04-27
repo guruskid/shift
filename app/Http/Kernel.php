@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
         'frozenUserCheck' =>\App\Http\Middleware\FrozenUserMiddleware::class,
         'frozenUserCheckApi' =>\App\Http\Middleware\FrozenUserApiMiddleware::class,
         'accountantManager' =>\App\Http\Middleware\AccountantManagerMiddleware::class,
+        'marketing' =>\App\Http\Middleware\Marketing::class,
         'businessDeveloper' =>\App\Http\Middleware\BusinessDeveloper::class,
     ];
 
