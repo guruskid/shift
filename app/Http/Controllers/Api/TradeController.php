@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Card;
 use App\CardCurrency;
+use App\CardCurrencyPaymentMedia;
+use App\Currency;
 use App\Events\NewTransaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CardResource;
 use App\Mail\DantownNotification;
 use App\Notification;
+use App\PaymentMedia;
 use App\Pop;
 use App\Transaction;
 use App\User;
@@ -86,10 +89,17 @@ class TradeController extends Controller
          foreach ($r->trades as $key => $i) {
             $card = Card::where('name', $i['cardName'])->first();
 
-            $rate = json_decode($card->currency->where('name',$i['currency'])->first()->cardCurrency->where('card_id',$card->id)->first()->cardPaymentMedia->first()->payment_range_settings);
+            // $rate = json_decode($card->currency->where('name',$i['currency'])->first()->cardCurrency->where('card_id',$card->id)->first()->cardPaymentMedia->first()->payment_range_settings);
+
+            $cardType = $i['cardType'];
+            $payment_medium_id = PaymentMedia::where('name',$cardType)->first()->id;
+            $currency_id = Currency::where('name',$i['currency'])->first()->id;
+            $card_currency_id = CardCurrency::where(['card_id' => $card->id, 'currency_id' => $currency_id])->first()->id;
+            $rates = CardCurrencyPaymentMedia::where(['payment_medium_id' => $payment_medium_id, 'card_currency_id' => $card_currency_id])->first();
+            $rates = json_decode($rates->payment_range_settings);
 
             $t_amount = 0;
-            foreach ($rate as $value) {
+            foreach ($rates as $value) {
                 if ($value->value == $i['cardValue']) {
                     $t_amount = $i['cardQuantity'] * $value->rate;
                     break;

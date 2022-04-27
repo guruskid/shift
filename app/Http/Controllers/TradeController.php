@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Card;
 use App\CardCurrency;
+use App\CardCurrencyPaymentMedia;
+use App\CardCurrencyPaymentMedium;
 use App\Events\CustomNotification;
 use App\Events\NewTransaction;
 use App\Http\Resources\CardResource;
@@ -21,6 +23,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use \App\Http\Controllers\GeneralSettings;
 use App\Mail\GeneralTemplateOne;
+use App\PaymentMedia;
 
 class TradeController extends Controller
 {
@@ -144,9 +147,12 @@ class TradeController extends Controller
         $transaction_id = uniqid();
 
         foreach ($r->cards as $i => $total) {
-            $cardCurrencyPaymentMedia = $card->currency->where('name',$r->currencies[$i])->first()->cardCurrency->where('card_id',$card->id)->first()->cardPaymentMedia->first(); 
-            $rates = json_decode($cardCurrencyPaymentMedia->payment_range_settings);
-            $perc = $cardCurrencyPaymentMedia->percentage_deduction;
+            $cardType = $r->card_types[$i];
+            $payment_medium_id = PaymentMedia::where('name',$cardType)->first()->id;
+            $currency_id = Currency::where('name',$r->currencies[$i])->first()->id;
+            $card_currency_id = CardCurrency::where(['card_id' => $card->id, 'currency_id' => $currency_id])->first()->id;
+            $rates = CardCurrencyPaymentMedia::where(['payment_medium_id' => $payment_medium_id, 'card_currency_id' => $card_currency_id])->first();
+            $rates = json_decode($rates->payment_range_settings);
 
             $t_amount = 0;
             foreach ($rates as $key => $value) {
@@ -155,8 +161,9 @@ class TradeController extends Controller
                     break;
                 }
             }
+
+
             $commission = $t_amount - $r->totals[$i];
-            // $data .= $t_amount .' '. $commission.' '.$r->totals[$i].' | ';
 
             $t = new Transaction();
             $t->uid = $transaction_id;
