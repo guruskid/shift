@@ -621,8 +621,8 @@ class TradeNairaController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return back()->with(['success' => 'Transaction confirmed']);
@@ -679,8 +679,8 @@ class TradeNairaController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return back()->with(['success' => 'Transaction confirmed']);

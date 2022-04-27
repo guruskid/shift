@@ -151,7 +151,8 @@
                     agent_id: this.agent_id,
                     amount: this.amount,
                     pin: this.pin,
-                    account_id: this.account_id
+                    account_id: this.account_id,
+                    platform:"web"
                 }).then(response => {
                     console.log(response);
                     if (response.data['success']) {

@@ -79,8 +79,8 @@ class UserController extends Controller
             $btn_url = '';
 
             $name = ($verification->user->first_name == " ") ? $verification->user->username : $verification->user->first_name;
-            $name = explode(' ', $name);
-            $firstname = ucfirst($name[0]);
+            $name = str_replace(' ', '', $name);
+            $firstname = ucfirst($name);
             Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         } elseif ($verification->type == 'Address') {
             $verification->user->address_verified_at = now();
@@ -106,8 +106,8 @@ class UserController extends Controller
             $btn_url = '';
 
             $name = ($verification->user->first_name == " ") ? $verification->user->username : $verification->user->first_name;
-            $name = explode(' ', $name);
-            $firstname = ucfirst($name[0]);
+            $name = str_replace(' ', '', $name);
+            $firstname = ucfirst($name);
             Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         }
 
@@ -184,8 +184,8 @@ class UserController extends Controller
         
         Please send an email to <a style='text-decoration:none' href='mailto:support@godantown.com'>support@godantown.com</a> if you have questions or complaints";
         $name = ($verification->user->first_name == " ") ? $verification->user->username : $verification->user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
 
         $btn_text = '';
         $btn_url = '';

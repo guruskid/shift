@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Middleware;
-use Illuminate\Support\Facades\Auth;
-use Closure;
 
-class Admin
+use Closure;
+use Illuminate\Support\Facades\Auth;
+
+class Marketing
 {
     /**
      * Handle an incoming request.
@@ -17,10 +18,9 @@ class Admin
     {
         $user = Auth::user();
 
-        if($user->role == 999 || $user->role == 888 || $user->role == 889 || $user->role == 777 || $user->role == 559 || $user->role == 557
-        || $user->role == 666 || $user->role == 444|| $user->role == 449 ){
+        if($user->role == 999 || $user->role == 559){
             if ($user->status != 'active') {
-                return redirect()->route('disabled');
+                abort(404);
             }
             return $next($request);
         }else{
