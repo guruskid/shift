@@ -23,7 +23,6 @@ class RateController extends Controller
 
     public function index()
     {
-
         $cards = Card::orderBy('name', 'asc')->get();
         $currencies = Currency::orderBy('name', 'asc')->get();
         $card_types = PaymentMedium::orderBy('name', 'asc')->get();
@@ -34,10 +33,64 @@ class RateController extends Controller
 
             return true;
         });
-
+        $rates = $rates->sortBy('card_name');
         $usd_ngn = LiveRateController::usdNgn();
 
         return view('admin.rates.index', compact(['cards', 'currencies', 'card_types', 'usd_ngn', 'rates']));
+    }
+
+    public function filter(Request $request)
+    {
+        if($request->card_id == null AND $request->currency_id == null AND $request->payment_medium_id == null){
+            return back()->with(['error' => 'Nothing Selected']);
+        }
+
+        $selected_card = null;
+        $selected_currency = null;
+        $selected_Payment_medium = null;
+        $cards = Card::orderBy('name', 'asc')->get();
+        $currencies = Currency::orderBy('name', 'asc')->get();
+        $card_types = PaymentMedium::orderBy('name', 'asc')->get();
+        $rates = CardCurrencyPaymentMedium::orderBy('card_currency_id', 'desc');
+
+        if($request->card_id != null){
+            $selected_card = Card::find($request->card_id) ?? null;
+            $rates = $rates->whereHas('cardCurrency',function ($query) use ($request) {
+                $query->whereHas('card',function ($query) use ($request){
+                    $query->where('id',$request->card_id);
+                });
+            });
+        }
+
+        if($request->currency_id != null){
+            $selected_currency = Currency::find($request->currency_id) ?? null;
+            $rates = $rates->whereHas('cardCurrency',function ($query) use ($request) {
+                $query->whereHas('currency',function ($query) use ($request){
+                    $query->where('id',$request->currency_id);
+                });
+            });
+        }
+
+        if($request->payment_medium_id != null){
+            $selected_Payment_medium = PaymentMedium::find($request->payment_medium_id) ?? null;
+            $rates = $rates->whereHas('paymentMedium',function ($query) use ($request) {
+                    $query->where('id',$request->payment_medium_id);
+            });
+        }
+
+        
+        $rates = $rates->get()->each(function ($rate) {
+            $rate->card_name = $rate->cardCurrency->card->name;
+            $rate->currency_name = $rate->cardCurrency->currency->name;
+            $rate->rates = \json_decode($rate->payment_range_settings);
+
+            return true;
+        });
+        $rates = $rates->sortBy('card_name');
+        $usd_ngn = LiveRateController::usdNgn();
+
+        return view('admin.rates.index', compact(['cards', 'currencies', 'card_types',
+         'usd_ngn', 'rates','selected_card','selected_currency','selected_Payment_medium']));
     }
 
     public function store(Request $request)
@@ -101,7 +154,7 @@ class RateController extends Controller
             );
         }
 
-        return back()->with(['success' => 'Rates added']);
+        return redirect()->route('admin.rates')->with(['success' => 'Rates Updated']);
     }
 
     public function updateUsd(Request $request)

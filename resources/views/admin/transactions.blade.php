@@ -313,7 +313,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                         <td class="text-center text-capitalize">{{$t->type}}</td>
                                         <td class="text-center">{{$t->country}}</td>
                                         <td class="text-center">{{$t->card_type}}</td>
-                                        <td class="text-center">{{$t->amount}}</td>
+                                        <td class="text-center">{{number_format($t->amount)}}</td>
 
                                         @if ($t->asset->is_crypto)
                                         <td class="text-center">{{ sprintf('%.8f', floatval($t->quantity))}}</td>

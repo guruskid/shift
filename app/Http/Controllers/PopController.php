@@ -19,7 +19,8 @@ class PopController extends Controller
         foreach ($r->pops as $file) {
             $extension = $file->getClientOriginalExtension();
             $filenametostore = time() . uniqid() . '.' . $extension;
-            Storage::put('public/pop/' . $filenametostore, fopen($file, 'r+'));
+            $file->move(public_path('storage/pop/'), $filenametostore);
+            
             $p = new Pop();
             $p->user_id = Auth::user()->id;
             $p->transaction_id = $r->transaction_id;

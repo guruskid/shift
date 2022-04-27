@@ -164,9 +164,75 @@
                                 </a>
                                 @endif
 
+                                {{-- USDT Wallet --}}
+                                @if (!Auth::user()->usdtWallet)
+                                <usdt-create-component></usdt-create-component>
+                                @else
+                                <a href="{{ route('user.usdt-wallet') }}">
+                                    <div class="row">
+                                        <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
+                                            style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="mx-3">
+                                                    <img src="/svg/tetherwallet_logo.svg" height="50px" alt="">
+                                                </div>
+                                                <div>
+                                                    <span
+                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->usdtWallet ? number_format((float)$usdt_wallet->balance, 5) : '' }} USDT</span>
+                                                    <div>
+                                                        <span
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Tether
+                                                            Wallet</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endif
 
-                               
-
+                                {{-- Tron Wallet --}}
+                                @if (!Auth::user()->tronWallet)
+                                @if (in_array(Auth::user()->email, ['sheanwinston@gmail.com', 'ibife1866@gmail.com', 'igwegoodnews002@gmail.com', 'chimenechinah11@gmail.com' ]))
+                                <div class="row">
+                                    <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
+                                        style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
+                                        <div class="d-flex align-items-center">
+                                            <div class="mx-3">
+                                                <img src="/svg/ethereum.svg" alt="">
+                                            </div>
+                                            <div>
+                                                <span class="d-block pb-0 mb-0 choosewallet_selection">Tron</span>
+                                                <a data-toggle="modal" data-target="#new-tron-wallet" href="#">Create
+                                                    Tron Wallet</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @else
+                                <a href="{{ route('user.tron-wallet') }}">
+                                    <div class="row">
+                                        <div class="col-10 px-1 col-lg-4 mx-auto py-2 mt-4"
+                                            style="box-shadow: 0px 2px 10px rgba(207, 207, 207, 0.25);border-radius: 5px;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="mx-3">
+                                                    <img src="/crypto/tron.png" height="50px" alt="">
+                                                </div>
+                                                <div>
+                                                    <span
+                                                        class="d-block pb-0 mb-0 choosewallet_selection">{{ Auth::user()->tronWallet ? number_format((float)$tron_wallet->balance, 5) : '' }} TRX</span>
+                                                    <div>
+                                                        <span
+                                                            class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Tron
+                                                            Wallet</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endif
                             </div>
                         </div>
                     </div>

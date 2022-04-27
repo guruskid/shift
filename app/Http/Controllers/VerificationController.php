@@ -13,6 +13,9 @@ class VerificationController extends Controller
 {
     public function uploadId(Request $request)
     {
+        if(Auth::user()->first_name == ' '){
+            return back()->with(['error' => 'Please add your bank details to continue your level 2 verification']);
+        }
         if(Auth::user()->phone_verified_at == null){
             return back()->with(['error' => 'Please verify your phone number first']);
         }
@@ -50,8 +53,8 @@ class VerificationController extends Controller
 
         // $name = $user->first_name;
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return back()->with(['success' => 'Id card uploaded, please hold on while we verify your account']);
@@ -60,10 +63,15 @@ class VerificationController extends Controller
 
     public function uploadAddress(Request $request)
     {
+
+        if(Auth::user()->first_name == ' '){
+            return back()->with(['error' => 'You must to add your bank details before proceeding for verification']);
+        }
+
         if(Auth::user()->phone_verified_at == null){
             return back()->with(['error' => 'Please Verify your phone number first']);
         }
-        
+
         $this->validate($request, [
             'address' => 'required',
             'location' => 'required',
@@ -98,8 +106,8 @@ class VerificationController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         return back()->with(['success' => 'Address uploaded, please hold on while we verify your account']);
     }

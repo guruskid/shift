@@ -170,6 +170,7 @@ class TradeController extends Controller
         $txn->status = 'waiting';
         $txn->type = 'withdrawal';
         $txn->account_id = $request->account_id;
+        $txn->platform = $request->platform;
         $txn->save();
 
         $user = Auth::user();
@@ -285,6 +286,7 @@ class TradeController extends Controller
         $txn->amount = $request->amount;
         $txn->status = 'waiting';
         $txn->type = 'deposit';
+        $txn->platform = $request->platform;
         $txn->save();
 
         $nt = new NairaTransaction();
