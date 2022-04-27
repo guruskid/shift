@@ -363,7 +363,7 @@ class UsdtController extends Controller
             'json' =>  [
                 "senderAccountId" => Auth::user()->usdtWallet->account_id,
                 "address" => $hd_wallet->address,
-                "amount" => (string)round($request->amount, 3),
+                "amount" => (string)round($request->amount, 4),
                 "compliant" => false,
                 "fee" => "0",
                 "paymentId" => uniqid(),
