@@ -340,7 +340,7 @@ class UsdtController extends Controller
         $usd = $total * $amt_usd;
         $ngn = $usd * $usd_ngn;
 
-        if ($usd < 10) {
+        if ($request->amount < 10) {
             return response()->json([
                 'success' => false,
                 'msg' => 'Minimum trade amount is $10'
@@ -470,12 +470,12 @@ class UsdtController extends Controller
         $btn_text = '';
         $btn_url = '';
 
-        // $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-        // $name = explode(' ', $name);
-        // $firstname = ucfirst($name[0]);
-        // Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-        // ////////////////////////////////////////////
+        ////////////////////////////////////////////
 
         return response()->json([
             'success' => true,
