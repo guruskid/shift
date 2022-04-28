@@ -26,7 +26,7 @@ class AddCurrentCycleCount extends Migration
     public function down()
     {
         Schema::table('user_trackings', function (Blueprint $table) {
-            //
+            $table->dropColumn('current_cycle_count_date');
         });
     }
 }
