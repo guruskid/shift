@@ -16,7 +16,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='All_Users_App') text-white @endif">Signed Up Users<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='All_Users_App') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='All_Users_App') text-white @endif"
                                     href="{{ route('admin.sales.type',['type'=>'All_Users_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -30,7 +30,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='All_Users_Web') text-white @endif">Signed Up Users<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='All_Users_Web') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='All_Users_Web') text-white @endif"
                                     href="{{ route('admin.sales.type',['type'=>'All_Users_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -44,7 +44,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Daily_Users_App') text-white @endif">Daily No. of Signup Users<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Daily_Users_App') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Daily_Users_App') text-white @endif"
                                     href="{{ route('admin.sales.type',['type'=>'Daily_Users_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -58,7 +58,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Daily_Users_Web') text-white @endif">Daily No. of Signup Users<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Daily_Users_Web') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Daily_Users_Web') text-white @endif"
                                      href="{{ route('admin.sales.type',['type'=>'Daily_Users_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -74,7 +74,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Daily_Transactions_App') text-white @endif">Daily No. of Transactions<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Daily_Transactions_App') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Daily_Transactions_App') text-white @endif"
                                      href="{{ route('admin.sales.type',['type'=>'Daily_Transactions_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -88,7 +88,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Daily_Transactions_Web') text-white @endif">Daily No. of Transactions<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Daily_Transactions_Web') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Daily_Transactions_Web') text-white @endif"
                                     href="{{ route('admin.sales.type',['type'=>'Daily_Transactions_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -102,7 +102,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Monthly_Users_App') text-white @endif">Monthly No. of Signup Users<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Monthly_Users_App') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Monthly_Users_App') text-white @endif"
                                     href="{{ route('admin.sales.type',['type'=>'Monthly_Users_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -116,7 +116,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Monthly_Users_Web') text-white @endif">Monthly No. of Signup Users<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Monthly_Users_Web') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Monthly_Users_Web') text-white @endif"
                                      href="{{ route('admin.sales.type',['type'=>'Monthly_Users_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -131,7 +131,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Monthly_Transactions_App') text-white @endif">Monthly No. of Transactions<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Monthly_Transactions_App') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Monthly_Transactions_App') text-white @endif"
                                     href="{{ route('admin.sales.type',['type'=>'Monthly_Transactions_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -145,7 +145,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Monthly_Transactions_Web') text-white @endif">Monthly No. of Transactions<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Monthly_Transactions_Web') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Monthly_Transactions_Web') text-white @endif"
                                     href="{{ route('admin.sales.type',['type'=>'Monthly_Transactions_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -159,7 +159,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Recalcitrant_App') text-white @endif">Recalcitrant Users<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Recalcitrant_App') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Recalcitrant_App') text-white @endif"
                                     href="{{ route('admin.sales.type',['type'=>'Recalcitrant_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -173,7 +173,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Recalcitrant_Web') text-white @endif">Recalcitrant Users<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Recalcitrant_Web') text-white @endif" 
+                                <p><a class="@if(isset($type) && $type =='Recalcitrant_Web') text-white @endif"
                                      href="{{ route('admin.sales.type',['type'=>'Recalcitrant_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
@@ -205,7 +205,7 @@
                                             <td>{{ $t->username }}</td>
                                             <td>{{ $t->email }}</td>
                                             <td>{{ $t->created_at->format('d M Y h:ia')}}</td>
-                                            
+
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -221,7 +221,7 @@
             @elseif(isset($type) AND strpos($type,'Transactions') !== false)
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                     <div class="widget widget-table-three">
-    
+
                         <div class="widget-content">
                             <div class="table-responsive">
                                 <table class="table table-striped">
@@ -248,7 +248,7 @@
                                                 @endif
                                             )</td>
                                             <td>{{ $t->created_at->format('d M Y h:ia')}}</td>
-                                            
+
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -283,7 +283,7 @@
                                             <td>{{ $t->username }}</td>
                                             <td>{{ $t->email }}</td>
                                             <td>{{ $t->created_at->format('d M Y h:ia')}}</td>
-                                            
+
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -296,7 +296,7 @@
                         </div>
                     </div>
                 </div>
-            
+
             @endif
 
 
