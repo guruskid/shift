@@ -26,7 +26,8 @@ class AddPlatformColumnNairaTrades extends Migration
     public function down()
     {
         Schema::table('naira_trades', function (Blueprint $table) {
-            //
+            $table->dropColumn('platform');
+
         });
     }
 }

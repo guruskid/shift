@@ -27,7 +27,7 @@ class UpdateColumnsPayoutsTable extends Migration
     public function down()
     {
         Schema::table('payouts', function (Blueprint $table) {
-            //
+            $table->dropColumn('traded_asset_amount', 'total_chinese_amount');
         });
     }
 }

@@ -27,7 +27,8 @@ class AddStreakUserTracking extends Migration
     public function down()
     {
         Schema::table('user_trackings', function (Blueprint $table) {
-            //
+            $table->dropColumn('Responded_streak', 'Recalcitrant_streak');
+
         });
     }
 }
