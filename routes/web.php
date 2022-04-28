@@ -595,7 +595,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing'
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
     Route::GET('/users_birthdays', 'MarketingController@user_birthday')->name('admin.sales.users_birthdays');
-    Route::GET('/{type?}', 'MarketingController@Category')->name('admin.sales.type');
+    Route::GET('/marketing/{type?}', 'MarketingController@Category')->name('admin.sales.type');
     Route::GET('/view/transactions/{type?}', 'MarketingController@viewTransactionsCategory')->name('admin.transactions.view.type');
     Route::GET('/view/users/{type?}', 'MarketingController@viewUsersCategory')->name('admin.users.view.type');
 });
@@ -613,5 +613,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('user_profile','Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
 
     // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
-    
+
 });
