@@ -293,9 +293,9 @@
                                         </div>
 
                                         <div class="colm4">
-                                            <a href="#" 
+                                            <a href="#"
                                             @if (!auth()->user()->role == 555)
-                                                data-toggle="modal" data-target="#update" 
+                                                data-toggle="modal" data-target="#update"
                                             @endif
                                             ><span
                                                  class="btn  btn-primary">Change Status</span></a>
@@ -321,7 +321,7 @@
                 <div class="modal-header">
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading">{{$user->first_name}}</h4>
+                            <h4 class="media-heading">{{$user->first_name .' '. $user->last_name}}</h4>
                         </div>
                     </div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span

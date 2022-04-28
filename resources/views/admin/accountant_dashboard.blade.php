@@ -190,7 +190,7 @@
                                         </td>
                                         <td>
                                             <div class="td-content pricing"><span
-                                                    class="">{{$t->user->first_name}}</span></div>
+                                                    class="">{{$t->user->first_name .' '. $t->user->last_name}}</span></div>
                                         </td>
                                         <td>
                                             <div class="td-content">
@@ -277,7 +277,7 @@
                                         </td>
                                         <td>
                                             <div class="td-content pricing"><span
-                                                    class="">{{$t->user->first_name}}</span></div>
+                                                    class="">{{$t->user->first_name .' '. $t->user->last_name}}</span></div>
                                         </td>
                                         <td>
                                             <div class="td-content">
@@ -366,7 +366,7 @@
                                         </td>
                                         <td>
                                             <div class="td-content pricing"><span
-                                                    class="">{{$t->user->first_name}}</span></div>
+                                                    class="">{{$t->user->first_name .' '.$t->user->last_name}}</span></div>
                                         </td>
                                         <td>
                                             <div class="td-content">
@@ -447,7 +447,7 @@
                                             <div class="td-content product-brand">₦{{number_format($t->amount) }}</div>
                                         </td>
                                         <td>
-                                            <div class="td-content">{{$t->user->first_name}}</div>
+                                            <div class="td-content">{{$t->user->first_name . ' '. $t->user->last_name}}</div>
                                         </td>
                                         <td>
                                             <div class="td-content pricing"><span

@@ -59,7 +59,7 @@
                                         </td>
                                         <td>
                                             <div class="td-content pricing"><span
-                                                    class="">{{$t->user->first_name}}</span></div>
+                                                    class="">{{$t->user->first_name .' '.$t->user->last_name}}</span></div>
                                         </td>
                                         <td>
                                             <div class="td-content">
@@ -142,7 +142,7 @@
                                         </td>
                                         <td>
                                             <div class="td-content pricing"><span
-                                                    class="">{{$t->user->first_name}}</span></div>
+                                                    class="">{{$t->user->first_name .' '.$t->user->last_name}}</span></div>
                                         </td>
                                         <td>
                                             <div class="td-content">
