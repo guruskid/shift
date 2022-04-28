@@ -14,7 +14,7 @@ class AddPlatformColumnTransactions extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->string('platform')->after('user_email');
+            $table->string('platform')->after('user_email')->nullable();
         });
     }
 

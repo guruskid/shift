@@ -14,7 +14,7 @@ class AddPlatformColumnNairaTrades extends Migration
     public function up()
     {
         Schema::table('naira_trades', function (Blueprint $table) {
-            $table->string('platform');
+            $table->string('platform')->nullable();
         });
     }
 

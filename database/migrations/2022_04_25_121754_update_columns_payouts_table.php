@@ -14,8 +14,8 @@ class UpdateColumnsPayoutsTable extends Migration
     public function up()
     {
         Schema::table('payouts', function (Blueprint $table) {
-            $table->integer('traded_asset_amount');
-            $table->integer('total_chinese_amount');
+            $table->integer('traded_asset_amount')->nullable();
+            $table->integer('total_chinese_amount')->nullable();
         });
     }
 
