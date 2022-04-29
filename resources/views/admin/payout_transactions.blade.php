@@ -173,7 +173,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                             <tbody>
                                                 @foreach ($success_transactions as $t)
                                                 <tr>
-                                                    
+
                                                     <td class="text-center text-muted">
                                                         <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
                                                                 <span>{{$t->uid}}</span>
@@ -189,7 +189,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     @if (in_array(Auth::user()->role, [999] ))
                                                     <td class="text-center">{{ $t->commission }}</td>
                                                     @endif
-                                                    <td class="text-center"> {{$t->user->first_name}} </td>
+                                                    <td class="text-center"> {{$t->user->first_name .' '. $t->user->last_name}} </td>
                                                     <td class="text-center"> {{$t->agent->first_name}} </td>
                                                     <td class="text-center">{{ $t->created_at->format('d M y, h:ia') }}</td>
                                                     <td class="text-center">
@@ -211,7 +211,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
 
                                                         @endswitch
                                                     </td>
-                                                    
+
                                                 </tr>
                                                 @endforeach
                                             </tbody>
