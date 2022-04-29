@@ -88,13 +88,7 @@
                                     <td>{{$t->user->first_name." ".$t->user->last_name}}</td>
                                     <td>{{ $t->user->username }}</td>
                                     <td>{{ $t->user->email }}</td>
-                                    <td>{{ucwords($t->card)}}(
-                                        @if ($t->asset->is_crypto)
-                                        {{ sprintf('%.8f', floatval($t->quantity))}}
-                                        @else
-                                        {{ $t->quantity}}
-                                        @endif
-                                    )</td>
+                                    <td>{{ucwords($t->tradename)}}(</td>
                                     <td>{{ $t->created_at->format('d M Y h:ia')}}</td>
                                     
                                 </tr>

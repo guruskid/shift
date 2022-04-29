@@ -97,13 +97,14 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                         <table class="align-middle mb-0 table table-borderless table-striped table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Total Asset Volume</th>
-                                                    <th>Total card volume in Naira </th>
-                                                    <th> Total successful transactions</th>
-                                                    <th>Worth of Traded Assets</th>
-                                                    <th>Sum of Chinese Amount</th>
-                                                    <th>Date</th>
+                                                    <th class="text-center">ID</th>
+                                                    <th class="text-center">Number of Giftcard transactions</th>
+                                                    <th class="text-center">Worth of Traded Assets</th>
+                                                    <th class="text-center">Sum of Chinese Amount</th>
+                                                    @if (in_array(Auth::user()->role, [999]))
+                                                    <th class="text-center">Total Commission</th>
+                                                    @endif
+                                                    <th class="text-center">Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>@php
@@ -111,13 +112,14 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                             @endphp
                                                 @foreach ($payoutHistory as $history)
                                                     <tr>
-                                                        <td>{{$sn++}}</td>
-                                                        <td>{{$history->card_asset_volume}}</td>
-                                                        <td>N {{number_format($history->card_volume_in_naira)}}</td>
-                                                        <td>{{number_format($history->success_transactions)}}</td>
-                                                        <td>{{number_format($history->traded_asset_amount)}}</td>
-                                                        <td>{{number_format($history->total_chinese_amount)}}</td>
-                                                        <td>{{$history->created_at->format('d M y, h:ia')}}</td>
+                                                        <td class="text-center">{{$sn++}}</td>
+                                                        <td class="text-center">{{$history->card_asset_volume}}</td>
+                                                        <td class="text-center">{{number_format($history->traded_asset_amount)}}</td>
+                                                        <td class="text-center">{{number_format($history->total_chinese_amount)}}</td>
+                                                        @if (in_array(Auth::user()->role, [999]))
+                                                        <td class="text-center">{{ number_format($history->total_commission) }}</td>
+                                                        @endif
+                                                        <td class="text-center">{{$history->created_at->format('d M y, h:ia')}}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

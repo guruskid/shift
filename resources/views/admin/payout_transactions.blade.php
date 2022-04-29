@@ -58,31 +58,47 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
             </div>
             <div class="row">
 
-                <div class="col-md-6 col-xl-3">
+                <div class="col-md-6
+                @if (in_array(Auth::user()->role, [999] ))
+                col-xl-3
+                @else
+                col-xl-4
+                @endif">
                     <div class="card mb-3 widget-content bg-ripe-malin">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
                                 <div class="widget-heading text-center">
-                                    <h5>Number of GiftCard <br>Transactions</h5>
+                                    <h5>Number of GiftCard Transactions</h5>
                                     <h6>{{ number_format($giftcard_tranx_count)}}</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-xl-3">
+                <div class="col-md-6
+                @if (in_array(Auth::user()->role, [999] ))
+                col-xl-3
+                @else
+                col-xl-4
+                @endif">
                     <div class="card mb-3 widget-content bg-ripe-malin">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
                                 <div class="widget-heading text-center">
-                                    <h5>Worth of all <br>Traded Assets</h5>
+                                    <h5>Worth of all Traded Assets</h5>
                                     <h6>{{number_format($total_traded_asset)}}</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-xl-2">
+                <div class="col-md-6 
+                @if (in_array(Auth::user()->role, [999] ))
+                col-xl-3
+                @else
+                col-xl-4
+                @endif
+                ">
                     <div class="card mb-3 widget-content bg-ripe-malin">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
@@ -94,32 +110,23 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-xl-2">
+                @if (in_array(Auth::user()->role, [999] ))
+                <div class="col-md-6 col-xl-3">
                     <div class="card mb-3 widget-content bg-ripe-malin">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
                                 <div class="widget-heading text-center">
-                                    <h5>Gift cards Asset volume</h5>
-                                    <h6>{{number_format($payoutVolume)}}</h6>
+                                    <h5>Total Sum of Commision</h5>
+                                    <h6>{{number_format($totalComm)}}</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                @endif
                 {{-- payoutVolume
                 assetsInNaira --}}
-                <div class="col-md-6 col-xl-2">
-                    <div class="card mb-3 widget-content bg-ripe-malin">
-                        <div class="widget-content-wrapper py-2 text-white">
-                            <div class="widget-content-actions mx-auto ">
-                                <div class="widget-heading text-center">
-                                    <h5>Total card volume in Naira </h5>
-                                    <h6>N{{ number_format($assetsInNaira) }}</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
 
             </div>
 
@@ -151,7 +158,12 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     <th class="text-center">Asset type</th>
                                                     <th class="text-center">Tran. type</th>
                                                     <th class="text-center">Asset value</th>
+                                                    <th class="text-center">Quantity</th>
+                                                    <th class="text-center">Total Asset</th>
                                                     <th class="text-center">Chinese amount</th>
+                                                    @if (in_array(Auth::user()->role, [999] ))
+                                                    <th class="text-center">Commission</th>
+                                                    @endif
                                                     <th class="text-center">User</th>
                                                     <th class="text-center">Agent</th>
                                                     <th class="text-center">Date</th>
@@ -170,8 +182,13 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     <td class="text-center">{{ucwords($t->card)}}</td>
                                                     <td class="text-center">{{$t->type}}</td>
                                                     <td class="text-center">{{$t->amount}}</td>
+                                                    <td class="text-center">{{ $t->quantity}}</td>
+                                                    <td class="text-center">{{ $t->amount * $t->quantity}}</td>
                                                     <td class="text-center">{{number_format($t->amount_paid + $t->commission)}}
                                                     </td>
+                                                    @if (in_array(Auth::user()->role, [999] ))
+                                                    <td class="text-center">{{ $t->commission }}</td>
+                                                    @endif
                                                     <td class="text-center"> {{$t->user->first_name}} </td>
                                                     <td class="text-center"> {{$t->agent->first_name}} </td>
                                                     <td class="text-center">{{ $t->created_at->format('d M y, h:ia') }}</td>
