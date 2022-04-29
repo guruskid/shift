@@ -150,6 +150,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.verification_limit' ? 'active' : '' }}">
+        <a href="{{route('admin.verification_limit')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Verification limit</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.cards' ? 'active' : '' }}">
         <a href="{{route('admin.cards')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">
