@@ -299,6 +299,9 @@ $not = $nots->last();
                                                 @case(555)
                                                 Customer Happiness
                                                 @break
+                                                @case(559)
+                                                Marketing
+                                                @break
                                                 @case(666)
                                                 Manager
                                                 @break
@@ -307,6 +310,9 @@ $not = $nots->last();
                                                 @break
                                                 @case(449)
                                                 Chinese Admin
+                                                @break
+                                                @case(557)
+                                                Business Developer
                                                 @break
                                                 @default
                                                 Hi! there
@@ -343,7 +349,7 @@ $not = $nots->last();
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     @auth
-    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449] ))
+    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449,557] ))
     <script src="{{asset('js/sa.js?v=7')}}"></script>
     @endif
     @endauth
@@ -412,6 +418,15 @@ $not = $nots->last();
                 console.log("this is working")
             }
         }
+
+        const category_status = () => {
+        const feedback = __st_id("category")
+        if (feedback.value != "") {
+        showit("feedback-textarea")
+        } else {
+            hideit("feedback-textarea")
+        }
+    }
 
         const decline_reason = (selectedOption) => {
             showit(selectedOption)

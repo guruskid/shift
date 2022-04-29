@@ -87,7 +87,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <select name="type" class="ml-1 form-control">
                                             <option value="null">Type</option>
                                             @foreach ($type as $t)
-                                                <option value="{{ $t->transaction_type_id }}">{{ ucwords($t->transactionType->name) }}</option>  
+                                                <option value="{{ $t->transaction_type_id }}">{{ ucwords($t->transactionType->name) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -102,12 +102,12 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                     <input type="date" name="end" class="ml-2 form-control" required>
                                 </div>
                                 @if (isset($status))
-                                    
+
                                     <div class="form-group mr-1">
                                         <select name="status" class="ml-1 form-control">
                                             <option value="null">Status</option>
                                             @foreach ($status as $s)
-                                                <option value="{{ $s->status }}">{{ $s->status }}</option> 
+                                                <option value="{{ $s->status }}">{{ $s->status }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -170,7 +170,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                             @if(strlen($t->user->first_name) < 3 )
                                                 {{$t->user->email}}
                                             @else
-                                                {{$t->user->first_name}}
+                                                {{$t->user->first_name .' '. $t->user->last_name}}
                                             @endif
 
                                             </a>
@@ -187,7 +187,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
                                         <td>{{$t->status}} </td>
                                         <td>@if (in_array(Auth::user()->role, [555] ))
-                                            
+
                                             @else
                                             {{ $t->extras }}
                                         @endif

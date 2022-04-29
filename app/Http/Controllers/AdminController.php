@@ -15,6 +15,7 @@ use App\Events\TransactionUpdated;
 use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\Exports\DownloadUsers;
+use App\Http\Controllers\Admin\BusinessDeveloperController;
 use Excel;
 use App\NairaWallet;
 use App\Payout;
@@ -164,6 +165,10 @@ class AdminController extends Controller
                     'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges', 'old_charges'
                 ])
             );
+        } else if (Auth::user()->role == 559) { //Marketing
+            $marketing_controller =  new MarketingController();
+            return $marketing_controller->index();
+
         } else if (Auth::user()->role == 666) { //Manager
             return view(
                 'admin.manager_dashboard',
@@ -234,6 +239,8 @@ class AdminController extends Controller
                     'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
                     'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
                 ]));
+        } else if (Auth::user()->role == 557) { //business_Developer
+            return (new BusinessDeveloperController)->index();
         }
     }
 
@@ -391,6 +398,13 @@ class AdminController extends Controller
         $success_transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->latest()->get();
+        $giftcard_tranx_count = $success_transactions->count();
+        $total_traded_asset = 0;
+        $total_chinese_amount = 0;
+        foreach ($success_transactions as $st) {
+            $total_traded_asset += ($st->amount * $st->quantity);
+            $total_chinese_amount += ($st->amount_paid + $st->commission);
+        }
         if ($type != 'all') {
             $success_transactions = $success_transactions->take(500);
         }
@@ -406,7 +420,7 @@ class AdminController extends Controller
                 'admin.payout_transactions',
                 compact([
                     'payoutVolume', 'assetsInNaira','countST',
-
+                    'giftcard_tranx_count','total_traded_asset','total_chinese_amount',
                     'transactions', 'waiting_transactions', 'in_progress_transactions',
                     'users', 'users_count', 'notifications', 'usersChart',
                     'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
@@ -417,7 +431,7 @@ class AdminController extends Controller
                 ]));
     }
 
-    public function payOutHistory()
+    public function payOutHistory(Request $request)
     {
         $s = Transaction::where('status', 'success')->count();
         $w = Transaction::where('status', 'waiting')->count();
@@ -448,14 +462,26 @@ class AdminController extends Controller
 
             $assets = payout::orderBy('created_at', 'desc')->first();
 
-            $payoutHistory =  payout::orderBy('id', 'desc')->get();
+            $payoutHistory =  payout::orderBy('id', 'desc');
+            $segment = null;
 
+            if($request->start)
+            {
+                $segment .= Carbon::parse($request->start)->format('d-M-Y');
+                $payoutHistory = $payoutHistory->whereDate('created_at',">=",$request->start);
+                if($request->end){
+                    $payoutHistory = $payoutHistory->whereDate('created_at',"<=",$request->end);
+                    $segment .=" to ".Carbon::parse($request->end)->format('d-M-Y');
+                }
+            }
+
+            $payoutHistory = $payoutHistory->get();
             // dd($cardTwentyFourHrs);
 
             return view(
                 'admin.payout_history',
                 compact([
-                    'assets', 'usersChart','payoutHistory'
+                    'assets', 'usersChart','payoutHistory','segment'
                 ]));
 
     }
@@ -484,6 +510,17 @@ class AdminController extends Controller
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->count();
 
+        $success_transactions = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->get();
+        
+        $total_traded_asset = 0;
+        $total_chinese_amount = 0;
+        foreach ($success_transactions as $st) {
+            $total_traded_asset += ($st->amount * $st->quantity);
+            $total_chinese_amount += ($st->amount_paid + $st->commission);
+        }
+
         // dd($countST);
 
         if($countST < 1 ){
@@ -494,6 +531,8 @@ class AdminController extends Controller
             'card_asset_volume' => $payoutVolume,
             'card_volume_in_naira' => $assetsInNaira,
             'success_transactions' => $countST,
+            'traded_asset_amount' => $total_traded_asset,
+            'total_chinese_amount' => $total_chinese_amount
         ]);
         return redirect()->back()->with('success', 'Transactions was wipe successfully');
     }

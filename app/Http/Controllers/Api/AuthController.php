@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Mail\DantownNotification;
 use App\NairaWallet;
 use App\Notification;
+use App\UserTracking;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Mail;
 use RestApis\Blockchain\Constants;
@@ -100,6 +101,11 @@ class AuthController extends Controller
             'amount' => 0,
             'password' => $password,
             'amount_control' => 'VARIABLE',
+        ]);
+
+        UserTracking::create([
+            'user_id' =>$user->id,
+            'Current_Cycle' => "Active"
         ]);
 
         $btc_hd = HdWallet::where('currency_id', 1)->first();

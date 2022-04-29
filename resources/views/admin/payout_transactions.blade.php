@@ -58,13 +58,49 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
             </div>
             <div class="row">
 
-                <div class="col-md-6 col-xl-6">
+                <div class="col-md-6 col-xl-3">
+                    <div class="card mb-3 widget-content bg-ripe-malin">
+                        <div class="widget-content-wrapper py-2 text-white">
+                            <div class="widget-content-actions mx-auto ">
+                                <div class="widget-heading text-center">
+                                    <h5>Number of GiftCard <br>Transactions</h5>
+                                    <h6>{{ number_format($giftcard_tranx_count)}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="card mb-3 widget-content bg-ripe-malin">
+                        <div class="widget-content-wrapper py-2 text-white">
+                            <div class="widget-content-actions mx-auto ">
+                                <div class="widget-heading text-center">
+                                    <h5>Worth of all <br>Traded Assets</h5>
+                                    <h6>{{number_format($total_traded_asset)}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-2">
+                    <div class="card mb-3 widget-content bg-ripe-malin">
+                        <div class="widget-content-wrapper py-2 text-white">
+                            <div class="widget-content-actions mx-auto ">
+                                <div class="widget-heading text-center">
+                                    <h5>Total Sum of Chinese Amount</h5>
+                                    <h6>{{number_format($total_chinese_amount)}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-2">
                     <div class="card mb-3 widget-content bg-ripe-malin">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
                                 <div class="widget-heading text-center">
                                     <h5>Gift cards Asset volume</h5>
-                                    <h6>{{$payoutVolume}}</h6>
+                                    <h6>{{number_format($payoutVolume)}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -72,8 +108,8 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                 </div>
                 {{-- payoutVolume
                 assetsInNaira --}}
-                <div class="col-md-6 col-xl-6">
-                    <div class="card mb-3 widget-content bg-happy-fisher">
+                <div class="col-md-6 col-xl-2">
+                    <div class="card mb-3 widget-content bg-ripe-malin">
                         <div class="widget-content-wrapper py-2 text-white">
                             <div class="widget-content-actions mx-auto ">
                                 <div class="widget-heading text-center">
@@ -118,20 +154,27 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     <th class="text-center">Chinese amount</th>
                                                     <th class="text-center">User</th>
                                                     <th class="text-center">Agent</th>
+                                                    <th class="text-center">Date</th>
                                                     <th class="text-center">Status</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($success_transactions as $t)
                                                 <tr>
-                                                    <td class="text-center text-muted">{{$t->uid}}</td>
+
+                                                    <td class="text-center text-muted">
+                                                        <a href="{{route('admin.view-transaction', [$t->id, $t->uid] )}} ">
+                                                                <span>{{$t->uid}}</span>
+                                                        </a>
+                                                    </td>
                                                     <td class="text-center">{{ucwords($t->card)}}</td>
                                                     <td class="text-center">{{$t->type}}</td>
                                                     <td class="text-center">{{$t->amount}}</td>
                                                     <td class="text-center">{{number_format($t->amount_paid + $t->commission)}}
                                                     </td>
-                                                    <td class="text-center"> {{$t->user->first_name}} </td>
+                                                    <td class="text-center"> {{$t->user->first_name .' '. $t->user->last_name}} </td>
                                                     <td class="text-center"> {{$t->agent->first_name}} </td>
+                                                    <td class="text-center">{{ $t->created_at->format('d M y, h:ia') }}</td>
                                                     <td class="text-center">
                                                         @switch($t->status)
                                                         @case('success')
@@ -151,6 +194,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
 
                                                         @endswitch
                                                     </td>
+
                                                 </tr>
                                                 @endforeach
                                             </tbody>

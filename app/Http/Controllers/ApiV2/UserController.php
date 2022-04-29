@@ -12,6 +12,7 @@ use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -297,14 +298,21 @@ class UserController extends Controller
         if ($r->has('image')) {
             $file = $r->image;
             $folderPath = public_path('storage/avatar/');
+
+            $extension = $file->getClientOriginalExtension();
+            $filenametostore = time() . uniqid() . '.' . $extension;
+            Storage::put('public/avatar/' . $filenametostore, fopen($file, 'r+'));
             $image_base64 = base64_decode($file);
 
-            $imageName = time() . uniqid() . '.png';
+            $imageName = $filenametostore;
             $imageFullPath = $folderPath . $imageName;
 
-            file_put_contents($imageFullPath, $image_base64);
+            // file_put_contents($imageFullPath, $image_base64);
 
-            Auth::user()->dp = $imageName;
+
+            ////////////////////
+
+            Auth::user()->dp = $filenametostore;
             Auth::user()->save();
 
             return response()->json([

@@ -11,6 +11,7 @@ use App\Mail\VerificationCodeMail;
 use App\NairaWallet;
 use App\Notification;
 use App\User;
+use App\UserTracking;
 use App\VerificationCode;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -182,7 +183,7 @@ class AuthController extends Controller
         if (Hash::check($r->old_password, Auth::user()->password) == false) {
             return response()->json([
                 'success' => false,
-                'message' => 'Your current password does not match with the password you provided. Please try again.',
+                'message' => 'Old password does not match with the password you provided. Please try again.',
             ]);
         }
 
@@ -199,6 +200,8 @@ class AuthController extends Controller
     public function verificationCodeEmail($email, $userId)
     {
         $otpCode = rand(1000, 9999);
+
+        
         VerificationCode::create([
             'user_id' => $userId,
             'verification_code' => $otpCode
@@ -219,7 +222,6 @@ class AuthController extends Controller
         // }
 
         $rc = $request->refcode ?? NULL;
-
 
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
@@ -251,6 +253,7 @@ class AuthController extends Controller
             'status' => 'active',
             'referrer' => $rc,
             'password' => Hash::make($input['password']),
+            'platform' => $input['platform']
         ];
 
         if (isset($input['referral_code'])) {
@@ -269,6 +272,11 @@ class AuthController extends Controller
         $success['token'] = $user->createToken('appToken')->accessToken;
         $password = '';
 
+        UserTracking::create([
+            'user_id' =>$user->id,
+            'Current_Cycle' => "Active"
+        ]);
+        
         NairaWallet::create([
             'user_id' => $user->id,
             'account_number' => time(),
@@ -346,8 +354,8 @@ class AuthController extends Controller
         $this->verificationCodeEmail($user->email, $user->id);
 
         $name = $user->first_name == " " ? $user->username : $user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
 
         $title = 'Welcome to Dantown,';
         $body = 'Congratulations ' . $firstname . ' on signing up on Dantown.<br>
