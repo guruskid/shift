@@ -9,6 +9,7 @@ use App\Mail\GeneralTemplateOne;
 use App\Notification;
 use App\User;
 use App\Verification;
+use App\VerificationLimit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -57,22 +58,22 @@ class UserController extends Controller
 
         if ($verification->type == 'ID Card') {
             $verification->user->idcard_verified_at = now();
-            NariaLimitController::nariaLimit($verification->user);
+            $level = VerificationLimit::where('level', "3")->first();
             $title = 'LEVEL 3 VERIFICATION SUCCESSFUL';
             $body = "Congrats " . $verification->user->first_name . ", you have successfully completed your Level 3 verification.
             Below is a breakdown of level 3 privileges. <br><br>
 
             <b style='color:000070'>Identity Verification<br><br>
 
-            Daily withdrawal limit: NGN ".number_format($verification->user->daily_max)."<br><br>
+            Daily withdrawal limit: NGN ".number_format($level->daily_widthdrawal_limit)."<br><br>
 
-            Monthly withdrawal limit: NGN ".number_format($verification->user->monthly_max)."<br><br>
+            Monthly withdrawal limit: NGN ".number_format($level->monthly_widthdrawal_limit)."<br><br>
 
-            Crypto withdrawal limit: unlimited<br><br>
+            Crypto withdrawal limit: ".$level->crypto_widthdrawal_limit."<br><br>
 
-            Crypto deposit: Unlimited<br><br>
+            Crypto deposit: ".$level->crypto_deposit."<br><br>
 
-            Transactions: Unlimited<br></b>
+            Transactions: ".$level->transactions."<br></b>
             ";
 
             $btn_text = '';
@@ -84,22 +85,22 @@ class UserController extends Controller
             Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         } elseif ($verification->type == 'Address') {
             $verification->user->address_verified_at = now();
-            NariaLimitController::nariaLimit($verification->user);
+            $level = VerificationLimit::where('level', "2")->first();
             $title = 'LEVEL 2 VERIFICATION SUCCESSFUL';
             $body = "Congrats " . $verification->user->first_name . ", you have successfully completed your Level 2 verification.
             Below is a breakdown of level 2 privileges. <br><br>
 
             <b style='color:000070'>Address Verification<br><br>
 
-            Daily withdrawal limit: NGN ".number_format($verification->user->daily_max)."<br><br>
+            Daily withdrawal limit: NGN ".number_format($level->daily_widthdrawal_limit)."<br><br>
 
-            Monthly withdrawal limit: NGN ".number_format($verification->user->monthly_max)."<br><br>
+            Monthly withdrawal limit: NGN ".number_format($level->monthly_widthdrawal_limit)."<br><br>
 
-            Crypto withdrawal limit: unlimited<br><br>
+            Crypto withdrawal limit: ".$level->crypto_widthdrawal_limit."<br><br>
 
-            Crypto deposit: Unlimited<br><br>
+            Crypto deposit: ".$level->crypto_deposit."<br><br>
 
-            Transactions: Unlimited<br></b>
+            Transactions: ".$level->transactions."<br></b>
             ";
 
             $btn_text = '';

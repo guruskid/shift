@@ -59,10 +59,10 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
 
                         </div>
                     </div>
-                    <h6 class="pl-5">Gift cards transaction <span class="badge bg-secondary">{{$cardTwentyFourHrscount}}</span></h6>
-                    <h6 class="pl-2">Total card volume in Naira <span class="badge bg-secondary">N{{$nairaTwentyFourHrs}}</span></h6>
-                    <h6 class="pl-2">Total card volume in Dollar<span class="badge bg-secondary">${{$dollarTwentyFourHrs}}</span></h6>
-
+                    <h6 class="pl-5">Gift cards transaction <span class="badge bg-secondary text-white">{{number_format($cardTwentyFourHrscount)}}</span></h6>
+                    <h6 class="pl-2">Total card volume in Naira <span class="badge bg-secondary text-white">₦{{number_format($nairaTwentyFourHrs)}}</span></h6>
+                    <h6 class="pl-2">Total card volume in Dollar<span class="badge bg-secondary text-white">${{number_format($dollarTwentyFourHrs)}}</span></h6>
+                    
                 </div>
 
             </div>
@@ -197,7 +197,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             @if (in_array(Auth::user()->role, [999] ))
                                                                 <th class="text-center">Commission</th>
                                                             @endif
-                                                            @if (in_array(Auth::user()->role, [444,999] ))
+                                                            @if (in_array(Auth::user()->role, [444,999,449] ))
                                                                 <th class="text-center">Chinese Amount</th>
                                                             @endif
                                                             @if (!in_array(Auth::user()->role, [449,444] ))
@@ -270,8 +270,8 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             @if (in_array(Auth::user()->role, [999] ))
                                                                 <td class="text-center">{{$t->commission,2, '.', ','}}</td>
                                                             @endif
-                                                            @if (in_array(Auth::user()->role, [444,999] ))
-                                                                <td class="text-center">N{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
+                                                            @if (in_array(Auth::user()->role, [444,999,449] ))
+                                                                <td class="text-center">₦{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
                                                             @endif
                                                             @if (!in_array(Auth::user()->role, [449,444] ))
                                                             <td class="text-center">{{$t->wallet_id}}</td>
@@ -562,6 +562,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <td class="text-center">{{$t->amount}}</td>
                                                             <td class="text-center">{{ $t->quantity}}</td>
                                                             <td class="text-center">{{ $t->amount * $t->quantity}}</td>
+                                                            @if (in_array(Auth::user()->role, [444,999,449] ))
                                                             <td class="text-center">N{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
                                                             <td class="text-center"> {{$t->user->first_name .' '. $t->user->last_name}}} </td>
                                                             <td class="text-center"> {{$t->agent->first_name}} </td>
@@ -636,6 +637,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                                             <td class="text-center">{{$t->amount}}</td>
                                                             <td class="text-center">{{ $t->quantity}}</td>
                                                             <td class="text-center">{{ $t->amount * $t->quantity}}</td>
+                                                            @if (in_array(Auth::user()->role, [444,999,449] ))
                                                             <td class="text-center">N{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
                                                             <td class="text-center"> {{$t->user->first_name  .' '. $t->user->last_name}} </td>
                                                             <td class="text-center"> {{$t->agent->first_name}} </td>
