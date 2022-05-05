@@ -513,7 +513,7 @@ class AdminController extends Controller
         $success_transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->get();
-        
+
         $total_traded_asset = 0;
         $total_chinese_amount = 0;
         foreach ($success_transactions as $st) {
@@ -631,7 +631,7 @@ class AdminController extends Controller
                 })->paginate(100);
             }
             $transactions = $transactions->paginate(100);
-            
+
 
 
             $segment = $request->segment;
@@ -755,7 +755,7 @@ class AdminController extends Controller
 
     public function buyTransac(Request $request)
     {
-        
+
         $category = Transaction::with('asset')
         ->select('card_id')
         ->where('card_id','!=',null)
@@ -780,7 +780,7 @@ class AdminController extends Controller
             }
             $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
         }
-        
+
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
@@ -1234,7 +1234,9 @@ class AdminController extends Controller
             $btc_transactions = [];
         }
 
-        return view('admin.user', compact(['user', 'transactions', 'wallet_txns', 'btc_wallet', 'btc_transactions', 'dr_total', 'cr_total']));
+        $verifications = $user->verifications;
+
+        return view('admin.user', compact(['user', 'transactions', 'wallet_txns', 'btc_wallet', 'btc_transactions', 'dr_total', 'cr_total', 'verifications']));
     }
 
     public function searchUser(Request $r)

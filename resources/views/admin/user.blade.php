@@ -43,7 +43,7 @@
             <div class="app-page-title">
                 <div class="page-title-wrapper">
                     <div class="page-title-heading">
-                        <div class="page-title-icon" style=" height: 150px; width: 150px " >
+                        <div class="page-title-icon" style=" height: 150px; width: 150px ">
                             <a href="{{asset('storage/avatar/'.$user->dp)}}"><img
                                     src=" {{asset('storage/avatar/'.$user->dp)}} " height="120px" alt=""></a>
                         </div>
@@ -77,14 +77,14 @@
                                         class="active nav-link">Profile</a></li>
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-1" class="nav-link">Bank <div
                                             class="d-none d-md-block ml-1"> details</div> </a></li>
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-4"
-                                        class="nav-link">Naira Wallet transactions</a></li>
-                                <li class="nav-item"><a data-toggle="tab" href="#btc-txns"
-                                    class="nav-link">Bitcoin Wallet transactions</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-4" class="nav-link">Naira
+                                        Wallet transactions</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#btc-txns" class="nav-link">Bitcoin
+                                        Wallet transactions</a></li>
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-2"
-                                    class="nav-link">Transactions</a></li>
-                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-3" class="nav-link">Id
-                                        Card</a></li>
+                                        class="nav-link">Transactions</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-3"
+                                        class="nav-link">Verification History</a></li>
                             </ul>
                             <div class="tab-content">
                                 {{-- Profile --}}
@@ -96,14 +96,16 @@
                                                 <div class="col-md-6">
                                                     <div class="position-relative form-group">
                                                         <label>First Name</label>
-                                                        <input type="text" class="form-control " name="first_name" {{ auth()->user()->role == 555 ? 'disabled' : '' }}
+                                                        <input type="text" class="form-control " name="first_name"
+                                                            {{ auth()->user()->role == 555 ? 'disabled' : '' }}
                                                             value="{{$user->first_name}}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="position-relative form-group">
                                                         <label>Last Name</label>
-                                                        <input type="text" class="form-control " name="last_name" {{ auth()->user()->role == 555 ? 'disabled' : '' }}
+                                                        <input type="text" class="form-control " name="last_name"
+                                                            {{ auth()->user()->role == 555 ? 'disabled' : '' }}
                                                             value="{{$user->last_name}}">
                                                     </div>
                                                 </div>
@@ -122,12 +124,14 @@
                                                 <div class="col-md-6">
                                                     <div class="position-relative form-group">
                                                         <label>Phone</label>
-                                                        <input type="text" class="form-control" name="phone" {{ auth()->user()->role == 555 ? 'disabled' : '' }}
+                                                        <input type="text" class="form-control" name="phone"
+                                                            {{ auth()->user()->role == 555 ? 'disabled' : '' }}
                                                             value="{{$user->phone}}">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="mt-2 btn btn-outline-primary" {{ auth()->user()->role == 555 ? 'disabled' : '' }}>
+                                            <button type="submit" class="mt-2 btn btn-outline-primary"
+                                                {{ auth()->user()->role == 555 ? 'disabled' : '' }}>
                                                 <i class="spinner-border spinner-border-sm" id="s-p"
                                                     style="display: none;"></i>
                                                 Save</button>
@@ -229,16 +233,19 @@
                                                     <td class="text-center">{{$t->transactionType->name}}</td>
                                                     <td class="text-center">{{ucwords($t->trans_type)}}</td>
                                                     <td class="text-center">{{ucwords($t->status)}} </td>
-                                                    <td class="text-center">{{$t->created_at->format('d M y h:i a ')}}</td>
+                                                    <td class="text-center">{{$t->created_at->format('d M y h:i a ')}}
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                                 <tr>
                                                     <td class="text-center"><strong>Debit Total</strong></td>
-                                                    <td class="text-center"><strong>₦{{number_format($dr_total)}} </strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($dr_total)}}
+                                                        </strong></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-center"><strong>Credit Total</strong></td>
-                                                    <td class="text-center"><strong>₦{{number_format($cr_total)}} </strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($cr_total)}}
+                                                        </strong></td>
                                                 </tr>
                                             </tbody>
                                             {{$wallet_txns->links()}}
@@ -249,7 +256,8 @@
                                 {{-- BTC Tranactions --}}
                                 <div class="tab-pane" id="btc-txns" role="tabpanel">
                                     <div class="table-responsive">
-                                        <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                                        <table
+                                            class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                             <thead>
                                                 <tr>
                                                     {{-- <th>ID</th> --}}
@@ -262,7 +270,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($btc_transactions as  $t)
+                                                @foreach ($btc_transactions as $t)
                                                 <tr>
                                                     {{-- <td>{{$key += 1}} </td> --}}
                                                     <td>{{ $t->transactionType }}</td>
@@ -272,7 +280,9 @@
                                                     <td>Completed</td>
                                                     <td class="transaction_content">
                                                         @if (isset($t->txId))
-                                                            <a target="_blank" href="https://blockexplorer.one/btc/mainnet/tx/{{ $t->txId }}" class="">Explorer</a>
+                                                        <a target="_blank"
+                                                            href="https://blockexplorer.one/btc/mainnet/tx/{{ $t->txId }}"
+                                                            class="">Explorer</a>
 
                                                         @endif
                                                     </td>
@@ -287,21 +297,29 @@
                                 {{-- Verification --}}
                                 <div class="tab-pane" id="tab-eg11-3" role="tabpanel">
                                     <div class="row ">
-                                        <div class="col-md-8">
+                                        @foreach ($verifications as $v)
+                                        <div class="col-md-4">
+                                            <a href="{{asset('storage/idcards/'.$v->path)}}">
+                                                <img src="{{asset('storage/idcards/'.$v->path)}}" class="img-fluid">
+
+                                            </a>
+                                            <h6>{{ $v->type }} <span class="badge badge-primary">{{ $v->status }}</span>
+                                            </h6>
+                                        </div>
+                                        @endforeach
+
+                                        {{-- <div class="col-md-8">
                                             <img src=" {{asset('storage/idcards/'.$user->id_card)}} " alt=""
-                                                class="img-fluid">
-                                        </div>
-
-                                        <div class="colm4">
-                                            <a href="#" 
-                                            @if (!auth()->user()->role == 555)
-                                                data-toggle="modal" data-target="#update" 
-                                            @endif
-                                            ><span
-                                                 class="btn  btn-primary">Change Status</span></a>
-                                        </div>
-
+                                        class="img-fluid">
                                     </div>
+
+                                    <div class="colm4">
+                                        <a href="#" @if (!auth()->user()->role == 555)
+                                            data-toggle="modal" data-target="#update"
+                                            @endif
+                                            ><span class="btn  btn-primary">Change Status</span></a>
+                                    </div> --}}
+
                                 </div>
                             </div>
                         </div>
@@ -310,6 +328,7 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 
 {{--Update Status --}}

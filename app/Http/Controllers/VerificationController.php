@@ -80,7 +80,6 @@ class VerificationController extends Controller
         $user = Auth::user();
         if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
             return back()->with(['error' => 'Address verification already in progress']);
-            dd('hi ');
         }
 
         $file = $request->address;
