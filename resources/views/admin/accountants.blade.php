@@ -99,7 +99,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                     @if ($u->id != Auth::user()->id)
                                     <tr>
                                         <td class="text-center text-muted">{{$u->id}}</td>
-                                        <td class="text-center">{{ucwords($u->first_name)}}</td>
+                                        <td class="text-center">{{ucwords($u->first_name .' '.$u->last_name)}}</td>
                                         <td class="text-center">{{$u->email}}</td>
                                         <td class="text-center">{{$u->phone}}</td>
                                         <td class="text-center">{{$u->approvedTransactions()->count()}}</td>

@@ -93,7 +93,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                     @if ($u->id != Auth::user()->id)
                                     <tr>
                                         <td class="text-center text-muted">{{$u->id}}</td>
-                                        <td class="text-center">{{ucwords($u->first_name)}}</td>
+                                        <td class="text-center">{{ucwords($u->first_name .' '. $u->last_name)}}</td>
                                         <td class="text-center">{{$u->email}}</td>
                                         <td class="text-center">{{$u->phone}}</td>
                                         <td class="text-center">
@@ -124,7 +124,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                             <a href="{{route('admin.chinese_add_admin.action', [$u->id, 'waiting'] )}}" class="btn btn-sm btn-warning">Deactivate</a>
 											@endif
                                             <a href="{{route('admin.chinese_add_admin.action', [$u->id, 'remove'] )}} "  class="btn btn-sm btn-danger">Remove</a>
-                                            
+
                                         </td>
                                     </tr>
                                     @endif

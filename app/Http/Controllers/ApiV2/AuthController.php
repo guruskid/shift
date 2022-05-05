@@ -11,6 +11,7 @@ use App\Mail\VerificationCodeMail;
 use App\NairaWallet;
 use App\Notification;
 use App\User;
+use App\UserTracking;
 use App\VerificationCode;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -222,7 +223,6 @@ class AuthController extends Controller
 
         $rc = $request->refcode ?? NULL;
 
-
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
@@ -253,6 +253,7 @@ class AuthController extends Controller
             'status' => 'active',
             'referrer' => $rc,
             'password' => Hash::make($input['password']),
+            'platform' => $input['platform']
         ];
 
         if (isset($input['referral_code'])) {
@@ -271,6 +272,11 @@ class AuthController extends Controller
         $success['token'] = $user->createToken('appToken')->accessToken;
         $password = '';
 
+        UserTracking::create([
+            'user_id' =>$user->id,
+            'Current_Cycle' => "Active"
+        ]);
+        
         NairaWallet::create([
             'user_id' => $user->id,
             'account_number' => time(),
@@ -348,8 +354,8 @@ class AuthController extends Controller
         $this->verificationCodeEmail($user->email, $user->id);
 
         $name = $user->first_name == " " ? $user->username : $user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
 
         $title = 'Welcome to Dantown,';
         $body = 'Congratulations ' . $firstname . ' on signing up on Dantown.<br>

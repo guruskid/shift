@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Card;
 use App\CardCurrency;
+use App\CardCurrencyPaymentMedia;
+use App\CardCurrencyPaymentMedium;
 use App\Events\CustomNotification;
 use App\Events\NewTransaction;
 use App\Http\Resources\CardResource;
@@ -21,6 +23,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use \App\Http\Controllers\GeneralSettings;
 use App\Mail\GeneralTemplateOne;
+use App\PaymentMedia;
 
 class TradeController extends Controller
 {
@@ -105,7 +108,7 @@ class TradeController extends Controller
         $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
 
-        return view('newpages.bitcoin', compact(['sell_rate', 'card', 'btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
+        return view('newpages.bitcoin', compact(['sell_rate','rates', 'card', 'btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
 
     }
 
@@ -119,7 +122,7 @@ class TradeController extends Controller
         $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
-        return view('newpages.ethereum', compact(['rates']));
+        return view('newpages.ethereum', compact(['rates','card']));
     }
 
     /* Trade GiftCards */
@@ -144,9 +147,12 @@ class TradeController extends Controller
         $transaction_id = uniqid();
 
         foreach ($r->cards as $i => $total) {
-            $cardCurrencyPaymentMedia = $card->currency->where('name',$r->currencies[$i])->first()->cardCurrency->where('card_id',$card->id)->first()->cardPaymentMedia->first(); 
-            $rates = json_decode($cardCurrencyPaymentMedia->payment_range_settings);
-            $perc = $cardCurrencyPaymentMedia->percentage_deduction;
+            $cardType = $r->card_types[$i];
+            $payment_medium_id = PaymentMedia::where('name',$cardType)->first()->id;
+            $currency_id = Currency::where('name',$r->currencies[$i])->first()->id;
+            $card_currency_id = CardCurrency::where(['card_id' => $card->id, 'currency_id' => $currency_id])->first()->id;
+            $rates = CardCurrencyPaymentMedia::where(['payment_medium_id' => $payment_medium_id, 'card_currency_id' => $card_currency_id])->first();
+            $rates = json_decode($rates->payment_range_settings);
 
             $t_amount = 0;
             foreach ($rates as $key => $value) {
@@ -155,8 +161,9 @@ class TradeController extends Controller
                     break;
                 }
             }
+
+
             $commission = $t_amount - $r->totals[$i];
-            // $data .= $t_amount .' '. $commission.' '.$r->totals[$i].' | ';
 
             $t = new Transaction();
             $t->uid = $transaction_id;
@@ -233,8 +240,8 @@ class TradeController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
@@ -244,7 +251,6 @@ class TradeController extends Controller
     /* Trade Crypto no longer in use for btc */
     public function tradeCrypto(Request $r)
     {
-
         $data = $r->validate([
             'card_id' => 'required|integer',
             'type' => 'required|string',

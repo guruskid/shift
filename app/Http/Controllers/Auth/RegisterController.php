@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegistered;
 use App\NairaWallet;
 use App\Notification;
+use App\UserTracking;
 use GuzzleHttp\Client;
 
 class RegisterController extends Controller
@@ -62,7 +63,8 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'first_name' => 'string|required',
-            // 'last_name' => 'string',
+            'phone_number' => 'required',
+            // 'last_name' => 'string|required',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             /* 'country_id' => 'required|integer', */
@@ -86,13 +88,20 @@ class RegisterController extends Controller
         $external_id = $username . '-' . uniqid();
 
         $user =  User::create([
-            'first_name' => ' ',
-            'last_name' => ' ',
+            'first_name' => $data['first_name'],
+            'phone' => $data['phone_number'],
+            // 'last_name' => $data['last_name'],
             'username' => $username,
             'status' => 'active',
             'email' => $data['email'],
             'external_id' => $external_id,
             'password' => Hash::make($data['password']),
+            'platform' => "web"
+        ]);
+
+        UserTracking::create([
+            'user_id' =>$user->id,
+            'Current_Cycle' => "Active"
         ]);
 
 

@@ -153,7 +153,7 @@
                                     </div>
                                 </div>
 
-                                <tron-send-component :usd_eth="{{ $tron_rate }}" ></tron-send-component>
+                                <tron-send-component :usd_trx="{{ $tron_rate }}" ></tron-send-component>
 
                                 @include('newpages.tabs.tron-wallet-receive')
 
@@ -177,7 +177,7 @@
                                                 <th scope="col">DATE</th>
                                                 <th scope="col">TIME</th>
                                                 <th scope="col">STATUS</th>
-                                                {{-- <th scope="col"></th> --}}
+                                                <th scope="col">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -208,7 +208,7 @@
                                                 </td>
                                                 <td class="transaction_content">
                                                     @if (isset($transaction->txId))
-                                                        <a target="_blank" href="https://blockexplorer.one/btc/mainnet/tx/{{ $transaction->txId }}" class="btn transaction_view_link">Explorer</a>
+                                                        <a target="_blank" href="https://tronscan.org/#/transaction/{{ $transaction->txId }}" class="btn transaction_view_link">Explorer</a>
 
                                                     @endif
                                                 </td>
