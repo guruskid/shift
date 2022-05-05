@@ -39,7 +39,7 @@ class LiveRateController extends Controller
 
         return $eth_rate;
     }
-    
+
     public static function btcRate()
     {
         $client = new Client();
@@ -57,9 +57,25 @@ class LiveRateController extends Controller
     }
 
 
+    public static function usdtRate()
+    {
+        // $client = new Client();
+        // $url = env('TATUM_URL') . '/tatum/rate/USDT_TRON?basePair=USD';
+        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        // $res = json_decode($res->getBody());
+        // $rate = $res->value;
+
+        return 1;
+    }
+
+
     public static function usdNgn()
     {
         return CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+    }
 
+    public static function usdtBuy()
+    {
+        return CryptoRate::where(['type' => 'buy', 'crypto_currency_id' => 7])->first()->rate ?? 0;
     }
 }

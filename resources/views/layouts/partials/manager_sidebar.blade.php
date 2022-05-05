@@ -26,20 +26,20 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.call-categories' ? 'active' : '' }}">
+        <a href="{{route('admin.call-categories')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="cube-outline"></ion-icon>
+                <span>Call Categories</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.chat_agents' ? 'active' : '' }}">
         <a href="{{route('admin.chat_agents')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="people-circle-outline"></ion-icon>
                 <span>Chat Agents</span>
-            </div>
-        </a>
-    </li>
-
-    <li class="menu {{ Route::currentRouteName() == 'admin.verification_limit' ? 'active' : '' }}">
-        <a href="{{route('admin.verification_limit')}}" aria-expanded="false" class="dropdown-toggle">
-            <div class="">
-                <ion-icon name="people-circle-outline"></ion-icon>
-                <span>Verification limit</span>
             </div>
         </a>
     </li>

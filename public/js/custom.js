@@ -52,6 +52,7 @@ $(document).ready(function () {
     $("#user-bank-details").submit(function (event) {
         event.preventDefault();
         $("#s-b").show();
+        // var formData = $(this).serialize();
         var formData = $(this).serialize();
         $.ajax({
             type: "POST",
@@ -71,6 +72,8 @@ $(document).ready(function () {
                 $("#s-b").hide();
                 swal('error', 'An error occured, please reload and try again');
                 console.log(err)
+                console.log(stat)
+                console.log(xhr.responseText)
             }
         });
     });
@@ -150,7 +153,7 @@ $(document).ready(function () {
         })
     })
 
-    
+
     $('#cable_provider').on('change',function (e) {
         var serviceId = e.currentTarget.value
         $.post('/user/get-variations/'+serviceId,null,function (result,status) {

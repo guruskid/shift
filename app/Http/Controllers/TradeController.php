@@ -108,7 +108,7 @@ class TradeController extends Controller
         $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
 
-        return view('newpages.bitcoin', compact(['sell_rate', 'card', 'btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
+        return view('newpages.bitcoin', compact(['sell_rate','rates', 'card', 'btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
 
     }
 
@@ -122,7 +122,7 @@ class TradeController extends Controller
         $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
-        return view('newpages.ethereum', compact(['rates']));
+        return view('newpages.ethereum', compact(['rates','card']));
     }
 
     /* Trade GiftCards */
@@ -240,8 +240,8 @@ class TradeController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);       
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
@@ -251,7 +251,6 @@ class TradeController extends Controller
     /* Trade Crypto no longer in use for btc */
     public function tradeCrypto(Request $r)
     {
-
         $data = $r->validate([
             'card_id' => 'required|integer',
             'type' => 'required|string',

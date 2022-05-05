@@ -48,7 +48,11 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                             <i class="pe-7s-home icon-gradient bg-night-sky">
                             </i>
                         </div>
-                        <div>Payout  History
+                        <div>
+                            Payout  History
+                            @if ($segment)
+                                {{ $segment }}
+                            @endif
                             <div class="page-title-subheading">Hi {{Auth::user()->first_name}}, good to see you again
                                 Boss.
                             </div>
@@ -60,7 +64,25 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                 {{-- Recent Transactions --}}
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
-                        <div class="card-header">Payout History </div>
+                        <div class="card-header justify-content-between"> 
+                            Payout History 
+                            <div class="float-right ">
+                                <form class="form-inline p-2"
+                                    method="GET">
+                                    {{-- @csrf --}}
+                                    <div class="form-group mr-2">
+                                        <label for="">Start date </label>
+                                        <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                                    </div>
+                                    <div class="form-group mr-2">
+                                        <label for="">End date </label>
+                                        <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                                    </div>
+                                    <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        
 
                         <div class="col-md-12">
                             <div class="col-md-12">
@@ -75,11 +97,14 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                         <table class="align-middle mb-0 table table-borderless table-striped table-hover">
                                             <thead>
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Total Asset Volume</th>
-                                                    <th>Total card volume in Naira </th>
-                                                    <th> Total successful transactions</th>
-                                                    <th>Date</th>
+                                                    <th class="text-center">ID</th>
+                                                    <th class="text-center">Number of Giftcard transactions</th>
+                                                    <th class="text-center">Worth of Traded Assets</th>
+                                                    <th class="text-center">Sum of Chinese Amount</th>
+                                                    @if (in_array(Auth::user()->role, [999]))
+                                                    <th class="text-center">Total Commission</th>
+                                                    @endif
+                                                    <th class="text-center">Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>@php
@@ -87,11 +112,14 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                             @endphp
                                                 @foreach ($payoutHistory as $history)
                                                     <tr>
-                                                        <td>{{$sn++}}</td>
-                                                        <td>{{$history->card_asset_volume}}</td>
-                                                        <td>N {{number_format($history->card_volume_in_naira)}}</td>
-                                                        <td>{{number_format($history->success_transactions)}}</td>
-                                                        <td>{{$history->created_at}}</td>
+                                                        <td class="text-center">{{$sn++}}</td>
+                                                        <td class="text-center">{{$history->card_asset_volume}}</td>
+                                                        <td class="text-center">{{number_format($history->traded_asset_amount)}}</td>
+                                                        <td class="text-center">{{number_format($history->total_chinese_amount)}}</td>
+                                                        @if (in_array(Auth::user()->role, [999]))
+                                                        <td class="text-center">{{ number_format($history->total_commission) }}</td>
+                                                        @endif
+                                                        <td class="text-center">{{$history->created_at->format('d M y, h:ia')}}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

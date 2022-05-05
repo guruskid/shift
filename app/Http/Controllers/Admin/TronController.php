@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Contract;
+use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
 use Illuminate\Http\Request;
@@ -50,7 +52,7 @@ class TronController extends Controller
         $blockchain_fee_wallet->balance = CryptoHelperController::feeWalletBalance(5);
 
 
-
+        $addresses = Contract::where(['currency_id' => 5, 'status' => 'pending', 'type' => 'address'])->count();
 
 
         $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
@@ -66,9 +68,7 @@ class TronController extends Controller
             $t->created = $time->setTimezone('Africa/Lagos');
         }
 
-
-
-        return view('admin.tron.index', compact('service_wallet', 'blockchain_fee_wallet', 'charges_wallet',  'hd_wallet', 'transactions'));
+        return view('admin.tron.index', compact('service_wallet', 'addresses', 'blockchain_fee_wallet', 'charges_wallet',  'hd_wallet', 'transactions'));
     }
 
 
@@ -95,7 +95,7 @@ class TronController extends Controller
 
         if ($request->wallet == 'hd') {
             $wallet = HdWallet::where('currency_id', 5)->first();
-        }else {
+        } else {
             $wallet = FeeWallet::find($request->wallet);
         }
 
@@ -115,7 +115,7 @@ class TronController extends Controller
         $fees_wallet = FeeWallet::where(['crypto_currency_id' => 5, 'name' => 'tron_fees'])->first();
 
         if ($request->amount  > $wallet->balance) {
-           return back()->with(['error' => 'Insufficient balance']);
+            return back()->with(['error' => 'Insufficient balance']);
         }
 
         //Store Withdrawal
@@ -150,7 +150,7 @@ class TronController extends Controller
                     "amount" => number_format($request->amount, 8),
                     "signatureId" => $hd_wallet->private_key,
                     "from" => $fees_wallet->address,
-                    "feeLimit" => 5,
+                    "feeLimit" => 100,
                 ]
             ]);
 
@@ -174,4 +174,122 @@ class TronController extends Controller
             return back()->with(['error' => 'An error occured, please try again']);
         }
     }
+
+    public function settings()
+    {
+        $sell_rate = CryptoRate::where(['crypto_currency_id' => 2, 'type' => 'sell'])->first()->rate;
+        return view('admin.tron.settings', compact('sell_rate'));
+    }
+
+    public function contracts()
+    {
+        $fees_wallet = FeeWallet::where('name', 'tron_fees')->first();
+        $fees_wallet->balance = CryptoHelperController::feeWalletBalance(5);
+
+        $addresses = Contract::where(['currency_id' => 5, 'status' => 'pending', 'type' => 'address'])->count();
+
+        $pending_transactions = Contract::where(['currency_id' => 5, 'status' => 'pending', 'type' => 'transaction'])->get();
+
+        return view('admin.tron.contracts', compact('fees_wallet', 'addresses', 'pending_transactions'));
+    }
+
+    public function deployContract(Request $request)
+    {
+        $fees_wallet = FeeWallet::where('name', 'tron_fees')->first();
+        $fees_wallet->balance = CryptoHelperController::feeWalletBalance(5);
+        $key = env('TRON_KEY');
+        $fee_limit = 0;
+
+        switch ($request->count) {
+            case 2:
+                $fee_limit = 60;
+                break;
+            case 5:
+                $fee_limit = 200;
+                break;
+            case 10:
+                $fee_limit = 300;
+                break;
+            case 100:
+                $fee_limit = 3000;
+                break;
+            case 270:
+                $fee_limit = 3000;
+                break;
+            default:
+                $fee_limit = 2000;
+                break;
+        }
+
+        if ($fees_wallet->balance < $fee_limit) {
+            return back()->with(['error' => 'Insufficient fee wallet balance']);
+        }
+        $client = new Client();
+
+        $url_contract = env('TATUM_URL') . '/blockchain/sc/custodial/batch';
+        try {
+            $res_contract = $client->request('POST', $url_contract, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "chain" => "TRON",
+                    "fromPrivateKey" => $key,
+                    "batchCount" => (int)$request->count,
+                    "owner" => $fees_wallet->address,
+                    "feeLimit"  => $fee_limit,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with(['error' => 'An error occured while deploying the contract']);
+        }
+
+        $res = json_decode($res_contract->getBody());
+        Contract::create([
+            'hash' => $res->txId,
+            'type' => 'transaction',
+            'currency_id' => 5
+        ]);
+
+        return back()->with(['success' => 'Contract deployed successfully']);
+    }
+
+    public function activate($id)
+    {
+        $contract = Contract::find($id);
+
+        $client = new Client();
+
+        try {
+
+            $url_contract = env('TATUM_URL') . '/blockchain/sc/custodial/TRON/' . $contract->hash;
+            $res_contract = $client->request('GET', $url_contract, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')]
+            ]);
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with(['error' => 'An error occured while activating the contract. Please confirm if the transaction has been signed']);
+        }
+
+        $res = json_decode($res_contract->getBody());
+        $count = 0;
+        foreach ($res as $r ) {
+            // check if address already exists
+            if (!Contract::where('hash', $r)->exists()) {
+                Contract::create([
+                    'hash' => $r,
+                    'type' => 'address',
+                    'currency_id' => 5
+                ]);
+                $count ++;
+            }
+
+        }
+
+        $contract->status = 'completed';
+        $contract->save();
+
+        return back()->with(['success' => $count. ' addresses created successfully']);
+    }
+
+
 }

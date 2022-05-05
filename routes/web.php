@@ -8,6 +8,7 @@ use App\Mail\GeneralTemplateOne;
 use App\Mail\UserRegistered;
 use App\Mail\VerificationCodeMail;
 use App\NairaTransaction;
+use App\User;
 //use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Mail;
 
@@ -40,6 +41,27 @@ Route::get('email', function () {
         $btn_url = '';
 
     return new VerificationCodeMail($rad, $title, $body, $btn_text, $btn_url);
+});
+
+Route::get('users/explode/firstname-lastname/prove/init/yes', function () {
+    $users = User::orderBy('id', 'desc')->get();
+    foreach($users as $user){
+    $xUser = explode(' ', $user->first_name);
+       if(isset($xUser[1])){
+        $user->first_name = $xUser[0];
+        $user->last_name = $xUser[1];
+        if(isset($xUser[2])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2];
+        }
+        if(isset($xUser[3])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2]. ' ' . $xUser[3];
+        }
+        if(isset($xUser[4])){
+            $user->last_name = $xUser[1]. ' ' . $xUser[2]. ' ' . $xUser[3]. ' ' . $xUser[4]; // for users with plenty last names
+        }
+        $user->save();
+       }
+    }
 });
 
 Route::get('gm', function () {
@@ -340,6 +362,16 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
         Route::post('/sell', 'TronWalletController@sell')->name('tron.sell');
     });
 
+    Route::prefix('usdt')->group(function () {
+        Route::post('/create', 'UsdtController@create')->name('usdt.create');
+        Route::get('/wallet', 'UsdtController@wallet')->name('user.usdt-wallet');
+        Route::get('/fees/{address}/{amount}', 'UsdtController@fees')->name('user.usdt-fees');
+        Route::post('/send', 'UsdtController@send')->name('usdt.send');
+        Route::get('/trade', 'UsdtController@trade')->name('usdt.trade');
+        Route::post('/sell', 'UsdtController@sell')->name('usdt.sell');
+        Route::post('/buy', 'UsdtController@buy')->name('usdt.buy');
+    });
+
     /* Route::get('/user-bitcoin-balance', 'BitcoinWalletController@btc_balance')->name('user.bitcoin-wallet'); */
 });
 
@@ -424,7 +456,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super', 'c
     Route::get('/cards', 'AdminController@cards')->name('admin.cards');
     Route::post('/wallet_id', 'AdminController@walletId')->name('admin.wallet');
 
-
+    // set verification limit
+    Route::GET('/verification-limit', 'Admin\VerificationLimitController@index')->name('admin.verification_limit');
+    Route::POST('/update-verification-limit', 'Admin\VerificationLimitController@addLimit')->name('admin.add_verification_limit');
 
     Route::get('/verify', 'AdminController@verify')->name('admin.verify');
     Route::post('/verify', 'AdminController@verifyUser')->name('admin.verify_user');
@@ -456,12 +490,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
     Route::GET('/download-database', 'AdminController@downloadUserDb')->name('admin.userdb');
     Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
-    Route::GET('/verification-limit', 'Admin\VerificationLimitController@index')->name('admin.verification_limit');
-    Route::POST('/update-verification-limit', 'Admin\VerificationLimitController@addLimit')->name('admin.add_verification_limit');
+
     Route::GET('/image-slider', 'Admin\ImageSliderController@index')->name('admin.image_slider');
     Route::POST('/upload-image-slider', 'Admin\ImageSliderController@upload')->name('admin.upload_image_slider');
     Route::POST('/update-image-slider', 'Admin\ImageSliderController@updateImage')->name('admin.update_image_slider');
     Route::GET('/delete-image-slider/{id}', 'Admin\ImageSliderController@deleteImage')->name('admin.delete_image_slider');
+
+    //?call category
+    Route::get('/call-category', 'Admin\BusinessDeveloperController@displayCallCategory')->name('admin.call-categories');
+    Route::get('/call-category/{id}', 'Admin\BusinessDeveloperController@deleteCallCategory')->name('admin.call-categories.action');
+    Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
 
 });
 
@@ -551,5 +589,30 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
     Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('ch.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('ch.junior-summary-details');
     Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
+
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing']], function () {
+
+    Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
+    Route::GET('/users_birthdays', 'MarketingController@user_birthday')->name('admin.sales.users_birthdays');
+    Route::GET('/marketing/{type?}', 'MarketingController@Category')->name('admin.sales.type');
+    Route::GET('/view/transactions/{type?}', 'MarketingController@viewTransactionsCategory')->name('admin.transactions.view.type');
+    Route::GET('/view/users/{type?}', 'MarketingController@viewUsersCategory')->name('admin.users.view.type');
+});
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
+
+    Route::GET('/QuarterlyInactiveUsersFromDB', 'Admin\BusinessDeveloperController@QuarterlyInactiveFromOldUsersDB');
+    Route::GET('/Categories/{type?}', 'Admin\BusinessDeveloperController@index')->name('business-developer.user-category');
+    Route::GET('/view/{type?}', 'Admin\BusinessDeveloperController@viewCategory')->name('business-developer.view-type');
+
+    Route::POST('/create-call-log', 'Admin\BusinessDeveloperController@createCallLog')->name('business-developer.create.call-log');
+    Route::POST('/update-call-log', 'Admin\BusinessDeveloperController@UpdateCallLog')->name('business-developer.update.call-log');
+
+    Route::GET('call-log','Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
+
+    Route::GET('user_profile','Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
+
+    // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
 });

@@ -47,7 +47,7 @@
                             <i class="pe-7s-wallet icon-gradient bg-warm-flame">
                             </i>
                         </div>
-                        <div>Ethereum Settings <br>
+                        <div>Tron Settings <br>
                         </div>
                     </div>
                 </div>
@@ -61,30 +61,11 @@
                             <div class="widget-content-wrapper ">
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
-                                        <form action="{{ route('admin.eth.update-rate') }} " method="post">@csrf
-                                            <h5>Sell Rate (NGN)</h5>
-                                            <input type="number" step="any" name="sell_rate"
-                                                value="{{ $sell_rate }}" class="form-control mb-2">
-                                            <button class="btn btn-primary">Save</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card mb-3 widget-content">
-                        <a href="#">
-                            <div class="widget-content-wrapper ">
-                                <div class="widget-content-left">
-                                    <div class="widget-heading">
                                         <form action="{{ route('admin.settings.update') }} " method="post">@csrf
                                             <h5>Sell Charges (%)</h5>
-                                            <input type="hidden" name="name" value="ethereum_sell_charge">
+                                            <input type="hidden" name="name" value="tron_sell_charge">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('ethereum_sell_charge') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('tron_sell_charge') }}" class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>
@@ -101,10 +82,10 @@
                                 <div class="widget-content-left">
                                     <div class="widget-heading">
                                         <form action="{{ route('admin.settings.update') }} " method="post">@csrf
-                                            <h5>Send Charges (ETH)</h5>
-                                            <input type="hidden" name="name" value="ethereum_send_charge">
+                                            <h5>Send Charges (TRON)</h5>
+                                            <input type="hidden" name="name" value="tron_send_charge">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('ethereum_send_charge') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('tron_send_charge') }}" class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>
@@ -122,9 +103,9 @@
                                     <div class="widget-heading">
                                         <form action="{{ route('admin.settings.update') }} " method="post">@csrf
                                             <h5>Fees Percentage (%)</h5>
-                                            <input type="hidden" name="name" value="trading_eth_per">
+                                            <input type="hidden" name="name" value="trading_tron_per">
                                             <input type="number" step="any" name="value"
-                                                value="{{ AppSetting::get('trading_eth_per') }}" class="form-control mb-2">
+                                                value="{{ AppSetting::get('trading_tron_per') }}" class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>
                                     </div>

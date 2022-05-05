@@ -50,22 +50,17 @@ class AssetTransactionController extends Controller
 
         // finding the commision percentage
         //?percentage diffrence
-        $commision = 0;
-        $percentage = ($t->commission/(($t->card_price * $t->quantity)));
-        $commision = ($t->card_price * $r->quantity) * $percentage;
-        $oldComm = ($t->card_price * $t->quantity) * ($t->commission/(($t->card_price * $t->quantity)));
-        $newComm = ($t->card_price * $r->quantity) * ($commision/(($t->card_price * $r->quantity)));
-        $oldChineseAmt = ($t->card_price * $t->quantity) + $t->commission;
-        $newChineseAmt = ($t->card_price * $r->quantity) + $newComm;
-        $amount_paid = ($t->card_price * $r->quantity);
+        $percentage = ($t->commission/($t->amount_paid+$t->commission));
+        $commision =  $amount_paid * $percentage;
+        $user_amount = $amount_paid - $commision;
 
         $t->card = Card::find($r->card_id)->name;
         $t->card_id = $r->card_id;
         $t->type = $r->trade_type;
         $t->country = $r->country;
         $t->amount = $r->amount;
-        $t->amount_paid = $amount_paid;
-        $t->commission = $newComm;
+        $t->amount_paid = $user_amount;
+        $t->commission = $commision;
         if(Auth::user()->role !=888){
             $t->status = $r->status;
         }
@@ -111,8 +106,8 @@ class AssetTransactionController extends Controller
         $btn_url = '';
 
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = explode(' ', $name);
-        $firstname = ucfirst($name[0]);
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
     // /////////////////////////////////////////////

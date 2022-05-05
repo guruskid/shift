@@ -22,7 +22,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                     <p class="text-warning">{{ $error }}</p>
                     @endforeach
                     <div class="mt-2 ">
-                        <div class="form-group">
+                        <div class="form-group d-none">
                             <input type="text" name="username" required value="{{ Auth::user()->username ?? '' }}" placeholder="Username" class="form-control col-11 mx-auto mx-md-0 col-lg-8"  />
                         </div>
                         <div class="form-group">

@@ -136,7 +136,7 @@
                                         <td class="text-center">{{$t->type}}</td>
                                         <td class="text-center">{{$t->amount}}</td>
                                         <td class="text-center">{{number_format($t->amount_paid)}}</td>
-                                        <td class="text-center"> {{$t->user->first_name}} </td>
+                                        <td class="text-center"> {{$t->user->first_name .' '. $t->user->last_name}} </td>
                                         <td class="text-center"> {{$t->agent->first_name}} </td>
                                         <td class="text-center">
                                             @switch($t->status)
@@ -200,7 +200,7 @@
                                         <td class="text-center">{{$t->type}}</td>
                                         <td class="text-center">{{$t->amount}}</td>
                                         <td class="text-center">{{number_format($t->amount_paid)}}</td>
-                                        <td class="text-center"> {{$t->user->first_name}} </td>
+                                        <td class="text-center"> {{$t->user->first_name .' '. $t->user->last_name}} </td>
                                         <td class="text-center"> {{$t->agent->first_name}} </td>
                                         <td class="text-center">
                                             @switch($t->status)
@@ -264,7 +264,7 @@
                                         <td class="text-center">{{$t->type}}</td>
                                         <td class="text-center">{{$t->amount}}</td>
                                         <td class="text-center">{{number_format($t->amount_paid)}}</td>
-                                        <td class="text-center"> {{$t->user->first_name}} </td>
+                                        <td class="text-center"> {{$t->user->first_name .' '. $t->user->last_name}} </td>
                                         <td class="text-center"> {{$t->agent->first_name}} </td>
                                         <td class="text-center">
                                             @switch($t->status)
