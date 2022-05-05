@@ -498,7 +498,7 @@ class AdminController extends Controller
         }else{
             $payoutDate = $assets->created_at;
         }
-        
+
         $assetsInNaira = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
@@ -509,14 +509,10 @@ class AdminController extends Controller
         $success_transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->get();
-<<<<<<< HEAD
-
-=======
         $totalComm = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('commission');
         $giftcard_tranx_count = $success_transactions->count();
->>>>>>> b55d4cbd589f6ea7069c77b6517350c6e70b12f2
         $total_traded_asset = 0;
         $total_chinese_amount = 0;
         foreach ($success_transactions as $st) {
