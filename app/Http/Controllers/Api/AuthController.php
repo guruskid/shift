@@ -58,10 +58,11 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
-            'password' => 'required',
+            'first_name' => 'required',
+            // 'last_name' => 'required',
             'username' => 'string|required|unique:users,username',
             'country_id' => 'required|integer',
-            /*'phone' => 'required', */
+            'phone' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -74,7 +75,8 @@ class AuthController extends Controller
         $external_id = $username . '-' . uniqid();
 
         $user = User::create([
-            'first_name' => ' ',
+            'first_name' => $input['first_name'],
+            'phone' => $input['phone'],
             'last_name' => ' ',
             'username' => $input['username'],
             'country_id' => $input['country_id'],
@@ -375,7 +377,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'bank_id' => 'required',
             'account_number' => 'required',
-            'account_name' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
             /* 'phone' => 'required', */
         ]);
         if ($validator->fails()) {
@@ -406,14 +409,15 @@ class AuthController extends Controller
         if ($err == 0) {
             $a = new Account();
             $a->user_id = Auth::user()->id;
-            $a->account_name = $request->account_name;
+            $a->account_name = $request->first_name .' '. $request->last_name;;
             $a->bank_name = $s->name;
             $a->bank_id = $s->id;
             $a->account_number = $request->account_number;
             $a->save();
         }
 
-        Auth::user()->first_name = $request->account_name;
+        Auth::user()->first_name = $request->first_name;
+        Auth::user()->last_name = $request->last_name;
         Auth::user()->save();
 
         return response()->json([

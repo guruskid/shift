@@ -419,7 +419,7 @@ class AdminController extends Controller
             return view(
                 'admin.payout_transactions',
                 compact([
-                    'payoutVolume', 'assetsInNaira','countST',
+                    'payoutVolume', 'assetsInNaira','countST','totalComm',
                     'giftcard_tranx_count','total_traded_asset','total_chinese_amount',
                     'transactions', 'waiting_transactions', 'in_progress_transactions',
                     'users', 'users_count', 'notifications', 'usersChart',
@@ -498,11 +498,7 @@ class AdminController extends Controller
         }else{
             $payoutDate = $assets->created_at;
         }
-
-        // dd($assets->id);
-        $payoutVolume = Transaction::whereHas('asset', function ($query) {
-            $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('quantity');
+        
         $assetsInNaira = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
@@ -513,7 +509,14 @@ class AdminController extends Controller
         $success_transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
             })->where("created_at",">=", $payoutDate)->where('status', 'success')->get();
+<<<<<<< HEAD
 
+=======
+        $totalComm = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('commission');
+        $giftcard_tranx_count = $success_transactions->count();
+>>>>>>> b55d4cbd589f6ea7069c77b6517350c6e70b12f2
         $total_traded_asset = 0;
         $total_chinese_amount = 0;
         foreach ($success_transactions as $st) {
@@ -528,11 +531,12 @@ class AdminController extends Controller
         }
 
         $payout = payout::create([
-            'card_asset_volume' => $payoutVolume,
+            'card_asset_volume' => $giftcard_tranx_count,
             'card_volume_in_naira' => $assetsInNaira,
             'success_transactions' => $countST,
             'traded_asset_amount' => $total_traded_asset,
-            'total_chinese_amount' => $total_chinese_amount
+            'total_chinese_amount' => $total_chinese_amount,
+            'total_commission' => $totalComm
         ]);
         return redirect()->back()->with('success', 'Transactions was wipe successfully');
     }

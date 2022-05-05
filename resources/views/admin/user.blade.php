@@ -340,7 +340,7 @@
                 <div class="modal-header">
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading">{{$user->first_name}}</h4>
+                            <h4 class="media-heading">{{$user->first_name .' '. $user->last_name}}</h4>
                         </div>
                     </div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span

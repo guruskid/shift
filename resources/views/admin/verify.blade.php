@@ -72,7 +72,7 @@
                                 <tbody>
                                     @foreach ($users as $u)
                                     <tr>
-                                        <td class="text-center">{{ ucfirst($u->first_name." ".$u->last_name) }}</td>
+                                        <td class="text-center">{{ ucfirst($u->first_name." ".$u->last_name) }}</td> 
                                         <td class="text-center">{{$u->email}} </td>
                                         <td class="text-center">{{$u->phone}} </td>
                                         <td class="text-center">{{$u->status}} </td>

@@ -78,7 +78,7 @@
                                     @foreach ($verifications as $v)
                                     <tr>
                                         <td class="text-muted">{{$v->id}}</td>
-                                        <td>{{ucwords($v->user->first_name)}}</td>
+                                        <td>{{ucwords($v->user->first_name .' '. $v->user->last_name)}}</td>
                                         <td>{{$v->user->phone}}</td>
                                         <td> {{$v->user->nairaWallet ? number_format($v->user->nairaWallet->amount) : 0 }}
                                         </td>
