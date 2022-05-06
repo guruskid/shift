@@ -323,14 +323,14 @@ class UsdtController extends Controller
 
         // percentage deduction in price
         $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value;
-        $service_fee = ($trading_per / 100) * $request->amount;
+        $service_fee = round(($trading_per / 100) * $request->amount, 3);
 
         //Get fees for the txn on the chain
 
 
         //percentage charge
         $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
-        $charge = ($charge / 100) * $request->amount;
+        $charge = round(($charge / 100) * $request->amount, 3);
 
         //Current eth price
         $amt_usd = LiveRateController::usdtRate();
