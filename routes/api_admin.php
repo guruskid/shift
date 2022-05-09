@@ -36,5 +36,12 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     });
 
 
+    // Verification
+    Route::group(['prefix' => 'verification'], function () {
+        Route::GET('/get-all-verifications',  'AdminController@allVerification');
+        Route::put('/user-verification/{verification}',  'AdminController@verifyUser');
+    //     Route::POST('/edit',  'VerificationController@editVerification');
+    //     Route::POST('/delete',  'VerificationController@deleteVerification');
+    });
 
 });
