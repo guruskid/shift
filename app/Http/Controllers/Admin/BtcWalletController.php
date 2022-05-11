@@ -66,7 +66,7 @@ class BtcWalletController extends Controller
             $time = \Carbon\Carbon::parse((int)$x);
             $t->created = $time->setTimezone('Africa/Lagos');
         }
-        $address = AdminAddresses::all();
+        $address = AdminAddresses::where('crypto_currency_id', 1)->get();
         $crypto_currencies = CryptoCurrency::all();
         return view('admin.bitcoin_wallet.index', compact('service_wallet', 'charges_wallet', 'migration_wallet', 'hd_wallet', 'transactions','address','crypto_currencies'));
     }
