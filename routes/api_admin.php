@@ -35,6 +35,37 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::POST('/delete',  'AnnoucementController@deleteAnnouncement');
     });
 
+    //?settings 
+    Route::group(['prefix' => 'setting'], function () {
+        Route::GET('/showUser', 'SettingController@showUser');
+        Route::POST('/editUser', 'SettingController@editUser');
+
+        Route::GET('/staffList', 'SettingController@MembersOfStaff');
+        Route::GET('/showStaff/{id}', 'SettingController@showStaff');
+        Route::POST('/editStaff', 'SettingController@editStaff');
+        Route::GET('/removeStaff/{id}', 'SettingController@removeUser');
+
+        Route::GET('/roleSelection', 'SettingController@roleSelection');
+        Route::POST('/addStaff', 'SettingController@addStaff');
+
+        Route::GET('/settings', 'SettingController@settings');
+        Route::POST('/updateSetting', 'SettingController@updateSettings');
+    });
+
+    //?summary
+    Route::group(['prefix' => 'summary'], function () {
+
+         Route::GET('/timeGraph/{date?}', 'SummaryController@timeGraph');
+         Route::GET('/crypto_transaction', 'SummaryController@cryptoTransaction');
+         Route::POST('/sortCrypto', 'SummaryController@sortCryptoTransaction');
+         Route::GET('/giftCard_transaction', 'SummaryController@giftCardTransactions');
+         Route::POST('/sortGiftCards', 'SummaryController@sortGiftCardTransactions');
+
+         Route::GET('transaction_detail','SummaryController@transactionsDetails');
+         Route::POST('sort_transaction_detail','SummaryController@sortTransaction');
+
+
+    }); 
 
     // Verification
     Route::group(['prefix' => 'verification'], function () {
