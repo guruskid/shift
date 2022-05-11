@@ -1,5 +1,6 @@
 <?php
 
+use App\ReferralSettings;
 use Illuminate\Http\Request;
 
 Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
@@ -35,7 +36,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::POST('/delete',  'AnnoucementController@deleteAnnouncement');
     });
 
-    //?settings 
+    //?settings
     Route::group(['prefix' => 'setting'], function () {
         Route::GET('/showUser', 'SettingController@showUser');
         Route::POST('/editUser', 'SettingController@editUser');
@@ -53,25 +54,33 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     });
 
     //?summary
+
     Route::group(['prefix' => 'summary'], function () {
 
-         Route::GET('/timeGraph/{date?}', 'SummaryController@timeGraph');
-         Route::GET('/crypto_transaction', 'SummaryController@cryptoTransaction');
-         Route::POST('/sortCrypto', 'SummaryController@sortCryptoTransaction');
-         Route::GET('/giftCard_transaction', 'SummaryController@giftCardTransactions');
-         Route::POST('/sortGiftCards', 'SummaryController@sortGiftCardTransactions');
+        Route::GET('/timeGraph/{date?}', 'SummaryController@timeGraph');
+        Route::GET('/crypto_transaction', 'SummaryController@cryptoTransaction');
+        Route::POST('/sortCrypto', 'SummaryController@sortCryptoTransaction');
+        Route::GET('/giftCard_transaction', 'SummaryController@giftCardTransactions');
+        Route::POST('/sortGiftCards', 'SummaryController@sortGiftCardTransactions');
 
-         Route::GET('transaction_detail','SummaryController@transactionsDetails');
-         Route::POST('sort_transaction_detail','SummaryController@sortTransaction');
+        Route::GET('transaction_detail','SummaryController@transactionsDetails');
+        Route::POST('sort_transaction_detail','SummaryController@sortTransaction');
 
 
-    }); 
+   });
 
     // Verification
     Route::group(['prefix' => 'verification'], function () {
         Route::GET('/get-all-verifications',  'AdminController@allVerification');
         Route::put('/user-verification/{verification}',  'AdminController@verifyUser');
         Route::put('/cancel-verification/{verification}', 'AdminController@cancelVerification');
+    });
+
+
+    // ReferralSettings
+    Route::group(['prefix' => 'referral'], function () {
+        Route::GET('/', 'ReferralSettingController@index');
+        Route::GET('/settings', 'ReferralSettingController@settings');
     });
 
 });
