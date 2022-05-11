@@ -95,8 +95,6 @@ class ReferralSettingController extends Controller
     }
 
 
-
-
     public static function status()
     {
        $rs = ReferralSettings::latest()->get();
