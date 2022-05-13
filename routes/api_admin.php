@@ -84,3 +84,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     });
 
 });
+
+
+Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
+    
+});
