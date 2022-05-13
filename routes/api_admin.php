@@ -83,4 +83,22 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/settings', 'ReferralSettingController@settings');
     });
 
+    //?Customer Happiness
+    Route::group(['prefix' => 'customerHappiness'], function () {
+
+        Route::GET('/Overview', 'CustomerHappinessController@overview');
+
+        Route::POST('/addStaff', 'CustomerHappinessController@addStaff');
+        Route::GET('/showStaff/{id}', 'CustomerHappinessController@showStaff');
+        Route::POST('/editStaff', 'CustomerHappinessController@editStaff');
+        Route::GET('/removeStaff/{id}', 'CustomerHappinessController@removeUser');
+
+        Route::GET('/activateUser/{id}/{status}', 'CustomerHappinessController@activateUser');
+   });
+
+   //? Nexus
+   Route::group(['prefix' => 'nexus'], function () {
+        
+   });
+
 });
