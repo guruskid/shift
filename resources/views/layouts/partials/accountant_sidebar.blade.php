@@ -76,6 +76,7 @@
     </li>
     @endif
 
+    @if ( in_array(Auth::user()->role, [889] ) )
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -84,6 +85,16 @@
             </div>
         </a>
     </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
+        <a href="{{route('admin.tether')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <img src="/svg/tetherwallet_logo.svg" height="20px" class="mr-4" alt="">
+                <span>USDT Wallet</span>
+            </div>
+        </a>
+    </li>
+    @endif
 
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin-wallets-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
