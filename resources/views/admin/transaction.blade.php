@@ -184,8 +184,8 @@
                                             <div class="form-group">
                                                 <label for="">Transac Type</label>
                                                 <select name="trade_type" class="form-control">
-                                                    <option vvalue="{{ $transaction->type }}">{{ $transaction->type }}</option>
-                                                    <option value="buy">Buy</option>
+                                                    {{-- <option value="{{ $transaction->type }}">{{ $transaction->type }}</option> --}}
+                                                    {{-- <option value="buy">Buy</option> --}}
                                                     <option value="sell">Sell</option>
                                                 </select>
                                             </div>
