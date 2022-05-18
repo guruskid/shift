@@ -122,10 +122,13 @@
                         @foreach ($errors->all() as $err)
                         <p class="text-danger text-center">{{ $err }}</p>
                         @endforeach
-                       <div class="d-flex justify-content-between">
-                        <h5>Send</h5>
-                        <button data-toggle="modal" data-target="#add-address" class="btn btn-primary">Add address</button>
-                       </div>
+                        <div class="d-flex justify-content-between">
+                            <h5>Send</h5>
+                            @if (auth()->user()->role == 999)
+                            <button data-toggle="modal" data-target="#add-address" class="btn btn-primary">Add
+                                address</button>
+                            @endif
+                        </div>
                         <form action="{{ route('admin.usdt.send') }}" method="post"> @csrf
                             <div class="form-group">
                                 <label for="">Choose wallet </label>
@@ -222,8 +225,7 @@
                                         <td>Completed</td>
                                         <td class="transaction_content">
                                             @if (isset($t->txId))
-                                            <a target="_blank"
-                                                href="https://tronscan.org/#/transaction/{{ $t->txId }}"
+                                            <a target="_blank" href="https://tronscan.org/#/transaction/{{ $t->txId }}"
                                                 class="">Explorer</a>
 
                                             @endif
