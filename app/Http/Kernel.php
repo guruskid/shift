@@ -77,6 +77,7 @@ class Kernel extends HttpKernel
         'accountantManager' =>\App\Http\Middleware\AccountantManagerMiddleware::class,
         'marketing' =>\App\Http\Middleware\Marketing::class,
         'businessDeveloper' =>\App\Http\Middleware\BusinessDeveloper::class,
+        'chineseAccountant' => \App\Http\Middleware\chineseAccountant::class,
     ];
 
     /**

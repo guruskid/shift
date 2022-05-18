@@ -423,7 +423,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chineseAccountant']], function () {
     /* ajax calls */
     Route::GET('/chinese-dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
     Route::GET('/chinese-admin', 'ChineseController@chineseAdminUser')->name('admin.chinese_admins');

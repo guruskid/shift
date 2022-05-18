@@ -140,6 +140,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.payout_transactions' ? 'active' : '' }}">
+        <a href="{{route('admin.payout_transactions')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Payout Page</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
         <a href="{{route('admin.users')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">

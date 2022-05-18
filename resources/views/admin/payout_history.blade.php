@@ -101,7 +101,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     <th class="text-center">Number of Giftcard transactions</th>
                                                     <th class="text-center">Worth of Traded Assets</th>
                                                     <th class="text-center">Sum of Chinese Amount</th>
-                                                    @if (in_array(Auth::user()->role, [999]))
+                                                    @if (in_array(Auth::user()->role, [999,889]))
                                                     <th class="text-center">Total Commission</th>
                                                     @endif
                                                     <th class="text-center">Date</th>
@@ -116,7 +116,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                         <td class="text-center">{{$history->card_asset_volume}}</td>
                                                         <td class="text-center">{{number_format($history->traded_asset_amount)}}</td>
                                                         <td class="text-center">{{number_format($history->total_chinese_amount)}}</td>
-                                                        @if (in_array(Auth::user()->role, [999]))
+                                                        @if (in_array(Auth::user()->role, [999,889]))
                                                         <td class="text-center">{{ number_format($history->total_commission) }}</td>
                                                         @endif
                                                         <td class="text-center">{{$history->created_at->format('d M y, h:ia')}}</td>
