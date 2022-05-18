@@ -83,6 +83,10 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/settings', 'ReferralSettingController@settings');
     });
 
+});
+
+
+Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
     //?Customer Happiness
     Route::group(['prefix' => 'customerHappiness'], function () {
 
@@ -98,12 +102,20 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
    //? Nexus
    Route::group(['prefix' => 'nexus'], function () {
-        
-   });
+    /**
+     * TODO: mnake 3 endpoints
+     * *1. overview
+     * *2. crypto
+     * *3. giftCard
+     */
+    });
 
-});
+    //? pulseTransactionsAnalytics
+    Route::group(['prefix' => 'pulseAnalytics'], function () {
+        /**
+         * TODO: make endpoint fir 
+         * *1.
+         */
+    });
 
-
-Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
-    
 });
