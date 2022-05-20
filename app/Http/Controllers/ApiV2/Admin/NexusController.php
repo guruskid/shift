@@ -31,11 +31,11 @@ class NexusController extends Controller
 
          //* Level 1 Verification
          $L1_Crypto = Transaction::whereHas('user', function ($query){
-            $query->where('phone_verified_at', '!=', null);
+            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '==', null)->where('idcard_verified_at', '==', null);
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
          $L1_Utilities = UtilityTransaction::whereHas('user', function ($query){
-            $query->where('phone_verified_at', '!=', null);
+            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '==', null)->where('idcard_verified_at', '==', null);
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
         //? monthly trading value 
@@ -62,11 +62,11 @@ class NexusController extends Controller
 
          //* Level 2 Verification
          $L2_Crypto = Transaction::whereHas('user', function ($query){
-            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null);
+            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null)->where('idcard_verified_at', '==', null);
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
          $L2_Utilities = UtilityTransaction::whereHas('user', function ($query){
-            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null);
+            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null)->where('idcard_verified_at', '==', null);
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
         //? monthly trading value 
@@ -240,66 +240,4 @@ class NexusController extends Controller
         }
         return $nexus;
      }
-
-
-   //   $data = collect([]);
-   //   $byweek = Transaction::with('user')->orderBy('created_at','asc')->get()
-   //   ->groupBy(function($date) {
-   //       return Carbon::parse($date->created_at)->format('Y-M');
-   //   });
-   //   $previous_total = 0;
-   //   foreach ($byweek as $key => $value) {
-   //       $total = $value->count();
-   //       $Level_1 = 0;
-   //       $Level_2 = 0;
-   //       $Level_3 = 0;
-   //       foreach($value as $v){
-   //           if(isset($v->user))
-   //           {
-   //               if($v->user->phone_verified_at != null AND $v->user->address_verified_at == null AND $v->user->idcard_verified_at == null)
-   //               {
-   //                   $Level_1 ++;
-   //               }
-   //               if($v->user->phone_verified_at != null AND $v->user->address_verified_at != null AND $v->user->idcard_verified_at == null)
-   //               {
-   //                   $Level_2 ++;
-   //               }
-   //               if($v->user->phone_verified_at != null AND $v->user->address_verified_at != null AND $v->user->idcard_verified_at != null)
-   //               {
-   //                   $Level_3 ++;
-   //               }
-   //           }
-   //           $value->date = $v->created_at;
-
-             
-   //       }
-   //       $percentage_L1 = ($Level_1/$total)*100;
-   //       $percentage_L2 = ($Level_2/$total)*100;
-   //       $percentage_L3 = ($Level_3/$total)*100;
-
-   //       $value->L1 = $percentage_L1;
-   //       $value->L2 = $percentage_L2;
-   //       $value->L3 = $percentage_L3;
-   //       $value->total = $total;
-   //       if($previous_total != 0){
-   //       $per_diff = (($total - $previous_total )/ $previous_total)*100;
-   //       }
-   //       else{
-   //           $per_diff = 0;
-   //       }
-   //       $value->per_diff = $per_diff;
-   //       $value->prev_per_diff = $per_diff;
-   //       $previous_total = $total;
-   //   }
-   //   dd($byweek);
-
-
-   //   public function returnLevelPercentage($value)
-   //  {
-   //      foreach($value as $v){
-   //          $Level_1 = $v->user->where('phone_verified_at', '!=', null)->get()->groupBy('id')->count();
-   //          $Level_2 = $v->user->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null)->get()->groupBy('id')->count();
-   //          $Level_3 = $v->user->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null)->where('idcard_verified_at', '!=', null)->get()->groupBy('id')->count();
-   //      }
-   //  }
 }
