@@ -153,7 +153,7 @@ class AdminController extends Controller
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
                 ])
             );
-        } else if (Auth::user()->role == 889 || Auth::user()->role == 777) { //Accountants
+        } else if (Auth::user()->role == 889 || Auth::user()->role == 777 ||Auth::user()->role == 775 ) { //Accountants
             return view(
                 'admin.accountant_dashboard',
                 compact([

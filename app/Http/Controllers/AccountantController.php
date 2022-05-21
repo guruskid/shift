@@ -59,11 +59,11 @@ class AccountantController extends Controller
                 $accountant = AccountantTimeStamp::where('user_id',$id);
                 if(!empty($accountant))
                 {
-                    $time_stamp = $accountant = $accountant->where('inactiveTime',null)
+                    $time_stamp =  $accountant->where('inactiveTime',null)
                     ->where('activeTime','!=',null);
 
                     $startTime = $accountant->where('inactiveTime',null)
-                    ->where('activeTime','!=',null)->first()->created_at;
+                    ->where('activeTime','!=',null)->first()->activeTime;
 ;                   $endTime = Carbon::now();
                     $totalDuration =  $startTime->diffInMinutes($endTime);
                     if($totalDuration < 5){

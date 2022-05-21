@@ -74,6 +74,16 @@
             </div>
         </a>
     </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.accountants' ? 'active' : '' }}">
+        <a href="{{route('admin.accountants')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Account Officers</span>
+            </div>
+        </a>
+    </li>
+
     @endif
 
     @if ( in_array(Auth::user()->role, [889] ) )
@@ -160,6 +170,7 @@
         </a>
     </li>
 
+    @endif
     <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
         <a href="{{route('admin.users')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -168,7 +179,6 @@
             </div>
         </a>
     </li>
-    @endif
 
     <li class="menu {{ Route::currentRouteName() == 'logout' ? 'active' : '' }}">
         <a href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"

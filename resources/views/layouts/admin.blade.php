@@ -215,6 +215,9 @@
                                     @break
                                     @case(557)
                                     Business Developer
+                                    @case(775)
+                                    Account Officer
+                                    @break
                                     @break
                                 @default
                                 Hi! there
@@ -245,7 +248,7 @@
                 @include('layouts.partials.manager_sidebar')
                 @endif
 
-                @if (Auth::user()->role == 889 || Auth::user()->role == 777 )
+                @if (Auth::user()->role == 889 || Auth::user()->role == 777 || Auth::user()->role == 775 )
                 @include('layouts.partials.accountant_sidebar')
                 @endif
 
