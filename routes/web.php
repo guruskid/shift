@@ -517,8 +517,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant']]
 
 });
 
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'accountant']], function () {
+    Route::get('/account-officers', 'JuniorAccountantController@showAccountOfficers')->name('admin.account_officers');
+    Route::get('/junior_accountant_action/{id}/{action}', 'JuniorAccountantController@action')->name('admin.Junior_accountant_action');
+});
+
 /* for super admin and all accountants */
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','AccountOfficer']], function () {
     Route::get('/query-transaction/{id}', 'NairaWalletController@query')->name('admin.query-transaction');
     Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus')->name('admin.update-naira-transaction');
 
