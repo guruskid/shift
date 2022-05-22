@@ -91,7 +91,6 @@ Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
     Route::group(['prefix' => 'customerHappiness'], function () {
 
         Route::GET('/Overview', 'CustomerHappinessController@overview');
-
         Route::POST('/addStaff', 'CustomerHappinessController@addStaff');
         Route::GET('/showStaff/{id}', 'CustomerHappinessController@showStaff');
         Route::POST('/editStaff', 'CustomerHappinessController@editStaff');
@@ -102,20 +101,15 @@ Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
 
    //? Nexus
    Route::group(['prefix' => 'nexus'], function () {
-    /**
-     * TODO: mnake 3 endpoints
-     * *1. overview
-     * *2. crypto
-     * *3. giftCard
-     */
+    Route::GET('/nexusOverview/{date?}', 'NexusController@verificationData');
+    Route::GET('/nexusCrypto/{date?}', 'NexusController@NexusCrypto');
+    Route::GET('/nexusGiftCard/{date?}', 'NexusController@NexusGiftCard');
+
     });
 
     //? pulseTransactionsAnalytics
-    Route::group(['prefix' => 'pulseAnalytics'], function () {
-        /**
-         * TODO: make endpoint fir 
-         * *1.
-         */
+    Route::group(['prefix' => 'pulse'], function () {
+        Route::GET('/Analytics/{startDate?}/{endDate?}/{transaction_type?}/{transaction_duration?}', 'pulseAnalyticsController@pulseTransactionAnalytics');
     });
 
 });
