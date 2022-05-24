@@ -84,3 +84,41 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     });
 
 });
+
+
+Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
+    Route::get('/test', function(){
+        return response()->json(['message' => 'test']);
+    });
+    //?Customer Happiness
+    Route::group(['prefix' => 'customerHappiness'], function () {
+
+        Route::GET('/Overview', 'CustomerHappinessController@overview');
+        Route::POST('/addStaff', 'CustomerHappinessController@addStaff');
+        Route::GET('/showStaff/{id}', 'CustomerHappinessController@showStaff');
+        Route::POST('/editStaff', 'CustomerHappinessController@editStaff');
+        Route::GET('/removeStaff/{id}', 'CustomerHappinessController@removeUser');
+
+        Route::GET('/activateUser/{id}/{status}', 'CustomerHappinessController@activateUser');
+   });
+
+   //? Nexus
+   Route::group(['prefix' => 'nexus'], function () {
+    Route::GET('/nexusOverview/{date?}', 'NexusController@verificationData');
+    Route::GET('/nexusCrypto/{date?}', 'NexusController@NexusCrypto');
+    Route::GET('/nexusGiftCard/{date?}', 'NexusController@NexusGiftCard');
+
+    });
+
+    //? pulseTransactionsAnalytics
+    Route::group(['prefix' => 'pulse'], function () {
+        Route::GET('/Analytics/{startDate?}/{endDate?}/{transaction_type?}/{transaction_duration?}', 'pulseAnalyticsController@pulseTransactionAnalytics');
+    });
+
+
+
+    Route::get('/customer-life', 'CustomerLifeController@index');
+
+
+
+});
