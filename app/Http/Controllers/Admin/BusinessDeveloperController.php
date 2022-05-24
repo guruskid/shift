@@ -56,33 +56,43 @@ class BusinessDeveloperController extends Controller
         );
     }
 
-    public function viewCategory($type = null)
+    public function viewCategory($type = null, Request $request)
     {
         $call_categories = CallCategory::all();
         if($type == null || $type == "all_Users"){
-            $data_table = UserTracking::latest('updated_at')->paginate(100);
+            $data_table = UserTracking::latest('updated_at');
             $segment = "All Users";
         }
         if($type == "Quarterly_Inactive")
         {
-            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->paginate(100);
+            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at');
             $segment = "Quarterly Inactive";
         }
         if($type == "Called_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at')->paginate(100);
+            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at');
             $segment = "Called Users";
         }
         if($type == "Responded_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at')->paginate(100);
+            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at');
             $segment = "Responded Users";
         }
         if($type == "Recalcitrant_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at')->paginate(100);
+            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at');
             $segment = "Recalcitrant Users";
         }
+        if($request->start)
+        {
+            $data_table = $data_table->whereDate('created_at','>=',$request->start);
+        }
+        if($request->end)
+        {
+            $data_table = $data_table->whereDate('created_at','<=',$request->end);
+        }
+        $count = $data_table->count();
+        $data_table = $data_table->paginate(100);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->latest('updated_at')->get();
             if($user_tnx->count() == 0)
@@ -96,7 +106,7 @@ class BusinessDeveloperController extends Controller
         return view(
             'admin.business_developer.users',
             compact([
-                'data_table','type','segment','call_categories'
+                'data_table','type','segment','call_categories','count'
             ])
         );
     }
@@ -333,11 +343,14 @@ class BusinessDeveloperController extends Controller
         }
     }
 
-
+    public function truncate()
+    {
+        UserTracking::truncate();
+        return redirect()->back()->with("success", "Database Emptied");
+    }
 
     public function QuarterlyInactiveFromOldUsersDB() {
-        $all_users = User::where('role',1)->get();
-        UserTracking::truncate();
+        $all_users = User::where('role',1)->latest('created_at')->paginate(500);
         foreach ($all_users as $u) {
             if($u->transactions()->count() == 0)
             {

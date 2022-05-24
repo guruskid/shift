@@ -57,8 +57,21 @@
                     <div class="main-card mb-3 pb-3 card">
                         <div class="card-header d-flex justify-content-between">
                             <div class="">
-                                {{ $segment }}
+                                {{ $segment }}[{{ number_format($count) }}]
                             </div>
+                            <form class="form-inline p-2"
+                                method="GET">
+                                {{-- @csrf --}}
+                                <div class="form-group mr-2">
+                                    <label for="">Start date </label>
+                                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                                </div>
+                                <div class="form-group mr-2">
+                                    <label for="">End date </label>
+                                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                            </form>
                             @if($segment == "Call Log")
                             <form class="form-inline p-2"
                                 method="GET">

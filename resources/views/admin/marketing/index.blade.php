@@ -40,6 +40,34 @@
                     </div>
                 </div>
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one @if(isset($type) && $type =='All_Transactions_App') bg-primary @endif">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="@if(isset($type) && $type =='All_Transactions_App') text-white @endif">Total Transactions<br>App </h5>
+                                <p><a class="@if(isset($type) && $type =='All_Transactions_App') text-white @endif"
+                                    href="{{ route('admin.sales.type',['type'=>'All_Transactions_App']) }}">View</a></p>
+                            </div>
+                            <div class="widget-n">
+                                <h5>{{ $total_app_transactions }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one @if(isset($type) && $type =='All_Transactions_Web') bg-primary @endif">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="@if(isset($type) && $type =='All_Transactions_Web') text-white @endif">Total Transactions<br>Web </h5>
+                                <p><a class="@if(isset($type) && $type =='All_Transactions_Web') text-white @endif"
+                                    href="{{ route('admin.sales.type',['type'=>'All_Transactions_Web']) }}">View</a></p>
+                            </div>
+                            <div class="widget-n">
+                                <h5>{{ $total_web_transactions }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Daily_Users_App') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
@@ -150,34 +178,6 @@
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $monthly_web_transactions }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                    <div class="widget widget-chart-one @if(isset($type) && $type =='Recalcitrant_App') bg-primary @endif">
-                        <div class="widget-heading">
-                            <div>
-                                <h5 class="@if(isset($type) && $type =='Recalcitrant_App') text-white @endif">Recalcitrant Users<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Recalcitrant_App') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'Recalcitrant_App']) }}">View</a></p>
-                            </div>
-                            <div class="widget-n">
-                                <h5>{{ $recalcitrant_users_app }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                    <div class="widget widget-chart-one @if(isset($type) && $type =='Recalcitrant_Web') bg-primary @endif">
-                        <div class="widget-heading">
-                            <div>
-                                <h5 class="@if(isset($type) && $type =='Recalcitrant_Web') text-white @endif">Recalcitrant Users<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Recalcitrant_Web') text-white @endif"
-                                     href="{{ route('admin.sales.type',['type'=>'Recalcitrant_Web']) }}">View</a></p>
-                            </div>
-                            <div class="widget-n">
-                                <h5>{{ $recalcitrant_users_web }}</h5>
                             </div>
                         </div>
                     </div>
