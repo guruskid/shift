@@ -87,6 +87,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
 
 Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
+    Route::get('/test', function(){
+        return response()->json(['message' => 'test']);
+    });
     //?Customer Happiness
     Route::group(['prefix' => 'customerHappiness'], function () {
 
@@ -111,5 +114,11 @@ Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
     Route::group(['prefix' => 'pulse'], function () {
         Route::GET('/Analytics/{startDate?}/{endDate?}/{transaction_type?}/{transaction_duration?}', 'pulseAnalyticsController@pulseTransactionAnalytics');
     });
+
+
+
+    Route::get('/customer-life', 'CustomerLifeController@index');
+
+
 
 });

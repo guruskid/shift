@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class COO
 {
@@ -18,7 +19,10 @@ class COO
         $user = Auth::user();
 
         if($user->role == 998 ){
-             return $next($request);
+            if ($user->status != 'active') {
+                abort(404);
+            }
+            return $next($request);
         }else{
             abort(404);
         }
