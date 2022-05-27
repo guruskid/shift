@@ -84,6 +84,19 @@ function ViewResponse(call_log,user,call_category){
     $('#v_feedback').val(call_log['call_response']);
 }
 
+function ViewNewUserData(user,user_log)
+{
+    console.log(user_log);
+    $('#v_email').html(user['email']);
+    $('#v_id').val(user['id']);
+
+    $('#v_status_input').val(user_log['status']);
+    $('#v_status').val(user_log['status']);
+    $('#v_status').html(user_log['status']);
+
+    $('#v_feedback').val(user_log['comment']);
+}
+
 /* Edit Transaction */
 function editTransac(data) {
     $('#e_email').html(data['user_email']);

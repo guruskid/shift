@@ -74,7 +74,8 @@ class HomeController extends Controller
         $email = Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
 
-        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 775|| $user->role == 666 || $user->role == 444 || $user->role == 449 || $user->role == 559 || $user->role == 557) {
+        if ($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 775|| $user->role == 666 
+        || $user->role == 444 || $user->role == 449 || $user->role == 559 || $user->role == 557 || $user->role == 556) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->role == 888) {
             return redirect()->route('admin.assigned-transactions');

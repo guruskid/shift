@@ -626,3 +626,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
 });
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
+    Route::GET('/sales/{type?}', 'Admin\SalesController@index')->name('sales.user-category');
+    Route::POST('/update-status', 'Admin\SalesController@assignStatus')->name('sales.update.status');
+    Route::GET('/sales_view/{type?}', 'Admin\SalesController@viewCategory')->name('sales.view-type');
+    Route::GET('Called_Users','Admin\SalesController@callLogs')->name('sales.call-log');
+    Route::GET('user/profile','Admin\SalesController@userProfile')->name('sales.user_profile');
+
+});

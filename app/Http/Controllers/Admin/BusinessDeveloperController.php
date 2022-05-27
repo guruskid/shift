@@ -6,6 +6,7 @@ use App\CallCategory;
 use App\CallLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\NewUsersTracking;
 use App\Transaction;
 use App\User;
 use App\UserTracking;
@@ -233,7 +234,7 @@ class BusinessDeveloperController extends Controller
                         'Current_Cycle'=>"QuarterlyInactive",
                         'current_cycle_count_date' => Carbon::now()
                     ]);
-
+                    NewUsersTracking::where('user_id',$au->user_id)->delete();
                 }
             }
             else{
@@ -245,6 +246,7 @@ class BusinessDeveloperController extends Controller
                         'Current_Cycle'=>"QuarterlyInactive",
                         'current_cycle_count_date' => Carbon::now()
                     ]);
+                    NewUsersTracking::where('user_id',$au->user_id)->delete();
                 }
 
             }
@@ -350,50 +352,53 @@ class BusinessDeveloperController extends Controller
     }
 
     public function QuarterlyInactiveFromOldUsersDB() {
-        $all_users = User::where('role',1)->latest('created_at')->paginate(500);
+        $all_users = User::where('role',1)->latest('created_at')->get();
         foreach ($all_users as $u) {
-            if($u->transactions()->count() == 0)
-            {
-                $diff_in_months = $u->created_at->diffInMonths(Carbon::now());
-                
-                if($diff_in_months >=3)
+            $userTracking = UserTracking::where('user_id',$u->id)->count();
+            if($userTracking == 0){
+                if($u->transactions()->count() == 0)
                 {
-                    $user_tracking = new UserTracking();
-                    $user_tracking->user_id = $u->id;
-                    $user_tracking->Current_Cycle = "QuarterlyInactive";
-                    $user_tracking->current_cycle_count_date = Carbon::now();
-                    $user_tracking->save();
+                    $diff_in_months = $u->created_at->diffInMonths(Carbon::now());
+                    
+                    if($diff_in_months >=3)
+                    {
+                        $user_tracking = new UserTracking();
+                        $user_tracking->user_id = $u->id;
+                        $user_tracking->Current_Cycle = "QuarterlyInactive";
+                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->save();
 
+                    }
+                    else{
+                        $user_tracking = new UserTracking();
+                        $user_tracking->user_id = $u->id;
+                        $user_tracking->Current_Cycle = "Active";
+                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->save();
+                    }
                 }
                 else{
-                    $user_tracking = new UserTracking();
-                    $user_tracking->user_id = $u->id;
-                    $user_tracking->Current_Cycle = "Active";
-                    $user_tracking->current_cycle_count_date = Carbon::now();
-                    $user_tracking->save();
-                }
-            }
-            else{
-                $last_user_transaction_date = $u->transactions()->latest('updated_at')->first()->updated_at;
-                $diff_in_months = $last_user_transaction_date->diffInMonths(Carbon::now());
-                
-                if($diff_in_months >=3)
-                {
-                    $user_tracking = new UserTracking();
-                    $user_tracking->user_id = $u->id;
-                    $user_tracking->Current_Cycle = "QuarterlyInactive";
-                    $user_tracking->current_cycle_count_date = Carbon::now();
-                    $user_tracking->save();
+                    $last_user_transaction_date = $u->transactions()->latest('updated_at')->first()->updated_at;
+                    $diff_in_months = $last_user_transaction_date->diffInMonths(Carbon::now());
+                    
+                    if($diff_in_months >=3)
+                    {
+                        $user_tracking = new UserTracking();
+                        $user_tracking->user_id = $u->id;
+                        $user_tracking->Current_Cycle = "QuarterlyInactive";
+                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->save();
+
+                    }
+                    else{
+                        $user_tracking = new UserTracking();
+                        $user_tracking->user_id = $u->id;
+                        $user_tracking->Current_Cycle = "Active";
+                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->save();
+                    }
 
                 }
-                else{
-                    $user_tracking = new UserTracking();
-                    $user_tracking->user_id = $u->id;
-                    $user_tracking->Current_Cycle = "Active";
-                    $user_tracking->current_cycle_count_date = Carbon::now();
-                    $user_tracking->save();
-                }
-
             }
         }
         return redirect()->back()->with("success", "Database Populated");
