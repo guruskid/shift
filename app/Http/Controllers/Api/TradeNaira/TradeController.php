@@ -92,7 +92,6 @@ class TradeController extends Controller
     }
 
     public function completeWihtdrawal(Request $request) {
-
         $validator = Validator::make($request->all(), [
             'agent_id'  => 'required',
             'amount'   => 'required',
@@ -170,7 +169,7 @@ class TradeController extends Controller
         $txn->status = 'waiting';
         $txn->type = 'withdrawal';
         $txn->account_id = $request->account_id;
-        $txn->platform = $request->platform;
+        // $txn->platform = $request->platform;
         $txn->save();
 
         $user = Auth::user();
@@ -226,7 +225,7 @@ class TradeController extends Controller
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
         $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
-        Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        // Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
         $message = '!!! Withdrawal Transaction !!!  A new Withdrawal transaction has been initiated ';
@@ -234,9 +233,27 @@ class TradeController extends Controller
             // broadcast(new CustomNotification($acct, $message))->toOthers();
         }
 
+        $pendingOrders = NairaTrade::where('status','waiting')->count();
+        $minutes = 0;
+
+        if ($pendingOrders <= 5) {
+            $minutes = 30;
+        } elseif(($pendingOrders > 5 and $pendingOrders <= 10) ) {
+            $minutes = 40;
+        } elseif(($pendingOrders > 10 and $pendingOrders <= 20) ) {
+            $minutes = 50;
+        } elseif(($pendingOrders > 20 and $pendingOrders <= 30) ) {
+            $minutes = 60;
+        } elseif(($pendingOrders > 30) ) {
+            $minutes = 60;
+        }
+
+        $msg = "You have successfully withdrawn the sum of ₦".number_format($request->amount)." from your naira wallet.
+        N/B: Payment would be made within ".$minutes." minutes due to the withdrawal queue at the moment.";
+
         return response()->json([
             'success' => true,
-            'message' => "Congratulations! You have successfully withdrawn the sum of $request->amount from your Dantown naira wallet",
+            'message' => $msg,
         ], 200);
     }
 
