@@ -220,9 +220,18 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                                 style="color: #87676F;font-size: 16px;">{{ $t->transactionType->name }}</span>
                                                         </td>
                                                         <td>
-                                                            <span class="px-3 py-2"
-                                                                style="font-size: 12px;color: #219653;background: rgba(115, 219, 158, 0.3);border-radius: 15px;">{{ $t->status }}</span>
+                                                            @if ($t->status == 'pending')
+                                                                <span class="px-3 py-2" style="font-size: 12px;color: #0f0e05;background: rgba(231, 224, 96, 0.3);border-radius: 15px;">{{ $t->status }}</span>
+                                                                <div class="mt-1"><small>{{$t->pay_time}}</small></div>
+                                                            @else
+                                                                <span class="px-3 py-2" style="font-size: 12px;color: #219653;background: rgba(115, 219, 158, 0.3);border-radius: 15px;">{{ $t->status }}</span>
+                                                            @endif
+                                                            
+                                                            
                                                         </td>
+                                                        {{-- <td>
+                                                            <span style="color: #87676F;font-size: 16px;"> {{ $t->transactionType->name }}</span>
+                                                        </td> --}}
                                                     </tr>
                                                     @endforeach
                                                     {{ $nts->links() }}

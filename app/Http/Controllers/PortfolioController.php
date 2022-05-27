@@ -91,7 +91,27 @@ class PortfolioController extends Controller
                 $t->trans_type = 'Debit';
                 $dr_total += $t->amount;
             }
+
+            $pendingOrders = NairaTransaction::where('status','waiting')->whereDate('created_at', '>', $t->created_at)->count();
+            $minutes = 0;
+
+            if ($pendingOrders <= 5) {
+                $minutes = 30;
+            } elseif(($pendingOrders > 5 and $pendingOrders <= 10) ) {
+                $minutes = 40;
+            } elseif(($pendingOrders > 10 and $pendingOrders <= 20) ) {
+                $minutes = 50;
+            } elseif(($pendingOrders > 20 and $pendingOrders <= 30) ) {
+                $minutes = 60;
+            } elseif(($pendingOrders > 30) ) {
+                $minutes = 60;
+            }
+
+            $pay_time = 'payment in '.$minutes.' minutes';
+            $t->pay_time = $pay_time;
         }
+
+        // return $nts;
 
         $daily_total = Auth::user()->nairaTransactions()->whereDate('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
         $daily_rem = Auth::user()->daily_max - $daily_total;

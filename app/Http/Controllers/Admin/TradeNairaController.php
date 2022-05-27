@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Mail;
+use DB;
 
 class TradeNairaController extends Controller
 {
@@ -152,11 +153,26 @@ class TradeNairaController extends Controller
         }
         if(!$search)
         {
-            $transactions = NairaTrade::orderBy('created_at', 'desc');
+            $transactions = NairaTrade::whereNotNull('id');
             if($type)
             {
                 $transactions = $transactions->where('type',$type);
+
+                $transactions = $transactions->with(['user' => function ($query) {
+                    $query->withCount(['nairaTrades as total_trx' => function ($query) {
+                        $query->select(DB::raw("sum(amount) as sumt"));
+                    }]);
+                }]);
+    
+                $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
+                    FROM naira_trades as tr
+                    WHERE 
+                    tr.user_id = naira_trades.user_id) 
+                    as total_trax'))
+                    ->orderBy('total_trax', 'desc');
             }
+
+            $transactions = $transactions->orderBy('created_at', 'desc');
 
             if($start_date && $end_date)
             {

@@ -310,7 +310,11 @@
                                     @foreach ($transactions as $key => $t)
                                     <tr>
                                         <td>{{ $key+1 }}</td>
-                                        <td>{{ $t->user->first_name .' '. $t->user->last_name }}</td>
+                                        <td>
+                                            @if ($t->user->total_trx > 5000000)
+                                                <span><i class="fa fa-star" style="color: green;"></i></span>
+                                            @endif
+                                            {{ $t->user->first_name .' '. $t->user->last_name }}</td>
                                         <td>{{ $t->user->phone }}</td>
                                         @if($t->type == 'withdrawal' AND $t->status == 'waiting')
                                             <td class="text-danger">₦{{ number_format($t->amount) }}</td>
