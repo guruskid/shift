@@ -97,6 +97,7 @@
                                         <th class="text-center">Total Deposit Amount Paid</th>
                                         <th class="text-center">Total Deposit Charges</th>
                                         <th class="text-center">Total Deposit Amount</th>
+                                        <th class="text-center">Average Response Time</th>
                                         <th class="text-center">Pending Deposit Today</th>
                                         <th class="text-center">Pending Deposit Total</th>
                                     </tr>
@@ -107,7 +108,9 @@
                                             <td class="text-center">₦ {{ isset($nw_deposit_amount_paid) ? number_format($nw_deposit_amount_paid) : 0 }}</td>
                                             <td class="text-center">₦ {{ isset($nw_deposit_tnx_charges) ? number_format($nw_deposit_tnx_charges) : 0 }}</td>
                                             <td class="text-center">₦ {{ isset($nw_deposit_total_amount) ? number_format($nw_deposit_total_amount) :0 }}</td>
+                                            <td class="text-center">{{ $averageResponseTime }}</td>
                                             <td class="text-center">[{{ isset($nw_deposit_pending_total) ? number_format($nw_deposit_pending_total) :0 }}] ₦ {{ isset($nw_deposit_pending_amount) ? number_format($nw_deposit_pending_amount) :0 }}</td>
+                                            
                                             <td class="text-center">
                                                 [{{ isset($deposit_total_pending) ? number_format($deposit_total_pending) :0 }}]
                                                  ₦ {{ isset($deposit_total_pending_amount) ? number_format($deposit_total_pending_amount) :0 }}
@@ -135,6 +138,7 @@
                             <th>Narration</th>
                             <th>Date</th>
                             <th>Status</th>
+                            <th>Response Time</th>
                             <th>Extras</th>
                         </tr>
                     </thead>
@@ -178,6 +182,11 @@
                                         <div class="text-warning">{{$t->status}}</div>
                                         @endswitch
                                     </td>
+                                    @if ($t->status == 'pending')
+                                        <td>{{ now()->diffForHumans($t->created_at) }}</td>
+                                        @else
+                                        <td>{{ $t->updated_at->diffForHumans($t->created_at) }}</td>
+                                    @endif
                                     <td>{{$t->extras}} </td>
                                 </tr>
                             @endforeach
@@ -228,6 +237,7 @@
                                     <th class="text-center">Total Withdrawal Amount Paid</th>
                                     <th class="text-center">Total Withdrawal Charges</th>
                                     <th class="text-center">Total Withdrawal Amount</th>
+                                    <th class="text-center">Average Response Time</th>
                                     <th class="text-center">Pending Withdrawal Today</th>
                                     <th class="text-center">Pending Withdrawal Total</th>
                                 </tr>
@@ -238,6 +248,7 @@
                                         <td class="text-center">₦ {{ isset($nw_withdrawal_amount_paid) ? number_format($nw_withdrawal_amount_paid) : 0 }}</td>
                                         <td class="text-center">₦ {{ isset($nw_withdrawal_tnx_charges) ? number_format($nw_withdrawal_tnx_charges) : 0 }}</td>
                                         <td class="text-center">₦ {{ isset($nw_withdrawal_total_amount) ? number_format($nw_withdrawal_total_amount) :0 }}</td>
+                                        <td class="text-center">{{ $averageResponseTime }}</td>
                                         <td class="text-center">[{{ isset($nw_withdrawal_pending_total) ? number_format($nw_withdrawal_pending_total) :0 }}] ₦ {{ isset($nw_withdrawal_pending_amount) ? number_format($nw_withdrawal_pending_amount) :0 }}</td>
                                         <td class="text-center">
                                             [{{ isset($withdrawal_total_pending) ? number_format($withdrawal_total_pending) :0 }}]
@@ -266,6 +277,7 @@
                         <th>Narration</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Response Time</th>
                         <th>Extras</th>
                     </tr>
                 </thead>
@@ -307,6 +319,11 @@
                                     @default
                                     <div class="text-warning">{{$t->status}}</div>
                                     @endswitch </td>
+                                    @if ($t->status == 'pending')
+                                        <td>{{ now()->diffForHumans($t->created_at) }}</td>
+                                        @else
+                                        <td>{{ $t->updated_at->diffForHumans($t->created_at) }}</td>
+                                    @endif
                                 <td>{{$t->extras}} </td>
                             </tr>
                         @endforeach
@@ -357,6 +374,7 @@
                                     <th class="text-center">Total Amount Paid</th>
                                     <th class="text-center">Total Charges</th>
                                     <th class="text-center">Total Amount</th>
+                                    <th class="text-center">Average Response Time</th>
                                     <th class="text-center">Total Pending Today</th>
                                     <th class="text-center">Total Pending Total</th>
                                 </tr>
@@ -367,6 +385,7 @@
                                         <td class="text-center">₦ {{ isset($nw_other_amount_paid) ? number_format($nw_other_amount_paid) : 0 }}</td>
                                         <td class="text-center">₦ {{ isset($nw_other_tnx_charges) ? number_format($nw_other_tnx_charges) : 0 }}</td>
                                         <td class="text-center">₦ {{ isset($nw_other_total_amount) ? number_format($nw_other_total_amount) :0 }}</td>
+                                        <td class="text-center">{{ $averageResponseTime }}</td>
                                         <td class="text-center">[{{ isset($nw_other_pending_total) ? number_format($nw_other_pending_total) :0 }}] ₦ {{ isset($nw_other_pending_amount) ? number_format($nw_other_pending_amount) :0 }}</td>
                                         <td class="text-center">
                                             [{{ isset($other_total_pending) ? number_format($other_total_pending) :0 }}]
@@ -395,6 +414,7 @@
                         <th>Narration</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Response Time</th>
                         <th>Extras</th>
                     </tr>
                 </thead>
@@ -436,6 +456,11 @@
                                     @default
                                     <div class="text-warning">{{$t->status}}</div>
                                     @endswitch  </td>
+                                    @if ($t->status == 'pending')
+                                        <td>{{ now()->diffForHumans($t->created_at) }}</td>
+                                        @else
+                                        <td>{{ $t->updated_at->diffForHumans($t->created_at) }}</td>
+                                    @endif
                                 <td>{{$t->extras}} </td>
                             </tr>
                         @endforeach
