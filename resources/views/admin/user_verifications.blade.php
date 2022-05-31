@@ -63,7 +63,7 @@
                         </div>
                         <div class="table-responsive p-3">
                             <table
-                                class="align-middle mb-0 table table-borderless table-striped table-hover">
+                                class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
                                 <thead>
                                     <tr>
                                         <th>#</th>
