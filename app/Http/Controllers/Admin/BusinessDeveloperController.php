@@ -348,6 +348,7 @@ class BusinessDeveloperController extends Controller
     public function truncate()
     {
         UserTracking::truncate();
+        AccountantTimeStamp::truncate();
         return redirect()->back()->with("success", "Database Emptied");
     }
 
