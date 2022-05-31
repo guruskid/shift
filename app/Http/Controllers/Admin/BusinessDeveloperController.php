@@ -155,12 +155,16 @@ class BusinessDeveloperController extends Controller
 
     public function CallLog(Request $request)
     {
-        // dd($request->status);
         $data_table = CallLog::latest('updated_at');
         $segment = "Call Log";
         $type = "Responded_Users";
         $call_categories = CallCategory::all();
-
+        if($request->start){
+            $data_table = $data_table->whereDate('created_at','>=',$request->start);
+        }
+        if($request->end){
+            $data_table = $data_table->whereDate('created_at','<=',$request->end);
+        }
         if($request->status)
         {
             $data_table = $data_table->where('call_category_id', $request->status);
@@ -168,6 +172,7 @@ class BusinessDeveloperController extends Controller
         $data_table = $data_table->paginate(1000);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->latest('updated_at')->get();
+
             if($user_tnx->count() == 0)
             {
                 $u->last_transaction_date = 'No Transactions';
@@ -186,9 +191,16 @@ class BusinessDeveloperController extends Controller
 
 
 
-    public function UserProfile()
+    public function UserProfile(Request $request)
     {
-        $users = User::orderBy('id','desc')->paginate(100);
+        $users = User::orderBy('id','desc');
+        if($request->start){
+            $users = $users->whereDate('created_at','>=',$request->start);
+        }
+        if($request->end){
+            $users = $users->whereDate('created_at','<=',$request->end);
+        }
+        $users = $users->paginate(100);
         $segment = "User Profile";
         return view(
             'admin.business_developer.UserProfile',
@@ -234,7 +246,6 @@ class BusinessDeveloperController extends Controller
                         'Current_Cycle'=>"QuarterlyInactive",
                         'current_cycle_count_date' => Carbon::now()
                     ]);
-                    NewUsersTracking::where('user_id',$au->user_id)->delete();
                 }
             }
             else{
@@ -246,7 +257,6 @@ class BusinessDeveloperController extends Controller
                         'Current_Cycle'=>"QuarterlyInactive",
                         'current_cycle_count_date' => Carbon::now()
                     ]);
-                    NewUsersTracking::where('user_id',$au->user_id)->delete();
                 }
 
             }

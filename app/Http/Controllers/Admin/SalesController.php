@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NewUsersTracking;
 use App\User;
+use Carbon\Carbon;
 
 class SalesController extends Controller
 {
@@ -27,6 +28,9 @@ class SalesController extends Controller
         }
     }
     public function index($type = null){
+        if($type == null){
+            $type = 'all_user';
+        }
         $this->addNewUsers();
         $new_user = NewUsersTracking::where('status','active')->count();
         $called_user = NewUsersTracking::where('status','goodlead')->orWhere('status','badlead')->count();
@@ -145,11 +149,25 @@ class SalesController extends Controller
 
     public function assignStatus(Request $request)
     {
+        if($request->phoneNumber == null)
+        {
+            $time = now();
+            $openingPhoneTime = Carbon::parse($request->phoneNumber)->subSeconds(18);
+            $timeDifference = $openingPhoneTime->diffInSeconds($time);
+            NewUsersTracking::where('user_id',$request->id)
+            ->update([
+                'status' => $request->status,
+                'comment' => $request->feedback,
+                'call_duration' => $timeDifference,
+                'call_duration_timestamp' => $time,
+            ]);
+        }
+
         NewUsersTracking::where('user_id',$request->id)
-        ->update([
-            'status' => $request->status,
-            'comment' => $request->feedback
-        ]);
+            ->update([
+                'status' => $request->status,
+                'comment' => $request->feedback,
+            ]);
 
         return back()->with(['success'=>'Status Updated']);
     }

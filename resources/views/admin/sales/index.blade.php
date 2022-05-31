@@ -110,10 +110,9 @@
                                         <table class="table text-center">
                                             <thead>
                                                 <tr>
-                                                    <th><div class="">Name</div></th>
-                                                    <th><div class="">Username</div></th>
-                                                    <th><div class="">Phone Number</div></th>
-                                                    <th><div class="">Signup Date</div></th>
+                                                    <th><div class="text-center">Name</div></th>
+                                                    <th><div class="text-center">Username</div></th>
+                                                    <th><div class="text-center">Signup Date</div></th>
                                                     @if ($type != "traded_user")
                                                         <th><div class="">Action</div></th>
                                                     @endif
@@ -124,14 +123,17 @@
                                                 <tr>
                                                     <td><div class="td-content customer-name">{{$u->user->first_name}}</div></td>
                                                     <td>{{ $u->user->username }}</td>
-                                                    <td>{{ $u->user->phone }}</td>
                                                     <td>{{ $u->user->created_at->format('d M y, h:ia') }}</td>
                                                     @if ($type != "traded_user")
-                                                    <td>
+                                                    <td class="text-center">
                                                         @if ($type == "all_user")
+                                                         <a href="#" class="my-2" data-toggle="modal" data-target="#view-phone-number" onclick="showPhoneNumber({{$u->user}})">
+                                                            <span class="btn btn btn-info">View Phone Number</span>
+                                                        </a>
                                                         <a href="#" class="my-2" data-toggle="modal" data-target="#add-call-log" onclick="AddResponse({{$u->user}})">
                                                             <span class="btn btn btn-info">Response</span>
                                                         </a>
+                                                        
                                                         @endif
                                                         @if ($type !="all_user")
                                                         <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewNewUserData({{ $u->user }},{{ $u }})">
@@ -184,6 +186,7 @@
 
                     <div class="form-group">
                         <input type="hidden" readonly name="id" id="e_id">
+                        <input type="hidden" readonly name="phoneNumber" id="e_phoneNumber">
                     </div>
                     <div class="row">
 
@@ -211,6 +214,26 @@
                     <button type="submit" class="btn btn-primary">Update Status</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade  item-badge-rightm" id="view-phone-number" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading " id="ph_email">User Email</h4>
+                            <h6 class="media-heading" id="ph_phoneNumber">User PhoneNumber</h6>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                </div>
         </div>
     </div>
 </div>

@@ -86,7 +86,6 @@ function ViewResponse(call_log,user,call_category){
 
 function ViewNewUserData(user,user_log)
 {
-    console.log(user_log);
     $('#v_email').html(user['email']);
     $('#v_id').val(user['id']);
 
@@ -97,6 +96,18 @@ function ViewNewUserData(user,user_log)
     $('#v_feedback').val(user_log['comment']);
 }
 
+function showPhoneNumber(user)
+{
+    $('#ph_email').html(user['email']);
+    $('#ph_phoneNumber').html(user['phone']);
+    
+    
+    var today = new Date();
+    var date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    $('#e_phoneNumber').val(dateTime);
+}
 /* Edit Transaction */
 function editTransac(data) {
     $('#e_email').html(data['user_email']);
