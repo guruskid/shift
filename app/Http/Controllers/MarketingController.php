@@ -19,9 +19,9 @@ class MarketingController extends Controller
         $total_web_signed_up = User::where('platform','web')->count();
        $total_app_signed_up = User::where('platform','app')->count();
  
-        $daily_web_signed_up = User::where("created_at",Carbon::now())->where('platform','web')->count();
+        $daily_web_signed_up = User::whereDate("created_at",Carbon::now())->where('platform','web')->count();
  
-        $daily_app_signed_up = User::where("created_at",Carbon::now())->where('platform','app')->count();
+        $daily_app_signed_up = User::whereDate("created_at",Carbon::now())->where('platform','app')->count();
 
         //?App total Transactions
         $Transaction_total_app_transactions = Transaction::where('platform','app')->where('status', 'success')->count();
@@ -38,15 +38,15 @@ class MarketingController extends Controller
         $total_web_transactions = $Paybridge_total_web_transactions + $Paybridge_total_web_transactions;
  
         //?app Daily transaction
-        $Transaction_daily_app_transactions = Transaction::where("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
+        $Transaction_daily_app_transactions = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
 
-        $Paybridge_daily_app_transactions = NairaTrade::where("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
+        $Paybridge_daily_app_transactions = NairaTrade::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
         $daily_app_transactions = $Transaction_daily_app_transactions + $Paybridge_daily_app_transactions;
 
         //?Web Daily transaction
-        $Transaction_daily_web_transactions = Transaction::where("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
+        $Transaction_daily_web_transactions = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
 
-        $Paybridge_daily_web_transactions = NairaTrade::where("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
+        $Paybridge_daily_web_transactions = NairaTrade::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
 
         $daily_web_transactions = $Transaction_daily_web_transactions + $Paybridge_daily_web_transactions;
  
@@ -89,9 +89,9 @@ class MarketingController extends Controller
        $total_web_signed_up = User::where('platform','web')->count();
        $total_app_signed_up = User::where('platform','app')->count();
 
-       $daily_web_signed_up = User::where("created_at",Carbon::now())->where('platform','web')->count();
+       $daily_web_signed_up = User::whereDate("created_at",Carbon::now())->where('platform','web')->count();
 
-       $daily_app_signed_up = User::where("created_at",Carbon::now())->where('platform','app')->count();
+       $daily_app_signed_up = User::whereDate("created_at",Carbon::now())->where('platform','app')->count();
 
        //?App total Transactions
        $Transaction_total_app_transactions = Transaction::where('platform','app')->where('status', 'success')->count();
@@ -108,15 +108,15 @@ class MarketingController extends Controller
        $total_web_transactions = $Paybridge_total_web_transactions + $Paybridge_total_web_transactions;
 
        //?app Daily transaction
-        $Transaction_daily_app_transactions = Transaction::where("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
+        $Transaction_daily_app_transactions = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
 
-        $Paybridge_daily_app_transactions = NairaTrade::where("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
+        $Paybridge_daily_app_transactions = NairaTrade::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
         $daily_app_transactions = $Transaction_daily_app_transactions + $Paybridge_daily_app_transactions;
 
         //?Web Daily transaction
-        $Transaction_daily_web_transactions = Transaction::where("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
+        $Transaction_daily_web_transactions = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
 
-        $Paybridge_daily_web_transactions = NairaTrade::where("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
+        $Paybridge_daily_web_transactions = NairaTrade::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
 
         $daily_web_transactions = $Transaction_daily_web_transactions + $Paybridge_daily_web_transactions;
 
@@ -143,15 +143,6 @@ class MarketingController extends Controller
         ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->where('platform','web')->count();
 
         $monthly_web_transactions = $Transaction_monthly_web_transactions + $Paybridge_monthly_web_transactions;
-
-
-        $recalcitrant_users_web = User::whereHas('userTracking', function($query){
-            $query->where('Current_Cycle','Recalcitrant');
-         })->where('platform','web')->count();
-
-         $recalcitrant_users_app = User::whereHas('userTracking', function($query){
-            $query->where('Current_Cycle','Recalcitrant');
-         })->where('platform','app')->count();
 
 
         $table_data = $this->tableDataForCategory($type);
@@ -218,23 +209,23 @@ class MarketingController extends Controller
 
         if($type == "Daily_Users_App" )
         {
-            return User::where("created_at",Carbon::now())->where('platform','app')->orderBy('id','desc')->limit(10)->get();
+            return User::whereDate("created_at",Carbon::now())->where('platform','app')->orderBy('id','desc')->limit(10)->get();
         }
         if($type == "Daily_Users_Web")
         {
-            return User::where("created_at",Carbon::now())->where('platform','web')->orderBy('id','desc')->limit(10)->get();
+            return User::whereDate("created_at",Carbon::now())->where('platform','web')->orderBy('id','desc')->limit(10)->get();
         }
 
         if($type == "Daily_Transactions_App" )
         {
             $daily_app_transaction = collect([]);
-            $nairatrade = NairaTrade::where("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->orderBy('id','desc')->limit(10)->get();
+            $nairatrade = NairaTrade::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->orderBy('id','desc')->limit(10)->get();
 
             foreach ($nairatrade as $nt) {
                 $nt->tradename = "Paybridge ".$nt->type;
             }
 
-            $transaction = Transaction::where("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->orderBy('id','desc')->limit(10)->get();
+            $transaction = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->orderBy('id','desc')->limit(10)->get();
 
             foreach ($transaction as $t) {
                 $t->tradename = $t->card;
@@ -248,13 +239,13 @@ class MarketingController extends Controller
         if($type == "Daily_Transactions_Web")
         {
             $daily_web_transaction = collect([]);
-            $nairatrade = NairaTrade::where("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->orderBy('id','desc')->limit(10)->get();
+            $nairatrade = NairaTrade::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->orderBy('id','desc')->limit(10)->get();
 
             foreach ($nairatrade as $nt) {
                 $nt->tradename = "Paybridge ".$nt->type;
             }
 
-            $transaction = Transaction::where("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->orderBy('id','desc')->limit(10)->get();
+            $transaction = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->orderBy('id','desc')->limit(10)->get();
 
             foreach ($transaction as $t) {
                 $t->tradename = $t->card;
@@ -352,7 +343,7 @@ class MarketingController extends Controller
         if($type == "Daily_Transactions_App")
         {
             $daily_app_transaction = collect([]);
-            $nairatrade = NairaTrade::where("created_at",Carbon::now())->where('status', 'success')->where('platform','app');
+            $nairatrade = NairaTrade::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app');
             if($request->start)
             {
                 $nairatrade = $nairatrade->whereDate('created_at','>=',$request->start);
@@ -367,7 +358,7 @@ class MarketingController extends Controller
                 $nt->tradename = "Paybridge ".$nt->type;
             }
 
-            $transaction = Transaction::where("created_at",Carbon::now())->where('status', 'success')->where('platform','app');
+            $transaction = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app');
             if($request->start)
             {
                 $transaction = $transaction->whereDate('created_at','>=',$request->start);
@@ -392,7 +383,7 @@ class MarketingController extends Controller
         if($type == "Daily_Transactions_Web")
         {
             $daily_web_transaction = collect([]);
-            $nairatrade = NairaTrade::where("created_at",Carbon::now())->where('status', 'success')->where('platform','web');
+            $nairatrade = NairaTrade::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web');
             if($request->start)
             {
                 $nairatrade = $nairatrade->whereDate('created_at','>=',$request->start);
@@ -407,7 +398,7 @@ class MarketingController extends Controller
                 $nt->tradename = "Paybridge ".$nt->type;
             }
 
-            $transaction = Transaction::where("created_at",Carbon::now())->where('status', 'success')->where('platform','web');
+            $transaction = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web');
             if($request->start)
             {
                 $transaction = $transaction->whereDate('created_at','>=',$request->start);
@@ -592,7 +583,7 @@ class MarketingController extends Controller
 
         if($type == "Daily_Users_App" )
         {
-            $data =  User::where("created_at",Carbon::now())->where('platform','app');
+            $data =  User::whereDate("created_at",Carbon::now())->where('platform','app');
             if($request->start)
             {
                 $data = $data->whereDate('created_at','>=',$request->start);
@@ -607,7 +598,7 @@ class MarketingController extends Controller
         }
         if($type == "Daily_Users_Web")
         {
-            $data =  User::where("created_at",Carbon::now())->where('platform','web');
+            $data =  User::whereDate("created_at",Carbon::now())->where('platform','web');
             if($request->start)
             {
                 $data = $data->whereDate('created_at','>=',$request->start);
