@@ -63,8 +63,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/giftCard_transaction', 'SummaryController@giftCardTransactions');
         Route::POST('/sortGiftCards', 'SummaryController@sortGiftCardTransactions');
 
-        Route::GET('transaction_detail','SummaryController@transactionsDetails');
-        Route::POST('sort_transaction_detail','SummaryController@sortTransaction');
+        Route::GET('/transaction_detail','SummaryController@transactionsDetails');
+        Route::POST('/sort_transaction_detail','SummaryController@sortTransaction');
 
 
    });
@@ -81,6 +81,10 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::group(['prefix' => 'referral'], function () {
         Route::GET('/', 'ReferralSettingController@index');
         Route::GET('/settings', 'ReferralSettingController@settings');
+    });
+
+    Route::group(['prefix', 'charts'], function () {
+        Route::GET('/monthly-analytics', 'ChartController@monthlyAnalytics');
     });
 
 });
@@ -114,11 +118,11 @@ Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
     Route::group(['prefix' => 'pulse'], function () {
         Route::GET('/Analytics/{startDate?}/{endDate?}/{transaction_type?}/{transaction_duration?}', 'pulseAnalyticsController@pulseTransactionAnalytics');
         Route::GET('/', 'PulseController@index');
+
     });
 
-
-
     Route::get('/customer-life', 'CustomerLifeController@index');
+
 
 
 
