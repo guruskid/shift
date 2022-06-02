@@ -16,6 +16,7 @@ use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\Exports\DownloadUsers;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
+use App\Http\Controllers\Admin\SalesController;
 use Excel;
 use App\NairaWallet;
 use App\Payout;
@@ -242,6 +243,10 @@ class AdminController extends Controller
         } else if (Auth::user()->role == 557) { //business_Developer
             return (new BusinessDeveloperController)->index();
         }
+        else if (Auth::user()->role == 556) { //Sales Personal 
+            return (new SalesController)->index();
+        }
+       
     }
 
 

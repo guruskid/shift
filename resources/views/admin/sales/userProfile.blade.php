@@ -48,6 +48,7 @@
                             </i>
                         </div>
                         <div>{{ strtoupper($segment) }}</div>
+                        
                     </div>
                 </div>
             </div>
@@ -85,16 +86,22 @@
                                     <th>Email</th>
                                     <th>Total Transactions</th>
                                     <th>Signup Date</th>
+                                    <th>Date</th>
+                                    {{-- <th>Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($users as $u)
                                 <tr>
-                                    <td>{{ $u->first_name." ".$u->last_name }}</td>
-                                    <td>{{ $u->username }}</td>
-                                    <td>{{ $u->email }}</td>
+                                    <td>{{ $u->user->first_name." ".$u->user->last_name }}</td>
+                                    <td>{{ $u->user->username }}</td>
+                                    <td>{{ $u->user->email }}</td>
                                     <td>{{ $u->transactions->count() }}</td>
-                                    <td>{{ $u->created_at->format('d M Y, h:ia') }}</td>
+                                    <td>{{ $u->user->created_at->format('d M Y, h:ia') }}</td>
+                                    <td>{{ $u->updated_at->format('d M Y, h:ia') }}</td>
+                                    {{-- <td><a href="#" class="my-2" data-toggle="modal" data-target="#view-user-info" onclick="UserProfile($u)">
+                                        <span class="btn btn btn-info">View</span>
+                                    </a></td> --}}
                                 </tr>
                                 @endforeach
                             </tbody>

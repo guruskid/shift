@@ -20,6 +20,7 @@ Route::group(['middleware'=>'manager'], function(){
     Route::get('/user-verification', 'UserController@verifications')->name('admin.user-verifications');
     Route::put('/user-verification/{verification}', 'UserController@verify')->name('admin.verify');
     Route::put('/cancel-verification/{verification}', 'UserController@cancelVerification')->name('admin.cancel-verification');
+    Route::get('/user-verification-history', 'UserController@verificationHistory')->name('admin.verification-history');
 
 });
 

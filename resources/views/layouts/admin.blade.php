@@ -219,6 +219,9 @@
                                     @case(775)
                                     Account Officer
                                     @break
+                                    @case(556)
+                                    Sales
+                                    @break
                                 @default
                                 Hi! there
 
@@ -257,6 +260,9 @@
                 @endif
                 @if (Auth::user()->role == 557)
                 @include('layouts.partials.buisness_developer_sidebar')
+                @endif
+                @if (Auth::user()->role == 556)
+                @include('layouts.partials.sales_sidebar')
                 @endif
 
             </nav>
@@ -345,7 +351,7 @@
 
     </script>
      @auth
-     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449,557,559] ))
+     @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449,557,559,556] ))
      <script src="{{asset('js/sa.js?v=7')}}"></script>
      @endif
      @endauth
