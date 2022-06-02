@@ -47,8 +47,6 @@ class AssetTransactionController extends Controller
 
         $t = Transaction::find($r->id);
 
-        // return ($r);
-
         $amount_paid = $r->amount_paid;
 
         // finding the commision percentage
@@ -57,7 +55,7 @@ class AssetTransactionController extends Controller
         $commision =  $amount_paid * $percentage;
         $user_amount = $amount_paid - $commision;
 
-        $percentage = ($t->commission/((($t->card_price + $t->commission) * $t->quantity))) * 100;
+        $percentage = ceil(($t->commission/((($t->card_price + $t->commission) * $t->quantity))) * 100);
         $commision = round(($percentage / 100) * $r->amount_paid,2);
         $amount_paid = round($r->amount_paid - $commision,2);
 
@@ -240,9 +238,9 @@ class AssetTransactionController extends Controller
         $t = Transaction::find($r->id);
         $user_wallet = $t->user->nairaWallet;
 
-        $percentage = ($t->commission/((($t->card_price + $t->commission) * $t->quantity))) * 100;
+        $percentage = ceil(($t->commission/((($t->card_price + $t->commission) * $t->quantity))) * 100);
 
-        $commision = round(($percentage / 100) * $r->amount_paid,2);
+        $commision = ($percentage / 100) * $r->amount_paid;
         $amount_paid = round($r->amount_paid - $commision,2);
 
         if ($t->status == 'success') {
