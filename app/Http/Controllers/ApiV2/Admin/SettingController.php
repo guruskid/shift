@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiV2\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SystemSettings;
+use App\TargetSettings;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,40 +18,51 @@ class SettingController extends Controller
     {
         $user = User::where('role','!=',1)->distinct()->get(['role']);
         foreach ($user as $u) {
-            switch ($u->role) {
-                case 999:
-                    $u->role_name = "Super Administrator";
-                    break;
-                case 888:
-                    $u->role_name = "Sales Representative";
-                    break;
-                case 889:
-                    $u->role_name = "Senior Accountant";
-                    break;  
-                case 777:
-                    $u->role_name = "Junior Accountant";
-                    break;
-                case 559:
-                    $u->role_name = "Marketing Personnel";
-                    break; 
-                case 557:
-                    $u->role_name = "Business Developer";
-                    break;
-                case 666:
-                    $u->role_name = "Manager";
-                    break;
-                case 444:
-                    $u->role_name = "Chinese Operator";
-                    break; 
-                case 449:
-                    $u->role_name = "Chinese Administrator";
-                    break;      
-                default:
-                $u->role_name = "";
-                    break;
-            }
+            $u->role_name = $this->roleName($u->role);
         }
         return $user;
+    }
+
+    public function roleName($role_number){
+        switch ($role_number) {
+            case 999:
+                $role_name = "Super Administrator";
+                break;
+            case 888:
+                $role_name = "Sales Representative";
+                break;
+            case 889:
+                $role_name = "Senior Accountant";
+                break;  
+            case 777:
+                $role_name = "Junior Accountant";
+                break;
+             case 775:
+                $role_name = "Account Officer";
+                break;   
+            case 559:
+                $role_name = "Marketing Personnel";
+                break; 
+            case 557:
+                $role_name = "Sales Personnel - Old Users";
+                break;
+            case 556:
+                $role_name = "Sales Personnel - New Users";
+                break;
+            case 666:
+                $role_name = "Manager";
+                break;
+            case 444:
+                $role_name = "Chinese Operator";
+                break; 
+            case 449:
+                $role_name = "Chinese Administrator";
+                break;    
+            default:
+            $role_name = "";
+                break;
+        }
+        return $role_name;
     }
     public function showUser()
     {
@@ -132,6 +144,9 @@ class SettingController extends Controller
     public function MembersOfStaff()
     {
         $user = User::where('role','!=',1)->get();
+        foreach ($user as $u) {
+            $u->role_name = $this->roleName($u->role);
+        }
         return response()->json([
             'success' => true,
             'users' => $user,
@@ -210,12 +225,13 @@ class SettingController extends Controller
 
     public function removeUser($id)
     {
+        $user = User::where('id',$id)->first();
         User::where('id',$id)->update([
             'role' => 1,
         ]);
         return response()->json([
             'success' => true,
-            'message' => 'Staff Deleted',
+            'message' => "$user->first_name $user->last_name with the role of ".$this->roleName($user->role)." has been removed",
         ], 200);
     }
 
@@ -259,7 +275,7 @@ class SettingController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "Staff Data Added",
+            'message' => "$r->first_name $r->last_name with the role of ".$this->roleName($r->role)." has been added",
         ], 200);
         
     }
@@ -310,5 +326,27 @@ class SettingController extends Controller
             'success' => false,
             'message' => "An error occurred, please try again!",
         ], 401);
+    }
+
+    public function assignSalesTarget(Request $request)
+    {
+         $user = User::find($request->user_id);
+         if(in_array($user()->role, [556, 557] ))
+         {
+             TargetSettings::updateOrCreate(
+                 ['user_id' => $request->user_id],
+                 ['target' => $request->target,]
+                );
+
+             return response()->json([
+                'success' => true,
+                'message' => "Target has been added for $user->first_name $user->last_name",
+            ], 200);
+         }
+         return response()->json([
+            'success' => false,
+            'message' => "$user->first_name $user->last_name is not a of role SALES",
+        ], 401);
+
     }
 }
