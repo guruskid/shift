@@ -14,12 +14,16 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/cable',  'UtilityController@cable');
     });
 
+
+
     //CRYPTO TRANSACTIONS
     Route::group(['prefix' => 'transaction'], function () {
         Route::GET('/btc',  'TransactionController@btc');
         Route::GET('/p2p',  'TransactionController@p2p');
 
     });
+
+    Route::GET('/users',  'UserController@index');
 
     Route::POST('/admin/add-admin',  'AdminController@addAdmin');
     Route::POST('/admin/action',  'AdminController@action');
@@ -81,10 +85,14 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::group(['prefix' => 'referral'], function () {
         Route::GET('/', 'ReferralSettingController@index');
         Route::GET('/settings', 'ReferralSettingController@settings');
+        Route::GET('/switch/{id}/{status}', 'ReferralSettingController@switch');
+        Route::POST('/switch/percentage', 'ReferralSettingController@percentage');
+
     });
 
     Route::group(['prefix', 'charts'], function () {
-        Route::GET('/monthly-analytics', 'ChartController@monthlyAnalytics');
+        Route::GET('/monthly-transaction-analytics', 'ChartController@monthlyTransactionAnalytics');
+        Route::GET('/monthly-new-user-analytics', 'ChartController@monthlyUserAnalytics');
     });
 
 });

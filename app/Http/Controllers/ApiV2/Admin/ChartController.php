@@ -4,105 +4,122 @@ namespace App\Http\Controllers\ApiV2\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\NairaTransaction;
 use App\Transaction;
+use App\User;
 use Carbon\Carbon;
-use Hamcrest\Core\IsTypeOf;
 
 class ChartController extends Controller
 {
-    public function monthlyAnalytics()
+    public function monthlyTransactionAnalytics()
     {
         // monthly chart
         // number of transactions chart
 
-        $data = Transaction::select('id', 'created_at')->get()->groupBy(function($data){
-            return Carbon::parse($data->created_at)->format('M');
+        $transaction_data = Transaction::select('id', 'created_at')->get()->groupBy(function($transaction_data){
+            return Carbon::parse($transaction_data->created_at)->format('Y-M');
         });
 
-        $months = [];
-        $monthCount = [];
+        $transaction_months = [];
+        $transaction_monthCount = [];
 
-        foreach($data as $month => $values) {
-           $months[] = $month;
-           $monthCount[] = count($values);
+        foreach($transaction_data as $month => $values) {
+           $transaction_months[] = $month;
+           $transaction_monthCount[] = count($values);
         }
+
+
+
+        /////////////////////////////////////////////////////////
+
+        $new_user_data = User::select('id', 'created_at')->get()->groupBy(function($new_user_data){
+            return Carbon::parse($new_user_data->created_at)->format('Y-M');
+        });
+
+        $new_user_months = [];
+        $new_user_monthCount = [];
+
+        foreach($new_user_data as $month => $values) {
+           $new_user_months[] = $month;
+           $new_user_monthCount[] = count($values);
+        }
+
+        /////////////////////////////////////////////////////////
+
+
+        $unique_user_data = Transaction::with('user')->select('id', 'created_at')->get()->groupBy(function($unique_user_data){
+            return Carbon::parse($unique_user_data->created_at)->format('Y-M');
+        });
+
+        $unique_user_months = [];
+        $monthlyCount = [];
+
+        // return($unique_user_data);
+
+        foreach($unique_user_data as $month => $values) {
+           if(!in_array($month, $unique_user_months)) {
+            $unique_user_months[] = $month;
+            $monthlyCount[] = count($values);
+           }
+        }
+
+
+        $monthlyVenue = Transaction::select('id', 'amount', 'created_at')->where('status', 'success')->get()->groupBy(function($monthlyVenue){
+            return Carbon::parse($monthlyVenue->created_at)->format('Y-M');
+        });
+
+        $monthly_data = [];
+        $monthlyrevenue = [];
+
+        // return($monthlyVenue);
+
+        foreach($monthlyVenue as $month => $valuesw) {
+            $monthly_data[] = $month;
+            $monthlyrevenue[] = $valuesw->sum('amount');
+        }
+
+
+
+        // Total Accountant Payout
+        $AccountantPayout = NairaTransaction::select('id', 'amount', 'created_at')->where('status', 'success')->get()->groupBy(function($AccountantPayout){
+            return Carbon::parse($AccountantPayout->created_at)->format('Y-M');
+        });
+
+        $payout_month = [];
+        $amount_paid_out = [];
+
+        // return($AccountantPayout);
+
+        foreach($AccountantPayout as $month => $valuesw) {
+            $payout_month[] = $month;
+            $amount_paid_out[] = $valuesw->sum('amount');
+        }
+
+
 
         return response()->json([
             'success' => true,
-            'data' => $data,
-            'month' => $month,
-            'monthCount' => $monthCount,
-        ], 200);
 
+            'transaction_months' => [
+                'month' => $transaction_months,
+                'monthCount' => $transaction_monthCount,
+            ],
 
+            'new_user_months' => [
+                'month' => $new_user_months,
+                'monthCount' => $new_user_monthCount,
+            ],
 
+            'unique_user_months' => [
+                'data' => $monthly_data,
+                'revenue' => $monthlyrevenue,
+            ],
 
+            'TotalAccountantPayout' => [
+                'data' => $payout_month,
+                'revenue' => $amount_paid_out,
+            ],
 
-        $days = [];
-
-
-        $firstDay = date('d');
-        $secondDay = date('d') - 1;
-        $thirdDay = date('d') - 2;
-        $forthDay = date('d') - 3;
-        $FiftDay = date('d') - 5;
-        $sixthDay = date('d') - 6;
-        $seventhDay = date('d') - 7;
-
-        $month = date('m');
-
-        // if($firstDay == '01'){
-        //     $month = date('m') - 1;
-        // }
-
-
-        // return $secondDay;
-
-
-        $dayone = Transaction::whereYear('created_at', "=", date('Y'))
-        ->whereMonth('created_at', date('m'))
-        ->WhereDay('created_at', $firstDay)->count();
-
-
-        $daytwo = Transaction::whereYear('created_at', "=", date('Y'))
-        ->whereMonth('created_at', $month)
-        ->WhereDay('created_at', $secondDay)->count();
-
-
-        $dayThree = Transaction::whereYear('created_at', "=", date('Y'))
-        ->whereMonth('created_at', $month)
-        ->WhereDay('created_at', $thirdDay)->count();
-
-
-        $dayFour = Transaction::whereYear('created_at', "=", date('Y'))
-        ->whereMonth('created_at',$month)
-        ->WhereDay('created_at', $forthDay)->count();
-
-
-        $dayFive = Transaction::whereYear('created_at', "=", date('Y'))
-        ->whereMonth('created_at',$month)
-        ->WhereDay('created_at', $FiftDay)->count();
-
-
-        $daySix = Transaction::whereYear('created_at', "=", date('Y'))
-        ->whereMonth('created_at',$month)
-        ->WhereDay('created_at', $sixthDay)->count();
-
-
-        $daySeven = Transaction::whereYear('created_at', "=", date('Y'))
-        ->whereMonth('created_at',$month)
-        ->WhereDay('created_at', $seventhDay)->count();
-
-        // return date($month . '/' . $daytwo  );
-
-        return response()->json([
-            '1' => $dayone,
-            '2' => $daytwo,
-            '3' => $dayThree,
-            '4' => $dayFour,
-            '5' => $dayFive,
-            '6' => $daySix,
-            '7' => $daySeven,
-        ]);
+        ], );
     }
 }
