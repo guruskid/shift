@@ -355,14 +355,7 @@ class BusinessDeveloperController extends Controller
         }
     }
 
-    public function truncate()
-    {
-        UserTracking::truncate();
-        AccountantTimeStamp::truncate();
-        return redirect()->back()->with("success", "Database Emptied");
-    }
-
-    public function QuarterlyInactiveFromOldUsersDB() {
+    public static function QuarterlyInactiveFromOldUsersDB() {
         $all_users = User::where('role',1)->latest('created_at')->get();
         foreach ($all_users as $u) {
             $userTracking = UserTracking::where('user_id',$u->id)->count();

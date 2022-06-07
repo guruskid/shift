@@ -12,7 +12,7 @@ class SalesController extends Controller
 {
     public function addNewUsers()
     {
-        $new_users = User::with('transactions')->whereDate('created_at',now()->subDays(21))->where('role',1)->latest('created_at')->get();
+        $new_users = User::with('transactions')->whereDate('created_at','>=',now()->subDays(21))->whereDate('created_at','<',now()->subMonths(3))->where('role',1)->latest('created_at')->get();
         foreach ($new_users as $nu) {
             if($nu->transactions()->count() == 0)
             {
@@ -160,6 +160,7 @@ class SalesController extends Controller
                 'comment' => $request->feedback,
                 'call_duration' => $timeDifference,
                 'call_duration_timestamp' => $time,
+                'sales_id' => Auth::user()->id,
             ]);
         }
 

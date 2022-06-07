@@ -9,6 +9,7 @@ use App\Mail\UserRegistered;
 use App\Mail\VerificationCodeMail;
 use App\NairaTransaction;
 use App\User;
+use Illuminate\Support\Facades\Artisan;
 //use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Mail;
 
@@ -610,8 +611,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing'
     
 });
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
-
-    Route::GET('/QuarterlyInactiveUsersFromDB', 'Admin\BusinessDeveloperController@QuarterlyInactiveFromOldUsersDB');
     Route::GET('/Categories/{type?}', 'Admin\BusinessDeveloperController@index')->name('business-developer.user-category');
     Route::GET('/view/{type?}', 'Admin\BusinessDeveloperController@viewCategory')->name('business-developer.view-type');
 
@@ -621,8 +620,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('call-log','Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
 
     Route::GET('user_profile','Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
-    Route::GET('/truncateDB-db', 'Admin\BusinessDeveloperController@truncate');
-
+    Route::GET('/QuarterlyInactiveUsersFromDB', function(){
+        Artisan::call('check:trackingTable');
+        return redirect()->back()->with("success", "Database Populated");
+    });
     // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
 });
@@ -634,4 +635,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], 
     Route::GET('Called_Users','Admin\SalesController@callLogs')->name('sales.call-log');
     Route::GET('user/profile','Admin\SalesController@userProfile')->name('sales.user_profile');
 
+});
+
+//? Sales Analytics for new Users 
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
+    Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
+    Route::ANY('/sortAnalytics/{type?}','Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
+    Route::ANY('/showAnalysis/{type?}','Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
 });
