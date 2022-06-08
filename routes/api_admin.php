@@ -14,12 +14,16 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/cable',  'UtilityController@cable');
     });
 
+
+
     //CRYPTO TRANSACTIONS
     Route::group(['prefix' => 'transaction'], function () {
         Route::GET('/btc',  'TransactionController@btc');
         Route::GET('/p2p',  'TransactionController@p2p');
 
     });
+
+    Route::GET('/users',  'UserController@index');
 
     Route::POST('/admin/add-admin',  'AdminController@addAdmin');
     Route::POST('/admin/action',  'AdminController@action');
@@ -63,8 +67,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/giftCard_transaction', 'SummaryController@giftCardTransactions');
         Route::POST('/sortGiftCards', 'SummaryController@sortGiftCardTransactions');
 
-        Route::GET('transaction_detail','SummaryController@transactionsDetails');
-        Route::POST('sort_transaction_detail','SummaryController@sortTransaction');
+        Route::GET('/transaction_detail','SummaryController@transactionsDetails');
+        Route::POST('/sort_transaction_detail','SummaryController@sortTransaction');
 
 
    });
@@ -81,6 +85,14 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::group(['prefix' => 'referral'], function () {
         Route::GET('/', 'ReferralSettingController@index');
         Route::GET('/settings', 'ReferralSettingController@settings');
+        Route::GET('/switch/{id}/{status}', 'ReferralSettingController@switch');
+        Route::POST('/switch/percentage', 'ReferralSettingController@percentage');
+
+    });
+
+    Route::group(['prefix', 'charts'], function () {
+        Route::GET('/monthly-transaction-analytics', 'ChartController@monthlyTransactionAnalytics');
+        Route::GET('/monthly-new-user-analytics', 'ChartController@monthlyUserAnalytics');
     });
 
 });
@@ -113,11 +125,12 @@ Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
     //? pulseTransactionsAnalytics
     Route::group(['prefix' => 'pulse'], function () {
         Route::GET('/Analytics/{startDate?}/{endDate?}/{transaction_type?}/{transaction_duration?}', 'pulseAnalyticsController@pulseTransactionAnalytics');
+        Route::GET('/', 'PulseController@index');
+
     });
 
-
-
     Route::get('/customer-life', 'CustomerLifeController@index');
+
 
 
 
