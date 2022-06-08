@@ -46,7 +46,9 @@
                     <input type="password" maxlength="4" v-model="pin" class="form-control" id="pin" placeholder="Pin" />
                 </div>
 
-                <div class="text-right">Add new account</div>
+               <a href="/user/account">
+                    <div class="text-right" v-if="accounts.length == 0" >Add new account</div>
+               </a>
 
                 <div class="form-group">
                     <button id="complete_withdrawal" type="submit"
