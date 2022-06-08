@@ -46,8 +46,8 @@
                     <input type="password" maxlength="4" v-model="pin" class="form-control" id="pin" placeholder="Pin" />
                 </div>
 
-               <a href="/user/account">
-                    <div class="text-right" v-if="accounts.length == 0" >Add new account</div>
+               <a href="#" data-toggle="modal" data-target="#add-bank-modal" >
+                    <div class="text-right">Add new account</div>
                </a>
 
                 <div class="form-group">
