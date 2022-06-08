@@ -547,6 +547,11 @@ class TradeNairaController extends Controller
                 $nt->user->nairaWallet->amount += $nt->amount;
                 $nt->user->nairaWallet->save();
 
+                //Send back the charges
+                $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+                $transfer_charges_wallet->amount -= $nt->charge;
+                $transfer_charges_wallet->save();
+
             }else {
 
                 $ref = \Str::random(3) . time();
@@ -575,12 +580,7 @@ class TradeNairaController extends Controller
                 $user_wallet = $nt->user->nairaWallet;
                 $user_wallet->amount -= $nt->amount;
                 $user_wallet->save();
-
             }
-            //Send back the charges
-            $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
-            $transfer_charges_wallet->amount -= $nt->charge;
-            $transfer_charges_wallet->save();
         }
 
         if ($nt) {
