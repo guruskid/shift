@@ -88,7 +88,7 @@ class CryptoHelperController extends Controller
             $wallet->balance = $accounts->balance->availableBalance;
             $wallet->usd = $wallet->balance * (float)$usd;
             $wallet->ngn = $wallet->usd * $ngn;
-            $wallet->usd = (float)$wallet->usd;
+            $wallet->usd = round((float)$wallet->usd, 2);
         }
 
         return $wallet;
