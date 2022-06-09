@@ -14,12 +14,17 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/cable',  'UtilityController@cable');
     });
 
+    Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
 
 
-    //CRYPTO TRANSACTIONS
+
+
+
+    // TRANSACTIONS
     Route::group(['prefix' => 'transaction'], function () {
         Route::GET('/btc',  'TransactionController@btc');
         Route::GET('/p2p',  'TransactionController@p2p');
+        Route::GET('/transactions-per-day',  'TransactionController@transactionsPerDay');
 
     });
 
