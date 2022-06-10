@@ -91,6 +91,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/get-all-verifications',  'AdminController@allVerification');
         Route::put('/user-verification/{verification}',  'AdminController@verifyUser');
         Route::put('/cancel-verification/{verification}', 'AdminController@cancelVerification');
+        Route::GET('/get-verification-percentages',  'AdminController@verificationByPercentage');
+
     });
 
 
@@ -100,7 +102,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/settings', 'ReferralSettingController@settings');
         Route::GET('/switch/{id}/{status}', 'ReferralSettingController@switch');
         Route::POST('/switch/percentage', 'ReferralSettingController@percentage');
-
+        
     });
 
     Route::group(['prefix', 'charts'], function () {

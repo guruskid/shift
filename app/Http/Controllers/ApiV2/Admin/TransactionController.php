@@ -49,7 +49,7 @@ class TransactionController extends Controller
     {
 
         $transaction_data = Transaction::select('id', 'created_at')->WhereYear('created_at', date('Y'))->get()->groupBy(function($transaction_data){
-            return Carbon::parse($transaction_data->created_at)->format('Y-M-D');
+            return Carbon::parse($transaction_data->created_at)->format('Y-M-d');
         });
 
         // return ($transaction_data);

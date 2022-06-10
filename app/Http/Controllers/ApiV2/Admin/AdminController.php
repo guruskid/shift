@@ -12,6 +12,7 @@ use App\Notification;
 use App\User;
 use App\Verification;
 use App\VerificationLimit;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -146,6 +147,67 @@ class AdminController extends Controller
         return response()->json([
             'success' => true,
             'verifications' => $verifications,
+        ]);
+    }
+
+    public function verificationByPercentage()
+    {
+        # code...
+        $totalUsers = User::count();
+
+        $now = Carbon::now();
+
+        $weeklyLevelOneVerifiedUsers = User::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'), //This will return date in format like this: 2022-01-10
+            $now->endOfWeek()->format('Y-m-d')
+         ])->where('phone_verified_at', '!=', NULL)->count();
+        $monthlyLevelOneVerifiedUsers = User::where('phone_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->WhereMonth('created_at', date('m'))->count();
+        $yearlyLevelOneVerifiedUsers = User::where('phone_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->count();
+
+
+        $weeklyLevelTwoVerifiedUsers = User::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'), //This will return date in format like this: 2022-01-10
+            $now->endOfWeek()->format('Y-m-d')
+         ])->where('address_verified_at', '!=', NULL)->count();
+        $monthlyLevelTwoVerifiedUsers = User::where('address_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->WhereMonth('created_at', date('m'))->count();
+        $yearlyLevelTwoVerifiedUsers = User::where('address_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->count();
+
+
+
+        $weeklyLevelThreeVerifiedUsers = User::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'), //This will return date in format like this: 2022-01-10
+            $now->endOfWeek()->format('Y-m-d')
+         ])->where('idcard_verified_at', '!=', NULL)->count();
+        $monthlyLevelThreeVerifiedUsers = User::where('idcard_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->WhereMonth('created_at', date('m'))->count();
+        $yearlyLevelThreeVerifiedUsers = User::where('idcard_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->count();
+
+        // return $levelOneVerifiedPercentage = ($monthlyLevelOneVerifiedUsers / $totalUsers) * 100;
+
+        return response()->json([
+            'success' => true,
+
+            'Verification_percent' => [
+                'levelOne' => [
+                    'weekly' => $weeklyLevelOneVerifiedUsers / $totalUsers * 100,
+                    'monthly' => $monthlyLevelOneVerifiedUsers / $totalUsers * 100,
+                    'Yearly' => $yearlyLevelOneVerifiedUsers / $totalUsers * 100,
+                ],
+                'levelTwo' => [
+                    'weekly' => $weeklyLevelTwoVerifiedUsers / $totalUsers * 100,
+                    'monthly' => $monthlyLevelTwoVerifiedUsers / $totalUsers * 100,
+                    'Yearly' => $yearlyLevelTwoVerifiedUsers / $totalUsers * 100,
+                ],
+                'levelThree' => [
+                    'weekly' => $weeklyLevelThreeVerifiedUsers / $totalUsers * 100,
+                    'monthly' => $monthlyLevelThreeVerifiedUsers / $totalUsers * 100,
+                    'Yearly' => $yearlyLevelThreeVerifiedUsers / $totalUsers * 100,
+                ]
+            ],
+            'unverified_user' => [
+                'levelTwo' => Verification::where('type', 'Address')->where('status', 'Waiting')->count(),
+                'levelThree' => Verification::where('type', 'ID Card')->where('status', 'Waiting')->count(),
+            ]
+
         ]);
     }
 
