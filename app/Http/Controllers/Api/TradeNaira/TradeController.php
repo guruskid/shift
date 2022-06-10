@@ -158,7 +158,7 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3) . time();
-        $charge = 0;
+        $charge = 100;
 
         //create TXN here
         $txn = new NairaTrade();
