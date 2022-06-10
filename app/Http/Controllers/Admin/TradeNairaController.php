@@ -14,6 +14,7 @@ use App\PayBridgeAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\GeneralTemplateOne;
+use App\WithdrawalQueueRange;
 use Illuminate\Support\Facades\Mail;
 use DB;
 
@@ -158,21 +159,22 @@ class TradeNairaController extends Controller
             {
                 $transactions = $transactions->where('type',$type);
 
-                $transactions = $transactions->with(['user' => function ($query) {
-                    $query->withCount(['nairaTrades as total_trx' => function ($query) {
-                        $query->select(DB::raw("sum(amount) as sumt"));
-                    }]);
-                }]);
+                // $transactions = $transactions->with(['user' => function ($query) {
+                //     $query->withCount(['nairaTrades as total_trx' => function ($query) {
+                //         $query->select(DB::raw("sum(amount) as sumt"));
+                //     }]);
+                // }]);
+                // return $transactions->get();
     
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
                     FROM naira_trades as tr
                     WHERE 
                     tr.user_id = naira_trades.user_id) 
                     as total_trax'))
+                    ->orderBy('created_at', 'desc')
                     ->orderBy('total_trax', 'desc');
             }
 
-            $transactions = $transactions->orderBy('created_at', 'desc');
 
             if($start_date && $end_date)
             {
@@ -580,6 +582,7 @@ class TradeNairaController extends Controller
                 $user_wallet = $nt->user->nairaWallet;
                 $user_wallet->amount -= $nt->amount;
                 $user_wallet->save();
+
             }
         }
 

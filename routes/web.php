@@ -420,6 +420,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
     Route::any('/sort-accountant-summary','Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
+
+    Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
 });
 
 
@@ -599,7 +601,7 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing']], function () {
 
-    Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
+    // Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
     Route::GET('/users_birthdays', 'MarketingController@user_birthday')->name('admin.sales.users_birthdays');
     Route::GET('/marketing/{type?}', 'MarketingController@Category')->name('admin.sales.type');
     Route::GET('/view/transactions/{type?}', 'MarketingController@viewTransactionsCategory')->name('admin.transactions.view.type');

@@ -17,6 +17,7 @@ use App\NairaTransaction;
 use App\Exports\DownloadUsers;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\Http\Controllers\Admin\SalesController;
+use App\NairaTrade;
 use Excel;
 use App\NairaWallet;
 use App\Payout;
@@ -130,6 +131,9 @@ class AdminController extends Controller
         $a_a_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'approved')->count();
         $all_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->count();
 
+        $pendingNairaDeposits = NairaTrade::where(['type' => 'deposit','status' => 'waiting'])->count();
+        $pendingNairaWithdrawals = NairaTrade::where(['type' => 'withdrawal','status' => 'waiting'])->count();
+
 
         if (Auth::user()->role == 999) { //Super admin
             return view(
@@ -151,7 +155,7 @@ class AdminController extends Controller
                     'users', 'users_count', 'notifications', 'usersChart',
                     'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
-                    'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
+                    'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance', 'pendingNairaDeposits','pendingNairaWithdrawals'
                 ])
             );
         } else if (Auth::user()->role == 889 || Auth::user()->role == 777 ||Auth::user()->role == 775 ) { //Accountants
