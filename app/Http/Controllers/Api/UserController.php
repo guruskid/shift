@@ -25,11 +25,11 @@ class UserController extends Controller
         $notification = Notification::where('user_id', 0)->latest()->first();
 
         $btc_wallet = CryptoHelperController::balance(1);
-        $tron_wallet = CryptoHelperController::balance(5);
+        // $tron_wallet = CryptoHelperController::balance(5);
         $usdt_wallet = CryptoHelperController::balance(7);
 
-        $total_crypto_balance = $btc_wallet->usd ?? 0  + $usdt_wallet->usd ?? 0;
-        $total_ngn_balance = $btc_wallet->ngn ?? 0  + $usdt_wallet->ngn ?? 0 + $naira_wallet->amount;
+        $total_crypto_balance = $btc_wallet->usd   + ($usdt_wallet ? $usdt_wallet->usd : 0) ;
+        $total_ngn_balance = $btc_wallet->ngn  + ($usdt_wallet ? $usdt_wallet->ngn : 0) + $naira_wallet->amount;
 
 
         return response()->json([
