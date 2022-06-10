@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
 use \App\Http\Controllers\GeneralSettings;
+use App\WithdrawalQueueRange;
 
 class PortfolioController extends Controller
 {
@@ -95,16 +96,22 @@ class PortfolioController extends Controller
             $pendingOrders = NairaTransaction::where('status','waiting')->whereDate('created_at', '>', $t->created_at)->count();
             $minutes = 0;
 
+            $range = WithdrawalQueueRange::all();
+
             if ($pendingOrders <= 5) {
-                $minutes = 30;
+                $minutes = $range->where('pending_requests','<=','5')->first()['pay_time'];
             } elseif(($pendingOrders > 5 and $pendingOrders <= 10) ) {
-                $minutes = 40;
+                $minutes = $range->where('pending_requests','>','5')->where('pending_requests','<=','10')->first()['pay_time'];
+                // $minutes = 40;
             } elseif(($pendingOrders > 10 and $pendingOrders <= 20) ) {
-                $minutes = 50;
+                // $minutes = 50;
+                $minutes = $range->where('pending_requests','>','10')->where('pending_requests','<=','20')->first()['pay_time'];
             } elseif(($pendingOrders > 20 and $pendingOrders <= 30) ) {
-                $minutes = 60;
+                // $minutes = 60;
+                $minutes = $range->where('pending_requests','>','20')->where('pending_requests','<=','30')->first()['pay_time'];
             } elseif(($pendingOrders > 30) ) {
-                $minutes = 60;
+                // $minutes = 60;
+                $minutes = $range->where('pending_requests','>','30')->first()['pay_time'];
             }
 
             $pay_time = 'payment in '.$minutes.' minutes';
