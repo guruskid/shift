@@ -147,6 +147,10 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::put('/refund-trade/{transaction}', 'TradeNairaController@refundTrade')->name('admin.naira-p2p.refund-trade');
         Route::post('/update-bank-details', 'TradeNairaController@updateBankdetails')->name('agent.update-bank');
 
+        Route::get('/withdrawal-queue', 'TradeNairaController@withdrawal_queue')->name('admin.naira-p2p.withdrawal-queue');
+        Route::post('/add-withdrawal-queue', 'TradeNairaController@add_withdrawal_queue')->name('admin.naira-p2p.add-withdrawal-queue');
+        Route::post('/update-withdrawal-queue', 'TradeNairaController@update_withdrawal_queue')->name('admin.naira-p2p.update-withdrawal-queue');
+
     });
 
 });

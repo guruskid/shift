@@ -14,6 +14,7 @@ use App\PayBridgeAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\GeneralTemplateOne;
+use App\WithdrawalQueueRange;
 use Illuminate\Support\Facades\Mail;
 use DB;
 
@@ -158,21 +159,22 @@ class TradeNairaController extends Controller
             {
                 $transactions = $transactions->where('type',$type);
 
-                $transactions = $transactions->with(['user' => function ($query) {
-                    $query->withCount(['nairaTrades as total_trx' => function ($query) {
-                        $query->select(DB::raw("sum(amount) as sumt"));
-                    }]);
-                }]);
+                // $transactions = $transactions->with(['user' => function ($query) {
+                //     $query->withCount(['nairaTrades as total_trx' => function ($query) {
+                //         $query->select(DB::raw("sum(amount) as sumt"));
+                //     }]);
+                // }]);
+                // return $transactions->get();
     
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
                     FROM naira_trades as tr
                     WHERE 
                     tr.user_id = naira_trades.user_id) 
                     as total_trax'))
+                    ->orderBy('created_at', 'desc')
                     ->orderBy('total_trax', 'desc');
             }
 
-            $transactions = $transactions->orderBy('created_at', 'desc');
 
             if($start_date && $end_date)
             {
@@ -332,6 +334,28 @@ class TradeNairaController extends Controller
     public function accounts() {
         $accounts = PayBridgeAccount::all();
         return view('admin.trade_naira.accounts', compact('accounts'));
+    }
+
+    public function withdrawal_queue() {
+        $ranges = WithdrawalQueueRange::all();
+        return view('admin.trade_naira.withdrawal_queue'
+        , compact('ranges')
+        );
+    }
+
+    public function add_withdrawal_queue(Request $request) {
+        $data = $request->except('_token');
+        WithdrawalQueueRange::create($data);
+        return redirect()->back()->with(["success" => 'Range added']);
+    }
+
+    public function update_withdrawal_queue(Request $request) { 
+        $account = WithdrawalQueueRange::find($request['id']);
+        $account->pending_requests = $request['pending_requests'];
+        $account->pay_time = $request['pay_time'];
+        $account->save();
+        return redirect()->back()->with(["success" => 'Range Updated']);
+        
     }
 
     public function addAccount(Request $request) {
@@ -547,6 +571,11 @@ class TradeNairaController extends Controller
                 $nt->user->nairaWallet->amount += $nt->amount;
                 $nt->user->nairaWallet->save();
 
+                //Send back the charges
+                $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+                $transfer_charges_wallet->amount -= $nt->charge;
+                $transfer_charges_wallet->save();
+
             }else {
 
                 $ref = \Str::random(3) . time();
@@ -577,10 +606,6 @@ class TradeNairaController extends Controller
                 $user_wallet->save();
 
             }
-            //Send back the charges
-            $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
-            $transfer_charges_wallet->amount -= $nt->charge;
-            $transfer_charges_wallet->save();
         }
 
         if ($nt) {
