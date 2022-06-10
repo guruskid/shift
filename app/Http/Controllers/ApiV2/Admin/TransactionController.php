@@ -70,12 +70,21 @@ class TransactionController extends Controller
     }
 
 
-    public function p2pWaitingTrans(Request $dt)
+    public function TransactionCounts($status)
     {
-        $transactions = NairaTrade::where('status','pending')->count();
+        if($status == 'withdrawal') {
+            $transactions = NairaTrade::where('type', $status)->where('status', 'success');
+            return response()->json([
+                'success' => true,
+                'transaction_count' => $transactions->count(),
+                'total_withdrawal' => $transactions->sum('amount'),
+            ]);
+        }
+
+        $transactions = NairaTrade::where('status', $status)->count();
         return response()->json([
             'success' => true,
-            'data' => $transactions,
+            'transaction_count' => $transactions,
         ]);
     }
 }

@@ -30,9 +30,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
     // Transaction Count
     Route::group(['prefix' => 'transaction-count'], function () {
-        Route::GET('/btc',  'TransactionController@btcCount');
-        Route::GET('/p2p',  'TransactionController@p2pCount');
-        Route::GET('/transactions-per-day',  'TransactionController@transactionsPerDayCount');
+        Route::GET('/{waiting}',  'TransactionController@TransactionCounts');
+        Route::GET('/{pending}',  'TransactionController@TransactionCounts');
+        Route::GET('/withdrawals',  'TransactionController@TransactionCounts');
     });
 
 
