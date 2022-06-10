@@ -48,7 +48,7 @@ class TransactionController extends Controller
     public function transactionsPerDay()
     {
 
-        $transaction_data = Transaction::select('id', 'created_at')->WhereMonth('created_at', date('M'))->get()->groupBy(function($transaction_data){
+        $transaction_data = Transaction::select('id', 'created_at')->WhereYear('created_at', date('Y'))->get()->groupBy(function($transaction_data){
             return Carbon::parse($transaction_data->created_at)->format('Y-M-D');
         });
 
@@ -69,4 +69,13 @@ class TransactionController extends Controller
         ]);
     }
 
+
+    public function p2pWaitingTrans(Request $dt)
+    {
+        $transactions = NairaTrade::where('status','pending')->count();
+        return response()->json([
+            'success' => true,
+            'data' => $transactions,
+        ]);
+    }
 }
