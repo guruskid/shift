@@ -206,7 +206,8 @@ class AdminController extends Controller
             'unverified_user' => [
                 'levelTwo' => Verification::where('type', 'Address')->where('status', 'Waiting')->count(),
                 'levelThree' => Verification::where('type', 'ID Card')->where('status', 'Waiting')->count(),
-            ]
+            ],
+            'total_users' => $totalUsers,
 
         ]);
     }
