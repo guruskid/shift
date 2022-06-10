@@ -188,19 +188,19 @@ class AdminController extends Controller
 
             'Verification_percent' => [
                 'levelOne' => [
-                    'weekly' => $weeklyLevelOneVerifiedUsers / $totalUsers * 100,
-                    'monthly' => $monthlyLevelOneVerifiedUsers / $totalUsers * 100,
-                    'Yearly' => $yearlyLevelOneVerifiedUsers / $totalUsers * 100,
+                    'weekly' => $weeklyLevelOneVerifiedUsers,
+                    'monthly' => $monthlyLevelOneVerifiedUsers,
+                    'Yearly' => $yearlyLevelOneVerifiedUsers,
                 ],
                 'levelTwo' => [
-                    'weekly' => $weeklyLevelTwoVerifiedUsers / $totalUsers * 100,
-                    'monthly' => $monthlyLevelTwoVerifiedUsers / $totalUsers * 100,
-                    'Yearly' => $yearlyLevelTwoVerifiedUsers / $totalUsers * 100,
+                    'weekly' => $weeklyLevelTwoVerifiedUsers,
+                    'monthly' => $monthlyLevelTwoVerifiedUsers,
+                    'Yearly' => $yearlyLevelTwoVerifiedUsers,
                 ],
                 'levelThree' => [
-                    'weekly' => $weeklyLevelThreeVerifiedUsers / $totalUsers * 100,
-                    'monthly' => $monthlyLevelThreeVerifiedUsers / $totalUsers * 100,
-                    'Yearly' => $yearlyLevelThreeVerifiedUsers / $totalUsers * 100,
+                    'weekly' => $weeklyLevelThreeVerifiedUsers,
+                    'monthly' => $monthlyLevelThreeVerifiedUsers,
+                    'Yearly' => $yearlyLevelThreeVerifiedUsers,
                 ]
             ],
             'unverified_user' => [
