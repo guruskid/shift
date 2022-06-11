@@ -14,14 +14,27 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/cable',  'UtilityController@cable');
     });
 
+    Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
 
 
-    //CRYPTO TRANSACTIONS
+
+
+
+    // TRANSACTIONS
     Route::group(['prefix' => 'transaction'], function () {
         Route::GET('/btc',  'TransactionController@btc');
         Route::GET('/p2p',  'TransactionController@p2p');
+        Route::GET('/transactions-per-day',  'TransactionController@transactionsPerDay');
 
     });
+
+    // Transaction Count
+    Route::group(['prefix' => 'transaction-count'], function () {
+        Route::GET('/{waiting}',  'TransactionController@TransactionCounts');
+        Route::GET('/{pending}',  'TransactionController@TransactionCounts');
+        Route::GET('/withdrawals',  'TransactionController@TransactionCounts');
+    });
+
 
     Route::GET('/users',  'UserController@index');
 
@@ -78,6 +91,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/get-all-verifications',  'AdminController@allVerification');
         Route::put('/user-verification/{verification}',  'AdminController@verifyUser');
         Route::put('/cancel-verification/{verification}', 'AdminController@cancelVerification');
+        Route::GET('/get-verification-percentages',  'AdminController@verificationByPercentage');
+
     });
 
 
@@ -87,7 +102,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/settings', 'ReferralSettingController@settings');
         Route::GET('/switch/{id}/{status}', 'ReferralSettingController@switch');
         Route::POST('/switch/percentage', 'ReferralSettingController@percentage');
-
+        
     });
 
     Route::group(['prefix', 'charts'], function () {

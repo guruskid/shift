@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTrade;
+use App\NairaTransaction;
+use App\NairaWallet;
 use App\Notification;
 use App\User;
 use App\Verification;
 use App\VerificationLimit;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -35,20 +38,20 @@ class AdminController extends Controller
             ], 401);
         }
 
-        if(User::where('email', $r->email)->count() > 0) {
+        if (User::where('email', $r->email)->count() > 0) {
             return response()->json([
                 'success' => false,
                 'message' => 'Email already exists',
             ], 401);
         }
 
-        if($r->department == 'Junior_Accountant') {
+        if ($r->department == 'Junior_Accountant') {
             $role = 777;
-        }elseif($r->department == 'Senior_Accountant') {
+        } elseif ($r->department == 'Senior_Accountant') {
             $role = 889;
-        }elseif($r->department == 'Customer_care') {
+        } elseif ($r->department == 'Customer_care') {
             $role = 333;
-        }else{
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid department, please select from the list below: Junior_Accountant, Senior_Accountant, Customer_care',
@@ -73,12 +76,16 @@ class AdminController extends Controller
         ], 200);
     }
 
+    public function totalUserBalance()
+    {
+        $total_user_balance = NairaWallet::sum('amount');
+        return response()->json([
+            'success' => true,
+            'total_user_balance' => $total_user_balance,
+        ], 200);
+    }
 
-    // public function totals()
-    // {
-    //     $totalNaira = NairaTrade::where('type','deposit')->where('status','success')->count();
-    //     // NairaTrade::where('type','deposit')->get()
-    // }
+
 
     public function action(Request $r)
     {
@@ -96,13 +103,13 @@ class AdminController extends Controller
 
         $user = User::find($r->user_id);
 
-        if($r->action == 'activate') {
+        if ($r->action == 'activate') {
             $user->status = 'active';
-        }elseif($r->action == 'deactivate') {
+        } elseif ($r->action == 'deactivate') {
             $user->status = 'not verified';
-        }elseif($r->action == 'delete') {
+        } elseif ($r->action == 'delete') {
             $user->delete();
-        }else{
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid action, please select from the list below: activate, deactivate, delete',
@@ -143,6 +150,67 @@ class AdminController extends Controller
         ]);
     }
 
+    public function verificationByPercentage()
+    {
+        # code...
+        $totalUsers = User::count();
+
+        $now = Carbon::now();
+
+        $weeklyLevelOneVerifiedUsers = User::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'), //This will return date in format like this: 2022-01-10
+            $now->endOfWeek()->format('Y-m-d')
+         ])->where('phone_verified_at', '!=', NULL)->count();
+        $monthlyLevelOneVerifiedUsers = User::where('phone_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->WhereMonth('created_at', date('m'))->count();
+        $yearlyLevelOneVerifiedUsers = User::where('phone_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->count();
+
+
+        $weeklyLevelTwoVerifiedUsers = User::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'), //This will return date in format like this: 2022-01-10
+            $now->endOfWeek()->format('Y-m-d')
+         ])->where('address_verified_at', '!=', NULL)->count();
+        $monthlyLevelTwoVerifiedUsers = User::where('address_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->WhereMonth('created_at', date('m'))->count();
+        $yearlyLevelTwoVerifiedUsers = User::where('address_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->count();
+
+
+
+        $weeklyLevelThreeVerifiedUsers = User::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'), //This will return date in format like this: 2022-01-10
+            $now->endOfWeek()->format('Y-m-d')
+         ])->where('idcard_verified_at', '!=', NULL)->count();
+        $monthlyLevelThreeVerifiedUsers = User::where('idcard_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->WhereMonth('created_at', date('m'))->count();
+        $yearlyLevelThreeVerifiedUsers = User::where('idcard_verified_at', '!=', NULL)->WhereYear('created_at', date('Y'))->count();
+
+        // return $levelOneVerifiedPercentage = ($monthlyLevelOneVerifiedUsers / $totalUsers) * 100;
+
+        return response()->json([
+            'success' => true,
+
+            'Verification_percent' => [
+                'levelOne' => [
+                    'weekly' => $weeklyLevelOneVerifiedUsers,
+                    'monthly' => $monthlyLevelOneVerifiedUsers,
+                    'Yearly' => $yearlyLevelOneVerifiedUsers,
+                ],
+                'levelTwo' => [
+                    'weekly' => $weeklyLevelTwoVerifiedUsers,
+                    'monthly' => $monthlyLevelTwoVerifiedUsers,
+                    'Yearly' => $yearlyLevelTwoVerifiedUsers,
+                ],
+                'levelThree' => [
+                    'weekly' => $weeklyLevelThreeVerifiedUsers,
+                    'monthly' => $monthlyLevelThreeVerifiedUsers,
+                    'Yearly' => $yearlyLevelThreeVerifiedUsers,
+                ]
+            ],
+            'unverified_user' => [
+                'levelTwo' => Verification::where('type', 'Address')->where('status', 'Waiting')->count(),
+                'levelThree' => Verification::where('type', 'ID Card')->where('status', 'Waiting')->count(),
+            ]
+
+        ]);
+    }
+
     public function verifyUser(Verification $verification)
     {
         if ($verification->type == 'ID Card') {
@@ -154,15 +222,15 @@ class AdminController extends Controller
 
             <b style='color:000070'>Identity Verification<br><br>
 
-            Daily withdrawal limit: NGN ".number_format($level->daily_widthdrawal_limit)."<br><br>
+            Daily withdrawal limit: NGN " . number_format($level->daily_widthdrawal_limit) . "<br><br>
 
-            Monthly withdrawal limit: NGN ".number_format($level->monthly_widthdrawal_limit)."<br><br>
+            Monthly withdrawal limit: NGN " . number_format($level->monthly_widthdrawal_limit) . "<br><br>
 
-            Crypto withdrawal limit: ".$level->crypto_widthdrawal_limit."<br><br>
+            Crypto withdrawal limit: " . $level->crypto_widthdrawal_limit . "<br><br>
 
-            Crypto deposit: ".$level->crypto_deposit."<br><br>
+            Crypto deposit: " . $level->crypto_deposit . "<br><br>
 
-            Transactions: ".$level->transactions."<br></b>
+            Transactions: " . $level->transactions . "<br></b>
             ";
 
             $btn_text = '';
@@ -181,15 +249,15 @@ class AdminController extends Controller
 
             <b style='color:000070'>Address Verification<br><br>
 
-            Daily withdrawal limit: NGN ".number_format($level->daily_widthdrawal_limit)."<br><br>
+            Daily withdrawal limit: NGN " . number_format($level->daily_widthdrawal_limit) . "<br><br>
 
-            Monthly withdrawal limit: NGN ".number_format($level->monthly_widthdrawal_limit)."<br><br>
+            Monthly withdrawal limit: NGN " . number_format($level->monthly_widthdrawal_limit) . "<br><br>
 
-            Crypto withdrawal limit: ".$level->crypto_widthdrawal_limit."<br><br>
+            Crypto withdrawal limit: " . $level->crypto_widthdrawal_limit . "<br><br>
 
-            Crypto deposit: ".$level->crypto_deposit."<br><br>
+            Crypto deposit: " . $level->crypto_deposit . "<br><br>
 
-            Transactions: ".$level->transactions."<br></b>
+            Transactions: " . $level->transactions . "<br></b>
             ";
 
             $btn_text = '';
@@ -228,7 +296,7 @@ class AdminController extends Controller
 
 
         // dd($dt->reason);
-        if ($dt->type == 'Address'){
+        if ($dt->type == 'Address') {
             $title = "LEVEL 2 VERIFICATION DENIED";
             $bodyTitle = 'level 2 verification';
             if ($dt->reason == 'Uploaded a wrong information') {
@@ -281,7 +349,7 @@ class AdminController extends Controller
         }
 
         $body = "We cannot proceed with your " . $bodyTitle . ".<br><br>
-        This is because: <br><b>" . $dt->reason . "</b> <br><br><b>" . $suggestion."</b><br><br>
+        This is because: <br><b>" . $dt->reason . "</b> <br><br><b>" . $suggestion . "</b><br><br>
 
         Please send an email to <a style='text-decoration:none' href='mailto:support@godantown.com'>support@godantown.com</a> if you have questions or complaints";
         $name = ($verification->user->first_name == " ") ? $verification->user->username : $verification->user->first_name;
@@ -308,9 +376,5 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'User verification cancelled',
         ]);
-
     }
 }
-
-
-
