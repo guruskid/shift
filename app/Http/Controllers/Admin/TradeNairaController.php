@@ -159,37 +159,21 @@ class TradeNairaController extends Controller
             {
                 $transactions = $transactions->where('type',$type);
 
-<<<<<<< HEAD
-                // $transactions = $transactions->with(['user' => function ($query) {
-                //     $query->withCount(['nairaTrades as total_trx' => function ($query) {
-                //         $query->select(DB::raw("sum(amount) as sumt"));
-                //     }]);
-                // }]);
-                // return $transactions->get();
-=======
                 $transactions = $transactions->with(['user' => function ($query) {
                     $query->withCount(['nairaTrades as total_trx' => function ($query) {
                         $query->select(DB::raw("sum(amount) as sumt"));
                     }]);
                 }]);
->>>>>>> d786deb9db964424edc9b95a9a33da0adce0a749
-    
-                $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
-                    FROM naira_trades as tr
-                    WHERE 
-                    tr.user_id = naira_trades.user_id) 
-                    as total_trax'))
-<<<<<<< HEAD
-                    ->orderBy('created_at', 'desc')
-                    ->orderBy('total_trax', 'desc');
-            }
 
-=======
+                $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
+                    FROM naira_trades as tr
+                    WHERE
+                    tr.user_id = naira_trades.user_id)
+                    as total_trax'))
                     ->orderBy('total_trax', 'desc');
             }
 
             $transactions = $transactions->orderBy('created_at', 'desc');
->>>>>>> d786deb9db964424edc9b95a9a33da0adce0a749
 
             if($start_date && $end_date)
             {
@@ -364,13 +348,13 @@ class TradeNairaController extends Controller
         return redirect()->back()->with(["success" => 'Range added']);
     }
 
-    public function update_withdrawal_queue(Request $request) { 
+    public function update_withdrawal_queue(Request $request) {
         $account = WithdrawalQueueRange::find($request['id']);
         $account->pending_requests = $request['pending_requests'];
         $account->pay_time = $request['pay_time'];
         $account->save();
         return redirect()->back()->with(["success" => 'Range Updated']);
-        
+
     }
 
     public function addAccount(Request $request) {
@@ -423,7 +407,7 @@ class TradeNairaController extends Controller
                 $a = Account::find($t->account_id);
                 if($a){
                     $acct = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
-                    $t->acct_details = $acct;    
+                    $t->acct_details = $acct;
                 }
             }
             $current_prev_bal = NairaTransaction::where('reference',$t->reference)->latest()->first();

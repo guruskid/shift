@@ -226,13 +226,8 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                             @else
                                                                 <span class="px-3 py-2" style="font-size: 12px;color: #219653;background: rgba(115, 219, 158, 0.3);border-radius: 15px;">{{ $t->status }}</span>
                                                             @endif
-<<<<<<< HEAD
-                                                            
-                                                            
-=======
 
 
->>>>>>> d786deb9db964424edc9b95a9a33da0adce0a749
                                                         </td>
                                                         {{-- <td>
                                                             <span style="color: #87676F;font-size: 16px;"> {{ $t->transactionType->name }}</span>
