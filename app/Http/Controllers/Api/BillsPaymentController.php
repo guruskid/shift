@@ -319,16 +319,6 @@ class BillsPaymentController extends Controller
     public function airtime()
     {
         $products = BillsPayment::getProducts('airtime');
-        foreach ($products as $key => $value) {
-            if ($value['serviceID'] == 'etisalat-pin') {
-                unset($products[$key]);
-            }
-            unset($products[$key]['minimium_amount']);
-            unset($products[$key]['maximum_amount']);
-            unset($products[$key]['convinience_fee']);
-            unset($products[$key]['product_type']);
-        }
-
         return response()->json([
             'success' => true,
             'data' => $products,

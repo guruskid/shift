@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\AdminAddresses;
 use App\Contract;
+use App\CryptoCurrency;
 use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
@@ -71,8 +73,9 @@ class UsdtController extends Controller
             $time = \Carbon\Carbon::parse((int)$x);
             $t->created = $time->setTimezone('Africa/Lagos');
         }
-
-        return view('admin.usdt.index', compact('service_wallet', 'addresses', 'blockchain_fee_wallet', 'charges_wallet',  'hd_wallet', 'transactions'));
+        $address = AdminAddresses::where('crypto_currency_id', 7)->get();
+        $crypto_currencies = CryptoCurrency::all();
+        return view('admin.usdt.index', compact('service_wallet', 'addresses', 'blockchain_fee_wallet', 'charges_wallet', 'crypto_currencies', 'address', 'hd_wallet', 'transactions'));
     }
 
     public function settings(Request $request)

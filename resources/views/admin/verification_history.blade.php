@@ -59,11 +59,11 @@
                             <div class="">
                                 Verifications
                             </div>
-                            <a href="{{ route('admin.verification-history') }}" class="btn btn-primary">Verification History</a>
+                            <a href="" class="btn btn-primary">Verification History</a>
                         </div>
                         <div class="table-responsive p-3">
                             <table
-                                class="align-middle mb-0 table table-borderless table-striped table-hover transactions-table">
+                                class="align-middle mb-0 table table-borderless table-striped table-hover">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -98,6 +98,7 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
+                                {{ $verifications->links() }}
                             </table>
                         </div>
                     </div>

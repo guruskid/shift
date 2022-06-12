@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class AccountantManagerMiddleware
+class chineseAccountant
 {
     /**
      * Handle an incoming request.
@@ -18,13 +18,10 @@ class AccountantManagerMiddleware
     {
         $user = Auth::user();
 
-        if($user->role == 999 || $user->role == 889 || $user->role == 777 || $user->role == 775 ||$user->role == 666 ){
-            if ($user->status != 'active') {
-                abort(404);
-            }
+        if($user->role == 444 || $user->role == 999 || $user->role == 449 || $user->role == 889 ){
             return $next($request);
-        }else{
-            abort(404);
-        }
+       }else{
+           abort(404);
+       }
     }
 }

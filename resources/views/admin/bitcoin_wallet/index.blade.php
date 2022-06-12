@@ -289,15 +289,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="">New Address </label>
+                                <label for="">Address </label>
                                 <input type="text" name="address" id="addressModal" required class="form-control">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="">Confirm New Address </label>
-                                <input type="text" name="confirm-address" id="confirm-addressModal" required
-                                    class="form-control" onkeyup='check();'>
-                                <span id='message'></span>
                             </div>
                             <div class="form-group">
                                 <label for="">Pin </label>
@@ -305,7 +298,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn" id="buttonModal" disabled>
+                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn" id="buttonModal">
                         Confirm
                     </button>
                 </div>
@@ -313,20 +306,4 @@
         </form>
     </div>
 </div>
-
-<script>
-    var check = function () {
-        if (document.getElementById('addressModal').value == document.getElementById('confirm-addressModal')
-            .value) {
-            document.getElementById('message').style.color = 'green';
-            document.getElementById('message').innerHTML = 'matching';
-            document.getElementById('buttonModal').disabled = false;
-        } else {
-            document.getElementById('message').style.color = 'red';
-            document.getElementById('message').innerHTML = 'not matching';
-            document.getElementById('buttonModal').disabled = true;
-        }
-    }
-
-</script>
 @endsection

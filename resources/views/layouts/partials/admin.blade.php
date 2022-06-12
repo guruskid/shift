@@ -124,7 +124,7 @@
                 </ul>
             </li>
             @endif
-            @if (!in_array(Auth::user()->role, [555,559,557] ))
+            @if (!in_array(Auth::user()->role, [555,559,557,556] ))
             <li>
                 <a href="#">
                     <i class="metismenu-icon pe-7s-timer"></i>
@@ -160,7 +160,7 @@
                             </i>Successful transactions
                         </a>
                     </li>
-                    @if (!in_array(Auth::user()->role, [889, 777, 666, 555, 449, 444]))
+                    @if (!in_array(Auth::user()->role, [889, 777, 775, 666, 555, 449, 444, 556]))
                     <li>
                         <a href="{{route('admin.transactions-status', 'approved')}}" >
                             <i class="metismenu-icon">
@@ -196,7 +196,7 @@
             </li>
             @endif
             
-            @if (in_array(Auth::user()->role, [777] ))
+            @if (in_array(Auth::user()->role, [777,775] ))
                 <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
                     <a href="{{route('admin.naira-p2p')}}">
                         <div class="">
@@ -209,7 +209,7 @@
             @endif
 
 
-            @if (in_array(Auth::user()->role, [999, 889, 777] ))
+            @if (in_array(Auth::user()->role, [999, 889, 777, 775] ))
                 <li class="my-3">
                     <a href="{{route('admin.crypto-summary', 1)}}"
                         class=" {{ Route::currentRouteName() == 'admin.bitcoin-summary' ? 'mm-active' : '' }} ">
@@ -217,7 +217,7 @@
                         Bitcoin Summary
                     </a>
                 </li>
-
+            @if (!in_array(Auth::user()->role, [775] ))
             <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
                 <a href="{{route('admin.junior-summary')}}">
                     <div class="">
@@ -226,6 +226,15 @@
                     </div>
                 </a>
             </li>
+            <li class="my-3">
+                <a href="{{route('admin.account_officers')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.account_officers' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Account Officers
+                </a>
+            </li>
+            @endif
+           
 
             <li class="my-3">
                 <a href="{{route('admin.wallet-transactions')}}"
@@ -254,7 +263,7 @@
                 </li>
             @endif
 
-            @if (!in_array(Auth::user()->role, [889, 777, 666, 555, 449, 444,559,557]))
+            @if (!in_array(Auth::user()->role, [889, 777,775 ,666, 555, 449, 444,559,557,556]))
                 <li class="my-3">
                     <a href="{{route('admin.assigned-transactions')}}"
                         class=" {{ Route::currentRouteName() == 'admin.assigned-transactions' ? 'mm-active' : '' }} ">
@@ -264,7 +273,7 @@
                 </li>
             @endif
 
-            @if (in_array(Auth::user()->role, [999, 666, 777, 889] ))
+            @if (in_array(Auth::user()->role, [999, 666, 777,775, 889] ))
                 <li class="my-3">
                     <a href="{{route('admin.chat_agents')}}"
                         class=" {{ Route::currentRouteName() == 'admin.chat_agents' ? 'mm-active' : '' }} ">
@@ -318,7 +327,7 @@
             </li>
             @endif
 
-            @if (in_array(Auth::user()->role, [999, 889, 777] ))
+            @if (in_array(Auth::user()->role, [999, 889, 777, 775] ))
                 <li class="my-3">
                     <a href="{{route('admin.users')}}"
                         class=" {{ Route::currentRouteName() == 'admin.users' ? 'mm-active' : '' }} ">
@@ -364,7 +373,7 @@
             </li>
             @endif
             
-            @if(Auth::user()->role == 999 OR  Auth::user()->role == 444 OR Auth::user()->role == 449)
+            @if(Auth::user()->role == 999 OR  Auth::user()->role == 444 OR  Auth::user()->role == 889 OR Auth::user()->role == 449)
             @if(Auth::user()->role == 999)
             <li class="my-3">
                 <a href="{{route('admin.chinese_dashboard_page')}}"
@@ -417,6 +426,23 @@
                         User Profile
                     </a>
                 </li>
+            @endif
+            @if (in_array(Auth::user()->role, [556] ))
+                <li class="my-3">
+                    <a href="{{route('sales.call-log')}}"
+                        class=" {{ Route::currentRouteName() == 'sales.call-log' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-users"></i>
+                        Call Log
+                    </a>
+                </li>
+                <li class="my-3">
+                    <a href="{{route('sales.user_profile')}}"
+                        class=" {{ Route::currentRouteName() == 'sales.user_profile' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-users"></i>
+                        User Profile
+                    </a>
+                </li>
+
             @endif
 {{--
             @if(Auth::user()->role == 449 AND Auth::user()->role == 999)

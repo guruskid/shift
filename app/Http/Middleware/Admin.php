@@ -17,8 +17,13 @@ class Admin
     {
         $user = Auth::user();
 
+<<<<<<< HEAD
         if($user->role == 999 || $user->role == 888 || $user->role == 998 || $user->role == 889 || $user->role == 777 || $user->role == 559 || $user->role == 557
         || $user->role == 666 || $user->role == 444|| $user->role == 449 ){
+=======
+        if($user->role == 999 || $user->role == 888 || $user->role == 889 || $user->role == 777 || $user->role == 559 || $user->role == 557
+        || $user->role == 666 || $user->role == 444|| $user->role == 449 || $user->role == 775 || $user->role == 556 ){
+>>>>>>> d786deb9db964424edc9b95a9a33da0adce0a749
             if ($user->status != 'active') {
                 return redirect()->route('disabled');
             }

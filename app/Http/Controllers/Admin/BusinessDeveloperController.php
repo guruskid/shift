@@ -6,6 +6,7 @@ use App\CallCategory;
 use App\CallLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\NewUsersTracking;
 use App\Transaction;
 use App\User;
 use App\UserTracking;
@@ -56,33 +57,43 @@ class BusinessDeveloperController extends Controller
         );
     }
 
-    public function viewCategory($type = null)
+    public function viewCategory($type = null, Request $request)
     {
         $call_categories = CallCategory::all();
         if($type == null || $type == "all_Users"){
-            $data_table = UserTracking::latest('updated_at')->paginate(100);
+            $data_table = UserTracking::latest('updated_at');
             $segment = "All Users";
         }
         if($type == "Quarterly_Inactive")
         {
-            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->paginate(100);
+            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at');
             $segment = "Quarterly Inactive";
         }
         if($type == "Called_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at')->paginate(100);
+            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at');
             $segment = "Called Users";
         }
         if($type == "Responded_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at')->paginate(100);
+            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at');
             $segment = "Responded Users";
         }
         if($type == "Recalcitrant_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at')->paginate(100);
+            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at');
             $segment = "Recalcitrant Users";
         }
+        if($request->start)
+        {
+            $data_table = $data_table->whereDate('created_at','>=',$request->start);
+        }
+        if($request->end)
+        {
+            $data_table = $data_table->whereDate('created_at','<=',$request->end);
+        }
+        $count = $data_table->count();
+        $data_table = $data_table->paginate(100);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->latest('updated_at')->get();
             if($user_tnx->count() == 0)
@@ -96,7 +107,7 @@ class BusinessDeveloperController extends Controller
         return view(
             'admin.business_developer.users',
             compact([
-                'data_table','type','segment','call_categories'
+                'data_table','type','segment','call_categories','count'
             ])
         );
     }
@@ -144,12 +155,16 @@ class BusinessDeveloperController extends Controller
 
     public function CallLog(Request $request)
     {
-        // dd($request->status);
         $data_table = CallLog::latest('updated_at');
         $segment = "Call Log";
         $type = "Responded_Users";
         $call_categories = CallCategory::all();
-
+        if($request->start){
+            $data_table = $data_table->whereDate('created_at','>=',$request->start);
+        }
+        if($request->end){
+            $data_table = $data_table->whereDate('created_at','<=',$request->end);
+        }
         if($request->status)
         {
             $data_table = $data_table->where('call_category_id', $request->status);
@@ -157,6 +172,7 @@ class BusinessDeveloperController extends Controller
         $data_table = $data_table->paginate(1000);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->latest('updated_at')->get();
+
             if($user_tnx->count() == 0)
             {
                 $u->last_transaction_date = 'No Transactions';
@@ -175,9 +191,16 @@ class BusinessDeveloperController extends Controller
 
 
 
-    public function UserProfile()
+    public function UserProfile(Request $request)
     {
-        $users = User::orderBy('id','desc')->paginate(100);
+        $users = User::orderBy('id','desc');
+        if($request->start){
+            $users = $users->whereDate('created_at','>=',$request->start);
+        }
+        if($request->end){
+            $users = $users->whereDate('created_at','<=',$request->end);
+        }
+        $users = $users->paginate(100);
         $segment = "User Profile";
         return view(
             'admin.business_developer.UserProfile',
@@ -223,7 +246,6 @@ class BusinessDeveloperController extends Controller
                         'Current_Cycle'=>"QuarterlyInactive",
                         'current_cycle_count_date' => Carbon::now()
                     ]);
-
                 }
             }
             else{
@@ -333,57 +355,61 @@ class BusinessDeveloperController extends Controller
         }
     }
 
-
+    public function truncate()
+    {
+        UserTracking::truncate();
+        AccountantTimeStamp::truncate();
+        return redirect()->back()->with("success", "Database Emptied");
+    }
 
     public function QuarterlyInactiveFromOldUsersDB() {
-        if(!Auth::user()->role == 999 ){
-            abort(404);
-        }
-        $all_users = User::all();
-        UserTracking::truncate();
+        $all_users = User::where('role',1)->latest('created_at')->get();
         foreach ($all_users as $u) {
-            if($u->transactions()->count() == 0)
-            {
-                $diff_in_months = $u->created_at->diffInMonths(Carbon::now());
-                
-                if($diff_in_months >=3)
+            $userTracking = UserTracking::where('user_id',$u->id)->count();
+            if($userTracking == 0){
+                if($u->transactions()->count() == 0)
                 {
-                    $user_tracking = new UserTracking();
-                    $user_tracking->user_id = $u->id;
-                    $user_tracking->Current_Cycle = "QuarterlyInactive";
-                    $user_tracking->current_cycle_count_date = Carbon::now();
-                    $user_tracking->save();
+                    $diff_in_months = $u->created_at->diffInMonths(Carbon::now());
+                    
+                    if($diff_in_months >=3)
+                    {
+                        $user_tracking = new UserTracking();
+                        $user_tracking->user_id = $u->id;
+                        $user_tracking->Current_Cycle = "QuarterlyInactive";
+                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->save();
 
+                    }
+                    else{
+                        $user_tracking = new UserTracking();
+                        $user_tracking->user_id = $u->id;
+                        $user_tracking->Current_Cycle = "Active";
+                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->save();
+                    }
                 }
                 else{
-                    $user_tracking = new UserTracking();
-                    $user_tracking->user_id = $u->id;
-                    $user_tracking->Current_Cycle = "Active";
-                    $user_tracking->current_cycle_count_date = Carbon::now();
-                    $user_tracking->save();
-                }
-            }
-            else{
-                $last_user_transaction_date = $u->transactions()->latest('updated_at')->first()->updated_at;
-                $diff_in_months = $last_user_transaction_date->diffInMonths(Carbon::now());
-                
-                if($diff_in_months >=3)
-                {
-                    $user_tracking = new UserTracking();
-                    $user_tracking->user_id = $u->id;
-                    $user_tracking->Current_Cycle = "QuarterlyInactive";
-                    $user_tracking->current_cycle_count_date = Carbon::now();
-                    $user_tracking->save();
+                    $last_user_transaction_date = $u->transactions()->latest('updated_at')->first()->updated_at;
+                    $diff_in_months = $last_user_transaction_date->diffInMonths(Carbon::now());
+                    
+                    if($diff_in_months >=3)
+                    {
+                        $user_tracking = new UserTracking();
+                        $user_tracking->user_id = $u->id;
+                        $user_tracking->Current_Cycle = "QuarterlyInactive";
+                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->save();
+
+                    }
+                    else{
+                        $user_tracking = new UserTracking();
+                        $user_tracking->user_id = $u->id;
+                        $user_tracking->Current_Cycle = "Active";
+                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->save();
+                    }
 
                 }
-                else{
-                    $user_tracking = new UserTracking();
-                    $user_tracking->user_id = $u->id;
-                    $user_tracking->Current_Cycle = "Active";
-                    $user_tracking->current_cycle_count_date = Carbon::now();
-                    $user_tracking->save();
-                }
-
             }
         }
         return redirect()->back()->with("success", "Database Populated");

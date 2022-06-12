@@ -314,6 +314,12 @@ $not = $nots->last();
                                                 @case(557)
                                                 Business Developer
                                                 @break
+                                                @case(775)
+                                                Account Officer
+                                                @break
+                                                @case(556)
+                                                Sales
+                                                @break
                                                 @default
                                                 Hi! there
 
@@ -349,7 +355,7 @@ $not = $nots->last();
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     @auth
-    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449,557] ))
+    @if (in_array(Auth::user()->role, [999, 889, 888, 777, 666, 444, 449,557,556] ))
     <script src="{{asset('js/sa.js?v=7')}}"></script>
     @endif
     @endauth
@@ -415,7 +421,6 @@ $not = $nots->last();
             } else {
                 hideit("ydeclined")
                 hideit("yfailed")
-                console.log("this is working")
             }
         }
 

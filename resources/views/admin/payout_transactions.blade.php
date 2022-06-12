@@ -59,7 +59,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
             <div class="row">
 
                 <div class="col-md-6
-                @if (in_array(Auth::user()->role, [999] ))
+                @if (in_array(Auth::user()->role, [999,889] ))
                 col-xl-3
                 @else
                 col-xl-4
@@ -76,7 +76,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                     </div>
                 </div>
                 <div class="col-md-6
-                @if (in_array(Auth::user()->role, [999] ))
+                @if (in_array(Auth::user()->role, [999,889] ))
                 col-xl-3
                 @else
                 col-xl-4
@@ -93,7 +93,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                     </div>
                 </div>
                 <div class="col-md-6 
-                @if (in_array(Auth::user()->role, [999] ))
+                @if (in_array(Auth::user()->role, [999,889] ))
                 col-xl-3
                 @else
                 col-xl-4
@@ -110,7 +110,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                         </div>
                     </div>
                 </div>
-                @if (in_array(Auth::user()->role, [999] ))
+                @if (in_array(Auth::user()->role, [999,889] ))
                 <div class="col-md-6 col-xl-3">
                     <div class="card mb-3 widget-content bg-ripe-malin">
                         <div class="widget-content-wrapper py-2 text-white">
@@ -143,7 +143,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                         <span>Succcessful Transactions</span>
                                         <div class="page-title-subheading d-flex">
                                             <a href="{{route('admin.payout_history')}}" class="btn btn-primary mr-2"> History </a>
-                                            @if(Auth::user()->role == 999)
+                                            @if(Auth::user()->role == 999 OR Auth::user()->role == 889)
                                             <form action="{{route('admin.payout')}}" method="POST">@csrf
                                                 <button class="btn btn-primary">WIPE TRANSACTIONS</button>
                                             </form>
@@ -189,7 +189,9 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     @if (in_array(Auth::user()->role, [999] ))
                                                     <td class="text-center">{{ $t->commission }}</td>
                                                     @endif
-                                                    <td class="text-center"> {{$t->user->first_name .' '. $t->user->last_name}} </td>
+                                                    <td class="text-center"> @if (isset($t->user))
+                                                        {{$t->user->first_name .' '. $t->user->last_name}}
+                                                    @endif </td>
                                                     <td class="text-center"> {{$t->agent->first_name}} </td>
                                                     <td class="text-center">{{ $t->created_at->format('d M y, h:ia') }}</td>
                                                     <td class="text-center">

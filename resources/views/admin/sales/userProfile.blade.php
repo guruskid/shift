@@ -47,7 +47,8 @@
                             <i class="pe-7s-users icon-gradient bg-sunny-morning">
                             </i>
                         </div>
-                        <div>{{ $segment }}</div>
+                        <div>{{ strtoupper($segment) }}</div>
+                        
                     </div>
                 </div>
             </div>
@@ -57,7 +58,7 @@
                     <div class="main-card mb-3 pb-3 card">
                         <div class="card-header d-flex justify-content-between">
                             <div class="">
-                                {{ $segment }}[{{ number_format($count) }}]
+                                {{ $segment }}
                             </div>
                             <form class="form-inline p-2"
                                 method="GET">
@@ -75,28 +76,37 @@
                     </div>
                     <div class="table-responsive p-3">
                         <table
-                            class="align-middle mb-0 table table-borderless table-striped table-hover">
+                            class="align-middle mb-0 table table-borderless table-striped table-hover text-center 
+                            transactions-table
+                            ">
                             <thead>
                                 <tr>
-                                    <th>Full Name</th>
+                                    <th>Name</th>
                                     <th>Username</th>
                                     <th>Email</th>
+                                    <th>Total Transactions</th>
                                     <th>Signup Date</th>
+                                    <th>Date</th>
+                                    {{-- <th>Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data as $t)
+                                @foreach ($users as $u)
                                 <tr>
-                                    <td>{{$t->first_name.' '.$t->last_name}}</td>
-                                    <td>{{ $t->username }}</td>
-                                    <td>{{ $t->email }}</td>
-                                    <td>{{ $t->created_at->format('d M Y h:ia')}}</td>
-                                    
+                                    <td>{{ $u->user->first_name." ".$u->user->last_name }}</td>
+                                    <td>{{ $u->user->username }}</td>
+                                    <td>{{ $u->user->email }}</td>
+                                    <td>{{ $u->transactions->count() }}</td>
+                                    <td>{{ $u->user->created_at->format('d M Y, h:ia') }}</td>
+                                    <td>{{ $u->updated_at->format('d M Y, h:ia') }}</td>
+                                    {{-- <td><a href="#" class="my-2" data-toggle="modal" data-target="#view-user-info" onclick="UserProfile($u)">
+                                        <span class="btn btn btn-info">View</span>
+                                    </a></td> --}}
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $data->links() }}
+                        {{ $users->links() }}
                     </div>
                 </div>
             </div>
@@ -104,6 +114,8 @@
     </div>
 </div>
 </div>
+
+
 
 
 @endsection

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     protected $casts = [
-        'commission' => 'integer',
+        'commission' => 'double',
     ];
 
     protected $guarded = [];

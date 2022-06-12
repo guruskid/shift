@@ -59,21 +59,24 @@
                             <div class="">
                                 {{ $segment }}
                             </div>
-                            {{--  <div class="">
-                                <form action="{{route('admin.search')}}" method="post" class="form-inline" >
-                            @csrf
-                            <div class="form-group">
-                                <input type="text" type="email" class="form-control" name="q"
-                                    placeholder="Enter user name or email">
-                            </div>
-                            <button class="ml-3 btn btn-outline-secondary"> <i class="fa fa-search"></i></button>
+                            <form class="form-inline p-2"
+                                method="GET">
+                                {{-- @csrf --}}
+                                <div class="form-group mr-2">
+                                    <label for="">Start date </label>
+                                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                                </div>
+                                <div class="form-group mr-2">
+                                    <label for="">End date </label>
+                                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
-                        </div> --}}
                     </div>
                     <div class="table-responsive p-3">
                         <table
                             class="align-middle mb-0 table table-borderless table-striped table-hover text-center 
-                            {{-- transactions-table --}}
+                            transactions-table
                             ">
                             <thead>
                                 <tr>
@@ -82,7 +85,6 @@
                                     <th>Email</th>
                                     <th>Total Transactions</th>
                                     <th>Signup Date</th>
-                                    {{-- <th>Action</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,9 +95,6 @@
                                     <td>{{ $u->email }}</td>
                                     <td>{{ $u->transactions->count() }}</td>
                                     <td>{{ $u->created_at->format('d M Y, h:ia') }}</td>
-                                    {{-- <td><a href="#" class="my-2" data-toggle="modal" data-target="#view-user-info" onclick="UserProfile($u)">
-                                        <span class="btn btn btn-info">View</span>
-                                    </a></td> --}}
                                 </tr>
                                 @endforeach
                             </tbody>

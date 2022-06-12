@@ -96,6 +96,7 @@ class PortfolioController extends Controller
             $pendingOrders = NairaTransaction::where('status','waiting')->whereDate('created_at', '>', $t->created_at)->count();
             $minutes = 0;
 
+<<<<<<< HEAD
             $range = WithdrawalQueueRange::all();
 
             if ($pendingOrders <= 5) {
@@ -112,6 +113,18 @@ class PortfolioController extends Controller
             } elseif(($pendingOrders > 30) ) {
                 // $minutes = 60;
                 $minutes = $range->where('pending_requests','>','30')->first()['pay_time'];
+=======
+            if ($pendingOrders <= 5) {
+                $minutes = 30;
+            } elseif(($pendingOrders > 5 and $pendingOrders <= 10) ) {
+                $minutes = 40;
+            } elseif(($pendingOrders > 10 and $pendingOrders <= 20) ) {
+                $minutes = 50;
+            } elseif(($pendingOrders > 20 and $pendingOrders <= 30) ) {
+                $minutes = 60;
+            } elseif(($pendingOrders > 30) ) {
+                $minutes = 60;
+>>>>>>> d786deb9db964424edc9b95a9a33da0adce0a749
             }
 
             $pay_time = 'payment in '.$minutes.' minutes';
