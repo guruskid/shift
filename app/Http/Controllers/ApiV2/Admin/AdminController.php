@@ -142,11 +142,19 @@ class AdminController extends Controller
 
     public function allVerification()
     {
-        $verifications = Verification::where('status', 'waiting')->latest()->get();
+        $verifications = Verification::with('user')->where('status', 'waiting')->latest()->get();
 
+        $verifications_array = [];
+
+        foreach($verifications as $verification) {
+            $verifications_array[] = [
+                'verification_details' => $verification,
+                'base_url' => url('storage/idcards/'.$verification->path)
+            ];
+        }
         return response()->json([
             'success' => true,
-            'verifications' => $verifications,
+            'verifications' => $verifications_array,
         ]);
     }
 
