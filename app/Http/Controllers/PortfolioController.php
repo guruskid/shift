@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
 use \App\Http\Controllers\GeneralSettings;
+use App\WithdrawalQueueRange;
 
 class PortfolioController extends Controller
 {

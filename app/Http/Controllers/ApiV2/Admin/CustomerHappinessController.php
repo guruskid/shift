@@ -4,15 +4,35 @@ namespace App\Http\Controllers\ApiV2\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\SystemSettings;
+use App\Ticket;
 use App\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class SettingController extends Controller
+class CustomerHappinessController extends Controller
 {
+    public function overview()
+    {
+        $user = User::where('role',555)->get();
+        $transactions  = $transactions = Transaction::with('user')->orderBy('updated_at', 'desc')->get();
+        foreach ($user as $u) {
+            $time_diff = 0;
+            $date = Ticket::where('agent_id',$u->id)->get();
+            foreach($date as $d)
+            {
+                $time_diff += $d->updated_at->diffInSeconds($d->created_at);
+            }
+            $time_diff = round($time_diff/$date->count());
 
+            $u->average_response_time = CarbonInterval::seconds($time_diff)->cascade()->forHumans();
+        }
+        return response()->json([
+            'success' => true,
+            'transactions' => $transactions,
+            'customerHappiness' => $user
+        ], 200);
+
+    }
+    
     public function dropdownForRole()
     {
         $user = User::where('role','!=',1)->distinct()->get(['role']);
@@ -52,91 +72,6 @@ class SettingController extends Controller
         }
         return $user;
     }
-    public function showUser()
-    {
-        $roleDropdown = $this->dropdownForRole();
-        if(Auth::user())
-        {
-            return response()->json([
-                'success' => true,
-                'dropdown' => $roleDropdown,
-                'user_details' => Auth::user(),
-            ], 200);
-        }
-        
-        return response()->json([
-            'success' => false,
-            'dropdown' => $roleDropdown,
-            'message' => 'Not Logged In'
-        ], 401);
-        
-    }
-
-    public function editUser(Request $r)
-    {
-        $validate = Validator::make($r->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
-            'password' => 'required',
-            'username' => 'required',
-            'role' => 'required'
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validate->errors(),
-            ], 401);
-        }
-
-        $user = Auth::user();
-        $user->first_name = $r->first_name;
-        $user->last_name = $r->last_name;
-        if($r->email != $user->email)
-        {
-            if(User::where('email',$r->email)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Email is in use",
-                ], 401);
-            }   
-            $user->email = $r->email;
-        }
-        $user->email = $r->email;
-        $user->phone = $r->phone;
-        if($r->username != $user->username)
-        {
-            if(User::where('username',$r->username)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "username is in use",
-                ], 401);
-            }
-            $user->username = $r->username;
-        }
-        $user->password = Hash::make($r->password);
-        $user->role = $r->role;
-        $user->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Updated',
-            'user_details' => Auth::user(),
-        ], 200);
-    }
-
-    public function MembersOfStaff()
-    {
-        $user = User::where('role','!=',1)->get();
-        return response()->json([
-            'success' => true,
-            'users' => $user,
-        ], 200);
-    }
 
     public function showStaff($id)
     {
@@ -168,9 +103,6 @@ class SettingController extends Controller
         }
 
         $user = User::where('id',$r->id)->first();
-       
-
-        
         $user->first_name = $r->first_name;
         $user->last_name = $r->last_name;
         if($r->email != $user->email)
@@ -219,15 +151,6 @@ class SettingController extends Controller
         ], 200);
     }
 
-    public function roleSelection()
-    {
-        $roleDropdown = $this->dropdownForRole();
-        return response()->json([
-            'success' => true,
-            'dropdown' => $roleDropdown,
-        ], 200);
-    }
-
     public function addStaff(Request $r)
     {
         $validate = Validator::make($r->all(), [
@@ -259,56 +182,39 @@ class SettingController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "Staff Data Added",
+            'message' => "You have successfully created an account for $r->first_name $r->last_name with the username \n 
+            Username: $r->username \n
+            Password: $r->password",
         ], 200);
         
     }
 
-    public function settings()
+    public function activateUser($id,$state)
     {
-        $settings = SystemSettings::get();
-        $settingsData = array();
-        foreach ($settings as $key => $value) {
-            $settingsData[$value['settings_name']] = $value;
+            
+        if($state == 'deactivate')
+        {
+            User::where('id',$id)->update([
+                'status' => 'waiting',
+            ]);
         }
-
-        $data['settings'] = $settingsData;
-
-        return response()->json([
-            'success' => true,
-            'settings' => $data,
-        ], 200);
-    }
-
-    public function updateSettings(Request $request)
-    {
-        $validate = Validator::make($request->all(), [
-            'name' => 'required',
-            'value' => 'required',
-            'notice' => 'required',
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validate->errors(),
-            ], 401);
+        if($state == 'activate'){
+            User::where('id',$id)->update([
+                'status' => 'active',
+            ]);
         }
-        $inputs = $request->all();
-        $value = ($inputs['value'] == 'true') ? 1 : 0;
-        $setting = SystemSettings::where('settings_name',$inputs['name'])
-        ->update(['settings_value' =>  $value, 'notice' => $inputs['notice']]);
-
-        if ($setting) {
+        if($state == 'deactivate' || $state == 'activate')
+        {
             return response()->json([
                 'success' => true,
-                'message' => 'Your Settings have been updated successfully',
+                'message' => 'Staff Status Updated',
             ], 200);
         }
-
         return response()->json([
             'success' => false,
-            'message' => "An error occurred, please try again!",
+            'message' => 'Staff details and status is not available',
         ], 401);
     }
+
+    
 }

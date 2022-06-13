@@ -282,6 +282,7 @@
                             @if ($show_limit)
                                 @if(auth()->user()->role == 889 || auth()->user()->role == 999)
                                     <div>
+                                        <a href="{{ route('admin.naira-p2p.withdrawal-queue')}}" class="btn btn-primary">Withdrawal Queue Range</a>
                                         <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
                                         <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Set account details</button>
                                     </div>
