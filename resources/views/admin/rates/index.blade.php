@@ -218,7 +218,7 @@
                 </div>
             </div>
 
-            @if (Auth::user()->role == '999')
+            @if (in_array(Auth::user()->role,[999,888]))
             <div class="row mb-5">
                 <div class="col-md-12">
                     <div class="card card-body">
