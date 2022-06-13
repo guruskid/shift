@@ -8,19 +8,12 @@ use App\NairaTransaction;
 use App\ReferralSettings;
 use App\Transaction;
 use App\User;
+use Illuminate\Support\Facades\Validator;
 
 class ReferralSettingController extends Controller
 {
     public function index()
     {
-        // $updateUser = User::all();
-        // foreach ($updateUser as $user) {
-        //     $user->referral_code = null;
-        //     $user->referred = 0;
-        //     $user->referrer = null;
-        //     $user->save();
-        // }
-        // return $updateUser;
 
         $referralSettings = ReferralSettings::latest()->get();
         $evangelist = array();
@@ -37,10 +30,6 @@ class ReferralSettingController extends Controller
 
         $referralPaidOut = NairaTransaction::where('type', 'referral')->sum('amount');
         $referredUsers = User::where('referred', 1)->count();
-
-        // return response()->json([
-        //     'evangelist' => $evangelist
-        // ]);
 
         return response()->json([
             'success' => true,
@@ -65,7 +54,6 @@ class ReferralSettingController extends Controller
 
     public function setReferral(Request $dt)
     {
-
 
 
         $dt->validate([
@@ -105,5 +93,51 @@ class ReferralSettingController extends Controller
     {
        $rs = ReferralSettings::latest()->get();
        return ($rs->count() < 1) ? $status = '0' : $status = $rs[0]->ref_percent;
+    }
+
+    public function switch($id, $status)
+    {
+
+        if (!isset($id) || !isset($status)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Referral settings\' Id and status is required',
+            ], 401);
+        }
+        $switchSettings = ReferralSettings::where('id', $id)->get()[0];
+        $status == 'on' ? $currentStatus = 1 : $currentStatus = 0;
+
+        $switchSettings->ref_status = $currentStatus;
+        $switchSettings->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Referral settings was successfully turned to '.$status,
+        ], 200);
+    }
+
+    public function percentage(Request $dt)
+    {
+        # code...
+        $validate = Validator::make($dt->all(), [
+            'percent' => 'required|integer',
+            'id' => 'required|integer',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ], 401);
+        }
+
+        $percentage = ReferralSettings::where('id', $dt->id)->get()[0];
+        $percentage->ref_percent = $dt->percent;
+        $percentage->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Referral percentage was successfully set to '.$dt->percent.'%',
+        ], 200);
     }
 }

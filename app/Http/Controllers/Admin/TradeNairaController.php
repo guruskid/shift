@@ -14,6 +14,7 @@ use App\PayBridgeAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Mail\GeneralTemplateOne;
+use App\WithdrawalQueueRange;
 use Illuminate\Support\Facades\Mail;
 use DB;
 
@@ -163,11 +164,11 @@ class TradeNairaController extends Controller
                         $query->select(DB::raw("sum(amount) as sumt"));
                     }]);
                 }]);
-    
-                $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
+
+                $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
                     FROM naira_trades as tr
-                    WHERE 
-                    tr.user_id = naira_trades.user_id) 
+                    WHERE
+                    tr.user_id = naira_trades.user_id)
                     as total_trax'))
                     ->orderBy('total_trax', 'desc');
             }
@@ -334,6 +335,28 @@ class TradeNairaController extends Controller
         return view('admin.trade_naira.accounts', compact('accounts'));
     }
 
+    public function withdrawal_queue() {
+        $ranges = WithdrawalQueueRange::all();
+        return view('admin.trade_naira.withdrawal_queue'
+        , compact('ranges')
+        );
+    }
+
+    public function add_withdrawal_queue(Request $request) {
+        $data = $request->except('_token');
+        WithdrawalQueueRange::create($data);
+        return redirect()->back()->with(["success" => 'Range added']);
+    }
+
+    public function update_withdrawal_queue(Request $request) {
+        $account = WithdrawalQueueRange::find($request['id']);
+        $account->pending_requests = $request['pending_requests'];
+        $account->pay_time = $request['pay_time'];
+        $account->save();
+        return redirect()->back()->with(["success" => 'Range Updated']);
+
+    }
+
     public function addAccount(Request $request) {
         $data = $request->except('_token');
         PayBridgeAccount::create($data);
@@ -384,7 +407,7 @@ class TradeNairaController extends Controller
                 $a = Account::find($t->account_id);
                 if($a){
                     $acct = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
-                    $t->acct_details = $acct;    
+                    $t->acct_details = $acct;
                 }
             }
             $current_prev_bal = NairaTransaction::where('reference',$t->reference)->latest()->first();
