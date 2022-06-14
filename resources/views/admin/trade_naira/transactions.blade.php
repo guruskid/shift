@@ -282,6 +282,7 @@
                             @if ($show_limit)
                                 @if(auth()->user()->role == 889 || auth()->user()->role == 999)
                                     <div>
+                                        <a href="{{ route('admin.naira-p2p.withdrawal-queue')}}" class="btn btn-primary">Withdrawal Queue Range</a>
                                         <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
                                         <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Set account details</button>
                                     </div>
@@ -339,8 +340,10 @@
                                         <td>
                                             <div class="btn-group">
                                                 @if ($t->status == 'waiting')
-                                                <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
-                                                <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button>
+                                                    <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
+                                                @if (in_array(Auth::user()->role, [999, 889]))
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button>
+                                                @endif
                                                 @elseif($t->status == 'success' && in_array(Auth::user()->role, [999, 889]) )
                                                 {{-- @else --}}
                                                     <button class="btn btn-danger" data-toggle="modal" data-target="#refund-modal-{{ $t->id }}">Refund</button>
