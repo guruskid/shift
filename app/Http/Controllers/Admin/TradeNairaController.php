@@ -159,16 +159,6 @@ class TradeNairaController extends Controller
             {
                 $transactions = $transactions->where('type',$type);
 
-<<<<<<< HEAD
-                // $transactions = $transactions->with(['user' => function ($query) {
-                //     $query->withCount(['nairaTrades as total_trx' => function ($query) {
-                //         $query->select(DB::raw("sum(amount) as sumt"));
-                //     }]);
-                // }]);
-                // return $transactions->get();
-    
-                $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
-=======
                 $transactions = $transactions->with(['user' => function ($query) {
                     $query->withCount(['nairaTrades as total_trx' => function ($query) {
                         $query->select(DB::raw("sum(amount) as sumt"));
@@ -176,7 +166,6 @@ class TradeNairaController extends Controller
                 }]);
 
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
->>>>>>> d7e1747fc1202eefc4267e17b20ee23ba71494ba
                     FROM naira_trades as tr
                     WHERE
                     tr.user_id = naira_trades.user_id)

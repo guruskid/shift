@@ -95,9 +95,8 @@
                                 <tr>
                                     <th><div class="">Name</div></th>
                                     <th><div class="">Username</div></th>
-                                    <th><div class="">Signup Date</div></th>
-                                    <th><div class="">Phone Number</div></th>
                                     <th><div class="">Last Transaction Date</div></th>
+                                    <th><div class="">Category</div></th>
                                     @if ($type == "Called_Users")
                                         <th><div class="">Called Date</div></th>
                                     @endif
@@ -121,9 +120,8 @@
                                 <tr>
                                     <td><div class="td-content customer-name">{{$u->user->first_name}}</div></td>
                                     <td>{{ $u->user->username }}</td>
-                                    <td>{{ $u->user->created_at->format('d M y, h:ia') }}</td>
-                                    <td>{{ $u->user->phone }}</td>
                                     <td>{{ $u->last_transaction_date }}</td>
+                                    <td>{{ $u->call_category->category }}</td>
                                     @if ($type == "Called_Users")
                                         <td>{{ $u->call_log->created_at->format('d M y, h:ia') }}</td>
                                     @endif

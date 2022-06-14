@@ -85,6 +85,7 @@ class AuthController extends Controller
             'external_id' => $external_id,
             'status' => 'active',
             'password' => Hash::make($input['password']),
+            'platform' => $input['platform']
         ]);
 
         $user->sendEmailVerificationNotification();

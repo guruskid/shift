@@ -84,8 +84,6 @@
                                     <th>Name</th>
                                     <th>Username</th>
                                     <th>Email</th>
-                                    <th>Total Transactions</th>
-                                    <th>Signup Date</th>
                                     <th>Date</th>
                                     {{-- <th>Action</th> --}}
                                 </tr>
@@ -96,8 +94,6 @@
                                     <td>{{ $u->user->first_name." ".$u->user->last_name }}</td>
                                     <td>{{ $u->user->username }}</td>
                                     <td>{{ $u->user->email }}</td>
-                                    <td>{{ $u->transactions->count() }}</td>
-                                    <td>{{ $u->user->created_at->format('d M Y, h:ia') }}</td>
                                     <td>{{ $u->updated_at->format('d M Y, h:ia') }}</td>
                                     {{-- <td><a href="#" class="my-2" data-toggle="modal" data-target="#view-user-info" onclick="UserProfile($u)">
                                         <span class="btn btn btn-info">View</span>

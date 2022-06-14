@@ -8,15 +8,6 @@
         </a>
     </li>
 
-    <li class="menu {{ Route::currentRouteName() == 'admin.sales.users_verifications' ? 'active' : '' }}  ">
-        <a href="{{route('admin.sales.users_verifications')}}"  aria-expanded="false" class="dropdown-toggle">
-            <div class="">
-                <ion-icon name="people-outline"></ion-icon>
-                <span>User Verification</span>
-            </div>
-        </a>
-    </li>
-
     <li class="menu {{ Route::currentRouteName() == 'admin.sales.users_birthdays' ? 'active' : '' }}  ">
         <a href="{{route('admin.sales.users_birthdays')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
