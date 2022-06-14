@@ -53,13 +53,10 @@ class SalesAnalyticsController extends Controller
     public function loadData($start_date ,$end_date,$conversionType,$type,$sales_id)
     {
         $salesNewUsers = User::where('role',556)->get();
-        if($start_date == null){
-            $start_date = now()->format('Y-m-d');
-        }
+        $start_date = now()->format('Y-m-d');
         $start_date = Carbon::parse($start_date." 00:00:00");
-        if($end_date == null){
-            $end_date = now()->format('Y-m-d');
-        }
+        
+        $end_date = now()->format('Y-m-d');
         $end_date = Carbon::parse($end_date." 23:59:59");
     
         $goodLeads = NewUsersTracking::where('updated_at','>=',$start_date)->where('updated_at','<=',$end_date)
@@ -282,7 +279,7 @@ class SalesAnalyticsController extends Controller
         if($salesUser){
             $segment .= $salesUser->first_name." ".$salesUser->last_name." ";
         }
-        $salesNewUsers = User::where('role',556)->get();
+        $salesOldUsers = User::where('role',556)->get();
         if($start_date == null){
             $start_date = now()->format('Y-m-d');
         }
@@ -407,7 +404,7 @@ class SalesAnalyticsController extends Controller
         $tdata = [];
 
         foreach ($data as $d) {
-            $user_transactionsUnique = Transaction::where('user_id',$d->user_id)->first();
+            $user_transactionsUnique = Transaction::where('user_id',$d->user_id)->where('status','success')->first();
             if($user_transactionsUnique != null)
             {
                 $tdata[] = $user_transactionsUnique;
@@ -463,11 +460,14 @@ class SalesAnalyticsController extends Controller
                 $timeDiff += Carbon::parse($cu->call_duration_timestamp)->diffInSeconds($cu->previous_call_duration_timestamp);
             }
         }
-        $timeDiff = ($calledUsers->count() == 0) ? 0 : $timeDiff/($calledUsers->count());
+        $noOfCalledUsers = $calledUsers->count();
+        $totalRestTime = $noOfCalledUsers * 60;
+        $timeAfterRest = $timeDiff - $totalRestTime;
+        $averageTimeBetweenCalls = ($noOfCalledUsers == 0) ? 0 : ($timeAfterRest/$noOfCalledUsers);
         if($calledUsers->count() == 0){
             return 0;
         }else{
-            return CarbonInterval::seconds($timeDiff)->cascade()->forHumans();
+            return CarbonInterval::seconds($averageTimeBetweenCalls)->cascade()->forHumans();
         }
     }
 }

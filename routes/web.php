@@ -599,8 +599,6 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing']], function () {
-
-    Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
     Route::GET('/users_birthdays', 'MarketingController@user_birthday')->name('admin.sales.users_birthdays');
     Route::GET('/marketing/{type?}', 'MarketingController@Category')->name('admin.sales.type');
     Route::GET('/view/transactions/{type?}', 'MarketingController@viewTransactionsCategory')->name('admin.transactions.view.type');
@@ -642,4 +640,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], 
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
     Route::ANY('/sortAnalytics/{type?}','Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
     Route::ANY('/showAnalysis/{type?}','Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
+});
+
+//TODO Old Analytics
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
+    Route::GET('/oldSalesAnalytics/{type?}', 'Admin\OldUsersSalesAnalytics@index')->name('sales.oldUsers.salesAnalytics');
+    Route::ANY('/showAnalysis/{type?}','Admin\OldUsersSalesAnalytics@showAllData')->name('sales.oldUsers.show.salesAnalytics');
+    Route::ANY('/sortAnalyticsOldUsers/{type?}','Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');
 });

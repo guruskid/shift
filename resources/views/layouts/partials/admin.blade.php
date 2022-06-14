@@ -285,14 +285,6 @@
 
             @if (in_array(Auth::user()->role, [559] ))
                 <li class="my-3">
-                    <a href="{{route('admin.sales.users_verifications')}}"
-                        class=" {{ Route::currentRouteName() == 'admin.sales.users_verifications' ? 'mm-active' : '' }} ">
-                        <i class="metismenu-icon pe-7s-users"></i>
-                         Users Verification
-                    </a>
-                </li>
-
-                <li class="my-3">
                     <a href="{{route('admin.sales.users_birthdays')}}"
                         class=" {{ Route::currentRouteName() == 'admin.sales.users_birthdays' ? 'mm-active' : '' }} ">
                         <i class="metismenu-icon pe-7s-users"></i>

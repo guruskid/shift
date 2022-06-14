@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NewUsersTracking;
+use App\Transaction;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class SalesController extends Controller
 {
     public function addNewUsers()
     {
-        $new_users = User::with('transactions')->whereDate('created_at','>=',now()->subDays(21))->whereDate('created_at','<',now()->subMonths(3))->where('role',1)->latest('created_at')->get();
+        $new_users = User::with('transactions')->whereDate('created_at','>',Carbon::now()->subMonths(3))->whereDate('created_at','<=',Carbon::now()->subDays(21))->where('role',1)->latest('created_at')->get();
         foreach ($new_users as $nu) {
             if($nu->transactions()->count() == 0)
             {
@@ -149,7 +151,7 @@ class SalesController extends Controller
 
     public function assignStatus(Request $request)
     {
-        if($request->phoneNumber == null)
+        if($request->phoneNumber)
         {
             $time = now();
             $openingPhoneTime = Carbon::parse($request->phoneNumber)->subSeconds(18);
