@@ -83,7 +83,7 @@
                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
             </form> 
             </div>
-            @include('admin.sales_analytics.includes.card')
+            @include('admin.oldUsersSalesAnalytics.includes.card')
             @if($show_data == true)
             <div class="row">
                 <div class="col-md-12">
