@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/btc',  'TransactionController@btc');
         Route::GET('/p2p',  'TransactionController@p2p');
         Route::GET('/transactions-per-day',  'TransactionController@transactionsPerDay');
+        Route::GET('/transactions-by-date',  'TransactionController@transactionsByDate');
 
     });
 
@@ -36,7 +37,14 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     });
 
 
-    Route::GET('/users',  'UserController@index');
+    Route::group(['prefix' => 'users'], function () {
+        Route::GET('/',  'UserController@index');
+        Route::GET('/new-users',  'UserController@newUsers');
+        Route::GET('/{id}',  'UserController@user');
+    });
+
+
+
 
     Route::POST('/admin/add-admin',  'AdminController@addAdmin');
     Route::POST('/admin/action',  'AdminController@action');
@@ -102,7 +110,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/settings', 'ReferralSettingController@settings');
         Route::GET('/switch/{id}/{status}', 'ReferralSettingController@switch');
         Route::POST('/switch/percentage', 'ReferralSettingController@percentage');
-        
+
     });
 
     Route::group(['prefix', 'charts'], function () {
@@ -113,7 +121,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 });
 
 
-Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
+Route::group(['middleware' => ['auth:api', 'coo']], function () {
     Route::get('/test', function(){
         return response()->json(['message' => 'test']);
     });
@@ -143,10 +151,11 @@ Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
         Route::GET('/', 'PulseController@index');
 
     });
-
     Route::get('/customer-life', 'CustomerLifeController@index');
+});
 
-
-
+Route::group(['middleware' => ['auth:api']], function(){
+    # code....
+   Route::GET('/customer-happiness', '@index');
 
 });

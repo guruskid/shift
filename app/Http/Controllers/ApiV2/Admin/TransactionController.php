@@ -10,6 +10,7 @@ use App\Transaction;
 use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
@@ -85,6 +86,28 @@ class TransactionController extends Controller
         return response()->json([
             'success' => true,
             'transaction_count' => $transactions,
+        ]);
+    }
+    public function transactionsByDate(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'start' => 'required|date|string',
+            'end' => 'required|date|string',
+        ]);
+
+        if($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ]);
+        }
+
+        $transactions = NairaTrade::where('created_at', '>=', $request['start'])->where('created_at', '<=', $request['end']);
+        $transactions = $transactions->paginate(1000);
+
+        return response()->json([
+            'success' => true,
+            'transactions' => $transactions,
         ]);
     }
 }
