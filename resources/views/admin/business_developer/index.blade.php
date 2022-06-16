@@ -11,28 +11,12 @@
             </div>
         </div>
             <div class="row layout-top-spacing">
-                
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                    <div class="widget widget-chart-one @if(isset($type) AND $type =='all_Users') bg-primary @endif">
-                        <div class="widget-heading">
-                            <div>
-                                <h5 class="@if(isset($type) AND $type =='all_Users') text-white @endif">Total Number <br>Of Users </h5>
-                                <p><a class="@if(isset($type) AND $type =='all_Users') text-white @endif"
-                                     href="{{ route('business-developer.user-category',['type'=>'all_Users']) }}">View</a></p>
-                            </div>
-                            <div class="widget-n">
-                                <h5>{{ $total_users }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('business-developer.user-category',['type'=>'Quarterly_Inactive']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) AND $type =='Quarterly_Inactive') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) AND $type =='Quarterly_Inactive') text-white @endif">Quaterly Inactive<br> Users </h5>
-                                <p><a class="@if(isset($type) AND $type =='Quarterly_Inactive') text-white @endif" 
-                                    href="{{ route('business-developer.user-category',['type'=>'Quarterly_Inactive']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $QuarterlyInactiveUsers }}</h5>
@@ -40,13 +24,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('business-developer.user-category',['type'=>'Called_Users']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) AND $type =='Called_Users') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) AND $type =='Called_Users') text-white @endif">Called<br>Users</h5>
-                                <p><a class="@if(isset($type) AND $type =='Called_Users') text-white @endif"
-                                    href="{{ route('business-developer.user-category',['type'=>'Called_Users']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $CalledUsers }}</h5>
@@ -54,13 +37,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('business-developer.user-category',['type'=>'Responded_Users']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) AND $type =='Responded_Users') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) AND $type =='Responded_Users') text-white @endif">Responded<br>Users</h5>
-                                <p><a class="@if(isset($type) AND $type =='Responded_Users') text-white @endif"
-                                    href="{{ route('business-developer.user-category',['type'=>'Responded_Users']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $RespondedUsers }}</h5>
@@ -68,13 +50,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('business-developer.user-category',['type'=>'Recalcitrant_Users']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) AND $type =='Recalcitrant_Users') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) AND $type =='Recalcitrant_Users') text-white @endif">Recalcitrant<br>Users</h5>
-                                <p><a class="@if(isset($type) AND $type =='Recalcitrant_Users') text-white @endif"
-                                     href="{{ route('business-developer.user-category',['type'=>'Recalcitrant_Users']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $RecalcitrantUsers }}</h5>
@@ -98,8 +79,6 @@
                                                 <tr>
                                                     <th><div class="">Name</div></th>
                                                     <th><div class="">Username</div></th>
-                                                    <th><div class="">Signup Date</div></th>
-                                                    <th><div class="">Phone Number</div></th>
                                                     <th><div class="">Last Transaction Date</div></th>
                                                     @if ($type == "Called_Users")
                                                         <th><div class="">Called Date</div></th>
@@ -124,8 +103,6 @@
                                                 <tr>
                                                     <td><div class="td-content customer-name">{{$u->user->first_name}}</div></td>
                                                     <td>{{ $u->user->username }}</td>
-                                                    <td>{{ $u->user->created_at->format('d M y, h:ia') }}</td>
-                                                    <td>{{ $u->user->phone }}</td>
                                                     <td>{{ $u->last_transaction_date }}</td>
                                                     @if ($type == "Called_Users")
                                                         <td>{{ $u->call_log->created_at->format('d M y, h:ia') }}</td>
@@ -151,11 +128,19 @@
                                                         </td>
                                                     @endif
                                                     @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users")
-                                                    <td>
+                                                    <td class="text-center">
                                                         @if ($type == "Quarterly_Inactive")
-                                                        <a href="#" class="my-2" data-toggle="modal" data-target="#add-call-log" onclick="AddResponse({{$u->user}})">
-                                                            <span class="btn btn btn-info">Response</span>
-                                                        </a>
+                                                        
+                                                        <div class="btn-group">
+                                                            <a href="#" class="my-2 mr-2" data-toggle="modal" data-target="#view-phone-number" onclick="showPhoneNumber({{$u->user}})">
+                                                                <span class="btn btn btn-info">View Phone Number</span>
+                                                            </a>
+    
+                                                            <a href="#" class="my-2" data-toggle="modal" data-target="#add-call-log" onclick="AddResponse({{$u->user}})">
+                                                                <span class="btn btn btn-info">Response</span>
+                                                            </a>
+                                                        </div>
+                                                        
                                                         @endif
                                                         @if ($type =="Responded_Users" OR $type == "Called_Users")
                                                         <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewResponse({{$u->call_log}},{{ $u->user }},{{ $u->call_log->call_category }})">
@@ -208,6 +193,7 @@
 
                     <div class="form-group">
                         <input type="hidden" readonly name="id" id="e_id">
+                        <input type="hidden" readonly name="phoneNumber" id="e_phoneNumber">
                     </div>
                     <div class="row">
 
@@ -235,6 +221,26 @@
                     <button type="submit" class="btn btn-primary">Create Call Log</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade  item-badge-rightm" id="view-phone-number" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading " id="ph_email">User Email</h4>
+                            <h6 class="media-heading" id="ph_phoneNumber">User PhoneNumber</h6>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                </div>
         </div>
     </div>
 </div>

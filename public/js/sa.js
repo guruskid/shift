@@ -67,13 +67,13 @@ function deleteRate(id) {
 
 //**Create Response Data for Called Users*/
 function AddResponse(data){
-    $('#e_email').html(data['email']);
+    $('#e_email').html(data['first_name'] + " " + data['last_name']);
     $('#e_id').val(data['id']);
 }
 
 //**View Response Data for Called Users*/
 function ViewResponse(call_log,user,call_category){
-    $('#v_email').html(user['email']);
+    $('#v_email').html(user['first_name'] + " " + user['last_name']);
     $('#v_id').val(call_log['id']);
 
     $('#v_status_input').val(call_category['category']);
@@ -98,12 +98,12 @@ function ViewNewUserData(user,user_log)
 
 function showPhoneNumber(user)
 {
-    $('#ph_email').html(user['email']);
+    $('#ph_email').html(user['first_name'] + " " + user['last_name']);
     $('#ph_phoneNumber').html(user['phone']);
     
     
     var today = new Date();
-    var date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var dateTime = date+' '+time;
     $('#e_phoneNumber').val(dateTime);

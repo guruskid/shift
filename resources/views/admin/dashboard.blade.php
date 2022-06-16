@@ -107,6 +107,32 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-3 col-xl-3">
+                    <div class="card mb-3 widget-content bg-happy-fisher">
+                        <div class="widget-content-wrapper py-2 text-white">
+                            <div class="widget-content- mx-auto">
+                                <div class="widget-heading text-center">
+                                    <h5>Pending Naira Deposits</h5>
+                                    <h6>{{$pendingNairaDeposits}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-xl-3">
+                    <div class="card mb-3 widget-content bg-ripe-malin">
+                        <div class="widget-content-wrapper py-2 text-white">
+                            <div class="widget-content- mx-auto">
+                                <div class="widget-heading text-center">
+                                    <h5>Pending Naira Withdrawals</h5>
+                                    <h6>{{$pendingNairaWithdrawals}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row">

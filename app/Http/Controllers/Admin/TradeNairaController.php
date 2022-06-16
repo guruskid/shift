@@ -170,10 +170,10 @@ class TradeNairaController extends Controller
                     WHERE
                     tr.user_id = naira_trades.user_id)
                     as total_trax'))
+                    ->orderBy('created_at', 'desc')
                     ->orderBy('total_trax', 'desc');
             }
 
-            $transactions = $transactions->orderBy('created_at', 'desc');
 
             if($start_date && $end_date)
             {
@@ -603,6 +603,7 @@ class TradeNairaController extends Controller
                 $user_wallet = $nt->user->nairaWallet;
                 $user_wallet->amount -= $nt->amount;
                 $user_wallet->save();
+
             }
         }
 

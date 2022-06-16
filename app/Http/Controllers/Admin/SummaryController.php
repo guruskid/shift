@@ -249,6 +249,7 @@ class SummaryController extends Controller
         $accountant_name = $data['accountant_name'];
 
         //*All Transactions
+        $all_tnx = $all_tnx->unique('id');
         $all_tnx_count = $all_tnx->where('status', 'success')->count();
         $all_tnx = $all_tnx->paginate(100);
 
@@ -257,18 +258,22 @@ class SummaryController extends Controller
         $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
 
         //*GiftCard Transaction BUY
+        $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->unique('id');
         $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
         $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
 
         //*GiftCard Transaction SELL
+        $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->unique('id');
         $giftcards_totaltnx_sell_amount = $giftcards_totaltnx_sell->sum('amount');
         $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
 
         //*Crypto Transaction BUY
+        $crypto_totaltnx_buy = $crypto_totaltnx_buy->unique('id');
         $crypto_totaltnx_buy_amount = $crypto_totaltnx_buy->sum('amount');
         $crypto_totaltnx_buy = $crypto_totaltnx_buy->count();
 
         //*Crypto Transaction SELL
+        $crypto_totaltnx_sell = $crypto_totaltnx_sell->unique('id');
         $crypto_totaltnx_sell_amount = $crypto_totaltnx_sell->sum('amount');
         $crypto_totaltnx_sell = $crypto_totaltnx_sell->count();
 
@@ -292,6 +297,7 @@ class SummaryController extends Controller
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
+        $util_tnx = $util_tnx->unique('id');
         $util_total_tnx = $util_tnx->where('status','success')->count();
         $util_tnx_amount = $util_tnx->where('status','success')->sum('amount');
         $util_tnx_fee = $util_tnx->where('status','success')->sum('convenience_fee');
@@ -336,6 +342,7 @@ class SummaryController extends Controller
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
+        $nw_deposit_tnx = $nw_deposit_tnx->unique('id');
         $nw_deposit_tnx_total = $nw_deposit_tnx->where('status','success')->count();
         $nw_deposit_amount_paid = $nw_deposit_tnx->where('status','success')->sum('amount_paid');
         $nw_deposit_tnx_charges = $nw_deposit_tnx->where('status','success')->sum('charge');
@@ -366,6 +373,7 @@ class SummaryController extends Controller
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
+        $nw_withdrawal_tnx = $nw_withdrawal_tnx->unique('id');
         $nw_withdrawal_tnx_total = $nw_withdrawal_tnx->where('status','success')->count();
         $nw_withdrawal_amount_paid = $nw_withdrawal_tnx->where('status','success')->sum('amount_paid');
         $nw_withdrawal_tnx_charges = $nw_withdrawal_tnx->where('status','success')->sum('charge');
@@ -397,6 +405,7 @@ class SummaryController extends Controller
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
+        $nw_other_tnx = $nw_other_tnx->unique('id');
         $nw_other_tnx_total = $nw_other_tnx->where('status','success')->count();
         $nw_other_amount_paid = $nw_other_tnx->where('status','success')->sum('amount_paid');
         $nw_other_tnx_charges = $nw_other_tnx->where('status','success')->sum('charge');
@@ -592,12 +601,21 @@ class SummaryController extends Controller
         if($requestDetails['Accountant'] != 'null'){
             $segment = Carbon::parse(date('Y')."-$month-$day")->format('d M');
         }
+        if($requestDetails['Accountant'] != 'null'){
+            $segment = $accountant_name." ".Carbon::parse($start_date[0])->format('d M');
+            
+        }
         if($requestDetails['startdate'] != null AND $requestDetails['Accountant'] != 'null')
         {
             $segment = $accountant_name." ".Carbon::parse($start)->format('d-M-y h:ia');
             if($requestDetails['enddate'] != null){
                 $segment .= " to ".Carbon::parse($end)->format('d-M-y h:ia'); 
             }
+        }
+        // dd($start);
+        if(empty($start))
+        {
+            $start = $start_date[0]." 00:00";
         }
         $data = array(
             'segment'=>$segment,
@@ -668,28 +686,28 @@ class SummaryController extends Controller
 
             }
             $all_tnx = $all_transaction_Collection;
-            $all_tnx = $all_tnx->where('updated_at', '>=', $start);
+            $all_tnx = $all_tnx->where('updated_at', '>=', Carbon::parse($start));
             $all_tnx = $this->SortingByAccountantAndDate($requestDetails['enddate'],$all_tnx,$start_date[0],$end);
             
             $gift_tranx = $giftcard_collection;
-            $gift_tranx = $gift_tranx->where('updated_at', '>=', $start);
+            $gift_tranx = $gift_tranx->where('updated_at', '>=', Carbon::parse($start));
             $gift_tranx = $this->SortingByAccountantAndDate($requestDetails['enddate'],$gift_tranx,$start_date[0],$end);
             $giftcards_totaltnx_buy = $gift_tranx->where('type', 'buy');
             $giftcards_totaltnx_sell = $gift_tranx->where('type', 'sell');
            
 
             $crypto_tranx = $crypto_collection;
-            $crypto_tranx = $crypto_tranx->where('updated_at', '>=', $start);
+            $crypto_tranx = $crypto_tranx->where('updated_at', '>=', Carbon::parse($start));
             $crypto_tranx = $this->SortingByAccountantAndDate($requestDetails['enddate'],$crypto_tranx,$start_date[0],$end);
             $crypto_totaltnx_buy = $crypto_tranx->where('type', 'buy');
             $crypto_totaltnx_sell = $crypto_tranx->where('type', 'sell');
 
             $util_tranx = $util_collection;
-            $util_tranx = $util_tranx->where('updated_at', '>=', $start);
+            $util_tranx = $util_tranx->where('updated_at', '>=', Carbon::parse($start));
             $util_tranx = $this->SortingByAccountantAndDate($requestDetails['enddate'],$util_tranx,$start_date[0],$end);
 
             $nw_tranx = $nw_collection;
-            $nw_tranx = $nw_tranx->where('updated_at', '>=', $start);
+            $nw_tranx = $nw_tranx->where('updated_at', '>=', Carbon::parse($start));
             $nw_tranx = $this->SortingByAccountantAndDate($requestDetails['enddate'],$nw_tranx,$start_date[0],$end);
 
         if($show_category == "all")
@@ -727,10 +745,10 @@ class SummaryController extends Controller
     }
     public function SortingByAccountantAndDate($enddate,$value,$start_date,$end){
         if($enddate != null){
-            $value = $value->where('updated_at', '<=', $end);
+            $value = $value->where('updated_at', '<=', Carbon::parse($end));
         }
         else{
-            $value = $value->where('updated_at', '<=', $start_date." 23:59:59");
+            $value = $value->where('updated_at', '<=', Carbon::parse($start_date." 23:59:59"));
         }
         return $value;
     }
