@@ -189,8 +189,10 @@
                                                     class="">₦{{number_format($t->amount_paid)}}</span></div>
                                         </td>
                                         <td>
-                                            <div class="td-content pricing"><span
-                                                    class="">{{$t->user->first_name .' '. $t->user->last_name}}</span></div>
+                                            <div class="td-content pricing">
+                                                @if(isset($t->user))<span
+                                                    class="">{{$t->user->first_name .' '. $t->user->last_name}}</span>
+                                                @endif</div>
                                         </td>
                                         <td>
                                             <div class="td-content">

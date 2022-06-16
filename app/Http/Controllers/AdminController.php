@@ -16,6 +16,7 @@ use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\Exports\DownloadUsers;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
+use App\Http\Controllers\Admin\SalesController;
 use Excel;
 use App\NairaWallet;
 use App\Payout;
@@ -153,7 +154,7 @@ class AdminController extends Controller
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
                 ])
             );
-        } else if (Auth::user()->role == 889 || Auth::user()->role == 777) { //Accountants
+        } else if (Auth::user()->role == 889 || Auth::user()->role == 777 ||Auth::user()->role == 775 ) { //Accountants
             return view(
                 'admin.accountant_dashboard',
                 compact([
@@ -242,6 +243,10 @@ class AdminController extends Controller
         } else if (Auth::user()->role == 557) { //business_Developer
             return (new BusinessDeveloperController)->index();
         }
+        else if (Auth::user()->role == 556) { //Sales Personal 
+            return (new SalesController)->index();
+        }
+       
     }
 
 

@@ -56,16 +56,14 @@ class AccountantController extends Controller
             }
             if($action == 'waiting')
             {
-                $accountant = AccountantTimeStamp::where('user_id',$id);
+                $accountant = AccountantTimeStamp::where('user_id',$id)->latest()->first();
                 if(!empty($accountant))
                 {
-                    $time_stamp = $accountant = $accountant->where('inactiveTime',null)
-                    ->where('activeTime','!=',null);
+                    $time_stamp =  $accountant->where('user_id',$id)->latest()->first();
 
-                    $startTime = $accountant->where('inactiveTime',null)
-                    ->where('activeTime','!=',null)->first()->created_at;
-;                   $endTime = Carbon::now();
-                    $totalDuration =  $startTime->diffInMinutes($endTime);
+                    $startTime = $accountant->activeTime;
+                    $endTime = Carbon::now();
+                    $totalDuration =  Carbon::parse($startTime)->diffInMinutes($endTime);
                     if($totalDuration < 5){
                         $time_stamp->delete();
                     }

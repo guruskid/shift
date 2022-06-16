@@ -1337,7 +1337,27 @@ class BillsPaymentController extends Controller
                 $response = [];
             }else{
                 $response = $response['content'];
+                
+                // $vars = [];
+                // foreach($response as $vr) {
+                //     $vars[] = [
+                //         'serviceID' => $vr['serviceID'],
+                //         'name' => $vr['name'],
+                //         'image' => $vr['image']
+                //     ];
+                // }
+
+                // dd($vars);
+                // $response = $vars;
+                // $nResp = [];
+                // foreach ($response as $key => $value) {
+                //     $nResp[] = (array)$response[$key];
+                // }
+                // dd($nResp);
+                // $response = $nResp;
             }
+
+            // dd($nResp);
         }
         return $response;
     }

@@ -14,12 +14,29 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/cable',  'UtilityController@cable');
     });
 
-    //CRYPTO TRANSACTIONS
+    Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
+
+
+
+
+
+    // TRANSACTIONS
     Route::group(['prefix' => 'transaction'], function () {
         Route::GET('/btc',  'TransactionController@btc');
         Route::GET('/p2p',  'TransactionController@p2p');
+        Route::GET('/transactions-per-day',  'TransactionController@transactionsPerDay');
 
     });
+
+    // Transaction Count
+    Route::group(['prefix' => 'transaction-count'], function () {
+        Route::GET('/{waiting}',  'TransactionController@TransactionCounts');
+        Route::GET('/{pending}',  'TransactionController@TransactionCounts');
+        Route::GET('/withdrawals',  'TransactionController@TransactionCounts');
+    });
+
+
+    Route::GET('/users',  'UserController@index');
 
     Route::POST('/admin/add-admin',  'AdminController@addAdmin');
     Route::POST('/admin/action',  'AdminController@action');
@@ -65,8 +82,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/giftCard_transaction', 'SummaryController@giftCardTransactions');
         Route::POST('/sortGiftCards', 'SummaryController@sortGiftCardTransactions');
 
-        Route::GET('transaction_detail','SummaryController@transactionsDetails');
-        Route::POST('sort_transaction_detail','SummaryController@sortTransaction');
+        Route::GET('/transaction_detail','SummaryController@transactionsDetails');
+        Route::POST('/sort_transaction_detail','SummaryController@sortTransaction');
 
 
    });
@@ -76,6 +93,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/get-all-verifications',  'AdminController@allVerification');
         Route::put('/user-verification/{verification}',  'AdminController@verifyUser');
         Route::put('/cancel-verification/{verification}', 'AdminController@cancelVerification');
+        Route::GET('/get-verification-percentages',  'AdminController@verificationByPercentage');
+
     });
 
 
@@ -83,6 +102,14 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::group(['prefix' => 'referral'], function () {
         Route::GET('/', 'ReferralSettingController@index');
         Route::GET('/settings', 'ReferralSettingController@settings');
+        Route::GET('/switch/{id}/{status}', 'ReferralSettingController@switch');
+        Route::POST('/switch/percentage', 'ReferralSettingController@percentage');
+        
+    });
+
+    Route::group(['prefix', 'charts'], function () {
+        Route::GET('/monthly-transaction-analytics', 'ChartController@monthlyTransactionAnalytics');
+        Route::GET('/monthly-new-user-analytics', 'ChartController@monthlyUserAnalytics');
     });
 
 });
@@ -115,11 +142,12 @@ Route::group(['middleware' => ['auth:api', 'verified', 'coo']], function () {
     //? pulseTransactionsAnalytics
     Route::group(['prefix' => 'pulse'], function () {
         Route::GET('/Analytics/{startDate?}/{endDate?}/{transaction_type?}/{transaction_duration?}', 'pulseAnalyticsController@pulseTransactionAnalytics');
+        Route::GET('/', 'PulseController@index');
+
     });
 
-
-
     Route::get('/customer-life', 'CustomerLifeController@index');
+
 
 
 

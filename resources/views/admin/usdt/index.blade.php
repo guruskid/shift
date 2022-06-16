@@ -122,7 +122,13 @@
                         @foreach ($errors->all() as $err)
                         <p class="text-danger text-center">{{ $err }}</p>
                         @endforeach
-                        <h5>Send</h5>
+                        <div class="d-flex justify-content-between">
+                            <h5>Send</h5>
+                            @if (auth()->user()->role == 999)
+                            <button data-toggle="modal" data-target="#add-address" class="btn btn-primary">Add
+                                address</button>
+                            @endif
+                        </div>
                         <form action="{{ route('admin.usdt.send') }}" method="post"> @csrf
                             <div class="form-group">
                                 <label for="">Choose wallet </label>
@@ -135,7 +141,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Address</label>
-                                <input type="text" name="address" id="address" required class="form-control">
+                                <select name="address" class="form-control">
+                                    <option value="">Select Address</option>
+                                    @foreach ($address as $a)
+                                    <option value="{{ $a->address }}">{{ $a->address}}</option>
+                                    @endforeach
+                                </select>
+                                {{-- <input type="text" name="address" id="address" required class="form-control"> --}}
                             </div>
                             <div class="form-group">
                                 <label for="">Amount (USDT)</label>
@@ -213,8 +225,7 @@
                                         <td>Completed</td>
                                         <td class="transaction_content">
                                             @if (isset($t->txId))
-                                            <a target="_blank"
-                                                href="https://tronscan.org/#/transaction/{{ $t->txId }}"
+                                            <a target="_blank" href="https://tronscan.org/#/transaction/{{ $t->txId }}"
                                                 class="">Explorer</a>
 
                                             @endif
@@ -232,4 +243,50 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="add-address">
+    <div class="modal-dialog  ">
+        <form action="{{route('admin.address')}}" id="freeze-form" method="post">
+            @csrf
+            <div class="modal-content  c-rounded">
+                <!-- Modal Header -->
+                <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
+                    <h4 class="modal-title">Add Address <i class="fa fa-paper-plane"></i></h4>
+                    <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+
+                <div class="modal-body p-4">
+                    {{-- <p class="text-success">Add Address</p> --}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Crypto Currency</label>
+                                <select name="crypto" class="form-control">
+                                    <option value="">Select Address</option>
+                                    @foreach ($crypto_currencies as $a)
+                                    <option value="{{ $a->id }}">{{ $a->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="">Address </label>
+                                <input type="text" name="address" id="addressModal" required class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Pin </label>
+                                <input type="password" name="pin" required class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-block c-rounded bg-custom-gradient txn-btn" id="buttonModal">
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 @endsection

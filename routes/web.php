@@ -423,7 +423,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chinese']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chineseAccountant']], function () {
     /* ajax calls */
     Route::GET('/chinese-dashboard', 'AdminController@dashboard')->name('admin.chinese_dashboard');
     Route::GET('/chinese-admin', 'ChineseController@chineseAdminUser')->name('admin.chinese_admins');
@@ -517,8 +517,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant']]
 
 });
 
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'accountant']], function () {
+    Route::get('/account-officers', 'JuniorAccountantController@showAccountOfficers')->name('admin.account_officers');
+    Route::get('/junior_accountant_action/{id}/{action}', 'JuniorAccountantController@action')->name('admin.Junior_accountant_action');
+});
+
 /* for super admin and all accountants */
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountant']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','AccountOfficer']], function () {
     Route::get('/query-transaction/{id}', 'NairaWalletController@query')->name('admin.query-transaction');
     Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus')->name('admin.update-naira-transaction');
 
@@ -599,6 +604,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing'
     Route::GET('/marketing/{type?}', 'MarketingController@Category')->name('admin.sales.type');
     Route::GET('/view/transactions/{type?}', 'MarketingController@viewTransactionsCategory')->name('admin.transactions.view.type');
     Route::GET('/view/users/{type?}', 'MarketingController@viewUsersCategory')->name('admin.users.view.type');
+    Route::GET('/view/transactions/{month}/{type}','MarketingController@viewTransactionsByMonth')->name('admin.transaction.view.month');
+    Route::GET('/view/users/{month}/{type}','MarketingController@viewUsersByMonth')->name('admin.users.view.month');
+
+    
 });
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
 
@@ -612,7 +621,17 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('call-log','Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
 
     Route::GET('user_profile','Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
+    Route::GET('/truncateDB-db', 'Admin\BusinessDeveloperController@truncate');
 
     // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
+
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
+    Route::GET('/sales/{type?}', 'Admin\SalesController@index')->name('sales.user-category');
+    Route::POST('/update-status', 'Admin\SalesController@assignStatus')->name('sales.update.status');
+    Route::GET('/sales_view/{type?}', 'Admin\SalesController@viewCategory')->name('sales.view-type');
+    Route::GET('Called_Users','Admin\SalesController@callLogs')->name('sales.call-log');
+    Route::GET('user/profile','Admin\SalesController@userProfile')->name('sales.user_profile');
 
 });

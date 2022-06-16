@@ -20,6 +20,7 @@ Route::group(['middleware'=>'manager'], function(){
     Route::get('/user-verification', 'UserController@verifications')->name('admin.user-verifications');
     Route::put('/user-verification/{verification}', 'UserController@verify')->name('admin.verify');
     Route::put('/cancel-verification/{verification}', 'UserController@cancelVerification')->name('admin.cancel-verification');
+    Route::get('/user-verification-history', 'UserController@verificationHistory')->name('admin.verification-history');
 
 });
 
@@ -83,7 +84,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 });
 
 
-Route::group(['middleware' => ['accountant'] ], function () {
+Route::group(['middleware' => ['AccountOfficer'] ], function () {
     Route::post('/admin-transfer', 'AssetTransactionController@payTransaction' )->name('admin.transfer');
     Route::post('/admin-btc-transfer', 'BitcoinWalletController@payBtcTransaction' )->name('admin.btc-transfer');
 
@@ -146,6 +147,10 @@ Route::group(['middleware' => ['accountant'] ], function () {
         Route::put('/cancel-trade/{transaction}', 'TradeNairaController@declineTrade')->name('admin.naira-p2p.cancel-trade');
         Route::put('/refund-trade/{transaction}', 'TradeNairaController@refundTrade')->name('admin.naira-p2p.refund-trade');
         Route::post('/update-bank-details', 'TradeNairaController@updateBankdetails')->name('agent.update-bank');
+
+        Route::get('/withdrawal-queue', 'TradeNairaController@withdrawal_queue')->name('admin.naira-p2p.withdrawal-queue');
+        Route::post('/add-withdrawal-queue', 'TradeNairaController@add_withdrawal_queue')->name('admin.naira-p2p.add-withdrawal-queue');
+        Route::post('/update-withdrawal-queue', 'TradeNairaController@update_withdrawal_queue')->name('admin.naira-p2p.update-withdrawal-queue');
 
     });
 

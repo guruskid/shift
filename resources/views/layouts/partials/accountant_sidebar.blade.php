@@ -74,8 +74,19 @@
             </div>
         </a>
     </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.accountants' ? 'active' : '' }}">
+        <a href="{{route('admin.accountants')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Account Officers</span>
+            </div>
+        </a>
+    </li>
+
     @endif
 
+    @if ( in_array(Auth::user()->role, [889] ) )
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -84,6 +95,16 @@
             </div>
         </a>
     </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin' ? 'active' : '' }}  ">
+        <a href="{{route('admin.tether')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <img src="/svg/tetherwallet_logo.svg" height="20px" class="mr-4" alt="">
+                <span>USDT Wallet</span>
+            </div>
+        </a>
+    </li>
+    @endif
 
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin-wallets-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
@@ -140,6 +161,16 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.payout_transactions' ? 'active' : '' }}">
+        <a href="{{route('admin.payout_transactions')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Payout Page</span>
+            </div>
+        </a>
+    </li>
+
+    @endif
     <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
         <a href="{{route('admin.users')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -148,7 +179,6 @@
             </div>
         </a>
     </li>
-    @endif
 
     <li class="menu {{ Route::currentRouteName() == 'logout' ? 'active' : '' }}">
         <a href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"

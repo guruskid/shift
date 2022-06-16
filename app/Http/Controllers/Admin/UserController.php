@@ -53,6 +53,13 @@ class UserController extends Controller
         return view('admin.user_verifications', compact('verifications'));
     }
 
+    public function verificationHistory()
+    {
+        $verifications = Verification::where('status', '!=', 'waiting')->latest()->paginate(50);
+
+        return view('admin.verification_history', compact('verifications'));
+    }
+
     public function verify(Verification $verification)
     {
 
@@ -163,17 +170,17 @@ class UserController extends Controller
                         Driver’s license.<br>
                 ';
             } elseif ($dt->reason == 'Unclear uploaded document') {
-                
+
                 $dt->reason = 'The document you uploaded is not unclear';
                 $suggestion = 'Please  upload a clear image of the required document that clearly shows your name and other relevant information.
                 ';
             } elseif ($dt->reason == 'Full image of the document was not uploaded') {
-                
+
                 $dt->reason = 'The full image of the document was not uploaded';
                 $suggestion = 'The image of the document you uploaded has some data missing. Please upload a full image of the document.
                 ';
             } elseif ($dt->reason == 'A mismatch of information') {
-                
+
                 $dt->reason = 'There is a mismatch of information';
                 $suggestion = 'Please upload a document that contains your name on Dantown.
                 ';
@@ -182,7 +189,7 @@ class UserController extends Controller
 
         $body = "We cannot proceed with your " . $bodyTitle . ".<br><br>
         This is because: <br><b>" . $dt->reason . "</b> <br><br><b>" . $suggestion."</b><br><br>
-        
+
         Please send an email to <a style='text-decoration:none' href='mailto:support@godantown.com'>support@godantown.com</a> if you have questions or complaints";
         $name = ($verification->user->first_name == " ") ? $verification->user->username : $verification->user->first_name;
         $name = str_replace(' ', '', $name);

@@ -57,23 +57,33 @@
                     <div class="main-card mb-3 pb-3 card">
                         <div class="card-header d-flex justify-content-between">
                             <div class="">
-                                {{ $segment }}
+                                {{ $segment }} @if (isset($count))
+                                    [{{ number_format($count) }}]
+                                @endif 
                             </div>
-                            @if($segment == "Call Log")
                             <form class="form-inline p-2"
                                 method="GET">
                                 {{-- @csrf --}}
-                            <div class="form-group mr-2">
-                                <select name="status" class="form-control" required>
-                                    <option value="">Select Category</option>
-                                    @foreach ($call_categories as $cc)
-                                        <option value="{{ $cc->id }}">{{ $cc->category }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
-                        </form>
-                        @endif
+                                <div class="form-group mr-2">
+                                    <label for="">Start date </label>
+                                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                                </div>
+                                <div class="form-group mr-2">
+                                    <label for="">End date </label>
+                                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                                </div>
+                                @if($segment == "Call Log")
+                                <div class="form-group mr-2">
+                                    <select name="status" class="form-control" required>
+                                        <option value="">Select Category</option>
+                                        @foreach ($call_categories as $cc)
+                                            <option value="{{ $cc->id }}">{{ $cc->category }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @endif
+                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                            </form>
                     </div>
                     
                     <div class="table-responsive p-3">

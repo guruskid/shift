@@ -13,6 +13,7 @@ use App\UtilityTransaction;
 use App\NairaTransaction;
 use App\User;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 
@@ -235,6 +236,188 @@ class SummaryController extends Controller
         }
     }
 
+    public function cryptoAndGiftCardTransactions($all_tnx,$bitcoin_total_tnx,$giftcards_totaltnx_buy
+    ,$giftcards_totaltnx_sell,$crypto_totaltnx_buy,$crypto_totaltnx_sell,$data)
+    {
+        $segment = $data['segment'];
+        $accountant= $data['accountant'];
+        $show_data= $data['show_data'];
+        $show_category= $data['show_category'];
+        $day= $data['day'];
+        $month= $data['month'];
+        $show_summary= $data['show_summary'];
+        $accountant_name = $data['accountant_name'];
+
+        //*All Transactions
+        $all_tnx_count = $all_tnx->where('status', 'success')->count();
+        $all_tnx = $all_tnx->paginate(100);
+
+        //*Bitcoin Transaction
+        $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy')->sum('quantity');
+        $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
+
+        //*GiftCard Transaction BUY
+        $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
+        $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
+
+        //*GiftCard Transaction SELL
+        $giftcards_totaltnx_sell_amount = $giftcards_totaltnx_sell->sum('amount');
+        $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
+
+        //*Crypto Transaction BUY
+        $crypto_totaltnx_buy_amount = $crypto_totaltnx_buy->sum('amount');
+        $crypto_totaltnx_buy = $crypto_totaltnx_buy->count();
+
+        //*Crypto Transaction SELL
+        $crypto_totaltnx_sell_amount = $crypto_totaltnx_sell->sum('amount');
+        $crypto_totaltnx_sell = $crypto_totaltnx_sell->count();
+
+        return view('admin.summary.JuniorAccountant.transaction',compact([
+            'segment','accountant','all_tnx','all_tnx_count','show_data','show_category','day','month','show_summary',
+            'giftcards_totaltnx_buy','giftcards_totaltnx_sell','crypto_totaltnx_buy','crypto_totaltnx_sell',
+            'giftcards_totaltnx_buy_amount','giftcards_totaltnx_sell_amount','crypto_totaltnx_buy_amount','crypto_totaltnx_sell_amount',
+            'bitcoin_total_tnx_buy','bitcoin_total_tnx_sell',
+
+        ]));        
+    }
+
+    public function UtilitiesTransactions($util_tnx,$data)
+    {
+        $segment = $data['segment'];
+        $accountant= $data['accountant'];
+        $show_data= $data['show_data'];
+        $show_category= $data['show_category'];
+        $day= $data['day'];
+        $month= $data['month'];
+        $show_summary= $data['show_summary'];
+        $accountant_name = $data['accountant_name'];
+
+        $util_total_tnx = $util_tnx->where('status','success')->count();
+        $util_tnx_amount = $util_tnx->where('status','success')->sum('amount');
+        $util_tnx_fee = $util_tnx->where('status','success')->sum('convenience_fee');
+        $util_amount_paid = $util_tnx->where('status','success')->sum('total');
+        $util_tnx = $util_tnx->paginate(100);
+        return view('admin.summary.JuniorAccountant.transaction',compact([
+            'segment','accountant','show_data','show_category','day','month','show_summary',
+            'util_tnx','util_total_tnx', 'util_tnx_amount', 'util_tnx_fee' , 'util_amount_paid',
+
+        ]));
+    }
+
+    public function GetAverageResponseTime($data_collection)
+    {
+        $tnx = $data_collection;
+        $avg_response = 0;
+        $total = $tnx->count();
+        foreach ($tnx as $t) {
+            if($t->status == 'pending'){
+                $avg_response += now()->diffInSeconds($t->created_at);
+            }else{
+                $avg_response += $t->updated_at->diffInSeconds($t->created_at);
+            }
+        }
+        if($total != 0){
+            $average = $avg_response/$total;
+            return (CarbonInterval::seconds($average)->cascade()->forHumans());
+        }
+        else{
+            return 0;
+        }
+        
+    }
+    public function PayBridgeDeposit($nw_deposit_tnx,$data)
+    {
+        $segment = $data['segment'];
+        $accountant= $data['accountant'];
+        $show_data= $data['show_data'];
+        $show_category= $data['show_category'];
+        $day= $data['day'];
+        $month= $data['month'];
+        $show_summary= $data['show_summary'];
+        $accountant_name = $data['accountant_name'];
+
+        $nw_deposit_tnx_total = $nw_deposit_tnx->where('status','success')->count();
+        $nw_deposit_amount_paid = $nw_deposit_tnx->where('status','success')->sum('amount_paid');
+        $nw_deposit_tnx_charges = $nw_deposit_tnx->where('status','success')->sum('charge');
+        $nw_deposit_total_amount = $nw_deposit_tnx->where('status','success')->sum('amount');
+
+        $nw_deposit_pending_total = $nw_deposit_tnx->where('status','pending')->count();
+        $nw_deposit_pending_amount = $nw_deposit_tnx->where('status','pending')->sum('amount');
+        $nw_deposit_tnx = $nw_deposit_tnx->paginate(100);
+        $deposit_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',1)->get();
+        $deposit_total_pending = $deposit_total->where('status','pending')->count();
+        $deposit_total_pending_amount = $deposit_total->where('status','pending')->sum('amount');
+        $averageResponseTime = $this->GetAverageResponseTime($nw_deposit_tnx);
+        return view('admin.summary.JuniorAccountant.transaction',compact([
+            'segment','accountant','show_data','show_category','day','month','show_summary',
+            'nw_deposit_tnx','nw_deposit_tnx_total','nw_deposit_amount_paid','nw_deposit_tnx_charges','nw_deposit_total_amount',
+            'nw_deposit_pending_total','nw_deposit_pending_amount','deposit_total_pending','deposit_total_pending_amount','averageResponseTime'
+        ]));
+    }
+
+    public function PayBridgeWithdrawal($nw_withdrawal_tnx,$data)
+    {
+        $segment = $data['segment'];
+        $accountant= $data['accountant'];
+        $show_data= $data['show_data'];
+        $show_category= $data['show_category'];
+        $day= $data['day'];
+        $month= $data['month'];
+        $show_summary= $data['show_summary'];
+        $accountant_name = $data['accountant_name'];
+
+        $nw_withdrawal_tnx_total = $nw_withdrawal_tnx->where('status','success')->count();
+        $nw_withdrawal_amount_paid = $nw_withdrawal_tnx->where('status','success')->sum('amount_paid');
+        $nw_withdrawal_tnx_charges = $nw_withdrawal_tnx->where('status','success')->sum('charge');
+        $nw_withdrawal_total_amount = $nw_withdrawal_tnx->where('status','success')->sum('amount');
+
+        $nw_withdrawal_pending_total = $nw_withdrawal_tnx->where('status','pending')->count();
+        $nw_withdrawal_pending_amount = $nw_withdrawal_tnx->where('status','pending')->sum('amount');
+        $nw_withdrawal_tnx = $nw_withdrawal_tnx->paginate(100);
+
+        $withdrawal_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',3)->get();
+        $withdrawal_total_pending = $withdrawal_total->where('status','pending')->count();
+        $withdrawal_total_pending_amount = $withdrawal_total->where('status','pending')->sum('amount');
+        $averageResponseTime = $this->GetAverageResponseTime($nw_withdrawal_tnx);
+        return view('admin.summary.JuniorAccountant.transaction',compact([
+            'segment','accountant','show_data','show_category','day','month','show_summary',
+            'nw_withdrawal_tnx','nw_withdrawal_tnx_total','nw_withdrawal_amount_paid','nw_withdrawal_tnx_charges','nw_withdrawal_total_amount',
+            'nw_withdrawal_pending_total','nw_withdrawal_pending_amount','withdrawal_total_pending','withdrawal_total_pending_amount','averageResponseTime'
+        ])); 
+    }
+
+    public function PayBridgeOthers($nw_other_tnx,$data)
+    {
+        $segment = $data['segment'];
+        $accountant= $data['accountant'];
+        $show_data= $data['show_data'];
+        $show_category= $data['show_category'];
+        $day= $data['day'];
+        $month= $data['month'];
+        $show_summary= $data['show_summary'];
+        $accountant_name = $data['accountant_name'];
+
+        $nw_other_tnx_total = $nw_other_tnx->where('status','success')->count();
+        $nw_other_amount_paid = $nw_other_tnx->where('status','success')->sum('amount_paid');
+        $nw_other_tnx_charges = $nw_other_tnx->where('status','success')->sum('charge');
+        $nw_other_total_amount = $nw_other_tnx->where('status','success')->sum('amount');
+
+        $nw_other_pending_total = $nw_other_tnx->where('status','pending')->count();
+        $nw_other_pending_amount = $nw_other_tnx->where('status','pending')->sum('amount');
+        $nw_other_tnx = $nw_other_tnx->paginate(100);
+
+        $other_total = NairaTransaction::latest()->where('status','pending')
+        ->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3)->get();
+        $other_total_pending = $other_total->where('status','pending')->count();
+        $other_total_pending_amount = $other_total->where('status','pending')->sum('amount');
+        $averageResponseTime = $this->GetAverageResponseTime($nw_other_tnx);
+        return view('admin.summary.JuniorAccountant.transaction',compact([
+            'segment','accountant','show_data','show_category','day','month','show_summary',
+            'nw_other_tnx','nw_other_tnx_total','nw_other_amount_paid','nw_other_tnx_charges','nw_other_total_amount',
+                'nw_other_pending_total','nw_other_pending_amount','other_total_pending','other_total_pending_amount','averageResponseTime'
+            ]));
+    }
+
     public function summary_tnx_category($month, $day, $category, Request $request)
     {
         $request->session()->forget('RequestDetails');
@@ -246,27 +429,33 @@ class SummaryController extends Controller
         $segment = $current_day_value->format("M d");
 
         $user = Auth::user();
-        $accountant = User::whereIn('role', [777])->where('id','!=',$user->id)->get();
+        $accountant = User::whereIn('role', [777,775])->get();
 
         $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$current_day_value)
         ->whereDate('created_at','<=',$current_day_value)
         ->where('user_id',$user->id)
         ->latest('id')->first();
 
+        $data = array(
+            'segment'=>$segment,
+            'accountant'=>$accountant,
+            'show_data' =>$show_data,
+            'show_category' => $show_category,
+            'day' =>$day,
+            'month' => $month,
+            'show_summary' =>$show_summary,
+            'accountant_name' => null
+        );
         if($category == "all"){
             //**All Transactions */
             $all_tnx = Transaction::whereNotNull('id')->orderBy('created_at', 'desc');
             $all_tnx = $this->category_listing($user,$accountant_timestamp,$all_tnx,$current_day_value);
             $all_tnx = $all_tnx->latest()->get();
-            $all_tnx_count = $all_tnx->where('status', 'success')->count();
-            $all_tnx = $all_tnx->paginate(100);
 
             //**Bitcoin Transactions */
             $bitcoin_total_tnx = Transaction::whereNotNull('id');
             $bitcoin_total_tnx = $this->category_listing($user,$accountant_timestamp,$bitcoin_total_tnx,$current_day_value);
             $bitcoin_total_tnx = $bitcoin_total_tnx->where('status', 'success')->where('card_id',102)->get();
-            $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy')->sum('quantity');
-            $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
 
             //**GiftCards Buy Transactions */
             $giftcards_totaltnx_buy = Transaction::whereNotNull('id')->whereHas('asset', function ($query) {
@@ -274,8 +463,6 @@ class SummaryController extends Controller
             })->where('type', 'buy');
             $giftcards_totaltnx_buy = $this->category_listing($user,$accountant_timestamp,$giftcards_totaltnx_buy,$current_day_value);
             $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->where('status', 'success')->get();
-            $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
-            $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
 
             //**GiftCards Sell Transactions */
             $giftcards_totaltnx_sell = Transaction::whereNotNull('id')->whereHas('asset', function ($query) {
@@ -283,8 +470,6 @@ class SummaryController extends Controller
              })->where('type', 'sell');
              $giftcards_totaltnx_sell = $this->category_listing($user,$accountant_timestamp,$giftcards_totaltnx_sell,$current_day_value);
              $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->where('status', 'success')->get();
-             $giftcards_totaltnx_sell_amount = $giftcards_totaltnx_sell->sum('amount');
-             $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
 
              //**Crypto Buy Transactions */
              $crypto_totaltnx_buy = Transaction::whereNotNull('id')->whereHas('asset', function ($query) {
@@ -292,8 +477,6 @@ class SummaryController extends Controller
             })->where('type', 'buy');
             $crypto_totaltnx_buy = $this->category_listing($user,$accountant_timestamp,$crypto_totaltnx_buy,$current_day_value);
             $crypto_totaltnx_buy = $crypto_totaltnx_buy->where('status', 'success')->get();
-            $crypto_totaltnx_buy_amount = $crypto_totaltnx_buy->sum('amount');
-            $crypto_totaltnx_buy = $crypto_totaltnx_buy->count();
 
             //**Crypto Sell Transactions */
             $crypto_totaltnx_sell = Transaction::whereNotNull('id')->whereHas('asset', function ($query) {
@@ -301,33 +484,17 @@ class SummaryController extends Controller
             })->where('type', 'sell');
             $crypto_totaltnx_sell = $this->category_listing($user,$accountant_timestamp,$crypto_totaltnx_sell,$current_day_value);
             $crypto_totaltnx_sell = $crypto_totaltnx_sell->where('status', 'success')->get();
-            $crypto_totaltnx_sell_amount = $crypto_totaltnx_sell->sum('amount');
-            $crypto_totaltnx_sell = $crypto_totaltnx_sell->count();
 
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-                'segment','accountant','all_tnx','all_tnx_count','show_data','show_category','day','month','show_summary',
-                'giftcards_totaltnx_buy','giftcards_totaltnx_sell','crypto_totaltnx_buy','crypto_totaltnx_sell',
-                'giftcards_totaltnx_buy_amount','giftcards_totaltnx_sell_amount','crypto_totaltnx_buy_amount','crypto_totaltnx_sell_amount',
-                'bitcoin_total_tnx_buy','bitcoin_total_tnx_sell',
-
-            ]));
+            return $this->cryptoAndGiftCardTransactions($all_tnx,$bitcoin_total_tnx,$giftcards_totaltnx_buy
+            ,$giftcards_totaltnx_sell,$crypto_totaltnx_buy,$crypto_totaltnx_sell,$data);
         }
 
         if($category == "utilities"){
             //**Utilities Transaction */
             $util_tnx = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc');
             $util_tnx = $this->category_listing($user,$accountant_timestamp,$util_tnx,$current_day_value);
-            $util_total_tnx = $util_tnx->where('status','success')->count();
-            $util_tnx_amount = $util_tnx->where('status','success')->sum('amount');
-            $util_tnx_fee = $util_tnx->where('status','success')->sum('convenience_fee');
-            $util_amount_paid = $util_tnx->where('status','success')->sum('total');
-            $util_tnx = $util_tnx->paginate(100);
 
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-                'segment','accountant','show_data','show_category','day','month','show_summary',
-                'util_tnx','util_total_tnx', 'util_tnx_amount', 'util_tnx_fee' , 'util_amount_paid',
-
-            ]));
+            return $this->UtilitiesTransactions($util_tnx,$data);
         }
 
         if($category == "paybridge"){
@@ -336,26 +503,7 @@ class SummaryController extends Controller
             $nw_deposit_tnx = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id',1);
             $nw_deposit_tnx = $this->category_listing($user,$accountant_timestamp,$nw_deposit_tnx,$current_day_value);
             $nw_deposit_tnx = $nw_deposit_tnx->get();
-
-            $nw_deposit_tnx_total = $nw_deposit_tnx->where('status','success')->count();
-            $nw_deposit_amount_paid = $nw_deposit_tnx->where('status','success')->sum('amount_paid');
-            $nw_deposit_tnx_charges = $nw_deposit_tnx->where('status','success')->sum('charge');
-            $nw_deposit_total_amount = $nw_deposit_tnx->where('status','success')->sum('amount');
-
-            $nw_deposit_pending_total = $nw_deposit_tnx->where('status','pending')->count();
-            $nw_deposit_pending_amount = $nw_deposit_tnx->where('status','pending')->sum('amount');
-            $nw_deposit_tnx = $nw_deposit_tnx->paginate(100);
-            $deposit_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',1)->get();
-            $deposit_total_pending = $deposit_total->where('status','pending')->count();
-            $deposit_total_pending_amount = $deposit_total->where('status','pending')->sum('amount');
-
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-            'segment','accountant','show_data','show_category','day','month','show_summary',
-            'nw_deposit_tnx','nw_deposit_tnx_total','nw_deposit_amount_paid','nw_deposit_tnx_charges','nw_deposit_total_amount',
-            'nw_deposit_pending_total','nw_deposit_pending_amount','deposit_total_pending','deposit_total_pending_amount'
-        ]));
-
-
+            return $this->PayBridgeDeposit($nw_deposit_tnx,$data);
         }
         if($category == "paybridgewithdrawal"){
 
@@ -363,23 +511,8 @@ class SummaryController extends Controller
             $nw_withdrawal_tnx = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id',3);
             $nw_withdrawal_tnx = $this->category_listing($user,$accountant_timestamp,$nw_withdrawal_tnx,$current_day_value);
             $nw_withdrawal_tnx = $nw_withdrawal_tnx->get();
-            $nw_withdrawal_tnx_total = $nw_withdrawal_tnx->where('status','success')->count();
-            $nw_withdrawal_amount_paid = $nw_withdrawal_tnx->where('status','success')->sum('amount_paid');
-            $nw_withdrawal_tnx_charges = $nw_withdrawal_tnx->where('status','success')->sum('charge');
-            $nw_withdrawal_total_amount = $nw_withdrawal_tnx->where('status','success')->sum('amount');
-
-            $nw_withdrawal_pending_total = $nw_withdrawal_tnx->where('status','pending')->count();
-            $nw_withdrawal_pending_amount = $nw_withdrawal_tnx->where('status','pending')->sum('amount');
-            $nw_withdrawal_tnx = $nw_withdrawal_tnx->paginate(100);
-
-            $withdrawal_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',3)->get();
-            $withdrawal_total_pending = $withdrawal_total->where('status','pending')->count();
-            $withdrawal_total_pending_amount = $withdrawal_total->where('status','pending')->sum('amount');
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-                'segment','accountant','show_data','show_category','day','month','show_summary',
-                'nw_withdrawal_tnx','nw_withdrawal_tnx_total','nw_withdrawal_amount_paid','nw_withdrawal_tnx_charges','nw_withdrawal_total_amount',
-                'nw_withdrawal_pending_total','nw_withdrawal_pending_amount','withdrawal_total_pending','withdrawal_total_pending_amount'
-            ]));            
+            return $this->PayBridgeWithdrawal($nw_withdrawal_tnx,$data);
+                       
         }
 
         if($category == "paybridgeothers"){
@@ -388,32 +521,16 @@ class SummaryController extends Controller
             $nw_other_tnx = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3);
             $nw_other_tnx = $this->category_listing($user,$accountant_timestamp,$nw_other_tnx,$current_day_value);
             $nw_other_tnx = $nw_other_tnx->get();
-
-            $nw_other_tnx_total = $nw_other_tnx->where('status','success')->count();
-            $nw_other_amount_paid = $nw_other_tnx->where('status','success')->sum('amount_paid');
-            $nw_other_tnx_charges = $nw_other_tnx->where('status','success')->sum('charge');
-            $nw_other_total_amount = $nw_other_tnx->where('status','success')->sum('amount');
-
-            $nw_other_pending_total = $nw_other_tnx->where('status','pending')->count();
-            $nw_other_pending_amount = $nw_other_tnx->where('status','pending')->sum('amount');
-            $nw_other_tnx = $nw_other_tnx->paginate(100);
-
-            $other_total = NairaTransaction::latest()->where('status','pending')
-            ->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3)->get();
-            $other_total_pending = $other_total->where('status','pending')->count();
-            $other_total_pending_amount = $other_total->where('status','pending')->sum('amount');
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-                'segment','accountant','show_data','show_category','day','month','show_summary',
-                'nw_other_tnx','nw_other_tnx_total','nw_other_amount_paid','nw_other_tnx_charges','nw_other_total_amount',
-                    'nw_other_pending_total','nw_other_pending_amount','other_total_pending','other_total_pending_amount'
-                ]));
+            return $this->PayBridgeOthers($nw_other_tnx,$data);
         }
 
     }
 
+
+
     public function category_listing($user,$accountant_timestamp,$value,$current_day_value)
     {
-        if ($user->role == 777 && !empty($accountant_timestamp)) {
+        if (($user->role == 777 OR $user->role == 775 )&& !empty($accountant_timestamp)) {
             $value = $value
             ->where('updated_at', '>=', $accountant_timestamp->created_at)
             ->where('updated_at', '<=', $accountant_timestamp->updated_at);
@@ -437,7 +554,7 @@ class SummaryController extends Controller
         $month = $requestDetails['month'];
         $show_category = $requestDetails['category'];
         $show_data = true;
-        $show_summary = (Auth::user()->role != 777 || $requestDetails['Accountant'] == 'null') ? true : false;
+        $show_summary = (Auth::user()->role != 777 || Auth::user()->role != 775 || $requestDetails['Accountant'] == 'null') ? true : false;
         $start_date =  explode('T',$requestDetails['startdate']);
         $end_date = explode('T',$requestDetails['enddate']);
 
@@ -453,8 +570,8 @@ class SummaryController extends Controller
             $user = User::find($requestDetails['Accountant']);
             $accountant_name = $user->first_name ?: $user->email;
         }
-        $accountant = User::whereIn('role', [777])->where('id','!=',$user->id)->get();
-        
+        $accountant = User::whereIn('role', [777,775])->get();
+
         if($requestDetails['Accountant'] == 'null')
         {
             return $this->sortbydate($requestDetails,$day,$month,$show_category,$show_data,
@@ -482,56 +599,16 @@ class SummaryController extends Controller
                 $segment .= " to ".Carbon::parse($end)->format('d-M-y h:ia'); 
             }
         }
-
-        //**All Transactions */
-        $all_tnx = Transaction::whereNotNull('id')->where('updated_at', '>=', $start);
-        $all_tnx = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$all_tnx,$start_date[0],$end);
-        $all_tnx_count = $all_tnx->where('status', 'success')->count();
-
-        //**Bitcoin Buy and Sell Transactions */
-        $bitcoin_total_tnx = $all_tnx ->where('status', 'success')->where('card_id',102);
-        $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy')->sum('quantity');
-        $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
-
-        //**GiftCard Buy Transactions */
-        $giftcards_totaltnx_buy = Transaction::whereNotNull('id')->where('status', 'success')->whereHas('asset', function ($query) {
-            $query->where('is_crypto', 0);
-        })->where('type', 'buy')->where('updated_at', '>=', $start);
-        $giftcards_totaltnx_buy = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$giftcards_totaltnx_buy,$start_date[0],$end);
-        $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
-        $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
-
-        //**GiftCard Sell Transactions */
-        $giftcards_totaltnx_sell = Transaction::whereNotNull('id')->where('status', 'success')->whereHas('asset', function ($query) {
-            $query->where('is_crypto', 0);
-        })->where('type', 'sell')->where('updated_at', '>=', $start);
-        $giftcards_totaltnx_sell = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$giftcards_totaltnx_sell,$start_date[0],$end);
-        $giftcards_totaltnx_sell_amount = $giftcards_totaltnx_sell->sum('amount');
-        $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
-
-        //**All Crypto Buy Transactions */
-        $crypto_totaltnx_buy = Transaction::whereNotNull('id') ->where('status', 'success')->whereHas('asset', function ($query) {
-            $query->where('is_crypto', 1);
-        })->where('type', 'buy')->where('updated_at', '>=', $start);
-        $crypto_totaltnx_buy = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$crypto_totaltnx_buy,$start_date[0],$end);
-        $crypto_totaltnx_buy_amount = $crypto_totaltnx_buy->sum('amount');
-        $crypto_totaltnx_buy = $crypto_totaltnx_buy->count();
-
-        //**All Crypto Sell Transactions */
-        $crypto_totaltnx_sell = Transaction::whereNotNull('id')->where('status', 'success')->whereHas('asset', function ($query) {
-            $query->where('is_crypto', 1);
-        })->where('type', 'sell')->where('updated_at', '>=', $start);
-        $crypto_totaltnx_sell = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$crypto_totaltnx_sell,$start_date[0],$end);
-        $crypto_totaltnx_sell_amount = $crypto_totaltnx_sell->sum('amount');
-        $crypto_totaltnx_sell = $crypto_totaltnx_sell->count();
-
-        //**Utility Transaction */
-        $util_tranx = UtilityTransaction::whereNotNull('id')->where('updated_at', '>=', $start);
-        $util_tranx = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$util_tranx,$start_date[0],$end);
-
-        //**Paybridge Transaction */
-        $nw_tranx = NairaTransaction::whereNotNull('id')->where('updated_at', '>=', $start);
-        $nw_tranx = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$nw_tranx,$start_date[0],$end);
+        $data = array(
+            'segment'=>$segment,
+            'accountant'=>$accountant,
+            'show_data' =>$show_data,
+            'show_category' => $show_category,
+            'day' =>$day,
+            'month' => $month,
+            'show_summary' =>$show_summary,
+            'accountant_name' => $accountant_name,
+        );
 
         $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$start_date[0])->where('user_id',$user->id)->get();
 
@@ -545,29 +622,48 @@ class SummaryController extends Controller
         {
             foreach ($accountant_timestamp  as $at) {
                 $all_tranx = Transaction::whereNotNull('id')
-                ->orderBy('created_at', 'desc')->where('updated_at', '>=', $at->created_at)->where('updated_at', '<=', $at->updated_at)->get();
+                ->orderBy('created_at', 'desc')->where('updated_at', '>=', $at->activeTime);
+                if($at->inactiveTime != null){
+                    $all_tranx = $all_tranx->where('updated_at', '<=', $at->inactiveTime);
+                }
+                $all_tranx = $all_tranx->get();
+                
                 $all_transaction_Collection = $all_transaction_Collection->concat($all_tranx);
 
                 $gift_tranx = Transaction::whereNotNull('id')
-                ->orderBy('created_at', 'desc')->where('updated_at', '>=', $at->created_at)->where('updated_at', '<=', $at->updated_at)->where('status', 'success')
+                ->orderBy('created_at', 'desc')->where('updated_at', '>=', $at->activeTime)->where('status', 'success')
                 ->whereHas('asset', function ($query) {
                     $query->where('is_crypto', 0);
-                })->get();
+                });
+                if($at->inactiveTime != null){
+                    $gift_tranx = $gift_tranx->where('updated_at', '<=', $at->inactiveTime);
+                }
+                $gift_tranx = $gift_tranx->get();
                 $giftcard_collection = $giftcard_collection->concat($gift_tranx);
 
-                $crypto_tranx = Transaction::whereNotNull('id')->orderBy('created_at', 'desc')->where('updated_at', '>=', $at->created_at)
-                ->where('updated_at', '<=', $at->updated_at)->where('status', 'success')
+                $crypto_tranx = Transaction::whereNotNull('id')->orderBy('created_at', 'desc')->where('updated_at', '>=', $at->activeTime)
+                ->where('status', 'success')
                 ->whereHas('asset', function ($query) {
                     $query->where('is_crypto', 1);
-                })->get();
+                });
+                if($at->inactiveTime != null){
+                    $crypto_tranx = $crypto_tranx->where('updated_at', '<=', $at->inactiveTime);
+                }
+                $crypto_tranx = $crypto_tranx->get();
                 $crypto_collection = $crypto_collection->concat($crypto_tranx);
 
-                $util_tranx = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc')->where('updated_at', '>=', $at->created_at)
-                ->where('updated_at', '<=', $at->updated_at)->get();
+                $util_tranx = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc')->where('updated_at', '>=', $at->activeTime);
+                if($at->inactiveTime != null){
+                    $util_tranx = $util_tranx->where('updated_at', '<=', $at->inactiveTime);
+                }
+                $util_tranx = $util_tranx->get();
                 $util_collection = $util_collection->concat($util_tranx);
 
-                $nw_tranx = NairaTransaction::latest()->orderBy('created_at','desc')
-                ->where('updated_at', '>=', $at->created_at)->where('updated_at', '<=', $at->updated_at)->get();
+                $nw_tranx = NairaTransaction::latest()->orderBy('created_at','desc')->where('updated_at', '>=', $at->activeTime);
+                if($at->inactiveTime != null){
+                    $nw_tranx = $nw_tranx->where('updated_at', '<=', $at->inactiveTime);
+                }
+                $nw_tranx = $nw_tranx->get();
                 $nw_collection = $nw_collection->concat($nw_tranx);
 
             }
@@ -598,126 +694,43 @@ class SummaryController extends Controller
 
         if($show_category == "all")
         {
-            $all_tnx_count = $all_tnx->where('status', 'success')->count();
 
             $bitcoin_total_tnx = $all_tnx ->where('status', 'success')->where('card_id',102);
-            $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy')->sum('quantity');
-            $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
+            return $this->cryptoAndGiftCardTransactions($all_tnx,$bitcoin_total_tnx,$giftcards_totaltnx_buy
+            ,$giftcards_totaltnx_sell,$crypto_totaltnx_buy,$crypto_totaltnx_sell,$data);
 
-            $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
-            $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
-
-            $giftcards_totaltnx_sell_amount = $giftcards_totaltnx_sell->sum('amount');
-            $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
-
-            $crypto_totaltnx_buy_amount = $crypto_totaltnx_buy->sum('amount');
-            $crypto_totaltnx_buy = $crypto_totaltnx_buy->count();
-
-            $crypto_totaltnx_sell_amount = $crypto_totaltnx_sell->sum('amount');
-            $crypto_totaltnx_sell = $crypto_totaltnx_sell->count();
-
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-                'segment','accountant','all_tnx','all_tnx_count','show_data','show_category','day','month','show_summary',
-                'giftcards_totaltnx_buy','giftcards_totaltnx_sell','crypto_totaltnx_buy','crypto_totaltnx_sell',
-                'giftcards_totaltnx_buy_amount','giftcards_totaltnx_sell_amount','crypto_totaltnx_buy_amount','crypto_totaltnx_sell_amount',
-                'bitcoin_total_tnx_buy','bitcoin_total_tnx_sell','accountant_name'
-            ]));
         }
 
         if($show_category == "utilities")
         {
             $util_tnx = $util_tranx;
-            $util_total_tnx = $util_tranx->where('status','success')->count();
-
-            $util_tnx_amount = $util_tranx->where('status','success')->sum('amount');
-
-            $util_tnx_fee = $util_tranx->where('status','success')->sum('convenience_fee');
-
-            $util_amount_paid = $util_tranx->where('status','success')->sum('total');
-
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-                'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
-                'util_tnx','util_total_tnx', 'util_tnx_amount', 'util_tnx_fee' , 'util_amount_paid',
-
-            ]));
+            return $this->UtilitiesTransactions($util_tnx,$data);
         }
-        
-        if($show_category == "paybridge" OR
-        $show_category == "paybridgewithdrawal" OR $show_category == "paybridgeothers")
+        if($show_category == "paybridge"){
+            $nw_deposit_tnx = $nw_tranx->where('transaction_type_id',1);
+            return $this->PayBridgeDeposit($nw_deposit_tnx,$data);
+        }
+
+        if($show_category == "paybridgewithdrawal")
         {
-            if($show_category == "paybridge"){
-                $nw_deposit_tnx = $nw_tranx->where('transaction_type_id',1);
-                $nw_deposit_tnx_total = $nw_deposit_tnx->where('status','success')->count();
-                $nw_deposit_amount_paid = $nw_deposit_tnx->where('status','success')->sum('amount_paid');
-                $nw_deposit_tnx_charges = $nw_deposit_tnx->where('status','success')->sum('charge');
-                $nw_deposit_total_amount = $nw_deposit_tnx->where('status','success')->sum('amount');
-
-                $nw_deposit_pending_total = $nw_deposit_tnx->where('status','pending')->count();
-                $nw_deposit_pending_amount = $nw_deposit_tnx->where('status','pending')->sum('amount');
-
-                $deposit_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',1)->get();
-                $deposit_total_pending = $deposit_total->where('status','pending')->count();
-                $deposit_total_pending_amount = $deposit_total->where('status','pending')->sum('amount');
-                return view('admin.summary.JuniorAccountant.transaction',compact([
-                    'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
-                    'nw_deposit_tnx','nw_deposit_tnx_total','nw_deposit_amount_paid','nw_deposit_tnx_charges','nw_deposit_total_amount',
-                    'nw_deposit_pending_total','nw_deposit_pending_amount','deposit_total_pending','deposit_total_pending_amount'
-                ]));
-
-            }
-
-            if($show_category == "paybridgewithdrawal")
-            {
-                $nw_withdrawal_tnx = $nw_tranx->where('transaction_type_id',3);
-                $nw_withdrawal_tnx_total = $nw_withdrawal_tnx->where('status','success')->count();
-                $nw_withdrawal_amount_paid = $nw_withdrawal_tnx->where('status','success')->sum('amount_paid');
-                $nw_withdrawal_tnx_charges = $nw_withdrawal_tnx->where('status','success')->sum('charge');
-                $nw_withdrawal_total_amount = $nw_withdrawal_tnx->where('status','success')->sum('amount');
-
-                $nw_withdrawal_pending_total = $nw_withdrawal_tnx->where('status','pending')->count();
-                $nw_withdrawal_pending_amount = $nw_withdrawal_tnx->where('status','pending')->sum('amount');
-
-                $withdrawal_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',3)->get();
-                $withdrawal_total_pending = $withdrawal_total->where('status','pending')->count();
-                $withdrawal_total_pending_amount = $withdrawal_total->where('status','pending')->sum('amount');
-
-                return view('admin.summary.JuniorAccountant.transaction',compact([
-                    'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
-                    'nw_withdrawal_tnx','nw_withdrawal_tnx_total','nw_withdrawal_amount_paid','nw_withdrawal_tnx_charges','nw_withdrawal_total_amount',
-                    'nw_withdrawal_pending_total','nw_withdrawal_pending_amount','withdrawal_total_pending','withdrawal_total_pending_amount'
-                ]));
-            }
-            if($show_category == "paybridgeothers")
-            {
-                $nw_other_tnx = $nw_tranx->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3);
-                $nw_other_tnx_total = $nw_other_tnx->where('status','success')->count();
-                $nw_other_amount_paid = $nw_other_tnx->where('status','success')->sum('amount_paid');
-                $nw_other_tnx_charges = $nw_other_tnx->where('status','success')->sum('charge');
-                $nw_other_total_amount = $nw_other_tnx->where('status','success')->sum('amount');
-
-                $nw_other_pending_total = $nw_other_tnx->where('status','pending')->count();
-                $nw_other_pending_amount = $nw_other_tnx->where('status','pending')->sum('amount');
-
-                $other_total = NairaTransaction::latest()->where('status','pending')
-                ->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3)->get();
-                $other_total_pending = $other_total->where('status','pending')->count();
-                $other_total_pending_amount = $other_total->where('status','pending')->sum('amount');
-                return view('admin.summary.JuniorAccountant.transaction',compact([
-                    'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
-                    'nw_other_tnx','nw_other_tnx_total','nw_other_amount_paid','nw_other_tnx_charges','nw_other_total_amount',
-                    'nw_other_pending_total','nw_other_pending_amount','other_total_pending','other_total_pending_amount'
-                ]));
-            }
+            $nw_withdrawal_tnx = $nw_tranx->where('transaction_type_id',3);
+            return $this->PayBridgeWithdrawal($nw_withdrawal_tnx,$data);
+        }
+        if($show_category == "paybridgeothers")
+        {
+            $nw_other_tnx = $nw_tranx->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3);
+            return $this->PayBridgeOthers($nw_other_tnx,$data);
         }
         }
 
 
     }
     public function SortingByAccountantAndDate($enddate,$value,$start_date,$end){
-        if($enddate == null){
-            $value = $value->where('updated_at', '<=', $start_date.' 23:59:59');
-        }else{
+        if($enddate != null){
             $value = $value->where('updated_at', '<=', $end);
+        }
+        else{
+            $value = $value->where('updated_at', '<=', $start_date." 23:59:59");
         }
         return $value;
     }
@@ -730,56 +743,51 @@ class SummaryController extends Controller
                 $segment .= " to ".Carbon::parse($end)->format('d-M-y h:ia'); 
             }
         }
+        $data = array(
+            'segment'=>$segment,
+            'accountant'=>$accountant,
+            'show_data' =>$show_data,
+            'show_category' => $show_category,
+            'day' =>$day,
+            'month' => $month,
+            'show_summary' =>$show_summary,
+            'accountant_name' => $accountant_name,
+        );
         if($show_category == "all")
         {
             //**All Transactions */
             $all_tnx = Transaction::whereNotNull('id')->where('updated_at', '>=', $start);
             $all_tnx = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$all_tnx,$start_date[0],$end);
-            $all_tnx_count = $all_tnx->where('status', 'success')->count();
 
             //**Bitcoin Buy and Sell Transactions */
             $bitcoin_total_tnx = $all_tnx ->where('status', 'success')->where('card_id',102);
-            $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy')->sum('quantity');
-            $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell')->sum('quantity');
 
             //**GiftCard Buy Transactions */
             $giftcards_totaltnx_buy = Transaction::whereNotNull('id')->where('status', 'success')->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             })->where('type', 'buy')->where('updated_at', '>=', $start);
             $giftcards_totaltnx_buy = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$giftcards_totaltnx_buy,$start_date[0],$end);
-            $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
-            $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
 
             //**GiftCard Sell Transactions */
             $giftcards_totaltnx_sell = Transaction::whereNotNull('id')->where('status', 'success')->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             })->where('type', 'sell')->where('updated_at', '>=', $start);
             $giftcards_totaltnx_sell = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$giftcards_totaltnx_sell,$start_date[0],$end);
-            $giftcards_totaltnx_sell_amount = $giftcards_totaltnx_sell->sum('amount');
-            $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
 
             //**All Crypto Buy Transactions */
             $crypto_totaltnx_buy = Transaction::whereNotNull('id') ->where('status', 'success')->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 1);
             })->where('type', 'buy')->where('updated_at', '>=', $start);
             $crypto_totaltnx_buy = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$crypto_totaltnx_buy,$start_date[0],$end);
-            $crypto_totaltnx_buy_amount = $crypto_totaltnx_buy->sum('amount');
-            $crypto_totaltnx_buy = $crypto_totaltnx_buy->count();
 
             //**All Crypto Sell Transactions */
             $crypto_totaltnx_sell = Transaction::whereNotNull('id')->where('status', 'success')->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 1);
             })->where('type', 'sell')->where('updated_at', '>=', $start);
             $crypto_totaltnx_sell = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$crypto_totaltnx_sell,$start_date[0],$end);
-            $crypto_totaltnx_sell_amount = $crypto_totaltnx_sell->sum('amount');
-            $crypto_totaltnx_sell = $crypto_totaltnx_sell->count();
 
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-                'segment','accountant','all_tnx','all_tnx_count','show_data','show_category','day','month','show_summary',
-                'giftcards_totaltnx_buy','giftcards_totaltnx_sell','crypto_totaltnx_buy','crypto_totaltnx_sell',
-                'giftcards_totaltnx_buy_amount','giftcards_totaltnx_sell_amount','crypto_totaltnx_buy_amount','crypto_totaltnx_sell_amount',
-                'bitcoin_total_tnx_buy','bitcoin_total_tnx_sell','accountant_name'
-            ]));
+            return $this->cryptoAndGiftCardTransactions($all_tnx,$bitcoin_total_tnx,$giftcards_totaltnx_buy
+            ,$giftcards_totaltnx_sell,$crypto_totaltnx_buy,$crypto_totaltnx_sell,$data);
         }
 
         if($show_category == "utilities")
@@ -789,19 +797,7 @@ class SummaryController extends Controller
             $util_tranx = $this->SortingStartDateAndEndDate($requestDetails['enddate'],$util_tranx,$start_date[0],$end);
 
             $util_tnx = $util_tranx;
-            $util_total_tnx = $util_tranx->where('status','success')->count();
-
-            $util_tnx_amount = $util_tranx->where('status','success')->sum('amount');
-
-            $util_tnx_fee = $util_tranx->where('status','success')->sum('convenience_fee');
-
-            $util_amount_paid = $util_tranx->where('status','success')->sum('total');
-
-            return view('admin.summary.JuniorAccountant.transaction',compact([
-                'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
-                'util_tnx','util_total_tnx', 'util_tnx_amount', 'util_tnx_fee' , 'util_amount_paid',
-
-            ]));
+            return $this->UtilitiesTransactions($util_tnx,$data);
         }
         
         if($show_category == "paybridge" OR
@@ -813,77 +809,31 @@ class SummaryController extends Controller
 
             if($show_category == "paybridge"){
                 $nw_deposit_tnx = $nw_tranx->where('transaction_type_id',1);
-                $nw_deposit_tnx_total = $nw_deposit_tnx->where('status','success')->count();
-                $nw_deposit_amount_paid = $nw_deposit_tnx->where('status','success')->sum('amount_paid');
-                $nw_deposit_tnx_charges = $nw_deposit_tnx->where('status','success')->sum('charge');
-                $nw_deposit_total_amount = $nw_deposit_tnx->where('status','success')->sum('amount');
-
-                $nw_deposit_pending_total = $nw_deposit_tnx->where('status','pending')->count();
-                $nw_deposit_pending_amount = $nw_deposit_tnx->where('status','pending')->sum('amount');
-
-                $deposit_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',1)->get();
-                $deposit_total_pending = $deposit_total->where('status','pending')->count();
-                $deposit_total_pending_amount = $deposit_total->where('status','pending')->sum('amount');
-                return view('admin.summary.JuniorAccountant.transaction',compact([
-                    'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
-                    'nw_deposit_tnx','nw_deposit_tnx_total','nw_deposit_amount_paid','nw_deposit_tnx_charges','nw_deposit_total_amount',
-                    'nw_deposit_pending_total','nw_deposit_pending_amount','deposit_total_pending','deposit_total_pending_amount'
-                ]));
+                return $this->PayBridgeDeposit($nw_deposit_tnx,$data);
 
             }
 
             if($show_category == "paybridgewithdrawal")
             {
                 $nw_withdrawal_tnx = $nw_tranx->where('transaction_type_id',3);
-                $nw_withdrawal_tnx_total = $nw_withdrawal_tnx->where('status','success')->count();
-                $nw_withdrawal_amount_paid = $nw_withdrawal_tnx->where('status','success')->sum('amount_paid');
-                $nw_withdrawal_tnx_charges = $nw_withdrawal_tnx->where('status','success')->sum('charge');
-                $nw_withdrawal_total_amount = $nw_withdrawal_tnx->where('status','success')->sum('amount');
-
-                $nw_withdrawal_pending_total = $nw_withdrawal_tnx->where('status','pending')->count();
-                $nw_withdrawal_pending_amount = $nw_withdrawal_tnx->where('status','pending')->sum('amount');
-
-                $withdrawal_total = NairaTransaction::latest()->where('status','pending')->where('transaction_type_id',3)->get();
-                $withdrawal_total_pending = $withdrawal_total->where('status','pending')->count();
-                $withdrawal_total_pending_amount = $withdrawal_total->where('status','pending')->sum('amount');
-
-                return view('admin.summary.JuniorAccountant.transaction',compact([
-                    'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
-                    'nw_withdrawal_tnx','nw_withdrawal_tnx_total','nw_withdrawal_amount_paid','nw_withdrawal_tnx_charges','nw_withdrawal_total_amount',
-                    'nw_withdrawal_pending_total','nw_withdrawal_pending_amount','withdrawal_total_pending','withdrawal_total_pending_amount'
-                ]));
+                return $this->PayBridgeWithdrawal($nw_withdrawal_tnx,$data);
             }
             if($show_category == "paybridgeothers")
             {
                 $nw_other_tnx = $nw_tranx->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3);
-                $nw_other_tnx_total = $nw_other_tnx->where('status','success')->count();
-                $nw_other_amount_paid = $nw_other_tnx->where('status','success')->sum('amount_paid');
-                $nw_other_tnx_charges = $nw_other_tnx->where('status','success')->sum('charge');
-                $nw_other_total_amount = $nw_other_tnx->where('status','success')->sum('amount');
-
-                $nw_other_pending_total = $nw_other_tnx->where('status','pending')->count();
-                $nw_other_pending_amount = $nw_other_tnx->where('status','pending')->sum('amount');
-
-                $other_total = NairaTransaction::latest()->where('status','pending')
-                ->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3)->get();
-                $other_total_pending = $other_total->where('status','pending')->count();
-                $other_total_pending_amount = $other_total->where('status','pending')->sum('amount');
-                return view('admin.summary.JuniorAccountant.transaction',compact([
-                    'segment','accountant','show_data','show_category','day','month','show_summary','accountant_name',
-                    'nw_other_tnx','nw_other_tnx_total','nw_other_amount_paid','nw_other_tnx_charges','nw_other_total_amount',
-                    'nw_other_pending_total','nw_other_pending_amount','other_total_pending','other_total_pending_amount'
-                ]));
+                return $this->PayBridgeOthers($nw_other_tnx,$data);
             }
         }
        
     }
 
     public function SortingStartDateAndEndDate($enddate, $value, $start_date, $end){
-        if($enddate == null){
-            $value = $value->whereDate('updated_at', '<=', $start_date)->get();
-        }else{
+        if($enddate != null){
             $value = $value->where('updated_at', '<=', $end)->get();
         } 
+        else{
+            $value = $value->whereDate('updated_at', '<=', $start_date)->get();
+        }
         return $value;
     }
 

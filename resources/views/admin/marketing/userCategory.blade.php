@@ -57,18 +57,21 @@
                     <div class="main-card mb-3 pb-3 card">
                         <div class="card-header d-flex justify-content-between">
                             <div class="">
-                                {{ $segment }}
+                                {{ $segment }}[{{ number_format($count) }}]
                             </div>
-                            {{--  <div class="">
-                                <form action="{{route('admin.search')}}" method="post" class="form-inline" >
-                            @csrf
-                            <div class="form-group">
-                                <input type="text" type="email" class="form-control" name="q"
-                                    placeholder="Enter user name or email">
-                            </div>
-                            <button class="ml-3 btn btn-outline-secondary"> <i class="fa fa-search"></i></button>
+                            <form class="form-inline p-2"
+                                method="GET">
+                                {{-- @csrf --}}
+                                <div class="form-group mr-2">
+                                    <label for="">Start date </label>
+                                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                                </div>
+                                <div class="form-group mr-2">
+                                    <label for="">End date </label>
+                                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
-                        </div> --}}
                     </div>
                     <div class="table-responsive p-3">
                         <table
