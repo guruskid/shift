@@ -119,7 +119,6 @@ class BusinessDeveloperController extends Controller
         if(empty($request->id) || empty($request->feedback) || empty($request->status)){
             return redirect()->back()->with(['error' => 'Error Adding Call Log']);
         }
-        dd($request->all());
         if($request->phoneNumber)
         {
             $call_log = CallLog::create([
