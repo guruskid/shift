@@ -7,6 +7,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
     //UTILITIES TRANSACTIONS
     Route::group(['prefix' => 'utility-transaction'], function () {
+        Route::get('/', 'UtilityController@allUtility');
         Route::GET('/airtime',  'UtilityController@airtime');
         Route::POST('/utilities-by-date-search',  'UtilityController@utilitiesSearch');
         Route::GET('/data',  'UtilityController@data');
@@ -18,7 +19,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
 
 
-
+    Route::get('/accountant/active', 'AdminController@activeAccountant');
 
     // TRANSACTIONS
     Route::group(['prefix' => 'transaction'], function () {
@@ -26,7 +27,6 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/p2p',  'TransactionController@p2p');
         Route::GET('/transactions-per-day',  'TransactionController@transactionsPerDay');
         Route::GET('/transactions-by-date',  'TransactionController@transactionsByDate');
-
     });
 
     // Transaction Count
@@ -42,8 +42,6 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/new-users',  'UserController@newUsers');
         Route::GET('/{id}',  'UserController@user');
     });
-
-
 
 
     Route::POST('/admin/add-admin',  'AdminController@addAdmin');
