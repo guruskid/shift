@@ -152,9 +152,13 @@
                                     @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog")
                                     <td>
                                         @if ($type == "Quarterly_Inactive")
+                                        <a href="#" class="my-2 mr-2" data-toggle="modal" data-target="#view-phone-number" onclick="showPhoneNumber({{$u->user}})">
+                                            <span class="btn btn btn-info">View Phone Number</span>
+                                        </a>
                                         <a href="#" class="my-2" data-toggle="modal" data-target="#add-call-log" onclick="AddResponse({{$u->user}})">
                                             <span class="btn btn btn-info">Response</span>
                                         </a>
+                                        
                                         @endif
                                         @if ($type == "Called_Users")
                                             @if ($type =="Responded_Users" OR $type == "Called_Users")
@@ -233,6 +237,26 @@
                     <button type="submit" class="btn btn-primary">Create Call Log</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade  item-badge-rightm" id="view-phone-number" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading " id="ph_email">User Email</h4>
+                            <h6 class="media-heading" id="ph_phoneNumber">User PhoneNumber</h6>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                </div>
         </div>
     </div>
 </div>

@@ -27,19 +27,19 @@ class BusinessDeveloperController extends Controller
         }
         if($type == "Quarterly_Inactive")
         {
-            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get()->take(10);
+            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get()->take(20);
         }
         if($type == "Called_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at')->get()->take(10);
+            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at')->get()->take(20);
         }
         if($type == "Responded_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at')->get()->take(10);
+            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at')->get()->take(20);
         }
         if($type == "Recalcitrant_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(10);
+            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(20);
         }
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
@@ -50,9 +50,6 @@ class BusinessDeveloperController extends Controller
             else{
                 $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
-        }
-        if($type == "Quarterly_Inactive"){
-        $data_table = $data_table->sortBy('last_transaction_date');
         }
         return view(
             'admin.business_developer.index',
@@ -98,7 +95,6 @@ class BusinessDeveloperController extends Controller
             $data_table = $data_table->whereDate('created_at','<=',$request->end);
         }
         $count = $data_table->count();
-        $data_table = $data_table->paginate(100);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
             if($user_tnx->count() == 0)
@@ -109,9 +105,7 @@ class BusinessDeveloperController extends Controller
                 $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
         }
-        if($type == "Quarterly_Inactive"){
-            $data_table = $data_table->sortBy('last_transaction_date');
-            }
+            $data_table = $data_table->paginate(100);
         return view(
             'admin.business_developer.users',
             compact([
@@ -125,7 +119,7 @@ class BusinessDeveloperController extends Controller
         if(empty($request->id) || empty($request->feedback) || empty($request->status)){
             return redirect()->back()->with(['error' => 'Error Adding Call Log']);
         }
-
+        dd($request->all());
         if($request->phoneNumber)
         {
             $call_log = CallLog::create([
