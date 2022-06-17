@@ -51,6 +51,9 @@ class BusinessDeveloperController extends Controller
                 $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
         }
+        if($type == "Quarterly_Inactive"){
+        $data_table = $data_table->sortBy('last_transaction_date');
+        }
         return view(
             'admin.business_developer.index',
             compact([
@@ -106,6 +109,9 @@ class BusinessDeveloperController extends Controller
                 $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
         }
+        if($type == "Quarterly_Inactive"){
+            $data_table = $data_table->sortBy('last_transaction_date');
+            }
         return view(
             'admin.business_developer.users',
             compact([
@@ -120,14 +126,15 @@ class BusinessDeveloperController extends Controller
             return redirect()->back()->with(['error' => 'Error Adding Call Log']);
         }
 
-        $call_log = CallLog::create([
-            'user_id'=>$request->id,
-            'call_response' =>$request->feedback,
-            'call_category_id' => $request->status
-        ]);
-        $user_tracking = UserTracking::where('user_id',$request->id)->first();
         if($request->phoneNumber)
         {
+            $call_log = CallLog::create([
+                'user_id'=>$request->id,
+                'call_response' =>$request->feedback,
+                'call_category_id' => $request->status
+            ]);
+            $user_tracking = UserTracking::where('user_id',$request->id)->first();
+
             $time = now();
             $openingPhoneTime = Carbon::parse($request->phoneNumber)->subSeconds(18);
             $timeDifference = $openingPhoneTime->diffInSeconds($time);
@@ -371,6 +378,8 @@ class BusinessDeveloperController extends Controller
     }
 
     public static function QuarterlyInactiveFromOldUsersDB() {
+        UserTracking::truncate();
+        CallLog::truncate();
         $all_users = User::where('role',1)->latest('created_at')->get();
         foreach ($all_users as $u) {
             $userTracking = UserTracking::where('user_id',$u->id)->count();
