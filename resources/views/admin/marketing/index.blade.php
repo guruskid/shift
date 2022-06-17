@@ -11,13 +11,12 @@
             </div>
         </div>
             <div class="row layout-top-spacing">
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing" 
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'All_Users_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='All_Users_App') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
-                                <h5 class="@if(isset($type) && $type =='All_Users_App') text-white @endif">Signed Up Users<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='All_Users_App') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'All_Users_App']) }}">View</a></p>
+                                <h5 class="@if(isset($type) && $type =='All_Users_App') text-white @endif">Total Signed Up Users<br>App </h5>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $total_app_signed_up }}</h5>
@@ -25,13 +24,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'All_Users_Web']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='All_Users_Web') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
-                                <h5 class="@if(isset($type) && $type =='All_Users_Web') text-white @endif">Signed Up Users<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='All_Users_Web') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'All_Users_Web']) }}">View</a></p>
+                                <h5 class="@if(isset($type) && $type =='All_Users_Web') text-white @endif">Total Signed Up Users<br>Web </h5>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $total_web_signed_up }}</h5>
@@ -39,13 +37,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'All_Transactions_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='All_Transactions_App') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='All_Transactions_App') text-white @endif">Total Transactions<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='All_Transactions_App') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'All_Transactions_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $total_app_transactions }}</h5>
@@ -53,13 +50,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'All_Transactions_Web']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='All_Transactions_Web') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='All_Transactions_Web') text-white @endif">Total Transactions<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='All_Transactions_Web') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'All_Transactions_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $total_web_transactions }}</h5>
@@ -67,13 +63,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Daily_Users_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Daily_Users_App') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Daily_Users_App') text-white @endif">Daily No. of Signup Users<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Daily_Users_App') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'Daily_Users_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $daily_app_signed_up }}</h5>
@@ -81,13 +76,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Daily_Users_Web']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Daily_Users_Web') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Daily_Users_Web') text-white @endif">Daily No. of Signup Users<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Daily_Users_Web') text-white @endif"
-                                     href="{{ route('admin.sales.type',['type'=>'Daily_Users_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $daily_web_signed_up }}</h5>
@@ -97,13 +91,12 @@
                 </div>
 
 
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Daily_Transactions_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Daily_Transactions_App') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Daily_Transactions_App') text-white @endif">Daily No. of Transactions<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Daily_Transactions_App') text-white @endif"
-                                     href="{{ route('admin.sales.type',['type'=>'Daily_Transactions_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $daily_app_transactions }}</h5>
@@ -111,13 +104,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Daily_Transactions_Web']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Daily_Transactions_Web') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Daily_Transactions_Web') text-white @endif">Daily No. of Transactions<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Daily_Transactions_Web') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'Daily_Transactions_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $daily_web_transactions }}</h5>
@@ -125,13 +117,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_Users_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_Users_App') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Monthly_Users_App') text-white @endif">Monthly No. of Signup Users<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Monthly_Users_App') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'Monthly_Users_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $monthly_app_signed_up }}</h5>
@@ -139,13 +130,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_Users_Web']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_Users_Web') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Monthly_Users_Web') text-white @endif">Monthly No. of Signup Users<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Monthly_Users_Web') text-white @endif"
-                                     href="{{ route('admin.sales.type',['type'=>'Monthly_Users_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $monthly_web_signed_up }}</h5>
@@ -154,13 +144,12 @@
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_Transactions_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_Transactions_App') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Monthly_Transactions_App') text-white @endif">Monthly No. of Transactions<br>App </h5>
-                                <p><a class="@if(isset($type) && $type =='Monthly_Transactions_App') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'Monthly_Transactions_App']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $monthly_app_transactions }}</h5>
@@ -168,13 +157,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_Transactions_Web']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_Transactions_Web') bg-primary @endif">
                         <div class="widget-heading">
                             <div>
                                 <h5 class="@if(isset($type) && $type =='Monthly_Transactions_Web') text-white @endif">Monthly No. of Transactions<br>Web </h5>
-                                <p><a class="@if(isset($type) && $type =='Monthly_Transactions_Web') text-white @endif"
-                                    href="{{ route('admin.sales.type',['type'=>'Monthly_Transactions_Web']) }}">View</a></p>
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $monthly_web_transactions }}</h5>

@@ -84,6 +84,28 @@
     </li>
     @endif
 
+    @if ( in_array(Auth::user()->role, [889, 999] ) )
+    <li class="menu {{ Route::currentRouteName() == 'sales.newUsers.salesAnalytics' ? 'active' : '' }}  ">
+        <a href="{{route('sales.newUsers.salesAnalytics')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Sales New Users</span>
+            </div>
+        </a>
+    </li>
+    @endif
+
+    @if ( in_array(Auth::user()->role, [889, 999] ) )
+    <li class="menu {{ Route::currentRouteName() == 'sales.oldUsers.salesAnalytics' ? 'active' : '' }}  ">
+        <a href="{{route('sales.oldUsers.salesAnalytics')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Sales Old Users</span>
+            </div>
+        </a>
+    </li>
+    @endif
+
     <li class="menu {{ Route::currentRouteName() == 'admin.tron' ? 'active' : '' }}  ">
         <a href="{{route('admin.tron')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
