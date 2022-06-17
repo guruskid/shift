@@ -172,7 +172,7 @@ class BusinessDeveloperController extends Controller
     {
         $data_table = CallLog::latest('updated_at');
         $segment = "Call Log";
-        $type = "Responded_Users";
+        $type = "callLog";
         $call_categories = CallCategory::all();
         if($request->start){
             $data_table = $data_table->whereDate('created_at','>=',$request->start);
@@ -215,7 +215,7 @@ class BusinessDeveloperController extends Controller
         if($request->end){
             $users = $users->whereDate('created_at','<=',$request->end);
         }
-        $users = $users->paginate(1000);
+        $users = $users->get();
         $segment = "User Profile";
         return view(
             'admin.business_developer.UserProfile',

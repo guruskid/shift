@@ -96,7 +96,9 @@
                                     <th><div class="">Name</div></th>
                                     <th><div class="">Username</div></th>
                                     <th><div class="">Last Transaction Date</div></th>
+                                    @if ($type =="callLog")
                                     <th><div class="">Category</div></th>
+                                    @endif
                                     @if ($type == "Called_Users")
                                         <th><div class="">Called Date</div></th>
                                     @endif
@@ -110,7 +112,7 @@
                                     @if ($type == "Quarterly_Inactive")
                                         <th><div class="">Previous Cycle</div></th>
                                     @endif
-                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users")
+                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog")
                                         <th><div class="">Action</div></th>
                                     @endif
                                 </tr>
@@ -121,7 +123,9 @@
                                     <td><div class="td-content customer-name">{{$u->user->first_name}}</div></td>
                                     <td>{{ $u->user->username }}</td>
                                     <td>{{ $u->last_transaction_date }}</td>
-                                    <td>{{ $u->call_category->category }}</td>
+                                    @if ($type =="callLog")
+                                    <td>{{ ($u->call_category) ? $u->call_category->category : 'none' }}</td>
+                                    @endif
                                     @if ($type == "Called_Users")
                                         <td>{{ $u->call_log->created_at->format('d M y, h:ia') }}</td>
                                     @endif
@@ -145,21 +149,21 @@
                                         @endif
                                         </td>
                                     @endif
-                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users")
+                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog")
                                     <td>
                                         @if ($type == "Quarterly_Inactive")
                                         <a href="#" class="my-2" data-toggle="modal" data-target="#add-call-log" onclick="AddResponse({{$u->user}})">
                                             <span class="btn btn btn-info">Response</span>
                                         </a>
                                         @endif
-                                        @if ($segment != "Call Log")
+                                        @if ($type == "Called_Users")
                                             @if ($type =="Responded_Users" OR $type == "Called_Users")
                                             <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewResponse({{$u->call_log}},{{ $u->user }},{{ $u->call_log->call_category }})">
                                                 <span class="btn btn btn-info">View</span>
                                             </a>
                                             @endif 
                                         @else
-                                            @if ($type =="Responded_Users" OR $type == "Called_Users")
+                                            @if ($type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog")
                                             <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewResponse({{$u}},{{ $u->user }},{{ $u->call_category }})">
                                                 <span class="btn btn btn-info">View</span>
                                             </a>
@@ -254,7 +258,7 @@
                         <input type="hidden" readonly name="id" id="v_id">
                     </div>
                     <div class="row">
-                        @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $segment != "Call Log")
+                        @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $type =="callLog")
                             <div class="col">
                                 <div class="form-group">
                                     <label for="">Category</label>
@@ -279,7 +283,7 @@
                             <div class="form-group">
                             <label for="feedback">Feedback</label>
                             <textarea class="form-control" id="v_feedback" name="feedback" rows="5" required
-                            @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $segment != "Call Log")
+                            @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $type =="callLog")
                                 disabled
                             @endif></textarea>
                             </div>
@@ -288,7 +292,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
-                    @if (!($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $segment != "Call Log"))
+                    @if (!($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $type =="callLog"))
                     <button type="submit" class="btn btn-primary">Update Call Log</button>
                     @endif
                 </div>
