@@ -185,7 +185,7 @@ class TradeNairaController extends Controller
                 $transactions = $transactions
                 ->where('status',$status);
             }
-
+            $transactions = $transactions->get()->sortByDesc('created_at');
             $transactions = $transactions->paginate(20);
         }
 
@@ -202,6 +202,10 @@ class TradeNairaController extends Controller
                 $t->current_bal = $current_prev_bal->current_balance;
             }
         }
+        
+        
+
+        
 
         //? top bars
             //?" all  deposit transactions
