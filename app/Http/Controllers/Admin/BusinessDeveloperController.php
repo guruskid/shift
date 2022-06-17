@@ -27,19 +27,19 @@ class BusinessDeveloperController extends Controller
         }
         if($type == "Quarterly_Inactive")
         {
-            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get()->take(10);
+            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get()->take(20);
         }
         if($type == "Called_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at')->get()->take(10);
+            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at')->get()->take(20);
         }
         if($type == "Responded_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at')->get()->take(10);
+            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at')->get()->take(20);
         }
         if($type == "Recalcitrant_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(10);
+            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(20);
         }
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
@@ -95,7 +95,6 @@ class BusinessDeveloperController extends Controller
             $data_table = $data_table->whereDate('created_at','<=',$request->end);
         }
         $count = $data_table->count();
-        $data_table = $data_table->paginate(100);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
             if($user_tnx->count() == 0)
@@ -106,6 +105,7 @@ class BusinessDeveloperController extends Controller
                 $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
         }
+            $data_table = $data_table->paginate(100);
         return view(
             'admin.business_developer.users',
             compact([
@@ -119,15 +119,15 @@ class BusinessDeveloperController extends Controller
         if(empty($request->id) || empty($request->feedback) || empty($request->status)){
             return redirect()->back()->with(['error' => 'Error Adding Call Log']);
         }
-
-        $call_log = CallLog::create([
-            'user_id'=>$request->id,
-            'call_response' =>$request->feedback,
-            'call_category_id' => $request->status
-        ]);
-        $user_tracking = UserTracking::where('user_id',$request->id)->first();
         if($request->phoneNumber)
         {
+            $call_log = CallLog::create([
+                'user_id'=>$request->id,
+                'call_response' =>$request->feedback,
+                'call_category_id' => $request->status
+            ]);
+            $user_tracking = UserTracking::where('user_id',$request->id)->first();
+
             $time = now();
             $openingPhoneTime = Carbon::parse($request->phoneNumber)->subSeconds(18);
             $timeDifference = $openingPhoneTime->diffInSeconds($time);
@@ -172,7 +172,7 @@ class BusinessDeveloperController extends Controller
     {
         $data_table = CallLog::latest('updated_at');
         $segment = "Call Log";
-        $type = "Responded_Users";
+        $type = "callLog";
         $call_categories = CallCategory::all();
         if($request->start){
             $data_table = $data_table->whereDate('created_at','>=',$request->start);
@@ -215,7 +215,7 @@ class BusinessDeveloperController extends Controller
         if($request->end){
             $users = $users->whereDate('created_at','<=',$request->end);
         }
-        $users = $users->paginate(1000);
+        $users = $users->get();
         $segment = "User Profile";
         return view(
             'admin.business_developer.UserProfile',
@@ -371,6 +371,8 @@ class BusinessDeveloperController extends Controller
     }
 
     public static function QuarterlyInactiveFromOldUsersDB() {
+        UserTracking::truncate();
+        CallLog::truncate();
         $all_users = User::where('role',1)->latest('created_at')->get();
         foreach ($all_users as $u) {
             $userTracking = UserTracking::where('user_id',$u->id)->count();

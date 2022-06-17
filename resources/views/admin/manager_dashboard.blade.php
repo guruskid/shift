@@ -8,6 +8,8 @@
                 <h5>Dashboard Home</h5>
                 <P>Hi DANTOWN ADMIN, good to see you again Boss.</P>
             </div>
+            <h6 class="pl-5">Pending Deposits <span class="badge bg-secondary text-white">{{number_format($pending_deposits)}}</span></h6>
+            <h6 class="pl-2">Pending Withdrawals <span class="badge bg-secondary text-white">{{number_format($pending_withdrawals)}}</span></h6>
         </div>
         <div class="row">
             <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
