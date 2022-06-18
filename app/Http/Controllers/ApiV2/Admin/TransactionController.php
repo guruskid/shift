@@ -10,6 +10,7 @@ use App\Transaction;
 use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
@@ -48,7 +49,7 @@ class TransactionController extends Controller
     public function transactionsPerDay()
     {
 
-        $transaction_data = Transaction::select('id', 'created_at')->WhereYear('created_at', date('Y'))->get()->groupBy(function($transaction_data){
+        $transaction_data = Transaction::with('user')->WhereYear('created_at', date('Y'))->get()->groupBy(function($transaction_data){
             return Carbon::parse($transaction_data->created_at)->format('Y-M-d');
         });
 
@@ -66,6 +67,7 @@ class TransactionController extends Controller
             'success' => true,
             'transaction_days' => $transaction_days,
             'transactionDayCount' => $transactionDayCount,
+            'transaction_data' => $transaction_data,
         ]);
     }
 
@@ -85,6 +87,28 @@ class TransactionController extends Controller
         return response()->json([
             'success' => true,
             'transaction_count' => $transactions,
+        ]);
+    }
+    public function transactionsByDate(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'start' => 'required|date|string',
+            'end' => 'required|date|string',
+        ]);
+
+        if($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ]);
+        }
+
+        $transactions = NairaTrade::with('user', 'nairaWallet', 'bitcoinWallet')->where('created_at', '>=', $request['start'])->where('created_at', '<=', $request['end']);
+        $transactions = $transactions->paginate(1000);
+
+        return response()->json([
+            'success' => true,
+            'transactions' => $transactions,
         ]);
     }
 }
