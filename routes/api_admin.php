@@ -17,8 +17,6 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
     Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
 
-
-
     Route::get('/accountant/active', 'AdminController@activeAccountant');
 
     // TRANSACTIONS
