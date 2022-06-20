@@ -36,6 +36,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
         Route::get('email/resend', 'Api\VerificationController@resend')->name('verification.resend');
 
+        // save firebase token
+        Route::post('/save-fcm-token', 'Api\AuthController@saveFcm');
+
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');

@@ -46,7 +46,7 @@
     </li>
     @endif
 
-    @if (Auth::user()->role == 889)
+    @if (in_array(Auth::user()->role, [889, 999, 777] ) )
         <li class="menu {{ Route::currentRouteName() == 'p2p.accounts' ? 'active' : '' }}  ">
             <a href="{{route('p2p.accounts')}}"  aria-expanded="false" class="dropdown-toggle">
                 <div class="">

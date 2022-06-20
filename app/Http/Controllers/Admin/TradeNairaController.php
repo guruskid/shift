@@ -376,6 +376,14 @@ class TradeNairaController extends Controller
     }
 
     public function updateAccount(Request $request) {
+        if(Auth::user()->role == 777)
+        {
+            $data = $request->except('_token');
+            $account = PayBridgeAccount::find($request['id']);
+            $account->status = $request['status'];
+            $account->save();
+            return redirect()->back()->with(["success" => 'Account Updated']);
+        }
         $data = $request->except('_token');
         $account = PayBridgeAccount::find($request['id']);
         $account->account_name = $request['account_name'];
