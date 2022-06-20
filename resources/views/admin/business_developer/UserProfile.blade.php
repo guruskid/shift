@@ -83,7 +83,6 @@
                                     <th>Name</th>
                                     <th>Username</th>
                                     <th>Email</th>
-                                    <th>Total Transactions</th>
                                     <th>Signup Date</th>
                                 </tr>
                             </thead>
@@ -93,13 +92,12 @@
                                     <td>{{ $u->first_name." ".$u->last_name }}</td>
                                     <td>{{ $u->username }}</td>
                                     <td>{{ $u->email }}</td>
-                                    <td>{{ $u->transactions->count() }}</td>
                                     <td>{{ $u->created_at->format('d M Y, h:ia') }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $users->links() }}
+                        {{-- {{ $users->links() }} --}}
                     </div>
                 </div>
             </div>

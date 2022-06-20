@@ -9,6 +9,7 @@ use App\Country;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FirebasePushNotificationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\User;
@@ -89,6 +90,7 @@ class AuthController extends Controller
             'external_id' => $external_id,
             'status' => 'active',
             'password' => Hash::make($input['password']),
+            'platform' => $input['platform']
         ]);
 
         $user->sendEmailVerificationNotification();

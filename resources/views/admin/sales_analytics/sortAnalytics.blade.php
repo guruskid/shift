@@ -1,0 +1,166 @@
+@extends('layouts.app')
+@section('content')
+<div class="app-main">
+    <div class="app-sidebar sidebar-shadow">
+        <div class="app-header__logo">
+            <div class="logo-src"></div>
+            <div class="header__pane ml-auto">
+                <div>
+                    <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
+                        data-class="closed-sidebar">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="app-header__mobile-menu">
+            <div>
+                <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="app-header__menu">
+            <span>
+                <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
+                    <span class="btn-icon-wrapper">
+                        <i class="fa fa-ellipsis-v fa-w-6"></i>
+                    </span>
+                </button>
+            </span>
+        </div>
+        {{-- User Side bar --}}
+        @include('layouts.partials.admin')
+    </div>
+
+    {{-- Content Starts here --}}
+    <div class="app-main__outer">
+        <div class="app-main__inner">
+            <div class="app-page-title">
+                <div class="page-title-wrapper">
+                    <div class="page-title-heading">
+                        <div class="page-title-icon">
+                            <i class="pe-7s-users icon-gradient bg-sunny-morning">
+                            </i>
+                        </div>
+                        <div>{{ $segment }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-header justify-content-between">{{ $segment }}
+            <form action="{{route('sales.sort.salesAnalytics')}}" class="form-inline p-2" method="POST">
+                @csrf
+                <div class="form-group mr-2">
+                    <select name="sales" class="form-control" required>
+                        <option value="">Select Sales</option>
+                        @foreach ($salesNewUsers as $snu)
+                            <option value="{{ $snu->id }}">{{ $snu->first_name.' '.$snu->last_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <input type="hidden" name="type" value="{{ $type }}">
+                <div class="form-group mr-2">
+                    <label for="">Start date </label>
+                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                </div>
+                <div class="form-group mr-2">
+                    <label for="">End date </label>
+                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                </div>
+                <div class="custom-control custom-switch mr-2">
+                    <input type="checkbox" name="unique" id="send-btc" onclick="" class="custom-control-input toggle-settings" {{($unique== 1) ? 'checked' : ''}} data-name="SEND_BTC">
+                    <label for="send-btc" class="custom-control-label">Unique</label>
+                </div>
+                <div class="custom-control custom-switch mr-2">
+                    <input type="checkbox" name="total" id="receive-btc" onclick="" class="custom-control-input toggle-settings" {{($total== 1) ? 'checked' : ''}}  data-name="RECEIVE_BTC">
+                    <label for="receive-btc" class="custom-control-label">Total</label>
+                </div>
+                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+            </form> 
+            </div>
+            @include('admin.sales_analytics.includes.sortCards')
+            @if($show_data == true)
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="main-card mb-3 pb-3 card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="">
+                                {{ $segment }}
+                            </div>
+                            {{--  <div class="">
+                                <form action="{{route('admin.search')}}" method="post" class="form-inline" >
+                            @csrf
+                            <div class="form-group">
+                                <input type="text" type="email" class="form-control" name="q"
+                                    placeholder="Enter user name or email">
+                            </div>
+                            <button class="ml-3 btn btn-outline-secondary"> <i class="fa fa-search"></i></button>
+                            </form>
+                        </div> --}}
+                    </div>
+                    
+                    <div class="table-responsive p-3">
+                        <table
+                            class="align-middle mb-0 table table-borderless table-striped table-hover">
+                            <thead>
+                                <tr>
+
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    @if($type != 'calledUsers')
+                                    <th>SignupDate</th>
+                                    @endif
+                                    @if($type == 'calledUsers' OR $type == 'GoodLead' OR $type == 'BadLead')
+                                    <th>Called Date</th>
+                                    <th>Called Time</th>
+                                    <th>Call Duration</th>
+                                    <th>Remark</th>
+                                    @endif
+                                    @if($type == 'GLConversion' OR $type == 'BLConversion')
+                                    <th>Trans Time</th>
+                                    <th>Trans Date</th>
+                                    <th>Volume of Trans</th>
+                                    @endif
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($table_data as $t)
+                                <tr>
+                                    <td>{{($t->user) ? $t->user->first_name." ".$t->user->last_name :'' }}</td>
+                                    <td>{{($t->user) ?  $t->user->username: '' }}</td>
+                                    @if($type != 'calledUsers')
+                                        <td>{{ ($t->user) ? $t->user->created_at->format('d M y, h:ia'):'' }}</td>
+                                    @endif
+                                    @if($type == 'calledUsers' OR $type == 'GoodLead' OR $type == 'BadLead')
+                                        <td>{{ $t->updated_at->format('d M y') }}</td>
+                                        <td>{{ $t->updated_at->format('h:ia') }}</td>
+                                        <td>{{ $t->callDuration }}</td>
+                                        <td>{{ $t->comment }}</td>
+                                    @endif
+                                    @if($type == 'GLConversion' OR $type == 'BLConversion')
+                                        <td>{{ $t->created_at->format('h:ia') }}</td>
+                                        <td>{{ $t->created_at->format('d M y') }}</td>
+                                        <td>${{ number_format($t->amount) }}</td>
+                                    @endif
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="View-all">
+                            <a href="{{ route('sales.show.salesAnalytics',['type'=>$type]) }}">View all </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+</div>
+</div>
+
+
+@endsection

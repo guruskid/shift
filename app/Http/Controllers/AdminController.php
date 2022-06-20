@@ -175,10 +175,12 @@ class AdminController extends Controller
             return $marketing_controller->index();
 
         } else if (Auth::user()->role == 666) { //Manager
+            $pending_deposits = NairaTrade::where('type','withdrawal')->where('status','waiting')->count();
+            $pending_withdrawals = NairaTrade::where('type','deposit')->where('status','waiting')->count();
             return view(
                 'admin.manager_dashboard',
                 compact([
-                    'transactions', 'users',
+                    'transactions', 'users','pending_deposits','pending_withdrawals',
                     'g_txns', 'c_txns', 'n_txns'
                 ])
             );

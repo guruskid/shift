@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCallDurationToNewUsersTrackingsTable extends Migration
+class AddSalesIdToNewUsersTracking extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddCallDurationToNewUsersTrackingsTable extends Migration
     public function up()
     {
         Schema::table('new_users_trackings', function (Blueprint $table) {
-            $table->string('call_duration')->nullable();
-            $table->string('call_duration_timestamp')->nullable();
+            $table->bigInteger('sales_id')->nullable();
         });
     }
 
@@ -27,7 +26,7 @@ class AddCallDurationToNewUsersTrackingsTable extends Migration
     public function down()
     {
         Schema::table('new_users_trackings', function (Blueprint $table) {
-            $table->dropColumn('call_duration','call_duration_timestamp');
+            $table->dropColumn('sales_id');
         });
     }
 }

@@ -47,11 +47,25 @@
                             <i class="pe-7s-users icon-gradient bg-sunny-morning">
                             </i>
                         </div>
-                        <div>All Users</div>
+                        <div>
+                            @php
+                            switch ($type) {
+                                case 'calledUsers':
+                                    echo 'Called Users';
+                                    break;
+                                case 'respondedUsers':
+                                    echo 'Responded Users';
+                                    break;
+                                default:
+                                    echo 'Sales New Users Analytics';
+                                    break;
+                            }
+                        @endphp
+                        </div>
                     </div>
                 </div>
             </div>
-
+            @if($show_data == true)
             <div class="row">
                 <div class="col-md-12">
                     <div class="main-card mb-3 pb-3 card">
@@ -59,22 +73,6 @@
                             <div class="">
                                 {{ $segment }}
                             </div>
-                            @if ($segment == "Verification Level")
-                            <form class="form-inline p-2"
-                                method="GET">
-                                {{-- @csrf --}}
-                            <div class="form-group mr-2">
-                                <select name="status" class="form-control" required>
-                                    <option value="">Select Category</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Level 1">Level 1</option>
-                                        <option value="Level 2">Level 2</option>
-                                        <option value="Level 3">Level 3</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
-                             </form> 
-                        @endif
                             {{--  <div class="">
                                 <form action="{{route('admin.search')}}" method="post" class="form-inline" >
                             @csrf
@@ -86,40 +84,59 @@
                             </form>
                         </div> --}}
                     </div>
+                    
                     <div class="table-responsive p-3">
                         <table
                             class="align-middle mb-0 table table-borderless table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+
                                     <th>Name</th>
-                                    {{-- <th >Last name</th> --}}
-                                    <th>Email</th>
-                                    @if($segment == "Users Birthday")
-                                    <th>Birthday</th>
+                                    <th>Username</th>
+                                    @if($type == 'calledUsers')
+                                    <th>Called Date</th>
+                                    <th>Called Time</th>
+                                    <th>Call Duration</th>
+                                    <th>Remark</th>
                                     @endif
-                                    <th>Date Of SignUp</th>
+                                    @if ($type == "respondedUsers")
+                                    <th>SignupDate</th>
+                                    <th>Responded Cycle</th>
+                                    <th>Recalcitrant Cycle</th>
+                                    <th>Last tran Date</th>
+                                    <th>Vol of last tran</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($users as $u)
+                                @foreach ($table_data as $t)
                                 <tr>
-                                    <td class="text-muted">{{$u->id}}</td>
-                                    <td>{{ucwords($u->first_name)}}</td>
-                                    {{-- <td >{{$u->last_name}}</td> --}}
-                                    <td>{{$u->email}}</td>
-                                    @if($segment == "Users Birthday")
-                                    <td>{{ $u->birthday}}</td>
+                                    <td>{{($t->user) ? $t->user->first_name." ".$t->user->last_name :'' }}</td>
+                                    <td>{{($t->user) ?  $t->user->username: '' }}</td>
+                                   
+                                    @if($type == 'calledUsers')
+                                        <td>{{ $t->called_date->format('d M y') }}</td>
+                                        <td>{{ $t->called_date->format('h:ia') }}</td>
+                                        <td>{{ $t->callDuration }}</td>
+                                        <td>{{ ($t->call_log) ? $t->call_log->call_response :''}}</td>
                                     @endif
-                                    <td>{{$u->created_at->format('d M y')}}</td>
+                                    @if($type == 'respondedUsers')
+                                        <td>{{ ($t->user) ? $t->user->created_at->format('d M y, h:ia'):'' }}</td>
+                                        <td>{{ ($t->Responded_Cycle == null) ? 0 : $t->Responded_Cycle}}</td>
+                                        <td>{{ ($t->Recalcitrant_Cycle == null) ? 0 : $t->Recalcitrant_Cycle }}</td>
+                                        <td>{{ $t->lastTranxDate->format('d M y h:ia') }}</td>
+                                        <td>${{ number_format($t->lastTranxVolume) }}</td>
+
+                                    @endif
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $users->links() }}
+                    {{$table_data->links() }}
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>

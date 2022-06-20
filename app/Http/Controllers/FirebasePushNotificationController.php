@@ -29,7 +29,7 @@ class FirebasePushNotificationController extends Controller {
 		
         $result = curl_exec($ch);
         if ($result === FALSE) {
-            die('Problem occurred: ' . curl_error($ch));
+            // die('Problem occurred: ' . curl_error($ch));
         }
 		
         curl_close($ch);

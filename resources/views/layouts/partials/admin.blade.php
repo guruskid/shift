@@ -207,8 +207,7 @@
                 </li>
 
             @endif
-
-
+            
             @if (in_array(Auth::user()->role, [999, 889, 777, 775] ))
                 <li class="my-3">
                     <a href="{{route('admin.crypto-summary', 1)}}"
@@ -251,6 +250,23 @@
                         <i class="metismenu-state-icon "></i>
                     </a>
                 </li>
+            @endif
+            @if (in_array(Auth::user()->role, [999, 889] ))
+            <li class="my-3">
+                <a href="{{route('sales.newUsers.salesAnalytics')}}"
+                    class=" {{ Route::currentRouteName() == 'sales.newUsers.salesAnalytics' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-graph1"></i>
+                    Sales New Users
+                </a>
+            </li>
+
+            <li class="my-3">
+                <a href="{{route('sales.oldUsers.salesAnalytics')}}"
+                    class=" {{ Route::currentRouteName() == 'sales.oldUsers.salesAnalytics' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-graph1"></i>
+                    Sales Old Users
+                </a>
+            </li>
             @endif
             {{-- Here --}}
             @if (in_array(Auth::user()->role, [888,999]))
