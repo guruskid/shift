@@ -35,10 +35,11 @@ class AuthController extends Controller
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
 
-
-            $user->update([
-                'fcm_id' => request('fcm_id')
-            ]);
+            if (null !== request('fcm_id')) {
+                $user->update([
+                    'fcm_id' => request('fcm_id')
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
