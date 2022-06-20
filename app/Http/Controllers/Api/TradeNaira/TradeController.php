@@ -251,6 +251,16 @@ class TradeController extends Controller
         $msg = "You have successfully withdrawn the sum of ₦".number_format($request->amount)." from your naira wallet.
         N/B: Payment would be made within ".$minutes." minutes due to the withdrawal queue at the moment.";
 
+        // Firebase Push Notification
+        $fcm_id = Auth::user()->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => $msg,
@@ -347,9 +357,20 @@ class TradeController extends Controller
             broadcast(new CustomNotification($acct, $message))->toOthers();
         }
 
+        $msg = "Congratulations! You have successfully deposited $request->amount, your Dantown wallet would be credited once payment is confirmed.";
+        // Firebase Push Notification
+        $fcm_id = Auth::user()->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
+
         return response()->json([
             'success' => true,
-            'message' => "Congratulations! You have successfully deposited $request->amount, your Dantown wallet would be credited once payment is confirmed.",
+            'message' => $msg,
         ], 200);
     }
 

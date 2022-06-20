@@ -234,13 +234,13 @@ class SummaryController extends Controller
         $date = ($date != null) ? $date: Carbon::now();
         $total_number = ($date != null) ? 40 : 100;
         $is_crypto = ($category == "Crypto") ? 1:0;
-        $highest_naira_user_name = null;
-        $highest_freq_user_name = null;
 
         $data_collection = collect([]);
         for ($i=0; $i <= $total_number; $i++) { 
-            $date = Carbon::parse($date)->subDay($i)->format("Y-m-d");
-            $transactions = Transaction::whereDate('created_at',$date)->where('status', 'success');
+            $highest_naira_user_name = null;
+            $highest_freq_user_name = null;
+            $dates = Carbon::parse($date)->subDays($i)->format("Y-m-d");
+            $transactions = Transaction::whereDate('created_at',$dates)->where('status', 'success');
             if($category != null){
                 $transactions = $transactions->whereHas('asset', function($query) use ($is_crypto){
                     $query->where('is_crypto', $is_crypto);
@@ -252,7 +252,7 @@ class SummaryController extends Controller
             $declined_tranx = $transactions->where('status','!=', 'success')->where('status','!=', 'waiting')->count();
 
             $highest_naira_user = Transaction::select('*', DB::raw('sum(amount_paid) AS total_amount'))
-            ->whereDate('created_at',$date)->where('status', 'success');
+            ->whereDate('created_at',$dates)->where('status', 'success');
             if($category){
                 $highest_naira_user = $highest_naira_user->whereHas('asset', function($query) use ($is_crypto){
                     $query->where('is_crypto', $is_crypto);
@@ -264,7 +264,7 @@ class SummaryController extends Controller
             }
 
             $highest_freq_user = Transaction::select('*', DB::raw('count(user_id) AS count'))
-            ->whereDate('created_at',$date)->where('status', 'success');
+            ->whereDate('created_at',$dates)->where('status', 'success');
             if($category){
                 $highest_freq_user = $highest_freq_user->whereHas('asset', function($query) use ($is_crypto){
                     $query->where('is_crypto', $is_crypto);
@@ -288,13 +288,13 @@ class SummaryController extends Controller
                     'successful_tranx_buy' => $successful_tranx_buy,
                     'successful_tranx_sell' =>$successful_tranx_sell,
                     'internal_transfer' => $naira_trades,
-                    'date' => $date
+                    'date' => $dates
                 ]);
 
                 $data_collection = $data_collection->concat($data);
             
         }
-        return $data_collection;
+        return $data_collection->sortByDesc('date');
 
 
     }

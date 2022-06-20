@@ -18,12 +18,12 @@ class pulseAnalyticsController extends Controller
             $endDate = now()->format('Y-m-d');
         }
 
-        $total_transaction = Transaction::where('status','success')->where('created_at','>',$startDate)->where('created_at','<',$endDate)->get();
+        $total_transaction = Transaction::where('status','success')->whereDate('created_at','>',$startDate)->whereDate('created_at','<',$endDate)->get();
         $total_tnx_no = $total_transaction->count();
         $total_asset_value = $total_transaction->sum('amount');
         $total_card_price = $total_transaction->sum('card_price');
         $total_cash_value = $total_transaction->sum('amount_paid');
-        $total_utility = UtilityTransaction::where('status','success')->where('created_at','>',$startDate)->where('created_at','<',$endDate)->get();
+        $total_utility = UtilityTransaction::where('status','success')->whereDate('created_at','>',$startDate)->whereDate('created_at','<',$endDate)->count();
 
         $transaction_table = $this->checkDuration($transaction_duration,$transaction_type);
         return response()->json([
@@ -33,7 +33,7 @@ class pulseAnalyticsController extends Controller
             'total_card_price' => number_format($total_card_price),
             'total_cash_value' => number_format($total_cash_value),
             'total_utility' => number_format($total_utility),
-            'transaction_table' => $transaction_table,
+            'transaction_table' => $transaction_table->paginate(10),
         ], 200);
 
     }

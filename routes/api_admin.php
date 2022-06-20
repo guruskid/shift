@@ -72,6 +72,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
         Route::GET('/settings', 'SettingController@settings');
         Route::POST('/updateSetting', 'SettingController@updateSettings');
+
+        Route::POST('/setTarget', 'SettingController@assignSalesTarget');
     });
 
     //?summary

@@ -159,6 +159,14 @@ class TradeNairaController extends Controller
             {
                 $transactions = $transactions->where('type',$type);
 
+                // $transactions = $transactions->with(['user' => function ($query) {
+                //     $query->withCount(['nairaTrades as total_trx' => function ($query) {
+                //         $query->select(DB::raw("sum(amount) as sumt"));
+                //     }]);
+                // }]);
+                // return $transactions->get();
+    
+                // $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
                 $transactions = $transactions->with(['user' => function ($query) {
                     $query->withCount(['nairaTrades as total_trx' => function ($query) {
                         $query->select(DB::raw("sum(amount) as sumt"));
@@ -669,6 +677,17 @@ class TradeNairaController extends Controller
         $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
+        $msg ="Your naria wallet has been credited with <b>₦".number_format($transaction->amount);
+        // Firebase Push Notification
+        $fcm_id = $user->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
+
         return back()->with(['success' => 'Transaction confirmed']);
     }
 
@@ -726,6 +745,17 @@ class TradeNairaController extends Controller
         $name = str_replace(' ', '', $name);
         $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+        $msg ="You have successfully withdrawn the sum of ₦".number_format($transaction->amount)." to ".$user_account->account_name."( ".$user_account->bank_name.", ".$user_account->account_number.")";
+        // Firebase Push Notification
+        $fcm_id = $user->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
 
         return back()->with(['success' => 'Transaction confirmed']);
     }
