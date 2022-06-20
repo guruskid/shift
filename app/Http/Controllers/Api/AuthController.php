@@ -189,6 +189,15 @@ class AuthController extends Controller
         ]);
     }
 
+    public function saveFcm() {
+        if (null !== request('fcm_id')) {
+            $user = Auth::user();
+            $user->update([
+                'fcm_id' => request('fcm_id')
+            ]);
+        }
+    }
+
     public function bankList()
     {
         $banks = Bank::orderBy('name', 'asc')->get();
