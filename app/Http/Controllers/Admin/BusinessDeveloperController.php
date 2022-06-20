@@ -240,10 +240,13 @@ class BusinessDeveloperController extends Controller
         return view('admin.business_developer.call_category', compact('call_category'));
     }
 
-    public function deleteCallCategory($id)
+    public function updateCallCategory(Request $request)
     {   
-        CallCategory::find($id)->delete();
-        return back()->with(['success'=>'Call Category deleted']);
+        CallCategory::where('id',$request->id)
+            ->update([
+                'category' => $request->feedback,
+            ]);
+        return back()->with(['success'=>'Call Category updated']);
     }
 
     

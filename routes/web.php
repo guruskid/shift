@@ -501,7 +501,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
 
     //?call category
     Route::get('/call-category', 'Admin\BusinessDeveloperController@displayCallCategory')->name('admin.call-categories');
-    Route::get('/call-category/{id}', 'Admin\BusinessDeveloperController@deleteCallCategory')->name('admin.call-categories.action');
+    Route::POST('/call-category', 'Admin\BusinessDeveloperController@updateCallCategory')->name('admin.call-categories.action');
     Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
 
 });
@@ -639,15 +639,18 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], 
 
 });
 
-//? Sales Analytics for new Users 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
+    Route::GET('/LoadSalesUsers', 'Admin\TargetController@loadSales')->name('sales.loadSales');
+    Route::POST('/addTarget','Admin\TargetController@addTarget')->name('sales.addTarget');
+    Route::POST('/editTarget','Admin\TargetController@editTarget')->name('sales.editTarget');
+});
+
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'seniorAccountant']], function () {
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
     Route::ANY('/sortAnalytics/{type?}','Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
     Route::ANY('/showAnalysis/{type?}','Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
-});
-
-//TODO Old Analytics
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
+    
     Route::GET('/oldSalesAnalytics/{type?}', 'Admin\OldUsersSalesAnalytics@index')->name('sales.oldUsers.salesAnalytics');
     Route::ANY('/showAnalysisOldUsers/{type?}','Admin\OldUsersSalesAnalytics@showAllData')->name('sales.oldUsers.show.salesAnalytics');
     Route::ANY('/sortAnalyticsOldUsers/{type?}','Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');

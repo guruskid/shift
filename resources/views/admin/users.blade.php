@@ -87,7 +87,9 @@
                                     {{-- <th >Last name</th> --}}
                                     <th>Email</th>
                                     <th>Phone</th>
+                                    @if (!in_array(Auth::user()->role, [777,775] ))
                                     <th>Naira balance</th>
+                                    @endif
                                     <th>Date added</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -101,7 +103,9 @@
                                     {{-- <td >{{$u->last_name}}</td> --}}
                                     <td>{{$u->email}}</td>
                                     <td>{{$u->phone}}</td>
+                                    @if (!in_array(Auth::user()->role, [777,775] ))
                                     <td>₦{{$u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }} </td>
+                                    @endif
                                     <td>{{$u->created_at->format('d M y')}}</td>
                                     <td>
                                         @switch($u->status)
