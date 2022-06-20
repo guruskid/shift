@@ -150,6 +150,11 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
     });
     Route::get('/customer-life', 'CustomerLifeController@index');
+
+    //TODO: Sales Analytics Route
+    Route::group(['prefix' => 'salesAnalytics'], function () {
+        Route::GET('/', 'SalesAnalyticsController@index');
+    });
 });
 
 Route::group(['middleware' => ['auth:api']], function(){
