@@ -9,6 +9,7 @@ use App\Country;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FirebasePushNotificationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\User;
@@ -34,6 +35,11 @@ class AuthController extends Controller
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
 
+            if (null !== request('fcm_id')) {
+                $user->update([
+                    'fcm_id' => request('fcm_id')
+                ]);
+            }
 
             return response()->json([
                 'success' => true,

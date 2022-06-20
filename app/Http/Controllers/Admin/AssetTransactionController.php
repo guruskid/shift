@@ -9,6 +9,7 @@ use App\Events\CustomNotification;
 use App\Events\TransactionUpdated;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FirebasePushNotificationController;
 use App\Mail\DantownNotification;
 use App\Mail\GeneralTemplateOne;
 use App\Mail\WalletAlert;
@@ -89,6 +90,18 @@ class AssetTransactionController extends Controller
             'title' => $title,
             'body' => $body,
         ]);
+
+        if ($t->status == 'success') {
+            // Firebase Push Notification
+            $fcm_id = $t->user->fcm_id;
+            if (isset($fcm_id)) {
+                try {
+                    FirebasePushNotificationController::sendPush($fcm_id,$title,$body);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+            }
+        }
 
         // broadcast(new TransactionUpdated($user))->toOthers();
         if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1) {
@@ -318,6 +331,17 @@ class AssetTransactionController extends Controller
 
         $title = 'Dantown wallet ' . $type;
         $msg_body = 'Your Dantown wallet has been ' . $type . 'ed with N' . $amount . ' desc: Payment for transaction with id ' . $t->uid;
+        
+        // Firebase Push Notification
+        $fcm_id = $t->user->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg_body);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
+
         /* Send notification */
         $not = Notification::create([
             'user_id' => $t->user->id,
