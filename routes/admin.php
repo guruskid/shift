@@ -66,6 +66,7 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::prefix('trade-naira')->group(function () {
         Route::get('/', 'TradeNairaController@index')->name('admin.trade-naira.index');
         Route::get('/agent-transactions/{user}', 'TradeNairaController@agentTransactions')->name('p2p.agent-transactions');
+        Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
     });
 
     Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
