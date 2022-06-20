@@ -208,6 +208,7 @@
 
             @endif
             
+           
             @if (in_array(Auth::user()->role, [999, 889, 777, 775] ))
                 <li class="my-3">
                     <a href="{{route('admin.crypto-summary', 1)}}"
@@ -344,6 +345,15 @@
                 </a>
             </li>
             @endif
+            @if (in_array(Auth::user()->role, [999] ))
+            <li class="my-3">
+                <a href="{{route('sales.loadSales')}}"
+                    class=" {{ Route::currentRouteName() == 'sales.loadSales' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-settings"></i>
+                    Target Setting
+                </a>
+            </li>
+        @endif
 
             @if (in_array(Auth::user()->role, [999, 889, 777, 775] ))
                 <li class="my-3">

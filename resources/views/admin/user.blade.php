@@ -48,6 +48,7 @@
                                     src=" {{asset('storage/avatar/'.$user->dp)}} " height="120px" alt=""></a>
                         </div>
                         <div>{{$user->first_name." ".$user->last_name}} <br>{{$user->username}}<br>
+                            @if (!in_array(Auth::user()->role, [777,775] ))
                             <span class="text-custom">
                                 @if ($user->nairaWallet)
                                 ₦{{number_format($user->nairaWallet->amount ) }}
@@ -63,6 +64,7 @@
                                 No Bitcoin wallet
                                 @endif
                             </span>
+                            @endif
                         </div>
                     </div>
                 </div>
