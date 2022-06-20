@@ -35,6 +35,10 @@ class AuthController extends Controller
             \Artisan::call('naira:limit');
 
 
+            $user->update([
+                'fcm_id' => request('fcm_id')
+            ]);
+
             return response()->json([
                 'success' => true,
                 'token' => $success,
