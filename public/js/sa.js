@@ -71,6 +71,28 @@ function AddResponse(data){
     $('#e_id').val(data['id']);
 }
 
+function renameCategory(data)
+{
+    $('#c_id').val(data['id']);
+    $('#c_category').val(data['category']);
+}
+
+function AddTarget(data)
+{
+    $('#to_id').val(data['id']);
+    $('#to_email').html(data['email']);
+}
+
+function EditTarget(user,user_target)
+{
+    console.log(user_target);
+    $('#tn_id').val(user['id']);
+    $('#tn_email').html(user['email']);
+    
+    $('#tn_number').val(user_target['target']);
+    $('#tn_number').html(user_target['target']);
+}
+
 //**View Response Data for Called Users*/
 function ViewResponse(call_log,user,call_category){
     $('#v_email').html(user['first_name'] + " " + user['last_name']);

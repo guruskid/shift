@@ -25,4 +25,13 @@ class NairaTrade extends Model
     {
         return $this->hasMany(NairaTransaction::class,'reference','reference');
     }
+
+    public function nairaWallet()
+    {
+        return $this->belongsTo('App\NairaWallet', 'user_id');
+    }
+    public function bitcoinWallet()
+        {
+            return $this->belongsTo('App\BitcoinWallet', 'user_id');
+        }
 }

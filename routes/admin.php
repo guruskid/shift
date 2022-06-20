@@ -63,24 +63,28 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
     Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
 
-
-    Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
-    Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
-
-
     Route::prefix('trade-naira')->group(function () {
         Route::get('/', 'TradeNairaController@index')->name('admin.trade-naira.index');
         Route::get('/agent-transactions/{user}', 'TradeNairaController@agentTransactions')->name('p2p.agent-transactions');
+        Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
+    });
+
+    Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
+    Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
+    //sending
+    Route::POST('/ethereum/send', 'EthWalletController@send')->name('admin.eth.send');
+    Route::POST('/tron/send', 'TronController@send')->name('admin.tron.send');
+    Route::POST('/usdt/send', 'UsdtController@send')->name('admin.usdt.send');
+});
+
+Route::group(['middleware' => 'accountant'], function () {
+
+    Route::prefix('trade-naira')->group(function () {
         Route::get('/accounts', 'TradeNairaController@accounts')->name('p2p.accounts');
 
         Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
         Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
     });
-
-    //sending
-    Route::POST('/ethereum/send', 'EthWalletController@send')->name('admin.eth.send');
-    Route::POST('/tron/send', 'TronController@send')->name('admin.tron.send');
-    Route::POST('/usdt/send', 'UsdtController@send')->name('admin.usdt.send');
 });
 
 

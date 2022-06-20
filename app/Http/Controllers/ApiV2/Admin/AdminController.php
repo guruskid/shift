@@ -9,6 +9,7 @@ use App\NairaTrade;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
+use App\Transaction;
 use App\User;
 use App\Verification;
 use App\VerificationLimit;
@@ -385,5 +386,39 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'User verification cancelled',
         ]);
+    }
+
+    public function check()
+    {
+        # code...
+        $work_hours = User::get()
+            ->keyBy('days');
+
+        // Now let's build an array of every day this week - you would have
+        // to adjust this to match the dates in $work_hours.
+        $days = [];
+        $start = Carbon::now()->startOfWeek();
+        $end = Carbon::now()->endOfWeek();
+        for ($day = $start->copy(); $day->lte($end); $day->addDay()) {
+            $days[] = $day->format('l'); // Eg "Monday"
+        }
+
+        // Now pass the full set of days to the view, along with your "data" days:
+        return response()->json([
+            'days'       => $days,
+            'work_hours' => $work_hours
+        ]);
+    }
+
+    public function activeAccountant()
+    {
+        $activeAccountant = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $activeAccountant,
+        ]);
+
+
     }
 }

@@ -47,25 +47,7 @@
                             <i class="pe-7s-users icon-gradient bg-sunny-morning">
                             </i>
                         </div>
-                        <div>Call Category</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mx-auto mb-3">
-                    <div class="card">
-                        <div class="card-header">Add New Call Categories</div>
-                        <div class="card-body">
-							<form action=" {{route('admin.call-categories.add')}} " method="post">
-								@csrf
-                                <div class="form-group">
-                                    <label for="">New Category</label>
-                                    <input class="form-control" type="text" name="category" placeholder="Enter New Call Category">
-								</div>
-								<button class="btn btn-success">Add</button>
-                            </form>
-                        </div>
+                        <div>Target Settings</div>
                     </div>
                 </div>
             </div>
@@ -78,19 +60,30 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">#</th>
-                                        <th class="text-center">Category</th>
+                                        <th class="text-center">Name</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($call_category as $u)
+                                    @php
+                                        $n = 1;
+                                    @endphp
+                                    @foreach ($user as $u)
                                     <tr>
-                                        <td class="text-center text-muted">{{$u->id}}</td>
-                                        <td class="text-center">{{ucwords($u->category)}}</td>
+                                        <td class="text-center text-muted">{{ $n++ }}</td>
+                                        <td class="text-center">{{ $u->first_name." ".$u->last_name }}</td>
                                         <td class="text-center" >
-                                            <a href="#" class="my-2 mr-2" data-toggle="modal" data-target="#rename-category" onclick="renameCategory({{$u}})">
-                                                <span class="btn btn btn-warning">Rename Category</span>
+                                            @if($u->target)
+                                            <a href="#" class="my-2 mr-2" data-toggle="modal" data-target="#editTarget" onclick="EditTarget({{$u}},{{ $u->target }})">
+                                                <span class="btn btn btn-warning">Edit Target</span>
                                             </a>
+                                            @else
+                                            <a href="#" class="my-2 mr-2" data-toggle="modal" data-target="#addTarget" onclick="AddTarget({{$u}})">
+                                                <span class="btn btn btn-primary">Add Target</span>
+                                            </a>
+                                            @endif
+                                            
+                                            
                                             {{-- <a href="{{route('admin.call-categories.action', [$u->id] )}}" class="btn btn-sm btn-danger">Delete</a> --}}
                                         </td>
                                     </tr>
@@ -105,15 +98,16 @@
     </div>
 </div>
 
-<div class="modal fade  item-badge-rightm" id="rename-category" role="dialog">
+{{-- modal to add target --}}
+<div class="modal fade  item-badge-rightm" id="addTarget" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{route('admin.call-categories.action')}} " method="POST" class="mb-3">
+            <form action="{{route('sales.addTarget')}} " method="POST" class="mb-3">
                 {{ csrf_field() }}
                 <div class="modal-header">
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading" id="c_email">User Email</h4>
+                            <h4 class="media-heading" id="to_email">User Email</h4>
                         </div>
                     </div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
@@ -123,20 +117,59 @@
                 <div class="modal-body">
 
                     <div class="form-group">
-                        <input type="hidden" readonly name="id" id="c_id">
+                        <input type="hidden" readonly name="id" id="to_id">
                     </div>
                     <div class="row">
                         <div class="col-12" id="feedback-textarea">
                             <div class="form-group">
-                            <label for="feedback">Category Name</label>
-                            <textarea class="form-control" id="c_category" name="feedback" rows="2" required></textarea>
+                            <label for="feedback">Target</label>
+                            <input type="number"  class="form-control" name="number" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">Update Call Log</button>
+                    <button type="submit" class="btn btn-primary">Add Target</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- modal to edit taget --}}
+<div class="modal fade  item-badge-rightm" id="editTarget" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{route('sales.editTarget')}} " method="POST" class="mb-3">
+                {{ csrf_field() }}
+                <div class="modal-header">
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading" id="tn_email">User Email</h4>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <input type="hidden" readonly name="id" id="tn_id">
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="feedback-textarea">
+                            <div class="form-group">
+                            <label for="feedback">Taget</label>
+                            <input type="number"  class="form-control" id="tn_number" name="number" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Update Target</button>
                 </div>
             </form>
         </div>

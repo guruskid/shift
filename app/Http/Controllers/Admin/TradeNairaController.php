@@ -159,7 +159,6 @@ class TradeNairaController extends Controller
             {
                 $transactions = $transactions->where('type',$type);
 
-<<<<<<< HEAD
                 // $transactions = $transactions->with(['user' => function ($query) {
                 //     $query->withCount(['nairaTrades as total_trx' => function ($query) {
                 //         $query->select(DB::raw("sum(amount) as sumt"));
@@ -167,8 +166,7 @@ class TradeNairaController extends Controller
                 // }]);
                 // return $transactions->get();
     
-                $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
-=======
+                // $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
                 $transactions = $transactions->with(['user' => function ($query) {
                     $query->withCount(['nairaTrades as total_trx' => function ($query) {
                         $query->select(DB::raw("sum(amount) as sumt"));
@@ -176,7 +174,6 @@ class TradeNairaController extends Controller
                 }]);
 
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
->>>>>>> ea8217fe81a10c8113bc219c9cc1f355b5409a10
                     FROM naira_trades as tr
                     WHERE
                     tr.user_id = naira_trades.user_id)
@@ -379,6 +376,14 @@ class TradeNairaController extends Controller
     }
 
     public function updateAccount(Request $request) {
+        if(Auth::user()->role == 777)
+        {
+            $data = $request->except('_token');
+            $account = PayBridgeAccount::find($request['id']);
+            $account->status = $request['status'];
+            $account->save();
+            return redirect()->back()->with(["success" => 'Account Updated']);
+        }
         $data = $request->except('_token');
         $account = PayBridgeAccount::find($request['id']);
         $account->account_name = $request['account_name'];

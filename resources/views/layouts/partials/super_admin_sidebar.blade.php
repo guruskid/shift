@@ -124,6 +124,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'sales.loadSales' ? 'active' : '' }}  ">
+        <a href="{{route('sales.loadSales')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="settings"></ion-icon>
+                <span>Target Setting</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.bitcoin-wallets-transactions' ? 'active' : '' }}  ">
         <a href="{{route('admin.bitcoin-wallets-transactions')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
