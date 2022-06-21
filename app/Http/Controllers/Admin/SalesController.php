@@ -39,11 +39,14 @@ class SalesController extends Controller
         $pending_user = NewUsersTracking::where('status','pending')->count();
         $good_user = NewUsersTracking::where('status','goodlead')->count();
         $bad_user = NewUsersTracking::Where('status','badlead')->count();
-        $all_user = NewUsersTracking::where('status','goodlead')->get();
+        $all_user = NewUsersTracking::whereIn('status',['goodlead','badlead'])->get();
         $total = 0;
         foreach ($all_user as $au) {
             $user = User::find($au->user_id);
-            $total += $user->transactions()->where('created_at','>=',$au->updated_at)->count();
+            if($user->transactions()->where('status','success')->where('created_at','>=',$au->updated_at)->count() > 0)
+            {
+                $total++; 
+            }
         }
         $data_table = $this->tableCategory($type);
         return view('admin.sales.index',compact([
@@ -76,15 +79,15 @@ class SalesController extends Controller
         }
         if($type == 'traded_user')
         {
-            $data_collection = collect([]);
-            $user_data = NewUsersTracking::with('user')->where('status','goodlead')->latest('created_at')->get();
+            $data_collection = [];
+            $user_data = NewUsersTracking::with('user')->whereIn('status',['goodlead','badlead'])->get();
             foreach ($user_data as $ud) {
-                if($ud->transactions()->where('created_at','>=',$ud->updated_at)->count() > 0)
+                if(Transaction::where('status','success')->where('created_at','>=',$ud->updated_at)->count() > 0)
                 {
-                    $data_collection = $data_collection->concat($ud);
+                    $data_collection[] = $ud;
                 }
             }
-            $data = $data_collection->take(10);
+            $data = collect($data_collection)->sortBy('id')->take(10);
         }
         return $data;
 
@@ -122,15 +125,15 @@ class SalesController extends Controller
         if($type == 'traded_user')
         {
             $segment = "Traded Users";
-            $data_collection = collect([]);
-            $user_data = NewUsersTracking::with('user')->where('status','goodlead')->latest('created_at')->get();
+            $data_collection = [];
+            $user_data = NewUsersTracking::with('user')->whereIn('status',['goodlead','badlead'])->get();
             foreach ($user_data as $ud) {
-                if($ud->transactions()->where('created_at','>=',$ud->updated_at)->count() > 0)
+                if(Transaction::where('status','success')->where('created_at','>=',$ud->updated_at)->count() > 0)
                 {
-                    $data_collection = $data_collection->concat($ud);
+                    $data_collection[] = $ud;
                 }
             }
-            $data = $data_collection;
+            $data = collect($data_collection)->sortBy('id');
         }
         
         if($request->start)

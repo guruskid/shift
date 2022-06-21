@@ -97,8 +97,12 @@ class OldUsersSalesAnalytics extends Controller
         foreach($table_data as $td)
         {
             $data = Transaction::where('user_id',$td->user_id)->where('status','success')->orderBy('id','desc')->first();
-            $td->lastTranxDate = $data->created_at;
-            $td->lastTranxVolume = $data->amount;
+            if($data)
+            {
+                $td->lastTranxDate = $data->created_at;
+                $td->lastTranxVolume = $data->amount;
+            }
+            
         }
         $segment = " Sales Old Users Analytics";
         return view('admin.oldUsersSalesAnalytics.index',compact([
@@ -176,8 +180,11 @@ class OldUsersSalesAnalytics extends Controller
         foreach($table_data as $td)
         {
             $data = Transaction::where('user_id',$td->user_id)->where('status','success')->orderBy('id','desc')->first();
-            $td->lastTranxDate = $data->created_at;
-            $td->lastTranxVolume = $data->amount;
+            if($data)
+            {
+                $td->lastTranxDate = $data->created_at;
+                $td->lastTranxVolume = $data->amount;
+            }
         }
         return view('admin.oldUsersSalesAnalytics.sort',compact([
             'show_data','segment','noOfCalledUsers','averageTimeBetweenCalls','respondedTranxVolume','respondedTranxNo','noOfRespondedUsers'
@@ -259,8 +266,11 @@ class OldUsersSalesAnalytics extends Controller
         foreach($table_data as $td)
         {
             $data = Transaction::where('user_id',$td->user_id)->where('status','success')->orderBy('id','desc')->first();
-            $td->lastTranxDate = $data->created_at;
-            $td->lastTranxVolume = $data->amount;
+            if($data){
+                $td->lastTranxDate = $data->created_at;
+                $td->lastTranxVolume = $data->amount;
+            }
+            
         }
         return view('admin.oldUsersSalesAnalytics.show',compact([
             'show_data','segment','type','table_data'

@@ -27,7 +27,6 @@ class SalesAnalyticsController extends Controller
 
     public function sortingAnalytics(Request $request, $type = null)
     {
-        
         $type = ($type != null) ? $type : "calledUsers";
         if(!empty($request->all())){
             $request->session()->put('SortingKeys',$request->all());
