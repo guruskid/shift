@@ -4,7 +4,10 @@ namespace App\Http\Controllers\ApiV2\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\NairaTrade;
+use App\NairaTransaction;
 use App\Ticket;
+use App\Transaction;
 use App\User;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,7 +35,7 @@ class CustomerHappinessController extends Controller
         ], 200);
 
     }
-    
+
     public function dropdownForRole()
     {
         $user = User::where('role','!=',1)->distinct()->get(['role']);
@@ -46,13 +49,13 @@ class CustomerHappinessController extends Controller
                     break;
                 case 889:
                     $u->role_name = "Senior Accountant";
-                    break;  
+                    break;
                 case 777:
                     $u->role_name = "Junior Accountant";
                     break;
                 case 559:
                     $u->role_name = "Marketing Personnel";
-                    break; 
+                    break;
                 case 557:
                     $u->role_name = "Business Developer";
                     break;
@@ -61,10 +64,10 @@ class CustomerHappinessController extends Controller
                     break;
                 case 444:
                     $u->role_name = "Chinese Operator";
-                    break; 
+                    break;
                 case 449:
                     $u->role_name = "Chinese Administrator";
-                    break;      
+                    break;
                 default:
                 $u->role_name = "";
                     break;
@@ -113,7 +116,7 @@ class CustomerHappinessController extends Controller
                     'success' => false,
                     'message' => "Email is in use",
                 ], 401);
-            }   
+            }
             $user->email = $r->email;
         }
         $user->email = $r->email;
@@ -182,16 +185,16 @@ class CustomerHappinessController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "You have successfully created an account for $r->first_name $r->last_name with the username \n 
+            'message' => "You have successfully created an account for $r->first_name $r->last_name with the username \n
             Username: $r->username \n
             Password: $r->password",
         ], 200);
-        
+
     }
 
     public function activateUser($id,$state)
     {
-            
+
         if($state == 'deactivate')
         {
             User::where('id',$id)->update([
@@ -216,5 +219,46 @@ class CustomerHappinessController extends Controller
         ], 401);
     }
 
-    
+    public function index()
+    {
+        $transactions = NairaTransaction::with('user')->orderBy('id','desc')->limit(10)->get();
+        return response()->json([
+            'success' => true,
+            'opened_querry' => [],
+            'transactions' => $transactions,
+        ], 200);
+    }
+
+    public function p2p()
+    {
+
+        return response()->json([
+            'success' => true,
+            'data' => NairaTrade::with('user', 'nairaWallet', 'naria_transactions')->latest()->paginate(1000),
+        ]);
+    }
+
+    public function userProfile()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => User::with('transactions', 'nairaWallet', 'utilityTransaction', 'nairaWallet', 'nairaTransactions', 'nairaTrades')->latest()->paginate(100),
+        ]);
+    }
+
+    public function userSearch($email)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => User::where('email', $email)->with('transactions', 'nairaWallet', 'utilityTransaction', 'nairaWallet', 'nairaTransactions', 'nairaTrades')->get(),
+        ]);
+    }
+
+    public function customerHappinessTransactions()
+    {
+        return response()->json([
+            'success' => true,
+            'data' => Transaction::with('user')->latest()->paginate(100),
+        ]);
+    }
 }
