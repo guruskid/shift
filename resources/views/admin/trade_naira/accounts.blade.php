@@ -59,9 +59,11 @@
                             <div class="">
                                 Accounts
                             </div>
+                            @if(Auth::user()->role == 889)
                             <div>
                                 <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Add account</button>
                             </div>
+                            @endif
                         </div>
                         <div class="table-responsive p-3">
                             <table
@@ -114,6 +116,7 @@
                     <form action="{{ route('agent.update-account') }}" method="POST" class="mb-4">@csrf
                         <div class="form-row ">
                             <input type="hidden" value="{{$account->id}}" name="id">
+                            @if(Auth::user()->role == 889)
                             <div class="col-md-12">
                                 <div class="position-relative form-group">
                                     <label>Bank Name</label>
@@ -142,6 +145,7 @@
                                     </select>
                                 </div>
                             </div>
+                            @endif
                             <div class="col-md-12">
                                 <div class="position-relative form-group">
                                     <label>Status</label>
