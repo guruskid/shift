@@ -180,11 +180,11 @@ class OldUsersSalesAnalytics extends Controller
         foreach($table_data as $td)
         {
             $data = Transaction::where('user_id',$td->user_id)->where('status','success')->orderBy('id','desc')->first();
-            if($data)
-            {
+            if($data){
                 $td->lastTranxDate = $data->created_at;
                 $td->lastTranxVolume = $data->amount;
             }
+            
         }
         return view('admin.oldUsersSalesAnalytics.sort',compact([
             'show_data','segment','noOfCalledUsers','averageTimeBetweenCalls','respondedTranxVolume','respondedTranxNo','noOfRespondedUsers'
@@ -266,7 +266,8 @@ class OldUsersSalesAnalytics extends Controller
         foreach($table_data as $td)
         {
             $data = Transaction::where('user_id',$td->user_id)->where('status','success')->orderBy('id','desc')->first();
-            if($data){
+            if($data)
+            {
                 $td->lastTranxDate = $data->created_at;
                 $td->lastTranxVolume = $data->amount;
             }

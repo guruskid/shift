@@ -120,7 +120,7 @@
                             <tbody>
                                 @foreach ($data_table as $u)
                                 <tr>
-                                    <td><div class="td-content customer-name">{{$u->user->first_name}}</div></td>
+                                    <td><div class="td-content customer-name">{{$u->user->first_name." ".$u->user->last_name}}</div></td>
                                     <td>{{ $u->user->username }}</td>
                                     <td>{{ $u->last_transaction_date }}</td>
                                     @if ($type =="callLog")
