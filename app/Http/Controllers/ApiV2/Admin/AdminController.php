@@ -412,13 +412,23 @@ class AdminController extends Controller
 
     public function activeAccountant()
     {
-        $activeAccountant = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+        $activeAccountant = [];
+        $users = User::where('status', 'active')
+        ->orWhere('role',  889)
+        ->orWhere('role', 777)
+        ->get();
+
+        foreach($users as $user ){
+            if($user->role == 777 || $user->role == 889){
+                if($user->status == 'active'){
+                    $activeAccountant[] = $user;
+                }
+            }
+        }
 
         return response()->json([
             'success' => true,
             'data' => $activeAccountant,
         ]);
-
-
     }
 }
