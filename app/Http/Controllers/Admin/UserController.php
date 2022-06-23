@@ -90,6 +90,19 @@ class UserController extends Controller
             $name = str_replace(' ', '', $name);
             $firstname = ucfirst($name);
             Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+            $title = "Level 3 verification";
+            $msg = "Level 3 verification WAS SUCCESSFUL! Your daily and monthly withdrawal limit have been increased to ".number_format($level->daily_widthdrawal_limit)." and ".number_format($level->monthly_widthdrawal_limit)." respectively.";
+
+            $fcm_id = $verification->user->fcm_id;
+            if (isset($fcm_id)) {
+                try {
+                    FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+            }
+
         } elseif ($verification->type == 'Address') {
             $verification->user->address_verified_at = now();
             $level = VerificationLimit::where('level', "2")->first();
@@ -117,6 +130,18 @@ class UserController extends Controller
             $name = str_replace(' ', '', $name);
             $firstname = ucfirst($name);
             Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+            $title = "Level 2 verification";
+            $msg = "Level 2 verification WAS SUCCESSFUL! Your daily and monthly withdrawal limit have been increased to ".number_format($level->daily_widthdrawal_limit)." and ".number_format($level->monthly_widthdrawal_limit)." respectively.";
+
+            $fcm_id = $verification->user->fcm_id;
+            if (isset($fcm_id)) {
+                try {
+                    FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+            }
         }
 
         $verification->user->save();
@@ -136,27 +161,32 @@ class UserController extends Controller
     {
         // dd($verification->user->email);
         if ($dt->type == 'Address') {
-            $title = "LEVEL 2 VERIFICATION DENIED";
+            $title = "LEVEL 2 VERIFICATION FAILED";
             $bodyTitle = 'level 2 verification';
+            $fcmNotice = "";
             if ($dt->reason == 'Uploaded a wrong information') {
                 $dt->reason = 'You uploaded a wrong information';
                 $suggestion = 'You are required to upload your bank statement that contains both your home address and name on Dantown.
                 ';
+                $fcmNotice = "Upload a bank statement that contains your name and the address inputted.";
             } elseif ($dt->reason == 'Unclear uploaded document') {
                 $dt->reason = 'The document you uploaded is not unclear';
                 $suggestion = 'Please upload a clear image of your bank statement where your name and home address is clearly visible.
                 ';
+                $fcmNotice = "Upload a visible image of your bank statement.";
             } elseif ($dt->reason == 'Full image of the document was not uploaded') {
                 $dt->reason = 'The full image of the document was not uploaded';
                 $suggestion = 'The image of the bank statement uploaded has some missing data. Please upload the full image of the statement.
                 ';
+                $fcmNotice = "Upload the full image of the bank statement, where the required data are visible.";
             } elseif ($dt->reason == 'A mismatch of information') {
                 $dt->reason = 'There is a mismatch of information';
                 $suggestion = 'Please ensure that the address you filled matches that on the bank statement you uploaded.
                 ';
+                $fcmNotice = "Ensure the address inputted and that on the bank statement are similar.";
             }
         } else {
-            $title = "LEVEL 3 VERIFICATION DENIED";
+            $title = "LEVEL 3 VERIFICATION FAILED";
             $bodyTitle = 'level 3 verification';
             if ($dt->reason == 'Uploaded a wrong information') {
                 $dt->reason = 'You uploaded a wrong information';
@@ -169,21 +199,25 @@ class UserController extends Controller
                         Permanent Voter’s card, <br>
                         Driver’s license.<br>
                 ';
+                $fcmNotice = "Upload an authorized form of identification that contains your name.";
             } elseif ($dt->reason == 'Unclear uploaded document') {
 
                 $dt->reason = 'The document you uploaded is not unclear';
                 $suggestion = 'Please  upload a clear image of the required document that clearly shows your name and other relevant information.
                 ';
+                $fcmNotice = "Upload a visible image of the means of identification.";
             } elseif ($dt->reason == 'Full image of the document was not uploaded') {
 
                 $dt->reason = 'The full image of the document was not uploaded';
                 $suggestion = 'The image of the document you uploaded has some data missing. Please upload a full image of the document.
                 ';
+                $fcmNotice = "Upload the full image of the means of identification, where the required data are visible.";
             } elseif ($dt->reason == 'A mismatch of information') {
 
                 $dt->reason = 'There is a mismatch of information';
                 $suggestion = 'Please upload a document that contains your name on Dantown.
                 ';
+                $fcmNotice = "Please ensure your name matches that on the means of identification.";
             }
         }
 
@@ -202,6 +236,16 @@ class UserController extends Controller
 
         Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         // return back()->with(['success' => 'User verification cancelled']);
+
+        $msg = "Your ".$bodyTitle." was declined because ".$dt->reason.". Kindly ".$fcmNotice.".";
+        $fcm_id = $verification->user->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
 
         $verification->status = 'failed';
         $verification->save();
