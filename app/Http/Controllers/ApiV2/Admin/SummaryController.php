@@ -15,56 +15,54 @@ class SummaryController extends Controller
 {
     public function Transactions24hrs($date)
     {
-        $crypto_collection = collect([]);
-        $giftCard_collection = collect([]);
-        $utilities_collection = collect([]);
+        $data_collection = collect([]);
+        $crypto_transactions = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 1);
+        })->where('status','success')->whereDate('created_at',$date)->get();
 
-        for($i = 0; $i < 24 ; $i++)
-        {
-            $crypto_transaction = Transaction::whereHas('asset', function ($query) {
-                $query->where('is_crypto', 1);
-            })->where("created_at",">=",$date." $i:00:00")->where("created_at","<=",$date." $i:59:59")->where('status', 'success')->count();
-            $data = array($i=>["start"=>"$i:00:00",
-                                "end"=>"$i:59:59",
-                                "transactions"=>$crypto_transaction]); 
-            $crypto_collection = $crypto_collection->concat($data);
+        $crypto = $crypto_transactions->where("created_at",">=",$date." 01:01:00")->where("created_at","<=",$date." 02:00:00");
 
-            $giftCard_transaction = Transaction::whereHas('asset', function ($query) {
-                $query->where('is_crypto', 0);
-            })->where("created_at",">=",$date." $i:00:00")->where("created_at","<=",$date." $i:59:59")->where('status', 'success')->count();
-            $data = array($i=>["start"=>"$i:00:00",
-                                "end"=>"$i:59:59",
-                                "transactions"=>$giftCard_transaction]); 
-            $giftCard_collection = $giftCard_collection->concat($data);
+        $giftCard_transaction = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+        })->where('status','success')->whereDate('created_at',$date)->get();
 
-            $utilities_transaction = UtilityTransaction::where("created_at",">=",$date." $i:00:00")
-            ->where("created_at","<=",$date." $i:59:59")->where('status', 'success')->count();
-            $data = array($i=>["start"=>"$i:00:00",
-                                "end"=>"$i:59:59",
-                                "transactions"=>$utilities_transaction]); 
-            $utilities_collection = $utilities_collection->concat($data);
+        $utilities_transaction = UtilityTransaction::where('status','success')->whereDate('created_at',$date)->get();
+
+        //* do a loop on the collections
+        for($i = 0; $i<=23; $i++){
+            $previous_time = $i - 1;
+            $current_time = $i;
+
+            if($i>= 0 AND $i <=9)
+            {
+                $previous_time = ($i == 0) ? 23 : "0".($i - 1);
+                $current_time = "0$i";
+            }
+
+            $crypto = $crypto_transactions->where("created_at",">=",$date." $previous_time:01:00")->where("created_at","<=",$date." $current_time:00:00")->count();
+            $giftcard = $giftCard_transaction->where("created_at",">=",$date." $previous_time:01:00")->where("created_at","<=",$date." $current_time:00:00")->count();
+            $utility = $utilities_transaction->where("created_at",">=",$date." $previous_time:01:00")->where("created_at","<=",$date." $current_time:00:00")->count();
+
+            $collection = array(collect(["$current_time:00" => [
+                "crypto"=>$crypto,"giftCards"=>$giftcard,"utility"=>$utility
+            ]]));
+            $data_collection = $data_collection->concat($collection);
 
         }
-        $data = [$crypto_collection,$giftCard_collection,$utilities_collection];
-        return $data;
+        return $data_collection;
+
     }
     public function timeGraph($date = null)
     {
+        
         if($date == null)
         {
-            $date = date('Y-m-d');
+            $date = now()->format('Y-m-d');
         }
-
-        $crypto_transaction = $this->Transactions24hrs($date)[0];
-        $giftCard_transaction = $this->Transactions24hrs($date)[1];
-        $utilities_transaction = $this->Transactions24hrs($date)[2];
-
         return response()->json([
             'success' => true,
-            'crypto' => $crypto_transaction,
-            'gift_card' => $giftCard_transaction,
-            'utility' => $utilities_transaction,
-        ], 200);
+            'data' => $this->Transactions24hrs($date)
+        ],200); 
     }
 
     public function totalAsset($card_id,$date)
@@ -106,7 +104,7 @@ class SummaryController extends Controller
 
             //total_traded_asset
             //?total_traded_asset
-            if($token_value ==1)
+            if($token_value == 1)
             {
                 $value = Transaction::where('card_id',$ct->id)
                 ->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success');
@@ -146,7 +144,7 @@ class SummaryController extends Controller
 
         return response()->json([
             'success' => true,
-            'transaction_number' => $number_of_tranx->count(),
+            'daily total' => $number_of_tranx->count(),
             'crypto_tokens' => $crypto_tokens,
             'transactions' => $number_of_tranx->paginate(10)
         ], 200);
@@ -229,29 +227,31 @@ class SummaryController extends Controller
         ], 200);
     }
 
-    public function transactions($category = null,$date = null)
+    public function transactions($category,$date)
     {
+        $total_number = ($date != null) ? 200 : 100;
         $date = ($date != null) ? $date: Carbon::now();
-        $total_number = ($date != null) ? 40 : 100;
         $is_crypto = ($category == "Crypto") ? 1:0;
-
         $data_collection = collect([]);
         for ($i=0; $i <= $total_number; $i++) { 
             $highest_naira_user_name = null;
             $highest_freq_user_name = null;
             $dates = Carbon::parse($date)->subDays($i)->format("Y-m-d");
-            $transactions = Transaction::whereDate('created_at',$dates)->where('status', 'success');
+            
+            $transactions =  Transaction::whereDate('created_at',$dates)->where('status', 'success');
+            
             if($category != null){
                 $transactions = $transactions->whereHas('asset', function($query) use ($is_crypto){
                     $query->where('is_crypto', $is_crypto);
                 });
             }
+            
             $transactions = $transactions->get();
-
+            
             $successful_tranx =  $transactions->where('status', 'success')->count();
             $declined_tranx = $transactions->where('status','!=', 'success')->where('status','!=', 'waiting')->count();
 
-            $highest_naira_user = Transaction::select('*', DB::raw('sum(amount_paid) AS total_amount'))
+            $highest_naira_user =Transaction::select('*', DB::raw('sum(amount_paid) AS total_amount'))
             ->whereDate('created_at',$dates)->where('status', 'success');
             if($category){
                 $highest_naira_user = $highest_naira_user->whereHas('asset', function($query) use ($is_crypto){
@@ -259,6 +259,7 @@ class SummaryController extends Controller
                 });
             }
             $highest_naira_user = $highest_naira_user->groupBy('user_id')->orderBy(DB::raw('total_amount'), 'desc')->first();
+            
             if(isset($highest_naira_user->user)){
                 $highest_naira_user_name = $highest_naira_user->user->first_name." ".$highest_naira_user->user->last_name;
             }
@@ -274,12 +275,13 @@ class SummaryController extends Controller
             if(isset($highest_freq_user->user)){
                 $highest_freq_user_name = $highest_freq_user->user->first_name." ".$highest_freq_user->user->last_name;
             }
+            
 
             $successful_tranx_buy =  $transactions->where('status', 'success')->where('type','buy')->count();
             $successful_tranx_sell =  $transactions->where('status', 'success')->where('type','sell')->count();
 
             $naira_trades = NairaTrade::whereDate('created_at',$date)->where('status', 'success')->count();
-
+            
                 $data = array($i=>[
                     'successful_transaction' => $successful_tranx,
                     'declined_transaction' =>$declined_tranx,
@@ -301,7 +303,7 @@ class SummaryController extends Controller
 
     public function transactionsDetails()
     {
-       $data_collection = $this->transactions();
+       $data_collection = $this->transactions(null,null);
         return response()->json([
             'success' => true,
             'data' => $data_collection->paginate(10),
@@ -314,7 +316,7 @@ class SummaryController extends Controller
         $data_collection = $this->transactions($r->category,$r->date);
         return response()->json([
             'success' => true,
-            'data' => $data_collection->paginate(10),
+            'data' => $data_collection->paginate(10)
         ], 200);
     }
 }
