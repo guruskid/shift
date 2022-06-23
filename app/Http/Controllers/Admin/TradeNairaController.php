@@ -520,6 +520,9 @@ class TradeNairaController extends Controller
         }
 
 
+        $title = "DEPOSIT UPDATE!";
+        $msg ="Your deposit transaction of ₦".number_format($transaction->amount)." was declined. Kindly contact support for more information.";
+
 
         $nt = NairaTransaction::where('reference', $transaction->reference)->first();
 
@@ -534,6 +537,21 @@ class TradeNairaController extends Controller
             $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
             $transfer_charges_wallet->amount -= $nt->charge;
             $transfer_charges_wallet->save();
+
+            $title = "WITHDRAWAL UPDATE!";
+            $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was declined. Kindly contact support for more information.";
+            
+        }
+
+        
+        // Firebase Push Notification
+        $fcm_id = $nt->user->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
         }
 
         if ($nt) {
@@ -685,7 +703,8 @@ class TradeNairaController extends Controller
         $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-        $msg ="Your naria wallet has been credited with <b>₦".number_format($transaction->amount);
+        $title = "DEPOSIT UPDATE!";
+        $msg ="Your deposit transaction of ₦".number_format($transaction->amount)." was successful.";
         // Firebase Push Notification
         $fcm_id = $user->fcm_id;
         if (isset($fcm_id)) {
@@ -755,6 +774,10 @@ class TradeNairaController extends Controller
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         $msg ="You have successfully withdrawn the sum of ₦".number_format($transaction->amount)." to ".$user_account->account_name."( ".$user_account->bank_name.", ".$user_account->account_number.")";
+
+        $title = "WITHDRAWAL UPDATE!";
+        $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was successful.";
+
         // Firebase Push Notification
         $fcm_id = $user->fcm_id;
         if (isset($fcm_id)) {
