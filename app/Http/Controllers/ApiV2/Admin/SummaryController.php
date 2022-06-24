@@ -365,7 +365,7 @@ class SummaryController extends Controller
         return $data_collection->sortByDesc('date');
     }
 
-    public function otherTransactionsTD($date, $type)
+    public function otherTransactionsTD($date)
     {
         $total_number = 100;
         $data_collection =  collect([]);
@@ -437,7 +437,7 @@ class SummaryController extends Controller
         }
         if($r->category == "others")
         {
-            $data_collection =  $this->otherTransactionsTD($r->date, $r->type);
+            $data_collection =  $this->otherTransactionsTD($r->date);
         }
         return response()->json([
             'success' => true,
