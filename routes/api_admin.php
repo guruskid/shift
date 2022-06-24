@@ -16,6 +16,18 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/cable',  'UtilityController@cable');
     });
 
+    Route::prefix('rate')->group(function () {
+        Route::get('/', 'RateController@index');
+    });
+
+
+    Route::prefix('card')->group(function () {
+        Route::post('/create', 'CardsController@store');
+        Route::post('/edit', 'CardsController@editCard');
+        Route::GET('/delete-card/{id}', 'CardsController@deleteCard');
+    });
+
+
     Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
 
     Route::get('/accountant/active', 'AdminController@activeAccountant');
