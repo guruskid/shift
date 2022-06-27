@@ -38,4 +38,13 @@ class TargetController extends Controller
         }
         return redirect()->back()->with(['error' => 'Error Updating Target']);
     }
+
+    public function activateSales($id, $action)
+    {
+        $user = User::find($id);
+        $user->status = $action;
+        $user->save();
+
+        
+    }
 }
