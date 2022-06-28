@@ -147,10 +147,8 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <th>Amount Paid</th>
                                         <th>Total Charge</th>
                                         <th>Total</th>
-                                        @if (!in_array(Auth::user()->role, [777,775] ))
                                         <th>Prev. Bal </th>
                                         <th>Cur. Bal</th>
-                                        @endif
                                         <th>Cr. Acct.</th>
                                         <th>Debit Acct.</th>
                                         <th>Narration</th>
@@ -181,10 +179,8 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>₦{{number_format($t->amount_paid) }} </td>
                                         <td>₦{{number_format($t->charge) }} </td>
                                         <td>₦{{number_format($t->amount) }} </td>
-                                        @if (!in_array(Auth::user()->role, [777,775] ))
                                         <td>₦{{number_format($t->previous_balance) }}</td>
                                         <td>₦{{number_format($t->current_balance) }} </td>
-                                        @endif
                                         <td>{{$t->cr_acct_name}} </td>
                                         <td>{{$t->dr_acct_name}} </td>
                                         <td>{{$t->narration}} </td>

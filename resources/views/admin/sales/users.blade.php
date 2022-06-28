@@ -97,16 +97,20 @@
                                         <td>{{ $u->updated_at->format('d M y, h:ia') }}</td>
                                         @if ($type != "traded_user")
                                         <td>
-                                            @if ($type == "all_user")
-                                            <a href="#" class="my-2" data-toggle="modal" data-target="#add-call-log" onclick="AddResponse({{$u->user}})">
-                                                <span class="btn btn btn-info">Response</span>
-                                            </a>
-                                            @endif
-                                            @if ($type !="all_user")
-                                            <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewNewUserData({{ $u->user }},{{ $u }})">
-                                                <span class="btn btn btn-info">View</span>
-                                            </a>
-                                            @endif
+                                            @if (in_array($type, ["pending_user","all_user"] ))
+                                            <a href="#" class="my-2" data-toggle="modal" data-target="#view-phone-number" onclick="showPhoneNumber({{$u->user}})">
+                                               <span class="btn btn btn-info">View Phone Number</span>
+                                           </a>
+                                           <a href="#" class="my-2" data-toggle="modal" data-target="#add-call-log" onclick="AddResponse({{$u->user}})">
+                                               <span class="btn btn btn-info">Response</span>
+                                           </a>
+                                           
+                                           @endif
+                                           @if (!in_array($type, ["pending_user","all_user"] ))
+                                           <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewNewUserData({{ $u->user }},{{ $u }})">
+                                               <span class="btn btn btn-info">View</span>
+                                           </a>
+                                           @endif
                                         </td>
                                         @endif
                                     </tr>
@@ -143,6 +147,8 @@
 
                     <div class="form-group">
                         <input type="hidden" readonly name="id" id="e_id">
+                        <input type="hidden" readonly name="phoneNumber" id="e_phoneNumber">
+                        <input type="hidden" readonly name="type" value="{{ $type }}">
                     </div>
                     <div class="row">
 
@@ -174,6 +180,26 @@
     </div>
 </div>
 
+<div class="modal fade  item-badge-rightm" id="view-phone-number" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading " id="ph_email">User Email</h4>
+                            <h6 class="media-heading" id="ph_phoneNumber">User PhoneNumber</h6>
+                        </div>
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade  item-badge-rightm" id="view-call-log" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -198,7 +224,11 @@
                         <div class="col">
                             <div class="form-group">
                                 <label for="">Category</label>
-                                <select onchange="category_status()" id="category" name="status" class="form-control" required>
+                                <select onchange="category_status()" id="category" name="status" class="form-control" 
+                                @if (in_array($type, ["good_lead","bad_lead","called_user"] ))
+                                 disabled
+                                @endif
+                                >
                                     <option value="" id="v_status">Select Category</option>
                                     <option value="pending">Pending</option>
                                     <option value="goodlead">Good Lead</option>
@@ -210,14 +240,17 @@
                         <div class="col-12">
                             <div class="form-group">
                             <label for="feedback">Feedback</label>
-                            <textarea class="form-control" id="v_feedback" name="feedback" rows="5" required></textarea>
+                            <textarea class="form-control" id="v_feedback" name="feedback" rows="5" required 
+                            @if (in_array($type, ["good_lead","bad_lead","called_user"] ))
+                            readonly
+                           @endif
+                           ></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Status</button>
                 </div>
             </form>
         </div>

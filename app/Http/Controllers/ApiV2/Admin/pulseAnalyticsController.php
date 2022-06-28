@@ -5,7 +5,9 @@ namespace App\Http\Controllers\ApiV2\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
+use App\Transaction;
 use App\UtilityTransaction;
+use Carbon\Carbon;
 
 class pulseAnalyticsController extends Controller
 {
