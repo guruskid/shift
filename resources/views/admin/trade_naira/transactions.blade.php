@@ -300,10 +300,8 @@
                                         <th>Amount</th>
                                         <th>Reference</th>
                                         <th>Type</th>
-                                        @if (!in_array(Auth::user()->role, [777,775] ))
                                         <th>Prev Balance</th>
                                         <th>Current Balance</th>
-                                        @endif
                                         <th>Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -335,10 +333,8 @@
                                         @endif
 
                                         </td>
-                                        @if (!in_array(Auth::user()->role, [777,775] ))
                                         <td>₦{{ number_format($t->prev_bal) }}</td>
                                         <td>₦{{ number_format($t->current_bal) }}</td>
-                                        @endif
                                         <td>{{ $t->created_at->format('d m y, h:ia') }}</td>
                                         <td>{{ $t->status }}</td>
                                         <td>
