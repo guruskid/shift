@@ -154,6 +154,15 @@ class SalesController extends Controller
 
     public function assignStatus(Request $request)
     {
+        if($request->status == "pending"){
+            NewUsersTracking::where('user_id',$request->id)
+            ->update([
+                'status' => $request->status,
+                'comment' => $request->feedback,
+            ]);
+
+            return back()->with(['success'=>'Status Updated']);
+        }
         if($request->phoneNumber)
         {
             $time = now();

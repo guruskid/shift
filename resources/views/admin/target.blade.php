@@ -73,6 +73,16 @@
                                         <td class="text-center text-muted">{{ $n++ }}</td>
                                         <td class="text-center">{{ $u->first_name." ".$u->last_name }}</td>
                                         <td class="text-center" >
+                                            @if($u->status == "active")
+                                            <a href="{{route('sales.action', [$u->id, 'waiting'] )}}" class="my-2 mr-2">
+                                                <span class="btn btn btn-danger">Deactivate</span>
+                                            </a>
+                                            @else
+                                            <a href="{{route('sales.action', [$u->id, 'active'] )}}" class="my-2 mr-2">
+                                                <span class="btn btn btn-primary">Activate</span>
+                                            </a>
+                                            @endif
+
                                             @if($u->target)
                                             <a href="#" class="my-2 mr-2" data-toggle="modal" data-target="#editTarget" onclick="EditTarget({{$u}},{{ $u->target }})">
                                                 <span class="btn btn btn-warning">Edit Target</span>

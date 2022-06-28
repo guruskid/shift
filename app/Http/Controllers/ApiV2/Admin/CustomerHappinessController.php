@@ -30,7 +30,7 @@ class CustomerHappinessController extends Controller
         }
         return response()->json([
             'success' => true,
-            'transactions' => $transactions,
+            'transactions' => $transactions->paginate(100),
             'customerHappiness' => $user
         ], 200);
 

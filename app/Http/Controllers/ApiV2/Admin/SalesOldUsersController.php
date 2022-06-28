@@ -34,7 +34,7 @@ class SalesOldUsersController extends Controller
         $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($this->RespondedUnique($RespondedUsers)->count()/$noOfCalledUsers)*100;
         $respondedTranxNo = $respondedTransactions->count();
         $respondedTranxVolume = $respondedTransactions->sum('amount');
-        $averageTimeBetweenCalls = $this->AverageTimeBetweenCalls($CalledUsers);
+        $averageTimeBetweenCalls = $this->sortAverageTimeBetweenCalls($start_date,$end_date,null);
 
         $totalCallDuration = $CalledUsers->sum('call_duration');
         $averageCallDuration = ($noOfCalledUsers == 0) ? 0 : ($totalCallDuration/$noOfCalledUsers);
@@ -139,7 +139,7 @@ class SalesOldUsersController extends Controller
         $respondedTranxNo = $respondedTransactions->count();
         $respondedTranxVolume = $respondedTransactions->sum('amount');
 
-        $averageTimeBetweenCalls = $this->AverageTimeBetweenCalls($CalledUsers);
+        $averageTimeBetweenCalls = $this->sortAverageTimeBetweenCalls($start_date,$end_date,$request->sales_id);
         $totalCallDuration = $CalledUsers->sum('call_duration');
         $averageCallDuration = ($noOfCalledUsers == 0) ? 0 : ($totalCallDuration/$noOfCalledUsers);
 
@@ -221,28 +221,50 @@ class SalesOldUsersController extends Controller
         return $totalData;
     }
 
-    public function averageTimeBetweenCalls($calledUsers)
-    {
-        $previousDatetime = null;
-        foreach ($calledUsers as $cu) {
-            $cu->previous_call_duration_timestamp = $previousDatetime;
-            $previousDatetime = $cu->call_duration_timestamp;
+    public function sortAverageTimeBetweenCalls($start_date,$end_date,$sales_id)
+    { 
+        //* step 1 find the time stamp within the time frame where user is a Sales Old user
+        $sales_timestamp = SalesTimestamp::whereHas('user', function ($query) {
+            $query->where('role', 557);
+            })->whereDate('activeTime','>=',$start_date)->whereDate('activeTime','<=',$end_date);
+        if($sales_id){ 
+            $sales_timestamp = $sales_timestamp->where('user_id',$sales_id);
         }
-        $timeDiff = 0;
-        foreach ($calledUsers as $cu) {
-            if($cu->previous_call_duration_timestamp != null)
-            {
-                $timeDiff += Carbon::parse($cu->call_duration_timestamp)->diffInSeconds($cu->previous_call_duration_timestamp);
+        $sales_timestamp = $sales_timestamp->get();
+        $avgTotalDiff = 0;
+        if($sales_timestamp){
+            foreach ($sales_timestamp as $st) {
+                if($st->inactiveTime == null){
+                    $st->inactiveTime = now();
+                }
+                //* for each timestamp check the called users 
+                $calledUsers = UserTracking::where('called_date','>=',$st->activeTime)
+                ->where('called_date','<=',$st->inactiveTime)->where('Current_Cycle','!=','QuarterlyInactive')->get();
+                $previousDatetime = null;
+                //* allocate the previous call duration timestamp to be able to calculate time difference
+                foreach ($calledUsers as $cu) {
+                    $cu->previous_call_duration_timestamp = $previousDatetime;
+                    $previousDatetime = $cu->call_duration_timestamp;
+                }
+                $timeDiff = 0;
+                //* now checking for the time difference and converting it into seconds 
+                foreach ($calledUsers as $cu) {
+                    if($cu->previous_call_duration_timestamp != null)
+                    {
+                        $timeDiff += Carbon::parse($cu->call_duration_timestamp)->diffInSeconds($cu->previous_call_duration_timestamp);
+                    }
+                }
+                $noOfCalledUsers = $calledUsers->count();
+                $totalRestTime = $noOfCalledUsers * 60;
+                $timeAfterRest = $timeDiff - $totalRestTime;
+                $averageTimeBetweenCalls = ($noOfCalledUsers == 0) ? 0 : ($timeAfterRest/$noOfCalledUsers);
+                $avgTotalDiff += $averageTimeBetweenCalls;
             }
+            
         }
-        $noOfCalledUsers = $calledUsers->count();
-        $totalRestTime = $noOfCalledUsers * 60;
-        $timeAfterRest = $timeDiff - $totalRestTime;
-        $averageTimeBetweenCalls = ($noOfCalledUsers == 0) ? 0 : ($timeAfterRest/$noOfCalledUsers);
-        if($calledUsers->count() == 0){
-            return 0;
-        }else{
-            return CarbonInterval::seconds($averageTimeBetweenCalls)->cascade()->forHumans();
-        }
+        //*after getting the summation of the average difference divide by total active time
+        //*and convert readable time for humans.
+        $totalTimeValue = (count($sales_timestamp) == 0) ? 0 : $avgTotalDiff/count($sales_timestamp);
+        return (count($sales_timestamp) == 0) ? 0 : CarbonInterval::seconds($totalTimeValue)->cascade()->forHumans();
     }
 }

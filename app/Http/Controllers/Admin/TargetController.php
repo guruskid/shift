@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\SalesTimestamp;
 use App\TargetSettings;
 use App\User;
+use Carbon\Carbon;
 
 class TargetController extends Controller
 {
@@ -45,6 +47,30 @@ class TargetController extends Controller
         $user->status = $action;
         $user->save();
 
+        if($action == 'active')
+        {
+            SalesTimestamp::create([
+                'user_id' => $id,
+                'activeTime' => now()
+            ]);
+        }
+        else{
+            $sales_data = SalesTimestamp::where('user_id',$id)->whereNull('inactiveTime')->orderBy('id','DESC')->first();
+            if($sales_data){
+                $activeTime = $sales_data->activeTime;
+                $duration = Carbon::parse($activeTime)->diffInMinutes(now());
+                if($duration < 5){
+                    $sales_data->delete();
+                }
+                else{
+                    $sales_data->update([
+                        'inactiveTime' => now()
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->back()->with(['success' => 'Status Changed']);
         
     }
 }

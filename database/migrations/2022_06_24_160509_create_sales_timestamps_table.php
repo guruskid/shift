@@ -18,6 +18,7 @@ class CreateSalesTimestampsTable extends Migration
             $table->bigInteger('user_id');
             $table->string('activeTime');
             $table->string('inactiveTime')->nullable();
+            $table->timestamps();
         });
     }
 
