@@ -196,6 +196,15 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
     });
     Route::get('/customer-life', 'CustomerLifeController@index');
+
+    //TODO: Sales Analytics Route
+    Route::group(['prefix' => 'salesAnalytics'], function () {
+        Route::GET('/newUsers/{category?}', 'SalesNewUsersController@loadNewUsers');
+        Route::POST('/newUsersSort', 'SalesNewUsersController@sortNewUsers');
+
+         Route::GET('/oldUsers/{category?}', 'SalesOldUsersController@loadOldUsers');
+         Route::POST('/oldUsersSort', 'SalesOldUsersController@sortOldUsers');
+    });
 });
 
 Route::group(['middleware' => ['auth:api', 'customerHappiness']], function(){

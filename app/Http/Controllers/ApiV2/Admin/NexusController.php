@@ -41,23 +41,21 @@ class NexusController extends Controller
         //? monthly trading value 
         $L1_Crypto_trading_value = $L1_Crypto->groupBy('user_id')->count();
         $L1_Utilities_trading_value = $L1_Utilities->groupBy('user_id')->count();
-        $L1_trading_value = number_format($L1_Crypto_trading_value + $L1_Utilities_trading_value);
+        $L1_trading_value = ($L1_Crypto_trading_value + $L1_Utilities_trading_value);
 
         //? monthly trading frequency
         $L1_trading_frequency_crypto = $L1_Crypto->count();
         $L1_trading_frequency_utilities = $L1_Utilities->count();
-        $L1_trading_frequency = number_format($L1_trading_frequency_crypto + $L1_trading_frequency_utilities);
+        $L1_trading_frequency = ($L1_trading_frequency_crypto + $L1_trading_frequency_utilities);
 
         //?monthly trading volume
         $L1_trading_volume_crypto = $L1_Crypto->sum('amount');
         $L1_trading_volume_utilities = $L1_Utilities->sum('amount')/$usd_value;
-        $L1_trading_volume = number_format($L1_trading_volume_crypto + $L1_trading_volume_utilities);
+        $L1_trading_volume = ($L1_trading_volume_crypto + $L1_trading_volume_utilities);
 
         //?Percentage of monthly trades 
         $L1_percentage_monthly_trades = ($L1_trading_volume/$total_volume)*100;
         //* end Level 1 Verification 
-
-
 
 
          //* Level 2 Verification
@@ -72,17 +70,17 @@ class NexusController extends Controller
         //? monthly trading value 
         $L2_Crypto_trading_value = $L2_Crypto->groupBy('user_id')->count();
         $L2_Utilities_trading_value = $L2_Utilities->groupBy('user_id')->count();
-        $L2_trading_value = number_format($L2_Crypto_trading_value + $L2_Utilities_trading_value);
+        $L2_trading_value = ($L2_Crypto_trading_value + $L2_Utilities_trading_value);
 
         //? monthly trading frequency
         $L2_trading_frequency_crypto = $L2_Crypto->count();
         $L2_trading_frequency_utilities = $L2_Utilities->count();
-        $L2_trading_frequency = number_format($L2_trading_frequency_crypto + $L2_trading_frequency_utilities);
+        $L2_trading_frequency = ($L2_trading_frequency_crypto + $L2_trading_frequency_utilities);
 
         //?monthly trading volume
         $L2_trading_volume_crypto = $L2_Crypto->sum('amount');
         $L2_trading_volume_utilities = $L2_Utilities->sum('amount')/$usd_value;
-        $L2_trading_volume = number_format($L2_trading_volume_crypto + $L2_trading_volume_utilities);
+        $L2_trading_volume = ($L2_trading_volume_crypto + $L2_trading_volume_utilities);
 
         //?Percentage of monthly trades 
         $L2_percentage_monthly_trades = ($L2_trading_volume/$total_volume)*100;
@@ -102,22 +100,21 @@ class NexusController extends Controller
         //? monthly trading value 
         $L3_Crypto_trading_value = $L3_Crypto->groupBy('user_id')->count();
         $L3_Utilities_trading_value = $L3_Utilities->groupBy('user_id')->count();
-        $L3_trading_value = number_format($L3_Crypto_trading_value + $L3_Utilities_trading_value);
+        $L3_trading_value = ($L3_Crypto_trading_value + $L3_Utilities_trading_value);
 
         //? monthly trading frequency
         $L3_trading_frequency_crypto = $L3_Crypto->count();
         $L3_trading_frequency_utilities = $L3_Utilities->count();
-        $L3_trading_frequency = number_format($L3_trading_frequency_crypto + $L3_trading_frequency_utilities);
+        $L3_trading_frequency = ($L3_trading_frequency_crypto + $L3_trading_frequency_utilities);
 
         //?monthly trading volume
         $L3_trading_volume_crypto = $L3_Crypto->sum('amount');
         $L3_trading_volume_utilities = $L3_Utilities->sum('amount')/$usd_value;
-        $L3_trading_volume = number_format($L3_trading_volume_crypto + $L3_trading_volume_utilities);
+        $L3_trading_volume = ($L3_trading_volume_crypto + $L3_trading_volume_utilities);
 
         //?Percentage of monthly trades 
         $L3_percentage_monthly_trades = ($L3_trading_volume/$total_volume)*100;
         //*End Level 3 Verification
-
 
          //?total turnover 
          $turnover_crypto = Transaction::where('status','success')->get()->sum('amount');
@@ -125,7 +122,7 @@ class NexusController extends Controller
          $turnover_utilities = UtilityTransaction::where('status','success')->get()->sum('amount');
          $turnover_utilities = $turnover_utilities/$usd_value;
 
-         $total_turnover = number_format($turnover_crypto + $turnover_utilities);
+         $total_turnover = ($turnover_crypto + $turnover_utilities);
 
          //?monthly turnover 
          $monthly_turnover_crypto = Transaction::where('status','success')
@@ -135,7 +132,7 @@ class NexusController extends Controller
          ->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get()->sum('amount');
          $monthly_turnover_utilities = $monthly_turnover_utilities/$usd_value;
 
-         $monthly_turnover_total = number_format($monthly_turnover_crypto + $monthly_turnover_utilities);
+         $monthly_turnover_total = ($monthly_turnover_crypto + $monthly_turnover_utilities);
 
          //?Old Users Monthly Turnover 
          $oldUsers_turnover_crypto = Transaction::whereHas('user', function ($query){
@@ -146,10 +143,11 @@ class NexusController extends Controller
             $query->where('created_at','<',now()->subMonth(3));
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
-         $oldUsers_turnover = number_format($oldUsers_turnover_crypto->sum('amount') + $oldUsers_turnover_utilities->sum('amount'));
+         $oldUsers_turnover = ($oldUsers_turnover_crypto->sum('amount') + $oldUsers_turnover_utilities->sum('amount'));
 
-         $oldUsers_totaltrades = number_format($oldUsers_turnover_crypto->count() + $oldUsers_turnover_utilities->count());
-
+         $oldUsers_totaltrades = ($oldUsers_turnover_crypto->count() + $oldUsers_turnover_utilities->count());
+         
+         
          $oldUsers_turnover_percentage = ($oldUsers_turnover/$monthly_turnover_total)*100;
 
           //?New Users Monthly Turnover 
@@ -161,37 +159,37 @@ class NexusController extends Controller
             $query->where('created_at','>',now()->subMonth(3));
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
-         $newUsers_turnover = number_format($newUsers_turnover_crypto->sum('amount') + $newUsers_turnover_utilities->sum('amount'));
+         $newUsers_turnover = ($newUsers_turnover_crypto->sum('amount') + $newUsers_turnover_utilities->sum('amount'));
 
-         $newUsers_totaltrades = number_format($newUsers_turnover_crypto->count() + $newUsers_turnover_utilities->count());
+         $newUsers_totaltrades = ($newUsers_turnover_crypto->count() + $newUsers_turnover_utilities->count());
 
          $newUsers_turnover_percentage = ($newUsers_turnover/$monthly_turnover_total)*100;
 
          return response()->json([
             'success' => true,
-            'monthly_L1_trading_value' => $L1_trading_value,
-            'monthly_L1_trading_Frequency' =>$L1_trading_frequency,
-            'monthly_L1_trading_volume' =>$L1_trading_volume,
-            'L1_percentage_monthly_trades' => $L1_percentage_monthly_trades,
+            'monthly_L1_trading_value' =>  number_format($L1_trading_value),
+            'monthly_L1_trading_Frequency' =>number_format($L1_trading_frequency),
+            'monthly_L1_trading_volume' =>number_format($L1_trading_volume),
+            'L1_percentage_monthly_trades' => number_format($L1_percentage_monthly_trades),
 
-            'monthly_L2_trading_value' => $L2_trading_value,
-            'monthly_L2_trading_Frequency' =>$L2_trading_frequency,
-            'monthly_L2_trading_volume' =>$L2_trading_volume,
-            'L2_percentage_monthly_trades' => $L2_percentage_monthly_trades,
+            'monthly_L2_trading_value' => number_format($L2_trading_value),
+            'monthly_L2_trading_Frequency' =>number_format($L2_trading_frequency),
+            'monthly_L2_trading_volume' =>number_format($L2_trading_volume),
+            'L2_percentage_monthly_trades' => number_format($L2_percentage_monthly_trades),
 
-            'monthly_L3_trading_value' => $L3_trading_value,
-            'monthly_L3_trading_Frequency' =>$L3_trading_frequency,
-            'monthly_L3_trading_volume' =>$L3_trading_volume,
-            'L3_percentage_monthly_trades' => $L3_percentage_monthly_trades,
+            'monthly_L3_trading_value' => number_format($L3_trading_value),
+            'monthly_L3_trading_Frequency' =>number_format($L3_trading_frequency),
+            'monthly_L3_trading_volume' =>number_format($L3_trading_volume),
+            'L3_percentage_monthly_trades' => number_format($L3_percentage_monthly_trades),
 
-            'turnover' => $total_turnover,
-            'old_user_monthly_turnover' => $oldUsers_turnover,
-            'old_user_monthly_trades' => $oldUsers_totaltrades,
-            'old_user_monthly_turnover_percentage' => $oldUsers_turnover_percentage,
+            'turnover' => number_format($total_turnover),
+            'old_user_monthly_turnover' => number_format($oldUsers_turnover),
+            'old_user_monthly_trades' => number_format($oldUsers_totaltrades),
+            'old_user_monthly_turnover_percentage' => number_format($oldUsers_turnover_percentage),
 
-            'new_user_monthly_turnover' => $newUsers_turnover,
-            'new_user_monthly_trades' => $newUsers_totaltrades,
-            'new_user_monthly_turnover_percentage' => $newUsers_turnover_percentage,
+            'new_user_monthly_turnover' => number_format($newUsers_turnover),
+            'new_user_monthly_trades' => number_format($newUsers_totaltrades),
+            'new_user_monthly_turnover_percentage' => number_format($newUsers_turnover_percentage),
         ], 200);
 
 
@@ -218,6 +216,9 @@ class NexusController extends Controller
 
         $nexus_giftCard = $this->NexusCards($date,0);
         return response()->json([
+         'data' => $nexus_giftCard,
+        ]);
+        return response()->json([
             'success' => true,
             'crypto' => $nexus_giftCard->paginate(10),
         ], 200);
@@ -228,14 +229,13 @@ class NexusController extends Controller
      {
         $nexus = Card::where('is_crypto',$is_crypto)->get();
         foreach ($nexus as $nc) {
-
              $total_transaction = Transaction::where('card_id',$nc->id)->get();
              $tranx = Transaction::where('card_id',$nc->id)->whereDate('created_at','>',$date)
              ->whereDate('created_at','<',$date)->get();
 
              $nc->total_volume = number_format($tranx->sum('amount'));
              $nc->total_number_traded = number_format($tranx->count());
-             $nc->percentage_volume_traded = ($tranx->sum('amount')/$total_transaction->sum('amount'))*100;
+             $nc->percentage_volume_traded = ($total_transaction->sum('amount') == 0) ? 0 : ($tranx->sum('amount')/$total_transaction->sum('amount'))*100;
              $nc->asset_traded_unique_user = $tranx->groupBy('user_id')->count();
         }
         return $nexus;

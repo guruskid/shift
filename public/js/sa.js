@@ -85,7 +85,6 @@ function AddTarget(data)
 
 function EditTarget(user,user_target)
 {
-    console.log(user_target);
     $('#tn_id').val(user['id']);
     $('#tn_email').html(user['email']);
     
@@ -334,7 +333,7 @@ function queryTransaction(id) {
     $('.loader').show();
     $.get('/admin/query-transaction/' + id)
         .done(function (response) {
-            console.log(response);
+            // console.log(response);
             $('.loader').hide();
             if (response['success'] == true) {
                 res = response.data;
@@ -372,7 +371,7 @@ function queryTransaction(id) {
 
 
 function freezeAccount(user, url) {
-    console.log(url)
+    // console.log(url)
     $('#user-name').text(user.first_name);
     $('#user-id').val(user.id);
     $('#freeze-form').attr('action', url);

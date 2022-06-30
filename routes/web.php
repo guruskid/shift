@@ -423,6 +423,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::any('/sort-accountant-summary','Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
+
+    Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
 });
 
 
@@ -449,7 +451,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super', 'c
 
     // Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
     // Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
-    Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
+    
 
     Route::post('/transactions', 'AdminController@addTransaction')->name('admin.add_transaction');
 
@@ -643,6 +645,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], 
     Route::GET('/LoadSalesUsers', 'Admin\TargetController@loadSales')->name('sales.loadSales');
     Route::POST('/addTarget','Admin\TargetController@addTarget')->name('sales.addTarget');
     Route::POST('/editTarget','Admin\TargetController@editTarget')->name('sales.editTarget');
+    Route::GET('/editStatusSales/{id}/{action}','Admin\TargetController@activateSales')->name('sales.action');
 });
 
 
