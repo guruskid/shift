@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiV2\Admin;
 
+use App\BitcoinWallet;
 use App\Card;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,7 +27,7 @@ class SummaryController extends Controller
             })->where("created_at",">=",$date." $i:00:00")->where("created_at","<=",$date." $i:59:59")->where('status', 'success')->count();
             $data = array($i=>["start"=>"$i:00:00",
                                 "end"=>"$i:59:59",
-                                "transactions"=>$crypto_transaction]); 
+                                "transactions"=>$crypto_transaction]);
             $crypto_collection = $crypto_collection->concat($data);
 
             $giftCard_transaction = Transaction::whereHas('asset', function ($query) {
@@ -34,14 +35,14 @@ class SummaryController extends Controller
             })->where("created_at",">=",$date." $i:00:00")->where("created_at","<=",$date." $i:59:59")->where('status', 'success')->count();
             $data = array($i=>["start"=>"$i:00:00",
                                 "end"=>"$i:59:59",
-                                "transactions"=>$giftCard_transaction]); 
+                                "transactions"=>$giftCard_transaction]);
             $giftCard_collection = $giftCard_collection->concat($data);
 
             $utilities_transaction = UtilityTransaction::where("created_at",">=",$date." $i:00:00")
             ->where("created_at","<=",$date." $i:59:59")->where('status', 'success')->count();
             $data = array($i=>["start"=>"$i:00:00",
                                 "end"=>"$i:59:59",
-                                "transactions"=>$utilities_transaction]); 
+                                "transactions"=>$utilities_transaction]);
             $utilities_collection = $utilities_collection->concat($data);
 
         }
@@ -90,7 +91,7 @@ class SummaryController extends Controller
                 $value = $value->where('type',$type);
             }
             $value = $value->count();
-            $ct->total_transactions = $value; 
+            $ct->total_transactions = $value;
 
             //?users
             $value = Transaction::where('card_id',$ct->id)
@@ -119,7 +120,7 @@ class SummaryController extends Controller
             else{
                 $value = $this->totalAsset($ct->id,$date);
             }
-            
+
             $ct->traded_value = $value;
         }
         return $tokens;
@@ -141,7 +142,7 @@ class SummaryController extends Controller
             $query->where('is_crypto', 1);
         })->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success')->get();
 
-        //?getting crypto token 
+        //?getting crypto token
         $crypto_tokens = $this->cryptoAssetData($date,1);
 
         return response()->json([
@@ -166,13 +167,13 @@ class SummaryController extends Controller
                 $query->where('is_crypto', 1);
             })->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success')->get();
         }
-        
+
 
         $crypto_tokens = $this->cryptoAssetData($date,1,$r->type);
         if($r->type != null)
         {
             $number_of_tranx = $number_of_tranx->where('type',$r->type);
-        } 
+        }
         return response()->json([
             'success' => true,
             'transaction_number' => $number_of_tranx->count(),
@@ -190,7 +191,7 @@ class SummaryController extends Controller
             $query->where('is_crypto', 0);
         })->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success')->get();
 
-        //?getting crypto token 
+        //?getting crypto token
         $tokens = $this->cryptoAssetData($date,0);
 
         return response()->json([
@@ -214,13 +215,13 @@ class SummaryController extends Controller
                 $query->where('is_crypto', 0);
             })->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success')->get();
         }
-        
+
 
         $crypto_tokens = $this->cryptoAssetData($date,0,$r->type);
         if($r->type != null)
         {
             $number_of_tranx = $number_of_tranx->where('type',$r->type);
-        } 
+        }
         return response()->json([
             'success' => true,
             'transaction_number' => $number_of_tranx->count(),
@@ -236,7 +237,7 @@ class SummaryController extends Controller
         $is_crypto = ($category == "Crypto") ? 1:0;
 
         $data_collection = collect([]);
-        for ($i=0; $i <= $total_number; $i++) { 
+        for ($i=0; $i <= $total_number; $i++) {
             $highest_naira_user_name = null;
             $highest_freq_user_name = null;
             $dates = Carbon::parse($date)->subDays($i)->format("Y-m-d");
@@ -292,7 +293,7 @@ class SummaryController extends Controller
                 ]);
 
                 $data_collection = $data_collection->concat($data);
-            
+
         }
         return $data_collection->sortByDesc('date');
 
@@ -316,5 +317,24 @@ class SummaryController extends Controller
             'success' => true,
             'data' => $data_collection->paginate(10),
         ], 200);
+    }
+
+    public function ledgerBalance()
+    {
+        $wallets = BitcoinWallet::all();
+
+        foreach ($wallets as $wallet) {
+            $transactions = $wallet->transactions()->where('status', 'success')->get();
+            $wallet->in = $transactions->sum('credit');
+            $wallet->out = $transactions->sum('debit');
+
+            $wallet->lbal = $wallet->in - $wallet->out;
+            $wallet->diff = $wallet->balance - $wallet->lbal;
+        }
+
+        return response()->json([
+            'success' => true,
+           'wallets' => $wallet
+        ]);
     }
 }
