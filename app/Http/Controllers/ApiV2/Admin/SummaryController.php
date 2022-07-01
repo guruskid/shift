@@ -6,10 +6,12 @@ use App\Card;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
+use App\NairaTransaction;
 use App\Transaction;
 use App\UtilityTransaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SummaryController extends Controller
 {
@@ -28,6 +30,8 @@ class SummaryController extends Controller
 
         $utilities_transaction = UtilityTransaction::where('status','success')->whereDate('created_at',$date)->get();
 
+        $airtime_data = NairaTransaction::whereIn('transaction_type_id',[9,10])->where('status','success')->whereDate('created_at',$date)->get();
+
         //* do a loop on the collections
         for($i = 0; $i<=23; $i++){
             $previous_time = $i - 1;
@@ -42,9 +46,10 @@ class SummaryController extends Controller
             $crypto = $crypto_transactions->where("created_at",">=",$date." $previous_time:01:00")->where("created_at","<=",$date." $current_time:00:00")->count();
             $giftcard = $giftCard_transaction->where("created_at",">=",$date." $previous_time:01:00")->where("created_at","<=",$date." $current_time:00:00")->count();
             $utility = $utilities_transaction->where("created_at",">=",$date." $previous_time:01:00")->where("created_at","<=",$date." $current_time:00:00")->count();
+            $airtime_data_value = $airtime_data->where("created_at",">=",$date." $previous_time:01:00")->where("created_at","<=",$date." $current_time:00:00")->count();
 
             $collection = array(collect(["$current_time:00" => [
-                "crypto"=>$crypto,"giftCards"=>$giftcard,"utility"=>$utility
+                "crypto"=>$crypto,"giftCards"=>$giftcard,"utility"=>$utility,'airtime_data'=>$airtime_data_value,
             ]]));
             $data_collection = $data_collection->concat($collection);
 
@@ -88,7 +93,7 @@ class SummaryController extends Controller
                 $value = $value->where('type',$type);
             }
             $value = $value->count();
-            $ct->total_transactions = $value; 
+            $ct->noOfTrans = $value; 
 
             //?users
             $value = Transaction::where('card_id',$ct->id)
@@ -120,6 +125,8 @@ class SummaryController extends Controller
             
             $ct->traded_value = $value;
         }
+        $tokens = $tokens->map->only(['id','name','noOfTrans','traded_value','total_users']);
+        $tokens = collect($tokens);
         return $tokens;
     }
 
@@ -139,12 +146,25 @@ class SummaryController extends Controller
             $query->where('is_crypto', 1);
         })->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success')->get();
 
+        foreach($number_of_tranx as $nt){
+            if($nt->user){
+                $nt->name = $nt->user->first_name." ".$nt->user->last_name;
+                $nt->dp = $nt->user->dp;
+                $nt->date = $nt->created_at->format('d M Y');
+                $nt->TokenPrice = $nt->card_price;
+                $nt->Amount = $nt->quantity;
+                $nt->valueNGN = $nt->amount_paid;
+                $nt->valueUSD = $nt->amount;
+            }
+        }
+        $number_of_tranx = $number_of_tranx->map->only(['id','user_id','name','TokenPrice','Amount','valueNGN','valueUSD','dp']);
+        $number_of_tranx = collect($number_of_tranx);
         //?getting crypto token 
         $crypto_tokens = $this->cryptoAssetData($date,1);
 
         return response()->json([
             'success' => true,
-            'daily total' => $number_of_tranx->count(),
+            'daily_total' => $number_of_tranx->count(),
             'crypto_tokens' => $crypto_tokens,
             'transactions' => $number_of_tranx->paginate(10)
         ], 200);
@@ -171,18 +191,34 @@ class SummaryController extends Controller
         {
             $number_of_tranx = $number_of_tranx->where('type',$r->type);
         } 
+
+        foreach($number_of_tranx as $nt){
+            if($nt->user){
+                $nt->name = $nt->user->first_name." ".$nt->user->last_name;
+                $nt->dp = $nt->user->dp;
+                $nt->date = $nt->created_at->format('d M Y');
+                $nt->TokenPrice = $nt->card_price;
+                $nt->Amount = $nt->quantity;
+                $nt->valueNGN = $nt->amount_paid;
+                $nt->valueUSD = $nt->amount;
+            }
+        }
+
+        $number_of_tranx = $number_of_tranx->map->only(['id','user_id','name','TokenPrice','Amount','valueNGN','valueUSD','dp']);
+        $number_of_tranx = collect($number_of_tranx);
         return response()->json([
             'success' => true,
-            'transaction_number' => $number_of_tranx->count(),
+            'daily_total' => $number_of_tranx->count(),
             'crypto_tokens' => $crypto_tokens,
             'transactions' => $number_of_tranx->paginate(10)
         ], 200);
 
     }
 
+    //TODO there is need to work on this 
     public function giftCardTransactions()
     {
-        $date = date('Y-m-d');
+        $date = now()->format('Y-m-d');
 
         $number_of_tranx = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
@@ -285,6 +321,10 @@ class SummaryController extends Controller
 
     public function TransactionsTD($date, $type, $category ,$is_crypto)
     {
+        if($date == null)
+        {
+            $date = now()->format('Y-m-d');
+        }
         $total_number = 100;
         $data_collection =  collect([]);
 
@@ -367,6 +407,10 @@ class SummaryController extends Controller
 
     public function otherTransactionsTD($date)
     {
+        if($date == null)
+        {
+            $date = now()->format('Y-m-d');
+        }
         $total_number = 100;
         $data_collection =  collect([]);
 
@@ -426,6 +470,17 @@ class SummaryController extends Controller
 
     public function sortTransaction(Request $r)
     {
+        $validator = Validator::make($r->all(),[
+            'category' => 'required',
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
         $r->category = strtolower($r->category);
         if($r->category == "crypto")
         {
