@@ -32,6 +32,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
 
     Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
+    Route::POST('/promote-to-admin', 'AdminController@promoteToAdmin');
+    Route::GET('/user/{email}',  'AdminController@userSearch');
+
 
     Route::get('/accountant/active', 'AdminController@activeAccountant');
 
