@@ -77,6 +77,50 @@ class AdminController extends Controller
         ], 200);
     }
 
+    public function promoteToAdmin(Request $r)
+    {
+        # code...
+        $validate = Validator::make($r->all(), [
+            'role' => 'required|integer',
+            'user_id' => 'required|integer',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ], 401);
+        }
+
+        $user = User::find($r->user_id);
+
+        if($r->role == 999 || $r->role == 998 || $r->role == 889){
+            return response()->json([
+                'success' => false,
+                'message' => 'You can\'t promote user to this role number '
+            ]);
+        }
+
+        $user->role = $r->role;
+        $user->save();
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User successfully promoted to admin role'
+        ]);
+
+
+
+    }
+
+    public function userSearch($email)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => User::where('email', $email)->get(),
+        ]);
+    }
+
     public function totalUserBalance()
     {
         $total_user_balance = NairaWallet::sum('amount');
@@ -412,13 +456,23 @@ class AdminController extends Controller
 
     public function activeAccountant()
     {
-        $activeAccountant = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+        $activeAccountant = [];
+        $users = User::where('status', 'active')
+        ->orWhere('role',  889)
+        ->orWhere('role', 777)
+        ->get();
+
+        foreach($users as $user ){
+            if($user->role == 777 || $user->role == 889){
+                if($user->status == 'active'){
+                    $activeAccountant[] = $user;
+                }
+            }
+        }
 
         return response()->json([
             'success' => true,
             'data' => $activeAccountant,
         ]);
-
-
     }
 }

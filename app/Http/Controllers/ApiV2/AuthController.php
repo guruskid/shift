@@ -47,6 +47,8 @@ class AuthController extends Controller
 
     public function checkForgotPasswordEmail(Request $r)
     {
+
+
         $validator = Validator::make($r->all(), [
             'email' => 'required',
         ]);
@@ -60,6 +62,14 @@ class AuthController extends Controller
 
         $userCount = User::where('email', $r->email)->count();
         $user = User::where('email', $r->email)->get();
+
+        if($user[0]->role == 999 || $user[0]->role == 998 || $user[0]->role == 889){
+            return response()->json([
+                'success' => false,
+                'message' => 'This account is not allowed to change password',
+            ], 401);
+        }
+
         if($userCount < 1){
             return response()->json([
                 'success' => false,
@@ -155,6 +165,13 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if($user[0]->role == 999 || $user[0]->role == 998 || $user[0]->role == 889){
+            return response()->json([
+                'success' => false,
+                'message' => 'This account is not allowed to change password',
+            ], 401);
+        }
+
         $user = User::where('email', $r->email)->get();
         $user = $user[0];
         $user->password = Hash::make($r->password);
@@ -188,6 +205,15 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+
+        if($user->role == 999 || $user->role == 998 || $user->role == 889){
+            return response()->json([
+                'success' => false,
+                'message' => 'This account is not allowed to change password',
+            ], 401);
+        }
+
+
         $user->password = Hash::make($r->new_password);
         $user->save();
 
@@ -201,7 +227,7 @@ class AuthController extends Controller
     {
         $otpCode = rand(1000, 9999);
 
-        
+
         VerificationCode::create([
             'user_id' => $userId,
             'verification_code' => $otpCode
@@ -276,7 +302,7 @@ class AuthController extends Controller
             'user_id' =>$user->id,
             'Current_Cycle' => "Active"
         ]);
-        
+
         NairaWallet::create([
             'user_id' => $user->id,
             'account_number' => time(),

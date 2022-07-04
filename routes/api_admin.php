@@ -2,6 +2,7 @@
 
 use App\ReferralSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
@@ -15,8 +16,24 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/cable',  'UtilityController@cable');
     });
 
-    Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
+    Route::prefix('rate')->group(function () {
+        Route::get('/', 'RateController@index');
+    });
 
+    Route::prefix('currency')->group(function () {
+        Route::POST('/store', 'CurrencyController@store');
+    });
+
+    Route::prefix('card')->group(function () {
+        Route::post('/create', 'CardsController@store');
+        Route::post('/edit', 'CardsController@editCard');
+        Route::GET('/delete-card/{id}', 'CardsController@deleteCard');
+    });
+
+
+    Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
+    Route::POST('/promote-to-admin', 'AdminController@promoteToAdmin');
+    Route::GET('/user/{email}',  'AdminController@userSearch');
 
 
     Route::get('/accountant/active', 'AdminController@activeAccountant');
@@ -118,6 +135,36 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/monthly-new-user-analytics', 'ChartController@monthlyUserAnalytics');
     });
 
+
+    Route::prefix('wallet')->group( function () {
+        Route::prefix('bitcoin')->group(function(){
+
+            Route::GET('/', 'BitcoinWalletController@index');
+            Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets');
+            Route::get('/bitcoin-hd-wallets', 'BitcoinWalletController@hdWallets');
+            Route::get('/bitcoin-charges', 'BitcoinWalletController@charges');
+            Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges');
+            Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions');
+
+
+            Route::POST('/create', 'BitcoinWalletController@createHdWallet');
+            Route::POST('/set-charge', 'BitcoinWalletController@setCharge');
+            Route::POST('/send-from-hd-wallet', 'BitcoinWalletController@sendFromHd');
+            Route::post('/add-address','BitcoinWalletController@addAddress');
+            Route::POST('/send-from-admin-wallet', 'BitcoinWalletController@send');
+            Route::GET('/btc-migration-wallet', 'BitcoinWalletController@migrationWallet');
+
+
+            Route::put('/confirm-migration/{migration}', 'BitcoinWalletController@confirmMigration');
+
+            Route::get('/bitcoin-users-balance', 'SummaryController@ledgerBalance');
+            Route::POST('/bitcoin-new-txn', 'BitcoinWalletController@addTxn');
+
+            Route::post('/service-fee', 'BitcoinWalletController@setFee');
+
+        });
+    });
+
 });
 
 
@@ -152,10 +199,26 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
     });
     Route::get('/customer-life', 'CustomerLifeController@index');
+
+    //TODO: Sales Analytics Route
+    Route::group(['prefix' => 'salesAnalytics'], function () {
+        Route::GET('/newUsers/{category?}', 'SalesNewUsersController@loadNewUsers');
+        Route::POST('/newUsersSort', 'SalesNewUsersController@sortNewUsers');
+
+         Route::GET('/oldUsers/{category?}', 'SalesOldUsersController@loadOldUsers');
+         Route::POST('/oldUsersSort', 'SalesOldUsersController@sortOldUsers');
+    });
 });
 
-Route::group(['middleware' => ['auth:api']], function(){
-    # code....
-   Route::GET('/customer-happiness', '@index');
-
+Route::group(['middleware' => ['auth:api', 'customerHappiness']], function(){
+    Route::prefix('customer-happiness')->group(function () {
+        Route::GET('/', 'CustomerHappinessController@index');
+        Route::GET('/p2p',  'CustomerHappinessController@p2p');
+        Route::GET('/users',  'CustomerHappinessController@userProfile');
+        Route::GET('/user/{email}',  'CustomerHappinessController@userSearch');
+        Route::GET('/transactions',  'CustomerHappinessController@customerHappinessTransactions');
+    });
 });
+
+
+

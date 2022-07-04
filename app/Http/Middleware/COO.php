@@ -18,7 +18,7 @@ class COO
     {
         $user = Auth::user();
 
-        if($user->role == 998 ){
+        if($user->role == 998 OR $user->role == 999 ){
             if ($user->status != 'active') {
                 abort(404);
             }
