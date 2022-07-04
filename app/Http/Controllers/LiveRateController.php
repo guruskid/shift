@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CryptoRate;
+use App\Http\Controllers\Admin\SettingController;
 use App\Setting;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -59,13 +60,17 @@ class LiveRateController extends Controller
 
     public static function usdtRate()
     {
-        // $client = new Client();
-        // $url = env('TATUM_URL') . '/tatum/rate/USDT_TRON?basePair=USD';
-        // $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
-        // $res = json_decode($res->getBody());
-        // $rate = $res->value;
-
         return 1;
+    }
+
+    public static function usdtNgn()
+    {
+        $rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $commission = SettingController::get('usdt_commission');
+
+        $rate = $rate - (($commission/100) * $rate);
+
+        return $rate;
     }
 
 
