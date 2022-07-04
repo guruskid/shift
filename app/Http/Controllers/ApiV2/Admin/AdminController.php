@@ -77,6 +77,50 @@ class AdminController extends Controller
         ], 200);
     }
 
+    public function promoteToAdmin(Request $r)
+    {
+        # code...
+        $validate = Validator::make($r->all(), [
+            'role' => 'required|integer',
+            'user_id' => 'required|integer',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ], 401);
+        }
+
+        $user = User::find($r->user_id);
+
+        if($r->role == 999 || $r->role == 998 || $r->role == 889){
+            return response()->json([
+                'success' => false,
+                'message' => 'You can\'t promote user to this role number '
+            ]);
+        }
+
+        $user->role = $r->role;
+        $user->save();
+
+        return response()->json([
+            'success' => false,
+            'message' => 'User successfully promoted to admin role'
+        ]);
+
+
+
+    }
+
+    public function userSearch($email)
+    {
+        return response()->json([
+            'success' => true,
+            'data' => User::where('email', $email)->get(),
+        ]);
+    }
+
     public function totalUserBalance()
     {
         $total_user_balance = NairaWallet::sum('amount');

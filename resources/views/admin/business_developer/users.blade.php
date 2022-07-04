@@ -95,7 +95,12 @@
                                 <tr>
                                     <th><div class="">Name</div></th>
                                     <th><div class="">Username</div></th>
+                                    @if ($type !="NoResponse")
                                     <th><div class="">Last Transaction Date</div></th>
+                                    @endif
+                                    @if ($type == "NoResponse")
+                                    <th><div class="">No Response Cycle</div></th>
+                                    @endif
                                     @if ($type =="callLog")
                                     <th><div class="">Category</div></th>
                                     @endif
@@ -112,7 +117,7 @@
                                     @if ($type == "Quarterly_Inactive")
                                         <th><div class="">Previous Cycle</div></th>
                                     @endif
-                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog")
+                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog" OR $type =="NoResponse")
                                         <th><div class="">Action</div></th>
                                     @endif
                                 </tr>
@@ -122,7 +127,12 @@
                                 <tr>
                                     <td><div class="td-content customer-name">{{$u->user->first_name." ".$u->user->last_name}}</div></td>
                                     <td>{{ $u->user->username }}</td>
+                                    @if ($type !="NoResponse")
                                     <td>{{ $u->last_transaction_date }}</td>
+                                    @endif
+                                    @if ($type == "NoResponse")
+                                    <td>{{ ($u->noResponse_streak == null) ? 0 : $u->noResponse_streak }}</td>
+                                    @endif
                                     @if ($type =="callLog")
                                     <td>{{ ($u->call_category) ? $u->call_category->category : 'none' }}</td>
                                     @endif
@@ -149,9 +159,9 @@
                                         @endif
                                         </td>
                                     @endif
-                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog")
+                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog" OR $type =="NoResponse")
                                     <td>
-                                        @if ($type == "Quarterly_Inactive")
+                                        @if ($type == "Quarterly_Inactive" OR $type =="NoResponse")
                                         <a href="#" class="my-2 mr-2" data-toggle="modal" data-target="#view-phone-number" onclick="showPhoneNumber({{$u->user}})">
                                             <span class="btn btn btn-info">View Phone Number</span>
                                         </a>
@@ -192,7 +202,7 @@
 
 {{-- Add Called User Data Modal --}}
 <div class="modal fade  item-badge-rightm" id="add-call-log" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="{{route('business-developer.create.call-log')}} " method="POST" class="mb-3">
                 {{ csrf_field() }}
@@ -222,6 +232,7 @@
                                     @foreach ($call_categories as $cc)
                                         <option value="{{ $cc->id }}">{{ $cc->category }}</option>
                                     @endforeach
+                                    <option value="NoResponse">No Response</option>
                                 </select>
                             </div>
                         </div>
@@ -243,13 +254,13 @@
 </div>
 
 <div class="modal fade  item-badge-rightm" id="view-phone-number" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
                 <div class="modal-header">
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading " id="ph_email">User Email</h4>
-                            <h6 class="media-heading" id="ph_phoneNumber">User PhoneNumber</h6>
+                            <h1 class="media-heading " id="ph_email">User Email</h1>
+                            <h1 class="media-heading" id="ph_phoneNumber">User PhoneNumber</h1>
                         </div>
                     </div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
@@ -263,7 +274,7 @@
 </div>
 
 <div class="modal fade  item-badge-rightm" id="view-call-log" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="{{route('business-developer.update.call-log')}} " method="POST" class="mb-3">
                 {{ csrf_field() }}

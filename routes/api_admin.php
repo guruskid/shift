@@ -20,6 +20,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::get('/', 'RateController@index');
     });
 
+    Route::prefix('currency')->group(function () {
+        Route::POST('/store', 'CurrencyController@store');
+    });
 
     Route::prefix('card')->group(function () {
         Route::post('/create', 'CardsController@store');
@@ -29,6 +32,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
 
     Route::GET('/total-user-balance', 'AdminController@totalUserBalance');
+    Route::POST('/promote-to-admin', 'AdminController@promoteToAdmin');
+    Route::GET('/user/{email}',  'AdminController@userSearch');
+
 
     Route::get('/accountant/active', 'AdminController@activeAccountant');
 
@@ -127,6 +133,36 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::group(['prefix', 'charts'], function () {
         Route::GET('/monthly-transaction-analytics', 'ChartController@monthlyTransactionAnalytics');
         Route::GET('/monthly-new-user-analytics', 'ChartController@monthlyUserAnalytics');
+    });
+
+
+    Route::prefix('wallet')->group( function () {
+        Route::prefix('bitcoin')->group(function(){
+
+            Route::GET('/', 'BitcoinWalletController@index');
+            Route::get('/bitcoin-wallets', 'BitcoinWalletController@wallets');
+            Route::get('/bitcoin-hd-wallets', 'BitcoinWalletController@hdWallets');
+            Route::get('/bitcoin-charges', 'BitcoinWalletController@charges');
+            Route::post('/transfer-bitcoin-charges', 'BitcoinWalletController@transferCharges');
+            Route::get('/bitcoin-wallet-transactions', 'BitcoinWalletController@transactions');
+
+
+            Route::POST('/create', 'BitcoinWalletController@createHdWallet');
+            Route::POST('/set-charge', 'BitcoinWalletController@setCharge');
+            Route::POST('/send-from-hd-wallet', 'BitcoinWalletController@sendFromHd');
+            Route::post('/add-address','BitcoinWalletController@addAddress');
+            Route::POST('/send-from-admin-wallet', 'BitcoinWalletController@send');
+            Route::GET('/btc-migration-wallet', 'BitcoinWalletController@migrationWallet');
+
+
+            Route::put('/confirm-migration/{migration}', 'BitcoinWalletController@confirmMigration');
+
+            Route::get('/bitcoin-users-balance', 'SummaryController@ledgerBalance');
+            Route::POST('/bitcoin-new-txn', 'BitcoinWalletController@addTxn');
+
+            Route::post('/service-fee', 'BitcoinWalletController@setFee');
+
+        });
     });
 
 });

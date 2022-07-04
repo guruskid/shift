@@ -12,6 +12,7 @@ use App\User;
 use App\UserTracking;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class BusinessDeveloperController extends Controller
 {
@@ -19,11 +20,15 @@ class BusinessDeveloperController extends Controller
         $total_users = User::count();
         $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->count();
         $CalledUsers =  UserTracking::where('Current_Cycle','Called')->count();
+        $NoResponse = UserTracking::where('Current_Cycle','NoResponse')->count();
         $RespondedUsers =  UserTracking::where('Current_Cycle','Responded')->count();
         $RecalcitrantUsers =  UserTracking::where('Current_Cycle','Recalcitrant')->count();
         $call_categories = CallCategory::all();
         if($type == null){
             $type = "Quarterly_Inactive";
+        }
+        if($type == "NoResponse"){
+            $data_table = UserTracking::where('Current_Cycle','NoResponse')->latest('updated_at')->get()->take(20);
         }
         if($type == "Quarterly_Inactive")
         {
@@ -41,6 +46,7 @@ class BusinessDeveloperController extends Controller
         {
             $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(20);
         }
+        
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
             if($user_tnx->count() == 0)
@@ -54,7 +60,8 @@ class BusinessDeveloperController extends Controller
         return view(
             'admin.business_developer.index',
             compact([
-                'data_table','total_users','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers'
+                'data_table','total_users','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
+                'NoResponse'
             ])
         );
     }
@@ -65,6 +72,10 @@ class BusinessDeveloperController extends Controller
         if($type == null || $type == "all_Users"){
             $data_table = UserTracking::latest('updated_at');
             $segment = "All Users";
+        }
+        if($type == "NoResponse"){
+            $data_table = UserTracking::where('Current_Cycle','NoResponse')->latest('updated_at');
+            $segment = "No Response";
         }
         if($type == "Quarterly_Inactive")
         {
@@ -95,6 +106,7 @@ class BusinessDeveloperController extends Controller
             $data_table = $data_table->whereDate('created_at','<=',$request->end);
         }
         $count = $data_table->count();
+        $data_table = $data_table->paginate(100);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
             if($user_tnx->count() == 0)
@@ -105,7 +117,6 @@ class BusinessDeveloperController extends Controller
                 $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
             }
         }
-            $data_table = $data_table->paginate(100);
         return view(
             'admin.business_developer.users',
             compact([
@@ -116,9 +127,32 @@ class BusinessDeveloperController extends Controller
 
     public function createCallLog(Request $request)
     {
-        if(empty($request->id) || empty($request->feedback) || empty($request->status)){
-            return redirect()->back()->with(['error' => 'Error Adding Call Log']);
+        $user_tracking = UserTracking::where('user_id',$request->id)->first();
+        if($request->status != "NoResponse"){
+            if(empty($request->id) OR empty($request->feedback) OR empty($request->status)){
+                return redirect()->back()->with(['error' => 'Missing Fields']);
+            }
         }
+        
+        if($request->status == "NoResponse")
+        {
+            $streak = $user_tracking->noResponse_streak;
+            if($user_tracking->Current_Cycle == "NoResponse")
+            {
+                ++$streak;
+            }
+            UserTracking::where('user_id',$request->id)
+            ->update([
+                'Previous_Cycle' =>$user_tracking->Current_Cycle,
+                'current_cycle_count_date' => now(),
+                'Current_Cycle' => "NoResponse",
+                'sales_id' => Auth::user()->id,
+                'called_date'=> now(),
+                'noResponse_streak'=>$streak,
+            ]);
+            return redirect()->back()->with(['success' => 'success']);
+        }
+
         if($request->phoneNumber)
         {
             $call_log = CallLog::create([
@@ -126,7 +160,7 @@ class BusinessDeveloperController extends Controller
                 'call_response' =>$request->feedback,
                 'call_category_id' => $request->status
             ]);
-            $user_tracking = UserTracking::where('user_id',$request->id)->first();
+            
 
             $time = now();
             $openingPhoneTime = Carbon::parse($request->phoneNumber)->subSeconds(18);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiV2\Admin;
 
+use App\BitcoinWallet;
 use App\Card;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -59,7 +60,7 @@ class SummaryController extends Controller
     }
     public function timeGraph($date = null)
     {
-        
+
         if($date == null)
         {
             $date = now()->format('Y-m-d');
@@ -67,7 +68,7 @@ class SummaryController extends Controller
         return response()->json([
             'success' => true,
             'data' => $this->Transactions24hrs($date)
-        ],200); 
+        ],200);
     }
 
     public function totalAsset($card_id,$date)
@@ -122,7 +123,7 @@ class SummaryController extends Controller
             else{
                 $value = $this->totalAsset($ct->id,$date);
             }
-            
+
             $ct->traded_value = $value;
         }
         $tokens = $tokens->map->only(['id','name','noOfTrans','traded_value','total_users']);
@@ -184,7 +185,7 @@ class SummaryController extends Controller
                 $query->where('is_crypto', 1);
             })->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success')->get();
         }
-        
+
 
         $crypto_tokens = $this->cryptoAssetData($date,1,$r->type);
         if($r->type != null)
@@ -224,7 +225,7 @@ class SummaryController extends Controller
             $query->where('is_crypto', 0);
         })->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success')->get();
 
-        //?getting crypto token 
+        //?getting crypto token
         $tokens = $this->cryptoAssetData($date,0);
 
         return response()->json([
@@ -247,20 +248,20 @@ class SummaryController extends Controller
                 $query->where('is_crypto', 0);
             })->whereDate("created_at",">=",$date)->whereDate("created_at","<=",$date)->where('status', 'success')->get();
         }
-        
+
 
         $crypto_tokens = $this->cryptoAssetData($date,0,$r->type);
         if($r->type != null)
         {
             $number_of_tranx = $number_of_tranx->where('type',$r->type);
-        } 
+        }
         return response()->json([
             'success' => true,
             'transaction_number' => $number_of_tranx->count(),
             'crypto_tokens' => $crypto_tokens,
             'transactions' => $number_of_tranx->paginate(10)
         ], 200);
-    }  
+    }
 
     public function loadTransactionDetails()
     {
@@ -268,7 +269,7 @@ class SummaryController extends Controller
         $total_number = 100;
         $data_collection =  collect([]);
 
-        for ($i=0; $i <= $total_number; $i++) { 
+        for ($i=0; $i <= $total_number; $i++) {
             $highest_naira_user_name = null;
             $highest_freq_user_name = null;
 
@@ -328,7 +329,7 @@ class SummaryController extends Controller
         $total_number = 100;
         $data_collection =  collect([]);
 
-        for ($i=0; $i <= $total_number; $i++) { 
+        for ($i=0; $i <= $total_number; $i++) {
             $highest_naira_user_name = null;
             $highest_freq_user_name = null;
 
@@ -414,7 +415,7 @@ class SummaryController extends Controller
         $total_number = 100;
         $data_collection =  collect([]);
 
-        for ($i=0; $i <= $total_number; $i++) { 
+        for ($i=0; $i <= $total_number; $i++) {
             $highest_naira_user_name = null;
             $highest_freq_user_name = null;
 
@@ -498,5 +499,24 @@ class SummaryController extends Controller
             'success' => true,
             'data' => $data_collection->paginate(10)
         ], 200);
+    }
+
+    public function ledgerBalance()
+    {
+        $wallets = BitcoinWallet::all();
+
+        foreach ($wallets as $wallet) {
+            $transactions = $wallet->transactions()->where('status', 'success')->get();
+            $wallet->in = $transactions->sum('credit');
+            $wallet->out = $transactions->sum('debit');
+
+            $wallet->lbal = $wallet->in - $wallet->out;
+            $wallet->diff = $wallet->balance - $wallet->lbal;
+        }
+
+        return response()->json([
+            'success' => true,
+           'wallets' => $wallet
+        ]);
     }
 }

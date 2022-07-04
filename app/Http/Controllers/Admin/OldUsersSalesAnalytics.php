@@ -55,7 +55,7 @@ class OldUsersSalesAnalytics extends Controller
         $end_date = now()->format('Y-m-d');
         $end_date = Carbon::parse($end_date." 23:59:59");
 
-        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('Current_Cycle','!=','QuarterlyInactive')->get();
+        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
         $RespondedUsers = UserTracking::where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
@@ -139,7 +139,7 @@ class OldUsersSalesAnalytics extends Controller
             $conversionType = "total";
         }
 
-        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','!=','QuarterlyInactive')->get();
+        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
         $RespondedUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded')->get();
@@ -224,7 +224,7 @@ class OldUsersSalesAnalytics extends Controller
         $end_date = Carbon::parse($end_date." 23:59:59");
         $segment .= " to ".$end_date->format('d M Y');
 
-        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','!=','QuarterlyInactive')->get();
+        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
         $RespondedUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded')->get();
@@ -335,7 +335,7 @@ class OldUsersSalesAnalytics extends Controller
                 }
                 //* for each timestamp check the called users 
                 $calledUsers = UserTracking::where('called_date','>=',$st->activeTime)
-                ->where('called_date','<=',$st->inactiveTime)->where('Current_Cycle','!=','QuarterlyInactive')->get();
+                ->where('called_date','<=',$st->inactiveTime)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse'])->get();
                 $previousDatetime = null;
                 //* allocate the previous call duration timestamp to be able to calculate time difference
                 foreach ($calledUsers as $cu) {
