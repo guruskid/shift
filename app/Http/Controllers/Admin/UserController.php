@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\NariaLimitController;
 use App\Mail\GeneralTemplateOne;
 use App\Notification;
 use App\User;
 use App\Verification;
 use App\VerificationLimit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -72,15 +71,15 @@ class UserController extends Controller
 
             <b style='color:000070'>Identity Verification<br><br>
 
-            Daily withdrawal limit: NGN ".number_format($level->daily_widthdrawal_limit)."<br><br>
+            Daily withdrawal limit: NGN " . number_format($level->daily_widthdrawal_limit) . "<br><br>
 
-            Monthly withdrawal limit: NGN ".number_format($level->monthly_widthdrawal_limit)."<br><br>
+            Monthly withdrawal limit: NGN " . number_format($level->monthly_widthdrawal_limit) . "<br><br>
 
-            Crypto withdrawal limit: ".$level->crypto_widthdrawal_limit."<br><br>
+            Crypto withdrawal limit: " . $level->crypto_widthdrawal_limit . "<br><br>
 
-            Crypto deposit: ".$level->crypto_deposit."<br><br>
+            Crypto deposit: " . $level->crypto_deposit . "<br><br>
 
-            Transactions: ".$level->transactions."<br></b>
+            Transactions: " . $level->transactions . "<br></b>
             ";
 
             $btn_text = '';
@@ -92,12 +91,12 @@ class UserController extends Controller
             Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
             $title = "Level 3 verification";
-            $msg = "Level 3 verification WAS SUCCESSFUL! Your daily and monthly withdrawal limit have been increased to ".number_format($level->daily_widthdrawal_limit)." and ".number_format($level->monthly_widthdrawal_limit)." respectively.";
+            $msg = "Level 3 verification WAS SUCCESSFUL! Your daily and monthly withdrawal limit have been increased to " . number_format($level->daily_widthdrawal_limit) . " and " . number_format($level->monthly_widthdrawal_limit) . " respectively.";
 
             $fcm_id = $verification->user->fcm_id;
             if (isset($fcm_id)) {
                 try {
-                    FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+                    FirebasePushNotificationController::sendPush($fcm_id, $title, $msg);
                 } catch (\Throwable $th) {
                     //throw $th;
                 }
@@ -112,15 +111,15 @@ class UserController extends Controller
 
             <b style='color:000070'>Address Verification<br><br>
 
-            Daily withdrawal limit: NGN ".number_format($level->daily_widthdrawal_limit)."<br><br>
+            Daily withdrawal limit: NGN " . number_format($level->daily_widthdrawal_limit) . "<br><br>
 
-            Monthly withdrawal limit: NGN ".number_format($level->monthly_widthdrawal_limit)."<br><br>
+            Monthly withdrawal limit: NGN " . number_format($level->monthly_widthdrawal_limit) . "<br><br>
 
-            Crypto withdrawal limit: ".$level->crypto_widthdrawal_limit."<br><br>
+            Crypto withdrawal limit: " . $level->crypto_widthdrawal_limit . "<br><br>
 
-            Crypto deposit: ".$level->crypto_deposit."<br><br>
+            Crypto deposit: " . $level->crypto_deposit . "<br><br>
 
-            Transactions: ".$level->transactions."<br></b>
+            Transactions: " . $level->transactions . "<br></b>
             ";
 
             $btn_text = '';
@@ -132,12 +131,12 @@ class UserController extends Controller
             Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
             $title = "Level 2 verification";
-            $msg = "Level 2 verification WAS SUCCESSFUL! Your daily and monthly withdrawal limit have been increased to ".number_format($level->daily_widthdrawal_limit)." and ".number_format($level->monthly_widthdrawal_limit)." respectively.";
+            $msg = "Level 2 verification WAS SUCCESSFUL! Your daily and monthly withdrawal limit have been increased to " . number_format($level->daily_widthdrawal_limit) . " and " . number_format($level->monthly_widthdrawal_limit) . " respectively.";
 
             $fcm_id = $verification->user->fcm_id;
             if (isset($fcm_id)) {
                 try {
-                    FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+                    FirebasePushNotificationController::sendPush($fcm_id, $title, $msg);
                 } catch (\Throwable $th) {
                     //throw $th;
                 }
@@ -146,6 +145,8 @@ class UserController extends Controller
 
         $verification->user->save();
         $verification->status = 'success';
+        $verification->verified_by = Auth::user()->id;
+
         $verification->save();
 
         Notification::create([
@@ -222,7 +223,7 @@ class UserController extends Controller
         }
 
         $body = "We cannot proceed with your " . $bodyTitle . ".<br><br>
-        This is because: <br><b>" . $dt->reason . "</b> <br><br><b>" . $suggestion."</b><br><br>
+        This is because: <br><b>" . $dt->reason . "</b> <br><br><b>" . $suggestion . "</b><br><br>
 
         Please send an email to <a style='text-decoration:none' href='mailto:support@godantown.com'>support@godantown.com</a> if you have questions or complaints";
         $name = ($verification->user->first_name == " ") ? $verification->user->username : $verification->user->first_name;
@@ -237,11 +238,11 @@ class UserController extends Controller
         Mail::to($verification->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         // return back()->with(['success' => 'User verification cancelled']);
 
-        $msg = "Your ".$bodyTitle." was declined because ".$dt->reason.". Kindly ".$fcmNotice.".";
+        $msg = "Your " . $bodyTitle . " was declined because " . $dt->reason . ". Kindly " . $fcmNotice . ".";
         $fcm_id = $verification->user->fcm_id;
         if (isset($fcm_id)) {
             try {
-                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+                FirebasePushNotificationController::sendPush($fcm_id, $title, $msg);
             } catch (\Throwable $th) {
                 //throw $th;
             }
