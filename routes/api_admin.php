@@ -163,6 +163,18 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
             Route::post('/service-fee', 'BitcoinWalletController@setFee');
 
         });
+
+
+        Route::prefix('usdt')->group(function(){
+            Route::GET('/', 'UsdtController@index');
+            Route::get('/settings', 'UsdtController@settings');
+            Route::post('/filter-sell-price', 'UsdtController@settings');
+            Route::post('/update-rate', 'UsdtController@updateRate');
+
+            Route::get('/smart-contracts', 'UsdtController@contracts');
+            Route::post('/deploy-contract', 'UsdtController@deployContract');
+            Route::get('/activate-contract/{id}', 'UsdtController@activate');
+        });
     });
 
 });
@@ -219,6 +231,4 @@ Route::group(['middleware' => ['auth:api', 'customerHappiness']], function(){
         Route::GET('/transactions',  'CustomerHappinessController@customerHappinessTransactions');
     });
 });
-
-
 
