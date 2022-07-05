@@ -239,7 +239,7 @@
                         <div class="d-none col-12" id="feedback-textarea">
                             <div class="form-group">
                             <label for="feedback">Feedback</label>
-                            <textarea class="form-control" name="feedback" rows="5" required></textarea>
+                            <textarea class="form-control" name="feedback" rows="5"></textarea>
                             </div>
                         </div>
                     </div>
