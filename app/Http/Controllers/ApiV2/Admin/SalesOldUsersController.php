@@ -55,7 +55,7 @@ class SalesOldUsersController extends Controller
             $table_data = $table_data->map->only(['id','user_id','name','username','signUpDate','Responded_Cycle','Recalcitrant_Cycle','lastTranxDate','lastTranxVolume','dp'])->all();
             $table_data = collect($table_data);
         }
-        $table_data = $table_data->sortByDesc('updated_at')->paginate(20);
+        $table_data = $table_data->sortByDesc('updated_at');
 
         return response()->json([
             'success' => true,
@@ -72,109 +72,126 @@ class SalesOldUsersController extends Controller
         ], 200);
     }
 
-    public function sort_type($request)
+    public function sortingType($data)
     {
-        $sorting_type = strtolower($request->sorting_type);
         $start_date = null;
         $end_date = null;
-        if ($sorting_type == 'time'){
-            $validator = Validator::make($request->all(),[
-                'start_time' => 'required',
-                'end_time' => 'required',
-            ]);
-
-            if($validator->fails())
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => $validator->errors(),
-                ], 401);
-            }
-
-            $start_date = Carbon::parse("today $request->start_time");
-            $end_date = Carbon::parse("today $request->end_time");
-        }
-
-        if($sorting_type == 'days'){
-            $validator = Validator::make($request->all(),[
-                'days' => 'required',
-            ]);
-
-            if($validator->fails())
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => $validator->errors(),
-                ], 401);
-            }
-            $start_date = now();
-            $end_date = $start_date->subDay($request->days);
-        }
-
-        if($sorting_type == 'month')
+        if($data['sorting_type'] == 'period')
         {
-            $validator = Validator::make($request->all(),[
-                'date' => 'required',
-            ]);
-
-            if($validator->fails())
+            if(empty($data['start_date']))
             {
                 return response()->json([
                     'success' => false,
-                    'message' => $validator->errors(),
-                ], 401);
+                    'message' => "start date field is empty"
+                ],401);
             }
+            if(empty($data['end_date']) )
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "end date field is empty"
+                ],401);
+            }
+
+            $start_date = Carbon::parse($data['start_date']." 00:00:00");
+            $end_date = Carbon::parse($data['end_date']." 23:59:59");
         }
-        if($sorting_type == 'quarterly')
+        if($data['sorting_type'] == 'days')
         {
-            $validator = Validator::make($request->all(),[
-                'date' => 'required',
-            ]);
-
-            if($validator->fails())
+            if(empty($data['days']))
             {
                 return response()->json([
                     'success' => false,
-                    'message' => $validator->errors(),
-                ], 401);
+                    'message' => "days field is empty"
+                ],401);
             }
-            $start_date = Carbon::parse($request->date);
-            $end_date = $start_date->subMonth(3)->startOfMonth();
+
+            $start_date = now()->subDays($data['days']);
+            $end_date = now();
         }
-        if($sorting_type == 'yearly')
+        if($data['sorting_type'] == 'month')
         {
-            $validator = Validator::make($request->all(),[
-                'date' => 'required',
-            ]);
-
-            if($validator->fails())
+            if(empty($data['month']))
             {
                 return response()->json([
                     'success' => false,
-                    'message' => $validator->errors(),
-                ], 401);
+                    'message' => "month field is empty"
+                ],401);
             }
-            $start_date = Carbon::parse($request->date);
-            $end_date = $start_date->firstOfYear();
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],$data['month'],1);
+            $end_date = Carbon::createFromDate($data['year'],$data['month'],1)->endOfMonth();
         }
-        return [$start_date, $end_date];
+        if($data['sorting_type'] == 'quarterly')
+        {
+            if(empty($data['month']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "month field is empty"
+                ],401);
+            }
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],$data['month'],1)->subMonths(3);
+            $end_date = Carbon::createFromDate($data['year'],$data['month'],1);
+        }
+
+        if($data['sorting_type'] == 'yearly')
+        {
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],1,1);
+            $end_date = Carbon::createFromDate($data['year'],1,1)->endOfYear();
+        }
+        return [$start_date,$end_date];
     }
+
+    
 
     public function sortOldUsers(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'sorting_type' => 'required',
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+        $time_date = $this->sortingType($request->all());
         $salesOldUsers = User::where('role',557)->get(['id','first_name','last_name','username']);
         
-        $start_date = $this->sort_type($request)[0];
+        $start_date = $time_date[0];
         if($start_date == null){
             $start_date = now()->format('Y-m-d');
+            $start_date = Carbon::parse($start_date." 00:00:00");
         }
-        $start_date = Carbon::parse($start_date." 00:00:00");
 
-        $end_date = $this->sort_type($request)[1];
+        $end_date = $time_date[1];
         if($end_date == null){
             $end_date = now()->format('Y-m-d');
+            $end_date = Carbon::parse($end_date." 23:59:59");
         }
-        $end_date = Carbon::parse($end_date." 23:59:59");
         
         $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse']);
         if($request->sales_id != null){
@@ -224,7 +241,7 @@ class SalesOldUsersController extends Controller
             $table_data = $table_data->map->only(['id','user_id','name','username','signUpDate','Responded_Cycle','Recalcitrant_Cycle','lastTranxDate','lastTranxVolume','dp'])->all();
             $table_data = collect($table_data);
         }
-        $table_data = $table_data->sortByDesc('updated_at')->paginate(20);
+        $table_data = $table_data->sortByDesc('updated_at');
 
         return response()->json([
             'success' => true,

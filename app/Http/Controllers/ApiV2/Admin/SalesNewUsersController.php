@@ -17,7 +17,7 @@ class SalesNewUsersController extends Controller
     public function loadNewUsers($category = null)
     {
         
-        $salesNewUsers = User::where('role',556)->get(['id','first_name','last_name', 'username']);;
+        $salesNewUsers = User::where('role',556)->get(['id','first_name','last_name', 'username']);
 
         $start_date = now()->format('Y-m-d');
         $start_date = Carbon::parse($start_date." 00:00:00");
@@ -91,7 +91,6 @@ class SalesNewUsersController extends Controller
             $table_data = collect($table_data);
         }
         
-        $table_data = $table_data->paginate(20);
         return response()->json([
             'success' => true,
             'dropdown' => $salesNewUsers,
@@ -110,14 +109,101 @@ class SalesNewUsersController extends Controller
     
     }
 
+    public function sortingType($data)
+    {
+        $start_date = null;
+        $end_date = null;
+        if($data['sorting_type'] == 'period')
+        {
+            if(empty($data['start_date']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "start date field is empty"
+                ],401);
+            }
+            if(empty($data['end_date']) )
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "end date field is empty"
+                ],401);
+            }
+
+            $start_date = Carbon::parse($data['start_date']." 00:00:00");
+            $end_date = Carbon::parse($data['end_date']." 23:59:59");
+        }
+        if($data['sorting_type'] == 'days')
+        {
+            if(empty($data['days']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "days field is empty"
+                ],401);
+            }
+
+            $start_date = now()->subDays($data['days']);
+            $end_date = now();
+        }
+        if($data['sorting_type'] == 'month')
+        {
+            if(empty($data['month']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "month field is empty"
+                ],401);
+            }
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],$data['month'],1);
+            $end_date = Carbon::createFromDate($data['year'],$data['month'],1)->endOfMonth();
+        }
+        if($data['sorting_type'] == 'quarterly')
+        {
+            if(empty($data['month']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "month field is empty"
+                ],401);
+            }
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],$data['month'],1)->subMonths(3);
+            $end_date = Carbon::createFromDate($data['year'],$data['month'],1);
+        }
+
+        if($data['sorting_type'] == 'yearly')
+        {
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],1,1);
+            $end_date = Carbon::createFromDate($data['year'],1,1)->endOfYear();
+        }
+        return [$start_date,$end_date];
+    }
+
     public function sortNewUsers(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'sales_id' => 'required|integer',
-            'conversionType' => 'required',
-            'category' => 'required'
+            'sorting_type' => 'required',
         ]);
 
         if($validator->fails())
@@ -127,25 +213,20 @@ class SalesNewUsersController extends Controller
                 'message' => $validator->errors(),
             ], 401);
         }
-        $salesNewUsers = User::where('role',556)->get(['id','first_name','last_name','username']);;
-        $salesUser = User::find($request->sales_id); 
 
-        if(!$salesUser){
-            return response()->json([
-                'success' => false,
-                'message' => 'error finding sales personnel'
-            ], 401);
+        $time_date = $this->sortingType($request->all());
+        $salesNewUsers = User::where('role',556)->get(['id','first_name','last_name','username']);
+        $start_date = $time_date[0];
+        if($start_date == null){
+            $start_date = now()->format('Y-m-d');
+            $start_date = Carbon::parse($start_date." 00:00:00");
         }
 
-        if($request->start_date == null){
-            $request->start_date = now()->format('Y-m-d');
+        $end_date = $time_date[1];
+        if($end_date == null){
+            $end_date = now()->format('Y-m-d');
+            $end_date = Carbon::parse($end_date." 23:59:59");
         }
-        $start_date = Carbon::parse($request->start_date." 00:00:00");
-
-        if($request->end_date == null){
-            $request->end_date = now()->format('Y-m-d');
-        }
-        $end_date = Carbon::parse($request->end_date." 23:59:59");
 
         $goodLeads = NewUsersTracking::where('updated_at','>=',$start_date)->where('updated_at','<=',$end_date)
         ->where('status','goodlead');
@@ -230,7 +311,6 @@ class SalesNewUsersController extends Controller
             $table_data = collect($table_data);
         }
         
-        $table_data = $table_data->paginate(20);
 
         return response()->json([
             'success' => true,
