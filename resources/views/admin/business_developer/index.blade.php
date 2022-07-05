@@ -245,7 +245,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Call Log</button>
+                    <button type="submit" class="btn btn-primary">Create Query</button>
                 </div>
             </form>
         </div>
@@ -328,7 +328,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
                     @if (!($type =="Responded_Users" OR $type == "Recalcitrant_Users"))
-                    <button type="submit" class="btn btn-primary">Update Call Log</button>
+                    <button type="submit" class="btn btn-primary">Update Query</button>
                     @endif
                 </div>
             </form>
