@@ -17,7 +17,7 @@ class SalesNewUsersController extends Controller
     public function loadNewUsers($category = null)
     {
         
-        $salesNewUsers = User::where('role',556)->get(['id','first_name','last_name']);;
+        $salesNewUsers = User::where('role',556)->get(['id','first_name','last_name', 'username']);
 
         $start_date = now()->format('Y-m-d');
         $start_date = Carbon::parse($start_date." 00:00:00");
@@ -64,24 +64,33 @@ class SalesNewUsersController extends Controller
         if($category == 'calledUsersNo' OR $category == null){
             $table_data = $calledUsers;
             $this->CallDuration($table_data);
+            $table_data = $table_data->map->only(['id','user_id','name','username','called_date','called_time','callDuration','remark','dp'])->all();
+            $table_data = collect($table_data);
         }
         if($category == 'goodLeadNo'){
             $table_data = $goodLeads;
             $this->CallDuration($table_data);
+            $table_data = $table_data->map->only(['id','user_id','name','username','signUpDate','called_time','callDuration','remark','dp'])->all();
+            $table_data = collect($table_data);
         }
         if($category == 'badLeadNo')
         {
             $table_data = $badLeads;
             $this->CallDuration($table_data);
+            $table_data = $table_data->map->only(['id','user_id','name','username','signUpDate','callDuration','remark','dp'])->all();
+            $table_data = collect($table_data);
         }
         if($category == 'goodLeadConversion' ){
             $table_data = $goodLeadTransactions;
+            $table_data = $table_data->map->only(['id','name','username','signUpDate','TransDate','TransTime','TransVolume','dp'])->all();
+            $table_data = collect($table_data);
         }
         if($category == 'badLeadConversion'){
             $table_data = $badLeadTransactions;
+            $table_data = $table_data->map->only(['id','name','username','signUpDate','TransDate','TransTime','TransVolume','dp'])->all();
+            $table_data = collect($table_data);
         }
         
-        $table_data = $table_data->paginate(20);
         return response()->json([
             'success' => true,
             'dropdown' => $salesNewUsers,
@@ -100,14 +109,101 @@ class SalesNewUsersController extends Controller
     
     }
 
+    public function sortingType($data)
+    {
+        $start_date = null;
+        $end_date = null;
+        if($data['sorting_type'] == 'period')
+        {
+            if(empty($data['start_date']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "start date field is empty"
+                ],401);
+            }
+            if(empty($data['end_date']) )
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "end date field is empty"
+                ],401);
+            }
+
+            $start_date = Carbon::parse($data['start_date']." 00:00:00");
+            $end_date = Carbon::parse($data['end_date']." 23:59:59");
+        }
+        if($data['sorting_type'] == 'days')
+        {
+            if(empty($data['days']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "days field is empty"
+                ],401);
+            }
+
+            $start_date = now()->subDays($data['days']);
+            $end_date = now();
+        }
+        if($data['sorting_type'] == 'month')
+        {
+            if(empty($data['month']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "month field is empty"
+                ],401);
+            }
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],$data['month'],1);
+            $end_date = Carbon::createFromDate($data['year'],$data['month'],1)->endOfMonth();
+        }
+        if($data['sorting_type'] == 'quarterly')
+        {
+            if(empty($data['month']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "month field is empty"
+                ],401);
+            }
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],$data['month'],1)->subMonths(3);
+            $end_date = Carbon::createFromDate($data['year'],$data['month'],1);
+        }
+
+        if($data['sorting_type'] == 'yearly')
+        {
+            if(empty($data['year']))
+            {
+                return response()->json([
+                    'success' => false,
+                    'message' => "year field is empty"
+                ],401);
+            }
+            $start_date = Carbon::createFromDate($data['year'],1,1);
+            $end_date = Carbon::createFromDate($data['year'],1,1)->endOfYear();
+        }
+        return [$start_date,$end_date];
+    }
+
     public function sortNewUsers(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'sales_id' => 'required|integer',
-            'conversionType' => 'required',
-            'category' => 'required'
+            'sorting_type' => 'required',
         ]);
 
         if($validator->fails())
@@ -117,25 +213,20 @@ class SalesNewUsersController extends Controller
                 'message' => $validator->errors(),
             ], 401);
         }
-        $salesNewUsers = User::where('role',556)->get(['id','first_name','last_name']);;
-        $salesUser = User::find($request->sales_id); 
 
-        if(!$salesUser){
-            return response()->json([
-                'success' => false,
-                'message' => 'error finding sales personnel'
-            ], 401);
+        $time_date = $this->sortingType($request->all());
+        $salesNewUsers = User::where('role',556)->get(['id','first_name','last_name','username']);
+        $start_date = $time_date[0];
+        if($start_date == null){
+            $start_date = now()->format('Y-m-d');
+            $start_date = Carbon::parse($start_date." 00:00:00");
         }
 
-        if($request->start_date == null){
-            $request->start_date = now()->format('Y-m-d');
+        $end_date = $time_date[1];
+        if($end_date == null){
+            $end_date = now()->format('Y-m-d');
+            $end_date = Carbon::parse($end_date." 23:59:59");
         }
-        $start_date = Carbon::parse($request->start_date." 00:00:00");
-
-        if($request->end_date == null){
-            $request->end_date = now()->format('Y-m-d');
-        }
-        $end_date = Carbon::parse($request->end_date." 23:59:59");
 
         $goodLeads = NewUsersTracking::where('updated_at','>=',$start_date)->where('updated_at','<=',$end_date)
         ->where('status','goodlead');
@@ -193,24 +284,33 @@ class SalesNewUsersController extends Controller
         if($request->category == 'calledUsersNo' OR $request->category == null){
             $table_data = $calledUsers;
             $this->CallDuration($table_data);
+            $table_data = $table_data->map->only(['id','user_id','name','username','called_date','called_time','callDuration','remark','dp'])->all();
+            $table_data = collect($table_data);
         }
         if($request->category == 'goodLeadNo'){
             $table_data = $goodLeads;
             $this->CallDuration($table_data);
+            $table_data = $table_data->map->only(['id','user_id','name','username','signUpDate','called_time','callDuration','remark','dp'])->all();
+            $table_data = collect($table_data);
         }
         if($request->category == 'badLeadNo')
         {
             $table_data = $badLeads;
             $this->CallDuration($table_data);
+            $table_data = $table_data->map->only(['id','user_id','name','username','signUpDate','callDuration','remark','dp'])->all();
+            $table_data = collect($table_data);
         }
         if($request->category == 'goodLeadConversion' ){
             $table_data = $goodLeadTransactions;
+            $table_data = $table_data->map->only(['id','name','username','signUpDate','TransDate','TransTime','TransVolume','dp'])->all();
+            $table_data = collect($table_data);
         }
         if($request->category == 'badLeadConversion'){
             $table_data = $badLeadTransactions;
+            $table_data = $table_data->map->only(['id','name','username','signUpDate','TransDate','TransTime','TransVolume','dp'])->all();
+            $table_data = collect($table_data);
         }
         
-        $table_data = $table_data->paginate(20);
 
         return response()->json([
             'success' => true,
@@ -240,6 +340,13 @@ class SalesNewUsersController extends Controller
     public function CallDuration($table_data){
         foreach ($table_data as $td) {
             $td->callDuration = CarbonInterval::seconds($td->call_duration)->cascade()->forHumans();
+            $called_timeStamp = $td->call_duration_timestamp;
+            $td->called_date = Carbon::parse($called_timeStamp)->format('d M Y');
+            $td->called_time = Carbon::parse($called_timeStamp)->format('h:ia');
+            $td->remark = $td->comment;
+            $td->username = ($td->user) ? $td->user->username : null;
+            $td->name = ($td->user) ? $td->user->first_name." ".$td->user->last_name : null;
+            $td->signUpDate = Carbon::parse($td->created_at)->format('d M Y');
         }
     }
 
@@ -255,6 +362,19 @@ class SalesNewUsersController extends Controller
             }
         }
         $tdata = collect(($tdata))->sortByDesc('updated_at');
+        foreach($tdata as $td)
+        {
+            $td->TransDate = Carbon::parse($td->created_at)->format('d M Y');
+            $td->TransTime = Carbon::parse($td->created_at)->format('h:ia');
+            $td->TransVolume = $td->amount;
+            if($td->user)
+            {
+                $td->signUpDate = Carbon::parse($td->user->created_at)->format('d M Y');
+                $td->name = $td->user->first_name." ".$td->user->last_name;
+                $td->username = $td->user->username;
+                $td->name = $td->user->first_name." ".$td->user->last_name;
+            }
+        }
         $ConversionUnique = ($noCalledUsers == 0) ? 0 : ($tdata->count()/$noCalledUsers)*100;
         
         $ConversionAmountUnique = $tdata->sum('amount');
@@ -276,6 +396,19 @@ class SalesNewUsersController extends Controller
                 $TransactionsTotal = $TransactionsTotal->concat($user_transactionsTotal);
             }
 
+        }
+        foreach($TransactionsTotal as $tt)
+        {
+            $tt->TransDate = Carbon::parse($tt->created_at)->format('d M Y');
+            $tt->TransTime = Carbon::parse($tt->created_at)->format('h:ia');
+            $tt->TransVolume = $tt->amount;
+            if($tt->user)
+            {
+                $tt->signUpDate = Carbon::parse($tt->user->created_at)->format('d M Y');
+                $tt->name = $tt->user->first_name." ".$tt->user->last_name;
+                $tt->username = $tt->user->username;
+                $tt->name = $tt->user->first_name." ".$tt->user->last_name;
+            }
         }
         $ConversionTotal = ($noCalledUsers == 0) ? 0 : ($TransactionsTotal->count()/$noCalledUsers)*100;
         $ConversionAmountTotal = $TransactionsTotal->sum('amount');

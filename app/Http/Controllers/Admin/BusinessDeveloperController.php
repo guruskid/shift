@@ -105,8 +105,19 @@ class BusinessDeveloperController extends Controller
         {
             $data_table = $data_table->whereDate('created_at','<=',$request->end);
         }
+
+        if($request->search)
+        {
+            $search = $request->search;
+            $data_table = $data_table->where(function($query) use($search){
+                $query->whereHas('user',function($q) use($search){
+                    $q->where('first_name', 'like', '%' . $search . '%')
+                       ->orWhere('last_name', 'like', '%' . $search . '%');
+                });
+            });
+        }
         $count = $data_table->count();
-        $data_table = $data_table->paginate(100);
+        $data_table = $data_table->paginate(1000);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
             if($user_tnx->count() == 0)

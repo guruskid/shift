@@ -54,7 +54,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card mb-3 widget-content">
                         <a href="#">
                             <div class="widget-content-wrapper ">
@@ -75,7 +75,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card mb-3 widget-content">
                         <a href="#">
                             <div class="widget-content-wrapper ">
@@ -96,7 +96,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card mb-3 widget-content">
                         <a href="#">
                             <div class="widget-content-wrapper ">
@@ -107,6 +107,27 @@
                                             <input type="hidden" name="name" value="trading_usdt_per">
                                             <input type="number" step="any" name="value"
                                                 value="{{ AppSetting::get('trading_usdt_per') }}"
+                                                class="form-control mb-2">
+                                            <button class="btn btn-primary">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card mb-3 widget-content">
+                        <a href="#">
+                            <div class="widget-content-wrapper ">
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">
+                                        <form action="{{ route('admin.settings.update') }} " method="post">@csrf
+                                            <h5>Commission (%)</h5>
+                                            <input type="hidden" name="name" value="usdt_commission">
+                                            <input type="number" step="any" name="value"
+                                                value="{{ AppSetting::get('usdt_commission') }}"
                                                 class="form-control mb-2">
                                             <button class="btn btn-primary">Save</button>
                                         </form>

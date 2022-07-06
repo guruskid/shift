@@ -63,6 +63,13 @@
                             </div>
                             <form class="form-inline p-2"
                                 method="GET">
+                                <div class="form-group mr-2">
+                                    <input class="form-control" name="search" type="text" placeholder="Search User">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                            </form>
+                            <form class="form-inline p-2"
+                                method="GET">
                                 {{-- @csrf --}}
                                 <div class="form-group mr-2">
                                     <label for="">Start date </label>
