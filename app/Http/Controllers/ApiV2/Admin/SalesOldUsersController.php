@@ -24,7 +24,7 @@ class SalesOldUsersController extends Controller
         $end_date = now()->format('Y-m-d');
         $end_date = Carbon::parse($end_date." 23:59:59");
 
-        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse'])->get();
+        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
         $RespondedUsers = UserTracking::where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
@@ -193,7 +193,7 @@ class SalesOldUsersController extends Controller
             $end_date = Carbon::parse($end_date." 23:59:59");
         }
         
-        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse']);
+        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser']);
         if($request->sales_id != null){
             $CalledUsers = $CalledUsers->where('sales_id',$request->sales_id)->get();            
         }else{
@@ -331,7 +331,7 @@ class SalesOldUsersController extends Controller
                 }
                 //* for each timestamp check the called users 
                 $calledUsers = UserTracking::where('called_date','>=',$st->activeTime)
-                ->where('called_date','<=',$st->inactiveTime)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse'])->get();
+                ->where('called_date','<=',$st->inactiveTime)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
                 $previousDatetime = null;
                 //* allocate the previous call duration timestamp to be able to calculate time difference
                 foreach ($calledUsers as $cu) {

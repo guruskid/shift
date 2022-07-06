@@ -14,31 +14,111 @@ use Illuminate\Support\Facades\DB;
 
 class SalesAnalyticsController extends Controller
 {
+    public function monthAndYear()
+     {
+        $list_of_years = Transaction::select(DB::raw('YEAR(created_at) as year'))->distinct()->get();
+        $years = $list_of_years->pluck('year');
+
+        $month = [
+            ['month'=>'january','number'=>1],
+            ['month'=>'february','number'=>2],
+            ['month'=>'march','number'=>3],
+            ['month'=>'april','number'=>4],
+            ['month'=>'may','number'=>5],
+            ['month'=>'june','number'=>6],
+            ['month'=>'july','number'=>7],
+            ['month'=>'august','number'=>8],
+            ['month'=>'september','number'=>9],
+            ['month'=>'october','number'=>10],
+            ['month'=>'november','number'=>11],
+            ['month'=>'december','number'=>12],
+        ];
+        return [$years , $month];
+     }
+
+     public function sortingType($sortingType){
+        $start_date  = null;
+        $end_date = null;
+        
+        if($sortingType['sortingType'] == 'period')
+        {
+            //*checking if the start end end date is available
+            if(empty($sortingType['start']) || empty($sortingType['end']))
+            {
+                return 'Missing Date Fields';
+            }
+            $start_date = Carbon::parse($sortingType['start']." 00:00:00");
+            $end_date = Carbon::parse($sortingType['end']." 23:59:59");
+        }
+        if($sortingType['sortingType'] == 'days')
+        {
+            //*checking if dates field is empty
+            if(empty($sortingType['days']) ){
+                return 'Days field Empty';
+            }
+            $start_date = now()->subDays($sortingType['days']);
+            $end_date = now();
+        }
+        //*checking month and year fields
+        if($sortingType['sortingType'] == 'monthly')
+        {
+            if(empty($sortingType['month']) || empty($sortingType['Year']))
+            {
+                return 'Missing Month or Year Field';
+            }   
+            $start_date = Carbon::createFromDate($sortingType['Year'],$sortingType['month'],1);
+            $end_date = Carbon::createFromDate($sortingType['Year'],$sortingType['month'],1)->endOfMonth();
+        }
+        if($sortingType['sortingType'] == 'quarterly')
+        {
+            if(empty($sortingType['month']) || empty($sortingType['Year']))
+            {
+                return 'Missing Month or Year Field';
+            }   
+            $start_date = Carbon::createFromDate($sortingType['Year'],$sortingType['month'],1)->subMonths(3);
+            $end_date = Carbon::createFromDate($sortingType['Year'],$sortingType['month'],1);
+        }
+        if($sortingType['sortingType'] == 'yearly')
+        {
+            if(empty($sortingType['Year']))
+            {
+                return 'Missing Year Field';
+            }  
+            $start_date = Carbon::createFromDate($sortingType['Year'],1,1);
+            $end_date = Carbon::createFromDate($sortingType['Year'],1,1)->endOfYear();
+        }
+
+        return [$start_date ,$end_date];
+     }
     public function index($type = null, Request $request)
     {
-        $request->session()->forget('SortingKeys');
-        $conversionType = "unique";
-        $start_date =  null;
-        $last_date = null;
-        
+        $request->session()->forget(['SortingKeys','startKey','endKey']);
         $type = ($type != null) ? $type : "calledUsers";
-
-        return $this->loadData($start_date,$last_date,$conversionType,$type,null);
+        return $this->loadData($type);
     }
 
     public function sortingAnalytics(Request $request, $type = null)
     {
-        $type = ($type != null) ? $type : "calledUsers";
         if(!empty($request->all())){
-            $request->session()->put('SortingKeys',$request->all());
-        }
-        $request_data = $request->session()->get('SortingKeys');
-        if(!empty($request_data)){
+            $request->session()->put('SortingKeys', $request->all());
+         }
+
+         $request_data = $request->session()->get('SortingKeys');
+         if(!empty($request_data))
+         {
+            //*by the sorting type depends the start and end date
+            if((is_string($this->sortingType($request_data))) == true)
+            {
+                return redirect()->back()->with(['error' => $this->sortingType($request_data)]);
+            }
+            else{
+                $time_data = $this->sortingType($request_data);
+                $start_date = $time_data[0];
+                $end_date = $time_data[1];
+                $request->session()->put('startKey', $start_date);
+                $request->session()->put('endKey', $end_date);
+            }
             $conversionType = "unique";
-
-            $start_date = ($request_data['start']) ? $request_data['start'] : null;
-            $last_date = ($request_data['end']) ? $request_data['end'] : null;
-
             if(isset($request_data['unique']) AND $request_data['unique'] =="on"){
                 $conversionType = "unique";
             }
@@ -46,11 +126,12 @@ class SalesAnalyticsController extends Controller
                 $conversionType = "total";
             }
             $type = ($type != null) ? $type : "calledUsers";
-            return $this->SortingLoadData($start_date,$last_date,$conversionType,$type,$request_data['sales']);
-        }
+            return $this->SortingLoadData($start_date,$end_date,$conversionType,$type,$request_data['sales']);
+         }
+         return redirect()->route('sales.newUsers.salesAnalytics');
     }
 
-    public function loadData($start_date ,$end_date,$conversionType,$type,$sales_id)
+    public function loadData($type)
     {
         $salesNewUsers = User::where('role',556)->get();
         $start_date = now()->format('Y-m-d');
@@ -70,19 +151,10 @@ class SalesAnalyticsController extends Controller
         $calledUsers = $this->allGoodAndBadLeads($goodLeads,$badLeads);
         $noCalledUsers = $calledUsers->count();
 
-        if($conversionType == "unique")
-        {
-            $goodLeadData = $this->conversionRateUnique($goodLeads,$noCalledUsers);
-            $badLeadData = $this->conversionRateUnique($badLeads,$noCalledUsers);
-            $unique = 1;
-            $total = 0;
-        }
-        else{
-            $goodLeadData = $this->conversionRateTotal($goodLeads,$noCalledUsers);
-            $badLeadData = $this->conversionRateTotal($badLeads,$noCalledUsers);
-            $unique = 0;
-            $total = 1;
-        }
+        $goodLeadData = $this->conversionRateUnique($goodLeads,$noCalledUsers);
+        $badLeadData = $this->conversionRateUnique($badLeads,$noCalledUsers);
+        $unique = 1;
+        $total = 0;
         
         $goodLeadTransactions = $goodLeadData[0]['transactions'];
         $goodLeadConversionRate = $goodLeadData[0]['ConversationRate'];
@@ -106,7 +178,6 @@ class SalesAnalyticsController extends Controller
         $averageCallDuration = ($averageCallDuration == 0) ? 0 : CarbonInterval::seconds($averageCallDuration)->cascade()->forHumans();
         $show_data = false;
         
-        $type = $type;
         $table_data = $calledUsers;
 
         if($type == 'calledUsers'){
@@ -136,11 +207,14 @@ class SalesAnalyticsController extends Controller
         $table_data = $table_data->take(10);
 
         $segment = " Sales New Users Analytics";
+        $monthAndYear = $this->monthAndYear();
+        $years = $monthAndYear[0];
+        $month = $monthAndYear[1];
         return view('admin.sales_analytics.index',compact([
             'show_data','segment','noCalledUsers','noGoodLeads','goodLeadConversionRate',
             'noBadLeads','averageTimeBetweenCalls','badLeadConversionRate','totalConversionRate',
             'totalConversionVolume','totalCallDuration','averageCallDuration','type','table_data',
-            'unique','total','salesNewUsers'
+            'unique','total','salesNewUsers','month','years'
         ]));
     }
 
@@ -154,13 +228,15 @@ class SalesAnalyticsController extends Controller
         $salesNewUsers = User::where('role',556)->get();
         if($start_date == null){
             $start_date = now()->format('Y-m-d');
+            $start_date = Carbon::parse($start_date." 00:00:00");
         }
-        $start_date = Carbon::parse($start_date." 00:00:00");
+        
         $segment .= $start_date->format('d M Y');
         if($end_date == null){
             $end_date = now()->format('Y-m-d');
+            $end_date = Carbon::parse($end_date." 23:59:59");
         }
-        $end_date = Carbon::parse($end_date." 23:59:59");
+        
         $segment .= " to ".$end_date->format('d M Y');
     
         $goodLeads = NewUsersTracking::where('updated_at','>=',$start_date)->where('updated_at','<=',$end_date)
@@ -262,8 +338,11 @@ class SalesAnalyticsController extends Controller
     public function viewAllTransaction(Request $request, $type = null)
     {
         $request_data = $request->session()->get('SortingKeys');
-        $start_date = (isset($request_data['start'])) ? $request_data['start'] : null;
-        $end_date = (isset($request_data['end'])) ? $request_data['end'] : null;
+        $start_date = $request->session()->get('startKey');
+        $end_date = $request->session()->get('endKey');
+
+        $start_date = (isset($start_date)) ? $start_date : null;
+        $end_date = (isset($end_date)) ? $end_date : null;
         $sales_id = (isset($request_data['sales'])) ? $request_data['sales'] : 0;
 
         $conversionType = "unique";
@@ -333,7 +412,7 @@ class SalesAnalyticsController extends Controller
         $badLeadConversionRate = $badLeadData[0]['ConversationRate'];
         $badLeadConversionAmount = $badLeadData[0]['ConversionAmount'];
         
-        $averageTimeBetweenCalls = $this->averageTimeBetweenCalls($calledUsers);
+        $averageTimeBetweenCalls = $this->sortAverageTimeBetweenCalls($start_date,$end_date,$sales_id);
 
         $totalConversionGoodandBadLeads = $goodLeadTransactions->count() + $badLeadTransactions->count();
         $totalConversionRate = ($noCalledUsers == 0) ? 0 : ($totalConversionGoodandBadLeads/$noCalledUsers)*100;
