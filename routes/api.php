@@ -33,6 +33,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/check-phone/{phone}', 'Api\UserController@checkPhone');
     Route::GET('/bitcoin-wallet/price', 'Api\BtcWalletController@btcPrice');
 
+    Route::get('/test-fcm', 'FirebasePushNotificationController@testPush');
+
     Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
         Route::get('email/resend', 'Api\VerificationController@resend')->name('verification.resend');
 

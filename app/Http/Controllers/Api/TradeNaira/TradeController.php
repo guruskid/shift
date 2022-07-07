@@ -9,6 +9,7 @@ use App\NairaTradePop;
 use App\User;
 use App\Account;
 use App\Events\CustomNotification;
+use App\Http\Controllers\FirebasePushNotificationController;
 use App\NairaTransaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;

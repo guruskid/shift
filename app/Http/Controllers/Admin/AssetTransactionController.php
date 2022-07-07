@@ -33,7 +33,6 @@ class AssetTransactionController extends Controller
 
     public function editTransaction(Request $r)
     {
-
         if (in_array(Auth::user()->role,[444,449,999]) and $r->status == 'success') {
             return $this->payTransactionChinese($r);
         }
@@ -91,7 +90,7 @@ class AssetTransactionController extends Controller
             'body' => $body,
         ]);
 
-        if ($t->status == 'success') {
+        // if ($t->status == 'success') {
             // Firebase Push Notification
             $fcm_id = $t->user->fcm_id;
             if (isset($fcm_id)) {
@@ -101,7 +100,7 @@ class AssetTransactionController extends Controller
                     //throw $th;
                 }
             }
-        }
+        // }
 
         // broadcast(new TransactionUpdated($user))->toOthers();
         if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1) {

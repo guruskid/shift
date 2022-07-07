@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 class FirebasePushNotificationController extends Controller {
 
     public static function sendPush($fcm_id, $title, $message) {
-		
-		$GOOGLE_API_KEY = env("FIREBASE_API_KEY");
+        $GOOGLE_API_KEY = env("FIREBASE_API_KEY");
 		$logo = asset('admin_assets/img/logo.svg');
 		$fields = array(
         	'to'		=> $fcm_id,
@@ -34,6 +33,14 @@ class FirebasePushNotificationController extends Controller {
 		
         curl_close($ch);
         return $result;
+    }
+
+    public function testPush() {
+       $fcm_id = 'cl8klIQ9QwWs-x6SIeFkSo:APA91bHvrydA01bpQwn2f2HfGNQgPftLGauBMi7oq-jd3a86U8PZkN1wR45tE6kqgco8cjzPGzQkYGcKzERWStgBS3JtFu0PpbpsF6hhuIIt48vIS9wUeA2Rm48i8kIAia5h0GMZAtwy';
+
+       $fcm = self::sendPush($fcm_id, 'Test test', 'hello world');
+
+       dd($fcm);
     }
 	
 }
