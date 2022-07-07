@@ -56,7 +56,18 @@
             <form action="{{route('sales.sort.salesAnalytics')}}" class="form-inline p-2" method="POST">
                 @csrf
                 <div class="form-group mr-2">
-                    <select name="sales" class="form-control" required>
+                    <select name="sortingType" id='e_sort' onchange="sortingchange()" class="form-control" required>
+                        <option value="noData">SortingType</option>
+                        <option value="period">Period</option>
+                        <option value="days">days</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quaterly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+
+                <div class="form-group mr-2">
+                    <select name="sales" class="form-control" >
                         <option value="">Select Sales</option>
                         @foreach ($salesNewUsers as $snu)
                             <option value="{{ $snu->id }}">{{ $snu->first_name.' '.$snu->last_name }}</option>
@@ -64,23 +75,52 @@
                     </select>
                 </div>
                 <input type="hidden" name="type" value="{{ $type }}">
-                <div class="form-group mr-2">
+               <div id="period_start" class="form-group mr-2  d-none">
                     <label for="">Start date </label>
-                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                    <input type="date" name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
                 </div>
-                <div class="form-group mr-2">
+                <div id="period_end" class="form-group mr-2  d-none">
                     <label for="">End date </label>
-                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                    <input type="date" name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
                 </div>
-                <div class="custom-control custom-switch mr-2">
+                <div id="days" class="d-none">
+                    <div class="form-group mr-2">
+                        <input type="numbers" class="form-control" name="days" placeholder="Enter days">
+                    </div>
+                </div>
+                <div id="months" class="d-none">
+                    <div class="form-group mr-2">
+                        <select name="month" class="form-control">
+                            <option value="">Month</option>
+                            @foreach($month as $m)
+                            <option value="{{ $m['number'] }}">{{ ucwords($m['month']) }}</option>
+                            @endforeach
+                        </select>
+
+                        
+                    </div>
+                </div>
+                <div id="yearly" class="d-none">
+                    <div class="form-group mr-2">
+                        <select name="Year"class="form-control">
+                            <option value="">Year</option>
+                            @foreach ($years as $y)
+                            <option value="{{ $y }}">{{ $y }}</option> 
+                            @endforeach
+                        </select>
+                    </div>
+                </div>  
+                <div id="ac1" class="custom-control custom-switch mr-2 d-none">
                     <input type="checkbox" name="unique" id="send-btc" onclick="" class="custom-control-input toggle-settings" {{($unique== 1) ? 'checked' : ''}} data-name="SEND_BTC">
                     <label for="send-btc" class="custom-control-label">Unique</label>
                 </div>
-                <div class="custom-control custom-switch mr-2">
+                <div id="ac2" class="custom-control custom-switch mr-2 d-none">
                     <input type="checkbox" name="total" id="receive-btc" onclick="" class="custom-control-input toggle-settings" {{($total== 1) ? 'checked' : ''}}  data-name="RECEIVE_BTC">
                     <label for="receive-btc" class="custom-control-label">Total</label>
                 </div>
+                <div id="ac3" class="d-none">
                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                </div>
             </form> 
             </div>
             @include('admin.sales_analytics.includes.card')

@@ -371,7 +371,7 @@
 
     const category_status = () => {
         const feedback = __st_id("category")
-        if (feedback.value != "") {
+        if (!(feedback.value == "" || feedback.value =="NoResponse")) {
         showit("feedback-textarea")
         } else {
             hideit("feedback-textarea")

@@ -426,7 +426,7 @@ $not = $nots->last();
 
         const category_status = () => {
         const feedback = __st_id("category")
-        if (feedback.value != "") {
+        if (!(feedback.value == "" || feedback.value =="NoResponse")) {
         showit("feedback-textarea")
         } else {
             hideit("feedback-textarea")
@@ -444,6 +444,94 @@ $not = $nots->last();
             $('[data-toggle="tooltip"]').tooltip();
         });
 
+    </script>
+
+    <script>
+        const __event = (activity) => document.getElementById(activity)
+        const hidebuttons = () =>{
+            __event('ac1').classList.add("d-none")
+            __event('ac2').classList.add("d-none")
+            __event('ac3').classList.add("d-none")
+        }
+
+        const showbuttons = () =>{
+            __event('ac1').classList.remove("d-none")
+            __event('ac2').classList.remove("d-none")
+            __event('ac3').classList.remove("d-none")
+        }
+        const hideAll = () =>{
+            hidebuttons()
+            __event('yearly').classList.add("d-none")
+            __event('period_start').classList.add("d-none")
+            __event('period_end').classList.add("d-none")
+            __event('days').classList.add("d-none")
+            __event('months').classList.add("d-none")
+            __event('quaterly').classList.add("d-none")
+        }
+        const periodShowit = () => {
+            showbuttons()
+            __event('yearly').classList.add("d-none")
+            __event('period_start').classList.remove("d-none")
+            __event('period_end').classList.remove("d-none")
+            __event('days').classList.add("d-none")
+            __event('months').classList.add("d-none")
+            __event('quaterly').classList.add("d-none")
+        }
+        const daysShowit = () => {
+            showbuttons()
+            __event('yearly').classList.add("d-none")
+            __event('days').classList.remove("d-none")
+            __event('period_start').classList.add("d-none")
+            __event('period_end').classList.add("d-none")
+            __event('months').classList.add("d-none")
+            __event('quaterly').classList.add("d-none")
+            
+        }
+        const monthShowit = () => {
+            showbuttons()
+            __event('months').classList.remove("d-none")
+            __event('yearly').classList.remove("d-none")
+            __event('period_start').classList.add("d-none")
+            __event('period_end').classList.add("d-none")
+            __event('days').classList.add("d-none")
+        }
+
+        const yearlyShowit = () => {
+            showbuttons()
+            __event('yearly').classList.remove("d-none")
+            __event('period_start').classList.add("d-none")
+            __event('period_end').classList.add("d-none")
+            __event('days').classList.add("d-none")
+            __event('months').classList.add("d-none")
+            __event('quaterly').classList.add("d-none")
+        }
+        const sortingchange = () => {
+        const feedback = __event("e_sort")
+        switch (feedback.value) {
+            case "noData":
+                hideAll()
+                break;
+            case "period":
+                periodShowit()
+                break;
+            case "days":
+                daysShowit()
+                break;
+            case "monthly":
+                monthShowit()
+                break;
+            case "quarterly":
+                monthShowit()
+                break;
+            case "yearly":
+                yearlyShowit()
+                break;
+        
+            default:
+                periodShowit()
+                break;
+        }
+        }
     </script>
 
     {{-- @if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999) --}}

@@ -645,6 +645,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], 
     Route::GET('/LoadSalesUsers', 'Admin\TargetController@loadSales')->name('sales.loadSales');
     Route::POST('/addTarget','Admin\TargetController@addTarget')->name('sales.addTarget');
     Route::POST('/editTarget','Admin\TargetController@editTarget')->name('sales.editTarget');
+    Route::GET('/editStatusSales/{id}/{action}','Admin\TargetController@activateSales')->name('sales.action');
 });
 
 

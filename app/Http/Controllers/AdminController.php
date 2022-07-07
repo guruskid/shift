@@ -34,7 +34,7 @@ class AdminController extends Controller
 {
     //All new functionalities will follow the conventional method, new controllers for each model and stored in the admin folder
     public function dashboard()
-    {   
+    {
         $page_limit = 1000;
         $buyCash = Transaction::where('status', 'success')->where('type', 'buy')->sum('amount_paid');
         $sellCash = Transaction::where('status', 'success')->where('type', 'sell')->sum('amount_paid');
@@ -249,10 +249,10 @@ class AdminController extends Controller
         } else if (Auth::user()->role == 557) { //business_Developer
             return (new BusinessDeveloperController)->index();
         }
-        else if (Auth::user()->role == 556) { //Sales Personal 
+        else if (Auth::user()->role == 556) { //Sales Personal
             return (new SalesController)->index();
         }
-       
+
     }
 
 
@@ -984,6 +984,7 @@ class AdminController extends Controller
     {
         $transac = Transaction::find($id);
         return response()->json($transac);
+
     }
 
 

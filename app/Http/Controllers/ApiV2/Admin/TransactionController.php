@@ -49,7 +49,7 @@ class TransactionController extends Controller
     public function transactionsPerDay()
     {
 
-        $transaction_data = Transaction::with('user')->WhereYear('created_at', date('Y'))->get()->groupBy(function($transaction_data){
+        $transaction_data = NairaTrade::with('user')->WhereYear('created_at', date('Y'))->get()->groupBy(function($transaction_data){
             return Carbon::parse($transaction_data->created_at)->format('Y-M-d');
         });
 

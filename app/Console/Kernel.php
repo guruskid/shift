@@ -8,6 +8,7 @@ use App\Console\Commands\CheckCalledUsers;
 use App\Console\Commands\CheckRecalcitrantUsers;
 use App\Console\Commands\CheckRespondedUsers;
 use App\Console\Commands\GetCurrentRate;
+use App\Console\Commands\NoResponseCheck;
 use App\Http\Controllers\MarketingController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -25,7 +26,8 @@ class Kernel extends ConsoleKernel
         CheckActiveUsers::class,
         CheckCalledUsers::class,
         CheckRespondedUsers::class,
-        CheckRecalcitrantUsers::class
+        CheckRecalcitrantUsers::class,
+        NoResponseCheck::class
     ];
 
     /**
@@ -44,6 +46,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('check:called')->daily();
         $schedule->command('check:Responded')->daily();
         $schedule->command('check:Recalcitrant')->daily();
+        $schedule->command('noResponse:check')->daily(); 
     }
 
     /**

@@ -78,7 +78,6 @@ class Kernel extends HttpKernel
         'accountantManager' =>\App\Http\Middleware\AccountantManagerMiddleware::class,
         'marketing' =>\App\Http\Middleware\Marketing::class,
         'businessDeveloper' =>\App\Http\Middleware\BusinessDeveloper::class,
-        'cors' =>\App\Http\Middleware\Cors::class,
         'chineseAccountant' => \App\Http\Middleware\chineseAccountant::class,
         'AccountOfficer' => \App\Http\Middleware\AccountOfficer::class,
         'sales' => \App\Http\Middleware\Sales::class,
