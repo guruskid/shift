@@ -6,6 +6,7 @@ use App\Contract;
 use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
+use App\Http\Controllers\Admin\SettingController;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
