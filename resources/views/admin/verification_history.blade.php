@@ -73,6 +73,7 @@
                                         <th>Type</th>
                                         <th>Status</th>
                                         <th>Action</th>
+                                        <th>Verified By</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -95,6 +96,7 @@
 
                                             </div>
                                         </td>
+                                        <td>{{ (isset($v->verifiedUserBy)) ? $v->verifiedUserBy->first_name .' '. $v->verifiedUserBy->last_name : "no data available" }} </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

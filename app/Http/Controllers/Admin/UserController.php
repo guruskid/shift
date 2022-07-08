@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-<<<<<<< HEAD
 use App\Http\Controllers\FirebasePushNotificationController;
 use App\Http\Controllers\NariaLimitController;
-=======
->>>>>>> 77f857ab905ffcefffc29c87da60f83f1a892e7a
 use App\Mail\GeneralTemplateOne;
 use App\Notification;
 use App\User;
