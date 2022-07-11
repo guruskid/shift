@@ -277,7 +277,7 @@
                                     <legend>Referral Percentage</legend>
                                     <div class="row">
                                         {{-- @if(!empty($settings['REFERRAL_PERCENTAGE'])) --}}
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group form-material">
                                                     <input type="text" name="referral_percentage" value="{{!empty($settings['REFERRAL_PERCENTAGE']) ? $settings['REFERRAL_PERCENTAGE']['settings_value'] : ''}}" class="form-control" placeholder="referral percentage"/>
                                                 </div>
@@ -292,7 +292,7 @@
                                                 <div class="custom-control mr-4 mb-3">
                                                     <input type="checkbox" name="naira_transaction_charge" class="form-check-input" id="naira-transaction-charge" {{(!empty($settings['NAIRA_TRANSACTION_CHARGE']) && $settings['NAIRA_TRANSACTION_CHARGE']['settings_value'] == 1) ? 'checked' : '' }}>
                                                     <label class="form-check-label " for="naira-transaction-charge" style="color: #676B87;">
-                                                        Disable Naira Transaction Charge for new users
+                                                        Disable Naira Transaction Charge for first 10 Transactions
                                                     </label>
                                                 </div>
                                             </div>
