@@ -47,8 +47,11 @@ class GeneralSettings extends Controller
     }
 
     public static function getSettingValue($name) {
-        $setting = SystemSettings::where('settings_name',$name)->first()['settings_value'];
-        return $setting;
+        $setting = SystemSettings::where('settings_name',$name)->first();
+        if ($setting) {
+            return $setting['settings_value'];
+        }
+        return 0;
     }
 
     public static function updateConfig(Request $request) {
