@@ -10,6 +10,8 @@ use App\User;
 use App\Account;
 use App\Events\CustomNotification;
 use App\Http\Controllers\FirebasePushNotificationController;
+use App\Http\Controllers\GeneralSettings;
+use App\Http\Controllers\UserController;
 use App\NairaTransaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -160,6 +162,10 @@ class TradeController extends Controller
 
         $ref = \Str::random(3) . time();
         $charge = 100;
+
+        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
+            $charge = 0;
+        }
 
         //create TXN here
         $txn = new NairaTrade();

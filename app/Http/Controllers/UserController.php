@@ -564,4 +564,8 @@ class UserController extends Controller
         Auth::user()->notificationSetting->save();
         return response()->json(["success" => true]);
     }
+
+    public static function successFulNairaTrx() {
+        return Auth::user()->nairaTransactions->where('status','success')->count();
+    }
 }
