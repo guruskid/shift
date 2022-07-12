@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers\Api\TradeNaira;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\NairaTrade;
-use App\NairaTradePop;
-use App\User;
 use App\Account;
 use App\Events\CustomNotification;
-use App\NairaTransaction;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
 use App\Mail\GeneralTemplateOne;
+use App\NairaTrade;
+use App\NairaTradePop;
+use App\NairaTransaction;
 use App\NairaWallet;
 use App\PayBridgeAccount;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 //! things to ask
 /**
@@ -42,7 +41,7 @@ class TradeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $agents
+            'data' => $agents,
         ]);
     }
 
@@ -63,7 +62,7 @@ class TradeController extends Controller
             'total_withdrawn_today' => $withdrawalToday,
             'total_withdrawn_this_month' => $withdrawalThisMonth,
             'daily_max' => $user->daily_max,
-            'monthly_max' => $user->monthly_max
+            'monthly_max' => $user->monthly_max,
         ];
 
         unset($agent[0]['accounts']);
@@ -73,7 +72,7 @@ class TradeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $agent
+            'data' => $agent,
         ]);
     }
 
@@ -91,17 +90,18 @@ class TradeController extends Controller
         return $total;
     }
 
-    public function completeWihtdrawal(Request $request) {
+    public function completeWihtdrawal(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            'agent_id'  => 'required',
-            'amount'   => 'required',
-            'pin'      => 'required|min:4'
+            'agent_id' => 'required',
+            'amount' => 'required',
+            'pin' => 'required|min:4',
         ]);
 
         if ($request->amount < 1000) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Amount should be greater than N1,000'
+                'msg' => 'Amount should be greater than N1,000',
             ]);
         }
 
@@ -114,7 +114,7 @@ class TradeController extends Controller
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Incorrect wallet pin'
+                'msg' => 'Incorrect wallet pin',
             ]);
         }
 
@@ -128,11 +128,9 @@ class TradeController extends Controller
 
         $agent = User::where(['role' => 777, 'status' => 'active', 'id' => $request->agent_id])->first();
 
-
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
 
         $agent['accounts'] = $account;
-
 
         if (empty($agent)) {
             return response()->json([
@@ -177,8 +175,6 @@ class TradeController extends Controller
         $user_wallet->amount -= $request->amount;
         $user_wallet->save();
 
-
-
         $nt = new NairaTransaction();
         $nt->reference = $ref;
         $nt->amount = $request->amount;
@@ -199,7 +195,6 @@ class TradeController extends Controller
         $nt->status = 'pending';
         $nt->save();
 
-
         //Transfer the charges
         $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
         $transfer_charges_wallet->amount += $nt->charge;
@@ -208,13 +203,13 @@ class TradeController extends Controller
         $title = 'Pay-Bridge withdrawal(pending)';
         $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
 
-        $body = "You have initiated a withdrawal of ₦".number_format($request->amount)." via Pay-Bridge.<br><br>
-        <b>Pay-Bridge Agent: ".$paybridge_account->account_name."</b><br><br>
-        <b>Bank Name: ".$paybridge_account->bank_name."</b><br><br>
+        $body = "You have initiated a withdrawal of ₦" . number_format($request->amount) . " via Pay-Bridge.<br><br>
+        <b>Pay-Bridge Agent: " . $paybridge_account->account_name . "</b><br><br>
+        <b>Bank Name: " . $paybridge_account->bank_name . "</b><br><br>
         <b>Status:<span style='color: red'>pending</span></b><br><br>
-        <b>Reference No : ".$ref."</b><br><br>
-        <b>Date: ".date("Y-m-d; h:ia")."</b><br><br>
-        <b>Account Balance: ₦".number_format(Auth::user()->nairaWallet->amount)."</b><br><br>
+        <b>Reference No : " . $ref . "</b><br><br>
+        <b>Date: " . date("Y-m-d; h:ia") . "</b><br><br>
+        <b>Account Balance: ₦" . number_format(Auth::user()->nairaWallet->amount) . "</b><br><br>
 
         <b></b><br><br>
         ";
@@ -233,29 +228,29 @@ class TradeController extends Controller
             // broadcast(new CustomNotification($acct, $message))->toOthers();
         }
 
-        $pendingOrders = NairaTrade::where('status','waiting')->count();
+        $pendingOrders = NairaTrade::where('status', 'waiting')->count();
         $minutes = 0;
 
         if ($pendingOrders <= 5) {
             $minutes = 30;
-        } elseif(($pendingOrders > 5 and $pendingOrders <= 10) ) {
+        } elseif (($pendingOrders > 5 and $pendingOrders <= 10)) {
             $minutes = 40;
-        } elseif(($pendingOrders > 10 and $pendingOrders <= 20) ) {
+        } elseif (($pendingOrders > 10 and $pendingOrders <= 20)) {
             $minutes = 50;
-        } elseif(($pendingOrders > 20 and $pendingOrders <= 30) ) {
+        } elseif (($pendingOrders > 20 and $pendingOrders <= 30)) {
             $minutes = 60;
-        } elseif(($pendingOrders > 30) ) {
+        } elseif (($pendingOrders > 30)) {
             $minutes = 60;
         }
 
-        $msg = "You have successfully withdrawn the sum of ₦".number_format($request->amount)." from your naira wallet.
-        N/B: Payment would be made within ".$minutes." minutes due to the withdrawal queue at the moment.";
+        $msg = "You have successfully withdrawn the sum of ₦" . number_format($request->amount) . " from your naira wallet.
+        N/B: Payment would be made within " . $minutes . " minutes due to the withdrawal queue at the moment.";
 
         // Firebase Push Notification
         $fcm_id = Auth::user()->fcm_id;
         if (isset($fcm_id)) {
             try {
-                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+                FirebasePushNotificationController::sendPush($fcm_id, $title, $msg);
             } catch (\Throwable $th) {
                 //throw $th;
             }
@@ -270,8 +265,8 @@ class TradeController extends Controller
     public function completeDeposit(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'agent_id'  => 'integer|required',
-            'amount'   => 'integer|required'
+            'agent_id' => 'integer|required',
+            'amount' => 'integer|required',
         ]);
 
         // dd("check");
@@ -350,7 +345,6 @@ class TradeController extends Controller
         $firstname = ucfirst($name[0]);
         //  Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-
         $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
         $message = '!!! Deposit Transaction !!!  A new Deposit transaction has been initiated ';
         foreach ($accountants as $acct) {
@@ -362,7 +356,7 @@ class TradeController extends Controller
         $fcm_id = Auth::user()->fcm_id;
         if (isset($fcm_id)) {
             try {
-                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+                FirebasePushNotificationController::sendPush($fcm_id, $title, $msg);
             } catch (\Throwable $th) {
                 //throw $th;
             }
@@ -380,8 +374,6 @@ class TradeController extends Controller
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
 
-
-
         $pendingWithdrawal = false;
         $pendingDeposit = false;
 
@@ -389,7 +381,6 @@ class TradeController extends Controller
         if (count($trade) > 0) {
             $pendingWithdrawal = true;
         }
-
 
         // $getName = User::where('id', Auth::user()->id)->get();
         // if (strlen($getName[0]->first_name) < 3) {
@@ -408,12 +399,11 @@ class TradeController extends Controller
             'monthly_max' => $user->monthly_max,
             'naira_balance' => $user->nairaWallet->amount,
             'pending_withdrawal' => $pendingWithdrawal,
-            'pending_deposit' => $pendingDeposit
+            'pending_deposit' => $pendingDeposit,
         ];
 
         return $user_data;
     }
-
 
     public function buyNaira(Request $request)
     {
@@ -434,17 +424,18 @@ class TradeController extends Controller
         $ref = \Str::random(3) . time();
         if ($agent->role != 777) {
             return response()->json([
-                'success' =>  false,
-                'msg' => 'Invalid agent'
+                'success' => false,
+                'msg' => 'Invalid agent',
             ]);
         }
+
         $min = $agent->agentLimits->min;
         $max = $agent->agentLimits->max;
 
         if ($request->amount < $min || $request->amount > $max) {
             return response()->json([
-                'success' =>  false,
-                'msg' => 'Trade range not met'
+                'success' => false,
+                'msg' => 'Trade range not met',
             ]);
         }
 
@@ -464,7 +455,8 @@ class TradeController extends Controller
         return response()->json([
             'success' => true,
             'reference' => $ref,
-            'id' => $txn->id
+            'id' => $txn->id,
+
         ]);
     }
 
@@ -473,7 +465,7 @@ class TradeController extends Controller
         $validator = Validator::make($request->all(), [
             'agent_id' => 'required',
             'amount' => 'integer|required',
-            'pin' => 'string|required'
+            'pin' => 'string|required',
         ]);
 
         if ($validator->fails()) {
@@ -502,8 +494,8 @@ class TradeController extends Controller
         $ref = \Str::random(3) . time();
         if ($agent->role != 777) {
             return response()->json([
-                'success' =>  false,
-                'msg' => 'Invalid agent'
+                'success' => false,
+                'msg' => 'Invalid agent',
             ]);
         }
         $min = $agent->agentLimits->min;
@@ -511,15 +503,15 @@ class TradeController extends Controller
 
         if ($request->amount < $min || $request->amount > $max) {
             return response()->json([
-                'success' =>  false,
-                'msg' => 'Trade range not met'
+                'success' => false,
+                'msg' => 'Trade range not met',
             ]);
         }
 
         if ($request->amount < $min || $request->amount > $max) {
             return response()->json([
-                'success' =>  false,
-                'msg' => 'Trade range not met'
+                'success' => false,
+                'msg' => 'Trade range not met',
             ]);
         }
 
@@ -539,7 +531,7 @@ class TradeController extends Controller
         return response()->json([
             'success' => true,
             'reference' => $ref,
-            'id' => $txn->id
+            'id' => $txn->id,
         ]);
     }
 
@@ -549,7 +541,7 @@ class TradeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $transactions
+            'data' => $transactions,
         ]);
     }
 
@@ -557,10 +549,19 @@ class TradeController extends Controller
     {
         $transactions = Auth::user()->nairaTrades()->with('pops')->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $transactions
-        ]);
+        if ($transactions->count() == 0) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'No naira trades yet',
+            ]);
+        } else {
+            return response()->json([
+                'success' => true,
+                'data' => $transactions,
+            ]);
+
+        }
+
     }
 
     public function upload(Request $r)
@@ -568,7 +569,6 @@ class TradeController extends Controller
         $validator = Validator::make($r->all(), [
             'transaction_id' => 'required',
         ]);
-
 
         if ($validator->fails()) {
             return response()->json([
@@ -578,10 +578,17 @@ class TradeController extends Controller
         }
 
         $txn = NairaTrade::find($r->transaction_id);
+
+        if (!$txn) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Transaction does not exit',
+            ]);
+        }
         if ($txn->user_id != Auth::user()->id) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Invalid transaction'
+                'msg' => 'Invalid transaction',
             ]);
         }
 
@@ -607,11 +614,10 @@ class TradeController extends Controller
         } else {
             return response()->json([
                 'success' => false,
-                'msg' => 'Image file not present'
+                'msg' => 'Image file not present',
             ]);
         }
     }
-
 
     public function confirm(Request $request)
     {
@@ -630,19 +636,17 @@ class TradeController extends Controller
 
         if (!$txn) {
             return response()->json([
-                'success' =>  false,
-                'msg' => 'Transaction not found'
+                'success' => false,
+                'msg' => 'Transaction not found',
             ], 404);
         }
 
-
         if ($txn->status != 'waiting') {
             return response()->json([
-                'success' =>  false,
-                'msg' => 'Transaction already updated'
+                'success' => false,
+                'msg' => 'Transaction already updated',
             ]);
         }
-
 
         $txn->status = 'pending';
         $txn->save();
@@ -651,7 +655,7 @@ class TradeController extends Controller
 
         return response()->json([
             'success' => true,
-            'msg' => 'Transaction updated'
+            'msg' => 'Transaction updated',
         ]);
     }
 
@@ -671,8 +675,8 @@ class TradeController extends Controller
 
         if (!$txn) {
             return response()->json([
-                'success' =>  false,
-                'msg' => 'Transaction not found'
+                'success' => false,
+                'msg' => 'Transaction not found',
             ], 404);
         }
 
@@ -687,17 +691,17 @@ class TradeController extends Controller
         <br><br>
         Kindly contact our customer happiness team via our Instagram handle @godantown or call 09068633429 If you have a complaint";
 
-         $btn_text = '';
-         $btn_url = '';
+        $btn_text = '';
+        $btn_url = '';
 
-         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-         $name = explode(' ', $name);
-         $firstname = ucfirst($name[0]);
-         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = explode(' ', $name);
+        $firstname = ucfirst($name[0]);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
         return response()->json([
             'success' => true,
-            'msg' => 'Transaction cancelled'
+            'msg' => 'Transaction cancelled',
         ]);
     }
 
@@ -706,7 +710,7 @@ class TradeController extends Controller
         $accts = Auth::user()->accounts;
         return response()->json([
             'success' => true,
-            'data' => $accts
+            'data' => $accts,
         ]);
     }
 }
