@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FirebasePushNotificationController;
+use App\Http\Controllers\NariaLimitController;
 use App\Mail\GeneralTemplateOne;
 use App\Notification;
 use App\User;
@@ -240,11 +242,12 @@ class UserController extends Controller
 
         $msg = "Your " . $bodyTitle . " was declined because " . $dt->reason . ". Kindly " . $fcmNotice . ".";
         $fcm_id = $verification->user->fcm_id;
-        if (isset($fcm_id)) {
+        
+        if (!empty($fcm_id)) {
             try {
                 FirebasePushNotificationController::sendPush($fcm_id, $title, $msg);
             } catch (\Throwable $th) {
-                //throw $th;
+                // throw $th;
             }
         }
 

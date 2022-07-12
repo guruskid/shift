@@ -235,6 +235,10 @@ class BillsPaymentController extends Controller
             $charge = $settings['settings_value'];
         }
 
+        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
+            $charge = 0;
+        }
+
         $r->validate([
             'cable_provider' => 'required',
             'subscription_plan' => 'required',
@@ -1402,6 +1406,10 @@ class BillsPaymentController extends Controller
         $settings = GeneralSettings::getSetting('POWER_CONVENIENCE_FEE');
         if (!empty(($settings))) {
             $charge = $settings['settings_value'];
+        }
+
+        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
+            $charge = 0;
         }
 
         $r->validate([

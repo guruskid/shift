@@ -103,6 +103,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                     <th class="text-center">Sum of Chinese Amount</th>
                                                     @if (in_array(Auth::user()->role, [999,889]))
                                                     <th class="text-center">Total Commission</th>
+                                                    <th class="text-center">Wiped By</th>
                                                     @endif
                                                     <th class="text-center">Date</th>
                                                 </tr>
@@ -118,6 +119,7 @@ $cards = App\Card::orderBy('name', 'asc')->get(['name', 'id']);
                                                         <td class="text-center">{{number_format($history->total_chinese_amount)}}</td>
                                                         @if (in_array(Auth::user()->role, [999,889]))
                                                         <td class="text-center">{{ number_format($history->total_commission) }}</td>
+                                                        <td class="text-center">{{ (isset($history->user)) ? $history->user->first_name : "" }} {{ (isset($history->user)) ? $history->user->last_name : ""}}</td>
                                                         @endif
                                                         <td class="text-center">{{$history->created_at->format('d M y, h:ia')}}</td>
                                                     </tr>

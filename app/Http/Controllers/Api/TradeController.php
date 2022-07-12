@@ -150,6 +150,17 @@ class TradeController extends Controller
 
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
+
+         // Firebase Push Notification
+         $fcm_id = Auth::user()->fcm_id;
+         if (isset($fcm_id)) {
+             try {
+                 FirebasePushNotificationController::sendPush($fcm_id,$title,$body);
+             } catch (\Throwable $th) {
+                 //throw $th;
+             }
+         }
+
         Notification::create([
             'user_id' => Auth::user()->id,
             'title' => $title,

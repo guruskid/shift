@@ -2,21 +2,25 @@
 
 namespace App\Http\Controllers\Api\TradeNaira;
 
-use App\Account;
-use App\Events\CustomNotification;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Mail\GeneralTemplateOne;
 use App\NairaTrade;
 use App\NairaTradePop;
+use App\User;
+use App\Account;
+use App\Events\CustomNotification;
+use App\Http\Controllers\FirebasePushNotificationController;
+use App\Http\Controllers\GeneralSettings;
+use App\Http\Controllers\UserController;
 use App\NairaTransaction;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use App\Mail\GeneralTemplateOne;
 use App\NairaWallet;
 use App\PayBridgeAccount;
-use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 //! things to ask
 /**
@@ -157,6 +161,10 @@ class TradeController extends Controller
 
         $ref = \Str::random(3) . time();
         $charge = 100;
+
+        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
+            $charge = 0;
+        }
 
         //create TXN here
         $txn = new NairaTrade();

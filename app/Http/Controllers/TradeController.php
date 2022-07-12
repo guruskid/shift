@@ -128,6 +128,20 @@ class TradeController extends Controller
     /* Trade GiftCards */
     public function trade(Request $r)
     {
+        $title = 'hello';
+        $body = 'message!!!';
+        // Firebase Push Notification
+        // $fcm_id = Auth::user()->fcm_id;
+        // // return $fcm_id;
+        // if (isset($fcm_id)) {
+        //     try {
+        //         return FirebasePushNotificationController::sendPush($fcm_id,$title,$body);
+        //     } catch (\Throwable $th) {
+        //         //throw $th;
+        //         dd($th);
+        //     }
+        // }
+        // return $r;
         if (count($r->cards) != count($r->totals)) {
             return back()->with(['error' => 'Invalid trade details']);
         }
@@ -214,6 +228,15 @@ class TradeController extends Controller
             'title' => $title,
             'body' => $body,
         ]);
+        // Firebase Push Notification
+        $fcm_id = Auth::user()->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$body);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+        }
         if (Auth::user()->notificationSetting->trade_email == 1) {
             Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
 
@@ -235,7 +258,6 @@ class TradeController extends Controller
         Date: ".date("Y-m-d; h:ia")."</b>
         ";
 
-
         $btn_text = '';
         $btn_url = '';
 
@@ -243,6 +265,7 @@ class TradeController extends Controller
         $name = str_replace(' ', '', $name);
         $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
 
 
         return redirect()->route('user.transactions')->with(['success' => 'Transaction initiated']);

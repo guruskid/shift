@@ -6,6 +6,7 @@ use App\Contract;
 use App\CryptoRate;
 use App\FeeWallet;
 use App\HdWallet;
+use App\Http\Controllers\Admin\SettingController;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
@@ -196,7 +197,7 @@ class UsdtController extends Controller
 
     public function trade()
     {
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $sell_rate = LiveRateController::usdtNgn();
         $buy_rate = LiveRateController::usdtBuy();
         $amt_usd = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
@@ -223,7 +224,7 @@ class UsdtController extends Controller
 
     public function tradeApi()
     {
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $sell_rate = LiveRateController::usdtNgn();
         $tron_usd = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
         $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
@@ -325,6 +326,8 @@ class UsdtController extends Controller
         $trading_per = Setting::where('name', 'trading_usdt_per')->first()->value;
         $service_fee = round(($trading_per / 100) * $request->amount, 3);
 
+
+
         //Get fees for the txn on the chain
 
 
@@ -334,11 +337,17 @@ class UsdtController extends Controller
 
         //Current eth price
         $amt_usd = LiveRateController::usdtRate();
-        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $usd_ngn = LiveRateController::usdtNgn();
 
         $total = $request->amount - $charge - $service_fee;
         $usd = $total * $amt_usd;
         $ngn = $usd * $usd_ngn;
+
+        //Commission
+        $usd_ngn_old = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $commission = SettingController::get('usdt_commission');
+        $commission = ($commission / 100) * $usd_ngn_old;
+        $commission = $commission * $total;
 
         if ($request->amount < 10) {
             return response()->json([
@@ -428,7 +437,8 @@ class UsdtController extends Controller
             'user_email' => Auth::user()->email,
             'card' => 'USDT',
             'agent_id' => 1,
-            'ngn_rate' => $usd_ngn
+            'ngn_rate' => $usd_ngn,
+            'commission' => $commission,
         ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;

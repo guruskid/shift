@@ -18,4 +18,9 @@ class Verification extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function verifiedUserBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
 }

@@ -46,12 +46,28 @@ class GeneralSettings extends Controller
         return $setting;
     }
 
+    public static function getSettingValue($name) {
+        $setting = SystemSettings::where('settings_name',$name)->first();
+        if ($setting) {
+            return $setting['settings_value'];
+        }
+        return 0;
+    }
+
     public static function updateConfig(Request $request) {
         $data = $request->except('_token');
         $res = '';
         if (!isset($data['referral_active'])) {
             $res = SystemSettings::updateOrCreate([
                 'settings_name'   => strtoupper('referral_active'),
+                'notice' => ''
+            ],[
+                'settings_value'  => 0
+            ]);
+        }
+        if (!isset($data['naira_transaction_charge'])) {
+            $res = SystemSettings::updateOrCreate([
+                'settings_name'   => strtoupper('naira_transaction_charge'),
                 'notice' => ''
             ],[
                 'settings_value'  => 0
