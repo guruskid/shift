@@ -543,7 +543,8 @@ class AdminController extends Controller
             'success_transactions' => $countST,
             'traded_asset_amount' => $total_traded_asset,
             'total_chinese_amount' => $total_chinese_amount,
-            'total_commission' => $totalComm
+            'total_commission' => $totalComm,
+            'wiped_by' => Auth::user()->id,
         ]);
         return redirect()->back()->with('success', 'Transactions was wipe successfully');
     }
