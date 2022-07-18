@@ -210,7 +210,11 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
         Route::GET('/', 'PulseController@index');
 
     });
-    Route::get('/customer-life', 'CustomerLifeController@index');
+    
+    Route::group(['prefix' => 'csLifetime'], function () {
+        Route::get('/', 'CustomerLifeController@index');
+        Route::get('/sort', 'CustomerLifeController@sorting');
+    });
 
     //TODO: Sales Analytics Route
     Route::group(['prefix' => 'salesAnalytics'], function () {

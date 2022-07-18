@@ -12,12 +12,13 @@ use Carbon\Carbon;
 
 class NexusController extends Controller
 {
-    public function verificationData($date = null)
+   //TODO there is an extra part 
+    public function verificationData(Request $request)
     {
-        if($date == null){
+        if($request->date == null){
             $date = now();
         }else{
-            $date = Carbon::parse($date);
+            $date = Carbon::parse($request->date);
         }
         
         //*using the usd value to change the naira value to dollars
@@ -194,33 +195,28 @@ class NexusController extends Controller
 
 
     }
-     public function NexusCrypto($date = null)
+     public function NexusCrypto(Request $request)
      {
-        if($date == null){
-            $date = now()->format('Y-m-d');
-        }
-
+        $date = ($request->date == null) ? now()->format('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
         $nexus_crypto = $this->NexusCards($date,1);
+
         return response()->json([
             'success' => true,
-            'crypto' => $nexus_crypto->paginate(10),
+            'crypto' => $nexus_crypto,
         ], 200);
         
      }
 
-     public function NexusGiftCard($date = null)
+     public function NexusGiftCard(Request $request)
      {
-        if($date == null){
-            $date = now()->format('Y-m-d');
-        }
-
+        $date = ($request->date == null) ? now()->format('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
         $nexus_giftCard = $this->NexusCards($date,0);
         return response()->json([
          'data' => $nexus_giftCard,
         ]);
         return response()->json([
             'success' => true,
-            'crypto' => $nexus_giftCard->paginate(10),
+            'crypto' => $nexus_giftCard,
         ], 200);
 
      }
@@ -228,16 +224,21 @@ class NexusController extends Controller
      public function NexusCards($date,$is_crypto)
      {
         $nexus = Card::where('is_crypto',$is_crypto)->get();
+        $export_data = array();
         foreach ($nexus as $nc) {
              $total_transaction = Transaction::where('card_id',$nc->id)->get();
-             $tranx = Transaction::where('card_id',$nc->id)->whereDate('created_at','>',$date)
-             ->whereDate('created_at','<',$date)->get();
+             $tranx = Transaction::where('card_id',$nc->id)->whereDate('created_at',$date)->get();
 
-             $nc->total_volume = number_format($tranx->sum('amount'));
-             $nc->total_number_traded = number_format($tranx->count());
-             $nc->percentage_volume_traded = ($total_transaction->sum('amount') == 0) ? 0 : ($tranx->sum('amount')/$total_transaction->sum('amount'))*100;
-             $nc->asset_traded_unique_user = $tranx->groupBy('user_id')->count();
+             $newData = array(
+               'name' => $nc->name,
+               'total_volume' => number_format($tranx->sum('amount')),
+               'total_number_traded' => number_format($tranx->count()),
+               'percentage_volume_traded' => ($total_transaction->sum('amount') == 0) ? 0 : ($tranx->sum('amount')/$total_transaction->sum('amount'))*100,
+               'asset_traded_unique_user' => $tranx->groupBy('user_id')->count()
+
+             );
+             $export_data[] = $newData;
         }
-        return $nexus;
+        return $export_data;
      }
 }

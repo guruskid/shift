@@ -8,96 +8,114 @@ use App\Transaction;
 use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerLifeController extends Controller
 {
     public function index()
     {
-        $yearlyTransactionsVolume = Transaction::whereYear('created_at', "=", date('Y'))->where('status', 'success')->sum('amount');
-        $yearlyTransactionsCount = Transaction::whereYear('created_at', "=", date('Y'))->where('status', 'success')->count();
+        $current_date = now();
+        $data = $this->loadData($current_date);
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ],200);
+    }
 
-        $yearlyUtilitiesVolume = UtilityTransaction::whereYear('created_at', "=", date('Y'))->where('status', 'success')->sum('amount');
-        $yearlyUtilitiesCount = UtilityTransaction::whereYear('created_at', "=", date('Y'))->where('status', 'success')->sum('amount');
+    public function sorting(Request $request){
+        $validate = Validator::make($request->all(), [
+            'month' => 'required|integer',
+            'year' => 'required|integer'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ], 401);
+        }
+
+        $date = Carbon::createFromDate($request->year, $request->month, 2);
+        $data = $this->loadData($date);
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ],200);
+    }
+    public function loadData($current_date)
+    {
+        $yearlyTransaction = Transaction::whereYear('created_at', "=", $current_date->year)->where('status', 'success')->get();
+        $yearlyTransactionsVolume = $yearlyTransaction->sum('amount');
+        $yearlyTransactionsCount = $yearlyTransaction->count();
+
+
+        $yearlyUtilities = UtilityTransaction::whereYear('created_at', "=", $current_date->year)->where('status', 'success')->get();
+        $yearlyUtilitiesVolume = $yearlyUtilities->sum('amount');
+        $yearlyUtilitiesCount = $yearlyUtilities->count();
+
 
         $yearlyVolume = $yearlyTransactionsVolume + $yearlyUtilitiesVolume;
         $yearlyCount = $yearlyTransactionsCount + $yearlyUtilitiesCount;
-
-
-
-        $monthlyTransactionsVolume = Transaction::whereYear('created_at', "=", date('Y'))->whereMonth('created_at', "=", date('m'))->where('status', 'success')->sum('amount');
-        $monthlyTransactionsCount = Transaction::whereYear('created_at', "=", date('Y'))->whereMonth('created_at', "=", date('m'))->where('status', 'success')->count();
-
-        $monthlyUtilitiesVolume = UtilityTransaction::whereYear('created_at', "=", date('Y'))->whereMonth('created_at', "=", date('m'))->where('status', 'success')->sum('amount');
-        $monthlyUtilitiesCount = UtilityTransaction::whereYear('created_at', "=", date('Y'))->whereMonth('created_at', "=", date('m'))->where('status', 'success')->sum('amount');
+        
+        $monthlyTransactions = Transaction::whereYear('created_at', "=", $current_date->year)->whereMonth('created_at', "=", $current_date->month)->where('status', 'success')->get();
+        $monthlyTransactionsVolume = $monthlyTransactions->sum('amount');
+        $monthlyTransactionsCount = $monthlyTransactions->count();
+        
+        $monthlyUtilities = UtilityTransaction::whereYear('created_at', "=", $current_date->year)->whereMonth('created_at', "=", $current_date->month)->where('status', 'success')->get();
+        $monthlyUtilitiesVolume = $monthlyUtilities->sum('amount');
+        $monthlyUtilitiesCount = $monthlyUtilities->count();
 
         $monthlyVolume = $monthlyTransactionsVolume + $monthlyUtilitiesVolume;
         $monthlyCount = $monthlyTransactionsCount + $monthlyUtilitiesCount;
 
+        //*unique yearly and nonthly users
+        //? creating a collection and concatenating the data of two collections and grouping the data by the USER_ID
+        $uniqueYearlyUsers = collect([])->concat($yearlyTransaction)->concat($yearlyUtilities)->groupBy('user_id')->count();
+        $uniqueMonthlyUsers = collect([])->concat($monthlyTransactions)->concat($monthlyUtilities)->groupBy('user_id')->count();
+
+        /**
+         * @param mixed $name
+         * ? work on the churn rate here
+         */
 
 
-        $yearlyTransactions = Transaction::whereYear('created_at', "=", date('Y'))->where('status', 'success')->get();
-        $monthlyTransactions = Transaction::whereYear('created_at', "=", date('Y'))->whereMonth('created_at', "=", date('m'))->where('status', 'success')->get();
+        //*Average Annual Purchase Value
+        $AAPV =  ($yearlyCount < 1) ? 0 : $yearlyVolume / $yearlyCount;
 
-        // return date('m');
-        $yearlyUtilitiesTransactions = UtilityTransaction::whereYear('created_at', "=", date('Y'))->where('status', 'success')->get();
-        $monthlyUtilitiesTransactions = UtilityTransaction::whereYear('created_at', "=", date('Y'))->whereMonth('created_at', "=", date('m'))->where('status', 'success')->get();
+        //*Average Monthly Purchase Value
+        $AMPV = ($monthlyCount < 1) ? 0 : $monthlyVolume / $monthlyCount;
 
-        $yearUniqueUsers = array();
-        $monthUniqueUsers = array();
-        $ampv = $monthlyVolume / $monthlyCount;
-        $aapv = $yearlyVolume / $yearlyCount;
+        //*Average Annual Purchase Frequency
+        $AAPF = ($uniqueYearlyUsers < 1) ?  0 : $yearlyCount / $uniqueYearlyUsers;
 
+        //*Average Monthly Purchase Frequency 
+        $AMPF = ($uniqueMonthlyUsers < 1) ? 0 : $monthlyCount / $uniqueMonthlyUsers;
 
-        // Yearly
-        foreach($yearlyTransactions[0] as $uniqueUser) {
-            if(!in_array($uniqueUser, $yearUniqueUsers)) {
-                array_push($yearUniqueUsers, $uniqueUser);
-            }
-        }
-        foreach($yearlyUtilitiesTransactions[0] as $uniqueUser) {
-            if(!in_array($uniqueUser, $yearUniqueUsers)) {
-                array_push($yearUniqueUsers, $uniqueUser);
-            }
-        }
+        //*Customer Value Annually
+        $CVA = $AAPV * $AAPF;
 
+        //*Customer Value Monthly 
+        $CVM = ($AMPF < 1) ? 0 : $AMPV / $AMPF;
 
-        // Monthly
-        foreach($monthlyTransactions[0] as $uniqueUser) {
-            if(!in_array($uniqueUser, $yearUniqueUsers)) {
-                array_push($monthUniqueUsers, $uniqueUser);
-            }
-        }
-        foreach($monthlyUtilitiesTransactions[0] as $uniqueUser) {
-            if(!in_array($uniqueUser, $yearUniqueUsers)) {
-                array_push($monthUniqueUsers, $uniqueUser);
-            }
-        }
+        //*Average Customer LifeSpan
+        // TODO: find how to calculate churnRate
+        $ACL = 1;
 
-        sizeof($monthUniqueUsers) < 1 ? $monthUniqueUsers = 1 : $monthUniqueUsers = sizeof($monthUniqueUsers);
+        //*Average Customer Lifetime Value Annually
+        $ACLV = $CVA * $ACL;
 
+        $export_data = array(
+            'AverageAnnualPurchaseValue' => $AAPV,
+            'AverageMonthlyPurchaseValue' => $AMPV,
+            'AverageAnnualPurchaseFrequency' => $AAPF,
+            'AverageMonthlyPurchaseFrequency' => $AMPF,
+            'CustomerValueAnnually' => $CVA,
+            'CustomerValueMOnthly' => $CVM,
+            'AverageCustomerLifespan' => $ACL,
+            'AverageCustomerLifetimeValueAnnually' => $ACLV,
+            'MonthlyTransactions' => $uniqueMonthlyUsers,
+        );
 
-        // return $monthUniqueUsers;
-        $ampf = $monthlyVolume / $monthUniqueUsers;
-        $aapf = $yearlyCount / sizeof($yearUniqueUsers);
-        $ampf2 = $monthlyCount / $monthUniqueUsers;
-        $cv = $ampv * $ampf;
-        $acl = $ampv * $ampf;
-        $cva = $aapv * $aapf;
-        $cvav = $cv * $ampf / $cva * $acl;
-
-        return response()->json([
-            'AAPV' => (float)$aapv,
-            'AMPV' => (float)$ampv,
-            'AAPF' => $aapf,
-            'AMPF' => $ampf,
-            'AMPF2' => $ampf2,
-            'CVA' => $cva,
-            'CV' => $cv,
-            'ACL' => $acl,
-            'CVAV' => $cvav
-
-            // 'yearlyTransactionsCount1' => $yearlyTransactionsVolume,
-            // 'monthlyTransactionsCount1' => $monthlyTransactionsVolume,
-        ]);
+        return $export_data;
     }
 }
