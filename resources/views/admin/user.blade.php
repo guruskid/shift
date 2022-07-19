@@ -48,26 +48,50 @@
                                     src=" {{asset('storage/avatar/'.$user->dp)}} " height="120px" alt=""></a>
                         </div>
                         <div>{{$user->first_name." ".$user->last_name}} <br>{{$user->username}}<br>
-                            @if (!in_array(Auth::user()->role, [777,775] ))
-                            <span class="text-custom">
-                                @if ($user->nairaWallet)
-                                ₦{{number_format($user->nairaWallet->amount ) }}
-                                @else
-                                No Naira wallet
-                                @endif
-                            </span>
-                            <span class="text-custom">
-                                @if ($btc_wallet)
-                                <p>{{ number_format((float)$btc_wallet->balance,8) }} BTC</p>
-                                <p>{{ $btc_wallet->address }}</p>
-                                @else
-                                No Bitcoin wallet
-                                @endif
-                            </span>
-                            @endif
+
                         </div>
+
                     </div>
                 </div>
+            </div>
+
+            <div class="row my-4">
+                @if (!in_array(Auth::user()->role, [777,775] ))
+                <div class="col-md-4">
+                    <div class="card card-body">
+                        <h6 class="text-primary">Naira Wallet</h6>
+
+                        @if ($user->nairaWallet)
+                        ₦{{number_format($user->nairaWallet->amount ) }}
+                        @else
+                        No Naira wallet
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-body">
+                        <h6 class="text-primary">BTC Wallet</h6>
+
+                        @if ($btc_wallet)
+                        <p class="mb-0">{{ number_format((float)$btc_wallet->balance,8) }} BTC</p>
+                        <small>{{ $btc_wallet->address }}</small>
+                        @else
+                        No Bitcoin wallet
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-body">
+                        <h6 class="text-primary">USDT Wallet</h6>
+                        @if ($usdt_wallet)
+                        <p class="mb-0">{{ number_format((float)$usdt_wallet->balance,2) }} USDT</p>
+                        <small>{{ $usdt_wallet->address }}</small>
+                        @else
+                        No USDT wallet
+                        @endif
+                    </div>
+                </div>
+                @endif
             </div>
 
             <div class="row">
@@ -83,6 +107,8 @@
                                         Wallet transactions</a></li>
                                 <li class="nav-item"><a data-toggle="tab" href="#btc-txns" class="nav-link">Bitcoin
                                         Wallet transactions</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#usdt-txns" class="nav-link">USDT
+                                     transactions</a></li>
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-2"
                                         class="nav-link">Transactions</a></li>
                                 <li class="nav-item"><a data-toggle="tab" href="#tab-eg11-3"
@@ -273,6 +299,47 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($btc_transactions as $t)
+                                                <tr>
+                                                    {{-- <td>{{$key += 1}} </td> --}}
+                                                    <td>{{ $t->transactionType }}</td>
+                                                    <td>{{ number_format((float) $t->amount, 8) }}</td>
+                                                    <td>{{ number_format($t->marketValue->amount, 2) }}</td>
+                                                    <td>{{ $t->created->format('d M Y h:ia') }}</td>
+                                                    <td>Completed</td>
+                                                    <td class="transaction_content">
+                                                        @if (isset($t->txId))
+                                                        <a target="_blank"
+                                                            href="https://blockexplorer.one/btc/mainnet/tx/{{ $t->txId }}"
+                                                            class="">Explorer</a>
+
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {{-- USDT Tranactions --}}
+                                <div class="tab-pane" id="usdt-txns" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table
+                                            class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                                            <thead>
+                                                <tr>
+                                                    {{-- <th>ID</th> --}}
+                                                    <th>Trans. Type</th>
+                                                    <th>Amount</th>
+                                                    <th>USD</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($usdt_transactions as $t)
                                                 <tr>
                                                     {{-- <td>{{$key += 1}} </td> --}}
                                                     <td>{{ $t->transactionType }}</td>
