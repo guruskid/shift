@@ -235,9 +235,9 @@ class BillsPaymentController extends Controller
             $charge = $settings['settings_value'];
         }
 
-        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
-            $charge = 0;
-        }
+        // if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
+        //     $charge = 0;
+        // }
 
         $r->validate([
             'cable_provider' => 'required',
@@ -1408,9 +1408,9 @@ class BillsPaymentController extends Controller
             $charge = $settings['settings_value'];
         }
 
-        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
-            $charge = 0;
-        }
+        // if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
+        //     $charge = 0;
+        // }
 
         $r->validate([
             'electricity_board' => 'required',
