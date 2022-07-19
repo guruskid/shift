@@ -56,6 +56,7 @@ class GeneralSettings extends Controller
 
     public static function updateConfig(Request $request) {
         $data = $request->except('_token');
+        dd($data);
         $res = '';
         if (!isset($data['referral_active'])) {
             $res = SystemSettings::updateOrCreate([
