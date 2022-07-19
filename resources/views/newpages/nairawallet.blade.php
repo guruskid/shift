@@ -174,6 +174,13 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                 </div>
                                             </div>
 
+                                            @if ($naira_charge and $tranx < 10)
+                                                <div class="text-center h5 py-1 text-white alert alert-info">
+                                                    <i class="fa fa-info-circle"></i>
+                                                    You are eligible for {{10 - $tranx}} charge-free withdrawal transactions
+                                                </div>
+                                            @endif
+
                                             {{-- @include('newpages.tabs.naira-transfer-tab')
                                             @if($setting['settings_value'] == 1)
                                                 @include('newpages.tabs.naira-withdraw-tab')
