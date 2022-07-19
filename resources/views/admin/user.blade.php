@@ -86,6 +86,7 @@
                         @if ($usdt_wallet)
                         <p class="mb-0">{{ number_format((float)$usdt_wallet->balance,2) }} USDT</p>
                         <small>{{ $usdt_wallet->address }}</small>
+                        <p>{{ $usdt_wallet->account_id }}</p>
                         @else
                         No USDT wallet
                         @endif
