@@ -12,6 +12,15 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomerLifeController extends Controller
 {
+    /** 
+     * Undocumented function
+     *
+     * @return void
+     * TODO first of all we just return the Annual, Quarterly
+     * *this  lifespan part should not be among cause we are calculating churn rate
+     * ? for the graph what am my plotting against : cause it makes no sense
+     * 
+     */
     public function index()
     {
         $current_date = now();

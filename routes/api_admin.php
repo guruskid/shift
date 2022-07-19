@@ -198,9 +198,10 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
    //? Nexus
    Route::group(['prefix' => 'nexus'], function () {
-    Route::GET('/nexusOverview/{date?}', 'NexusController@verificationData');
-    Route::GET('/nexusCrypto/{date?}', 'NexusController@NexusCrypto');
-    Route::GET('/nexusGiftCard/{date?}', 'NexusController@NexusGiftCard');
+    Route::GET('/nexusOverview', 'NexusController@verificationData');
+    Route::GET('/nexusCrypto', 'NexusController@NexusCrypto');
+    Route::GET('/nexusGiftCard', 'NexusController@NexusGiftCard');
+    Route::GET('/timeGraph','NexusController@timeGraph');
 
     });
 
