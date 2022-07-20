@@ -215,6 +215,9 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
     Route::group(['prefix' => 'csLifetime'], function () {
         Route::get('/', 'CustomerLifeController@index');
         Route::get('/sort', 'CustomerLifeController@sorting');
+
+        Route::get('/chart', 'CustomerLifeController@ChartData');
+        Route::get('/chartSort', 'CustomerLifeController@sortChartData');
     });
 
     //TODO: Sales Analytics Route

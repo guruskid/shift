@@ -143,7 +143,6 @@ class SummaryController extends Controller
          */
 
         $date = date('Y-m-d');
-        $date = "2022-06-22";
 
         $number_of_tranx = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 1);
