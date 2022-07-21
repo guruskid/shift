@@ -31,6 +31,12 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
+            if ($user->is_deleted == 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid Email or Password',
+                ], 401);
+            }
             $success['token'] = $user->createToken('appToken')->accessToken;
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
@@ -196,6 +202,15 @@ class AuthController extends Controller
                 'fcm_id' => request('fcm_id')
             ]);
         }
+    }
+
+    public function deleteAccount() {
+        Auth::user()->update(['is_deleted' => 1]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account deleted',
+        ], 200);
     }
 
     public function bankList()
