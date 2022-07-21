@@ -41,6 +41,9 @@ Route::group(['prefix' => 'v1'], function () {
         // save firebase token
         Route::post('/save-fcm-token', 'Api\AuthController@saveFcm');
 
+        // Delete Account
+        Route::post('/delete-account', 'Api\AuthController@deleteAccount');
+
         Route::post('/bank-details', 'Api\AuthController@addBankDetails');
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
