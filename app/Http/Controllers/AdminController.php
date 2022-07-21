@@ -383,7 +383,7 @@ class AdminController extends Controller
 
 
         // dd($assets->id);
-        $assets = payout::orderBy('id', 'desc')->first();
+        $assets = Payout::orderBy('id', 'desc')->first();
 
         if (!isset($assets->created_at)) {
             $payoutDate = '2020-01-13 10:03:52';
@@ -470,9 +470,9 @@ class AdminController extends Controller
 
 
 
-        $assets = payout::orderBy('created_at', 'desc')->first();
+        $assets = Payout::orderBy('created_at', 'desc')->first();
 
-        $payoutHistory =  payout::orderBy('id', 'desc');
+        $payoutHistory =  Payout::orderBy('id', 'desc');
         $segment = null;
 
         if ($request->start) {
@@ -499,7 +499,7 @@ class AdminController extends Controller
     {
         // $payoutVolume = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
 
-        $assets = payout::orderBy('id', 'desc')->first();
+        $assets = Payout::orderBy('id', 'desc')->first();
 
 
         if (!isset($assets->created_at)) {
@@ -535,7 +535,7 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Nothing to wipe');
         }
 
-        $payout = payout::create([
+        $payout = Payout::create([
             'card_asset_volume' => $giftcard_tranx_count,
             'card_volume_in_naira' => $assetsInNaira,
             'success_transactions' => $countST,
