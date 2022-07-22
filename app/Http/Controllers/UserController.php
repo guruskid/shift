@@ -566,6 +566,6 @@ class UserController extends Controller
     }
 
     public static function successFulNairaTrx() {
-        return Auth::user()->nairaTransactions->where('status','success')->count();
+        return Auth::user()->nairaTrades->where(['type' => 'withdrawal','status' => 'success'])->count();
     }
 }
