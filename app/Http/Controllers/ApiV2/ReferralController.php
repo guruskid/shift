@@ -70,7 +70,7 @@ class ReferralController extends Controller
         if (!Auth::user()->btcWallet) {
             return response()->json([
                 'success' => false,
-                'message' => 'Please a bitcoin wallet to continue'
+                'message' => 'Please create a bitcoin wallet to continue'
             ]);
         }
 
@@ -370,7 +370,7 @@ class ReferralController extends Controller
             ]);
         }
         return response()->json([
-            'success' => false,
+            'success' => true,
             'link' => url('/api_v2/register/'.Auth::user()->referral_code)
         ]);
     }
