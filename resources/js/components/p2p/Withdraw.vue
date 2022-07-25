@@ -19,7 +19,7 @@
         <div>
           Kindly note that you are receiving the sum of
           <span class="font-weight-bold"
-            ><span id="amt">{{ amount >= 1000 ? amount - ((naira_charge === 1)? 0 : 100) : "0" }}</span> NGN</span
+            ><span id="amt">{{ amount >= 1000 ? amount - ((naira_charge === 1 && tranx < 10)? 0 : 100) : "0" }}</span> NGN</span
           >
           from
         </div>
@@ -111,7 +111,7 @@
 
 <script>
 export default {
-  props: ['free_naira_charge'],
+  props: ['free_naira_charge','tranx'],
   data() {
     return {
       naira_charge: this.free_naira_charge,

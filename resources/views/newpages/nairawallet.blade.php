@@ -195,7 +195,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                         <deposit-component></deposit-component>
                                                     </tab>
                                                     <tab name="Withdraw via Pay-bridge" at="withdraw">
-                                                        <withdraw-component :free_naira_charge="{{$naira_charge}}"></withdraw-component>
+                                                        <withdraw-component :free_naira_charge="{{$naira_charge}}" :tranx="{{$tranx}}"></withdraw-component>
                                                     </tab>
                                                 </tabs>
                                             </div>

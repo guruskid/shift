@@ -5298,7 +5298,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['free_naira_charge'],
+  props: ['free_naira_charge', 'tranx'],
   data: function data() {
     return {
       naira_charge: this.free_naira_charge,
@@ -55017,7 +55017,8 @@ var render = function() {
                 _vm._v(
                   _vm._s(
                     _vm.amount >= 1000
-                      ? _vm.amount - (_vm.naira_charge === 1 ? 0 : 100)
+                      ? _vm.amount -
+                          (_vm.naira_charge === 1 && _vm.tranx < 10 ? 0 : 100)
                       : "0"
                   )
                 )
