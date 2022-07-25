@@ -117,7 +117,7 @@ class BusinessDeveloperController extends Controller
             });
         }
         $count = $data_table->count();
-        $data_table = $data_table->paginate(1000);
+        $data_table = $data_table->paginate(100);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
             if($user_tnx->count() == 0)
@@ -229,7 +229,7 @@ class BusinessDeveloperController extends Controller
         {
             $data_table = $data_table->where('call_category_id', $request->status);
         }
-        $data_table = $data_table->paginate(1000);
+        $data_table = $data_table->paginate(100);
         foreach ($data_table as $u ) {
             $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
 

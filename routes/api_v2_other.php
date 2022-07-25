@@ -51,11 +51,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
     Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
 
-    Route::get('referral-transactions', 'ApiV2\ReferralController@referralTransactions');
-    Route::post('withdraw-referral-bonus', 'ApiV2\ReferralController@withdrawReferralBonus');
-    Route::get('my-referrers', 'ApiV2\ReferralController@myReferrers');
-    Route::get('get-referrers-link', 'ApiV2\ReferralController@getReferralLink');
-
 
     // Notifications
     Route::GET('/notifications', 'Api\NotificationController@index');

@@ -22,6 +22,9 @@ class UserController extends Controller
     {
         $wallet = Auth::user()->nairaWallet;
 
+
+
+
         $client = new Client();
         $url = "https://api.coinbase.com/v2/prices/spot?currency=USD";
         $res = $client->request('GET', $url);
@@ -204,52 +207,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function uploadId(Request $r)
+
+//Level 2 Verification
+
+    public function uploadAddress(Request $r)
     {
-        $user = Auth::user();
-
-        if ($user->verifications()->where(['type' => 'ID Card', 'status' => 'Waiting'])->exists()) {
-            return response()->json([
-                'success' => false,
-                'msg' => 'ID Card verification already in progress'
-            ]);
-        }
-
-        if ($r->has('image')) {
-            $file = $r->image;
-            $folderPath = public_path('storage/idcards/');
-            $image_base64 = base64_decode($file);
-
-            $imageName = time() . uniqid() . '.png';
-            $imageFullPath = $folderPath . $imageName;
-
-            file_put_contents($imageFullPath, $image_base64);
-
-            Auth::user()->id_card = $imageName;
-            Auth::user()->save();
-
-            $user->verifications()->create([
-                'path' => $imageName,
-                'type' => 'ID Card',
-                'status' => 'Waiting'
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'data' => Auth::user(),
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'msg' => 'Image file not present'
-            ]);
-        }
-    }
-
-    public function uploadAddress(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'image' => 'required',
+        $validator = Validator::make($r->all(), [
+            'image' => 'required|mimes:application/pdf,jpeg,bmp,png|max:5000',
             'location' => 'required',
         ]);
         if ($validator->fails()) {
@@ -261,6 +225,13 @@ class UserController extends Controller
 
         $user = Auth::user();
 
+        if(Auth::user()->phone_verified_at == null){
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please verify your phone number first'
+            ]);
+        }
+
         if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
             return response()->json([
                 'success' => false,
@@ -268,29 +239,110 @@ class UserController extends Controller
             ]);
         }
 
-        $file = $request->image;
-        $folderPath = public_path('storage/idcards/');
-        $image_base64 = base64_decode($file);
+        $file = $r->image;
+        $location = $r->location;
+        $extension = $file->getClientOriginalExtension();
+        $filenametostore =  $user->email . uniqid() . '.' . $extension;
+        Storage::put('public/idcards/' . $filenametostore, fopen($file, 'r+'));
+     
+    
 
-        $imageName = time() . uniqid() . '.png';
-        $imageFullPath = $folderPath . $imageName;
-
-        file_put_contents($imageFullPath, $image_base64);
-
-        Auth::user()->address_img = $request->location;
+        Auth::user()->address_img = $filenametostore;
         Auth::user()->save();
 
         $user->verifications()->create([
-            'path' => $imageName,
+            'path' => $filenametostore,
             'type' => 'Address',
-            'status' => 'Waiting'
+            'status' => 'Waiting',
+            'location' => $location
         ]);
 
         return response()->json([
             'success' => true,
-            'msg' => 'Adress uploaded'
+            'msg' => 'Address uploaded'
         ]);
     }
+
+
+
+
+
+    //Level 3 Verification Begins Here
+
+    public function uploadId(Request $r)
+    {
+
+        $validator = Validator::make($r->all(), [
+            'image' => 'required|mimes:application/pdf,jpeg,bmp,png|max:5000',
+            'id_number' => 'required',
+            'id_type' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'msg' => $validator->errors(),
+            ], 401);
+        }
+     
+        if(Auth::user()->phone_verified_at == null){
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please verify your phone number first'
+            ]);
+        }
+         
+
+        if(Auth::user()->address_verified_at == null){
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please verify your address first'
+            ]);
+        }
+
+        $user = Auth::user();
+        
+
+        if ($user->verifications()->where(['type' => 'ID Card', 'status' => 'Waiting'])->exists()) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'ID Card verification already in progress'
+            ]);
+        }
+
+  
+
+       
+            $file = $r->image;
+            $idtype = $r->idtype;
+            $id_number = $r->id_number;
+            $extension = $file->getClientOriginalExtension();
+            $filenametostore =  $user->email . uniqid() . '.' . $extension;
+            Storage::put('public/idcards/' . $filenametostore, fopen($file, 'r+'));
+         
+            
+
+            Auth::user()->id_card = $filenametostore;
+            Auth::user()->save();
+
+            $user->verifications()->create([
+                'path' => $filenametostore,
+                'type' => 'ID Card',
+                'status' => 'Waiting',
+                'id_type' => $idtype,
+                'id_number' => $id_number
+
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'msg' => 'You have successfully uploaded your verification.',
+            ]);
+     
+
+
+    }
+
+  
 
     public function updateDp(Request $r)
     {
