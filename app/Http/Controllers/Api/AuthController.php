@@ -31,12 +31,12 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
-            if ($user->is_deleted == 1) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid Email or Password',
-                ], 401);
-            }
+            // if ($user->is_deleted == 1) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Invalid Email or Password',
+            //     ], 401);
+            // }
             $success['token'] = $user->createToken('appToken')->accessToken;
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
@@ -204,7 +204,24 @@ class AuthController extends Controller
         }
     }
 
-    public function deleteAccount() {
+    public function deleteAccount(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        if(!Hash::check($request['password'],Auth::user()->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => ["Incorrect Password"],
+            ], 400);
+        }
+
         Auth::user()->update(['is_deleted' => 1]);
 
         return response()->json([
