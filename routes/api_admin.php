@@ -220,6 +220,17 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
          Route::GET('/oldUsers/{category?}', 'SalesOldUsersController@loadOldUsers');
          Route::POST('/oldUsersSort', 'SalesOldUsersController@sortOldUsers');
     });
+
+    Route::group(['prefix' => 'spotlight'], function () {
+        Route::GET('/stats', 'SpotLightController@stats');
+        Route::GET('/recent-transactions', 'SpotLightController@recentTransactions');
+        Route::GET('/staff-on-role', 'SpotLightController@staffOnRole');
+        Route::GET('/monthly-analytics',  'SpotLightController@monthlyAnalytics');
+        Route::GET('/other-graph',  'SpotLightController@otherGraph');
+        Route::POST('/acquisition-cost',  'SpotLightController@getCustomerAcquisitionCost');
+        Route::GET('/number-of-users',  'SpotLightController@numberOfNewUsers'); 
+        Route::GET('/get-users-by-date',  'SpotLightController@getNewUsersByDate'); 
+    });
 });
 
 Route::group(['middleware' => ['auth:api', 'customerHappiness']], function(){

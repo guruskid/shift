@@ -35,6 +35,7 @@ class AccountantController extends Controller
     public function action($id, $action)
     {   
         $user = User::find($id);
+        // return $user->nairaWallet;
         if ($action == 'remove') {
             $user->role = 1;
         }elseif(Auth::user()->role == 999 && $action == 'upgrade-to-senior'){
