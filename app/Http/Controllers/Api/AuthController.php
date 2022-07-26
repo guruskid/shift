@@ -10,6 +10,7 @@ use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebasePushNotificationController;
+use App\Http\Controllers\LoginSessionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\User;
@@ -39,6 +40,11 @@ class AuthController extends Controller
                 $user->update([
                     'fcm_id' => request('fcm_id')
                 ]);
+            }
+            if($user->role == 1)
+            {
+                $loginSession = new LoginSessionController();
+                $loginSession->createSessionData($user->id);
             }
 
             return response()->json([

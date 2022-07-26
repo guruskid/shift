@@ -208,7 +208,12 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
     //? pulseTransactionsAnalytics
     Route::group(['prefix' => 'pulse'], function () {
         Route::GET('/Analytics', 'pulseAnalyticsController@pulseTransactionAnalytics');
+
         Route::GET('/', 'PulseController@index');
+        
+
+        Route::GET('/chart', 'PulseController@chart');
+        Route::GET('/sortChart', 'PulseController@sortChart');
 
     });
     

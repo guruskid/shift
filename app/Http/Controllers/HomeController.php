@@ -83,6 +83,8 @@ class HomeController extends Controller
         elseif($user->role == 555){
             return redirect()->route('customerHappiness.homepage');
         } elseif ($user->role == 1 or $user->role == 2) {
+            $loginSession = new LoginSessionController();
+            $loginSession->createSessionData($user->id);
             return redirect()->route('user.dashboard');
         } else {
             abort(404);

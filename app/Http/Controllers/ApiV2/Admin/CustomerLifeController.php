@@ -188,11 +188,11 @@ class CustomerLifeController extends Controller
         $endMonthly = Carbon::parse($current_time)->format('Y-m-d');
 
         $monthlyData = $this->daysChart($startMonthly, $endMonthly, $usd_value);
-        
 
         //?Quarterly
-        $monthsBack = 2;
+        $monthsBack = 11;
         $quarterlyData = $this->monthsChart($monthsBack, $current_time, $usd_value);
+        $quarterlyData = $this->monthlyBreakdown($quarterlyData);
 
         //?Annually
         $monthsBack = 11;
@@ -206,7 +206,41 @@ class CustomerLifeController extends Controller
             'Annually' => $annualData
         );
 
-        return response()->json(['f' => $exportData]);
+        return response()->json(['ChartData' => $exportData]);
+
+    }
+
+    
+
+    public function monthlyBreakdown($array)
+    {
+        /**
+         *
+         * @param array $array
+         * @return array
+         * 
+         */
+
+        $quarterlyArray = array_chunk($array, 3);
+
+        $quarter = array();
+        foreach (collect($quarterlyArray) as $value) {
+            $TransactionsNo = $value[0]['TransactionsNo'] + $value[1]['TransactionsNo'] + $value[2]['TransactionsNo'];
+            $TurnOver = $value[0]['TurnOver'] + $value[1]['TurnOver'] + $value[2]['TurnOver'];
+            $NewUsers = $value[0]['NewUsers'] + $value[1]['NewUsers'] + $value[2]['NewUsers'];
+            $uniqueUsers = $value[0]['uniqueUsers'] + $value[1]['uniqueUsers'] + $value[2]['uniqueUsers'];
+
+            $date = $value[0]['date']." - ".$value[2]['date'];
+            $quarter[] = array(
+                'TransactionsNo' => $TransactionsNo,
+                'TurnOver' => $TurnOver,
+                'NewUsers' => $NewUsers,
+                'uniqueUsers' => $uniqueUsers,
+                'date' => $date,
+            );
+        }
+
+        return $quarter;
 
     }
 
@@ -293,14 +327,26 @@ class CustomerLifeController extends Controller
             $uniqueUsers  = $transactions->groupBy('user_id')->count();
 
             $newUsers = $durationNewUsers->where('created_at','>=',"$day 00:00:00")->where('created_at','<=',"$day 23:59:59")->count();
-
-            $exportData[] = array(
-                'TransactionsNo' => $tranxNo,
-                'TurnOver' => $turnover,
-                'NewUsers' => $newUsers,
-                'uniqueUsers' => $uniqueUsers,
-                'date' => Carbon::parse($day)->addHour()->format("d F Y")
-            );
+            if ($loopCounter <= 7)
+            {
+                $exportData[] = array(
+                    'TransactionsNo' => $tranxNo,
+                    'TurnOver' => $turnover,
+                    'NewUsers' => $newUsers,
+                    'uniqueUsers' => $uniqueUsers,
+                    'date' => Carbon::parse($day)->addHour()->format("l")
+                );
+            }
+            else{
+                $exportData[] = array(
+                    'TransactionsNo' => $tranxNo,
+                    'TurnOver' => $turnover,
+                    'NewUsers' => $newUsers,
+                    'uniqueUsers' => $uniqueUsers,
+                    'date' => Carbon::parse($day)->addHour()->format("d F Y")
+                );
+            }
+            
         }
 
         return $exportData;
