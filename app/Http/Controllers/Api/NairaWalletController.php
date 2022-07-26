@@ -46,7 +46,8 @@ class NairaWalletController extends Controller
 
         $validator = Validator::make($r->all(), [
             'account_password' => 'required',
-            'new_pin' => 'required|string|confirmed|min:4|max:4|different:account_password'
+            'new_pin' => 'required|same:new_pin_confirmation|string|min:4|max:4',
+            'new_pin_confirmation' => 'required|min:4|max:4'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -67,7 +68,7 @@ class NairaWalletController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $n,
+            'msg' => 'Pin successfully changed',
         ]);
     }
 

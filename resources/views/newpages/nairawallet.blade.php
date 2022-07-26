@@ -177,7 +177,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                             @if ($naira_charge and $tranx < 10)
                                                 <div class="text-center h5 py-1 text-white alert alert-info">
                                                     <i class="fa fa-info-circle"></i>
-                                                    You are eligible for {{10 - $tranx}} charge-free withdrawal transaction(s)
+                                                    You have {{10 - $tranx}} free naira withdrawal(s)
                                                 </div>
                                             @endif
 
@@ -195,7 +195,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                         <deposit-component></deposit-component>
                                                     </tab>
                                                     <tab name="Withdraw via Pay-bridge" at="withdraw">
-                                                        <withdraw-component></withdraw-component>
+                                                        <withdraw-component :free_naira_charge="{{$naira_charge}}" :tranx="{{$tranx}}"></withdraw-component>
                                                     </tab>
                                                 </tabs>
                                             </div>
