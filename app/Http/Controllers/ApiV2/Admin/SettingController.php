@@ -289,10 +289,10 @@ class SettingController extends Controller
             'id'=>'required',
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|unique:users',
+            'email' => 'required',
             'phone' => 'required',
             'password' => 'required|min:8',
-            'username' => 'required|unique:users,username',
+            'username' => 'required|unique:users',
             'role' => 'required'
         ]);
 
