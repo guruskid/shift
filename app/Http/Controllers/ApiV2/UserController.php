@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\ApiV2;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LiveRateController;
 use App\ImageSlide;
 use App\NairaTransaction;
-use App\Notification;
 use App\User;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,14 +29,14 @@ class UserController extends Controller
 
         $usdPerNairaRate = LiveRateController::usdNgn();
 
-        $usd_value = $wallet->amount/$usdPerNairaRate;
-        $btc_value = $usd_value/$btc_rate;
+        $usd_value = $wallet->amount / $usdPerNairaRate;
+        $btc_value = $usd_value / $btc_rate;
 
         return response()->json([
             'success' => true,
-            'ngn_value' => (int)$wallet->amount,
-            'btc_value' => number_format((float)$btc_value, 8),
-            'usd_value' => (int)$usd_value
+            'ngn_value' => (int) $wallet->amount,
+            'btc_value' => number_format((float) $btc_value, 8),
+            'usd_value' => (int) $usd_value,
         ]);
     }
 
@@ -53,12 +52,12 @@ class UserController extends Controller
 
         $usdPerNairaRate = LiveRateController::usdNgn();
 
-        $usd_value = $wallet->amount/$usdPerNairaRate;
-        $btc_value = $usd_value/$btc_rate;
+        $usd_value = $wallet->amount / $usdPerNairaRate;
+        $btc_value = $usd_value / $btc_rate;
 
-        $ngn_bal = (int)$wallet->amount;
-        $ngn_btc_value = number_format((float)$btc_value, 8);
-        $ngn_usd_value = (int)$usd_value;
+        $ngn_bal = (int) $wallet->amount;
+        $ngn_btc_value = number_format((float) $btc_value, 8);
+        $ngn_usd_value = (int) $usd_value;
 
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
@@ -73,7 +72,7 @@ class UserController extends Controller
 
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
         ]);
         $accounts = json_decode($res->getBody(), true);
 
@@ -113,14 +112,14 @@ class UserController extends Controller
 
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
         ]);
         $accounts = json_decode($res->getBody(), true);
 
         if (empty($accounts)) {
             return response()->json([
                 'success' => false,
-                'message' => 'btc wallet not found'
+                'message' => 'btc wallet not found',
             ]);
         }
 
@@ -142,42 +141,42 @@ class UserController extends Controller
                 'short_name' => 'USDT',
                 'rate' => $data['tether']['ngn'],
                 '24h_change' => $data['tether']['ngn_24h_change'],
-                'img' => url('/crypto/tether.png')
+                'img' => url('/crypto/tether.png'),
             ],
             [
                 'name' => 'Bitcoin',
                 'short_name' => 'BTC',
                 'rate' => $data['bitcoin']['ngn'],
                 '24h_change' => $data['bitcoin']['ngn_24h_change'],
-                'img' => url('/crypto/bitcoin.png')
+                'img' => url('/crypto/bitcoin.png'),
             ],
             [
                 'name' => 'Ethereum',
                 'short_name' => 'ETH',
                 'rate' => $data['ethereum']['ngn'],
                 '24h_change' => $data['ethereum']['ngn_24h_change'],
-                'img' => url('/crypto/ethereum.png')
+                'img' => url('/crypto/ethereum.png'),
             ],
             [
                 'name' => 'Litecoin',
                 'short_name' => 'LTC',
                 'rate' => $data['litecoin']['ngn'],
                 '24h_change' => $data['litecoin']['ngn_24h_change'],
-                'img' => url('/crypto/litecoin.png')
+                'img' => url('/crypto/litecoin.png'),
             ],
             [
                 'name' => 'Ripple',
                 'short_name' => 'XRP',
                 'rate' => $data['ripple']['ngn'],
                 '24h_change' => $data['ripple']['ngn_24h_change'],
-                'img' => url('/crypto/xrp.png')
-            ]
+                'img' => url('/crypto/xrp.png'),
+            ],
         ];
 
         $slides = array();
         $adImages = ImageSlide::latest()->get()->take(10);
-        foreach($adImages as $image){
-            array_push($slides, array("image" => url('storage/slider/'.$image->image)));
+        foreach ($adImages as $image) {
+            array_push($slides, array("image" => url('storage/slider/' . $image->image)));
         }
 
         return response()->json([
@@ -187,7 +186,7 @@ class UserController extends Controller
             'btc_balnace_in_usd' => $btc_wallet->usd,
             'btc_rate' => $btc_real_time,
             'featured_coins' => $currencies,
-            'advert_image' => $slides
+            'advert_image' => $slides,
         ]);
     }
 
@@ -204,20 +203,128 @@ class UserController extends Controller
         ]);
     }
 
-    public function uploadId(Request $r)
-    {
-        $user = Auth::user();
+//Level 2 Verification
 
-        if ($user->verifications()->where(['type' => 'ID Card', 'status' => 'Waiting'])->exists()) {
+    public function uploadAddress(Request $r)
+    {
+        $validator = Validator::make($r->all(), [
+            'image' => 'required',
+            'location' => 'required',
+        ]);
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'msg' => 'ID Card verification already in progress'
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $user = Auth::user();
+
+        if (Auth::user()->phone_verified_at == null) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please verify your phone number first',
+            ]);
+        }
+
+        if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Address verification already in progress',
             ]);
         }
 
         if ($r->has('image')) {
             $file = $r->image;
-            $folderPath = public_path('storage/idcards/');
+            $location = $r->location;
+            $folderPath = storage_path('app/public/address/');
+
+            if (!File::isDirectory($folderPath)) {
+
+                File::makeDirectory($folderPath, 0777, true, true);
+
+            }
+
+            $image_base64 = base64_decode($file);
+
+            $imageName = time() . uniqid() . '.png';
+            $imageFullPath = $folderPath . $imageName;
+
+            file_put_contents($imageFullPath, $image_base64);
+
+            Auth::user()->address_img = $imageName;
+            Auth::user()->save();
+
+            $user->verifications()->create([
+                'path' => $imageName,
+                'type' => 'Address',
+                'status' => 'Waiting',
+                'location' => $location,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => 'You have successfully Address for verification.',
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Image file not present',
+            ]);
+        }
+
+    }
+
+    //Level 3 Verification Begins Here
+
+    public function uploadId(Request $r)
+    {
+
+        $validator = Validator::make($r->all(), [
+            'image' => 'required',
+            'id_number' => 'required',
+            'id_type' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'msg' => $validator->errors(),
+            ], 401);
+        }
+
+        if (Auth::user()->phone_verified_at == null) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please verify your phone number first',
+            ]);
+        }
+
+        if (Auth::user()->address_verified_at == null) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please verify your address first',
+            ]);
+        }
+
+        $user = Auth::user();
+
+        if ($user->verifications()->where(['type' => 'ID Card', 'status' => 'Waiting'])->exists()) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'ID Card verification already in progress',
+            ]);
+        }
+
+        if ($r->has('image')) {
+            $file = $r->image;
+            $idtype = $r->idtype;
+            $id_number = $r->id_number;
+            $folderPath = storage_path('app/public/idcards');
+            if (!File::isDirectory($folderPath)) {
+
+                File::makeDirectory($folderPath, 0777, true, true);
+
+            }
             $image_base64 = base64_decode($file);
 
             $imageName = time() . uniqid() . '.png';
@@ -231,65 +338,22 @@ class UserController extends Controller
             $user->verifications()->create([
                 'path' => $imageName,
                 'type' => 'ID Card',
-                'status' => 'Waiting'
+                'status' => 'Waiting',
+                'id_type' => $idtype,
+                'id_number' => $id_number,
             ]);
 
             return response()->json([
                 'success' => true,
-                'data' => Auth::user(),
+                'data' => 'You have successfully uploaded your verification.',
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'msg' => 'Image file not present'
-            ]);
-        }
-    }
-
-    public function uploadAddress(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'image' => 'required',
-            'location' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors(),
-            ], 401);
-        }
-
-        $user = Auth::user();
-
-        if ($user->verifications()->where(['type' => 'Address', 'status' => 'Waiting'])->exists()) {
-            return response()->json([
-                'success' => false,
-                'msg' => 'Address verification already in progress'
+                'msg' => 'Image file not present',
             ]);
         }
 
-        $file = $request->image;
-        $folderPath = public_path('storage/idcards/');
-        $image_base64 = base64_decode($file);
-
-        $imageName = time() . uniqid() . '.png';
-        $imageFullPath = $folderPath . $imageName;
-
-        file_put_contents($imageFullPath, $image_base64);
-
-        Auth::user()->address_img = $request->location;
-        Auth::user()->save();
-
-        $user->verifications()->create([
-            'path' => $imageName,
-            'type' => 'Address',
-            'status' => 'Waiting'
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'msg' => 'Adress uploaded'
-        ]);
     }
 
     public function updateDp(Request $r)
@@ -297,35 +361,39 @@ class UserController extends Controller
 
         if ($r->has('image')) {
             $file = $r->image;
-            $folderPath = public_path('storage/avatar/');
+           
+            $folderPath = storage_path('app/public/avatar/');
+            if (!File::isDirectory($folderPath)) {
 
-            $extension = $file->getClientOriginalExtension();
-            $filenametostore = time() . uniqid() . '.' . $extension;
-            Storage::put('public/avatar/' . $filenametostore, fopen($file, 'r+'));
+                File::makeDirectory($folderPath, 0777, true, true);
+
+            }
             $image_base64 = base64_decode($file);
 
-            $imageName = $filenametostore;
+            $imageName = time() . uniqid() . '.png';
             $imageFullPath = $folderPath . $imageName;
 
-            // file_put_contents($imageFullPath, $image_base64);
+            file_put_contents($imageFullPath, $image_base64);
 
-
-            ////////////////////
-
-            Auth::user()->dp = $filenametostore;
+            Auth::user()->dp = $imageName;
             Auth::user()->save();
+
+         ;
 
             return response()->json([
                 'success' => true,
-                'data' => Auth::user(),
+                'data' => 'You have successfully uploaded image.',
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'msg' => 'Image file not present'
+                'msg' => 'Image file not present',
             ]);
         }
+
     }
+
+
 
     public function updateBirthday(Request $r)
     {
@@ -344,10 +412,9 @@ class UserController extends Controller
         $user->birthday = $r->day . '/' . $r->month;
         $user->save();
 
-
         return response()->json([
             'success' => true,
-            'msg' => 'Your birthday was updated successfully'
+            'msg' => 'Your birthday was updated successfully',
         ]);
     }
 
@@ -366,14 +433,14 @@ class UserController extends Controller
 
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
         $res = $client->request('GET', $url, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
         ]);
         $accounts = json_decode($res->getBody(), true);
 
         if (empty($accounts)) {
             return response()->json([
                 'success' => false,
-                'message' => 'btc wallet not found'
+                'message' => 'btc wallet not found',
             ]);
         }
 
