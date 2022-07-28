@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/removeStaff/{id}', 'SettingController@removeUser');
 
         Route::GET('/roleSelection', 'SettingController@roleSelection');
+        Route::POST('/getUserByEmail', 'SettingController@getUserByEmail');
         Route::POST('/addStaff', 'SettingController@addStaff');
 
         Route::GET('/settings', 'SettingController@settings');
