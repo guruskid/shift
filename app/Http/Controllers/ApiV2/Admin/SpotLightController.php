@@ -157,7 +157,7 @@ class SpotLightController extends Controller {
         $acctn = User::where(['role' => 777, 'status' => 'active'])->with('nairaWallet')->first();
         $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
         $opening_balance = $stamp->opening_balance;
-        // return $stamp;
+        
         $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
         ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
         ->get();
@@ -170,8 +170,6 @@ class SpotLightController extends Controller {
         $paid_out = $wtrade->sum('amount');
         $current_balance = $opening_balance - $paid_out;
 
-
-
         $saleRep = User::where(['role' => 556, 'status' => 'active'])->with('nairaWallet')->first();
         $saleTimeStamp = SalesTimestamp::where(['user_id' => $saleRep->id])->latest()->first();
 
@@ -180,8 +178,6 @@ class SpotLightController extends Controller {
 
         $declinedTranx = Transaction::where(['status' => 'declined'])
         ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
-
-        
 
         $customerHappiness = User::where(['role' => 555, 'status' => 'active'])->with('nairaWallet')->first();
         $ticketsWaiting = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count();
@@ -197,24 +193,7 @@ class SpotLightController extends Controller {
         return response()->json([
             'success' => true,
             'data' => [
-                'accountant' => [
-                    'staff_name' => $acctn->first_name.' '.$acctn->last_name,
-                    'opening_balance' => $opening_balance,
-                    'closing_balance' => 00,
-                    'total_paid_out' => [
-                        'amount' => $wtrade->sum('amount'),
-                        'count' => $wtrade->count()
-                    ],
-                    'total_deposit'  => [
-                        'amount' => $dtrade->sum('amount'),
-                        'count' => $dtrade->count()
-                    ],
-                    'current_balance' => $current_balance ,
-                    'pending_withdrawal' => [
-                        'amount' => $pending_withdrawal->sum('amount'),
-                        'count'  => $pending_withdrawal->count()
-                    ]
-                ],
+                'accountant' => self::accountantOnRole(),
                 'sales_rep' => [
                     'staff_name' => $saleRep->first_name.' '.$saleRep->last_name,
                     'total_amount' => $tranx->sum('amount_paid'),
@@ -229,6 +208,44 @@ class SpotLightController extends Controller {
                 ]
             ]
         ],200);
+    }
+
+    public static function accountantOnRole() {
+        $acctn = User::where(['role' => 777, 'status' => 'active'])->with('nairaWallet')->first();
+        $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
+        $opening_balance = $stamp->opening_balance;
+
+        $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
+        ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
+        ->get();
+
+        $dtrade = NairaTrade::where(['status' => 'success','type'=> 'deposit'])
+        ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
+        ->get();
+
+        $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal']);
+        $paid_out = $wtrade->sum('amount');
+        $current_balance = $opening_balance - $paid_out;
+
+
+        return [
+            'staff_name' => $acctn->first_name.' '.$acctn->last_name,
+            'opening_balance' => $opening_balance,
+            'closing_balance' => 00,
+            'total_paid_out' => [
+                'amount' => $wtrade->sum('amount'),
+                'count' => $wtrade->count()
+            ],
+            'total_deposit'  => [
+                'amount' => $dtrade->sum('amount'),
+                'count' => $dtrade->count()
+            ],
+            'current_balance' => $current_balance ,
+            'pending_withdrawal' => [
+                'amount' => $pending_withdrawal->sum('amount'),
+                'count'  => $pending_withdrawal->count()
+            ]
+        ];
     }
 
     public function monthlyAnalytics(Request $request) {
@@ -375,14 +392,12 @@ class SpotLightController extends Controller {
         ],200);
     }
 
-    function getUsersByDays()
-    {
-        $range = 1000;
+    public static function getUsersByDays() {
+        $range = 30;
         $chartData = User::select([
             DB::raw('DATE(created_at) AS date'),
             DB::raw('COUNT(id) AS count'),
         ])
-        ->whereBetween('created_at', [Carbon::now()->subDays($range), Carbon::now()])
         ->groupBy('date')
         ->orderBy('date', 'ASC')
         ->get()->toArray();
@@ -412,7 +427,7 @@ class SpotLightController extends Controller {
     public function numberOfNewUsers() {
         return response()->json([
             'success' => true,
-            'data' => $this->getUsersByDays()
+            'data' => self::getUsersByDays()
         ],200);
     }
 
@@ -421,9 +436,8 @@ class SpotLightController extends Controller {
         if (empty($date)) {
             $date = Carbon::now()->format('Y-m-d');   
         }
-        // return $date;
-        $users = User::where(DB::raw('date(created_at)'),$date)->limit(10)->get();
 
+        $users = User::where(DB::raw('date(created_at)'),$date)->limit(10)->get();
 
         return response()->json([
             'success' => true,
