@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\LiveRateController;
 use App\ImageSlide;
 use App\NairaTransaction;
+use App\Transaction;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -361,7 +362,7 @@ class UserController extends Controller
 
         if ($r->has('image')) {
             $file = $r->image;
-           
+
             $folderPath = storage_path('app/public/avatar/');
             if (!File::isDirectory($folderPath)) {
 
@@ -390,6 +391,20 @@ class UserController extends Controller
                 'msg' => 'Image file not present',
             ]);
         }
+
+    }
+
+
+    public function crypto(){
+
+        $cryptoTran = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 1)->where('user_id', Auth::user()->id);
+        })->latest()->get();
+
+        return response()->json([
+            'success' => true,
+             'data' => $cryptoTran
+        ]);
 
     }
 
