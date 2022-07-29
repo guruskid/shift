@@ -306,7 +306,7 @@ class ReferralController extends Controller
 
         if(Auth::user()->referral_wallet < 300){
             return response()->json([
-                'success' => true,
+                'success' => false,
                 'mgs' => "You can't withdrawal less than N300"
             ]);
         }
