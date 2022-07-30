@@ -309,6 +309,13 @@ class UsdtController extends Controller
             ]);
         }
 
+        if ($user_wallet->balance - $request->amount < 1) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient balance, a minimum of $1 must be reserved in the wallet'
+            ]);
+        }
+
         $blockchain_fee = 100;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $blockchain_fee) {

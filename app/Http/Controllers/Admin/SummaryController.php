@@ -260,28 +260,32 @@ class SummaryController extends Controller
         //*GiftCard Transaction BUY
         $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->unique('id');
         $giftcards_totaltnx_buy_amount = $giftcards_totaltnx_buy->sum('amount');
+        $giftcards_totaltnx_buy_amount_naira = $giftcards_totaltnx_buy->sum('amount_paid');
         $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
 
         //*GiftCard Transaction SELL
         $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->unique('id');
         $giftcards_totaltnx_sell_amount = $giftcards_totaltnx_sell->sum('amount');
+        $giftcards_totaltnx_sell_amount_naira = $giftcards_totaltnx_sell->sum('amount_paid');
         $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
 
         //*Crypto Transaction BUY
         $crypto_totaltnx_buy = $crypto_totaltnx_buy->unique('id');
         $crypto_totaltnx_buy_amount = $crypto_totaltnx_buy->sum('amount');
+        $crypto_totaltnx_buy_amount_naira = $crypto_totaltnx_buy->sum('amount_paid');
         $crypto_totaltnx_buy = $crypto_totaltnx_buy->count();
 
         //*Crypto Transaction SELL
         $crypto_totaltnx_sell = $crypto_totaltnx_sell->unique('id');
         $crypto_totaltnx_sell_amount = $crypto_totaltnx_sell->sum('amount');
+        $crypto_totaltnx_sell_amount_naira = $crypto_totaltnx_sell->sum('amount_paid');
         $crypto_totaltnx_sell = $crypto_totaltnx_sell->count();
 
         return view('admin.summary.JuniorAccountant.transaction',compact([
             'segment','accountant','all_tnx','all_tnx_count','show_data','show_category','day','month','show_summary',
             'giftcards_totaltnx_buy','giftcards_totaltnx_sell','crypto_totaltnx_buy','crypto_totaltnx_sell',
-            'giftcards_totaltnx_buy_amount','giftcards_totaltnx_sell_amount','crypto_totaltnx_buy_amount','crypto_totaltnx_sell_amount',
-            'bitcoin_total_tnx_buy','bitcoin_total_tnx_sell',
+            'giftcards_totaltnx_buy_amount','giftcards_totaltnx_sell_amount','giftcards_totaltnx_sell_amount_naira','giftcards_totaltnx_buy_amount_naira','crypto_totaltnx_buy_amount','crypto_totaltnx_sell_amount',
+            'bitcoin_total_tnx_buy','bitcoin_total_tnx_sell','crypto_totaltnx_sell_amount_naira','crypto_totaltnx_buy_amount_naira'
 
         ]));        
     }

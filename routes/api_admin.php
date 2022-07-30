@@ -68,12 +68,21 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::get("/all-accountant", 'AdminController@accountant');
 
 
+    // // Announcement
+    // Route::group(['prefix' => 'announcement'], function () {
+    //     Route::GET('/all',  'AnnoucementController@allAnnouncement');
+    //     Route::POST('/add',  'AnnoucementController@addAnnouncement');
+    //     Route::POST('/edit',  'AnnoucementController@editAnnoucement');
+    //     Route::POST('/delete',  'AnnoucementController@deleteAnnouncement');
+    // });
+
     // Announcement
     Route::group(['prefix' => 'announcement'], function () {
-        Route::GET('/all',  'AnnoucementController@allAnnouncement');
-        Route::POST('/add',  'AnnoucementController@addAnnouncement');
-        Route::POST('/edit',  'AnnoucementController@editAnnoucement');
-        Route::POST('/delete',  'AnnoucementController@deleteAnnouncement');
+        Route::post('/create',  'AnnouncementController@create');
+        Route::get('/all',  'AnnouncementController@getAnnouncements');
+        Route::post('/update/{id}',  'AnnouncementController@update');
+        Route::post('/update-status/{id}/{status}',  'AnnouncementController@updateStatus');
+        Route::post('/delete/{id}',  'AnnouncementController@delete');
     });
 
     //?settings
@@ -182,6 +191,24 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         });
     });
 
+    // Dashboard Overview
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/overview', 'DashboardOverviewController@overview');
+        Route::get('/number-of-new-users',  'SpotLightController@numberOfNewUsers');
+        Route::get('/get-users-by-date',  'SpotLightController@getNewUsersByDate'); 
+        Route::post('/acquisition-cost',  'SpotLightController@getCustomerAcquisitionCost');
+        Route::get('/transaction-history/{type}',  'DashboardOverviewController@transactionHistory'); 
+        Route::get('/p2p-transaction-history',  'DashboardOverviewController@p2pTransactionHistory'); 
+        Route::get('/p2p-transactions-by-date',  'DashboardOverviewController@getP2pTransactionHistoryByDate'); 
+        Route::get('/crypto-transactions-by-date',  'DashboardOverviewController@getCryptoTransactionHistoryByDate'); 
+        Route::get('/users-verification',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
+        Route::get('/users-verification', 'DashboardOverviewController@usersVerification');
+        Route::get('/monthly-analytics', 'SpotLightController@monthlyAnalytics');
+        Route::get('/monthly-earnings', 'DashboardOverviewController@monthlyEarnings');
+        Route::get('/summary', 'DashboardOverviewController@summary');
+    });
+
+    
 });
 
 
