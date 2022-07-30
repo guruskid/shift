@@ -504,7 +504,7 @@ class SummaryController extends Controller
 
         if($category == "utilities"){
             //**Utilities Transaction */
-            $util_tnx = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc')->get();
+            $util_tnx = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc');
             $util_tnx = $this->category_listing($user,$accountant_timestamp,$util_tnx,$current_day_value);
 
             return $this->UtilitiesTransactions($util_tnx,$data);
