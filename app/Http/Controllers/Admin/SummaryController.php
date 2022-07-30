@@ -507,7 +507,7 @@ class SummaryController extends Controller
             $util_tnx = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc');
             $util_tnx = $this->category_listing($user,$accountant_timestamp,$util_tnx,$current_day_value);
 
-            return $this->UtilitiesTransactions($util_tnx,$data);
+            return $this->UtilitiesTransactions($util_tnx->get(),$data);
         }
 
         if($category == "paybridge"){
