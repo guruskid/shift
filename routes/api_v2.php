@@ -58,6 +58,10 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
     Route::get('/get_referral_balance', 'ReferralController@getBalance');
     Route::post('/sell_referral_btc', 'ReferralController@sell');
     Route::post('/referral_status', 'ReferralController@referralSystemStatus');
+    Route::get('/referral-transactions', 'ReferralController@referralTransactions');
+    Route::post('/withdraw-referral-bonus', 'ReferralController@withdrawReferralBonus');
+    Route::get('/my-referrers', 'ReferralController@myReferrers');
+    Route::get('/get-referrers-link', 'ReferralController@getReferralLink');
 
 
     // Transactions

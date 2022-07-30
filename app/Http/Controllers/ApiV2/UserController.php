@@ -22,6 +22,9 @@ class UserController extends Controller
     {
         $wallet = Auth::user()->nairaWallet;
 
+
+
+
         $client = new Client();
         $url = "https://api.coinbase.com/v2/prices/spot?currency=USD";
         $res = $client->request('GET', $url);
@@ -356,6 +359,15 @@ class UserController extends Controller
         }
 
     }
+
+
+
+
+
+    //Level 3 Verification Begins Here
+
+
+
 
     public function updateDp(Request $r)
     {

@@ -559,9 +559,9 @@ class BillsPaymentController extends Controller
             $charge = $settings['settings_value'];
         }
 
-        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
-            $charge = 0;
-        }
+        // if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
+        //     $charge = 0;
+        // }
 
         $data = Validator::make($r->all(), [
             'service_id' => 'required',
@@ -954,9 +954,9 @@ class BillsPaymentController extends Controller
             // $charge = $settings['settings_value'];
         }
 
-        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
-            $charge = 0;
-        }
+        // if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
+        //     $charge = 0;
+        // }
 
         $data = Validator::make($r->all(), [
             'cable_provider' => 'required',
