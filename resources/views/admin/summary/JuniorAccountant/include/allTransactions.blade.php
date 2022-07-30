@@ -59,8 +59,14 @@
                                                                     [{{sprintf('%.8f', floatval($bitcoin_total_tnx_sell))  }} BTC]</td>
                                                             </tbody>
                                                             <tfoot>
-                                                                <td>Total <h6 class="text-right">${{ $crypto_totaltnx_buy_amount }}</h6></td>
-                                                                <td>Total <h6 class="text-right">${{ $crypto_totaltnx_sell_amount }}</h6></td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $crypto_totaltnx_buy_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">N{{ $crypto_totaltnx_buy_amount_naira }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $crypto_totaltnx_sell_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">N{{ $crypto_totaltnx_sell_amount_naira }}</h6></div>
+                                                                </td>
                                                             </tfoot>
                                                         </table>
                                                     </td>
@@ -75,8 +81,14 @@
                                                                 <td class="text-center">{{ isset($giftcards_totaltnx_sell) ? number_format($giftcards_totaltnx_sell) : 0 }}</td>
                                                             </tbody>
                                                             <tfoot>
-                                                                <td>Total <h6 class="text-right">${{ $giftcards_totaltnx_buy_amount }}</h6></td>
-                                                                <td>Total <h6 class="text-right">${{ $giftcards_totaltnx_sell_amount }}</h6></td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_buy_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">N{{ $giftcards_totaltnx_buy_amount_naira }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_sell_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">N{{ $giftcards_totaltnx_sell_amount_naira }}</h6></div>
+                                                                </td>
                                                             </tfoot>
                                                         </table>
                                                     </td>

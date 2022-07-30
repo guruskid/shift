@@ -50,6 +50,8 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
     Route::get('/profile', 'UserController@profile');
     Route::post('/update-birthday', 'UserController@updateBirthday');
 
+    Route::get('/crypto-transaction', 'UserController@crypto');
+
 
     // Referral
     Route::post('/create_referral_code', 'ReferralController@create');

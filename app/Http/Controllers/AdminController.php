@@ -131,8 +131,8 @@ class AdminController extends Controller
         $a_a_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'approved')->count();
         $all_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->count();
 
-        $pendingNairaDeposits = NairaTrade::where(['type' => 'deposit','status' => 'waiting'])->count();
-        $pendingNairaWithdrawals = NairaTrade::where(['type' => 'withdrawal','status' => 'waiting'])->count();
+        $pendingNairaDeposits = NairaTrade::where(['type' => 'deposit', 'status' => 'waiting'])->count();
+        $pendingNairaWithdrawals = NairaTrade::where(['type' => 'withdrawal', 'status' => 'waiting'])->count();
 
 
         if (Auth::user()->role == 999) { //Super admin
@@ -155,10 +155,10 @@ class AdminController extends Controller
                     'users', 'users_count', 'notifications', 'usersChart',
                     'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
-                    'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance', 'pendingNairaDeposits','pendingNairaWithdrawals'
+                    'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance', 'pendingNairaDeposits', 'pendingNairaWithdrawals'
                 ])
             );
-        } else if (Auth::user()->role == 889 || Auth::user()->role == 777 ||Auth::user()->role == 775 ) { //Accountants
+        } else if (Auth::user()->role == 889 || Auth::user()->role == 777 || Auth::user()->role == 775) { //Accountants
             return view(
                 'admin.accountant_dashboard',
                 compact([
@@ -173,64 +173,63 @@ class AdminController extends Controller
         } else if (Auth::user()->role == 559) { //Marketing
             $marketing_controller =  new MarketingController();
             return $marketing_controller->index();
-
         } else if (Auth::user()->role == 666) { //Manager
-            $pending_deposits = NairaTrade::where('type','withdrawal')->where('status','waiting')->count();
-            $pending_withdrawals = NairaTrade::where('type','deposit')->where('status','waiting')->count();
+            $pending_deposits = NairaTrade::where('type', 'withdrawal')->where('status', 'waiting')->count();
+            $pending_withdrawals = NairaTrade::where('type', 'deposit')->where('status', 'waiting')->count();
             return view(
                 'admin.manager_dashboard',
                 compact([
-                    'transactions', 'users','pending_deposits','pending_withdrawals',
+                    'transactions', 'users', 'pending_deposits', 'pending_withdrawals',
                     'g_txns', 'c_txns', 'n_txns'
                 ])
             );
-        }elseif(Auth::user()->role == 444 OR Auth::user()->role == 449){ // Chinese Dashboard
+        } elseif (Auth::user()->role == 444 or Auth::user()->role == 449) { // Chinese Dashboard
 
             $twentyFourHrsTransactions = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
+            })->where("created_at", ">=", Carbon::now()->subDay())->where("created_at", "<=", Carbon::now())->where('status', 'success');
             $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
             $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
-            $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
+            $dollarTwentyFourHr = $twentyFourHrsTransactions->sum('amount');
 
             $nairaTwentyFourHrs = $nairaTwentyFourHr;
             $dollarTwentyFourHrs = $dollarTwentyFourHr;
 
             $countWaiting = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'waiting')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            })->where('status', 'waiting')->where("created_at", ">=", Carbon::now()->subDay())->where("created_at", "<=", Carbon::now())->count();
             $countProgreses = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'in progress')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            })->where('status', 'in progress')->where("created_at", ">=", Carbon::now()->subDay())->where("created_at", "<=", Carbon::now())->count();
             $countSuccess = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'success')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            })->where('status', 'success')->where("created_at", ">=", Carbon::now()->subDay())->where("created_at", "<=", Carbon::now())->count();
             $countApproved = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'approved')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            })->where('status', 'approved')->where("created_at", ">=", Carbon::now()->subDay())->where("created_at", "<=", Carbon::now())->count();
             $declined = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'declined')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            })->where('status', 'declined')->where("created_at", ">=", Carbon::now()->subDay())->where("created_at", "<=", Carbon::now())->count();
             $failed = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'failed')->where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->count();
+            })->where('status', 'failed')->where("created_at", ">=", Carbon::now()->subDay())->where("created_at", "<=", Carbon::now())->count();
             $failedAndDeclined = $failed + $declined;
 
             $waiting_transactions_chinese = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->with('asset')->where('status', 'waiting')->orderBy('id', 'desc')->get()->take(20);
+            })->with('asset')->where('status', 'waiting')->orderBy('id', 'desc')->get()->take(20);
             $success_transactions_chinese = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'success')->orderBy('id', 'desc')->get()->take(5);
+            })->where('status', 'success')->orderBy('id', 'desc')->get()->take(5);
             $failed_transactions_chinese = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'failed')->orderBy('id', 'desc')->get()->take(5);
+            })->where('status', 'failed')->orderBy('id', 'desc')->get()->take(5);
             $in_progress_transactions_chinese = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'in progress')->orderBy('id', 'desc')->get()->take(5);
+            })->where('status', 'in progress')->orderBy('id', 'desc')->get()->take(5);
             $approved_transactions_chinese = Transaction::whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-                })->where('status', 'approved')->orderBy('id', 'desc')->get()->take(5);
+            })->where('status', 'approved')->orderBy('id', 'desc')->get()->take(5);
 
             // dd($cardTwentyFourHrs);
 
@@ -245,14 +244,13 @@ class AdminController extends Controller
                     'cardTwentyFourHrscount', 'nairaTwentyFourHrs', 'dollarTwentyFourHrs',
                     'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
                     'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
-                ]));
+                ])
+            );
         } else if (Auth::user()->role == 557) { //business_Developer
             return (new BusinessDeveloperController)->index();
-        }
-        else if (Auth::user()->role == 556) { //Sales Personal
+        } else if (Auth::user()->role == 556) { //Sales Personal
             return (new SalesController)->index();
         }
-
     }
 
 
@@ -271,8 +269,8 @@ class AdminController extends Controller
                 'cardTwentyFourHrscount', 'nairaTwentyFourHrs', 'dollarTwentyFourHrs',
                 'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
                 'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
-            ]));
-
+            ])
+        );
     }
 
 
@@ -360,55 +358,55 @@ class AdminController extends Controller
         $a_a_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->where('status', 'approved')->count();
         $all_c = $au->assignedTransactions()->where('created_at', '>=', $au->updated_at)->count();
 
-            $twentyFourHrsTransactions = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success')
+        $twentyFourHrsTransactions = Transaction::where("created_at", ">=", Carbon::now()->subDay())->where("created_at", "<=", Carbon::now())->where('status', 'success')
             ->whereHas('asset', function ($query) {
-            $query->where('is_crypto', 0);
+                $query->where('is_crypto', 0);
             })->latest();
-            $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
-            $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
-            $dollarTwentyFourHr= $twentyFourHrsTransactions->sum('amount');
+        $cardTwentyFourHrscount = $twentyFourHrsTransactions->count();
+        $nairaTwentyFourHr = $twentyFourHrsTransactions->sum('amount_paid');
+        $dollarTwentyFourHr = $twentyFourHrsTransactions->sum('amount');
 
-            $nairaTwentyFourHrs = number_format($nairaTwentyFourHr);
-            $dollarTwentyFourHrs = number_format($dollarTwentyFourHr);
+        $nairaTwentyFourHrs = number_format($nairaTwentyFourHr);
+        $dollarTwentyFourHrs = number_format($dollarTwentyFourHr);
 
-            $countWaiting = Transaction::where('status', 'waiting')->count();
-            $countProgreses = Transaction::where('status', 'in progress')->count();
-            $countSuccess = Transaction::where('status', 'success')->count();
-            $countApproved = Transaction::where('status', 'approved')->count();
-            $failedAndDeclined = Transaction::where('status', 'failed')->where('status', 'declined')->count();
+        $countWaiting = Transaction::where('status', 'waiting')->count();
+        $countProgreses = Transaction::where('status', 'in progress')->count();
+        $countSuccess = Transaction::where('status', 'success')->count();
+        $countApproved = Transaction::where('status', 'approved')->count();
+        $failedAndDeclined = Transaction::where('status', 'failed')->where('status', 'declined')->count();
 
-            // $waiting_transactions_chinese = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->get()->take(5);
-            // $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->get()->take(5);
-            // $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->get()->take(5);
-            // $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->get()->take(5);
-            // $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->get()->take(5);
+        // $waiting_transactions_chinese = Transaction::where('status', 'waiting')->where('card', '!=', 'BITCOIN')->get()->take(5);
+        // $success_transactions_chinese = Transaction::where('status', 'success')->where('card', '!=', 'BITCOIN')->get()->take(5);
+        // $failed_transactions_chinese = Transaction::where('status', 'failed')->where('card', '!=', 'BITCOIN')->get()->take(5);
+        // $in_progress_transactions_chinese = Transaction::where('status', 'in progress')->where('card', '!=', 'BITCOIN')->get()->take(5);
+        // $approved_transactions_chinese = Transaction::where('status', 'approved')->where('card', '!=', 'BITCOIN')->get()->take(5);
 
 
-            // dd($assets->id);
-        $assets = payout::orderBy('id', 'desc')->first();
+        // dd($assets->id);
+        $assets = Payout::orderBy('id', 'desc')->first();
 
-        if(!isset($assets->created_at)){
+        if (!isset($assets->created_at)) {
             $payoutDate = '2020-01-13 10:03:52';
-        }else{
+        } else {
             $payoutDate = $assets->created_at;
         }
 
         $payoutVolume = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('quantity');
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->sum('quantity');
         $assetsInNaira = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
 
         $totalComm = Transaction::whereHas('asset', function ($query) {
-                $query->where('is_crypto', 0);
-                })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('commission');
+            $query->where('is_crypto', 0);
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->sum('commission');
         $countST = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->count();
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->count();
         $success_transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->latest()->get();
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->latest()->get();
         $giftcard_tranx_count = $success_transactions->count();
         $total_traded_asset = 0;
         $total_chinese_amount = 0;
@@ -425,21 +423,22 @@ class AdminController extends Controller
         // dd($assets->);
 
 
-            // dd($cardTwentyFourHrs);
+        // dd($cardTwentyFourHrs);
 
-            return view(
-                'admin.payout_transactions',
-                compact([
-                    'payoutVolume', 'assetsInNaira','countST','totalComm',
-                    'giftcard_tranx_count','total_traded_asset','total_chinese_amount',
-                    'transactions', 'waiting_transactions', 'in_progress_transactions',
-                    'users', 'users_count', 'notifications', 'usersChart',
-                    'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
-                    'buyCash', 'sellCash', 'buyCount', 'sellCount', 'pBuyCash',
-                    'cardTwentyFourHrscount', 'nairaTwentyFourHrs', 'dollarTwentyFourHrs',
-                    'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
-                    'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
-                ]));
+        return view(
+            'admin.payout_transactions',
+            compact([
+                'payoutVolume', 'assetsInNaira', 'countST', 'totalComm',
+                'giftcard_tranx_count', 'total_traded_asset', 'total_chinese_amount',
+                'transactions', 'waiting_transactions', 'in_progress_transactions',
+                'users', 'users_count', 'notifications', 'usersChart',
+                'a_w_c', 'a_s_c', 'a_a_c', 'a_i_c',
+                'buyCash', 'sellCash', 'buyCount', 'sellCount', 'pBuyCash',
+                'cardTwentyFourHrscount', 'nairaTwentyFourHrs', 'dollarTwentyFourHrs',
+                'countWaiting', 'countProgreses', 'countSuccess', 'countApproved', 'failedAndDeclined',
+                'success_transactions', 'failed_transactions',  'pSellCash', 'pBuyCount', 'pSellCount', 'users_wallet_balance', 'rubies_balance', 'company_balance'
+            ])
+        );
     }
 
     public function payOutHistory(Request $request)
@@ -471,58 +470,57 @@ class AdminController extends Controller
 
 
 
-            $assets = payout::orderBy('created_at', 'desc')->first();
+        $assets = Payout::orderBy('created_at', 'desc')->first();
 
-            $payoutHistory =  payout::orderBy('id', 'desc');
-            $segment = null;
+        $payoutHistory =  Payout::orderBy('id', 'desc');
+        $segment = null;
 
-            if($request->start)
-            {
-                $segment .= Carbon::parse($request->start)->format('d-M-Y');
-                $payoutHistory = $payoutHistory->whereDate('created_at',">=",$request->start);
-                if($request->end){
-                    $payoutHistory = $payoutHistory->whereDate('created_at',"<=",$request->end);
-                    $segment .=" to ".Carbon::parse($request->end)->format('d-M-Y');
-                }
+        if ($request->start) {
+            $segment .= Carbon::parse($request->start)->format('d-M-Y');
+            $payoutHistory = $payoutHistory->whereDate('created_at', ">=", $request->start);
+            if ($request->end) {
+                $payoutHistory = $payoutHistory->whereDate('created_at', "<=", $request->end);
+                $segment .= " to " . Carbon::parse($request->end)->format('d-M-Y');
             }
+        }
 
-            $payoutHistory = $payoutHistory->get();
-            // dd($cardTwentyFourHrs);
+        $payoutHistory = $payoutHistory->get();
+        // dd($cardTwentyFourHrs);
 
-            return view(
-                'admin.payout_history',
-                compact([
-                    'assets', 'usersChart','payoutHistory','segment'
-                ]));
-
+        return view(
+            'admin.payout_history',
+            compact([
+                'assets', 'usersChart', 'payoutHistory', 'segment'
+            ])
+        );
     }
 
     public function payout()
     {
         // $payoutVolume = Transaction::where("created_at",">=",Carbon::now()->subDay())->where("created_at","<=",Carbon::now())->where('status', 'success');
 
-        $assets = payout::orderBy('id', 'desc')->first();
+        $assets = Payout::orderBy('id', 'desc')->first();
 
 
-        if(!isset($assets->created_at)){
+        if (!isset($assets->created_at)) {
             $payoutDate = '2020-01-13 10:03:52';
-        }else{
+        } else {
             $payoutDate = $assets->created_at;
         }
 
         $assetsInNaira = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->sum('amount_paid');
         $countST = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->count();
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->count();
 
         $success_transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->get();
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->get();
         $totalComm = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where("created_at",">=", $payoutDate)->where('status', 'success')->sum('commission');
+        })->where("created_at", ">=", $payoutDate)->where('status', 'success')->sum('commission');
         $giftcard_tranx_count = $success_transactions->count();
         $total_traded_asset = 0;
         $total_chinese_amount = 0;
@@ -533,11 +531,11 @@ class AdminController extends Controller
 
         // dd($countST);
 
-        if($countST < 1 ){
+        if ($countST < 1) {
             return redirect()->back()->with('error', 'Nothing to wipe');
         }
 
-        $payout = payout::create([
+        $payout = Payout::create([
             'card_asset_volume' => $giftcard_tranx_count,
             'card_volume_in_naira' => $assetsInNaira,
             'success_transactions' => $countST,
@@ -554,14 +552,14 @@ class AdminController extends Controller
     {
         $waiting_transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where('status', 'waiting')->count();
+        })->where('status', 'waiting')->count();
         $in_progress_transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-            })->where('status', 'in progress')->count();
+        })->where('status', 'in progress')->count();
         return response()->json([
-                'waiting_transaction' => $waiting_transactions,
-                'in_progress_transactions' => $in_progress_transactions
-            ]);
+            'waiting_transaction' => $waiting_transactions,
+            'in_progress_transactions' => $in_progress_transactions
+        ]);
     }
 
 
@@ -575,9 +573,9 @@ class AdminController extends Controller
         $transactions = Transaction::with('user')->orderBy('updated_at', 'desc');
         $segment = 'All';
 
-        $tranx =  Transaction::with('user')->WhereHas('asset', function($q){
+        $tranx =  Transaction::with('user')->WhereHas('asset', function ($q) {
             $q->where('is_crypto', 0);
-        })->orderBy('updated_at', 'desc')->where('status','success');
+        })->orderBy('updated_at', 'desc')->where('status', 'success');
 
         if (isset($request['start']) and isset($request['end'])) {
             $from = $request['start'];
@@ -605,7 +603,7 @@ class AdminController extends Controller
         $totalAvgPerToday = ceil($tt->sum() / $tt->count());
         // }
 
-        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
+        if (Auth::user()->role == 444 or Auth::user()->role == 449) {
             $transactions = $transactions->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             });
@@ -617,28 +615,28 @@ class AdminController extends Controller
         $transactions = $transactions->paginate(1000);
         // return $transactions;
         return view('admin.transactions', compact([
-            'transactions', 'total_transactions','segment',
-            'totalTransactions','totalVol','totalComm','totalChineseAmt',
-            'totalAvgPerToday','card_price_total','cash_value_total','asset_value_total']));
+            'transactions', 'total_transactions', 'segment',
+            'totalTransactions', 'totalVol', 'totalComm', 'totalChineseAmt',
+            'totalAvgPerToday', 'card_price_total', 'cash_value_total', 'asset_value_total'
+        ]));
     }
 
     public function search_tnx(Request $request)
     {
         // dd($request);
-        if($request->segment == 'All')
-        {
+        if ($request->segment == 'All') {
             $search = $request->search;
-            $conditions = ['uid','card','type','country','card_type','status'];
+            $conditions = ['uid', 'card', 'type', 'country', 'card_type', 'status'];
             $transactions = Transaction::where(function ($query) use ($conditions, $search) {
                 foreach ($conditions as $column)
-                    $query->orWhere($column, 'like',"%{$search}%")
-                    ->orWhereHas('user', function($q) use($search) {
+                    $query->orWhere($column, 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
-                            ->orWhere('last_name', 'like', '%' . $search . '%');
+                                ->orWhere('last_name', 'like', '%' . $search . '%');
                         });
             });
-                if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
+            if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+                $transactions = $transactions->WhereHas('asset', function ($q) {
                     $q->where('is_crypto', 0);
                 })->paginate(100);
             }
@@ -650,21 +648,20 @@ class AdminController extends Controller
 
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
-        if($request->segment == 'Buy' || $request->segment == 'Sell')
-        {
+        if ($request->segment == 'Buy' || $request->segment == 'Sell') {
             $status = $request->segment;
             $search = $request->search;
-            $conditions = ['uid','card','country','card_type','status'];
+            $conditions = ['uid', 'card', 'country', 'card_type', 'status'];
             $transactions = Transaction::where('type', $status)->latest()->where(function ($query) use ($conditions, $search) {
                 foreach ($conditions as $column)
-                    $query->orWhere($column, 'like',"%{$search}%")
-                    ->orWhereHas('user', function($q) use($search) {
+                    $query->orWhere($column, 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
-                            ->orWhere('last_name', 'like', '%' . $search . '%');
+                                ->orWhere('last_name', 'like', '%' . $search . '%');
                         });
             });
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
+            if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+                $transactions = $transactions->WhereHas('asset', function ($q) {
                     $q->where('is_crypto', 0);
                 })->paginate(100);
             }
@@ -675,38 +672,36 @@ class AdminController extends Controller
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
 
-        if($request->segment == 'Utility')
-        {
+        if ($request->segment == 'Utility') {
             $search = $request->search;
-            $conditions = ['reference_id','amount','type','status'];
+            $conditions = ['reference_id', 'amount', 'type', 'status'];
             $transactions = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc')->where(function ($query) use ($conditions, $search) {
                 foreach ($conditions as $column)
-                    $query->orWhere($column, 'like',"%{$search}%")
-                    ->orWhereHas('user', function($q) use($search) {
+                    $query->orWhere($column, 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
                             $q->where('first_name', 'like', '%' . $search . '%');
                         });
             });
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
+            if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+                $transactions = $transactions->WhereHas('asset', function ($q) {
                     $q->where('is_crypto', 0);
                 })->paginate(100);
             }
             $transactions = $transactions->paginate(100);
             return view('admin.utility-transactions', compact('transactions'));
         }
-        if($request->segment == 'Gift Card' || $request->segment == 'Crypto')
-        {
-            $id = $request->segment == 'Gift Card' ? 0:1;
+        if ($request->segment == 'Gift Card' || $request->segment == 'Crypto') {
+            $id = $request->segment == 'Gift Card' ? 0 : 1;
             $search = $request->search;
-            $conditions = ['uid','card','type','country','card_type','status'];
+            $conditions = ['uid', 'card', 'type', 'country', 'card_type', 'status'];
             $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
                 $query->where('is_crypto', $id);
             })->latest()->where(function ($query) use ($conditions, $search) {
                 foreach ($conditions as $column)
-                    $query->orWhere($column, 'like',"%{$search}%")
-                    ->orWhereHas('user', function($q) use($search) {
+                    $query->orWhere($column, 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
-                            ->orWhere('last_name', 'like', '%' . $search . '%');
+                                ->orWhere('last_name', 'like', '%' . $search . '%');
                         });
             })->paginate(100);
 
@@ -714,21 +709,20 @@ class AdminController extends Controller
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
 
-        if($request->segment == 'All Wallet')
-        {
+        if ($request->segment == 'All Wallet') {
             $search = $request->search;
-            $conditions = ['reference','status'];
+            $conditions = ['reference', 'status'];
             $transactions = NairaTransaction::latest()->where(function ($query) use ($conditions, $search) {
                 foreach ($conditions as $column)
-                    $query->orWhere($column, 'like',"%{$search}%")
-                    ->orWhereHas('user', function($q) use($search) {
+                    $query->orWhere($column, 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
                             $q->where('first_name', 'like', '%' . $search . '%');
-                        })->orWhereHas('transactionType', function($q) use($search) {
+                        })->orWhereHas('transactionType', function ($q) use ($search) {
                             $q->where('name', 'like', '%' . $search . '%');
                         });
             });
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
+            if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+                $transactions = $transactions->WhereHas('asset', function ($q) {
                     $q->where('is_crypto', 0);
                 })->paginate(100);
             }
@@ -739,27 +733,28 @@ class AdminController extends Controller
 
             return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
         }
-        if($request->segment == 'success' || $request->segment == 'approved' || $request->segment == 'in progress'
-        || $request->segment == 'waiting'|| $request->segment == 'declined' || $request->segment == 'failed')
-        {
+        if (
+            $request->segment == 'success' || $request->segment == 'approved' || $request->segment == 'in progress'
+            || $request->segment == 'waiting' || $request->segment == 'declined' || $request->segment == 'failed'
+        ) {
             $search = $request->search;
-            $conditions = ['uid','card','type','country','card_type'];
+            $conditions = ['uid', 'card', 'type', 'country', 'card_type'];
             $status = $request->segment;
 
             $transactions = Transaction::where('status', $status)->latest()->where(function ($query) use ($conditions, $search) {
                 foreach ($conditions as $column)
-                    $query->orWhere($column, 'like',"%{$search}%")
-                    ->orWhereHas('user', function($q) use($search) {
+                    $query->orWhere($column, 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($q) use ($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
-                            ->orWhere('last_name', 'like', '%' . $search . '%');
+                                ->orWhere('last_name', 'like', '%' . $search . '%');
                         });
-                    });
-                    if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                        $transactions = $transactions->WhereHas('asset', function($q){
-                            $q->where('is_crypto', 0);
-                        })->paginate(100);
-                    }
-                    $transactions = $transactions->paginate(100);
+            });
+            if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+                $transactions = $transactions->WhereHas('asset', function ($q) {
+                    $q->where('is_crypto', 0);
+                })->paginate(100);
+            }
+            $transactions = $transactions->paginate(100);
             $segment = $status;
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
@@ -769,15 +764,15 @@ class AdminController extends Controller
     {
 
         $category = Transaction::with('asset')
-        ->select('card_id')
-        ->where('card_id','!=',null)
-        ->distinct('card_id')
-        ->get();
+            ->select('card_id')
+            ->where('card_id', '!=', null)
+            ->distinct('card_id')
+            ->get();
         $accountant = Transaction::with('accountant')
-        ->select('accountant_id')
-        ->where('accountant_id','!=',null)
-        ->distinct('accountant_id')
-        ->get();
+            ->select('accountant_id')
+            ->where('accountant_id', '!=', null)
+            ->distinct('accountant_id')
+            ->get();
         $status = Transaction::select('Status')->distinct('Status')->get();
         $transactions = Transaction::where('type', 'buy')->orderBy('updated_at', 'desc');
         $segment = 'Buy';
@@ -785,8 +780,8 @@ class AdminController extends Controller
             $from = $request['start'];
             $to = $request['end'];
             $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
+            if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+                $transactions = $transactions->WhereHas('asset', function ($q) {
                     $q->where('is_crypto', 0);
                 });
             }
@@ -797,29 +792,29 @@ class AdminController extends Controller
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
-        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = $transactions->with('user')->
-            whereHas('asset', function ($query) {
-                $query->where('is_crypto', 0);
-            });
+        if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+            $transactions = $transactions->with('user')->whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 0);
+                });
         }
         $transactions = $transactions->paginate(1000);
-        return view('admin.transactions', compact(['transactions', 'segment','accountant','status','category'
-        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
+        return view('admin.transactions', compact([
+            'transactions', 'segment', 'accountant', 'status', 'category', 'total_transactions', 'asset_value_total', 'cash_value_total', 'card_price_total'
+        ]));
     }
 
     public function sellTransac(Request $request)
     {
         $category = Transaction::with('asset')
-        ->select('card_id')
-        ->where('card_id','!=',null)
-        ->distinct('card_id')
-        ->get();
+            ->select('card_id')
+            ->where('card_id', '!=', null)
+            ->distinct('card_id')
+            ->get();
         $accountant = Transaction::with('accountant')
-        ->select('accountant_id')
-        ->where('accountant_id','!=',null)
-        ->distinct('accountant_id')
-        ->get();
+            ->select('accountant_id')
+            ->where('accountant_id', '!=', null)
+            ->distinct('accountant_id')
+            ->get();
         $segment = 'Sell';
         $status = Transaction::select('Status')->distinct('Status')->get();
         $transactions = Transaction::where('type', 'sell')->orderBy('updated_at', 'desc');
@@ -827,8 +822,8 @@ class AdminController extends Controller
             $from = $request['start'];
             $to = $request['end'];
             $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
+            if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+                $transactions = $transactions->WhereHas('asset', function ($q) {
                     $q->where('is_crypto', 0);
                 });
             }
@@ -838,38 +833,38 @@ class AdminController extends Controller
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
-        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = $transactions->with('user')->
-            whereHas('asset', function ($query) {
-                $query->where('is_crypto', 0);
-            });
+        if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+            $transactions = $transactions->with('user')->whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 0);
+                });
         }
         $transactions = $transactions->paginate(1000);
-        return view('admin.transactions', compact(['transactions', 'segment','accountant','status','category'
-        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
+        return view('admin.transactions', compact([
+            'transactions', 'segment', 'accountant', 'status', 'category', 'total_transactions', 'asset_value_total', 'cash_value_total', 'card_price_total'
+        ]));
     }
 
     public function txnByStatus($status, Request $request)
     {
         $type = Transaction::select('type')->distinct('type')->get();
         $category = Transaction::with('asset')
-        ->select('card_id')
-        ->where('card_id','!=',null)
-        ->distinct('card_id')
-        ->get();
+            ->select('card_id')
+            ->where('card_id', '!=', null)
+            ->distinct('card_id')
+            ->get();
         $accountant = Transaction::with('accountant')
-        ->select('accountant_id')
-        ->where('accountant_id','!=',null)
-        ->distinct('accountant_id')
-        ->get();
+            ->select('accountant_id')
+            ->where('accountant_id', '!=', null)
+            ->distinct('accountant_id')
+            ->get();
         $segment = $status;
         $transactions = Transaction::where('status', $status)->orderBy('updated_at', 'desc');
         if (isset($request['start']) and isset($request['end'])) {
             $from = $request['start'];
             $to = $request['end'];
             $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
-            if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-                $transactions = $transactions->WhereHas('asset', function($q){
+            if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+                $transactions = $transactions->WhereHas('asset', function ($q) {
                     $q->where('is_crypto', 0);
                 });
             }
@@ -879,16 +874,15 @@ class AdminController extends Controller
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
-        if(Auth::user()->role == 444 OR Auth::user()->role == 449){
-            $transactions = $transactions->with('user')->
-            whereHas('asset', function ($query) {
-                $query->where('is_crypto', 0);
-            });
+        if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+            $transactions = $transactions->with('user')->whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 0);
+                });
         }
         $transactions = $transactions->paginate(1000);
-        return view('admin.transactions', compact(['transactions', 'segment','type','accountant','category'
-        ,'total_transactions','asset_value_total','cash_value_total','card_price_total'
-    ]));
+        return view('admin.transactions', compact([
+            'transactions', 'segment', 'type', 'accountant', 'category', 'total_transactions', 'asset_value_total', 'cash_value_total', 'card_price_total'
+        ]));
     }
 
     public function assignedTransac()
@@ -908,15 +902,15 @@ class AdminController extends Controller
     {
         $type = Transaction::select('type')->distinct('type')->get();
         $category = Transaction::with('asset')
-        ->select('card_id')
-        ->where('card_id','!=',null)
-        ->distinct('card_id')
-        ->get();
+            ->select('card_id')
+            ->where('card_id', '!=', null)
+            ->distinct('card_id')
+            ->get();
         $accountant = Transaction::with('accountant')
-        ->select('accountant_id')
-        ->where('accountant_id','!=',null)
-        ->distinct('accountant_id')
-        ->get();
+            ->select('accountant_id')
+            ->where('accountant_id', '!=', null)
+            ->distinct('accountant_id')
+            ->get();
         $status = Transaction::select('Status')->distinct('Status')->get();
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
@@ -934,8 +928,9 @@ class AdminController extends Controller
         }
 
 
-        return view('admin.transactions', compact(['transactions', 'segment','type','accountant','status','category'
-        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
+        return view('admin.transactions', compact([
+            'transactions', 'segment', 'type', 'accountant', 'status', 'category', 'total_transactions', 'asset_value_total', 'cash_value_total', 'card_price_total'
+        ]));
     }
 
     public function assetTransactionsSortByDate(Request $request)
@@ -943,32 +938,32 @@ class AdminController extends Controller
         // dd($request);
         $type = Transaction::select('type')->distinct('type')->get();
         $category = Transaction::with('asset')
-        ->select('card_id')
-        ->where('card_id','!=',null)
-        ->distinct('card_id')
-        ->get();
+            ->select('card_id')
+            ->where('card_id', '!=', null)
+            ->distinct('card_id')
+            ->get();
         $accountant = Transaction::with('accountant')
-        ->select('accountant_id')
-        ->where('accountant_id','!=',null)
-        ->distinct('accountant_id')
-        ->get();
+            ->select('accountant_id')
+            ->where('accountant_id', '!=', null)
+            ->distinct('accountant_id')
+            ->get();
         $status = Transaction::select('Status')->distinct('Status')->get();
         $data = $request->validate([
             'start' => 'required|date|string',
             'end' => 'required|date|string',
         ]);
         $transactions = Transaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end']);
-        if($request->type != 'null'){
-            $transactions = $transactions->where('type',$request->type);
+        if ($request->type != 'null') {
+            $transactions = $transactions->where('type', $request->type);
         }
-        if($request->category != 'null'){
-            $transactions = $transactions->where('card_id',$request->category);
+        if ($request->category != 'null') {
+            $transactions = $transactions->where('card_id', $request->category);
         }
-        if($request->Accountant != 'null'){
-            $transactions = $transactions->where('accountant_id',$request->Accountant);
+        if ($request->Accountant != 'null') {
+            $transactions = $transactions->where('accountant_id', $request->Accountant);
         }
-        if($request->status != 'null'){
-            $transactions = $transactions->where('status',$request->status);
+        if ($request->status != 'null') {
+            $transactions = $transactions->where('status', $request->status);
         }
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
@@ -977,15 +972,15 @@ class AdminController extends Controller
         $transactions = $transactions->paginate(200);
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Asset';
 
-        return view('admin.transactions', compact(['segment', 'transactions','type','accountant','status','category'
-        ,'total_transactions','asset_value_total','cash_value_total','card_price_total']));
+        return view('admin.transactions', compact([
+            'segment', 'transactions', 'type', 'accountant', 'status', 'category', 'total_transactions', 'asset_value_total', 'cash_value_total', 'card_price_total'
+        ]));
     }
 
     public function getTransac($id)
     {
         $transac = Transaction::find($id);
         return response()->json($transac);
-
     }
 
 
@@ -997,7 +992,7 @@ class AdminController extends Controller
 
         $cards = Card::all();
 
-        return view('admin.transaction', compact(['transaction','cards']));
+        return view('admin.transaction', compact(['transaction', 'cards']));
     }
 
     public function deleteTransac($id)
@@ -1030,18 +1025,17 @@ class AdminController extends Controller
     public function walletTransactions($id = null)
     {
         $type = NairaTransaction::with('transactionType')
-        ->select('transaction_type_id')
-        ->where('transaction_type_id','!=',null)
-        ->distinct('transaction_type_id')
-        ->get();
+            ->select('transaction_type_id')
+            ->where('transaction_type_id', '!=', null)
+            ->distinct('transaction_type_id')
+            ->get();
         $status = NairaTransaction::select('status')->distinct('status')->get();
         if ($id == null) {
-            $transactions = NairaTransaction::latest()->orderBy('created_at','desc');
+            $transactions = NairaTransaction::latest()->orderBy('created_at', 'desc');
             $segment = 'All Wallet';
             $total = $transactions->sum('amount');
-
         } else {
-            $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at','desc');
+            $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at', 'desc');
             $segment = TransactionType::find($id)->name;
             $total = $transactions->sum('amount');
         }
@@ -1049,16 +1043,17 @@ class AdminController extends Controller
         $total_amount_paid = $transactions->sum('amount_paid');
         $total_charges = $transactions->sum('charge');
         $transactions = $transactions->paginate(1000);
-        return view('admin.naira_transactions', compact(['segment', 'transactions', 'total','type','status'
-        ,'total_tnx','total_amount_paid','total_charges']));
+        return view('admin.naira_transactions', compact([
+            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges'
+        ]));
     }
     public function walletTransactionsSortByDate(Request $request)
     {
         $type = NairaTransaction::with('transactionType')
-        ->select('transaction_type_id')
-        ->where('transaction_type_id','!=',null)
-        ->distinct('transaction_type_id')
-        ->get();
+            ->select('transaction_type_id')
+            ->where('transaction_type_id', '!=', null)
+            ->distinct('transaction_type_id')
+            ->get();
         $status = NairaTransaction::select('status')->distinct('status')->get();
         $data = $request->validate([
             'start' => 'required|date|string',
@@ -1068,17 +1063,15 @@ class AdminController extends Controller
         $transactions = NairaTransaction::where('created_at', '>=', $data['start'])->where('created_at', '<=', $data['end']);
 
 
-        if($request->status != 'null')
-        {
+        if ($request->status != 'null') {
             $transactions = $transactions
-            ->where('status',$request->status);
+                ->where('status', $request->status);
             // ->paginate(1000);
         }
-        if($request->type != 'null')
-            {
-                $transactions = $transactions
-                ->where('transaction_type_id',$request->type);
-            }
+        if ($request->type != 'null') {
+            $transactions = $transactions
+                ->where('transaction_type_id', $request->type);
+        }
         $total_tnx = $transactions->count();
         $total_amount_paid = $transactions->sum('amount_paid');
         $total_charges = $transactions->sum('charge');
@@ -1087,8 +1080,9 @@ class AdminController extends Controller
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
         $total = $transactions->sum('amount');
 
-    return view('admin.naira_transactions', compact(['segment', 'transactions', 'total','type','status'
-    ,'total_tnx','total_amount_paid','total_charges']));
+        return view('admin.naira_transactions', compact([
+            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges'
+        ]));
     }
 
     public function adminWallet()
@@ -1173,20 +1167,19 @@ class AdminController extends Controller
     public function user_search(Request $request)
     {
         if ($request->search) {
-            $request->session()->put('search',$request->search);
+            $request->session()->put('search', $request->search);
         }
-        if($request->session()->has('search')){
+        if ($request->session()->has('search')) {
             $search = $request->session()->get('search');
             $users = User::orderBy('created_at', 'desc')
-            ->where('first_name','LIKE','%'.$search.'%')
-            ->orWhere('email','LIKE','%'.$search.'%')
-            ->orWhere('phone','LIKE','%'.$search.'%')
-            ->orWhere('phone','LIKE','%'.$search.'%')
-            ->orWhere('id','LIKE','%'.$search.'%')
-            ->paginate(1000);
+                ->where('first_name', 'LIKE', '%' . $search . '%')
+                ->orWhere('email', 'LIKE', '%' . $search . '%')
+                ->orWhere('phone', 'LIKE', '%' . $search . '%')
+                ->orWhere('phone', 'LIKE', '%' . $search . '%')
+                ->orWhere('id', 'LIKE', '%' . $search . '%')
+                ->paginate(1000);
             return view('admin.users', compact(['users']));
         }
-
     }
 
     public function verifiedUsers()
@@ -1242,14 +1235,52 @@ class AdminController extends Controller
                 $time = \Carbon\Carbon::parse((int)$x);
                 $t->created = $time->setTimezone('Africa/Lagos');
             }
-        }else {
+        } else {
             $btc_wallet = null;
             $btc_transactions = [];
         }
 
+
+        $usdt_wallet = $user->usdtWallet;
+        $usdt_transactions = [];
+        if ($usdt_wallet) {
+            $client = new Client();
+            $url = env('TATUM_URL') . '/ledger/account/' . $usdt_wallet->account_id;
+            $res = $client->request('GET', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')]
+            ]);
+
+            $accounts = json_decode($res->getBody());
+            $rate = LiveRateController::usdtRate();
+
+            $usdt_wallet->balance = $accounts->balance->availableBalance;
+            $usdt_wallet->usd = $usdt_wallet->balance  * $rate;
+
+            $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
+            $get_txns = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
+                "json" => ["id" => $usdt_wallet->account_id]
+            ]);
+
+            $usdt_transactions = json_decode($get_txns->getBody());
+            foreach ($usdt_transactions as $t) {
+                $x = \Str::limit($t->created, 10, '');
+                $time = \Carbon\Carbon::parse((int)$x);
+                $t->created = $time->setTimezone('Africa/Lagos');
+
+                if (!isset($t->senderNote)) {
+                    $t->senderNote = 'Sending Tron';
+                }
+            }
+        }
+
         $verifications = $user->verifications;
 
-        return view('admin.user', compact(['user', 'transactions', 'wallet_txns', 'btc_wallet', 'btc_transactions', 'dr_total', 'cr_total', 'verifications']));
+        return view('admin.user', compact([
+            'user', 'transactions', 'wallet_txns', 'btc_wallet',
+            'usdt_wallet', 'usdt_transactions',
+            'btc_transactions', 'dr_total', 'cr_total', 'verifications'
+        ]));
     }
 
     public function searchUser(Request $r)
