@@ -312,15 +312,28 @@ class SettingController extends Controller
             ], 401);
         }
 
-        $user->where('id',$r->id)->update([
-            'first_name' => $r->first_name,
-            'last_name' => $r->last_name,
-            'email' => $r->email,
-            'phone' => $r->phone,
-            'password' => Hash::make($r->password),
-            'username' => $r->username,
-            'role' => $r->role,
-        ]);
+        if($r->password == 'Cannot be decrypted')
+        {
+            $user->where('id',$r->id)->update([
+                'first_name' => $r->first_name,
+                'last_name' => $r->last_name,
+                'email' => $r->email,
+                'phone' => $r->phone,
+                'username' => $r->username,
+                'role' => $r->role,
+            ]);
+        }
+        else{
+            $user->where('id',$r->id)->update([
+                'first_name' => $r->first_name,
+                'last_name' => $r->last_name,
+                'email' => $r->email,
+                'phone' => $r->phone,
+                'password' => Hash::make($r->password),
+                'username' => $r->username,
+                'role' => $r->role,
+            ]);
+        }
         return response()->json([
             'success' => true,
             'message' => "$r->first_name $r->last_name with the role of ".$roleName." has been added",

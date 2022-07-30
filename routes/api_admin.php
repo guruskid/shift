@@ -96,6 +96,10 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::POST('/setTarget', 'SettingController@assignSalesTarget');
     });
 
+    //?Accountants
+    Route::group(['prefix' => 'accountant'], function () {
+        Route::GET('/', 'AccountantController@index');
+    });
     //?summary
 
     Route::group(['prefix' => 'summary'], function () {

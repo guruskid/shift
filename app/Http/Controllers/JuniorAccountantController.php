@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AccountantTimeStamp;
+use App\NairaWallet;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,12 +23,15 @@ class JuniorAccountantController extends Controller
         $user = User::find($id);
         $user->status = $action;
         $user->save();
+
+        $nairaUsersWallet = NairaWallet::sum('amount');
         if(($user->role == 775))
         {
             if ($action == 'active') {
                 AccountantTimeStamp::create([
                     'user_id' => $id,
                     'activeTime' => Carbon::now(),
+                    'opening_balance' => $nairaUsersWallet,
                 ]);
             }
             if($action == 'waiting')
@@ -44,7 +48,10 @@ class JuniorAccountantController extends Controller
                         $time_stamp->delete();
                     }
                     else{
-                        $time_stamp->update(['inactiveTime' => Carbon::now()]); 
+                        $time_stamp->update([
+                            'inactiveTime' => Carbon::now(),
+                            'closing_balance' => $nairaUsersWallet,
+                        ]); 
                     }
     
                     
