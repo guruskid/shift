@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ApiV2\Admin;
 
+use App\AccountantTimeStamp;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
@@ -11,6 +12,7 @@ use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class AccountantController extends Controller
 {
@@ -86,6 +88,116 @@ class AccountantController extends Controller
             'chart' => $chartExportData
         ],200);
 
+    }
+
+    public function activateAccountant(Request $r)
+    {
+        $validator = Validator::make($r->all(),[
+            'id' => 'required|integer',
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $id = $r->id;
+        $user = User::find($id);
+
+        if(!in_array($user->role, [777,775] ))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "$user->first_name $user->last_name is not an accountant"
+            ],401);
+        }
+
+        if($user->status != 'active'):
+
+            $user->status = 'active';
+            $user->save();
+
+            $nairaUsersWallet = NairaWallet::sum('amount');
+            AccountantTimeStamp::create([
+                'user_id' => $id,
+                'activeTime' => Carbon::now(),
+                'opening_balance' => $nairaUsersWallet,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => "$user->first_name $user->last_name is activated"
+            ],200);
+        endif;
+
+        return response()->json([
+            'success' => true,
+            'message' => "$user->first_name $user->last_name is already activated"
+        ],200);
+    }
+
+    public function deactivateAccountant(Request $r)
+    {
+        $validator = Validator::make($r->all(),[
+            'id' => 'required|integer',
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $id = $r->id;
+        $user = User::find($id);
+        if(!in_array($user->role, [777,775] ))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "$user->first_name $user->last_name is not an accountant"
+            ],401);
+        }
+
+        if($user->status != 'waiting'):
+
+            $user->status = 'waiting';
+            $user->save();
+
+            $nairaUsersWallet = NairaWallet::sum('amount');
+            $accountant = AccountantTimeStamp::where('user_id',$id)->latest()->first();
+                if(!empty($accountant))
+                {
+                    $time_stamp =  $accountant->where('user_id',$id)->latest()->first();
+
+                    $startTime = $accountant->activeTime;
+                    $endTime = Carbon::now();
+                    $totalDuration =  Carbon::parse($startTime)->diffInMinutes($endTime);
+                    if($totalDuration < 5){
+                        $time_stamp->delete();
+                    }
+                    else{
+                        $time_stamp->update([
+                            'inactiveTime' => Carbon::now(),
+                            'closing_balance' => $nairaUsersWallet,
+                        ]); 
+                    }
+                }
+
+            return response()->json([
+                'success' => true,
+                'message' => "$user->first_name $user->last_name is deactivated"
+            ],200);
+        endif;
+
+        return response()->json([
+            'success' => true,
+            'message' => "$user->first_name $user->last_name is already deactivated"
+        ],200);
     }
 
     public function appendDataFromLastActive(Collection $collection)

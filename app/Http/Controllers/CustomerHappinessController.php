@@ -66,7 +66,7 @@ class CustomerHappinessController extends Controller
             $tickedDetails = Ticket::where('ticketNo',$ticketNo)->first();
             $tickedDetails->update([
                 'status' => 'close',
-                'agent_id'=> Auth::user()->id,
+                'closed_by'=> Auth::user()->id,
             ]);
             return redirect()->route('customerHappiness.chatdetails', 'New');
             

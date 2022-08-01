@@ -85,7 +85,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::post('/delete/{id}',  'AnnouncementController@delete');
     });
 
-    //?settings
+    //settings
     Route::group(['prefix' => 'setting'], function () {
         Route::GET('/showUser', 'SettingController@showUser');
         Route::POST('/editUser', 'SettingController@editUser');
@@ -105,14 +105,16 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::POST('/setTarget', 'SettingController@assignSalesTarget');
     });
 
-    //?Accountants
+    //Accountants
     Route::group(['prefix' => 'accountant'], function () {
         Route::GET('/listOfAccountants', 'AccountantController@listOfAccountants');
         Route::GET('/ChartAndTransaction', 'AccountantController@ChartAndTransactions');
         Route::GET('/summary', 'AccountantController@summary');
+        Route::POST('/activateAccountant',  'AccountantController@activateAccountant');
+        Route::POST('/deactivateAccountant',  'AccountantController@deactivateAccountant');
     });
-    //?summary
 
+    //summary
     Route::group(['prefix' => 'summary'], function () {
 
         Route::GET('/timeGraph/{date?}', 'SummaryController@timeGraph');
@@ -210,6 +212,16 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::get('/summary', 'DashboardOverviewController@summary');
     });
 
+
+    //Customer Happiness
+    Route::group(['prefix' => 'customerHappiness'], function () {
+
+        Route::GET('/', 'CustomerHappinessController@overview');
+
+        Route::POST('/activateCustomerHappiness',  'CustomerHappinessController@activateCustomerHappiness');
+        Route::POST('/deactivateCustomerHappiness',  'CustomerHappinessController@deactivateCustomerHappiness');
+   });
+
     
 });
 
@@ -218,19 +230,8 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
     Route::get('/test', function(){
         return response()->json(['message' => 'test']);
     });
-    //?Customer Happiness
-    Route::group(['prefix' => 'customerHappiness'], function () {
 
-        Route::GET('/Overview', 'CustomerHappinessController@overview');
-        Route::POST('/addStaff', 'CustomerHappinessController@addStaff');
-        Route::GET('/showStaff/{id}', 'CustomerHappinessController@showStaff');
-        Route::POST('/editStaff', 'CustomerHappinessController@editStaff');
-        Route::GET('/removeStaff/{id}', 'CustomerHappinessController@removeUser');
-
-        Route::GET('/activateUser/{id}/{status}', 'CustomerHappinessController@activateUser');
-   });
-
-   //? Nexus
+   //Nexus
    Route::group(['prefix' => 'nexus'], function () {
     Route::GET('/nexusOverview', 'NexusController@verificationData');
     Route::GET('/nexusCrypto', 'NexusController@NexusCrypto');
@@ -239,13 +240,10 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
     });
 
-    //? pulseTransactionsAnalytics
+    //pulseTransactionsAnalytics
     Route::group(['prefix' => 'pulse'], function () {
         Route::GET('/Analytics', 'pulseAnalyticsController@pulseTransactionAnalytics');
-
         Route::GET('/', 'PulseController@index');
-        
-
         Route::GET('/chart', 'PulseController@chart');
         Route::GET('/sortChart', 'PulseController@sortChart');
 
@@ -254,12 +252,11 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
     Route::group(['prefix' => 'csLifetime'], function () {
         Route::get('/', 'CustomerLifeController@index');
         Route::get('/sort', 'CustomerLifeController@sorting');
-
         Route::get('/chart', 'CustomerLifeController@ChartData');
         Route::get('/chartSort', 'CustomerLifeController@sortChartData');
     });
 
-    //TODO: Sales Analytics Route
+    //Sales Analytics
     Route::group(['prefix' => 'salesAnalytics'], function () {
         Route::GET('/newUsers/{category?}', 'SalesNewUsersController@loadNewUsers');
         Route::POST('/newUsersSort', 'SalesNewUsersController@sortNewUsers');
