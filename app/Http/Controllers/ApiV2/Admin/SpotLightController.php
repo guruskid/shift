@@ -171,37 +171,56 @@ class SpotLightController extends Controller {
         $current_balance = $opening_balance - $paid_out;
 
         $saleRep = User::where(['role' => 556, 'status' => 'active'])->with('nairaWallet')->first();
-        $saleTimeStamp = SalesTimestamp::where(['user_id' => $saleRep->id])->latest()->first();
-
-        $tranx = Transaction::where(['status' => 'success'])
-        ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
-
-        $declinedTranx = Transaction::where(['status' => 'declined'])
-        ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
+        $saleTimeStamp = null;
+        $repFn = '';
+        $repLn = '';
+        if ($saleRep) {
+            $saleTimeStamp = SalesTimestamp::where(['user_id' => $saleRep->id])->latest()->first();
+            $repFn = $saleRep->first_name;
+            $repLn = $saleRep->last_name;
+        }
+        
+        $ticketsWaiting = 0;
+        $ticketsResolved = 0;
+        $ticketsUnresolved = 0;
 
         $customerHappiness = User::where(['role' => 555, 'status' => 'active'])->with('nairaWallet')->first();
-        $ticketsWaiting = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count();
-        $ticketsResolved = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count();
-        $ticketsUnresolved = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'waiting'])->count();
+        if ($customerHappiness) {
+            $ticketsWaiting = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count();
+            $ticketsResolved = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count();
+            $ticketsUnresolved = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'waiting'])->count();
+        } 
+        $aFn = (isset($customerHappiness)) ? $customerHappiness->first_name : null;
+        $aLn = (isset($customerHappiness)) ? $customerHappiness->lastst_name : null;
+        $customerHappinessAgent = $aFn.' '.$aLn;
 
-        $tranx = Transaction::where(['status' => 'success'])
-        ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
+        $tranx =  0;
+        $declinedTranx = 0;
+        $saleTotalAmt = 0;
 
-        $declinedTranx = Transaction::where(['status' => 'declined'])
-        ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
+        if ($saleTimeStamp) {
+            $saleTotalAmt = Transaction::where(['status' => 'success'])
+            ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()])->sum('amount_paid');
+
+            $tranx = Transaction::where(['status' => 'success'])
+            ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()])->count();
+    
+            $declinedTranx = Transaction::where(['status' => 'declined'])
+            ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()])->count();   
+        }
 
         return response()->json([
             'success' => true,
             'data' => [
                 'accountant' => self::accountantOnRole(),
                 'sales_rep' => [
-                    'staff_name' => $saleRep->first_name.' '.$saleRep->last_name,
-                    'total_amount' => $tranx->sum('amount_paid'),
-                    'successful_transaction' => $tranx->count(),
-                    'declined_transaction' => $declinedTranx->count()
+                    'staff_name' => $repFn.' '.$repLn,
+                    'total_amount' => $saleTotalAmt,
+                    'successful_transaction' => $tranx,
+                    'declined_transaction' => $declinedTranx
                 ],
                 'customer_happiness' => [
-                    'staff_name' => $customerHappiness->first_name.' '.$customerHappiness->last_name,
+                    'staff_name' => $customerHappinessAgent,
                     'waiting' => $ticketsWaiting,
                     'resolved' => $ticketsResolved,
                     'unresolved' => $ticketsUnresolved
@@ -251,20 +270,6 @@ class SpotLightController extends Controller {
     public function monthlyAnalytics(Request $request) {
         $year = $request['year'];
         $month = $request['month'];
-
-        // for ($i=0; $i < $eom; $i++) { 
-        //     $dateRange[] = $eod->format('Y-m-d');
-        //     $eod->subDay();
-        // }
-
-        // return $dateRange;
-
-        // return Carbon::create()->month($month)->startOfMonth()->year($year)->format('d/m/y').' '.Carbon::create()->month($month)->endOfMonth()->year($year)->format('d');
-        // return Carbon::create()->startOfMonth()->month(2);
-        // return Carbon::create()->month(04);
-
-        // return Carbon::now()->format('m');
-        // return Carbon::now()->startOfMonth() .' '. Carbon::now()->endOfMonth();
         
         $tranx = Transaction::where('status','success')
             ->select(DB::raw("date(created_at) as date"),DB::raw("count(date(created_at)) as total"))
@@ -288,21 +293,33 @@ class SpotLightController extends Controller {
             ->get();
 
         $unique_users = Transaction::where('status','success')
-            ->select(DB::raw("date(created_at) as date"),DB::raw("count(distinct user_id) as users"))
+            ->select(DB::raw("date(created_at) as date"),DB::raw("count(distinct user_id) as total"))
             // ->select(DB::raw("user_id as user"),DB::raw("count(user_id) as total"))
             ->where(DB::raw('month(created_at)'), '=', $month)
             ->where(DB::raw('year(created_at)'), '=', $year)
             ->groupBy('date')
             ->get();
 
+        $bigData = [];
+
+        $tranx = $this->formatData($tranx,$month,$year);
+        $turn_over = $this->formatData($turn_over,$month,$year);
+        $new_users = $this->formatData($users,$month,$year);
+        $unique_users = $this->formatData($unique_users,$month,$year);
+
+        for ($i=0; $i < count($tranx ); $i++) { 
+            $bigData[] = [
+                'date' => $tranx[$i]['date'],
+                'no_of_transactions' => $tranx[$i]['value'],
+                'turn_over' => $turn_over[$i]['value'],
+                'new_users' => $new_users[$i]['value'],
+                'unique_users' => $unique_users[$i]['value']
+            ];
+        }
+
         return response()->json([
             'success' => true,
-            'data' => [
-                'no_of_transactions' => $this->formatData($tranx,$month,$year),
-                'turn_over'   => $this->formatData($turn_over,$month,$year),
-                'new_users'   => $this->formatData($users,$month,$year),
-                'unique_users' => $this->formatData($unique_users,$month,$year)
-            ]
+            'data' => $bigData
         ],200);
     }
 
@@ -339,15 +356,26 @@ class SpotLightController extends Controller {
             ->groupBy('date')
             ->get();
 
+        $tranx = $this->formatData($tranx,$month,$year);
+        $resurrected_users = $this->formatData($turn_over,$month,$year);
+        $activation_rate = $this->formatData($users,$month,$year);
+        $unique_users = $this->formatData($unique_users,$month,$year);
+
+        $bigData = [];
+
+        for ($i=0; $i < count($tranx ); $i++) { 
+            $bigData[] = [
+                'date' => $tranx[$i]['date'],
+                'dead_users' => $tranx[$i]['value'],
+                'resurrected_users' => $resurrected_users[$i]['value'],
+                'activation_rate' => $activation_rate[$i]['value'],
+                'retained_users' => $unique_users[$i]['value']
+            ];
+        }
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'dead_users' => $this->formatData($tranx,$month,$year),
-                'resurrected_users'   => $this->formatData($turn_over,$month,$year),
-                'activation_rate'   => $this->formatData($users,$month,$year),
-                'retained_users' => $this->formatData($unique_users,$month,$year)
-            ]
+            'data' => $bigData
         ],200);
     }
 
