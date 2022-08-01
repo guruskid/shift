@@ -521,7 +521,7 @@ class BillsPaymentController extends Controller
         $btc_rate = $res->data->amount;
         // dd($rate_naira);
 
-        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+        $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
         $url =  "https://vtpass.com/api/service-categories";
         $response = $client->request('GET', $url);
 
@@ -628,7 +628,7 @@ class BillsPaymentController extends Controller
         $nt->status = 'pending';
         $nt->save();
 
-        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+        $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
         $url =  "https://vtpass.com/api/pay";
         $response = $client->request('POST', $url, [
             'json' => [
@@ -1025,7 +1025,7 @@ class BillsPaymentController extends Controller
     //     $bt->status = 'pending';
     //     $bt->save();
 
-    //     $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+    //     $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
     //     $url = "https://sandbox.vtpass.com/api/pay";
     //     $response = $client->request('POST', $url, [
     //         'json' => [
@@ -1341,7 +1341,7 @@ class BillsPaymentController extends Controller
                 $response = [];
             }else{
                 $response = $response['content'];
-                
+
                 // $vars = [];
                 // foreach($response as $vr) {
                 //     $vars[] = [
