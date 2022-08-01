@@ -298,7 +298,7 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
-        // $user->sendEmailVerificationNotification();
+      //  $user->sendEmailVerificationNotification();
 
         $auth_user = User::find($user->id);
         $success['token'] = $user->createToken('appToken')->accessToken;
@@ -327,6 +327,7 @@ class AuthController extends Controller
 
         $client = new Client();
         $url = env('TATUM_URL') . "/ledger/account/batch";
+
 
         /* try { */
         $response = $client->request('POST', $url, [
