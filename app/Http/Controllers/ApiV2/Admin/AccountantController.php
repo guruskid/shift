@@ -14,16 +14,26 @@ use Illuminate\Database\Eloquent\Collection;
 
 class AccountantController extends Controller
 {
-    public function index()
+
+    public function listOfAccountants()
     {
         $listOfAccountant = User::select('id','first_name','last_name','email','phone','role','status','username')
         ->with('accountantTimestamp')->whereIn('role',[777,775])->get();
         $listOfAccountant = $this->appendDataFromLastActive($listOfAccountant);
 
-        $activeUser = $listOfAccountant->where('status', 'active')->first();
+        return response()->json([
+            'success' => true,
+            'accountant' => $listOfAccountant
+        ],200);
+    }
 
-        $startTime = $activeUser['activeTime'];
-        $endTime = ($activeUser['inactiveTime'] == null) ? now() : $activeUser['inactiveTime'];
+    public function summary()
+    {
+        $activeUser = User::select('id','first_name','last_name','email','phone','role','status','username')
+        ->with('accountantTimestamp')->whereIn('role',[777,775])->where('status', 'active')->first();
+
+        $startTime = $activeUser->accountantTimestamp->first()->activeTime;
+        $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
 
         $p2pTranx = NairaTrade::where('status', 'success')->where('created_at','>=',$startTime)->where('created_at','<=',$endTime)->get();
 
@@ -32,6 +42,29 @@ class AccountantController extends Controller
 
         $withdrawal_count =  $p2pTranx->where('type','withdrawal')->count();
         $withdrawal_amount = $p2pTranx->where('type','withdrawal')->sum('amount');
+
+        $summary = [
+            'DepositCount' => $deposit_count,
+            'DepositAmount' => $deposit_amount,
+            'WithdrawalCount' => $withdrawal_count,
+            'WithdrawalAmount' => $withdrawal_amount
+        ];
+
+        return response()->json([
+            'success' => true,
+            'summary' => $summary,
+        ], 200);
+    }
+
+    public function ChartAndTransactions()
+    {
+        $activeUser = User::select('id','first_name','last_name','email','phone','role','status','username')
+        ->with('accountantTimestamp')->whereIn('role',[777,775])->where('status', 'active')->first();
+
+        $startTime = $activeUser->accountantTimestamp->first()->activeTime;
+        $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
+
+        $p2pTranx = NairaTrade::where('status', 'success')->where('created_at','>=',$startTime)->where('created_at','<=',$endTime)->get();
 
         $chart = $p2pTranx->groupBy(function($date){
             return Carbon::parse($date->created_at)->format('h');
@@ -45,21 +78,14 @@ class AccountantController extends Controller
                 'amount' => $value->sum('amount')
             );
         }
-        $summary = [
-            'DepositCount' => $deposit_count,
-            'DepositAmount' => $deposit_amount,
-            'WithdrawalCount' => $withdrawal_count,
-            'WithdrawalAmount' => $withdrawal_amount
-        ];
-
         $transactions = $this->TransactionsDuringActiveTime($startTime, $endTime);
 
         return response()->json([
-            'accountant' => $listOfAccountant,
-            'summary' => $summary,
+            'success' => true,
             'transactions' => $transactions,
             'chart' => $chartExportData
-        ]);
+        ],200);
+
     }
 
     public function appendDataFromLastActive(Collection $collection)

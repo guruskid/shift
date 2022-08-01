@@ -107,7 +107,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 
     //?Accountants
     Route::group(['prefix' => 'accountant'], function () {
-        Route::GET('/', 'AccountantController@index');
+        Route::GET('/listOfAccountants', 'AccountantController@listOfAccountants');
+        Route::GET('/ChartAndTransaction', 'AccountantController@ChartAndTransactions');
+        Route::GET('/summary', 'AccountantController@summary');
     });
     //?summary
 
