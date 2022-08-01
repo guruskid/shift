@@ -20,11 +20,20 @@ class DashboardOverviewController extends Controller {
     public function overview() {
         $walletTotal = NairaWallet::sum('amount');
         $customerHappiness = User::where(['role' => 555, 'status' => 'active'])->with('nairaWallet')->first();
-        $opened = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count();
-        $closed = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count();
+        $opened = 0;
+        $closed = 0;
+        if ($customerHappiness) {
+            $opened = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count();
+            $closed = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count();
+        }
 
         $totalOpened = Ticket::where(['status'=>'open'])->count();
         $totalClosed = Ticket::where(['status'=>'closed'])->count();
+
+        $aFn = (isset($customerHappiness)) ? $customerHappiness->first_name : null;
+        $aLn = (isset($customerHappiness)) ? $customerHappiness->lastst_name : null;
+
+        $customerHappinessAgent = $aFn.' '.$aLn;
         
         $overview = [
             'users_naira_wallet' => number_format($walletTotal,'0','.',','),
@@ -34,7 +43,7 @@ class DashboardOverviewController extends Controller {
                 'new_users' => '14%'
             ],
             'customer_happiness' => [
-                'staff_name' => $customerHappiness->first_name.' '.$customerHappiness->last_name,
+                'staff_name' => $customerHappinessAgent,
                 'opened_query' => $opened,
                 'closed_query' => $closed,
                 'total_opened_query' => $totalOpened,
