@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payout extends Model
 {
-   Protected $guarded = [];	 
+   Protected $guarded = [];
 }
