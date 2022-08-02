@@ -21,7 +21,7 @@ class AccountantController extends Controller
     public function listOfAccountants()
     {
         $listOfAccountant = User::select('id','first_name','last_name','email','phone','role','status','username')
-        ->with('accountantTimestamp')->whereIn('role',[777,775])->get();
+        ->with('accountantTimestamp')->whereIn('role',[777,775, 889])->get();
         $listOfAccountant = $this->appendDataFromLastActive($listOfAccountant);
 
         return response()->json([
@@ -33,7 +33,7 @@ class AccountantController extends Controller
     public function summary()
     {
         $activeUser = User::select('id','first_name','last_name','email','phone','role','status','username')
-        ->with('accountantTimestamp')->whereIn('role',[777,775])->where('status', 'active')->first();
+        ->with('accountantTimestamp')->whereIn('role',[777,775, 889])->where('status', 'active')->first();
 
         $summary = [
             'DepositCount' => 0,
@@ -71,7 +71,7 @@ class AccountantController extends Controller
     public function ChartAndTransactions()
     {
         $activeUser = User::select('id','first_name','last_name','email','phone','role','status','username')
-        ->with('accountantTimestamp')->whereIn('role',[777,775])->where('status', 'active')->first();
+        ->with('accountantTimestamp')->whereIn('role',[777,775, 889])->where('status', 'active')->first();
 
         $startTime = $activeUser->accountantTimestamp->first()->activeTime;
         $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
