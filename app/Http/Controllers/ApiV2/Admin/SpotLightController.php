@@ -323,10 +323,34 @@ class SpotLightController extends Controller {
         ],200);
     }
 
+    public static function deadUsersCount() {
+        $users_no_transactions = User::doesnthave('transactions')->count();
+        $dead_users = User::where('status','active')
+            ->with(['transactions' => function ($query) {
+                $query->where(DB::raw('date(created_at)'),'<',Carbon::now()->subMonth(6)->format('Y-m-d'));
+            }])->count();
+        return $users_no_transactions + $dead_users;
+    }
+
+    public static function resurrectedUsersCount() {
+        $users1 = User::whereHas('transactions', function ($query) {
+                $query->whereNotBetween('created_at',[Carbon::now()->subMonth(6),Carbon::now()->subMonth(1)]);
+            })->pluck('id');
+
+        $users2 = User::whereHas('transactions', function ($query) {
+            $query->where(DB::raw('date(created_at)'),Carbon::now()->format('Y-m-d'))
+                ->where(DB::raw('date(created_at)'),'=',Carbon::now()->format('Y-m-d'));
+        })->whereIn('id',$users1)
+        ->count();
+        return $users2;
+    }
+
     public function otherGraph(Request $request) {
         $year = $request['year'];
         $month = $request['month'];
-        
+        $dead_users = self::deadUsersCount();
+        $resurrected_userss = self::resurrectedUsersCount();
+
         $tranx = Transaction::where('status','success')
             ->select(DB::raw("date(created_at) as date"),DB::raw("count(date(created_at)) as total"))
             ->where(DB::raw('month(created_at)'), '=', $month)
