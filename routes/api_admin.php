@@ -233,27 +233,30 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
    //Nexus
    Route::group(['prefix' => 'nexus'], function () {
-    Route::GET('/nexusOverview', 'NexusController@verificationData');
-    Route::GET('/nexusCrypto', 'NexusController@NexusCrypto');
-    Route::GET('/nexusGiftCard', 'NexusController@NexusGiftCard');
-    Route::GET('/timeGraph','NexusController@timeGraph');
+    Route::ANY('/', 'NexusController@verificationData');
+    Route::ANY('/nexusCrypto', 'NexusController@NexusCrypto');
+    Route::ANY('/nexusGiftCard', 'NexusController@NexusGiftCard');
+    Route::ANY('/timeGraph','NexusController@timeGraph');
 
     });
 
     //pulseTransactionsAnalytics
     Route::group(['prefix' => 'pulse'], function () {
         Route::GET('/Analytics', 'pulseAnalyticsController@pulseTransactionAnalytics');
+        Route::POST('/SortAnalytics', 'pulseAnalyticsController@sortTransactionAnalytics');
+        
         Route::GET('/', 'PulseController@index');
         Route::GET('/chart', 'PulseController@chart');
-        Route::GET('/sortChart', 'PulseController@sortChart');
+        Route::POST('/sortChart', 'PulseController@sortChart');
 
     });
     
+    //csLifetime
     Route::group(['prefix' => 'csLifetime'], function () {
         Route::get('/', 'CustomerLifeController@index');
-        Route::get('/sort', 'CustomerLifeController@sorting');
+        Route::post('/sort', 'CustomerLifeController@sorting');
         Route::get('/chart', 'CustomerLifeController@ChartData');
-        Route::get('/chartSort', 'CustomerLifeController@sortChartData');
+        Route::post('/chartSort', 'CustomerLifeController@sortChartData');
     });
 
     //Sales Analytics

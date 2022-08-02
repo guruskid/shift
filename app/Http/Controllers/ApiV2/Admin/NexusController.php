@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTransaction;
 use App\Transaction;
+use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
 
@@ -18,7 +19,7 @@ class NexusController extends Controller
         if($request->date == null){
             $date = now();
         }else{
-            $date = Carbon::parse($request->date);
+            $date = Carbon::parse($request->date)->addHour();
         }
         
         //*using the usd value to change the naira value to dollars
@@ -32,11 +33,11 @@ class NexusController extends Controller
 
          //* Level 1 Verification
          $L1_Crypto = Transaction::whereHas('user', function ($query){
-            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '==', null)->where('idcard_verified_at', '==', null);
+            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', null)->where('idcard_verified_at', null);
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
          $L1_Utilities = UtilityTransaction::whereHas('user', function ($query){
-            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '==', null)->where('idcard_verified_at', '==', null);
+            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', null)->where('idcard_verified_at', null);
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
         //? monthly trading value 
@@ -61,11 +62,11 @@ class NexusController extends Controller
 
          //* Level 2 Verification
          $L2_Crypto = Transaction::whereHas('user', function ($query){
-            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null)->where('idcard_verified_at', '==', null);
+            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null)->where('idcard_verified_at', null);
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
          $L2_Utilities = UtilityTransaction::whereHas('user', function ($query){
-            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null)->where('idcard_verified_at', '==', null);
+            $query->where('phone_verified_at', '!=', null)->where('address_verified_at', '!=', null)->where('idcard_verified_at', null);
          })->where('status','success')->whereMonth('created_at',$date->month)->WhereYear('created_at',$date->year)->get();
 
         //? monthly trading value 
@@ -324,7 +325,7 @@ class NexusController extends Controller
 
      public function NexusCrypto(Request $request)
      {
-        $date = ($request->date == null) ? now()->format('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
+        $date = ($request->date == null) ? now()->addHour()->format('Y-m-d') : Carbon::parse($request->date)->addHour()->format('Y-m-d');
         $nexus_crypto = $this->NexusCards($date,1);
 
         return response()->json([
@@ -336,7 +337,7 @@ class NexusController extends Controller
 
      public function NexusGiftCard(Request $request)
      {
-        $date = ($request->date == null) ? now()->format('Y-m-d') : Carbon::parse($request->date)->format('Y-m-d');
+        $date = ($request->date == null) ? now()->addHour()->format('Y-m-d') : Carbon::parse($request->date)->addHour()->format('Y-m-d');
         $nexus_giftCard = $this->NexusCards($date,0);
         return response()->json([
          'data' => $nexus_giftCard,

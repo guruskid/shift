@@ -12,6 +12,7 @@ use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class AccountantController extends Controller
@@ -34,23 +35,32 @@ class AccountantController extends Controller
         $activeUser = User::select('id','first_name','last_name','email','phone','role','status','username')
         ->with('accountantTimestamp')->whereIn('role',[777,775])->where('status', 'active')->first();
 
-        $startTime = $activeUser->accountantTimestamp->first()->activeTime;
-        $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
-
-        $p2pTranx = NairaTrade::where('status', 'success')->where('created_at','>=',$startTime)->where('created_at','<=',$endTime)->get();
-
-        $deposit_count = $p2pTranx->where('type','deposit')->count();
-        $deposit_amount = $p2pTranx->where('type','deposit')->sum('amount');
-
-        $withdrawal_count =  $p2pTranx->where('type','withdrawal')->count();
-        $withdrawal_amount = $p2pTranx->where('type','withdrawal')->sum('amount');
-
         $summary = [
-            'DepositCount' => $deposit_count,
-            'DepositAmount' => $deposit_amount,
-            'WithdrawalCount' => $withdrawal_count,
-            'WithdrawalAmount' => $withdrawal_amount
+            'DepositCount' => 0,
+            'DepositAmount' => 0,
+            'WithdrawalCount' => 0,
+            'WithdrawalAmount' => 0
         ];
+        
+        if($activeUser):
+            $startTime = $activeUser->accountantTimestamp->first()->activeTime;
+            $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
+
+            $p2pTranx = NairaTrade::where('status', 'success')->where('created_at','>=',$startTime)->where('created_at','<=',$endTime)->get();
+
+            $deposit_count = $p2pTranx->where('type','deposit')->count();
+            $deposit_amount = $p2pTranx->where('type','deposit')->sum('amount');
+
+            $withdrawal_count =  $p2pTranx->where('type','withdrawal')->count();
+            $withdrawal_amount = $p2pTranx->where('type','withdrawal')->sum('amount');
+
+            $summary = [
+                'DepositCount' => $deposit_count,
+                'DepositAmount' => $deposit_amount,
+                'WithdrawalCount' => $withdrawal_count,
+                'WithdrawalAmount' => $withdrawal_amount
+            ];
+        endif;
 
         return response()->json([
             'success' => true,

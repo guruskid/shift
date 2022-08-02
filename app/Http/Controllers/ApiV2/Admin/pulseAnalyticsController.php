@@ -11,19 +11,19 @@ use Carbon\Carbon;
 
 class pulseAnalyticsController extends Controller
 {
-    public function pulseTransactionAnalytics(Request $r)
+    public function pulseTransactionAnalytics()
     {
-        $r->startDate = ($r->startDate == null) ? now() : Carbon::parse($r->startDate);
-        $r->endDate = ($r->endDate == null) ? now() : Carbon::parse($r->endDate);
-        
-        $total_transaction = Transaction::where('status','success')->where('created_at','>=',$r->startDate)->where('created_at','<=',$r->endDate)->get();
+        $date = now();
+        $total_transaction = Transaction::where('status','success')->where('created_at',$date)->get();
+
         $total_tnx_no = $total_transaction->count();
         $total_asset_value = $total_transaction->sum('amount');
+
         $total_card_price = $total_transaction->sum('card_price');
         $total_cash_value = $total_transaction->sum('amount_paid');
-        $total_utility = UtilityTransaction::where('status','success')->where('created_at','>=',$r->startDate)->where('created_at','<=',$r->endDate)->count();
 
-        $transaction_table = $this->checkDuration($r->transaction_duration,$r->transaction_type);
+        $total_utility = UtilityTransaction::where('status','success')->where('created_at',$date)->count();
+
         return response()->json([
             'success' => true,
             'total_transaction_number' => number_format($total_tnx_no),
@@ -31,9 +31,41 @@ class pulseAnalyticsController extends Controller
             'total_card_price' => number_format($total_card_price),
             'total_cash_value' => number_format($total_cash_value),
             'total_utility' => number_format($total_utility),
-            'transaction_table' => $transaction_table,
+            'weekly_transaction_table' => $this->checkDuration('Weekly','Crypto'),
+            'monthly_transaction_table' => $this->checkDuration('Monthly','Crypto'),
+            'quarterly_transaction_table' => $this->checkDuration('Quarterly','Crypto'),
+            'annually_transaction_table' => $this->checkDuration('Annually','Crypto'),
         ], 200);
 
+    }
+
+    public function sortTransactionAnalytics(Request $r)
+    {
+        $r->startDate = ($r->startDate == null) ? now() : $r->startDate." 00:00:00";
+        $r->endDate = ($r->endDate == null) ? now() : $r->endDate." 23:59:59";
+
+        $total_transaction = Transaction::where('status','success')->where('created_at','>=',$r->startDate)->where('created_at','<=',$r->endDate)->get();
+        $total_tnx_no = $total_transaction->count();
+
+        $total_asset_value = $total_transaction->sum('amount');
+        $total_card_price = $total_transaction->sum('card_price');
+
+        $total_cash_value = $total_transaction->sum('amount_paid');
+        $total_utility = UtilityTransaction::where('status','success')->where('created_at','>=',$r->startDate)->where('created_at','<=',$r->endDate)->count();
+
+        $r->transaction_type = ($r->transaction_type == null) ? 'Crypto' : $r->transaction_type;
+        return response()->json([
+            'success' => true,
+            'total_transaction_number' => number_format($total_tnx_no),
+            'total_asset_value' => number_format($total_asset_value),
+            'total_card_price' => number_format($total_card_price),
+            'total_cash_value' => number_format($total_cash_value),
+            'total_utility' => number_format($total_utility),
+            'weekly_transaction_table' => $this->checkDuration('Weekly',$r->transaction_type),
+            'monthly_transaction_table' => $this->checkDuration('Monthly',$r->transaction_type),
+            'quarterly_transaction_table' => $this->checkDuration('Quarterly',$r->transaction_type),
+            'annually_transaction_table' => $this->checkDuration('Annually',$r->transaction_type ),
+        ], 200);
     }
 
     public function checkDuration($transaction_duration,$transaction_type)
@@ -127,12 +159,12 @@ class pulseAnalyticsController extends Controller
                 $duration_value = "$duration[0] - $duration[2]";
             }
             if(count($duration) == 2){
-                $duration_value = "$duration[0] - $duration[2]";
+                $duration_value = "$duration[0] - $duration[1]";
             }
             if(count($duration) == 1){
                 $duration_value = "$duration[0]";
             }
-
+            
                 $QM_data->duration = $duration_value;
                 $QM_data->L1_percentage = ($Level_1/$total)*100;
                 $QM_data->L2_percentage = ($Level_2/$total)*100;
@@ -141,14 +173,14 @@ class pulseAnalyticsController extends Controller
                 $QM_data->date = $QMv->created_at;
                 //* destroying the data available in the duration array
                 unset($duration);
-
+                
                 //*calculating percentage difference
                 $per_diff = ($previous_total != 0) ? (($total - $previous_total )/ $previous_total)*100 : 0 ;
                 $QM_data->percentage_difference = round($per_diff,2);
                 
                 //*setting the previous total with the old total
                 $previous_total = $total;
-            
+                  
         }
         //* adding the previous_percentage_difference to the payload.
         $previous_total = 0;
@@ -228,8 +260,6 @@ class pulseAnalyticsController extends Controller
                      }
                  }
                  $value->date = $v->created_at;
-    
-                 
              }
              $percentage_L1 = ($Level_1/$total)*100;
              $percentage_L2 = ($Level_2/$total)*100;

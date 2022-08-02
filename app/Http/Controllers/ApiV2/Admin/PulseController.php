@@ -159,7 +159,7 @@ class PulseController extends Controller
        $DAU = $tranxCurrentDaily->groupBy('user_id')->count();
        $MAU = $tranxCurrentMonth->groupBy('user_id')->count();
 
-       $dailyToMonthlyRatio = $DAU/$MAU;
+       $dailyToMonthlyRatio = ($MAU == 0) ? 0 : $DAU/$MAU;
 
        //? no of transactions
        $monthlyTranxNo = $tranxCurrentMonth->count();
@@ -283,7 +283,7 @@ class PulseController extends Controller
         //?DAU/QAU
         $QAU = $tranxCurrentQuarter->groupBy('user_id')->count();
 
-        $dailyToQuarterRatio = $DAU/$QAU;
+        $dailyToQuarterRatio = ($QAU == 0) ? 0 : $DAU/$QAU;
 
         //?no of transactions
         $quarterTranxNo = $tranxCurrentQuarter->count();
@@ -433,7 +433,7 @@ class PulseController extends Controller
         //? DAU/AAU
         $AAU = $tranxCurrentAnnual->groupBy('user_id')->count();
 
-        $dailyToAnnualRatio = $DAU/$AAU;
+        $dailyToAnnualRatio = ($AAU == 0) ? 0 : $DAU/$AAU;
 
         //? no of transactions
         $annualTranxNo = $tranxCurrentAnnual->count();
