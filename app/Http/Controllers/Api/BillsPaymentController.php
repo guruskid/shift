@@ -46,7 +46,7 @@ class BillsPaymentController extends Controller
         $btc_rate = $res->data->amount;
         // dd($rate_naira);
 
-        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+        $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
         $url =  "https://vtpass.com/api/service-categories";
         $response = $client->request('GET', $url);
 
@@ -412,7 +412,7 @@ class BillsPaymentController extends Controller
         $nt->status = 'pending';
         $nt->save();
 
-        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+        $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
         $url =  "https://vtpass.com/api/pay";
         $response = $client->request('POST', $url, [
             'json' => [
@@ -1117,6 +1117,124 @@ class BillsPaymentController extends Controller
         }
     }
 
+
+    //get variation
+
+    public function getVariations($product) {
+        $response = [];
+        if(!empty($product)) {
+            $ch = curl_init(env('LIVE_VTPASS_GET_VARIATIONS_URL').$product);
+            \curl_setopt_array($ch,[
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT=> 120,
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response,true);
+
+            if(isset($response['response_description']) && $response['response_description'] != "000") {
+                $response = [];
+            }else{
+                $response = isset($response['content']['varations']) ? $response['content']['varations'] : [];
+            }
+        }
+        if(count($response) > 0) {
+            $vars = [];
+            foreach($response as $vr) {
+                $vars[] = [
+                    'variation_name' => $vr['name'],
+                    'variation_amount' => $vr['variation_amount'],
+                    'variation_code' => $vr['variation_code']
+                ];
+            }
+            $response = $vars;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+
+    }
+
+
+    public function merchantVerify($serviceID,$billersCode) {
+
+        $response = [];
+        if(!empty($serviceID) && !empty($billersCode)) {
+            $post_data = [
+                'serviceID' => $serviceID,
+                'billersCode' => $billersCode
+            ];
+
+            $ch = curl_init(env('LIVE_VTPASS_MERCHANT_VERIFICATION_URL'));
+            \curl_setopt_array($ch,[
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_USERPWD=> env('VTPASS_USERNAME').':'.env('VTPASS_PASSWORD'),
+                CURLOPT_TIMEOUT=> 120,
+                CURLOPT_POST=>true,
+                CURLOPT_POSTFIELDS=>$post_data
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response,true);
+
+            if(isset($response['code']) && $response['code'] != "000") {
+                $response = [];
+            }else{
+                if(isset($response['content']['error'])){
+                    $response = [];
+                }else{
+                    $response = isset($response['content']) ? $response['content']: [];
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
+
+
+    public static function getProducts($category = "electricity-bill") {
+        $category = (
+            ($category == "airtime") ? "airtime" :
+            (($category == "data") ? "data" :
+            (($category == "tv-subscription") ? "tv-subscription" :
+            (($category == "electricity-bill") ? "electricity-bill" :
+            (($category == "insurance") ? "insurance" :
+            (($category == "education") ? "education" :
+            (($category == "funds") ? "funds" : ""))))))
+        );
+
+        $response = [];
+        if(!empty($category)) {
+            $ch = curl_init(env('LIVE_VTPASS_GET_PRODUCTS_URL').$category);
+            \curl_setopt_array($ch,[
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT=> 120,
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response,true);
+            if(isset($response['response_description']) && $response['response_description'] != "000") {
+                $response = [];
+            }else{
+                $response = $response['content'];
+
+            }
+
+
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
     // public function bitcoinAirtime(Request $request)
     // {
     //     $request->validate([
@@ -1228,7 +1346,7 @@ class BillsPaymentController extends Controller
     //     $bt->status = 'pending';
     //     $bt->save();
 
-    //     $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+    //     $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
     //     $url = "https://sandbox.vtpass.com/api/pay";
     //     $response = $client->request('POST', $url, [
     //         'json' => [

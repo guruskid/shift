@@ -38,17 +38,19 @@ Route::group(['middleware' => 'auth:api'], function () {
     //Pay Cable
     Route::get('/cable', 'Api\BillsPaymentController@cable');
     Route::post('/recharge-cable', 'Api\BillsPaymentController@rechargeCable');
-    Route::post('/get-merchant/{serviveId}/{billercode}', 'BillsPaymentController@merchantVerify');
+    Route::post('/get-merchant/{serviveId}/{billercode}', 'Api\BillsPaymentController@merchantVerify');
+
+    Route::get('/get-variations/{serviveId}', 'Api\BillsPaymentController@getVariations');
 
     //Power
-    Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
-    Route::get('/get-elect-boards/{category?}', 'BillsPaymentController@getProducts');
+   // Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+    Route::get('/get-elect-boards/{category?}', 'Api\BillsPaymentController@getProducts');
 
     Route::post('/get-dec-user', 'BillsPaymentController@getUser');
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
 
     Route::get('/power/{category?}', 'Api\BillsPaymentController@power');
-    Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+  //  Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
     Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
 
 
@@ -59,7 +61,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
 
 
-    
+
 
     Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified', 'admin', 'super' ]], function () {
         Route::get('/utility/airtime', 'UserController@deleteBank');
