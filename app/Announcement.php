@@ -15,6 +15,10 @@ class Announcement extends Model
         return $this->belongsTo(User::class,'posted_by','id');
     }
 
+    public function getImageAttribute($image) {
+        return url('storage/announcement/'.$image);
+    }
+
     public function getPostedAttribute($posted_by) {
         $roles = [
             '999' => 'CEO',
