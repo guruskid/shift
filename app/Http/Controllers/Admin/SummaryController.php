@@ -550,8 +550,7 @@ class SummaryController extends Controller
         }
         else{
             $value = $value
-            ->whereDate('updated_at', '>=', $current_day_value)
-            ->whereDate('updated_at', '<=', $current_day_value);
+            ->whereDate('updated_at', $current_day_value);
         }
         return $value;
     }
