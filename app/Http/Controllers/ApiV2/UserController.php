@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiV2;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LiveRateController;
+use App\Http\Controllers\LoginSessionController;
 use App\ImageSlide;
 use App\NairaTransaction;
 use App\Transaction;
@@ -183,6 +184,9 @@ class UserController extends Controller
             array_push($slides, array("image" => url('storage/slider/' . $image->image)));
         }
 
+        $loginSession = new LoginSessionController();
+        $loginSession->FindSessionData(Auth::user()->id);
+        
         return response()->json([
             'success' => true,
             'btc_balance' => $btc_balance,

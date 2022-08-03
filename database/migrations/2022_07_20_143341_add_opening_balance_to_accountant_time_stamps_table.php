@@ -14,7 +14,8 @@ class AddOpeningBalanceToAccountantTimeStampsTable extends Migration
     public function up()
     {
         Schema::table('accountant_time_stamps', function (Blueprint $table) {
-            $table->bigInteger('opening_balance')->default(0)->after('inactiveTime');
+            $table->bigInteger('opening_balance')->nullable()->after('inactiveTime');
+            $table->bigInteger('closing_balance')->nullable()->after('opening_balance');
         });
     }
 
@@ -26,7 +27,7 @@ class AddOpeningBalanceToAccountantTimeStampsTable extends Migration
     public function down()
     {
         Schema::table('accountant_time_stamps', function (Blueprint $table) {
-            //
+            $table->dropColumn('opening_balance','closing_balance');
         });
     }
 }
