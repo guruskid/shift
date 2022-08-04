@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Ticket;
 use App\TicketCategory;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,12 +28,14 @@ class TicketController extends Controller
             ], 401);
         }
 
+        $agent_id = User::where('role', 555)->where('status', 'active')->first();
+
         $ticket = Ticket::create([
             'ticketNo' => time(),
             'user_id' => Auth::user()->id,
             'description' => $r->description,
             'status' => 'open',
-            'agent_id' => null,
+            'agent_id' => $agent_id->id,
             'subcategory_id' => $r->subcategory_id,
         ]);
         //* getting subcategory and parent category.

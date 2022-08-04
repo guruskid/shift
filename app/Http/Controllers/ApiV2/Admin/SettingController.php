@@ -59,7 +59,7 @@ class SettingController extends Controller
                 $role_name = "Chinese Administrator";
                 break;    
             default:
-            $role_name = "";
+            $role_name = null;
                 break;
         }
         return $role_name;
@@ -244,15 +244,55 @@ class SettingController extends Controller
         ], 200);
     }
 
-    public function addStaff(Request $r)
+    public function getUserByEmail(Request $request, User $user)
+    {
+        $validate = Validator::make($request->all(), [
+            'email' => 'required| email',
+            'role' => 'required | integer'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ], 401);
+        }
+
+        $userData = $user->where('email', $request->email)->first();
+        if(!$userData) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User Does Not Exist'
+            ], 401);
+        }
+        $exportData = [
+            'id' => $userData->id,
+            'first_name' => $userData->first_name,
+            'last_name' => $userData->last_name,
+            'email' => $userData->email,
+            'phone' => $userData->phone,
+            'password' => 'Cannot be decrypted',
+            'username' => $userData->username,
+            'staffId' => $userData->staffId,
+            'role' => $userData->role
+        ];
+
+        return response()->json([
+            'success' => true,
+            'user' => $exportData
+        ], 200);
+    }
+
+    public function addStaff(Request $r, User $user)
     {
         $validate = Validator::make($r->all(), [
+            'id'=>'required',
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|unique:users',
+            'email' => 'required',
             'phone' => 'required',
-            'password' => 'required',
-            'username' => 'required|unique:users,username',
+            'password' => 'required|min:8',
+            'username' => 'required|unique:users',
             'role' => 'required'
         ]);
 
@@ -263,19 +303,40 @@ class SettingController extends Controller
             ], 401);
         }
 
-        User::create([
-            'first_name' => $r->first_name,
-            'last_name' => $r->last_name,
-            'email' => $r->email,
-            'phone' => $r->phone,
-            'password' => Hash::make($r->password),
-            'username' => $r->username,
-            'role' => $r->role,
-        ]);
+        $roleName = $this->roleName($r->role);
+        if(!$roleName)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'role does not exist',
+            ], 401);
+        }
 
+        if($r->password == 'Cannot be decrypted')
+        {
+            $user->where('id',$r->id)->update([
+                'first_name' => $r->first_name,
+                'last_name' => $r->last_name,
+                'email' => $r->email,
+                'phone' => $r->phone,
+                'username' => $r->username,
+                'role' => $r->role,
+            ]);
+        }
+        else{
+            $user->where('id',$r->id)->update([
+                'first_name' => $r->first_name,
+                'last_name' => $r->last_name,
+                'email' => $r->email,
+                'phone' => $r->phone,
+                'password' => Hash::make($r->password),
+                'username' => $r->username,
+                'role' => $r->role,
+            ]);
+        }
         return response()->json([
             'success' => true,
-            'message' => "$r->first_name $r->last_name with the role of ".$this->roleName($r->role)." has been added",
+            'message' => "$r->first_name $r->last_name with the role of ".$roleName." has been added",
         ], 200);
         
     }

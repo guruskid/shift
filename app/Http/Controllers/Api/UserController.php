@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CryptoHelperController;
+use App\Http\Controllers\LoginSessionController;
 use App\NairaTransaction;
 use App\Notification;
 use App\Setting;
@@ -31,6 +32,9 @@ class UserController extends Controller
         $total_crypto_balance = $btc_wallet->usd   + ($usdt_wallet ? $usdt_wallet->usd : 0) ;
         $total_ngn_balance = $btc_wallet->ngn  + ($usdt_wallet ? $usdt_wallet->ngn : 0) + $naira_wallet->amount;
 
+        //* Add checker for login Session
+        $loginSession = new LoginSessionController();
+        $loginSession->FindSessionData(Auth::user()->id);
 
         return response()->json([
             'success' => true,

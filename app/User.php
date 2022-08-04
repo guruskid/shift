@@ -154,9 +154,18 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne('App\UserTracking');
     }
 
-    //? loading target
     public function target()
     {
         return $this->hasOne('App\TargetSettings');
+    }
+
+    public function accountantTimestamp()
+    {
+        return $this->hasMany('App\AccountantTimeStamp')->latest('id');
+
+    }
+    public function loginSession()
+    {
+        return $this->hasMany('App\LoginSession')->latest();
     }
 }

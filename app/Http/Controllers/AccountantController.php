@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AccountantTimeStamp;
+use App\NairaWallet;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,7 +36,6 @@ class AccountantController extends Controller
     public function action($id, $action)
     {   
         $user = User::find($id);
-        // return $user->nairaWallet;
         if ($action == 'remove') {
             $user->role = 1;
         }elseif(Auth::user()->role == 999 && $action == 'upgrade-to-senior'){
@@ -46,6 +46,7 @@ class AccountantController extends Controller
         }
         $user->save();
 
+        $nairaUsersWallet = NairaWallet::sum('amount');
         //* tracking user
         if(($user->role == 777))
         {
@@ -53,6 +54,7 @@ class AccountantController extends Controller
                 AccountantTimeStamp::create([
                     'user_id' => $id,
                     'activeTime' => Carbon::now(),
+                    'opening_balance' => $nairaUsersWallet,
                 ]);
             }
             if($action == 'waiting')
@@ -66,7 +68,10 @@ class AccountantController extends Controller
                         $accountant->delete();
                     }
                     else{
-                        $accountant->update(['inactiveTime' => Carbon::now()]); 
+                        $accountant->update([
+                            'inactiveTime' => Carbon::now(),
+                            'closing_balance' => $nairaUsersWallet,
+                        ]); 
                     }
     
                     
