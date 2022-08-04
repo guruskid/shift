@@ -136,9 +136,11 @@ class SpotLightController extends Controller {
         $tranx = DB::table('transactions')
             ->join('users', 'transactions.user_id', '=', 'users.id')
             // ->join('naira_wallets', 'transactions.user_id', '=', 'naira_wallets.id')
-            ->select('transactions.id','card as transaction','amount_paid as amount','transactions.amount as value',DB::raw('0 as prv_bal'),DB::raw('0 as cur_bal'),'transactions.status',DB::raw('date(transactions.created_at) as date','transactions.created_at as created_at'));
+            ->select('first_name','last_name','username','dp','transactions.id','user_id','card as transaction','amount_paid as amount','transactions.amount as value',DB::raw('0 as prv_bal'),DB::raw('0 as cur_bal'),'transactions.status',DB::raw('date(transactions.created_at) as date','transactions.created_at as created_at'))
+            ;
         $tranx2 = DB::table('naira_transactions')
-            ->select('id','type as transaction','amount_paid','naira_transactions.amount as value','previous_balance as prv_bal','current_balance as cur_bal','naira_transactions.status',DB::raw('date(naira_transactions.created_at) as date','naira_transactions.created_at as created_at'));
+            ->join('users', 'naira_transactions.user_id', '=', 'users.id')
+            ->select('first_name','last_name','username','dp','naira_transactions.id','user_id','type as transaction','amount_paid','naira_transactions.amount as value','previous_balance as prv_bal','current_balance as cur_bal','naira_transactions.status',DB::raw('date(naira_transactions.created_at) as date','naira_transactions.created_at as created_at'));
 
         $mergeTbl = $tranx->unionAll($tranx2);
         DB::table(DB::raw("({$mergeTbl->toSql()}) AS mg"))->mergeBindings($mergeTbl);

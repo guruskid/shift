@@ -175,7 +175,7 @@ class DashboardOverviewController extends Controller {
         }
 
         $tranx = NairaTrade::where(DB::raw('date(created_at)'),$date)
-            ->with('user')
+            ->with(['user','agent'])
             ->limit(10)
             ->get();
 
