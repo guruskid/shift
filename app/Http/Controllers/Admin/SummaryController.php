@@ -442,7 +442,7 @@ class SummaryController extends Controller
         $segment = $current_day_value->format("M d");
 
         $user = Auth::user();
-        $accountant = User::whereIn('role', [777,775])->get();
+        $accountant = User::whereIn('role', [889,777,775])->get();
 
         $accountant_timestamp = AccountantTimeStamp::whereDate('created_at','>=',$current_day_value)
         ->whereDate('created_at','<=',$current_day_value)
@@ -543,7 +543,7 @@ class SummaryController extends Controller
 
     public function category_listing($user,$accountant_timestamp,$value,$current_day_value)
     {
-        if (($user->role == 777 OR $user->role == 775 )&& !empty($accountant_timestamp)) {
+        if (($user->role == 777 OR $user->role == 775 OR $user->role == 889  ) && !empty($accountant_timestamp)) {
             $value = $value
             ->where('updated_at', '>=', $accountant_timestamp->created_at)
             ->where('updated_at', '<=', $accountant_timestamp->updated_at);
@@ -555,6 +555,8 @@ class SummaryController extends Controller
         return $value;
     }
 
+
+    
     public function sorting(Request $request)
     {
         $request->session()->put('RequestDetails', $request->all());
