@@ -36,13 +36,13 @@ class AccountantController extends Controller
         ->with('accountantTimestamp')->whereIn('role',[777,775, 889])->where('status', 'active')->first();
 
         $summary = [
-            'DepositCount' => 0,
-            'DepositAmount' => 0,
-            'WithdrawalCount' => 0,
-            'WithdrawalAmount' => 0
+            'DepositCount' => "Not Available",
+            'DepositAmount' => "Not Available",
+            'WithdrawalCount' => "Not Available",
+            'WithdrawalAmount' => "Not Available"
         ];
         
-        if($activeUser):
+        if($activeUser->accountantTimestamp->count() > 0){
             $startTime = $activeUser->accountantTimestamp->first()->activeTime;
             $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
 
@@ -60,7 +60,7 @@ class AccountantController extends Controller
                 'WithdrawalCount' => $withdrawal_count,
                 'WithdrawalAmount' => $withdrawal_amount
             ];
-        endif;
+        }
 
         return response()->json([
             'success' => true,
@@ -73,6 +73,15 @@ class AccountantController extends Controller
         $activeUser = User::select('id','first_name','last_name','email','phone','role','status','username')
         ->with('accountantTimestamp')->whereIn('role',[777,775, 889])->where('status', 'active')->first();
 
+        if($activeUser->accountantTimestamp->count() <= 0)
+        {
+            return response()->json([
+                'success' => true,
+                'transactions' => "Not Available",
+                'chart' => "Not Available"
+            ],200);
+        }
+        
         $startTime = $activeUser->accountantTimestamp->first()->activeTime;
         $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
 
@@ -220,23 +229,44 @@ class AccountantController extends Controller
 
         foreach($collection as $accountant)
         {
-            $accountant->role_name = ($accountant->role == 777) ? 'Junior Accountant' : 'Account Officer';
-            $latest_timeStamp = $accountant->accountantTimestamp->first();
+            if($accountant->accountantTimestamp->count() == 0)
+            {
+                $roles = new SettingController();
+                $accountant->role_name = $roles->roleName($accountant->role);
+                $latest_timeStamp = $accountant->accountantTimestamp->first();
+    
+                $accountant->openingBalance = 'Not Available';
+                $accountant->closingBalance = 'Not Available';
+    
+                $accountant->totalAmountPaidOut = 'Not Available';
+                $accountant->totalDeposit = 'Not Available';
+    
+                $accountant->pendingWithdrawal = 'Not Available';
+                $accountant->CurrentBalance = 'Not Available';
+    
+                $accountant->activeTime = 'Not Available';
+                $accountant->inactiveTime = 'Not Available';
+            }
+            else{
+                $roles = new SettingController();
+                $accountant->role_name = $roles->roleName($accountant->role);
+                $latest_timeStamp = $accountant->accountantTimestamp->first();
+                
+                $openingBalance = $latest_timeStamp->opening_balance;
+                $closingBalance = $latest_timeStamp->closing_balance;
 
-            $openingBalance = $latest_timeStamp->opening_balance;
-            $closingBalance = $latest_timeStamp->closing_balance;
+                $accountant->openingBalance = ($openingBalance == null) ? 'Not Available' : number_format($openingBalance);
+                $accountant->closingBalance = ($closingBalance == null) ? number_format($amount) : number_format($closingBalance);
 
-            $accountant->openingBalance = ($openingBalance == null) ? 'Not Available' : number_format($openingBalance);
-            $accountant->closingBalance = ($closingBalance == null) ? number_format($amount) : number_format($closingBalance);
+                $accountant->totalAmountPaidOut = $this->totalAmountPaidOut($latest_timeStamp->activeTime,$latest_timeStamp->inactiveTime,$all_transactions,$utilityTranx,$p2pTranx);
+                $accountant->totalDeposit = $this->totalDeposit($latest_timeStamp->activeTime,$latest_timeStamp->inactiveTime,$all_transactions,$p2pTranx);
 
-            $accountant->totalAmountPaidOut = $this->totalAmountPaidOut($latest_timeStamp->activeTime,$latest_timeStamp->inactiveTime,$all_transactions,$utilityTranx,$p2pTranx);
-            $accountant->totalDeposit = $this->totalDeposit($latest_timeStamp->activeTime,$latest_timeStamp->inactiveTime,$all_transactions,$p2pTranx);
+                $accountant->pendingWithdrawal = $this->pendingWithdrawal($latest_timeStamp->activeTime,$latest_timeStamp->inactiveTime,$p2pTranx);
+                $accountant->CurrentBalance = number_format($amount);
 
-            $accountant->pendingWithdrawal = $this->pendingWithdrawal($latest_timeStamp->activeTime,$latest_timeStamp->inactiveTime,$p2pTranx);
-            $accountant->CurrentBalance = number_format($amount);
-
-            $accountant->activeTime = $latest_timeStamp->activeTime;
-            $accountant->inactiveTime = $latest_timeStamp->inactiveTime;
+                $accountant->activeTime = $latest_timeStamp->activeTime;
+                $accountant->inactiveTime = $latest_timeStamp->inactiveTime;
+            }
         }  
 
         $activeUsers = $collection->where('status', 'active');

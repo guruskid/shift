@@ -18,6 +18,16 @@ class CustomerHappinessController extends Controller
     public function overview()
     {
         $customerHappinessUser = User::select('id','first_name','last_name','email','phone','status')->where('role',555)->get();
+
+        if($customerHappinessUser->count() <= 0)
+        {
+            return response()->json([
+                'success' => true,
+                'customerHappiness' => "Not Available",
+                'chart' => "Not Available",
+                'querySummary' => "Not Available",
+            ]);
+        }
         $ticketData = Ticket::all();
 
         $assigned_ticket = $ticketData->count();

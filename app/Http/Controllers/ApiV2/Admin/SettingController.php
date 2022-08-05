@@ -49,6 +49,9 @@ class SettingController extends Controller
             case 556:
                 $role_name = "Sales Personnel - New Users";
                 break;
+            case 555:
+                $role_name = "Customer Happiness";
+                break;
             case 666:
                 $role_name = "Manager";
                 break;

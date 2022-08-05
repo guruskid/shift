@@ -149,7 +149,7 @@ class CustomerLifeController extends Controller
         }
         $new_users = ( collect( $new_users )->count() );
 
-        $ACLM = 1 - ( ($uniqueMonthlyUserPT - ( $uniqueMonthlyUsers - $new_users )) / $uniqueMonthlyUserPT) ;
+        $ACLM = ($uniqueMonthlyUserPT == 0) ? 0 : 1 - ( ($uniqueMonthlyUserPT - ( $uniqueMonthlyUsers - $new_users )) / $uniqueMonthlyUserPT) ;
 
         //*Average Customer Lifetime Value Monthly
         $ACLVM = $CVM * $ACLM;
