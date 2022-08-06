@@ -324,6 +324,7 @@ class SettingController extends Controller
                 'phone' => $r->phone,
                 'username' => $r->username,
                 'role' => $r->role,
+                'status' => 'active',
             ]);
         }
         else{
@@ -335,6 +336,7 @@ class SettingController extends Controller
                 'password' => Hash::make($r->password),
                 'username' => $r->username,
                 'role' => $r->role,
+                'status' => 'active',
             ]);
         }
         return response()->json([
