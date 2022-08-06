@@ -33,6 +33,17 @@ class TradeController extends Controller
     public function agents()
     {
         $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
+
+        if($agents->count() == 0)
+        {
+            $accountantTimestampSA = User::where(['role' => 889, 'status' => 'active'])
+            ->with(['nairaWallet', 'accounts'])->whereHas('accountantTimestamp', function ($query){
+                $query->whereNull('inactiveTime');
+            })->get();
+
+            $agents = $accountantTimestampSA;
+        }
+
         foreach ($agents as $a) {
             $a->successful = $a->agentNairaTrades()->where('status', 'success')->count();
             $a->declined = $a->agentNairaTrades()->where('status', 'failed')->count();
@@ -59,6 +70,17 @@ class TradeController extends Controller
 
         $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->limit(1)->get();
         $user_wallet = $user->nairaWallet;
+
+        if($agent->count() == 0)
+        {
+            $accountantTimestampSA = User::where(['role' => 889, 'status' => 'active'])
+            ->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')
+            ->whereHas('accountantTimestamp', function ($query){
+                $query->whereNull('inactiveTime');
+            })->get();
+
+            $agent = $accountantTimestampSA;
+        }
 
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => $transactiontype])->first();
 
@@ -129,7 +151,7 @@ class TradeController extends Controller
             ]);
         }
 
-        $agent = User::where(['role' => 777, 'status' => 'active', 'id' => $request->agent_id])->first();
+        $agent = User::whereIn('role',[889,777])->where(['status' => 'active', 'id' => $request->agent_id])->first();
 
 
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
@@ -290,7 +312,7 @@ class TradeController extends Controller
             ], 401);
         }
 
-        $agent = User::where(['role' => 777, 'status' => 'active', 'id' => $request->agent_id])->limit(1)->get();
+        $agent = User::whereIn('role',[889,777])->where(['status' => 'active', 'id' => $request->agent_id])->limit(1)->get();
 
         if (count($agent) < 1) {
             return response()->json([
