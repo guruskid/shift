@@ -106,36 +106,15 @@ class SettingController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
-        $user->first_name = $r->first_name;
-        $user->last_name = $r->last_name;
-        if($r->email != $user->email)
-        {
-            if(User::where('email',$r->email)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Email is in use",
-                ], 401);
-            }   
-            $user->email = $r->email;
-        }
-        $user->email = $r->email;
-        $user->phone = $r->phone;
-        if($r->username != $user->username)
-        {
-            if(User::where('username',$r->username)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "username is in use",
-                ], 401);
-            }
-            $user->username = $r->username;
-        }
-        $user->password = Hash::make($r->password);
-        $user->role = $r->role;
-        $user->save();
+        Auth::user()->update([
+            'first_name' => $r->first_name,
+            'last_name' => $r->last_name,
+            'email' => $r->email,
+            'phone' => $r->phone,
+            'username' => $r->username,
+            'password' => Hash::make($r->password),
+            'role' => $r->role,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -173,9 +152,10 @@ class SettingController extends Controller
             'last_name' => 'required',
             'email' => 'required',
             'phone' => 'required',
-            'password' => 'required',
+            'password' => 'required | min:8',
             'username' => 'required',
-            'role' => 'required'
+            'role' => 'required',
+            'id' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -185,44 +165,19 @@ class SettingController extends Controller
             ], 401);
         }
 
-        $user = User::where('id',$r->id)->first();
-       
-
-        
-        $user->first_name = $r->first_name;
-        $user->last_name = $r->last_name;
-        if($r->email != $user->email)
-        {
-            if(User::where('email',$r->email)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Email is in use",
-                ], 401);
-            }   
-            $user->email = $r->email;
-        }
-        $user->email = $r->email;
-        $user->phone = $r->phone;
-        if($r->username != $user->username)
-        {
-            if(User::where('username',$r->username)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "username is in use",
-                ], 401);
-            }
-            $user->username = $r->username;
-        }
-        $user->password = Hash::make($r->password);
-        $user->role = $r->role;
-        $user->save();
+        $user = User::where('id',$r->id)->update([
+            'first_name' => $r->first_name,
+            'last_name' => $r->last_name,
+            'email' => $r->email,
+            'phone' => $r->phone,
+            'username' => $r->username,
+            'password' => Hash::make($r->password),
+            'role' => $r->role
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Updated',
-            'user_details' => $user,
+            'message' => 'Staff Data Updated',
         ], 200);
     }
 
@@ -414,5 +369,69 @@ class SettingController extends Controller
             'message' => "$user->first_name $user->last_name is not a of role SALES",
         ], 401);
 
+    }
+
+    public function activateStaff(Request $r)
+    {
+        $validate = Validator::make($r->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ], 401);
+        }
+
+        $id = $r->id;
+        $user = User::find($id);
+
+        if($user->status != 'active'):
+            $user->status = 'active';
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => "$user->first_name $user->last_name is activated"
+            ],200);
+        endif;
+
+        return response()->json([
+            'success' => true,
+            'message' => "$user->first_name $user->last_name is already activated"
+        ],200);
+    }
+
+    public function deactivateStaff(Request $r)
+    {
+        $validate = Validator::make($r->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ], 401);
+        }
+
+        $id = $r->id;
+        $user = User::find($id);
+
+        if($user->status != 'waiting'):
+            $user->status = 'waiting';
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => "$user->first_name $user->last_name is deactivated"
+            ],200);
+        endif;
+
+        return response()->json([
+            'success' => true,
+            'message' => "$user->first_name $user->last_name is already deactivated"
+        ],200);
     }
 }

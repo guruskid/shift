@@ -103,6 +103,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::POST('/updateSetting', 'SettingController@updateSettings');
 
         Route::POST('/setTarget', 'SettingController@assignSalesTarget');
+
+        Route::POST('/activateStaff', 'SettingController@activateStaff');
+        Route::POST('/deactivateStaff', 'SettingController@deactivateStaff');
     });
 
     //Accountants
