@@ -28,7 +28,8 @@ class AccountantController extends Controller
 
     public function juniorAccountants()
     {
-        $users = User::whereIn('role', [777, 889])->with('accountantTimestamp')->latest()->get();
+        $users = User::whereIn('role', [777, 889])->latest()->get();
+
         return view('admin.accountants', compact('users'));
     }
 
@@ -45,14 +46,15 @@ class AccountantController extends Controller
         }
         $user->save();
 
+        $nairaUsersWallet = NairaWallet::sum('amount');
         //* tracking user
         if(($user->role == 777))
         {
-            $nairaUsersWallet = NairaWallet::sum('amount');
             if ($action == 'active') {
                 AccountantTimeStamp::create([
                     'user_id' => $id,
                     'activeTime' => Carbon::now(),
+                    'opening_balance' => $nairaUsersWallet,
                 ]);
             }
             if($action == 'waiting')
@@ -66,7 +68,10 @@ class AccountantController extends Controller
                         $accountant->delete();
                     }
                     else{
-                        $accountant->update(['inactiveTime' => Carbon::now()]); 
+                        $accountant->update([
+                            'inactiveTime' => Carbon::now(),
+                            'closing_balance' => $nairaUsersWallet,
+                        ]); 
                     }
     
                     
@@ -74,6 +79,9 @@ class AccountantController extends Controller
                 
             }
         }
+        
+
+        return back()->with(['success'=>'Action Successfull']);
     }
 
 }
