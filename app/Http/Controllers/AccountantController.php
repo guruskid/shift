@@ -46,7 +46,7 @@ class AccountantController extends Controller
 
     public function action($id, $action)
     {   
-        $user = User::find($id);
+        $user = User::find($id); 
 
         if($action == 'activeSA' OR $action == 'waitingSA')
         {
