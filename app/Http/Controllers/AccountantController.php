@@ -32,15 +32,16 @@ class AccountantController extends Controller
         return view('admin.accountants', compact('users'));
     }
 
-    public function seniorAccountantActivation(User $user, $action)
+    public function seniorAccountantActivation(User $user, $action, $nairaUsersWallet)
     {
+        
         if($action == 'activeSA')
         {
-            $this->activateAccountantTimestamp($user,$user->id);
+            $this->activateAccountantTimestamp($user,$user->id, $nairaUsersWallet);
         }else{
-            $this->deactivateAccountantTimestamp($user->id);
+            $this->deactivateAccountantTimestamp($user->id, $nairaUsersWallet);
         }
-        return back()->with(['success'=>'Action Successfull']);
+        return back()->with(['success'=>'Action Successful']);
 
     }
 
@@ -48,9 +49,10 @@ class AccountantController extends Controller
     {   
         $user = User::find($id); 
 
+        $nairaUsersWallet = NairaWallet::sum('amount');
         if($action == 'activeSA' OR $action == 'waitingSA')
         {
-            return $this->seniorAccountantActivation($user, $action);
+            return $this->seniorAccountantActivation($user, $action, $nairaUsersWallet);
         }
 
         if ($action == 'remove') {
@@ -66,13 +68,12 @@ class AccountantController extends Controller
         //* tracking user
         if(($user->role == 777))
         {
-            $nairaUsersWallet = NairaWallet::sum('amount');
             if ($action == 'active') {
-                $this->activateAccountantTimestamp($user,$id);
+                $this->activateAccountantTimestamp($user,$id, $nairaUsersWallet);
             }
             if($action == 'waiting')
             {
-                $this->deactivateAccountantTimestamp($id);
+                $this->deactivateAccountantTimestamp($id, $nairaUsersWallet);
             }
         }
         
@@ -80,7 +81,7 @@ class AccountantController extends Controller
         return back()->with(['success'=>'Action Successfull']);
     }
 
-    public function activateAccountantTimestamp(User $user, $id)
+    public function activateAccountantTimestamp(User $user, $id, $nairaUsersWallet)
     {
         $user_check = AccountantTimeStamp::where('user_id', $user->id)->whereNull('inactiveTime')->get();
 
@@ -89,12 +90,12 @@ class AccountantController extends Controller
             AccountantTimeStamp::create([
                 'user_id' => $id,
                 'activeTime' => Carbon::now(),
-                // 'opening_balance' => $nairaUsersWallet,
+                'opening_balance' => $nairaUsersWallet,
             ]);
         }
     }
 
-    public function deactivateAccountantTimestamp($id)
+    public function deactivateAccountantTimestamp($id, $nairaUsersWallet)
     {
         $accountant = AccountantTimeStamp::where('user_id',$id)->whereNull('inactiveTime')->orderBy('id','DESC')->first();
 
@@ -108,7 +109,7 @@ class AccountantController extends Controller
             else{
                 $accountant->update([
                     'inactiveTime' => Carbon::now(),
-                    // 'closing_balance' => $nairaUsersWallet,
+                    'closing_balance' => $nairaUsersWallet,
                 ]); 
             }  
         }
