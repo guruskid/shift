@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Payout extends Model
+class LoginSession extends Model
 {
-   Protected $guarded = [];
+    protected $guarded = [];
 }

@@ -23,20 +23,16 @@ class JuniorAccountantController extends Controller
         $user = User::find($id);
         $user->status = $action;
         $user->save();
+
+        $nairaUsersWallet = NairaWallet::sum('amount');
         if(($user->role == 775))
         {
             $nairaUsersWallet = NairaWallet::sum('amount');
             if ($action == 'active') {
-                $user_check = AccountantTimeStamp::where('user_id', $user->id)->whereNull('inactiveTime')->get();
-                if($user_check->count() <= 0)
-                {
-                    AccountantTimeStamp::create([
-                        'user_id' => $id,
-                        'activeTime' => Carbon::now(),
-                        // 'opening_balance' => $nairaUsersWallet,
-                    ]);
-                }
-                
+                AccountantTimeStamp::create([
+                    'user_id' => $id,
+                    'activeTime' => Carbon::now(),
+                ]);
             }
             if($action == 'waiting')
             {
@@ -49,10 +45,7 @@ class JuniorAccountantController extends Controller
                         $accountant->delete();
                     }
                     else{
-                        $accountant->update([
-                            'inactiveTime' => Carbon::now(),
-                            // 'closing_balance' => $nairaUsersWallet,
-                        ]); 
+                        $time_stamp->update(['inactiveTime' => Carbon::now()]); 
                     }
     
                     

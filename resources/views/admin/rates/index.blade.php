@@ -172,11 +172,11 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <select name="card_id" id="" class="form-control  ">
-                                        
+
                                         @if (isset($selected_card))
-                                            <option value="{{ $selected_card->id }}">{{ $selected_card->name }}</option> 
+                                            <option value="{{ $selected_card->id }}">{{ $selected_card->name }}</option>
                                             @else
-                                            <option value="">Select Card</option> 
+                                            <option value="">Select Card</option>
                                         @endif
 
                                         @foreach ($cards as $card)
@@ -188,9 +188,9 @@
                                 <div class="col-md-3">
                                     <select name="currency_id" id="" class="form-control  ">
                                         @if (isset($selected_currency))
-                                            <option value="{{ $selected_currency->id }}">{{ $selected_currency->name }}</option> 
+                                            <option value="{{ $selected_currency->id }}">{{ $selected_currency->name }}</option>
                                             @else
-                                            <option value="">Select Currency</option> 
+                                            <option value="">Select Currency</option>
                                         @endif
                                         @foreach ($currencies as $currency)
                                         <option value="{{ $currency->id }}">{{ $currency->name }}</option>
@@ -201,7 +201,7 @@
                                 <div class="col-md-3">
                                     <select name="payment_medium_id" id="" class="form-control  ">
                                         @if (isset($selected_Payment_medium))
-                                            <option value="{{ $selected_Payment_medium->id }}">{{ $selected_Payment_medium->name }}</option> 
+                                            <option value="{{ $selected_Payment_medium->id }}">{{ $selected_Payment_medium->name }}</option>
                                             @else
                                             <option value="">Select Card Type</option>
                                         @endif
@@ -229,6 +229,17 @@
                                         <label for="">USD to NGN</label>
                                         <input type="number" name="rate" value="{{ $usd_ngn }}" class="form-control">
                                     </div>
+                                    <button class="btn btn-primary">Save</button>
+                                </form>
+                            </div>
+
+                            <div class="col-md-4">
+                                <form action="{{ route('admin.settings.update') }} " method="post">@csrf
+                                    <h5>Commission (%)</h5>
+                                    <input type="hidden" name="name" value="usdt_commission">
+                                    <input type="number" step="any" name="value"
+                                        value="{{ AppSetting::get('usdt_commission') }}"
+                                        class="form-control mb-2">
                                     <button class="btn btn-primary">Save</button>
                                 </form>
                             </div>
