@@ -71924,8 +71924,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/macbookpro/Sites/localhost/app.dantown/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/macbookpro/Sites/localhost/app.dantown/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/wisdomokechukwu/Documents/DantownRepos/newRepo/app_dantownms_prod/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/wisdomokechukwu/Documents/DantownRepos/newRepo/app_dantownms_prod/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
