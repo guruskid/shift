@@ -6,6 +6,7 @@ use App\Faq;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\TicketCategory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,11 +14,13 @@ class FaqApiController extends Controller
 {
     public function index()
     {
+
         $faq = Faq::all();
         return response()->json([
             'success' => true,
             "faq" => $faq,
         ], 200);
+
     }
 
     public function getFaq($id)
@@ -34,10 +37,14 @@ class FaqApiController extends Controller
             'success' => true,
             "faq" => $faq,
         ], 200);
+
+
+
     }
 
     public function addFaq(Request $r)
     {
+        if(Auth::user()->role === 999){
         $validator = Validator::make($r->all(), [
             'title' => 'required|min:2|max:225',
             'body' => 'required',
@@ -53,6 +60,7 @@ class FaqApiController extends Controller
         }
 
         $file = $r->file('photo');
+        
         $filename = "";
 
         if ($file) {
@@ -82,9 +90,19 @@ class FaqApiController extends Controller
             "faq" => $faq,
         ], 200);
     }
+    else {
+        return response()->json([
+            'success' => false,
+            "msg" => 'Not Authorised to add faq',
+        ], 200);
+    }
+
+    }
 
     public function updateFaq(Request $r)
     {
+
+        if(Auth::user()->role === 999){
         $validator = Validator::make($r->all(), [
             'id' => 'required|min:1|exists:faqs,id',
             'title' => 'required|min:2|max:225',
@@ -137,9 +155,17 @@ class FaqApiController extends Controller
             "message" => "Updated Successfully"
         ], 200);
     }
+    else {
+        return response()->json([
+            'success' => false,
+            "msg" => 'Not Authorised to update faq',
+        ], 200);
+    }
+    }
 
     public function deleteFaq($id)
     {
+        if(Auth::user()->role === 999){
         $faq = Faq::find($id);
 
         if (empty($faq)) {
@@ -154,4 +180,12 @@ class FaqApiController extends Controller
             "message" => "Faq Deleted"
         ], 200);
     }
+    else {
+        return response()->json([
+            'success' => false,
+            "msg" => 'Not Authorised to delete faq',
+        ], 200);
+    }
+}
+
 }
