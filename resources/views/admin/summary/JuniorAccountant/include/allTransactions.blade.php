@@ -108,6 +108,7 @@
                                         <th class="text-center">Card type</th>
                                         <th class="text-center">Asset value</th>
                                         <th class="text-center">Quantity</th>
+                                        <th class="text-center">Total Asset</th>
                                         <th class="text-center">Card price</th>
                                         @if (in_array(Auth::user()->role, [444,449] ))
                                         <th class="text-center">Cash value</th>
@@ -154,6 +155,7 @@
                                             @else
                                             <td class="text-center">{{ $t->quantity}}</td>
                                             @endif
+                                            <td class="text-center">{{ $t->amount * $t->quantity}}</td>
                                             <td class="text-center">{{$t->card_price}}</td>
                                             @if (in_array(Auth::user()->role, [444,449] ))
                                             <td class="text-center">N{{number_format($t->amount_paid)}}</td>
