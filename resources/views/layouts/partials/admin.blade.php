@@ -290,16 +290,6 @@
                 </li>
             @endif
 
-            @if (in_array(Auth::user()->role, [889, 999, 777] ) )
-            <li class="my-3">
-                <a href="{{route('p2p.accounts')}}"
-                    class=" {{ Route::currentRouteName() == 'p2p.accounts' ? 'mm-active' : '' }} ">
-                    <i class="metismenu-icon pe-7s-wallet"></i>
-                    Pay Birdge Accounts
-                </a>
-            </li>
-            @endif
-            
             @if (in_array(Auth::user()->role, [999, 666, 777,775, 889] ))
                 <li class="my-3">
                     <a href="{{route('admin.chat_agents')}}"

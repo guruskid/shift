@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\AccountantTimeStamp;
 use App\CallCategory;
 use App\CallLog;
 use Illuminate\Http\Request;
@@ -471,12 +470,6 @@ class BusinessDeveloperController extends Controller
                 }
             }
         }
-        return redirect()->back()->with("success", "Database Populated");
-    }
-
-    public function trunc()
-    {
-        AccountantTimeStamp::truncate();
         return redirect()->back()->with("success", "Database Populated");
     }
 
