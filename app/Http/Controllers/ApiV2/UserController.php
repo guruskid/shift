@@ -102,12 +102,67 @@ class UserController extends Controller
         ]);
     }
 
+    public function allBalance(){
+        $client = new Client();
+        $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $btc_real_time = $res->value;
+
+
+
+
+        $url = env('TATUM_URL') . '/tatum/rate/USD?basePair=NGN';
+        $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
+        $res = json_decode($res->getBody());
+        $naira_usd_real_time = $res->value;
+
+
+
+        $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
+        $response = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')],
+        ]);
+        $accounts = json_decode($response->getBody(), true);
+
+        if (empty($accounts)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'btc wallet not found',
+            ]);
+        }
+
+        $btc_balance = $accounts['balance']['availableBalance'];
+
+        $btc_wallet = Auth::user()->btcWallet;
+        $btc_wallet->balance = $btc_balance;
+        $btc_wallet->usd = $btc_wallet->balance * $btc_real_time;
+
+        $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
+
+
+        return response()->json([
+            'success' => true,
+            'btc_balance' => $btc_balance,
+            'btc_balance_in_naira' => $naira_balance,
+            'btc_balance_in_usd' => $btc_wallet->usd,
+            'total' => $naira_balance,
+
+        ]);
+
+
+
+
+    }
+
+
     public function dashboard()
     {
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
+
         $btc_real_time = $res->value;
 
         $url = env('TATUM_URL') . '/tatum/rate/USD?basePair=NGN';
@@ -120,6 +175,8 @@ class UserController extends Controller
             'headers' => ['x-api-key' => env('TATUM_KEY')],
         ]);
         $accounts = json_decode($res->getBody(), true);
+
+
 
         if (empty($accounts)) {
             return response()->json([
@@ -186,12 +243,12 @@ class UserController extends Controller
 
         $loginSession = new LoginSessionController();
         $loginSession->FindSessionData(Auth::user()->id);
-        
+
         return response()->json([
             'success' => true,
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
-            'btc_balnace_in_usd' => $btc_wallet->usd,
+            'btc_balance_in_usd' => $btc_wallet->usd,
             'btc_rate' => $btc_real_time,
             'featured_coins' => $currencies,
             'advert_image' => $slides,
