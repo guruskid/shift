@@ -406,44 +406,70 @@ class SpotLightController extends Controller {
     }
 
     public function getCustomerAcquisitionCost(Request $request) {
-        $validate = Validator::make($request->all(), [
-            'amount' => 'required|integer',
-            'range' => 'required|in:quaterly,yearly'
-        ]);
+        // search types
+        // -- Range, Days, Monthly, Quarterly, Year
+        $totalUsers = User::whereNotNull('id');
+        $type = $request['type'];
 
-        if ($validate->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validate->errors(),
-            ], 401);
+        if ($type == 'yearly') {
+            $year = request('year');
+            $amount = request('amount');
+            $totalUsers = $totalUsers->where(DB::raw('year(created_at)'),$year);
         }
 
-        $from = date('m');
-        $range = $request['range'];
-
-        if ($range == 'quaterly') {
-            $from = $from - 3;
-            if ($from < 1) {
-                $from = 1;
-            }
+        if ($type == 'range') {
+            $from = request('from');
+            $to = request('to');
+            $amount = request('amount');
+            $totalUsers = $totalUsers->whereBetween(DB::raw('date(created_at)'),[$from,$to]);
         }
 
-        if ($range == 'yearly') {
-            $from = 1;
+        if ($type == 'days') {
+            $days = request('days');
+            $amount = request('amount');
+            $from = Carbon::now()->subDay($days)->format('Y-m-d');
+            $to = Carbon::now()->format('Y-m-d');
+            $totalUsers = $totalUsers->whereBetween(DB::raw('date(created_at)'),[$from,$to]);
         }
 
-        $now = Carbon::now()->format('m');
+        if ($type == 'monthly') {
+            $date = request('date');
+            $d = Carbon::createFromDate($date);
+            $month = $d->format('m');
+            $year = $d->format('Y');
+            $totalUsers = $totalUsers->where(DB::raw('month(created_at)'),$month)
+                ->where(DB::raw('year(created_at)'),$year);
+        }
 
-        $total = User::whereBetween(DB::raw('month(created_at)'),[$from,$now])
-            ->where(DB::raw('year(created_at)'),date('Y'))
-            ->get()->count();
+        if ($type == 'quarterly') {
+            $date = request('date');
+            $monthFrom = Carbon::createFromDate($date)->subMonth(2);
+            $monthTo = Carbon::createFromDate($date);
+            $totalUsers = $totalUsers->whereBetween(DB::raw('date(created_at)'),[$monthFrom,$monthTo]);
+        }
 
-        $res = $request['amount'] / $total;
+        $total = $totalUsers->count();
+
+        $data = $request['amount'] / $total;
 
         return response()->json([
             'success' => true,
-            'data' => $res
+            'data' => $data
         ],200);
+    }
+
+    public function getCustomerAcquisitionCostByYear() {
+       $year = request('year');
+       $amount = request('amount');
+
+       return Carbon::now()->year()->format('m');
+
+       $total = User::whereBetween(DB::raw('year(created_at)'),[2001,2022])
+            ->get()->count();
+    
+        $res = $amount / $total;
+
+       return $year.' '.$amount.' '.date('Y').' '.$res;
     }
 
     public static function getUsersByDays() {
