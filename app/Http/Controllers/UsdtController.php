@@ -272,9 +272,9 @@ class UsdtController extends Controller
     {
         return response()->json([
             'success' => false,
-            'msg' => 'Service not available, will be back shortly'
+            'msg' => 'Service not available, we\'ll be back shortly'
         ]);
-        
+
         $validator = Validator::make($request->all(), [
             'amount' => 'required|min:0',
         ]);
