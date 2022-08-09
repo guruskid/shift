@@ -7,6 +7,7 @@ use App\Http\Controllers\LiveRateController;
 use App\Http\Controllers\LoginSessionController;
 use App\ImageSlide;
 use App\NairaTransaction;
+use App\Notification;
 use App\Transaction;
 use App\User;
 use GuzzleHttp\Client;
@@ -235,6 +236,14 @@ class UserController extends Controller
             ],
         ];
 
+        $notify = array();
+        $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
+         foreach($notifications as $body){
+            array_push($notify, array($body->body));
+
+         }
+
+
         $slides = array();
         $adImages = ImageSlide::latest()->get()->take(10);
         foreach ($adImages as $image) {
@@ -252,6 +261,7 @@ class UserController extends Controller
             'btc_rate' => $btc_real_time,
             'featured_coins' => $currencies,
             'advert_image' => $slides,
+            'notifications' => $notify,
         ]);
     }
 
