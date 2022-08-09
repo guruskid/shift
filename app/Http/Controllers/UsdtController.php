@@ -270,6 +270,11 @@ class UsdtController extends Controller
 
     public function sell(Request $request)
     {
+        return response()->json([
+            'success' => false,
+            'msg' => 'Service not available, will be back shortly'
+        ]);
+        
         $validator = Validator::make($request->all(), [
             'amount' => 'required|min:0',
         ]);
@@ -625,7 +630,7 @@ class UsdtController extends Controller
                     "custodialAddress" => $hd_wallet->address,
                     "contractType" => [0, 0, 0],
                     "recipient" => [Auth::user()->usdtWallet->address, $service_wallet->address, $charge_wallet->address],
-                    "amount" => [round($total,5),  round($service_fee, 5), round($charge, 5)],
+                    "amount" => [round($total, 5),  round($service_fee, 5), round($charge, 5)],
                     "signatureId" => $hd_wallet->private_key,
                     "tokenId" => ["0", "0", "0"],
                     "tokenAddress" => ["TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"],
