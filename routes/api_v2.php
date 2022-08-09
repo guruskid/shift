@@ -52,6 +52,8 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
 
     Route::get('/crypto-transaction', 'UserController@crypto');
 
+    Route::get('/all-balance', 'UserController@allBalance');
+
 
     // Referral
     Route::post('/create_referral_code', 'ReferralController@create');

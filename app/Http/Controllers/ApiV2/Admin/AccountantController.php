@@ -126,32 +126,47 @@ class AccountantController extends Controller
         $id = $r->id;
         $user = User::find($id);
 
-        if(!in_array($user->role, [777,775] ))
+        if(!in_array($user->role, [777,775,889] ))
         {
             return response()->json([
                 'success' => false,
                 'message' => "$user->first_name $user->last_name is not an accountant"
             ],401);
         }
+        $nairaUsersWallet = NairaWallet::sum('amount');
 
-        if($user->status != 'active'):
+        if(in_array($user->role, [777,775] )){
+            if($user->status != 'active'):
+                $user->status = 'active';
+                $user->save();
 
-            $user->status = 'active';
-            $user->save();
+                $this->activate($id, $nairaUsersWallet);
 
-            $nairaUsersWallet = NairaWallet::sum('amount');
-            AccountantTimeStamp::create([
-                'user_id' => $id,
-                'activeTime' => Carbon::now(),
-                'opening_balance' => $nairaUsersWallet,
-            ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => "$user->first_name $user->last_name is activated"
+                ],200);
+            endif;
+        }
 
-            return response()->json([
-                'success' => true,
-                'message' => "$user->first_name $user->last_name is activated"
-            ],200);
-        endif;
+        if($user->role == 889)
+        {
+            $counterSA = User::where(['role' => 889, 'status' => 'active', 'id' => $id])
+            ->whereHas('accountantTimestamp', function ($query){
+                $query->whereNotNull('inactiveTime');
+            })->first();
 
+            if($counterSA){
+                $this->activate($id, $nairaUsersWallet);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => "$user->first_name $user->last_name is activated"
+                ],200);
+            }
+            
+        }
+        
         return response()->json([
             'success' => true,
             'message' => "$user->first_name $user->last_name is already activated"
@@ -174,49 +189,85 @@ class AccountantController extends Controller
 
         $id = $r->id;
         $user = User::find($id);
-        if(!in_array($user->role, [777,775] ))
+        if(!in_array($user->role, [777,775, 889] ))
         {
             return response()->json([
                 'success' => false,
                 'message' => "$user->first_name $user->last_name is not an accountant"
             ],401);
         }
+        $nairaUsersWallet = NairaWallet::sum('amount');
 
-        if($user->status != 'waiting'):
-
-            $user->status = 'waiting';
-            $user->save();
-
+        if(in_array($user->role, [777,775] )){
             $nairaUsersWallet = NairaWallet::sum('amount');
-            $accountant = AccountantTimeStamp::where('user_id',$id)->latest()->first();
-                if(!empty($accountant))
-                {
-                    $time_stamp =  $accountant->where('user_id',$id)->latest()->first();
+            if($user->status != 'waiting'):
+                $user->status = 'waiting';
+                $user->save();
 
-                    $startTime = $accountant->activeTime;
-                    $endTime = Carbon::now();
-                    $totalDuration =  Carbon::parse($startTime)->diffInMinutes($endTime);
-                    if($totalDuration < 5){
-                        $time_stamp->delete();
-                    }
-                    else{
-                        $time_stamp->update([
-                            'inactiveTime' => Carbon::now(),
-                            'closing_balance' => $nairaUsersWallet,
-                        ]); 
-                    }
-                }
+                $this->deactivate($id, $nairaUsersWallet);
 
-            return response()->json([
-                'success' => true,
-                'message' => "$user->first_name $user->last_name is deactivated"
-            ],200);
-        endif;
+                return response()->json([
+                    'success' => true,
+                    'message' => "$user->first_name $user->last_name is deactivated"
+                ],200);
+            endif;
+        }
+
+        if($user->role == 889)
+        {
+            $counterSA = User::where(['role' => 889, 'status' => 'active', 'id' => $id])
+            ->whereHas('accountantTimestamp', function ($query){
+                $query->whereNull('inactiveTime');
+            })->first();
+
+            if($counterSA)
+            {
+                $this->deactivate($id, $nairaUsersWallet);
+                return response()->json([
+                    'success' => true,
+                    'message' => "$user->first_name $user->last_name is deactivated"
+                ],200);
+            }
+
+        }
 
         return response()->json([
             'success' => true,
             'message' => "$user->first_name $user->last_name is already deactivated"
         ],200);
+    }
+
+    public function activate($id, $amount)
+    {
+        $user_check = AccountantTimeStamp::where('user_id', $id)->whereNull('inactiveTime')->get();
+
+        if( $user_check->count() <= 0 )
+        {
+            AccountantTimeStamp::create([
+                'user_id' => $id,
+                'activeTime' => Carbon::now(),
+                'opening_balance' => $amount,
+            ]);
+        }
+    }
+    public function deactivate($id, $amount)
+    {
+        $accountant = AccountantTimeStamp::where('user_id',$id)->whereNull('inactiveTime')->orderBy('id','DESC')->first();
+
+        if(!empty($accountant))
+        {
+            $activeTime = $accountant->activeTime;
+            $duration = Carbon::parse($activeTime)->diffInMinutes(now());
+            if($duration < 5){
+                $accountant->delete();
+            }
+            else{
+                $accountant->update([
+                    'inactiveTime' => Carbon::now(),
+                    'closing_balance' => $amount,
+                ]); 
+            }  
+        }
     }
 
     public function appendDataFromLastActive(Collection $collection)
