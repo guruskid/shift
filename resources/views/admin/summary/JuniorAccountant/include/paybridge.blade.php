@@ -62,10 +62,10 @@
                 @csrf
                 <div class="form-inline mb-3">
                     <label class="mr-1">Start Date</label>
-                    <input type="date" name="startdate" value="{{app('request')->input('startdate')}}"  class="form-control mr-1" >
+                    <input type="datetime-local" name="startdate" value="{{app('request')->input('startdate')}}"  class="form-control mr-1" >
 
                     <label class="mr-1">End Date</label>
-                    <input type="date" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
+                    <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
                     <input type="hidden" name="day" value="{{ $day }}">
                     <input type="hidden" name="month" value="{{ $month }}">
                     <input type="hidden" name="category" value="{{ $show_category }}">
@@ -84,7 +84,7 @@
                         </select>
                     @endif
                     
-                    {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
+                    <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
                     <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                 </div>
             </form>
@@ -121,7 +121,7 @@
                         @endif
                 </div>  
                 
-                <table class="mb-2 table table-bordered transactions-table">
+                <table class="mb-2 table table-bordered">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -202,10 +202,10 @@
                     @csrf
                     <div class="form-inline mb-3">
                         <label class="mr-1">Start Date</label>
-                        <input type="date" name="startdate" value="{{app('request')->input('startdate')}}" class="form-control mr-1" >
+                        <input type="datetime-local" name="startdate" value="{{app('request')->input('startdate')}}" class="form-control mr-1" >
 
                         <label class="mr-1">End Date</label>
-                        <input type="date" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
+                        <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
                         <input type="hidden" name="day" value="{{ $day }}">
                         <input type="hidden" name="month" value="{{ $month }}">
                         <input type="hidden" name="category" value="{{ $show_category }}">
@@ -224,7 +224,7 @@
                             </select>
                         @endif
                         
-                        {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
+                        <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
                         <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                     </div>
             </form>
@@ -260,7 +260,7 @@
                     @endif
             </div>  
             
-            <table class="mb-2 table table-bordered transactions-table">
+            <table class="mb-2 table table-bordered">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -338,10 +338,10 @@
                 @csrf
                 <div class="form-inline mb-3">
                     <label class="mr-1">Start Date</label>
-                    <input type="date" name="startdate" value="{{app('request')->input('startdate')}}" class="form-control mr-1">
+                    <input type="datetime-local" name="startdate" value="{{app('request')->input('startdate')}}" class="form-control mr-1">
 
                     <label class="mr-1">End Date</label>
-                    <input type="date" name="enddate" value="{{app('request')->input('enddate')}}"class="form-control mr-1">
+                    <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}"class="form-control mr-1">
                     <input type="hidden" name="day" value="{{ $day }}">
                     <input type="hidden" name="month" value="{{ $month }}">
                     <input type="hidden" name="category" value="{{ $show_category }}">
@@ -361,7 +361,7 @@
                         </select>
                     @endif
                     
-                    {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
+                    <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
                     <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                 </div>
             </form>
@@ -397,7 +397,7 @@
                     @endif
              </div>  
             
-            <table class="mb-2 table table-bordered transactions-table">
+            <table class="mb-2 table table-bordered">
                 <thead>
                     <tr>
                         <th>ID</th>
