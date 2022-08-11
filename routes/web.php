@@ -623,7 +623,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         return redirect()->back()->with("success", "Database Populated");
     });
 
-    Route::GET('AATAAVC', 'Admin\BusinessDeveloperController@trunc');
     // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
 });
