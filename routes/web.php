@@ -618,12 +618,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('call-log', 'Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
 
     Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
+    
     Route::GET('/QuarterlyInactiveUsersFromDB', function () {
         Artisan::call('check:trackingTable');
         return redirect()->back()->with("success", "Database Populated");
     });
 
-    Route::GET('AATAAVC', 'Admin\BusinessDeveloperController@trunc');
+    
+    //* Artisan route for checking called responded and recalcitrant
+
     // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
 });
