@@ -249,6 +249,7 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
         Route::POST('/SortAnalytics', 'pulseAnalyticsController@sortTransactionAnalytics');
         
         Route::GET('/', 'PulseController@index');
+        Route::POST('/modal','PulseController@ModalData');
         Route::GET('/chart', 'PulseController@chart');
         Route::POST('/sortChart', 'PulseController@sortChart');
 
