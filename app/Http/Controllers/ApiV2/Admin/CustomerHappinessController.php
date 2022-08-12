@@ -60,11 +60,10 @@ class CustomerHappinessController extends Controller
     public function CustomerHappinessData()
     {
         $customerHappinessUser = User::select('id','first_name','last_name','email','phone','status')->where('role',555)->get();
-
-        $active = $customerHappinessUser->where('status','active');
-        $inactive = $customerHappinessUser->where('status','!=','active');
+        $active = User::where('status','active')->select('id','first_name','last_name','email','phone','status')->where('role',555)->get();
+        $inactive = User::where('status','!=','active')->select('id','first_name','last_name','email','phone','status')->where('role',555)->get();
         
-        if($customerHappinessUser->count() <= 0)
+        if($active->count() <= 0 || $inactive->count() <= 0)
         {
             return response()->json([
                 'success' => true,
