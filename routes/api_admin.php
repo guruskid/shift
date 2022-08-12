@@ -220,6 +220,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::group(['prefix' => 'customerHappiness'], function () {
 
         Route::GET('/', 'CustomerHappinessController@overview');
+        Route::GET('/user', 'CustomerHappinessController@CustomerHappinessData');
 
         Route::POST('/activateCustomerHappiness',  'CustomerHappinessController@activateCustomerHappiness');
         Route::POST('/deactivateCustomerHappiness',  'CustomerHappinessController@deactivateCustomerHappiness');

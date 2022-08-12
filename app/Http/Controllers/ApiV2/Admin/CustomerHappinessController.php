@@ -28,26 +28,8 @@ class CustomerHappinessController extends Controller
                 'querySummary' => "Not Available",
             ]);
         }
-        $ticketData = Ticket::all();
-
-        $assigned_ticket = $ticketData->count();
-        $closed_ticket = $ticketData->where('status','close')->count();
-
-        $generalCloseRate = ($closed_ticket/$assigned_ticket)*100;
-
-        foreach ($customerHappinessUser as $key => $value) {
-            $assigned_ticket = $ticketData->where('agent_id',$value->id)->count();
-            $closed_ticket = $ticketData->where('closed_by',$value->id)->where('status','close')->count();
-
-            $AgentCloseRate = ($closed_ticket/$assigned_ticket)*100;
-            $value->agentAgentRate = round($AgentCloseRate,2);
-            $value->generalCloseRate = round($generalCloseRate,2);
-        }
 
         $activeCH = $customerHappinessUser->where('status','active');
-        $inactiveCH = $customerHappinessUser->where('status','!=','active');
-
-        $allCH = collect()->concat($activeCH)->concat($inactiveCH);
 
         $chartData = $this->chartData(now(), $activeCH->first()->id);
 
@@ -70,9 +52,46 @@ class CustomerHappinessController extends Controller
         }
         return response()->json([
             'success' => true,
-            'customerHappiness' => $allCH,
             'chart' => $chartData,
             'querySummary' => collect($queryData)->sortByDesc('created_at')
+        ]);
+    }
+
+    public function CustomerHappinessData()
+    {
+        $customerHappinessUser = User::select('id','first_name','last_name','email','phone','status')->where('role',555)->get();
+
+        $active = $customerHappinessUser->where('status','active');
+        $inactive = $customerHappinessUser->where('status','!=','active');
+        
+        if($customerHappinessUser->count() <= 0)
+        {
+            return response()->json([
+                'success' => true,
+                'active' => "Not Available",
+                'inactive' => "Not Available",
+            ]);
+        }
+        $ticketData = Ticket::all();
+
+        $assigned_ticket = $ticketData->count();
+        $closed_ticket = $ticketData->where('status','close')->count();
+
+        $generalCloseRate = ($closed_ticket/$assigned_ticket)*100;
+
+        foreach ($customerHappinessUser as $key => $value) {
+            $assigned_ticket = $ticketData->where('agent_id',$value->id)->count();
+            $closed_ticket = $ticketData->where('closed_by',$value->id)->where('status','close')->count();
+
+            $AgentCloseRate = ($assigned_ticket == 0) ? 0 : ($closed_ticket/$assigned_ticket)*100;
+            $value->agentAgentRate = round($AgentCloseRate,2);
+            $value->generalCloseRate = round($generalCloseRate,2);
+        }
+    
+        return response()->json([
+            'success' => true,
+            'active' => $active,
+            'inactive' => $inactive
         ]);
     }
 

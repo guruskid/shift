@@ -25,15 +25,9 @@ class SettingController extends Controller
 
     public function roleName($role_number){
         switch ($role_number) {
-            case 999:
-                $role_name = "Super Administrator";
-                break;
             case 888:
                 $role_name = "Sales Representative";
                 break;
-            case 889:
-                $role_name = "Senior Accountant";
-                break;  
             case 777:
                 $role_name = "Junior Accountant";
                 break;
