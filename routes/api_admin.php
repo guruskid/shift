@@ -236,10 +236,10 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
    //Nexus
    Route::group(['prefix' => 'nexus'], function () {
-    Route::ANY('/', 'NexusController@verificationData');
-    Route::ANY('/nexusCrypto', 'NexusController@NexusCrypto');
-    Route::ANY('/nexusGiftCard', 'NexusController@NexusGiftCard');
-    Route::ANY('/timeGraph','NexusController@timeGraph');
+    Route::GET('/', 'NexusController@verificationData');
+    Route::GET('/nexusCrypto', 'NexusController@NexusCrypto');
+    Route::GET('/nexusGiftCard', 'NexusController@NexusGiftCard');
+    Route::GET('/timeGraph','NexusController@timeGraph');
 
     });
 
