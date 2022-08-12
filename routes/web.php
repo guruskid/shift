@@ -621,8 +621,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     
     Route::GET('/QuarterlyInactiveUsersFromDB', function () {
         Artisan::call('check:trackingTable');
-        return redirect()->back()->with("success", "Database Populated");
+        return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
     });
+
+    //? checking called Users for responded or recalcitrant
+    Route::GET('/QuarterlyInactiveUsersFromDB', function () {
+        Artisan::call('check:trackingTable');
+        return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
+    }); 
+
+    //?checking responded 
+
+    //?checking recalcitrant
+
 
     Route::GET('AATAAVC', 'Admin\BusinessDeveloperController@trunc');
     // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');

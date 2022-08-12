@@ -298,7 +298,7 @@ class BusinessDeveloperController extends Controller
     
 
     public static function checkActiveUsers(){
-        $active_users = UserTracking::where('Current_Cycle','Active')->orderBy('id','desc')->get();
+        $active_users = UserTracking::where('Current_Cycle','Active')->get();
         foreach ($active_users as $au) {
             $User_tnx = Transaction::where('user_id',$au->user_id)->where('status','success')->count();
             if($User_tnx == 0)
