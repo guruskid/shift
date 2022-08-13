@@ -830,8 +830,9 @@ class AdminController extends Controller
         ]));
     }
 
-    public function currencyTransactions($card_id, $currency)
+    public function currencyTransactions($card_id, $currency, Request $request)
     {
+        $segment = null;
         $category = Transaction::with('asset')
             ->select('card_id')
             ->where('card_id', '!=', null)
@@ -842,20 +843,21 @@ class AdminController extends Controller
             ->where('accountant_id', '!=', null)
             ->distinct('accountant_id')
             ->get();
-        $segment = $currency.' transactions';
         $status = Transaction::select('Status')->distinct('Status')->get();
         $transactions = Transaction::where('type', 'sell')->where('card_id', $card_id)->latest();
-        // if (isset($request['start']) and isset($request['end'])) {
-        //     $from = $request['start'];
-        //     $to = $request['end'];
-        //     $transactions = $transactions->whereBetween('created_at', [$from, $to])->latest();
-        //     if (Auth::user()->role == 444 or Auth::user()->role == 449) {
-        //         $transactions = $transactions->WhereHas('asset', function ($q) {
-        //             $q->where('is_crypto', 0);
-        //         });
-        //     }
-        //     $segment = Carbon::parse($request['start'])->format('D d M y') . ' - ' . Carbon::parse($request['end'])->format('D d M Y') . ' Asset';
-        // }
+
+        if(isset($request['start']))
+        {
+            $transactions = $transactions->where('created_at','>=',$request['start']." 00:00:00");
+            $segment = Carbon::parse($request['start'])->format('D d M y');
+        }
+        if(isset($request['end']))
+        {
+            $transactions = $transactions->where('created_at','<=',$request['end']." 23:59:59");
+            $segment .=' - ' . Carbon::parse($request['end'])->format('D d M y');
+        }
+        $segment .= " ".$currency;
+        
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
