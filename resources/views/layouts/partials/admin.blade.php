@@ -155,7 +155,7 @@
                     </li>
                     <li>
                         <a href="{{route('admin.currency_transactions', [143, 'USDT'])}}"
-                            class=" {{ Route::currentRouteName() == 'admin.sell_transac' ? 'mm-active' : '' }} ">
+                            class=" {{ Route::currentRouteName() == 'admin.currency_transactions' ? 'mm-active' : '' }} ">
                             <i class="metismenu-icon">
                             </i>USDT transactions
                         </a>
