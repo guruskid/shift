@@ -7,12 +7,15 @@ use App\CallCategory;
 use App\CallLog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\NairaTransaction;
 use App\NewUsersTracking;
 use App\Transaction;
 use App\User;
 use App\UserTracking;
+use App\UtilityTransaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class BusinessDeveloperController extends Controller
@@ -327,34 +330,46 @@ class BusinessDeveloperController extends Controller
         }
     }
 
+    //*if the transaction has been done the do a daily check 
+    //*if the transaction is 0 leave until Three months.
     public static function checkCalledUsersForRespondedAndRecalcitrant()
     {
-        $called_users = UserTracking::where('Current_Cycle','Called')->orderBy('id','desc')->get();
+        $called_users = UserTracking::where('Current_Cycle','Called')->orderBy('current_cycle_count_date','asc')->get();
+
+        $transactions = Transaction::where('created_at','>=',$called_users[0]->current_cycle_count_date)->where('status','success')->get();
+        $utility = UtilityTransaction::where('created_at','>=',$called_users[0]->current_cycle_count_date)->where('status','success')->get();
+        $payBridgeDeposit = NairaTransaction::where('transaction_type_id',1)->where('created_at','>=',$called_users[0]->current_cycle_count_date)->where('status','success')->get();
+
         foreach ($called_users as $cu ) {
             $cu->current_cycle_count_date = Carbon::parse($cu->current_cycle_count_date);
-            $User_tnx = Transaction::where('user_id',$cu->user_id)->where('updated_at','>=',$cu->current_cycle_count_date)->where('status','success')->count();
-            $diff_in_months = $cu->current_cycle_count_date->diffInMonths(Carbon::now());
-            if($diff_in_months >= 1)
+            $User_tnx = $transactions->where('user_id',$cu->user_id)->where('created_at','>=',$cu->current_cycle_count_date)->count();
+            
+            $user_util = $utility->where('user_id',$cu->user_id)->where('created_at','>=',$cu->current_cycle_count_date)->count();
+            $user_deposit = $payBridgeDeposit->where('user_id',$cu->user_id)->where('created_at','>=',$cu->current_cycle_count_date)->count();
+
+            $tranxCount = $User_tnx + $user_util + $user_util;
+            if($tranxCount >= 1)
             {
-                if($User_tnx >= 1)
-                {
-                    UserTracking::find($cu->id)->update([
-                        'Current_Cycle'=>"Responded",
-                        'Previous_Cycle' => "Called",
-                        'current_cycle_count_date' => Carbon::now()
-                    ]);
-                }
-                else{
+                UserTracking::find($cu->id)->update([
+                    'Current_Cycle'=>"Responded",
+                    'Previous_Cycle' => "Called",
+                    'current_cycle_count_date' => Carbon::now()
+                ]);
+            }
+            else{
+                $diff_in_months = $cu->current_cycle_count_date->diffInMonths(Carbon::now());
+                dd($cu->current_cycle_count_date);
+                if($diff_in_months >= 1){
                     UserTracking::find($cu->id)->update([
                         'Current_Cycle'=>"Recalcitrant",
                         'Previous_Cycle' => "Called",
                         'current_cycle_count_date' => Carbon::now()
                     ]);
                 }
-                
-            }
+            }    
         }
     }
+
 
     public static function CheckRecalcitrantUsersForResponded()
     {

@@ -624,15 +624,34 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
     });
 
+    //?checking Active
+    Route::GET('/CheckingActiveUserOnline', function () {
+        Artisan::call('check:active');
+        return redirect()->back()->with("success", "Active Users Checked");
+    });
+
     //? checking called Users for responded or recalcitrant
-    Route::GET('/QuarterlyInactiveUsersFromDB', function () {
-        Artisan::call('check:trackingTable');
-        return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
-    }); 
+    Route::GET('/CheckingCalledUserOnline', function () {
+        Artisan::call('check:called');
+        return redirect()->back()->with("success", "Checked Called Users");
+    });
 
     //?checking responded 
+    Route::GET('/CheckingRespondedUserOnline', function () {
+        Artisan::call('check:Responded');
+        return redirect()->back()->with("success", "Checked Responded Users");
+    });
 
     //?checking recalcitrant
+    Route::GET('/CheckingRecalcitrantUserOnline', function () {
+        Artisan::call('check:Recalcitrant');
+        return redirect()->back()->with("success", "Checked Recalcitrant Users");
+    });
+
+    Route::GET('/CheckingNoResponseUserOnline', function () {
+        Artisan::call('noResponse:check');
+        return redirect()->back()->with("success", "Checked No Response Users");
+    });
 
 
     Route::GET('AATAAVC', 'Admin\BusinessDeveloperController@trunc');
