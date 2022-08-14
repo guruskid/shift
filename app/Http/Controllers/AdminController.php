@@ -15,6 +15,8 @@ use App\Events\TransactionUpdated;
 use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\Exports\DownloadUsers;
+use App\Exports\UsdtTransactions;
+use App\Exports\UsdtTransactionsExport;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\Http\Controllers\Admin\SalesController;
 use App\NairaTrade;
@@ -846,15 +848,20 @@ class AdminController extends Controller
         $status = Transaction::select('Status')->distinct('Status')->get();
         $transactions = Transaction::where('type', 'sell')->where('card_id', $card_id)->latest();
 
+        $start = null;
         if(isset($request['start']))
         {
             $transactions = $transactions->where('created_at','>=',$request['start']." 00:00:00");
             $segment = Carbon::parse($request['start'])->format('D d M y');
+            $start = $request['start'];
         }
+
+        $end = null;
         if(isset($request['end']))
         {
             $transactions = $transactions->where('created_at','<=',$request['end']." 23:59:59");
             $segment .=' - ' . Carbon::parse($request['end'])->format('D d M y');
+            $end = $request['end'];
         }
         $segment .= " ".$currency;
         
@@ -867,9 +874,14 @@ class AdminController extends Controller
                     $query->where('is_crypto', 0);
                 });
         }
+
+        if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
+            return (new UsdtTransactionsExport(143,$request['start'],$request['end']))->download('usdtTransactions.xlsx');
+        }
         $transactions = $transactions->paginate(1000);
         return view('admin.transactions', compact([
-            'transactions', 'segment', 'accountant', 'status', 'category', 'total_transactions', 'asset_value_total', 'cash_value_total', 'card_price_total'
+            'transactions', 'segment', 'accountant', 'status', 'category', 'total_transactions', 'asset_value_total', 'cash_value_total', 'card_price_total',
+            'start','end'
         ]));
     }
 
