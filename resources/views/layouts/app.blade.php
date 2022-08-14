@@ -485,7 +485,7 @@ $not = $nots->last();
             __event('period_end').classList.add("d-none")
             __event('months').classList.add("d-none")
             __event('quaterly').classList.add("d-none")
-            
+
         }
         const monthShowit = () => {
             showbuttons()
@@ -526,7 +526,7 @@ $not = $nots->last();
             case "yearly":
                 yearlyShowit()
                 break;
-        
+
             default:
                 periodShowit()
                 break;
