@@ -136,7 +136,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                     <div class="main-card mb-3 card">
 
                         <div class="card-header justify-content-between">{{$segment}} Transactions 
-                            @if(in_array(Auth::user()->role, [999, 889] ))
+                            @if(in_array(Auth::user()->role, [999, 889] ) AND str_contains($segment, 'USDT'))
                                 <form class="form-inline"
                                     method="GET">
                                     <input type="hidden" name="downloader" value="csv">
