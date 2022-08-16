@@ -547,6 +547,24 @@ class UserController extends Controller
 
     }
 
+    public function deleteBankAccount($id)
+    {
+
+        $bank = Account::find($id);
+        if ($bank->user_id != Auth::user()->id) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Not authorised',
+            ]);
+        } else {
+            $bank->delete();
+            return response()->json([
+                'success' => true,
+                'msg' => 'Account detail successfully added',
+            ]);
+        }
+    }
+
     public function userAccounts()
     {
 

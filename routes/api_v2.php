@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
     Route::get('/bank-list', 'UserController@listOfBanks');
     Route::get('/user-banks', 'UserController@userAccounts');
     Route::post('/add-bank-account', 'UserController@addBankAccount');
+    Route::post('/delete-bank-account/{id}', 'UserController@deleteBankAccount');
 
     Route::post('/delete-user', 'UserController@deleteUserAccount');
 
