@@ -405,10 +405,10 @@ class SpotLightController extends Controller {
                     $now->subDay();
                 }
                 $frmd = $now->format('Y-m-d');
-                $from = $now->format('jS D');
+                $from = $now->format('jS M');
                 $now->subDays($days + 1);
                 $tod = $now->format('Y-m-d');
-                $to = $now->format('jS D');
+                $to = $now->format('jS M');
                 $tick = $from.' - '.$to;
 
                 $tx = Transaction::where('status','success')
