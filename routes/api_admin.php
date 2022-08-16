@@ -223,6 +223,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::group(['prefix' => 'customerHappiness'], function () {
 
         Route::GET('/', 'CustomerHappinessController@overview');
+        Route::GET('/user', 'CustomerHappinessController@CustomerHappinessData');
 
         Route::POST('/activateCustomerHappiness',  'CustomerHappinessController@activateCustomerHappiness');
         Route::POST('/deactivateCustomerHappiness',  'CustomerHappinessController@deactivateCustomerHappiness');
@@ -239,10 +240,10 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
    //Nexus
    Route::group(['prefix' => 'nexus'], function () {
-    Route::ANY('/', 'NexusController@verificationData');
-    Route::ANY('/nexusCrypto', 'NexusController@NexusCrypto');
-    Route::ANY('/nexusGiftCard', 'NexusController@NexusGiftCard');
-    Route::ANY('/timeGraph','NexusController@timeGraph');
+    Route::GET('/', 'NexusController@verificationData');
+    Route::GET('/nexusCrypto', 'NexusController@NexusCrypto');
+    Route::GET('/nexusGiftCard', 'NexusController@NexusGiftCard');
+    Route::GET('/timeGraph','NexusController@timeGraph');
 
     });
 
@@ -252,6 +253,7 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
         Route::POST('/SortAnalytics', 'pulseAnalyticsController@sortTransactionAnalytics');
         
         Route::GET('/', 'PulseController@index');
+        Route::POST('/modal','PulseController@ModalData');
         Route::GET('/chart', 'PulseController@chart');
         Route::POST('/sortChart', 'PulseController@sortChart');
 

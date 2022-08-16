@@ -453,15 +453,7 @@ class PulseController extends Controller
             "ChurnedUsers"=> count($churnUserDataMonthly),
             "QuarterlyDesertedUser" => $QuarterlyDesertedUserNo,
             "DAU/MAU" => $dailyToMonthlyRatio,
-            "TotalNoOfTranx" => $dailyTranxTotal,
-            "modalData" =>[
-                "DeadUsers" => $deadUserAnnually,
-                "ResurrectedUsers" => $resurrectedUserAnnually,
-                "RetainedUsers" => $retainedUserDataMonthly,
-                "ChurnedUsers" => $churnUserDataMonthly,
-                "QuarterlyInactiveUsers" => $quarterlyInactiveUsers,
-                "QuarterlyDesertedUsers" => $QuarterlyDesertedUser
-            ]
+            "TotalNoOfTranx" => $dailyTranxTotal
         ];
 
         $monthly = [
@@ -479,15 +471,7 @@ class PulseController extends Controller
             "ChurnedUsers"=> count($churnUserDataMonthly),
             "QuarterlyDesertedUser" => $QuarterlyDesertedUserNo,
             "DAU/MAU" => $dailyToMonthlyRatio,
-            "TotalNoOfTranx" => $monthlyTranxNo,
-            "modalData" =>[
-                "DeadUsers" => $deadUserAnnually,
-                "ResurrectedUsers" => $resurrectedUserAnnually,
-                "RetainedUsers" => $retainedUserDataMonthly,
-                "ChurnedUsers" => $churnUserDataMonthly,
-                "QuarterlyInactiveUsers" => $quarterlyInactiveUsers,
-                "QuarterlyDesertedUsers" => $QuarterlyDesertedUser
-            ]
+            "TotalNoOfTranx" => $monthlyTranxNo
         ];
 
         $quarterly = [
@@ -505,15 +489,7 @@ class PulseController extends Controller
             "ChurnedUsers"=> count($churnUserDataQuarterly),
             "QuarterlyDesertedUser" => $QuarterlyDesertedUserNo,
             "DAU/MAU" => $dailyToQuarterRatio,
-            "TotalNoOfTranx" => $quarterTranxNo,
-            "modalData" =>[
-                "DeadUsers" => $deadUserAnnually,
-                "ResurrectedUsers" => $resurrectedUserAnnually,
-                "RetainedUsers" => $retainedUserDataQuarterly,
-                "ChurnedUsers" => $churnUserDataQuarterly,
-                "QuarterlyInactiveUsers" => $quarterlyInactiveUsers,
-                "QuarterlyDesertedUsers" => $QuarterlyDesertedUser
-            ]
+            "TotalNoOfTranx" => $quarterTranxNo
         ];
 
         $annually = [
@@ -531,15 +507,7 @@ class PulseController extends Controller
             "ChurnedUsers"=> count($churnUserDataAnnual),
             "QuarterlyDesertedUser" => $QuarterlyDesertedUserNo,
             "DAU/MAU" => $dailyToAnnualRatio,
-            "TotalNoOfTranx" => $annualTranxNo,
-            "modalData" =>[
-                "DeadUsers" => $deadUserAnnually,
-                "ResurrectedUsers" => $resurrectedUserAnnually,
-                "RetainedUsers" => $retainedUserDataAnnual,
-                "ChurnedUsers" => $churnUserDataAnnual,
-                "QuarterlyInactiveUsers" => $annualQuarterlyInactiveUsers,
-                "QuarterlyDesertedUsers" => $QuarterlyDesertedUser
-            ]
+            "TotalNoOfTranx" => $annualTranxNo
         ];
 
         return response()->json([
@@ -550,6 +518,454 @@ class PulseController extends Controller
             'annually' => $annually
 
          ],200);
+    }
+
+    public function ModalData(Request $request)
+    {
+        $timeFrame = $request->timeFrame ?: 'daily';
+
+        if(!in_array($timeFrame,['annually','quarterly','monthly','daily']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "invalid timeFrame"
+            ],401);
+        }
+
+        $modalType = $request->modalType;
+
+        if($modalType == null){
+            return response()->json([
+                'success' => false,
+                'message' => "Modal type is required"
+            ],401);
+        }
+
+        $usd_value = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $firstLoginSession = LoginSession::orderBy('id', 'asc')->first();
+
+        //? Annually
+        $startCurrentYear = now()->startOfYear()->addHour()->format('Y-m-d');
+        $startCurrentYear = $startCurrentYear. " 00:00:00";
+
+        $endCurrentYear = now()->endOfYear()->format('Y-m-d');
+        $endCurrentYear= $endCurrentYear. " 23:59:59";
+
+        $startPreviousYear = now()->subYear()->startOfYear()->addHour()->format('Y-m-d');
+        $startPreviousYear = $startPreviousYear. " 00:00:00";
+
+        $endPreviousYear = now()->subYear()->endOfYear()->format('Y-m-d');
+        $endPreviousYear= $endPreviousYear. " 23:59:59";
+
+        $startOldPreviousYear = now()->subYear(2)->startOfYear()->addHour()->format('Y-m-d');
+        $startOldPreviousYear = $startOldPreviousYear. " 00:00:00";
+
+        $endOldPreviousYear = now()->subYear(2)->endOfYear()->format('Y-m-d');
+        $endOldPreviousYear = $endOldPreviousYear. " 23:59:59";
+
+        $tranxCurrentPreviousCryptoAnnually = Transaction::with('user')->where('status', 'success')->where('created_at','>=',$startOldPreviousYear)->where('created_at','<=',$endCurrentYear)->get();
+        $tranxCurrentPreviousUtilAnnually = UtilityTransaction::with('user')->where('status', 'success')->where('created_at','>=',$startOldPreviousYear)->where('created_at','<=',$endCurrentYear)->get();
+
+        foreach ($tranxCurrentPreviousUtilAnnually as $value) {
+            $value->amount = $value->amount/$usd_value;
+        }
+        
+        $tranxCurrentPreviousAnnually = collect([])->concat($tranxCurrentPreviousCryptoAnnually)->concat($tranxCurrentPreviousUtilAnnually);
+        $userCurrentPreviousAnnually = User::with('transactions','utilityTransaction')->where('created_at','>=',$startOldPreviousYear)->where('created_at','<=',$endCurrentYear)->get();
+
+        $tranxCurrentAnnual = $this->searchCollection($tranxCurrentPreviousAnnually, $startCurrentYear, $endCurrentYear);
+        $tranxPreviousAnnual = $this->searchCollection($tranxCurrentPreviousAnnually, $startPreviousYear, $endPreviousYear);
+
+        $userCurrentAnnual = $this->searchCollection($userCurrentPreviousAnnually, $startCurrentYear, $endCurrentYear);
+        $userPreviousAnnual = $this->searchCollection($userCurrentPreviousAnnually, $startPreviousYear, $endPreviousYear);
+        
+        //?Dead Users Annually
+        $DUsersStart = now()->subMonths(6)->addHour()->format('Y-m-d'). " 00:00:00";
+        $DUsersEnd = now()->format('Y-m-d')." 23:59:59";
+
+        $deadUserAnnually = array();
+        foreach($userCurrentAnnual as $key => $value)
+        {
+            $tranx = $value['transactions']->where('created_at','>=',$DUsersStart)->where('created_at','<=',$DUsersEnd)->count();
+            $utilTranx = $value['utilityTransaction']->where('created_at','>=',$DUsersStart)->where('created_at','<=',$DUsersEnd)->count();
+            if( $tranx == 0 AND $utilTranx == 0 )
+            {
+                $deadUserAnnually[] = $value;
+            }
+        }
+
+        //?Resurrected Users Annually
+        $previousRUsersStart = now()->subMonths(6)->addHour()->format('Y-m-d'). " 00:00:00";
+        $previousRUsersEnd = now()->subMonths(1)->addHour()->format('Y-m-d'). " 23:59:59";
+
+        $currentRUsersStart = now()->subMonths(1)->addDay()->addHour()->format('Y-m-d'). " 00:00:00";
+        $currentRUsersEnd = now()->format('Y-m-d')." 23:59:59";
+        $resurrectedUserAnnually = array();
+        foreach($userCurrentAnnual as $key => $value)
+        { 
+            $prevTranx = $value['transactions']->where('created_at','>=',$previousRUsersStart)->where('created_at','<=',$previousRUsersEnd)->count();
+            $prevUtilTranx = $value['utilityTransaction']->where('created_at','>=',$previousRUsersStart)->where('created_at','<=',$previousRUsersEnd)->count(); 
+
+            $currentTranx = $value['transactions']->where('created_at','>=',$currentRUsersStart)->where('created_at','<=',$currentRUsersEnd)->count();
+            $currentUtilTranx = $value['utilityTransaction']->where('created_at','>=',$currentRUsersStart)->where('created_at','<=',$currentRUsersEnd)->count(); 
+            if($prevTranx == 0 AND $prevUtilTranx == 0)
+            {
+                if($currentTranx >= 1 OR $currentUtilTranx >= 1)
+                {
+                    $resurrectedUserAnnually[] = $value;
+                }
+
+            }
+        }
+
+        //?Retained users Annually
+        $activePreviousMonthAnnualUsers = $tranxPreviousAnnual->groupBy('user_id');
+        $activeCurrentMonthAnnualUsers = $tranxCurrentAnnual->groupBy('user_id');
+
+        $retainedUsersKeys = $activePreviousMonthAnnualUsers->intersectByKeys($activeCurrentMonthAnnualUsers);
+        $retainedUsersKeys = $retainedUsersKeys->all();
+
+        $retainedUserDataAnnual = array(); 
+        foreach ($retainedUsersKeys as $key => $value) {
+            if($value->first()->user)
+            {
+                $retainedUserDataAnnual[] = $value->first()->user;
+            }
+        }
+
+        //?Churn Users Annually
+        $churnedUsersKeys = $activePreviousMonthAnnualUsers->diffKeys($activeCurrentMonthAnnualUsers);
+
+        $churnUserDataAnnual = array(); 
+        foreach ($churnedUsersKeys as $key => $value) {
+            if($value->first()->user)
+            {
+                $churnUserDataAnnual[] = $value->first()->user;
+            }
+        }
+
+        //?Quarterly Inactive Annual
+        $annualQuarterlyInactiveUsers = UserTracking::where('Current_Cycle','QuarterlyInactive')->where('created_at','>=',$startCurrentYear)->where('created_at','<=',$endCurrentYear)->get();
+        $annualQuarterlyInactiveUsersNo = $annualQuarterlyInactiveUsers->count();
+
+        //?Quarterly Deserted User
+        $QuarterlyDesertedUser = "Not Available";
+        $QuarterlyDesertedUserNo = 0;
+        if(now()->diffInMonths($firstLoginSession->created_at) >= 3) 
+        {
+            $QDArray = array();
+            $QDUsers = User::with('loginSession')->get();
+            foreach($QDUsers as $value)
+            {
+                if($value->loginSession()->count() > 0)
+                {
+                    $lastUserLoginSession = $value->loginSession()->first();
+                    if(now()->diffInMonths($lastUserLoginSession->created_at) >= 3)
+                    {
+                        $QDArray[] = $value; 
+                    }
+                }else{
+                    $QDArray[] = $value; 
+                }  
+            }
+            $QuarterlyDesertedUser = $QDArray;
+            $QuarterlyDesertedUserNo = count($QDArray);
+        }
+
+        if($timeFrame == 'annually')
+        {
+
+            if($modalType == 'DeadUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "DeadUsers" => $deadUserAnnually,
+                ]);
+            }
+
+            if($modalType == 'ResurrectedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "ResurrectedUsers" => $resurrectedUserAnnually,
+                ]);
+            }
+
+            if($modalType == 'RetainedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "RetainedUsers" => $retainedUserDataAnnual,
+                ]);
+            }
+
+            if($modalType == 'ChurnedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "ChurnedUsers" => $churnUserDataAnnual,
+                ]);
+            }
+
+            if($modalType == 'QuarterlyInactiveUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "QuarterlyInactiveUsers" => $annualQuarterlyInactiveUsers,
+                ]);
+            }
+
+            if($modalType == 'QuarterlyDesertedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "QuarterlyDesertedUsers" => $QuarterlyDesertedUser,
+                ]);
+            }
+        }
+
+        //?Quarterly
+        $startCurrentQuarter = now()->subMonth(2)->startOfMonth()->addHour()->format('Y-m-d');
+        $startCurrentQuarter = $startCurrentQuarter. " 00:00:00";
+
+        $endCurrentQuarter = now()->endOfMonth()->format('Y-m-d');
+        $endCurrentQuarter = $endCurrentQuarter. " 23:59:59";
+
+        $startPreviousQuarter = now()->subMonth(5)->startOfMonth()->addHour()->format('Y-m-d');
+        $startPreviousQuarter = $startPreviousQuarter. " 00:00:00";
+
+        $endPreviousQuarter = now()->subMonth(3)->endOfMonth()->format('Y-m-d');
+        $endPreviousQuarter = $endPreviousQuarter. " 23:59:59";
+
+        $tranxCurrentPreviousCryptoQuarter = Transaction::where('status','success')->where('created_at','>=',$startPreviousQuarter)->where('created_at','<=',$endCurrentQuarter)->get();
+        $tranxCurrentPreviousUtilQuarter = UtilityTransaction::where('status','success')->where('created_at','>=',$startPreviousQuarter)->where('created_at','<=',$endCurrentQuarter)->get();
+
+        foreach ($tranxCurrentPreviousUtilQuarter as $value) {
+            $value->amount = $value->amount/$usd_value;
+        }
+
+        $tranxCurrentPreviousQuarter = collect([])->concat($tranxCurrentPreviousCryptoQuarter)->concat($tranxCurrentPreviousUtilQuarter);
+        $userCurrentPreviousQuarter = User::where('created_at','>=',$startPreviousQuarter)->where('created_at','<=',$endCurrentQuarter)->get();
+
+        $tranxCurrentQuarter = $this->searchCollection($tranxCurrentPreviousQuarter, $startCurrentQuarter, $endCurrentQuarter);
+        $tranxPreviousQuarter = $this->searchCollection($tranxCurrentPreviousQuarter, $startPreviousQuarter, $endPreviousQuarter);
+
+        $userCurrentQuarter = $this->searchCollection($userCurrentPreviousQuarter, $startCurrentQuarter, $endCurrentQuarter);
+        $userPreviousQuarter = $this->searchCollection($userCurrentPreviousQuarter, $startPreviousQuarter, $endPreviousQuarter);
+
+        //?Quarterly Retained Users
+
+        $activePreviousMonthQuarterUsers = $tranxPreviousQuarter->groupBy('user_id');
+        $activeCurrentMonthQuarterUsers = $tranxCurrentQuarter->groupBy('user_id');
+
+        $retainedUsersKeysQuarterly = $activePreviousMonthQuarterUsers->intersectByKeys($activeCurrentMonthQuarterUsers);
+        $retainedUsersKeysQuarterly = $retainedUsersKeysQuarterly->all();
+
+        $retainedUserDataQuarterly = array(); 
+        foreach ($retainedUsersKeysQuarterly as $key => $value) {
+            if($value->first()->user)
+            {
+                $retainedUserDataQuarterly[] = $value->first()->user;
+            }
+        }
+
+        //? Quarterly churned users
+        $churnedUsersKeysQuarterly = $activePreviousMonthQuarterUsers->diffKeys($activeCurrentMonthQuarterUsers);
+
+        $churnUserDataQuarterly = array(); 
+        foreach ($churnedUsersKeysQuarterly as $key => $value) {
+            if($value->first()->user)
+            {
+                $churnUserDataQuarterly[] = $value->first()->user;
+            }
+        }
+
+        //?Quarterly Inactive Users
+       $quarterlyInactiveUsers = UserTracking::where('Current_Cycle','QuarterlyInactive')->where('created_at','>=',$startCurrentQuarter)->where('created_at','<=',$endCurrentQuarter)->get();
+       $quarterlyInactiveUsersNo = $quarterlyInactiveUsers->count();
+
+        //?Quaterly Deserted Users
+        $QuarterlyDesertedUser = "Not Available";
+        $QuarterlyDesertedUserNo = 0;
+        if(now()->diffInMonths($firstLoginSession->created_at) >= 3) 
+        {
+            $QDArray = array();
+            $QDUsers = User::with('loginSession')->get();
+            foreach($QDUsers as $value)
+            {
+                if($value->loginSession()->count() > 0)
+                {
+                    $lastUserLoginSession = $value->loginSession()->first();
+                    if(now()->diffInMonths($lastUserLoginSession->created_at) >= 3)
+                    {
+                        $QDArray[] = $value; 
+                    }
+                }else{
+                    $QDArray[] = $value; 
+                }  
+            }
+            $QuarterlyDesertedUser = $QDArray;
+            $QuarterlyDesertedUserNo = count($QDArray);
+        }
+
+        if($timeFrame == 'quarterly')
+        {
+            if($modalType == 'DeadUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "DeadUsers" => $deadUserAnnually,
+                ]);
+            }
+
+            if($modalType == 'ResurrectedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "ResurrectedUsers" => $resurrectedUserAnnually,
+                ]);
+            }
+
+            if($modalType == 'RetainedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "RetainedUsers" => $retainedUserDataQuarterly,
+                ]);
+            }
+
+            if($modalType == 'ChurnedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "ChurnedUsers" => $churnUserDataQuarterly,
+                ]);
+            }
+
+            if($modalType == 'QuarterlyInactiveUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "QuarterlyInactiveUsers" => $quarterlyInactiveUsers,
+                ]);
+            }
+
+            if($modalType == 'QuarterlyDesertedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "QuarterlyDesertedUsers" => $QuarterlyDesertedUser,
+                ]);
+            }
+        }
+
+        //? monthly
+        $startCurrentMonth = now()->startOfMonth()->addHour()->format('Y-m-d');
+         $startCurrentMonth = $startCurrentMonth. " 00:00:00";
+
+         $endCurrentMonth = now()->endOfMonth()->format('Y-m-d');
+         $endCurrentMonth = $endCurrentMonth. " 23:59:59";
+
+         $startPreviousMonth = now()->subMonth()->startOfMonth()->addHour()->format('Y-m-d');
+         $startPreviousMonth = $startPreviousMonth. " 00:00:00";
+
+         $endPreviousMonth = now()->subMonth()->endOfMonth()->format('Y-m-d');
+         $endPreviousMonth = $endPreviousMonth. " 23:59:59";
+
+         $tranxCurrentPreviousCryptoMonthly = Transaction::where('status','success')->where('created_at','>=', $startPreviousMonth)->where('created_at','<=', $endCurrentMonth)->get();
+         $tranxCurrentPreviousUtilMonthly = UtilityTransaction::where('status','success')->where('created_at','>=', $startPreviousMonth)->where('created_at','<=', $endCurrentMonth)->get();
+
+         foreach ($tranxCurrentPreviousUtilMonthly as $value) {
+            $value->amount = $value->amount/$usd_value;
+        }
+
+         $tranxCurrentPreviousMonthly = collect([])->concat($tranxCurrentPreviousCryptoMonthly)->concat($tranxCurrentPreviousUtilMonthly);
+         $userCurrentPreviousMonthly = User::where('created_at','>=', $startPreviousMonth)->where('created_at','<=', $endCurrentMonth)->get();
+
+         $tranxCurrentMonth = $this->searchCollection($tranxCurrentPreviousMonthly, $startCurrentMonth, $endCurrentMonth);
+         $tranxPreviousMonth = $this->searchCollection($tranxCurrentPreviousMonthly, $startPreviousMonth, $endPreviousMonth);
+
+         $userCurrentMonth = $this->searchCollection($userCurrentPreviousMonthly, $startCurrentMonth, $endCurrentMonth);
+         $userPreviousMonth = $this->searchCollection($userCurrentPreviousMonthly, $startPreviousMonth, $endPreviousMonth);
+
+         //?Retained Users Monthly
+
+        $activePreviousMonthUsers = $tranxPreviousMonth->groupBy('user_id');
+        $activeCurrentMonthUsers = $tranxCurrentMonth->groupBy('user_id');
+
+        $retainedUsersKeysMonthly = $activePreviousMonthUsers->intersectByKeys($activeCurrentMonthUsers);
+        $retainedUsersKeysMonthly = $retainedUsersKeysMonthly->all();
+
+        $retainedUserDataMonthly = array(); 
+        foreach ($retainedUsersKeysMonthly as $key => $value) {
+            if($value->first()->user)
+            {
+                $retainedUserDataMonthly[] = $value->first()->user;
+            }
+        }
+
+        //? churned users Monthly
+       $churnedUsersKeysMonthly = $activePreviousMonthUsers->diffKeys($activeCurrentMonthUsers);
+
+       $churnUserDataMonthly = array(); 
+       foreach ($churnedUsersKeysMonthly as $key => $value) {
+           if($value->first()->user)
+           {
+               $churnUserDataMonthly[] = $value->first()->user;
+           }
+       }
+
+       if($timeFrame == 'monthly' || $timeFrame == 'daily')
+        {
+            if($modalType == 'DeadUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "DeadUsers" => $deadUserAnnually,
+                ]);
+            }
+
+            if($modalType == 'ResurrectedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "ResurrectedUsers" => $resurrectedUserAnnually,
+                ]);
+            }
+
+            if($modalType == 'RetainedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "RetainedUsers" => $retainedUserDataMonthly,
+                ]);
+            }
+
+            if($modalType == 'ChurnedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "ChurnedUsers" => $churnUserDataMonthly,
+                ]);
+            }
+
+            if($modalType == 'QuarterlyInactiveUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "QuarterlyInactiveUsers" => $quarterlyInactiveUsers,
+                ]);
+            }
+
+            if($modalType == 'QuarterlyDesertedUsers')
+            {
+                return response()->json([
+                    'success' => true,
+                    "QuarterlyDesertedUsers" => $QuarterlyDesertedUser,
+                ]);
+            }
+        }
+
     }
 
     public function searchCollection($collect, $start, $end)
