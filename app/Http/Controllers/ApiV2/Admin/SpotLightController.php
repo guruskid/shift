@@ -280,29 +280,29 @@ class SpotLightController extends Controller {
         $year = $request['year'];
         $month = $request['month'];
 
-        $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal']);
-        $paid_out = $wtrade->sum('amount');
-        $current_balance = $opening_balance - $paid_out;
+        // $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal']);
+        // $paid_out = $wtrade->sum('amount');
+        // $current_balance = $opening_balance - $paid_out;
 
 
-        return [
-            'staff_name' => $acctn->first_name.' '.$acctn->last_name,
-            'opening_balance' => $opening_balance,
-            'closing_balance' => 00,
-            'total_paid_out' => [
-                'amount' => $wtrade->sum('amount'),
-                'count' => $wtrade->count()
-            ],
-            'total_deposit'  => [
-                'amount' => $dtrade->sum('amount'),
-                'count' => $dtrade->count()
-            ],
-            'current_balance' => $current_balance ,
-            'pending_withdrawal' => [
-                'amount' => $pending_withdrawal->sum('amount'),
-                'count'  => $pending_withdrawal->count()
-            ]
-        ];
+        // return [
+        //     'staff_name' => $acctn->first_name.' '.$acctn->last_name,
+        //     'opening_balance' => $opening_balance,
+        //     'closing_balance' => 00,
+        //     'total_paid_out' => [
+        //         'amount' => $wtrade->sum('amount'),
+        //         'count' => $wtrade->count()
+        //     ],
+        //     'total_deposit'  => [
+        //         'amount' => $dtrade->sum('amount'),
+        //         'count' => $dtrade->count()
+        //     ],
+        //     'current_balance' => $current_balance ,
+        //     'pending_withdrawal' => [
+        //         'amount' => $pending_withdrawal->sum('amount'),
+        //         'count'  => $pending_withdrawal->count()
+        //     ]
+        // ];
     }
 
     public function monthlyAnalytics(Request $request) {
