@@ -19,7 +19,7 @@ class CustomerHappinessController extends Controller
     {
         $customerHappinessUser = User::select('id','first_name','last_name','email','phone','status')->where('role',555)->get();
 
-        if($customerHappinessUser->count() <= 0)
+        if($customerHappinessUser->count() == 0)
         {
             return response()->json([
                 'success' => true,
@@ -37,7 +37,7 @@ class CustomerHappinessController extends Controller
 
         foreach ($customerHappinessUser as $key => $value) {
             $assigned_ticket = $ticketData->where('agent_id',$value->id)->count();
-            $closed_ticket = $ticketData->where('closed_by',$value->id)->where('status','close')->count();
+            $closed_ticket = $ticketData->where('status','close')->count();
 
             $AgentCloseRate = ($closed_ticket/$assigned_ticket)*100;
             $value->agentAgentRate = round($AgentCloseRate,2);
@@ -78,7 +78,7 @@ class CustomerHappinessController extends Controller
 
     public function chartData($date, $id)
     {
-        //* Weekly 
+        //* Weekly
         $startWeek = Carbon::parse($date)->subDays(7)->addHour()->format('Y-m-d');
         $endWeek = Carbon::parse($date)->format('Y-m-d');
 
@@ -115,15 +115,15 @@ class CustomerHappinessController extends Controller
     public function dailyChart($startDate, $endDate, $id = null)
     {
         /**
-         * 
+         *
          * @param date $startDate
-         * 
+         *
          * @param date $endDate
-         * 
+         *
          * @param integer $usd_value
-         * 
+         *
          * @return array $exportData
-         * 
+         *
          */
 
         $ticket = Ticket::all();
@@ -134,10 +134,10 @@ class CustomerHappinessController extends Controller
 
         for($i = 0; $i <= $loopCounter; $i ++)
         {
-            //*Total Time 
+            //*Total Time
             $day = Carbon::parse($startDate)->addHour()->addDays($i)->format('Y-m-d');
             if($id == null){
-                
+
                 $opened_data = $ticket->where('status','open')->where('created_at','>=',"$day 00:00:00")->where('created_at','<=',"$day 23:59:59")->count();
                 $closed_data = $ticket->where('status','close')->where('created_at','>=',"$day 00:00:00")->where('created_at','<=',"$day 23:59:59")->count();
             }else{
@@ -162,7 +162,7 @@ class CustomerHappinessController extends Controller
                     'date' => Carbon::parse($day)->addHour()->format("d F Y")
                 );
             }
-            
+
         }
 
         return $exportData;
@@ -171,15 +171,15 @@ class CustomerHappinessController extends Controller
     public function monthlyChart($monthsBack, $time, $id = null)
     {
         /**
-         * 
+         *
          * @param integer $monthsBack
-         * 
+         *
          * @param date $time
-         * 
+         *
          * @param integer $usd_value
-         * 
+         *
          * @return array $exportData
-         * 
+         *
          */
         $listOfMonths = array();
         do{
@@ -190,7 +190,7 @@ class CustomerHappinessController extends Controller
             $listOfMonths[] = array(
                 'start' => $startMonth,
                 'end' => $endMonth,
-            ); 
+            );
             $monthsBack -- ;
         }
         while($monthsBack >= 0);
@@ -204,7 +204,7 @@ class CustomerHappinessController extends Controller
         for($i = 0; $i <= $endIndex; $i ++)
         {
             if($id == null){
-                
+
                 $opened_data = $durationTranx->where('status','open')->where('created_at','>=',$listOfMonths[$i]['start'])->where('created_at','<=',$listOfMonths[$i]['end'])->count();
                 $closed_data = $durationTranx->where('status','close')->where('created_at','>=',$listOfMonths[$i]['start'])->where('created_at','<=',$listOfMonths[$i]['end'])->count();
             }else{
@@ -219,7 +219,7 @@ class CustomerHappinessController extends Controller
             );
         }
 
-        return $exportData; 
+        return $exportData;
 
 
     }

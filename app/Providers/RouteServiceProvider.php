@@ -51,6 +51,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapApiAdminRoutes();
 
+        $this->mapApiCustomerHappinessRoutes();
+
         //
     }
 
@@ -135,5 +137,13 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware(['api', 'admin'])
              ->namespace($this->namespace .'\ApiV2\Admin')
              ->group(base_path('routes/api_admin.php'));
+    }
+
+    protected function mapApiCustomerHappinessRoutes()
+    {
+        Route::prefix('api_v2')
+             ->middleware(['api', 'customerHappiness'])
+             ->namespace($this->namespace .'\ApiV2\Customerhappiness')
+             ->group(base_path('routes/customerhappy.php'));
     }
 }
