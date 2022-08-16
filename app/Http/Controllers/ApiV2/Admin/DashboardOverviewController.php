@@ -34,8 +34,9 @@ class DashboardOverviewController extends Controller {
         $aLn = (isset($customerHappiness)) ? $customerHappiness->lastst_name : null;
 
         $customerHappinessAgent = $aFn.' '.$aLn;
-        $opened = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count();
-        $closed = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count();
+
+        // $opened = ($customerHappiness) ? Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count() : 0;
+        // $closed =  ($customerHappiness) ? Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count() : 0;
 
         $totalOpened = Ticket::where(['status'=>'open'])->count();
         $totalClosed = Ticket::where(['status'=>'closed'])->count();
