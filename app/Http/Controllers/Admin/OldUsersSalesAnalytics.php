@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\CryptoRate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SalesTimestamp;
@@ -107,10 +108,11 @@ class OldUsersSalesAnalytics extends Controller
         $end_date = now()->format('Y-m-d');
         $end_date = Carbon::parse($end_date." 23:59:59");
 
-        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
+        $CalledUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')->where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
-        $RespondedUsers = UserTracking::where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
+        $RespondedUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')->where('called_date','>=',$start_date)
+        ->where('Current_Cycle','Responded')->get();
         $noOfRespondedUsers = $RespondedUsers->count();
 
         //? on base loading it should just show unique transactions
@@ -118,9 +120,10 @@ class OldUsersSalesAnalytics extends Controller
         $unique = 1;
         $total = 0;
 
-        $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($this->RespondedUnique($RespondedUsers)->count()/$noOfCalledUsers)*100;
-        $respondedTranxNo = $respondedTransactions->count();
-        $respondedTranxVolume = $respondedTransactions->sum('amount');
+        $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($this->RespondedUnique($RespondedUsers)[0]/$noOfCalledUsers)*100;
+        $respondedTranxNo = $respondedTransactions[0];
+
+        $respondedTranxVolume = $respondedTransactions[1];
         $averageTimeBetweenCalls = $this->sortAverageTimeBetweenCalls($start_date,$end_date,null);
 
         $totalCallDuration = $CalledUsers->sum('call_duration');
@@ -142,9 +145,30 @@ class OldUsersSalesAnalytics extends Controller
             $show_data = true;
         }
         $table_data = $table_data->sortByDesc('updated_at')->take(10);
+        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+
         foreach($table_data as $td)
         {
-            $data = Transaction::where('user_id',$td->user_id)->where('status','success')->orderBy('id','desc')->first();
+            if($td['utilityTransaction']->count() > 0)
+            {
+                foreach($td['utilityTransaction']->where('created_at','>=',$td->called_date) as $util)
+                {
+                    $util->amount = $util->amount/$usdRate;
+                }
+            }
+
+            if($td['depositTransactions']->count() > 0)
+            {
+                foreach($td['depositTransactions']->where('created_at','>=',$td->called_date) as $deposit)
+                {
+                    $deposit->amount = $deposit->amount/$usdRate;
+                }
+            }
+
+            $allTranx = collect()->concat($td['transactions'])->concat($td['depositTransactions'])->concat($td['utilityTransaction']);
+            dd($allTranx->sortByDesc('created_at'));
+            
+            $data = $allTranx->where('created_at','>=',$td->called_date)->sortByDesc('created_at')->first();
             if($data)
             {
                 $td->lastTranxDate = $data->created_at;
@@ -385,17 +409,40 @@ class OldUsersSalesAnalytics extends Controller
     }
     public function RespondedUnique($data)
     {
+        //?do a performance check on this (to many foreach statements check execution time)
+
+        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $uniqueData = [];
         foreach($data as $d)
         {
-            $User_tnx = Transaction::where('user_id',$d->user_id)->where('updated_at','>=',$d->called_date)->where('status','success')->first();
-            if($User_tnx != null)
+            if($d['utilityTransaction']->count() > 0)
             {
-                $uniqueData[] = $User_tnx;
+                foreach($d['utilityTransaction']->where('created_at','>=',$d->called_date) as $util)
+                {
+                    $util->amount = $util->amount/$usdRate;
+                }
+            }
+
+            if($d['depositTransactions']->count() > 0)
+            {
+                foreach($d['depositTransactions']->where('created_at','>=',$d->called_date) as $deposit)
+                {
+                    $deposit->amount = $deposit->amount/$usdRate;
+                }
+            }
+        
+            $allTranx = collect()->concat($d['transactions'])->concat($d['depositTransactions'])->concat($d['utilityTransaction']);
+
+            $userTranx = $allTranx->where('created_at','>=',$d->called_date)->sortByDesc('created_at')->first();
+            if($userTranx != null)
+            {
+                $uniqueData[] = $userTranx;
             }
         }
-        $uniqueData = collect($uniqueData)->sortByDesc('updated_at');
-        return $uniqueData;
+        $uniqueData = collect($uniqueData)->sortByDesc('created_at');
+        $number = $uniqueData->count();
+        $amount = $uniqueData->sum('amount');
+        return [$number,$amount];
 
     }
 

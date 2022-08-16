@@ -452,20 +452,20 @@ class BusinessDeveloperController extends Controller
     public static function QuarterlyInactiveFromOldUsersDB() {
         UserTracking::truncate();
         CallLog::truncate();
-        $all_users = User::where('role',1)->latest('created_at')->get();
+        $all_users = User::with('transactions')->where('role',1)->latest('created_at')->get();
         foreach ($all_users as $u) {
             $userTracking = UserTracking::where('user_id',$u->id)->count();
             if($userTracking == 0){
-                if($u->transactions()->count() == 0)
+                if($u['transactions']->count() == 0)
                 {
-                    $diff_in_months = $u->created_at->diffInMonths(Carbon::now());
+                    $diff_in_months = $u->created_at->diffInMonths(now());
                     
                     if($diff_in_months >=3)
                     {
                         $user_tracking = new UserTracking();
                         $user_tracking->user_id = $u->id;
                         $user_tracking->Current_Cycle = "QuarterlyInactive";
-                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->current_cycle_count_date = now();
                         $user_tracking->save();
 
                     }
@@ -473,20 +473,20 @@ class BusinessDeveloperController extends Controller
                         $user_tracking = new UserTracking();
                         $user_tracking->user_id = $u->id;
                         $user_tracking->Current_Cycle = "Active";
-                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->current_cycle_count_date = now();
                         $user_tracking->save();
                     }
                 }
                 else{
                     $last_user_transaction_date = $u->transactions()->latest('updated_at')->first()->updated_at;
-                    $diff_in_months = $last_user_transaction_date->diffInMonths(Carbon::now());
+                    $diff_in_months = $last_user_transaction_date->diffInMonths(now());
                     
                     if($diff_in_months >=3)
                     {
                         $user_tracking = new UserTracking();
                         $user_tracking->user_id = $u->id;
                         $user_tracking->Current_Cycle = "QuarterlyInactive";
-                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->current_cycle_count_date = now();
                         $user_tracking->save();
 
                     }
@@ -494,7 +494,7 @@ class BusinessDeveloperController extends Controller
                         $user_tracking = new UserTracking();
                         $user_tracking->user_id = $u->id;
                         $user_tracking->Current_Cycle = "Active";
-                        $user_tracking->current_cycle_count_date = Carbon::now();
+                        $user_tracking->current_cycle_count_date = now();
                         $user_tracking->save();
                     }
 
