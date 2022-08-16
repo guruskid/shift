@@ -153,6 +153,13 @@
                             </i>Sell transactions
                         </a>
                     </li>
+                    <li>
+                        <a href="{{route('admin.currency_transactions', [143, 'USDT'])}}"
+                            class=" {{ Route::currentRouteName() == 'admin.currency_transactions' ? 'mm-active' : '' }} ">
+                            <i class="metismenu-icon">
+                            </i>USDT transactions
+                        </a>
+                    </li>
 
                     <li>
                         <a href="{{route('admin.transactions-status', 'success')}}" >
@@ -195,7 +202,7 @@
                 </ul>
             </li>
             @endif
-            
+
             @if (in_array(Auth::user()->role, [777,775] ))
                 <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">
                     <a href="{{route('admin.naira-p2p')}}">
@@ -207,8 +214,8 @@
                 </li>
 
             @endif
-            
-           
+
+
             @if (in_array(Auth::user()->role, [999, 889, 777, 775] ))
                 <li class="my-3">
                     <a href="{{route('admin.crypto-summary', 1)}}"
@@ -234,7 +241,7 @@
                 </a>
             </li>
             @endif
-           
+
 
             <li class="my-3">
                 <a href="{{route('admin.wallet-transactions')}}"
@@ -290,6 +297,16 @@
                 </li>
             @endif
 
+            @if (in_array(Auth::user()->role, [889, 999, 777] ) )
+            <li class="my-3">
+                <a href="{{route('p2p.accounts')}}"
+                    class=" {{ Route::currentRouteName() == 'p2p.accounts' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-wallet"></i>
+                    Pay Bridge Accounts
+                </a>
+            </li>
+            @endif
+            
             @if (in_array(Auth::user()->role, [999, 666, 777,775, 889] ))
                 <li class="my-3">
                     <a href="{{route('admin.chat_agents')}}"
@@ -400,7 +417,7 @@
                 </a>
             </li>
             @endif
-            
+
             @if(Auth::user()->role == 999 OR  Auth::user()->role == 444 OR  Auth::user()->role == 889 OR Auth::user()->role == 449)
             @if(Auth::user()->role == 999)
             <li class="my-3">

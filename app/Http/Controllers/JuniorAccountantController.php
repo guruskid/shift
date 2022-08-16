@@ -22,33 +22,36 @@ class JuniorAccountantController extends Controller
     {   
         $user = User::find($id);
         $user->status = $action;
+        
         $user->save();
 
         $nairaUsersWallet = NairaWallet::sum('amount');
         if(($user->role == 775))
         {
             if ($action == 'active') {
-                AccountantTimeStamp::create([
-                    'user_id' => $id,
-                    'activeTime' => Carbon::now(),
-                    'opening_balance' => $nairaUsersWallet,
-                ]);
+                $user_check = AccountantTimeStamp::where('user_id', $user->id)->whereNull('inactiveTime')->get();
+                if($user_check->count() <= 0)
+                {
+                    AccountantTimeStamp::create([
+                        'user_id' => $id,
+                        'activeTime' => Carbon::now(),
+                        'opening_balance' => $nairaUsersWallet,
+                    ]);
+                }
+                
             }
             if($action == 'waiting')
             {
                 $accountant = AccountantTimeStamp::where('user_id',$id)->latest()->first();
                 if(!empty($accountant))
                 {
-                    $time_stamp =  $accountant->where('user_id',$id)->latest()->first();
-
-                    $startTime = $accountant->activeTime;
-                    $endTime = Carbon::now();
-                    $totalDuration =  Carbon::parse($startTime)->diffInMinutes($endTime);
-                    if($totalDuration < 5){
-                        $time_stamp->delete();
+                    $activeTime = $accountant->activeTime;
+                    $duration = Carbon::parse($activeTime)->diffInMinutes(now());
+                    if($duration < 5){
+                        $accountant->delete();
                     }
                     else{
-                        $time_stamp->update([
+                        $accountant->update([
                             'inactiveTime' => Carbon::now(),
                             'closing_balance' => $nairaUsersWallet,
                         ]); 

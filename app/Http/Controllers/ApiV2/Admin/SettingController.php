@@ -33,10 +33,10 @@ class SettingController extends Controller
                 break;
              case 775:
                 $role_name = "Account Officer";
-                break;   
+                break;
             case 559:
                 $role_name = "Marketing Personnel";
-                break; 
+                break;
             case 557:
                 $role_name = "Sales Personnel - Old Users";
                 break;
@@ -51,10 +51,10 @@ class SettingController extends Controller
                 break;
             case 444:
                 $role_name = "Chinese Operator";
-                break; 
+                break;
             case 449:
                 $role_name = "Chinese Administrator";
-                break;    
+                break;
             default:
             $role_name = null;
                 break;
@@ -72,13 +72,13 @@ class SettingController extends Controller
                 'user_details' => Auth::user(),
             ], 200);
         }
-        
+
         return response()->json([
             'success' => false,
             'dropdown' => $roleDropdown,
             'message' => 'Not Logged In'
         ], 401);
-        
+
     }
 
     public function editUser(Request $r)
@@ -292,7 +292,7 @@ class SettingController extends Controller
             'success' => true,
             'message' => "$r->first_name $r->last_name with the role of ".$roleName." has been added",
         ], 200);
-        
+
     }
 
     public function settings()
@@ -363,69 +363,5 @@ class SettingController extends Controller
             'message' => "$user->first_name $user->last_name is not a of role SALES",
         ], 401);
 
-    }
-
-    public function activateStaff(Request $r)
-    {
-        $validate = Validator::make($r->all(), [
-            'id' => 'required',
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validate->errors(),
-            ], 401);
-        }
-
-        $id = $r->id;
-        $user = User::find($id);
-
-        if($user->status != 'active'):
-            $user->status = 'active';
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => "$user->first_name $user->last_name is activated"
-            ],200);
-        endif;
-
-        return response()->json([
-            'success' => true,
-            'message' => "$user->first_name $user->last_name is already activated"
-        ],200);
-    }
-
-    public function deactivateStaff(Request $r)
-    {
-        $validate = Validator::make($r->all(), [
-            'id' => 'required',
-        ]);
-
-        if ($validate->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validate->errors(),
-            ], 401);
-        }
-
-        $id = $r->id;
-        $user = User::find($id);
-
-        if($user->status != 'waiting'):
-            $user->status = 'waiting';
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => "$user->first_name $user->last_name is deactivated"
-            ],200);
-        endif;
-
-        return response()->json([
-            'success' => true,
-            'message' => "$user->first_name $user->last_name is already deactivated"
-        ],200);
     }
 }
