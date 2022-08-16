@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\ApiV2;
 
+use App\Account;
+use App\Bank;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LiveRateController;
 use App\Http\Controllers\LoginSessionController;
@@ -14,7 +16,6 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -23,9 +24,6 @@ class UserController extends Controller
     public function nairaWalletBalance()
     {
         $wallet = Auth::user()->nairaWallet;
-
-
-
 
         $client = new Client();
         $url = "https://api.coinbase.com/v2/prices/spot?currency=USD";
@@ -103,22 +101,18 @@ class UserController extends Controller
         ]);
     }
 
-    public function allBalance(){
+    public function allBalance()
+    {
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
         $btc_real_time = $res->value;
 
-
-
-
         $url = env('TATUM_URL') . '/tatum/rate/USD?basePair=NGN';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
         $naira_usd_real_time = $res->value;
-
-
 
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
         $response = $client->request('GET', $url, [
@@ -141,7 +135,6 @@ class UserController extends Controller
 
         $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
 
-
         return response()->json([
             'success' => true,
             'btc_balance' => $btc_balance,
@@ -151,11 +144,7 @@ class UserController extends Controller
 
         ]);
 
-
-
-
     }
-
 
     public function dashboard()
     {
@@ -176,8 +165,6 @@ class UserController extends Controller
             'headers' => ['x-api-key' => env('TATUM_KEY')],
         ]);
         $accounts = json_decode($res->getBody(), true);
-
-
 
         if (empty($accounts)) {
             return response()->json([
@@ -238,11 +225,10 @@ class UserController extends Controller
 
         $notify = array();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
-         foreach($notifications as $body){
+        foreach ($notifications as $body) {
             array_push($notify, array($body->body));
 
-         }
-
+        }
 
         $slides = array();
         $adImages = ImageSlide::latest()->get()->take(10);
@@ -431,14 +417,7 @@ class UserController extends Controller
 
     }
 
-
-
-
-
     //Level 3 Verification Begins Here
-
-
-
 
     public function updateDp(Request $r)
     {
@@ -462,8 +441,6 @@ class UserController extends Controller
             Auth::user()->dp = $imageName;
             Auth::user()->save();
 
-         ;
-
             return response()->json([
                 'success' => true,
                 'data' => 'You have successfully uploaded image.',
@@ -477,8 +454,8 @@ class UserController extends Controller
 
     }
 
-
-    public function crypto(){
+    public function crypto()
+    {
 
         $cryptoTran = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 1)->where('user_id', Auth::user()->id);
@@ -486,12 +463,10 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-             'data' => $cryptoTran
+            'data' => $cryptoTran,
         ]);
 
     }
-
-
 
     public function updateBirthday(Request $r)
     {
@@ -560,5 +535,97 @@ class UserController extends Controller
             'btc_balnace_in_usd' => $btc_wallet->usd,
             'btc_rate' => $btc_real_time,
         ]);
+    }
+    public function listOfBanks()
+    {
+        $banks = Bank::All();
+
+        return response()->json([
+            'success' => true,
+            'data' => $banks,
+        ]);
+
+    }
+
+    public function deleteBankAccount($id)
+    {
+
+        $bank = Account::find($id);
+        if ($bank->user_id != Auth::user()->id) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Not authorised',
+            ]);
+        } else {
+            $bank->delete();
+            return response()->json([
+                'success' => true,
+                'msg' => 'Account detail successfully added',
+            ]);
+        }
+    }
+
+    public function userAccounts()
+    {
+
+        $accounts = Auth::user()->accounts;
+        return response()->json([
+            'success' => true,
+            'data' => $accounts,
+        ]);
+
+    }
+
+    public function addBankAccount(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'account_name' => 'required',
+            'bank_name' => 'required',
+            'account_number' => 'required| min:10',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'msg' => $validator->errors(),
+            ], 401);
+        }
+
+        $addNew = new Account();
+        $bank = Bank::where('code', $request->bank_code)->first();
+        $addNew->user_id = Auth::user()->id;
+        $addNew->account_name = $request->account_name;
+        $addNew->bank_name = $bank->name;
+        $addNew->bank_id = $bank->id;
+        $addNew->account_number = $request->account_number;
+        $addNew->save();
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Account added successfully',
+        ]);
+
+    }
+
+    public function deleteUserAccount()
+    {
+
+        $updateStatus = User::where('id', Auth::user()->id)->update(['is_deleted' => 1]);
+
+        if ($updateStatus) {
+            return response()->json([
+                'success' => true,
+                'msg' => 'Account deleted successfully',
+            ]);
+
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Invalid Operation',
+            ]);
+        }
+
     }
 }
