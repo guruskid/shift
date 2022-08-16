@@ -185,6 +185,13 @@ class SpotLightController extends Controller {
         $ticketsWaiting = 0;
         $ticketsResolved = 0;
         $ticketsUnresolved = 0;
+        $saleTimeStamp = SalesTimestamp::where(['user_id' => $saleRep->id])->latest()->first();
+
+        $tranx = Transaction::where(['status' => 'success'])
+        ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
+
+        $declinedTranx = Transaction::where(['status' => 'declined'])
+        ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
 
         $customerHappiness = User::where(['role' => 555, 'status' => 'active'])->with('nairaWallet')->first();
         if ($customerHappiness) {
@@ -269,6 +276,35 @@ class SpotLightController extends Controller {
         ];
     }
 
+    public function monthlyAnalyticss(Request $request) {
+        $year = $request['year'];
+        $month = $request['month'];
+
+        $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal']);
+        $paid_out = $wtrade->sum('amount');
+        $current_balance = $opening_balance - $paid_out;
+
+
+        return [
+            'staff_name' => $acctn->first_name.' '.$acctn->last_name,
+            'opening_balance' => $opening_balance,
+            'closing_balance' => 00,
+            'total_paid_out' => [
+                'amount' => $wtrade->sum('amount'),
+                'count' => $wtrade->count()
+            ],
+            'total_deposit'  => [
+                'amount' => $dtrade->sum('amount'),
+                'count' => $dtrade->count()
+            ],
+            'current_balance' => $current_balance ,
+            'pending_withdrawal' => [
+                'amount' => $pending_withdrawal->sum('amount'),
+                'count'  => $pending_withdrawal->count()
+            ]
+        ];
+    }
+
     public function monthlyAnalytics(Request $request) {
         $year = $request['year'];
         $month = $request['month'];
@@ -317,6 +353,256 @@ class SpotLightController extends Controller {
                 'new_users' => $new_users[$i]['value'],
                 'unique_users' => $unique_users[$i]['value']
             ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $bigData
+        ],200);
+    }
+
+    public function graphAnalytics(Request $request) {
+        $type = $request['type'];
+        $bigData = [];
+
+        if ($type == 'monthly') {
+            $year = $request['year'];
+
+            $soy = Carbon::now()->startOfYear();
+            for ($i=0; $i < 12; $i++) { 
+                $tx = Transaction::where('status','success')
+                    ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
+                    ->where(DB::raw('year(created_at)'), '=', $year)
+                    ->count();
+                
+                $users = User::where('status','active')
+                    ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
+                    ->where(DB::raw('year(created_at)'), '=', $year)->count();
+
+                $unique_users = Transaction::where('status','success')
+                    ->select(DB::raw("month(created_at) as date"),DB::raw("count(distinct user_id) as total"))
+                    ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
+                    ->where(DB::raw('year(created_at)'), '=', $year)->first()->total;
+
+                $bigData[] = [
+                    'x_tick' => $soy->format('M'),
+                    'no_of_transactions' => $tx,
+                    'new_users' => $users,
+                    'unique_users' => $unique_users
+                ];
+                $soy->addMonth();
+            }
+        }
+
+        if ($type == 'day') {
+            $days = $request['days'];
+            $now = Carbon::now();
+            $period = 1000;
+            $ticks = ceil($period/$days);
+
+            for ($i=0; $i < $ticks; $i++) {
+                if ($i > 0) {
+                    $now->subDay();
+                }
+                $frmd = $now->format('Y-m-d');
+                $from = $now->format('jS D');
+                $now->subDays($days + 1);
+                $tod = $now->format('Y-m-d');
+                $to = $now->format('jS D');
+                $tick = $from.' - '.$to;
+
+                $tx = Transaction::where('status','success')
+                    ->whereBetween('created_at',[$tod,$frmd])
+                    ->count();
+
+                $users = User::where('status','active')
+                    ->whereBetween('created_at',[$tod,$frmd])
+                    ->count();
+
+                $unique_users = Transaction::where('status','success')
+                    ->select(DB::raw("month(created_at) as date"),DB::raw("count(distinct user_id) as total"))
+                    ->whereBetween('created_at',[$tod,$frmd])
+                    ->first()->total;
+
+                $bigData[] = [
+                    'x_tick' => $tick,
+                    'no_of_transactions' => $tx,
+                    'new_users' => $users,
+                    'unique_users' => $unique_users
+                ];
+            }
+        }
+
+        if ($type == 'quarterly') {
+            $startFrom = Carbon::createFromFormat('Y-m',$request['month']);
+            $period = 100;
+
+            for ($i=0; $i < 10; $i++) {
+                if ($i > 0) {
+                    $startFrom->subMonth();
+                }
+                $from = $startFrom->format('M Y');
+                $to = $startFrom->subMonth(2)->format('M Y');
+                $tick = $from.' - '.$to;
+
+                $tx = Transaction::where('status','success')
+                    ->whereBetween(DB::raw('date(created_at)'),[$startFrom->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')])
+                    ->count();
+
+                $users = User::where('status','active')
+                    ->whereBetween(DB::raw('date(created_at)'),[$startFrom->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')])
+                    ->count();
+
+                $unique_users = Transaction::where('status','success')
+                    ->select(DB::raw("month(created_at) as date"),DB::raw("count(distinct user_id) as total"))
+                    ->whereBetween(DB::raw('date(created_at)'),[$startFrom->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')])
+                    ->first()->total;
+
+                $bigData[] = [
+                    'x_tick' => $tick,
+                    'no_of_transactions' => $tx,
+                    'new_users' => $users,
+                    'unique_users' => $unique_users
+                ];
+            }
+
+        }
+
+        if ($type == 'year') {
+            $year = $request['year'];
+            $startFrom = Carbon::createFromFormat('Y',$request['year']);
+            $period = 100;
+
+            for ($i=0; $i < 10; $i++) {
+                $tx = Transaction::where('status','success')
+                    ->where(DB::raw('year(created_at)'),$startFrom->format('Y'))
+                    ->count();
+
+                $users = User::where('status','active')
+                    ->where(DB::raw('year(created_at)'),$startFrom->format('Y'))
+                    ->count();
+
+                $unique_users = Transaction::where('status','success')
+                    ->select(DB::raw("month(created_at) as date"),DB::raw("count(distinct user_id) as total"))
+                    ->where(DB::raw('year(created_at)'),$startFrom->format('Y'))
+                    ->first()->total;
+
+                $bigData[] = [
+                    'x_tick' => $startFrom->format('Y'),
+                    'no_of_transactions' => $tx,
+                    'new_users' => $users,
+                    'unique_users' => $unique_users
+                ];
+                $startFrom->subYear();
+            }
+
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $bigData
+        ],200);
+    }
+
+    public function turnOverGraphAnalytics(Request $request) {
+        $type = $request['type'];
+        $bigData = [];
+
+        if ($type == 'monthly') {
+            $year = $request['year'];
+
+            $soy = Carbon::now()->startOfYear();
+            for ($i=0; $i < 12; $i++) {
+                $turn_over = Transaction::where('status','success')
+                    ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
+                    ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
+                    ->where(DB::raw('year(created_at)'), '=', $year)
+                    ->groupBy('date')
+                    ->first();
+
+                $bigData[] = [
+                    'x_tick' => $soy->format('M'),
+                    'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
+                ];
+                $soy->addMonth();
+            }
+        }
+
+        if ($type == 'day') {
+            $days = $request['days'];
+            $now = Carbon::now();
+            $period = 100;
+            $ticks = ceil($period/$days);
+
+            for ($i=0; $i < $ticks; $i++) {
+                if ($i > 0) {
+                    $now->subDay();
+                }
+                $frmd = $now->format('Y-m-d');
+                $from = $now->format('jS D');
+                $now->subDays($days + 1);
+                $tod = $now->format('Y-m-d');
+                $to = $now->format('jS D');
+                $tick = $from.' - '.$to;
+
+                $turn_over = Transaction::where('status','success')
+                    ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
+                    ->whereBetween('created_at',[$tod,$frmd])
+                    ->groupBy('date')
+                    ->first();
+
+                $bigData[] = [
+                    'x_tick' => $tick,
+                    'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
+                ];
+            }
+        }
+
+        if ($type == 'quarterly') {
+            $startFrom = Carbon::createFromFormat('Y-m',$request['month']);
+            $period = 100;
+
+            for ($i=0; $i < 10; $i++) {
+                if ($i > 0) {
+                    $startFrom->subMonth();
+                }
+                $from = $startFrom->format('M Y');
+                $to = $startFrom->subMonth(2)->format('M Y');
+                $tick = $from.' - '.$to;
+
+                $turn_over = Transaction::where('status','success')
+                    ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
+                    ->whereBetween(DB::raw('date(created_at)'),[$startFrom->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')])
+                    ->groupBy('date')
+                    ->first();
+
+                $bigData[] = [
+                    'x_tick' => $tick,
+                    'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
+                ];
+            }
+
+        }
+
+        if ($type == 'year') {
+            $year = $request['year'];
+            $startFrom = Carbon::createFromFormat('Y',$request['year']);
+            $period = 100;
+
+            for ($i=0; $i < 10; $i++) {
+                $turn_over = Transaction::where('status','success')
+                    ->select(DB::raw("year(created_at) as date"),DB::raw("sum(amount_paid) as total"))
+                    ->where(DB::raw('year(created_at)'),$startFrom->format('Y'))
+                    ->groupBy('date')
+                    ->first();
+
+                $bigData[] = [
+                    'x_tick' => $startFrom->format('Y'),
+                    'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
+                ];
+                $startFrom->subYear();
+            }
+
         }
 
         return response()->json([

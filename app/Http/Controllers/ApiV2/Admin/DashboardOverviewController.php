@@ -20,6 +20,7 @@ class DashboardOverviewController extends Controller {
     public function overview() {
         $walletTotal = NairaWallet::sum('amount');
         $customerHappiness = User::where(['role' => 555, 'status' => 'active'])->with('nairaWallet')->first();
+<<<<<<< Updated upstream
         $opened = 0;
         $closed = 0;
         if ($customerHappiness) {
@@ -34,6 +35,13 @@ class DashboardOverviewController extends Controller {
         $aLn = (isset($customerHappiness)) ? $customerHappiness->lastst_name : null;
 
         $customerHappinessAgent = $aFn.' '.$aLn;
+=======
+        $opened = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count();
+        $closed = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count();
+
+        $totalOpened = Ticket::where(['status'=>'open'])->count();
+        $totalClosed = Ticket::where(['status'=>'closed'])->count();
+>>>>>>> Stashed changes
         
         $overview = [
             'users_naira_wallet' => number_format($walletTotal,'0','.',','),
@@ -43,7 +51,11 @@ class DashboardOverviewController extends Controller {
                 'new_users' => '14%'
             ],
             'customer_happiness' => [
+<<<<<<< Updated upstream
                 'staff_name' => $customerHappinessAgent,
+=======
+                'staff_name' => $customerHappiness->first_name.' '.$customerHappiness->last_name,
+>>>>>>> Stashed changes
                 'opened_query' => $opened,
                 'closed_query' => $closed,
                 'total_opened_query' => $totalOpened,
@@ -128,7 +140,11 @@ class DashboardOverviewController extends Controller {
             $dateRange[] = [
                 'date' => $dateString,
                 'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
+<<<<<<< Updated upstream
                 'day' => substr($date->format('l'), 0, 3),
+=======
+                'days' => substr($date->format('l'), 0, 3),
+>>>>>>> Stashed changes
                 'date_day' => $date->format('d')
             ];
             $date->subDay();
@@ -160,7 +176,11 @@ class DashboardOverviewController extends Controller {
             $dateRange[] = [
                 'date' => $dateString,
                 'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
+<<<<<<< Updated upstream
                 'day' => substr($date->format('l'), 0, 3),
+=======
+                'days' => substr($date->format('l'), 0, 3),
+>>>>>>> Stashed changes
                 'date_day' => $date->format('d')
             ];
             $date->subDay();
@@ -175,7 +195,11 @@ class DashboardOverviewController extends Controller {
         }
 
         $tranx = NairaTrade::where(DB::raw('date(created_at)'),$date)
+<<<<<<< Updated upstream
             ->with(['user','agent'])
+=======
+            ->with('user')
+>>>>>>> Stashed changes
             ->limit(10)
             ->get();
 
@@ -259,6 +283,7 @@ class DashboardOverviewController extends Controller {
     }
 
     public function monthlyEarnings() {
+<<<<<<< Updated upstream
         $wk = request('wk');
         $month = request('month');
         $year = request('year');
@@ -313,12 +338,31 @@ class DashboardOverviewController extends Controller {
 
         for ($i = 0; $i < $range; $i++) {
             $dateString = $queryFrom->format('Y-m-d');
+=======
+        $range = 30;
+        $chartData = Transaction::select([
+            DB::raw('DAYOFWEEK(created_at) AS date'),
+            DB::raw('COUNT(id) AS count'),
+        ])
+        ->groupBy('date')
+        ->orderBy('date', 'ASC')
+        ->get()->toArray();
+        $dateRange = [];
+        $chartDataByDay = [];
+        foreach ($chartData as $data) {
+            $chartDataByDay[$data['date']] = $data['count'];
+        }
+        $date = new Carbon;
+        for ($i = 0; $i < $range - 1; $i++) {
+            $dateString = $date->format('Y-m-d');
+>>>>>>> Stashed changes
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
             }
            
             $dateRange[] = [
                 'date' => $dateString,
+<<<<<<< Updated upstream
                 'old_users_turnover' => (!isset($chartDataByDayOldUsers[$dateString]))? '0' : $chartDataByDayOldUsers[$dateString],
                 'new_users_turnover' => (!isset($chartDataByDayNewUsers[$dateString]))? '0' : $chartDataByDayNewUsers[$dateString],
                 'day' => substr($queryFrom->format('l'), 0, 3),
@@ -331,6 +375,18 @@ class DashboardOverviewController extends Controller {
             'success' => true,
             'data' => $dateRange
         ],200);
+=======
+                'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
+                'days' => substr($date->format('l'), 0, 3),
+                'date_day' => $date->format('d')
+            ];
+            $date->subDay();
+        }
+
+        return $chartData;
+        return ($dateRange);
+
+>>>>>>> Stashed changes
     }
 
     public function summary() {

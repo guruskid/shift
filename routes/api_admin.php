@@ -213,6 +213,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::get('/monthly-analytics', 'SpotLightController@monthlyAnalytics');
         Route::get('/monthly-earnings', 'DashboardOverviewController@monthlyEarnings');
         Route::get('/summary', 'DashboardOverviewController@summary');
+
+        Route::GET('/graph-analytics',  'SpotLightController@graphAnalytics');
+        Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
     });
 
 
@@ -280,6 +283,9 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
         Route::POST('/acquisition-cost',  'SpotLightController@getCustomerAcquisitionCost');
         Route::GET('/number-of-users',  'SpotLightController@numberOfNewUsers'); 
         Route::GET('/get-users-by-date',  'SpotLightController@getNewUsersByDate'); 
+
+        Route::GET('/graph-analytics',  'SpotLightController@graphAnalytics');
+        Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
     });
 });
 
