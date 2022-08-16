@@ -72,9 +72,17 @@ class DashboardOverviewController extends Controller {
             $query->where('status','waiting');
         })->with('user')->latest()->first();
 
+        $acct_name = '';
+
+        if ($stamp) {
+            $acctn = $stamp->user;
+            $acct_name = $acctn->first_name.' '.$acctn->last_name;
+        }
+
         $acctn = $stamp->user;
 
-        $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
+        // $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
+
         $opening_balance = $stamp->opening_balance;
 
         $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])

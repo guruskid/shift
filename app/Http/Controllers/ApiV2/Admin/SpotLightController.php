@@ -368,7 +368,7 @@ class SpotLightController extends Controller {
         if ($type == 'monthly') {
             $year = $request['year'];
 
-            $soy = Carbon::now()->startOfYear();
+            $soy = Carbon::createFromFormat('m',$request['month'])->year($year);
             for ($i=0; $i < 12; $i++) { 
                 $tx = Transaction::where('status','success')
                     ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
