@@ -76,7 +76,7 @@ class OldUsersSalesAnalytics extends Controller
                 return 'Missing Month or Year Field';
             }   
             $start_date = Carbon::createFromDate($sortingType['Year'],$sortingType['month'],1)->subMonths(3);
-            $end_date = Carbon::createFromDate($sortingType['Year'],$sortingType['month'],1);
+            $end_date = Carbon::createFromDate($sortingType['Year'],$sortingType['month'],1)->endOfMonth();
         }
         if($sortingType['sortingType'] == 'yearly')
         {
@@ -388,7 +388,7 @@ class OldUsersSalesAnalytics extends Controller
         $uniqueData = [];
         foreach($data as $d)
         {
-            $User_tnx = Transaction::where('user_id',$d->user_id)->where('updated_at','>=',$d->current_cycle_count_date)->where('status','success')->first();
+            $User_tnx = Transaction::where('user_id',$d->user_id)->where('updated_at','>=',$d->called_date)->where('status','success')->first();
             if($User_tnx != null)
             {
                 $uniqueData[] = $User_tnx;
@@ -404,7 +404,7 @@ class OldUsersSalesAnalytics extends Controller
         $totalData = collect([]);
         foreach($data as $d)
         {
-            $User_tnx = Transaction::where('user_id',$d->user_id)->where('updated_at','>=',$d->current_cycle_count_date)->where('status','success')->get();
+            $User_tnx = Transaction::where('user_id',$d->user_id)->where('updated_at','>=',$d->called_date)->where('status','success')->get();
             if($User_tnx != null)
             {
                 $totalData = $totalData->concat($User_tnx);

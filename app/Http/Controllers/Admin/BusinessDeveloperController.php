@@ -301,69 +301,66 @@ class BusinessDeveloperController extends Controller
     
 
     public static function checkActiveUsers(){
-        $active_users = UserTracking::where('Current_Cycle','Active')->get();
+        $active_users = UserTracking::where('Current_Cycle','Active')->with('transactions','utilityTransaction','depositTransactions','user')->get();
         foreach ($active_users as $au) {
-            $User_tnx = Transaction::where('user_id',$au->user_id)->where('status','success')->count();
-            if($User_tnx == 0)
+            $user_tnx = collect()->concat($au['transactions'])->concat($au['utilityTransaction'])->concat($au['depositTransactions']);
+            if($user_tnx->count() == 0)
             {
-                $diff_in_months = $au->user->created_at->diffInMonths(Carbon::now());
-                if($diff_in_months >=3)
+                //* Checking when user was created
+                $MonthDiff = $au['user']->created_at->diffInMonths(now());
+                if($MonthDiff >= 3)
                 {
                     UserTracking::find($au->id)->update([
                         'Current_Cycle'=>"QuarterlyInactive",
-                        'current_cycle_count_date' => Carbon::now()
+                        'Previous_Cycle' => "Active",
+                        'current_cycle_count_date' => now()
                     ]);
                 }
             }
             else{
-                $last_user_transaction_date = Transaction::where('user_id',$au->user_id)->where('status','success')->latest('updated_at')->first()->updated_at;
-                $diff_in_months = $last_user_transaction_date->diffInMonths(Carbon::now());
-                if($diff_in_months >=3)
-                {
+                //* Checking last Transactions date
+                $lastTranxDate = $user_tnx->sortByDesc('created_at')->first()->created_at;
+                 $monthDiff = $lastTranxDate->diffInMonths(now());
+                 if($monthDiff >= 3)
+                 {
                     UserTracking::find($au->id)->update([
                         'Current_Cycle'=>"QuarterlyInactive",
-                        'current_cycle_count_date' => Carbon::now()
+                        'Previous_Cycle' => "Active",
+                        'current_cycle_count_date' => now()
                     ]);
-                }
-
+                 }
             }
         }
     }
 
-    //*if the transaction has been done the do a daily check 
-    //*if the transaction is 0 leave until Three months.
     public static function checkCalledUsersForRespondedAndRecalcitrant()
     {
-        $called_users = UserTracking::where('Current_Cycle','Called')->orderBy('current_cycle_count_date','asc')->get();
-
-        $transactions = Transaction::where('created_at','>=',$called_users[0]->current_cycle_count_date)->where('status','success')->get();
-        $utility = UtilityTransaction::where('created_at','>=',$called_users[0]->current_cycle_count_date)->where('status','success')->get();
-        $payBridgeDeposit = NairaTransaction::where('transaction_type_id',1)->where('created_at','>=',$called_users[0]->current_cycle_count_date)->where('status','success')->get();
-
+        $called_users = UserTracking::where('Current_Cycle','Called')->with('transactions','utilityTransaction','depositTransactions','user')->get();
         foreach ($called_users as $cu ) {
-            $cu->current_cycle_count_date = Carbon::parse($cu->current_cycle_count_date);
-            $User_tnx = $transactions->where('user_id',$cu->user_id)->where('created_at','>=',$cu->current_cycle_count_date)->count();
-            
-            $user_util = $utility->where('user_id',$cu->user_id)->where('created_at','>=',$cu->current_cycle_count_date)->count();
-            $user_deposit = $payBridgeDeposit->where('user_id',$cu->user_id)->where('created_at','>=',$cu->current_cycle_count_date)->count();
+            $cu->called_date = Carbon::parse($cu->called_date);
+ 
+            $userTranx = $cu['transactions']->where('created_at','>=',$cu->called_date);
+            $userUtil = $cu['utilityTransaction']->where('created_at','>=',$cu->called_date);
 
-            $tranxCount = $User_tnx + $user_util + $user_util;
-            if($tranxCount >= 1)
+            $userDeposit = $cu['depositTransactions']->where('created_at','>=',$cu->called_date);
+            $allTranx = collect()->concat($userTranx)->concat($userUtil)->concat($userDeposit);
+
+            if($allTranx->count() >= 1)
             {
                 UserTracking::find($cu->id)->update([
                     'Current_Cycle'=>"Responded",
                     'Previous_Cycle' => "Called",
-                    'current_cycle_count_date' => Carbon::now()
+                    'current_cycle_count_date' => now()
                 ]);
             }
             else{
-                $diff_in_months = $cu->current_cycle_count_date->diffInMonths(Carbon::now());
-                dd($cu->current_cycle_count_date);
-                if($diff_in_months >= 1){
+                $monthDiff = $cu->called_date->diffInMonths(now());
+                if($monthDiff >= 1)
+                {
                     UserTracking::find($cu->id)->update([
                         'Current_Cycle'=>"Recalcitrant",
                         'Previous_Cycle' => "Called",
-                        'current_cycle_count_date' => Carbon::now()
+                        'current_cycle_count_date' => now()
                     ]);
                 }
             }    
@@ -373,31 +370,37 @@ class BusinessDeveloperController extends Controller
 
     public static function CheckRecalcitrantUsersForResponded()
     {
-        $recalcitrant_users = UserTracking::where('Current_Cycle','Recalcitrant')->orderBy('id','desc')->get();
+        $recalcitrant_users = UserTracking::where('Current_Cycle','Recalcitrant')->with('transactions','utilityTransaction','depositTransactions','user')->get();
         foreach ($recalcitrant_users as $ru) {
             $ru->current_cycle_count_date = Carbon::parse($ru->current_cycle_count_date);
-            $User_tnx = Transaction::where('user_id',$ru->user_id)->where('updated_at','>=',$ru->current_cycle_count_date)->where('status','success')->count();
-            $diff_in_months = $ru->current_cycle_count_date->diffInMonths(Carbon::now());
-            if($diff_in_months >= 2){
-                if($User_tnx == 0)
+
+            $userTranx = $ru['transactions']->where('created_at','>=',$ru->current_cycle_count_date);
+            $userUtil = $ru['utilityTransaction']->where('created_at','>=',$ru->current_cycle_count_date);
+
+            $userDeposit = $ru['depositTransactions']->where('created_at','>=',$ru->current_cycle_count_date);
+            $allTranx = collect()->concat($userTranx)->concat($userUtil)->concat($userDeposit);
+
+            if($allTranx->count() > 0)
+            {
+
+                UserTracking::find($ru->id)->update([
+                    'Current_Cycle'=>"Responded",
+                    'Previous_Cycle' => "Recalcitrant",
+                    'current_cycle_count_date' => now()
+                ]);
+
+            }else{
+                $monthDiff = $ru->current_cycle_count_date->diffInMonths(now());
+                if($monthDiff >= 2)
                 {
                     UserTracking::find($ru->id)->update([
                         'Recalcitrant_Cycle' => $ru->Recalcitrant_Cycle + 1,
                         'Current_Cycle'=>"QuarterlyInactive",
                         'Previous_Cycle' => "Recalcitrant",
                         'call_log_id' => null,
-                        'current_cycle_count_date' => Carbon::now(),
+                        'current_cycle_count_date' => now(),
                         'Recalcitrant_streak' => $ru->Recalcitrant_streak + 1,
                         'Responded_streak' => 0
-                    ]);
-
-
-                }
-                else{
-                    UserTracking::find($ru->id)->update([
-                        'Current_Cycle'=>"Responded",
-                        'Previous_Cycle' => "Recalcitrant",
-                        'current_cycle_count_date' => Carbon::now()
                     ]);
                 }
             }
@@ -406,30 +409,42 @@ class BusinessDeveloperController extends Controller
 
     public static function CheckRespondedUsersForQualityInactive()
     {
-        $responded_users = UserTracking::where('Current_Cycle','Responded')->orderBy('id','desc')->get();
+        $responded_users = UserTracking::where('Current_Cycle','Responded')->with('transactions','utilityTransaction','depositTransactions','user')->get();
         foreach ($responded_users as $ru) {
             $ru->current_cycle_count_date = Carbon::parse($ru->current_cycle_count_date);
-            $User_tnx = Transaction::where('user_id',$ru->user_id)->where('updated_at','>',$ru->current_cycle_count_date)->where('status','success')->count();
-            $diff_in_months = $ru->current_cycle_count_date->diffInMonths(Carbon::now());
-            if($diff_in_months >=2)
+
+            $userTranx = $ru['transactions']->where('created_at','>=',$ru->current_cycle_count_date);
+            $userUtil = $ru['utilityTransaction']->where('created_at','>=',$ru->current_cycle_count_date);
+
+            $userDeposit = $ru['depositTransactions']->where('created_at','>=',$ru->current_cycle_count_date);
+            $allTranx = collect()->concat($userTranx)->concat($userUtil)->concat($userDeposit);
+
+            $monthDiff = $ru->current_cycle_count_date->diffInMonths(now());
+            
+            if($allTranx->count() == 0)
             {
-                if($User_tnx == 0)
+                if($monthDiff >= 3)
                 {
                     UserTracking::find($ru->id)->update([
                         'Responded_Cycle' => $ru->Responded_Cycle + 1,
                         'Current_Cycle'=>"QuarterlyInactive",
                         'Previous_Cycle' => "Responded",
                         'call_log_id' => null,
-                        'current_cycle_count_date' => Carbon::now(),
+                        'current_cycle_count_date' => now(),
                         'Responded_streak' => $ru->Responded_streak + 1,
                         'Recalcitrant_streak' => 0
-                   ]);
-                }else{
-                    $last_transaction_date = Transaction::where('user_id',$ru->user_id)->where('updated_at','>=',$ru->current_cycle_count_date)->where('status','success')->latest('updated_at')->first()->updated_at;
+                    ]); 
+                }
+            }
+            else{
+                $lastTranxDate = $allTranx->sortBy('created_at')->first()->created_at;
+                if($lastTranxDate)
+                {
                     UserTracking::find($ru->id)->update([
-                        'current_cycle_count_date' => $last_transaction_date
+                        'current_cycle_count_date' => $lastTranxDate
                     ]);
                 }
+                
             }
         }
     }

@@ -14,9 +14,18 @@ class UserTracking extends Model
     
     public function transactions()
     {
-        return $this->hasMany('App\Transaction','user_id')->latest();
+        return $this->hasMany('App\Transaction','user_id','user_id')->where('status','success')->latest();
     }
 
+    public function utilityTransaction()
+    {
+        return $this->hasMany('App\UtilityTransaction','user_id','user_id')->where('status','success')->latest();
+    }
+
+    public function depositTransactions()
+    {
+        return $this->hasMany(NairaTrade::class,'user_id','user_id')->where('status','success')->where('type','deposit')->latest();
+    }
     
     public function call_log()
     {

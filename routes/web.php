@@ -654,11 +654,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         Artisan::call('noResponse:check');
         return redirect()->back()->with("success", "Checked No Response Users");
     });
-
-
-    Route::GET('AATAAVC', 'Admin\BusinessDeveloperController@trunc');
-    // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
-
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
