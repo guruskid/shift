@@ -84,7 +84,7 @@
     </li>
     @endif
 
-    @if ( in_array(Auth::user()->role, [889, 999] ) )
+    @if ( in_array(Auth::user()->role, [999] ) )
     <li class="menu {{ Route::currentRouteName() == 'sales.newUsers.salesAnalytics' ? 'active' : '' }}  ">
         <a href="{{route('sales.newUsers.salesAnalytics')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -95,7 +95,7 @@
     </li>
     @endif
 
-    @if ( in_array(Auth::user()->role, [889, 999] ) )
+    @if ( in_array(Auth::user()->role, [999] ) )
     <li class="menu {{ Route::currentRouteName() == 'sales.oldUsers.salesAnalytics' ? 'active' : '' }}  ">
         <a href="{{route('sales.oldUsers.salesAnalytics')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -128,7 +128,7 @@
         <a href="{{route('sales.loadSales')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">
                 <ion-icon name="settings"></ion-icon>
-                <span>Target Setting</span>
+                <span>Sales Setting</span>
             </div>
         </a>
     </li>

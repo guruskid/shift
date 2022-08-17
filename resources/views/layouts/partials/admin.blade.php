@@ -259,7 +259,7 @@
                     </a>
                 </li>
             @endif
-            @if (in_array(Auth::user()->role, [999, 889] ))
+            @if (in_array(Auth::user()->role, [999, 666] ))
             <li class="my-3">
                 <a href="{{route('sales.newUsers.salesAnalytics')}}"
                     class=" {{ Route::currentRouteName() == 'sales.newUsers.salesAnalytics' ? 'mm-active' : '' }} ">
@@ -362,12 +362,12 @@
                 </a>
             </li>
             @endif
-            @if (in_array(Auth::user()->role, [999] ))
+            @if (in_array(Auth::user()->role, [999, 666] ))
             <li class="my-3">
                 <a href="{{route('sales.loadSales')}}"
                     class=" {{ Route::currentRouteName() == 'sales.loadSales' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-settings"></i>
-                    Target Setting
+                    Sales Setting
                 </a>
             </li>
         @endif

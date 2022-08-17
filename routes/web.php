@@ -664,7 +664,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], 
     Route::GET('user/profile', 'Admin\SalesController@userProfile')->name('sales.user_profile');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']], function () {
     Route::GET('/LoadSalesUsers', 'Admin\TargetController@loadSales')->name('sales.loadSales');
     Route::POST('/addTarget', 'Admin\TargetController@addTarget')->name('sales.addTarget');
     Route::POST('/editTarget', 'Admin\TargetController@editTarget')->name('sales.editTarget');
@@ -672,7 +672,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], 
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'seniorAccountant']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']], function () {
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
     Route::ANY('/sortAnalytics/{type?}', 'Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
     Route::ANY('/showAnalysis/{type?}', 'Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
