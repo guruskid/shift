@@ -12,6 +12,7 @@ use App\NairaTransaction;
 use App\Notification;
 use App\Transaction;
 use App\User;
+use App\Verification;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -628,4 +629,87 @@ class UserController extends Controller
         }
 
     }
+
+    public function userVerification()
+    {
+
+        $verifyLimit = Verification::where('user_id', Auth::user()->id)->where('status', 'success')->latest('id')->first();
+
+        if ($verifyLimit->type == "Address") {
+            return response()->json([
+                'success' => true,
+                'level' => 2,
+            ]);
+
+        } elseif ($verifyLimit->type == "ID Card") {
+            return response()->json([
+                'success' => true,
+                'level' => 3,
+            ]);
+
+        } else {
+            return response()->json([
+                'success' => true,
+                'level' => 1,
+            ]);
+        }
+
+    }
+
+    public function userNotify(Request $r)
+    {
+        $month = $r->input('month');
+        if ($month) {
+            $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->paginate(10);
+        } else {
+            $notifications = Auth::user()->notifications()->paginate(10);
+        }
+
+        return response()->json([
+            'success' => true,
+            'time' => $month,
+            'notification' => $notifications,
+        ]);
+    }
+
+    public function newNotify($id)
+    {
+        $notify = Auth::user()->notifications->where('id', $id)->first();
+        $notify->is_seen = 1;
+        $notify->save();
+        return response()->json([
+            'success' => true,
+            'msg' => 'Read now',
+
+        ]);
+    }
+
+    public function clearAllNotify()
+    {
+        $clearAll = Auth::user()->notifications->where('user_id', Auth::id())->all();
+        foreach ($clearAll as $notify) {
+            $notify->is_cleared = 1;
+            $notify->save();
+        }
+        return response()->json([
+            'success' => true,
+            'cleared' => 1,
+
+        ]);
+    }
+
+    public function markAllNotify()
+    {
+        $markAll = Auth::user()->notifications->where('user_id', Auth::user()->id);
+        foreach ($markAll as $notify) {
+            $notify->is_seen = 1;
+            $notify->save();
+        }
+        return response()->json([
+            'success' => true,
+            'allread' => 1,
+
+        ]);
+    }
+
 }
