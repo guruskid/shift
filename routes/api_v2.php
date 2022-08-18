@@ -44,7 +44,6 @@ Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
     Route::get('/profile', 'UserController@profile');
     Route::post('/update-birthday', 'UserController@updateBirthday');
 
-
     //Bank STUFF
 
     Route::get('/bank-list', 'UserController@listOfBanks');
@@ -56,26 +55,16 @@ Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
 
     Route::post('/delete-user', 'UserController@deleteUserAccount');
 
-
     //Get user Verification Limit
 
     Route::get('/user-verify-limit', 'UserController@userVerification');
-
 
     //User Notification
 
     Route::get('/user-notifier', 'UserController@userNotify');
     Route::post('/clear-notification', 'UserController@clearAllNotify');
     Route::post('/mark-all', 'UserController@markAllNotify');
-
-
-
-
-
-
-
-
-
+    Route::get('/notifier/{id}', 'UserController@newNotify');
 
     Route::get('/crypto-transaction', 'UserController@crypto');
 

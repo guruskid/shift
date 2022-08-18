@@ -675,13 +675,25 @@ class UserController extends Controller
     public function newNotify($id)
     {
         $notify = Auth::user()->notifications->where('id', $id)->first();
-        $notify->is_seen = 1;
-        $notify->save();
-        return response()->json([
-            'success' => true,
-            'msg' => 'Read now',
 
-        ]);
+        if ($notify) {
+            $notify->is_seen = 1;
+            $notify->save();
+            return response()->json([
+                'success' => true,
+                'notification' => $notify,
+
+            ]);
+
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'invalid id',
+
+            ]);
+
+        }
+
     }
 
     public function clearAllNotify()
