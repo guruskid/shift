@@ -395,7 +395,7 @@ class SpotLightController extends Controller {
         }
 
         if ($type == 'day') {
-            $days = $request['days'];
+            $days = $request['days'] - 1;
             $now = Carbon::now();
             $period = 1000;
             $ticks = ceil($period/$days);
@@ -409,7 +409,7 @@ class SpotLightController extends Controller {
                 $now->subDays($days + 1);
                 $tod = $now->format('Y-m-d');
                 $to = $now->format('jS M');
-                $tick = $from.' - '.$to;
+                $tick = $to.' - '.$from;
 
                 $tx = Transaction::where('status','success')
                     ->whereBetween('created_at',[$tod,$frmd])
@@ -431,6 +431,8 @@ class SpotLightController extends Controller {
                     'unique_users' => $unique_users
                 ];
             }
+
+            $bigData = array_reverse($bigData);
         }
 
         if ($type == 'quarterly') {
@@ -511,7 +513,8 @@ class SpotLightController extends Controller {
         if ($type == 'monthly') {
             $year = $request['year'];
 
-            $soy = Carbon::now()->startOfYear();
+            // $soy = Carbon::now()->startOfYear();
+            $soy = Carbon::createFromFormat('m',$request['month'])->year($year);
             for ($i=0; $i < 12; $i++) {
                 $turn_over = Transaction::where('status','success')
                     ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
@@ -529,9 +532,9 @@ class SpotLightController extends Controller {
         }
 
         if ($type == 'day') {
-            $days = $request['days'];
+            $days = $request['days'] - 1;
             $now = Carbon::now();
-            $period = 100;
+            $period = 1000;
             $ticks = ceil($period/$days);
 
             for ($i=0; $i < $ticks; $i++) {
@@ -539,11 +542,11 @@ class SpotLightController extends Controller {
                     $now->subDay();
                 }
                 $frmd = $now->format('Y-m-d');
-                $from = $now->format('jS D');
+                $from = $now->format('jS M');
                 $now->subDays($days + 1);
                 $tod = $now->format('Y-m-d');
-                $to = $now->format('jS D');
-                $tick = $from.' - '.$to;
+                $to = $now->format('jS M');
+                $tick = $to.' - '.$from;
 
                 $turn_over = Transaction::where('status','success')
                     ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
@@ -556,6 +559,8 @@ class SpotLightController extends Controller {
                     'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
                 ];
             }
+
+            $bigData = array_reverse($bigData);
         }
 
         if ($type == 'quarterly') {
