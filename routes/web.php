@@ -411,6 +411,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 
     Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
     Route::get('/transactions/sell', 'AdminController@sellTransac')->name('admin.sell_transac');
+    Route::get('/transactions/{card_id}/{currency}', 'AdminController@currencyTransactions')->name('admin.currency_transactions');
+
     Route::get('/transactions/{status}', 'AdminController@txnByStatus')->name('admin.transactions-status');
     Route::get('/transactions/agent/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
     Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
@@ -622,6 +624,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         Artisan::call('check:trackingTable');
         return redirect()->back()->with("success", "Database Populated");
     });
+
+    Route::GET('AATAAVC', 'Admin\BusinessDeveloperController@trunc');
     // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
 });
