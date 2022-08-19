@@ -12,11 +12,12 @@ use App\NairaTransaction;
 use App\Notification;
 use App\Transaction;
 use App\User;
-use App\Verification;
+use App\VerificationLimit;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -182,9 +183,20 @@ class UserController extends Controller
 
         $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
 
-        $res = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true");
+        function curl_get_contents($url)
+        {
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            $data = curl_exec($ch);
+            curl_close($ch);
+            return $data;
+        }
 
-        $data = json_decode($res, true);
+        $url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true";
+        $data = json_decode(curl_get_contents($url), true);
 
         $currencies = [
             [
@@ -240,6 +252,23 @@ class UserController extends Controller
         $loginSession = new LoginSessionController();
         $loginSession->FindSessionData(Auth::user()->id);
 
+        $apkcurrent = "2.0.0";
+        $apkstable = "2.0.0";
+
+        $ioscurrent = "2.0.0";
+        $iosstable = "2.0.0";
+
+        $versions = [
+            [
+
+                'apkcurrent' => $apkcurrent,
+                'apkstable' => $apkstable,
+                'ioscurrent' => $ioscurrent,
+                'iosstable' => $iosstable,
+
+            ],
+        ];
+
         return response()->json([
             'success' => true,
             'btc_balance' => $btc_balance,
@@ -249,6 +278,8 @@ class UserController extends Controller
             'featured_coins' => $currencies,
             'advert_image' => $slides,
             'notifications' => $notify,
+            'version' => $versions,
+
         ]);
     }
 
@@ -610,8 +641,26 @@ class UserController extends Controller
 
     }
 
-    public function deleteUserAccount()
+    public function deleteUserAccount(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        if (Hash::check($request->password, Auth::user()->password) == false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect Password. Please try again.',
+            ]);
+        }
 
         $updateStatus = User::where('id', Auth::user()->id)->update(['is_deleted' => 1]);
 
@@ -633,36 +682,21 @@ class UserController extends Controller
     public function userVerification()
     {
 
-        $verifyLimit = Verification::where('user_id', Auth::user()->id)->where('status', 'success')->latest('id')->first();
+        $verifyLimit = VerificationLimit::All();
 
-        if ($verifyLimit->type == "Address") {
-            return response()->json([
-                'success' => true,
-                'level' => 2,
-            ]);
-
-        } elseif ($verifyLimit->type == "ID Card") {
-            return response()->json([
-                'success' => true,
-                'level' => 3,
-            ]);
-
-        } else {
-            return response()->json([
-                'success' => true,
-                'level' => 1,
-            ]);
-        }
-
+        return response()->json([
+            'success' => true,
+            'data' => $verifyLimit,
+        ]);
     }
 
     public function userNotify(Request $r)
     {
         $month = $r->input('month');
         if ($month) {
-            $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->paginate(10);
+            $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->get();
         } else {
-            $notifications = Auth::user()->notifications()->paginate(10);
+            $notifications = Auth::user()->notifications()->get();
         }
 
         return response()->json([
