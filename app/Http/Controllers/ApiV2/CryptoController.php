@@ -30,7 +30,7 @@ class CryptoController extends Controller
         $usdt->rates = [
             'send_charge' => Setting::where('name', 'usdt_send_charge')->first()->value,
             'coin_to_usd' => LiveRateController::usdtRate(),
-            'usd_to_ngn' => LiveRateController::usdtNgn(),
+            'usd_to_ngn' => LiveRateController::usdNgn(),
             'sell_charge' => Setting::where('name', 'bitcoin_sell_charge')->first()->value
         ];
 
