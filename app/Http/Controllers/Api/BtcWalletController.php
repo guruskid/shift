@@ -68,18 +68,18 @@ class BtcWalletController extends Controller
         ]);
     }
 
-    public function create(Request $r)
+    public static function create(Request $r)
     {
-        $validator = Validator::make($r->all(), [
-            'wallet_password' => 'required|min:4|confirmed',
-        ]);
+        // $validator = Validator::make($r->all(), [
+        //     'wallet_password' => 'required|min:4|confirmed',
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors(),
-            ], 401);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => $validator->errors(),
+        //     ], 401);
+        // }
 
         if (Auth::user()->btcWallet) {
             return response()->json([
@@ -124,7 +124,7 @@ class BtcWalletController extends Controller
 
         $btc_account_id = $body[0]->id;
         $user->customer_id = $body[0]->customerId;
-        $user->pin = $password;
+        // $user->pin = $password;
         $user->external_id = $external_id;
         $user->save();
 

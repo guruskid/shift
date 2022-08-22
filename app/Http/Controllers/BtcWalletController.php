@@ -241,7 +241,7 @@ class BtcWalletController extends Controller
     }
 
 
-    public function sell(Request $r)
+    public static function sell(Request $r)
     {
         $validator = Validator::make($r->all(), [
             'quantity' => 'required|min:0',
@@ -499,7 +499,7 @@ class BtcWalletController extends Controller
 
 
 
-    public function send(Request $r)
+    public static function send(Request $r)
     {
         $data = $r->validate([
             'amount' => 'required|min:0',
