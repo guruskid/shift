@@ -292,7 +292,7 @@
                                                 <div class="custom-control mr-4 mb-3">
                                                     <input type="checkbox" name="naira_transaction_charge" class="form-check-input" id="naira-transaction-charge" {{(!empty($settings['NAIRA_TRANSACTION_CHARGE']) && $settings['NAIRA_TRANSACTION_CHARGE']['settings_value'] == 1) ? 'checked' : '' }}>
                                                     <label class="form-check-label " for="naira-transaction-charge" style="color: #676B87;">
-                                                        Disable Naira Transaction Charge for first 10 Transactions
+                                                        Free Withdrawal for first 10 Transactions
                                                     </label>
                                                 </div>
                                             </div>

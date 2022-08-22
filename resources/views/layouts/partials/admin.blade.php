@@ -302,11 +302,19 @@
                 <a href="{{route('p2p.accounts')}}"
                     class=" {{ Route::currentRouteName() == 'p2p.accounts' ? 'mm-active' : '' }} ">
                     <i class="metismenu-icon pe-7s-wallet"></i>
+<<<<<<< HEAD
                     Pay Birdge Accounts
                 </a>
             </li>
             @endif
 
+=======
+                    Pay Bridge Accounts
+                </a>
+            </li>
+            @endif
+            
+>>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
             @if (in_array(Auth::user()->role, [999, 666, 777,775, 889] ))
                 <li class="my-3">
                     <a href="{{route('admin.chat_agents')}}"

@@ -86,12 +86,21 @@
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
+<<<<<<< HEAD
                                                                     <div>Total <h6 class="text-right">${{ number_format($USDTbuyUsdAmount,2, '.', ',') }}</h6></div>
                                                                     <div>Total Naira <h6 class="text-right">₦{{ number_format($USDTbuyNairaAmount,2, '.', ',') }}</h6></div>
                                                                 </td>
                                                                 <td>
                                                                     <div>Total <h6 class="text-right">${{ number_format($USDTsellUsdAmount,2, '.', ',') }}</h6></div>
                                                                     <div>Total Naira <h6 class="text-right">₦{{ number_format($USDTsellNairaAmount,2, '.', ',') }}</h6></div>
+=======
+                                                                    <div>Total <h6 class="text-right">${{ $crypto_totaltnx_buy_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">N{{ $crypto_totaltnx_buy_amount_naira }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $crypto_totaltnx_sell_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">N{{ $crypto_totaltnx_sell_amount_naira }}</h6></div>
+>>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
                                                                 </td>
                                                             </tfoot>
                                                         </table>
@@ -108,12 +117,21 @@
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
+<<<<<<< HEAD
                                                                     <div>Total <h6 class="text-right">${{ number_format($giftcards_totaltnx_buy_amount) }}</h6></div>
                                                                     <div>Total Naira <h6 class="text-right">₦{{ number_format($giftcards_totaltnx_buy_amount_naira,2, '.', ',') }}</h6></div>
                                                                 </td>
                                                                 <td>
                                                                     <div>Total <h6 class="text-right">${{ number_format($giftcards_totaltnx_sell_amount) }}</h6></div>
                                                                     <div>Total Naira <h6 class="text-right">₦{{ number_format($giftcards_totaltnx_sell_amount_naira,2, '.', ',') }}</h6></div>
+=======
+                                                                    <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_buy_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">N{{ $giftcards_totaltnx_buy_amount_naira }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_sell_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">N{{ $giftcards_totaltnx_sell_amount_naira }}</h6></div>
+>>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
                                                                 </td>
                                                             </tfoot>
                                                         </table>
@@ -188,11 +206,19 @@
                                             @endif
 
                                             @if (!in_array(Auth::user()->role, [449,444] ))
+<<<<<<< HEAD
                                             <td class="text-center">₦{{number_format($t->amount_paid, 2, '.', ',')}}</td>
                                             @endif
                                             @if (in_array(Auth::user()->role, [999] ))
                                                 <td class="text-center">{{$t->commission}}</td>
                                                 <td class="text-center">₦{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
+=======
+                                            <td class="text-center">N{{number_format($t->amount_paid, 2, '.', ',')}}</td>
+                                            @endif
+                                            @if (in_array(Auth::user()->role, [999] ))
+                                                <td class="text-center">{{$t->commission}}</td>
+                                                <td class="text-center">N{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
+>>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
 
                                             @endif
                                             @if (!in_array(Auth::user()->role, [449,444] ))

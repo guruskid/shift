@@ -270,6 +270,13 @@ class UsdtController extends Controller
 
     public function sell(Request $request)
     {
+<<<<<<< HEAD
+=======
+        return response()->json([
+            'success' => false,
+            'msg' => 'Service not available, we\'ll be back shortly'
+        ]);
+>>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
 
         $validator = Validator::make($request->all(), [
             'amount' => 'required|min:0',

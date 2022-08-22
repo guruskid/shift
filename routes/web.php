@@ -594,8 +594,13 @@ Route::group(['prefix' => 'customerhappiness', 'middleware' => ['auth', 'custome
     Route::post('/asset-transactions', 'CustomerHappinessController@assetTransactionsSortByDate')->name('customerHappiness.transactions-by-date');
 
     Route::any('/search-transactions', 'CustomerHappinessController@search_tnx')->name('customerHappiness.search-tnxs');
+<<<<<<< HEAD
 
 
+=======
+
+
+>>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
     Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('ch.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('ch.junior-summary-details');
     Route::any('/sort-accountant-summary', 'Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
@@ -621,7 +626,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('call-log', 'Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
 
     Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
+<<<<<<< HEAD
     
+=======
+>>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
     Route::GET('/QuarterlyInactiveUsersFromDB', function () {
         Artisan::call('check:trackingTable');
         return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
@@ -644,6 +652,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         Artisan::call('check:Responded');
         return redirect()->back()->with("success", "Checked Responded Users");
     });
+<<<<<<< HEAD
+=======
+
+    Route::GET('AATAAVC', 'Admin\BusinessDeveloperController@trunc');
+    // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
+>>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
 
     //?checking recalcitrant
     Route::GET('/CheckingRecalcitrantUserOnline', function () {
