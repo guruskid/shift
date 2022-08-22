@@ -9,6 +9,8 @@ Route::get('/banks', 'Api\AuthController@bankList' );
 Route::group(['middleware' => 'auth:api'], function () {
 
     //BTC Wallet
+
+    // ------> THIS ENDPOINTS MAY NOT BE IN USE FOR V2 -WINSTON
     Route::group(['prefix' => 'bitcoin-wallet'], function () {
 
         Route::POST('/create', 'Api\BtcWalletController@create');
@@ -23,6 +25,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::POST('/send', 'BtcWalletController@send');
 
     });
+    // ----------->
+
     Route::post('/update-wallet-pin', 'Api\NairaWalletController@updateWalletPin');
     Route::post('/bank-details', 'Api\AuthController@addBankDetails');
     Route::GET('/naira-wallet', 'Api\NairaWalletController@index');

@@ -107,4 +107,8 @@ Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
     Route::get('/ticket-messages/{ticketNo}', "ChatMessagesController@Messages");
     Route::post('/send-message', 'ChatMessagesController@sendMessage');
 
+
+    //CRYPTO APIS
+    Route::get('/crypto-currencies', 'CryptoController@index');
+
 });

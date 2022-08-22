@@ -145,7 +145,7 @@ class UsdtController extends Controller
         if (!Auth::user()->usdtWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please create a Tron wallet to continue'
+                'msg' => 'Please create a USDT wallet to continue'
             ]);
         }
 
@@ -270,13 +270,6 @@ class UsdtController extends Controller
 
     public function sell(Request $request)
     {
-<<<<<<< HEAD
-=======
-        return response()->json([
-            'success' => false,
-            'msg' => 'Service not available, we\'ll be back shortly'
-        ]);
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
 
         $validator = Validator::make($request->all(), [
             'amount' => 'required|min:0',

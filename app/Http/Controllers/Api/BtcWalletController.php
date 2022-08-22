@@ -19,16 +19,6 @@ class BtcWalletController extends Controller
 {
     public function btcPrice()
     {
-
-        $client = new Client();
-        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
-        // $res = json_decode($res->getBody());
-        // $btc_rate = (int)$res->value;
-
-        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        // $tp = ($trading_per / 100) * $btc_rate;
-        // $btc_rate -= $tp;
         $btc_rate = LiveRateController::btcRate();
 
         $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
@@ -40,7 +30,7 @@ class BtcWalletController extends Controller
         ]);
     }
 
-    public function fees()
+    public static function fees()
     {
         $address = HdWallet::where('currency_id', 1)->first()->address;
         $amount = 0.002;
