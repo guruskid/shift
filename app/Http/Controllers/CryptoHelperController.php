@@ -67,7 +67,7 @@ class CryptoHelperController extends Controller
             case 7:
                 $wallet = $user->usdtWallet;
                 $usd = LiveRateController::usdtRate();
-                $ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+                $ngn = LiveRateController::usdNgn();
                 break;
 
             default:
