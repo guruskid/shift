@@ -524,6 +524,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant']]
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'accountant']], function () {
     Route::get('/account-officers', 'JuniorAccountantController@showAccountOfficers')->name('admin.account_officers');
+    Route::post('/add_accountantOfficers', 'JuniorAccountantController@addAccountOfficer')->name('admin.account_officers.add');
     Route::get('/junior_accountant_action/{id}/{action}', 'JuniorAccountantController@action')->name('admin.Junior_accountant_action');
 });
 

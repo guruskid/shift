@@ -55,7 +55,23 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                 </div>
             </div>
 
-           
+            <div class="row">
+                <div class="col-md-6 mx-auto mb-3">
+                    <div class="card">
+                        <div class="card-header">Add Account Officers</div>
+                        <div class="card-body">
+							<form action=" {{route('admin.account_officers.add')}} " method="post">
+								@csrf
+                                <div class="form-group">
+                                    <label for="">User Email</label>
+                                    <input type="email" id="userEmail" name="userEmail" class="form-control" placeholder="User Email">
+								</div>
+								<button class="btn btn-success">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-md-12">
@@ -104,6 +120,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                             @else
                                             <a href="{{route('admin.Junior_accountant_action', [$u->id, 'waiting'] )}}" class="btn btn-sm btn-warning">Deactivate</a>
 											@endif
+                                            <a href="{{route('admin.Junior_accountant_action', [$u->id, 'remove'] )}} "  class="btn btn-sm btn-danger">Remove</a>
                                         </td>
                                     </tr>
                                     @endif

@@ -18,12 +18,26 @@ class JuniorAccountantController extends Controller
         return view('admin.account_officers', compact('users'));
     }
 
+    public function addAccountOfficer(Request $r)
+    {
+        $user = User::where('email',$r->userEmail)->first();
+
+        if(!$user)
+        {
+            return back()->with(['error'=>'Invalid Email Try Again']);
+        }
+
+        $user->role = 775;
+        $user->status = 'waiting';
+        $user->save();
+        return back()->with(['success'=>'Account Officer added successfully']);
+    }
+
     public function action($id, $action)
     {   
         $user = User::find($id);
         $user->status = $action;
-        
-        $user->save();
+
         if(($user->role == 775))
         {
             $nairaUsersWallet = NairaWallet::sum('amount');
@@ -62,7 +76,13 @@ class JuniorAccountantController extends Controller
                 }
                 
             }
+            if($action == 'remove')
+            {
+                $user->role = 1;
+            }
+           
         }
+        $user->save();
         return back()->with(['success'=>'Action Successfull']);
     }
 }
