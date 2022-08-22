@@ -32,50 +32,50 @@ Route::get('/', function () {
 Route::get('email', function () {
     $rad = rand(1000, 9999);
     $otpCode = rand(1000, 9999);
-        // VerificationCode::create([
-        //     'user_id' => $userId,
-        //     'verification_code' => $otpCode
-        // ]);
-        $title = 'Email Verification Code1';
-        $body = 'is your verification code, valid for 5 minutes. to keep your account safe, do not share this code with anyone.';
-        $btn_text = '';
-        $btn_url = '';
+    // VerificationCode::create([
+    //     'user_id' => $userId,
+    //     'verification_code' => $otpCode
+    // ]);
+    $title = 'Email Verification Code1';
+    $body = 'is your verification code, valid for 5 minutes. to keep your account safe, do not share this code with anyone.';
+    $btn_text = '';
+    $btn_url = '';
 
     return new VerificationCodeMail($rad, $title, $body, $btn_text, $btn_url);
 });
 
 Route::get('users/explode/firstname-lastname/prove/init/yes', function () {
     $users = User::orderBy('id', 'desc')->get();
-    foreach($users as $user){
-    $xUser = explode(' ', $user->first_name);
-       if(isset($xUser[1])){
-        $user->first_name = $xUser[0];
-        $user->last_name = $xUser[1];
-        if(isset($xUser[2])){
-            $user->last_name = $xUser[1]. ' ' . $xUser[2];
+    foreach ($users as $user) {
+        $xUser = explode(' ', $user->first_name);
+        if (isset($xUser[1])) {
+            $user->first_name = $xUser[0];
+            $user->last_name = $xUser[1];
+            if (isset($xUser[2])) {
+                $user->last_name = $xUser[1] . ' ' . $xUser[2];
+            }
+            if (isset($xUser[3])) {
+                $user->last_name = $xUser[1] . ' ' . $xUser[2] . ' ' . $xUser[3];
+            }
+            if (isset($xUser[4])) {
+                $user->last_name = $xUser[1] . ' ' . $xUser[2] . ' ' . $xUser[3] . ' ' . $xUser[4]; // for users with plenty last names
+            }
+            $user->save();
         }
-        if(isset($xUser[3])){
-            $user->last_name = $xUser[1]. ' ' . $xUser[2]. ' ' . $xUser[3];
-        }
-        if(isset($xUser[4])){
-            $user->last_name = $xUser[1]. ' ' . $xUser[2]. ' ' . $xUser[3]. ' ' . $xUser[4]; // for users with plenty last names
-        }
-        $user->save();
-       }
     }
 });
 
 Route::get('gm', function () {
     $rad = rand(1000, 9999);
     $otpCode = rand(1000, 9999);
-        // VerificationCode::create([
-        //     'user_id' => $userId,
+    // VerificationCode::create([
+    //     'user_id' => $userId,
 
 
-        //     'verification_code' => $otpCode
-        // ]);
-        $title = 'Email Verification Code1';
-        $body = 'Please upload any national approved identity verification document with your name.
+    //     'verification_code' => $otpCode
+    // ]);
+    $title = 'Email Verification Code1';
+    $body = 'Please upload any national approved identity verification document with your name.
         IDs accepted are; <br>
         National identity card,<br>
         NIMC slip,<br>
@@ -83,16 +83,17 @@ Route::get('gm', function () {
         Driver’s license.<br>
 ';
 
-$name = 'akdjfladfla';
-        $btn_text = '';
-        $btn_url = '';
-        // $p = ;
+    $name = 'akdjfladfla';
+    $btn_text = '';
+    $btn_url = '';
+    // $p = ;
 
 
-        // $p = array('National identity card', 'skjfkfaf', 'jadfldfdf');
-        $paragraph = array('National identity card','NIMC slip',
-            'International Passport, Permanent Voter’s card'
-        );
+    // $p = array('National identity card', 'skjfkfaf', 'jadfldfdf');
+    $paragraph = array(
+        'National identity card', 'NIMC slip',
+        'International Passport, Permanent Voter’s card'
+    );
 
     return new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name);
 });
@@ -202,8 +203,8 @@ Route::get('test', function () {
     dd(LiveRateController::btcRate());
     /* $emailJob = (); */
 
-        // dispatch(new RegistrationEmailJob('shean@gmail.com'));
-    Mail::to('sheanwinston@gmail.com')->send(new UserRegistered() );
+    // dispatch(new RegistrationEmailJob('shean@gmail.com'));
+    Mail::to('sheanwinston@gmail.com')->send(new UserRegistered());
     return new UserRegistered();
 
     // dispatch(new RegistrationEmailJob('shean@gmail.com'));
@@ -222,7 +223,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 //Registration and verification routes
-Route::group(['middleware' => ['auth', 'verified','frozenUserCheck']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'frozenUserCheck']], function () {
     Route::get('/setup-bank-account', 'HomeController@setupBank')->name('user.setup-bank');
     Route::post('/setup-bank-account', 'HomeController@addUserBank')->name('signup.add-bank');
     Route::get('/verify-phone-number', 'HomeController@phoneVerification')->name('user.verify-phone');
@@ -261,7 +262,7 @@ Route::post('/naira/electricity/dddsfhd-q23-nfnd-dnf', 'BillsPaymentController@e
 Route::post('/wallet-webhook', 'BitcoinWalletController@webhook')->name('user.wallet-webhook');
 
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName','frozenUserCheck'] ], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkName', 'frozenUserCheck']], function () {
 
 
     /* ajax calls */
@@ -307,7 +308,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
     // Route::view('/paytv', 'newpages.smartbudget')->name('user.paytv');
     // Route::get('/paytv', 'BillsPaymentController@disabledView')->name('user.paytv');
-    Route::get('/paytv','BillsPaymentController@CableRechargeView')->name('user.paytv');
+    Route::get('/paytv', 'BillsPaymentController@CableRechargeView')->name('user.paytv');
     Route::post('/paytv', 'BillsPaymentController@rechargeCable')->name('user.paytv');
 
     // Route::view('/airtime', 'newpages.buyairtime')->name('user.recharge'); //for naira wallet Airtime view
@@ -406,10 +407,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 
 
     Route::get('/transactions', 'AdminController@transactions')->name('admin.transactions');
-    Route::post('/search-transactions','AdminController@search_tnx')->name('admin.search-tnxs');
+    Route::post('/search-transactions', 'AdminController@search_tnx')->name('admin.search-tnxs');
 
     Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
     Route::get('/transactions/sell', 'AdminController@sellTransac')->name('admin.sell_transac');
+    Route::get('/transactions/{card_id}/{currency}', 'AdminController@currencyTransactions')->name('admin.currency_transactions');
+
     Route::get('/transactions/{status}', 'AdminController@txnByStatus')->name('admin.transactions-status');
     Route::get('/transactions/agent/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
     Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
@@ -418,9 +421,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
-    Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
-    Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
-    Route::any('/sort-accountant-summary','Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
+    Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
+    Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
+    Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
 
@@ -436,7 +439,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'chineseAcc
     Route::get('/admin-action/{id}/{action}', 'ChineseController@action')->name('admin.chinese_add_admin.action');
     Route::GET('/payout-transactions/{type?}', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
     Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
-    Route::post('/admin-transfer-chinese/{id}', 'Admin\AssetTransactionController@payTransactionChinese' )->name('admin.transfer-chinese');
+    Route::post('/admin-transfer-chinese/{id}', 'Admin\AssetTransactionController@payTransactionChinese')->name('admin.transfer-chinese');
     // To be move to super Admin dashboard later
 });
 
@@ -451,7 +454,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super', 'c
 
     // Route::GET('/payout-transactions', 'AdminController@payoutTransactions')->name('admin.payout_transactions');
     // Route::GET('/payout-history', 'AdminController@payOutHistory')->name('admin.payout_history');
-    
+
 
     Route::post('/transactions', 'AdminController@addTransaction')->name('admin.add_transaction');
 
@@ -505,7 +508,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::get('/call-category', 'Admin\BusinessDeveloperController@displayCallCategory')->name('admin.call-categories');
     Route::POST('/call-category', 'Admin\BusinessDeveloperController@updateCallCategory')->name('admin.call-categories.action');
     Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
-
 });
 
 
@@ -518,17 +520,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant']]
 
     Route::post('/clear-transfer-charges', 'AdminController@clearTransferCharges')->name('admin.clear-transfer-charges');
     Route::post('/clear-sms-charges', 'AdminController@clearSmsCharges')->name('admin.clear-sms-charges');
-
-
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'accountant']], function () {
     Route::get('/account-officers', 'JuniorAccountantController@showAccountOfficers')->name('admin.account_officers');
+    Route::post('/add_accountantOfficers', 'JuniorAccountantController@addAccountOfficer')->name('admin.account_officers.add');
     Route::get('/junior_accountant_action/{id}/{action}', 'JuniorAccountantController@action')->name('admin.Junior_accountant_action');
 });
 
 /* for super admin and all accountants */
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','AccountOfficer']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'AccountOfficer']], function () {
     Route::get('/query-transaction/{id}', 'NairaWalletController@query')->name('admin.query-transaction');
     Route::post('/update-naira-transaction', 'NairaWalletController@updateStatus')->name('admin.update-naira-transaction');
 
@@ -555,10 +556,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','AccountOffi
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'accountantManager']], function () {
 
-Route::any('/users', 'AdminController@users')->name('admin.users');
-Route::any('/users/search', 'AdminController@user_search')->name('admin.user-search');
-Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
-
+    Route::any('/users', 'AdminController@users')->name('admin.users');
+    Route::any('/users/search', 'AdminController@user_search')->name('admin.user-search');
+    Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 });
 
 /* Customer Happiness routes*/
@@ -573,7 +573,7 @@ Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 
 // });
 
-Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'customerHappiness']],function(){
+Route::group(['prefix' => 'customerhappiness', 'middleware' => ['auth', 'customerHappiness']], function () {
     Route::get('/homepage', 'CustomerHappinessController@index')->name('customerHappiness.homepage');
     Route::get('/Chat/{status?}/{ticketNo?}', 'CustomerHappinessController@chatDetails')->name('customerHappiness.chatdetails');
     Route::post('/Chat', 'CustomerHappinessController@chat')->name('customerHappiness.chat');
@@ -593,13 +593,12 @@ Route::group([ 'prefix' => 'customerhappiness', 'middleware' =>['auth', 'custome
     Route::get('/transactions/{status}', 'CustomerHappinessController@txnByStatus')->name('customerHappiness.transactions-status');
     Route::post('/asset-transactions', 'CustomerHappinessController@assetTransactionsSortByDate')->name('customerHappiness.transactions-by-date');
 
-    Route::any('/search-transactions','CustomerHappinessController@search_tnx')->name('customerHappiness.search-tnxs');
+    Route::any('/search-transactions', 'CustomerHappinessController@search_tnx')->name('customerHappiness.search-tnxs');
 
 
-    Route::get('/accountant-summary/{month?}/{day?}','Admin\SummaryController@summaryhomepage')->name('ch.junior-summary');
-    Route::get('/accountant-summary/{month}/{day}/{category}','Admin\SummaryController@summary_tnx_category')->name('ch.junior-summary-details');
-    Route::any('/sort-accountant-summary','Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
-
+    Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('ch.junior-summary');
+    Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('ch.junior-summary-details');
+    Route::any('/sort-accountant-summary', 'Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing']], function () {
@@ -609,10 +608,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing'
     Route::GET('/marketing/{type?}', 'MarketingController@Category')->name('admin.sales.type');
     Route::GET('/view/transactions/{type?}', 'MarketingController@viewTransactionsCategory')->name('admin.transactions.view.type');
     Route::GET('/view/users/{type?}', 'MarketingController@viewUsersCategory')->name('admin.users.view.type');
-    Route::GET('/view/transactions/{month}/{type}','MarketingController@viewTransactionsByMonth')->name('admin.transaction.view.month');
-    Route::GET('/view/users/{month}/{type}','MarketingController@viewUsersByMonth')->name('admin.users.view.month');
-
-    
+    Route::GET('/view/transactions/{month}/{type}', 'MarketingController@viewTransactionsByMonth')->name('admin.transaction.view.month');
+    Route::GET('/view/users/{month}/{type}', 'MarketingController@viewUsersByMonth')->name('admin.users.view.month');
 });
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
     Route::GET('/Categories/{type?}', 'Admin\BusinessDeveloperController@index')->name('business-developer.user-category');
@@ -621,40 +618,67 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::POST('/create-call-log', 'Admin\BusinessDeveloperController@createCallLog')->name('business-developer.create.call-log');
     Route::POST('/update-call-log', 'Admin\BusinessDeveloperController@UpdateCallLog')->name('business-developer.update.call-log');
 
-    Route::GET('call-log','Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
+    Route::GET('call-log', 'Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
 
-    Route::GET('user_profile','Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
-    Route::GET('/QuarterlyInactiveUsersFromDB', function(){
+    Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
+    
+    Route::GET('/QuarterlyInactiveUsersFromDB', function () {
         Artisan::call('check:trackingTable');
-        return redirect()->back()->with("success", "Database Populated");
+        return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
     });
-    // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
+    //?checking Active
+    Route::GET('/CheckingActiveUserOnline', function () {
+        Artisan::call('check:active');
+        return redirect()->back()->with("success", "Active Users Checked");
+    });
+
+    //? checking called Users for responded or recalcitrant
+    Route::GET('/CheckingCalledUserOnline', function () {
+        Artisan::call('check:called');
+        return redirect()->back()->with("success", "Checked Called Users");
+    });
+
+    //?checking responded 
+    Route::GET('/CheckingRespondedUserOnline', function () {
+        Artisan::call('check:Responded');
+        return redirect()->back()->with("success", "Checked Responded Users");
+    });
+
+    //?checking recalcitrant
+    Route::GET('/CheckingRecalcitrantUserOnline', function () {
+        Artisan::call('check:Recalcitrant');
+        return redirect()->back()->with("success", "Checked Recalcitrant Users");
+    });
+
+    Route::GET('/CheckingNoResponseUserOnline', function () {
+        Artisan::call('noResponse:check');
+        return redirect()->back()->with("success", "Checked No Response Users");
+    });
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
     Route::GET('/sales/{type?}', 'Admin\SalesController@index')->name('sales.user-category');
     Route::POST('/update-status', 'Admin\SalesController@assignStatus')->name('sales.update.status');
     Route::GET('/sales_view/{type?}', 'Admin\SalesController@viewCategory')->name('sales.view-type');
-    Route::GET('Called_Users','Admin\SalesController@callLogs')->name('sales.call-log');
-    Route::GET('user/profile','Admin\SalesController@userProfile')->name('sales.user_profile');
-
+    Route::GET('Called_Users', 'Admin\SalesController@callLogs')->name('sales.call-log');
+    Route::GET('user/profile', 'Admin\SalesController@userProfile')->name('sales.user_profile');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']], function () {
     Route::GET('/LoadSalesUsers', 'Admin\TargetController@loadSales')->name('sales.loadSales');
-    Route::POST('/addTarget','Admin\TargetController@addTarget')->name('sales.addTarget');
-    Route::POST('/editTarget','Admin\TargetController@editTarget')->name('sales.editTarget');
-    Route::GET('/editStatusSales/{id}/{action}','Admin\TargetController@activateSales')->name('sales.action');
+    Route::POST('/addTarget', 'Admin\TargetController@addTarget')->name('sales.addTarget');
+    Route::POST('/editTarget', 'Admin\TargetController@editTarget')->name('sales.editTarget');
+    Route::GET('/editStatusSales/{id}/{action}', 'Admin\TargetController@activateSales')->name('sales.action');
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'seniorAccountant']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']], function () {
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
-    Route::ANY('/sortAnalytics/{type?}','Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
-    Route::ANY('/showAnalysis/{type?}','Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
-    
+    Route::ANY('/sortAnalytics/{type?}', 'Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
+    Route::ANY('/showAnalysis/{type?}', 'Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
+
     Route::GET('/oldSalesAnalytics/{type?}', 'Admin\OldUsersSalesAnalytics@index')->name('sales.oldUsers.salesAnalytics');
-    Route::ANY('/showAnalysisOldUsers/{type?}','Admin\OldUsersSalesAnalytics@showAllData')->name('sales.oldUsers.show.salesAnalytics');
-    Route::ANY('/sortAnalyticsOldUsers/{type?}','Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');
+    Route::ANY('/showAnalysisOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@showAllData')->name('sales.oldUsers.show.salesAnalytics');
+    Route::ANY('/sortAnalyticsOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');
 });

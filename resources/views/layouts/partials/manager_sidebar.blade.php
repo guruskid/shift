@@ -26,6 +26,37 @@
         </a>
     </li>
 
+    @if ( in_array(Auth::user()->role, [666, 999] ) )
+    <li class="menu {{ Route::currentRouteName() == 'sales.newUsers.salesAnalytics' ? 'active' : '' }}  ">
+        <a href="{{route('sales.newUsers.salesAnalytics')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Sales New Users</span>
+            </div>
+        </a>
+    </li>
+    @endif
+
+    @if ( in_array(Auth::user()->role, [666,999] ) )
+    <li class="menu {{ Route::currentRouteName() == 'sales.oldUsers.salesAnalytics' ? 'active' : '' }}  ">
+        <a href="{{route('sales.oldUsers.salesAnalytics')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Sales Old Users</span>
+            </div>
+        </a>
+    </li>
+    @endif
+
+    <li class="menu {{ Route::currentRouteName() == 'sales.loadSales' ? 'active' : '' }}  ">
+        <a href="{{route('sales.loadSales')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="settings"></ion-icon>
+                <span>Sales Setting</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.call-categories' ? 'active' : '' }}">
         <a href="{{route('admin.call-categories')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">

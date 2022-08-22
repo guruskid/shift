@@ -26,7 +26,7 @@
                                         </select>
                                     @endif
                                     
-                                    {{-- <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries"> --}}
+                                    <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
                                     <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                                 </div>
                             </form>
@@ -54,7 +54,7 @@
                                     </table>
                                     @endif
                                 </div>
-                                <table class="mb-2 table table-bordered transactions-table">
+                                <table class="mb-2 table table-bordered">
                                     <thead>
                                         <tr>
                                             <th class="text-center">Reference ID</th>
