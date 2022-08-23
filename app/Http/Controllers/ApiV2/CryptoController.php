@@ -41,8 +41,7 @@ class CryptoController extends Controller
 
         return response()->json([
             'success' => true,
-            'bitcoin' => $bitcoin,
-            'usdt' => $usdt
+            'currencies' => [$bitcoin, $usdt]
         ]);
     }
 
