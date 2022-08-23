@@ -28,12 +28,6 @@ class SettingController extends Controller
             case 888:
                 $role_name = "Sales Representative";
                 break;
-<<<<<<< HEAD
-            case 889:
-                $role_name = "Senior Accountant";
-                break;
-=======
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
             case 777:
                 $role_name = "Junior Accountant";
                 break;
@@ -106,46 +100,6 @@ class SettingController extends Controller
             ], 401);
         }
 
-<<<<<<< HEAD
-        $user = Auth::user();
-        
-        if ($user->role != 1) {
-            return response()->json([
-                'success' => false,
-                'message' => "User cannot be updated",
-            ], 401);
-        }
-
-        $user->first_name = $r->first_name;
-        $user->last_name = $r->last_name;
-        if($r->email != $user->email)
-        {
-            if(User::where('email',$r->email)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Email is in use",
-                ], 401);
-            }
-            $user->email = $r->email;
-        }
-        $user->email = $r->email;
-        $user->phone = $r->phone;
-        if($r->username != $user->username)
-        {
-            if(User::where('username',$r->username)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "username is in use",
-                ], 401);
-            }
-            $user->username = $r->username;
-        }
-        $user->password = Hash::make($r->password);
-        $user->role = $r->role;
-        $user->save();
-=======
         Auth::user()->update([
             'first_name' => $r->first_name,
             'last_name' => $r->last_name,
@@ -155,7 +109,6 @@ class SettingController extends Controller
             'password' => Hash::make($r->password),
             'role' => $r->role,
         ]);
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
 
         return response()->json([
             'success' => true,
@@ -206,41 +159,6 @@ class SettingController extends Controller
             ], 401);
         }
 
-<<<<<<< HEAD
-        $user = User::where('id',$r->id)->first();
-
-
-
-        $user->first_name = $r->first_name;
-        $user->last_name = $r->last_name;
-        if($r->email != $user->email)
-        {
-            if(User::where('email',$r->email)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Email is in use",
-                ], 401);
-            }
-            $user->email = $r->email;
-        }
-        $user->email = $r->email;
-        $user->phone = $r->phone;
-        if($r->username != $user->username)
-        {
-            if(User::where('username',$r->username)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "username is in use",
-                ], 401);
-            }
-            $user->username = $r->username;
-        }
-        $user->password = Hash::make($r->password);
-        $user->role = $r->role;
-        $user->save();
-=======
         $user = User::where('id',$r->id)->update([
             'first_name' => $r->first_name,
             'last_name' => $r->last_name,
@@ -250,7 +168,6 @@ class SettingController extends Controller
             'password' => Hash::make($r->password),
             'role' => $r->role
         ]);
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
 
         return response()->json([
             'success' => true,
