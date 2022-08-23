@@ -34,7 +34,6 @@ class AccountantController extends Controller
 
     public function seniorAccountantActivation(User $user, $action, $nairaUsersWallet)
     {
-<<<<<<< HEAD
         
         if($action == 'activeSA')
         {
@@ -43,25 +42,12 @@ class AccountantController extends Controller
             $this->deactivateAccountantTimestamp($user->id, $nairaUsersWallet);
         }
         return back()->with(['success'=>'Action Successful']);
-=======
-        if($action == 'activeSA')
-        {
-            $this->activateAccountantTimestamp($user,$user->id,$nairaUsersWallet);
-        }else{
-            $this->deactivateAccountantTimestamp($user->id,$nairaUsersWallet);
-        }
-        return back()->with(['success'=>'Action Successfull']);
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
 
     }
 
     public function action($id, $action)
     {   
-<<<<<<< HEAD
         $user = User::find($id); 
-=======
-        $user = User::find($id);
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
 
         $nairaUsersWallet = NairaWallet::sum('amount');
         if($action == 'activeSA' OR $action == 'waitingSA')
@@ -83,19 +69,11 @@ class AccountantController extends Controller
         if(($user->role == 777))
         {
             if ($action == 'active') {
-<<<<<<< HEAD
                 $this->activateAccountantTimestamp($user,$id, $nairaUsersWallet);
             }
             if($action == 'waiting')
             {
                 $this->deactivateAccountantTimestamp($id, $nairaUsersWallet);
-=======
-                $this->activateAccountantTimestamp($user,$id,$nairaUsersWallet);
-            }
-            if($action == 'waiting')
-            {
-                $this->deactivateAccountantTimestamp($id,$nairaUsersWallet);
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
             }
         }
         

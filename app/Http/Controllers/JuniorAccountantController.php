@@ -37,22 +37,12 @@ class JuniorAccountantController extends Controller
     {   
         $user = User::find($id);
         $user->status = $action;
-<<<<<<< HEAD
 
-=======
-        
-        $user->save();
-
-        $nairaUsersWallet = NairaWallet::sum('amount');
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
         if(($user->role == 775))
         {
             $nairaUsersWallet = NairaWallet::sum('amount');
             if ($action == 'active') {
-<<<<<<< HEAD
 
-=======
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
                 $user_check = AccountantTimeStamp::where('user_id', $user->id)->whereNull('inactiveTime')->get();
                 if($user_check->count() <= 0)
                 {
@@ -71,10 +61,7 @@ class JuniorAccountantController extends Controller
                 {
                     $activeTime = $accountant->activeTime;
                     $duration = Carbon::parse($activeTime)->diffInMinutes(now());
-<<<<<<< HEAD
 
-=======
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
                     if($duration < 5){
                         $accountant->delete();
                     }

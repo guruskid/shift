@@ -620,8 +620,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('call-log', 'Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
 
     Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
-
-
+    
     Route::GET('/QuarterlyInactiveUsersFromDB', function () {
         Artisan::call('check:trackingTable');
         return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
@@ -639,15 +638,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         return redirect()->back()->with("success", "Checked Called Users");
     });
 
-    //?checking responded
+    //?checking responded 
     Route::GET('/CheckingRespondedUserOnline', function () {
         Artisan::call('check:Responded');
         return redirect()->back()->with("success", "Checked Responded Users");
     });
-
-
-    Route::GET('AATAAVC', 'Admin\BusinessDeveloperController@trunc');
-    // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
     //?checking recalcitrant
     Route::GET('/CheckingRecalcitrantUserOnline', function () {

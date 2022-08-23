@@ -137,18 +137,6 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                                 @endif
                                             @endif
 
-<<<<<<< HEAD
-                                            @if(Auth::user()->role != $u->role)
-                                                @if ($u->status == 'waiting')
-                                                    <a href="{{route('accountant.action', [$u->id, 'active'] )}}" class="btn btn-sm btn-info">Activate</a>
-                                                @else
-                                                    <a href="{{route('accountant.action', [$u->id, 'waiting'] )}}" class="btn btn-sm btn-warning">Deactivate</a>
-                                                @endif
-
-                                                <a href="{{route('accountant.action', [$u->id, 'remove'] )}} "  class="btn btn-sm btn-danger">Remove</a>
-                                            @endif
-
-=======
                                             @if ($u->status == 'waiting')
                                             <a href="{{route('accountant.action', [$u->id, 'active'] )}}" class="btn btn-sm btn-info">Activate</a>
                                             @else
@@ -156,8 +144,6 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
 											@endif
 
                                             <a href="{{route('accountant.action', [$u->id, 'remove'] )}} "  class="btn btn-sm btn-danger">Remove</a>
-                                            
->>>>>>> 31cf241bc84e2c5fcbd45f891dfb9865d2d405eb
                                             @if (Auth::user()->role == 999 && $u->role == 777)
                                             <a href="{{route('accountant.action', [$u->id, 'upgrade-to-senior'] )}} "  class="btn btn-sm btn-success">Upgrade</a>
                                             @endif
