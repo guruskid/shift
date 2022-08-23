@@ -240,6 +240,14 @@ class SummaryController extends Controller
         }
     }
 
+    public function roundUpAmount($collection)
+    {
+        foreach($collection as $col)
+        {
+            $col->amount = round($col->amount);
+        }
+    }
+
     public function CryptoGiftCardTransactions($all_tnx,$bitcoin_total_tnx,$giftcards_totaltnx_buy
     ,$giftcards_totaltnx_sell,$USDTranx,$data,$entries)
     {
@@ -256,12 +264,21 @@ class SummaryController extends Controller
         $accountant_name = $data['accountant_name'];
 
         //*All Transactions
-        $all_tnx = $all_tnx->unique('id')->sortByDesc('created_at');
+        $all_tnx = $all_tnx->unique('id')->sortByDesc('updated_at');
 
+        $this->roundUpAmount($all_tnx);
+        
         $all_tnx_count = $all_tnx->where('status', 'success')->count();
+        $allCountBuy = $all_tnx->where('status', 'success')->where('type', 'buy')->count();
+        $allCountSell = $all_tnx->where('status','success')->where('type', 'sell')->count();
+
+        $allNairaAmountBuy = $all_tnx->where('status', 'success')->where('type', 'buy')->sum('amount_paid');
+        $allNairaAmountSell = $all_tnx->where('status','success')->where('type', 'sell')->sum('amount_paid');
         $all_tnx = $all_tnx->paginate($entries);
 
         //*Bitcoin Transaction
+        $this->roundUpAmount($bitcoin_total_tnx);
+
         $bitcoin_total_tnx_buy = $bitcoin_total_tnx->unique('id')->where('type', 'buy');
         $bitcoin_total_tnx_sell = $bitcoin_total_tnx->unique('id')->where('type', 'sell');
 
@@ -278,6 +295,8 @@ class SummaryController extends Controller
         $BTCsellCount = $bitcoin_total_tnx_sell->count();
         
         //* USDT Transaction
+        $this->roundUpAmount($USDTranx);
+
         $USDTbuyTranx = $USDTranx->unique('id')->where('type', 'buy');
         $USDTsellTranx = $USDTranx->unique('id')->where('type', 'sell');
 
@@ -294,6 +313,8 @@ class SummaryController extends Controller
         $USDTsellCount = $USDTsellTranx->count();
 
         //*GiftCard Transaction BUY
+        $this->roundUpAmount($giftcards_totaltnx_buy);
+
         $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->unique('id');
         $giftcards_totaltnx_buy_amount = 0;
 
@@ -305,6 +326,8 @@ class SummaryController extends Controller
         $giftcards_totaltnx_buy = $giftcards_totaltnx_buy->count();
 
         //*GiftCard Transaction SELL
+        $this->roundUpAmount($giftcards_totaltnx_sell);
+
         $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->unique('id');
         $giftcards_totaltnx_sell_amount = 0;
 
@@ -315,7 +338,7 @@ class SummaryController extends Controller
         $giftcards_totaltnx_sell = $giftcards_totaltnx_sell->count();
 
         return view('admin.summary.JuniorAccountant.transaction',compact([
-            'segment','accountant','all_tnx','all_tnx_count','show_data','show_category','day','month','show_summary',
+            'segment','accountant','all_tnx','all_tnx_count','show_data','show_category','day','month','show_summary','allNairaAmountBuy','allNairaAmountSell','allCountBuy','allCountSell',
 
             'giftcards_totaltnx_buy','giftcards_totaltnx_sell','giftcards_totaltnx_buy_amount','giftcards_totaltnx_sell_amount','giftcards_totaltnx_sell_amount_naira','giftcards_totaltnx_buy_amount_naira',
 
@@ -340,7 +363,7 @@ class SummaryController extends Controller
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
-        $util_tnx = $util_tnx->unique('id')->sortByDesc('created_at');;
+        $util_tnx = $util_tnx->unique('id')->sortByDesc('updated_at');
         $util_total_tnx = $util_tnx->where('status','success')->count();
 
         $util_tnx_amount = $util_tnx->where('status','success')->sum('amount');
@@ -391,7 +414,7 @@ class SummaryController extends Controller
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
-        $nw_deposit_tnx = $nw_deposit_tnx->unique('id')->sortByDesc('created_at');;
+        $nw_deposit_tnx = $nw_deposit_tnx->unique('id')->sortByDesc('updated_at');
         $nw_deposit_tnx_total = $nw_deposit_tnx->where('status','success')->count();
         
         $nw_deposit_amount_paid = $nw_deposit_tnx->where('status','success')->sum('amount_paid');
@@ -429,7 +452,7 @@ class SummaryController extends Controller
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
-        $nw_withdrawal_tnx = $nw_withdrawal_tnx->unique('id')->sortByDesc('created_at');;
+        $nw_withdrawal_tnx = $nw_withdrawal_tnx->unique('id')->sortByDesc('updated_at');
         $nw_withdrawal_tnx_total = $nw_withdrawal_tnx->where('status','success')->count();
 
         $nw_withdrawal_amount_paid = $nw_withdrawal_tnx->where('status','success')->sum('amount_paid');
@@ -468,7 +491,7 @@ class SummaryController extends Controller
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
-        $nw_other_tnx = $nw_other_tnx->unique('id')->sortByDesc('created_at');;
+        $nw_other_tnx = $nw_other_tnx->unique('id')->sortByDesc('updated_at');
         $nw_other_tnx_total = $nw_other_tnx->where('status','success')->count();
 
         $nw_other_amount_paid = $nw_other_tnx->where('status','success')->sum('amount_paid');
@@ -561,7 +584,7 @@ class SummaryController extends Controller
 
         if($category == "utilities"){
             //**Utilities Transaction */
-            $util_tnx = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc');
+            $util_tnx = UtilityTransaction::whereNotNull('id')->orderBy('updated_at', 'desc');
             $util_tnx = $this->category_listing($user,$accountant_timestamp,$util_tnx,$current_day_value);
 
             return $this->UtilitiesTransactions($util_tnx->get(),$data,$entries);
@@ -570,7 +593,7 @@ class SummaryController extends Controller
         if($category == "paybridge"){
 
             //**PayBridge Deposit Transaction */
-            $nw_deposit_tnx = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id',1);
+            $nw_deposit_tnx = NairaTransaction::latest()->orderBy('updated_at','desc')->where('transaction_type_id',1);
             $nw_deposit_tnx = $this->category_listing($user,$accountant_timestamp,$nw_deposit_tnx,$current_day_value);
             $nw_deposit_tnx = $nw_deposit_tnx->get();
             return $this->PayBridgeDeposit($nw_deposit_tnx,$data,$entries);
@@ -578,7 +601,7 @@ class SummaryController extends Controller
         if($category == "paybridgewithdrawal"){
 
             //**PayBridge Withdrawal Transaction */
-            $nw_withdrawal_tnx = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id',3);
+            $nw_withdrawal_tnx = NairaTransaction::latest()->orderBy('updated_at','desc')->where('transaction_type_id',3);
             $nw_withdrawal_tnx = $this->category_listing($user,$accountant_timestamp,$nw_withdrawal_tnx,$current_day_value);
             $nw_withdrawal_tnx = $nw_withdrawal_tnx->get();
             return $this->PayBridgeWithdrawal($nw_withdrawal_tnx,$data,$entries);
@@ -588,7 +611,7 @@ class SummaryController extends Controller
         if($category == "paybridgeothers"){
 
             //**Other PayBridge Transaction */
-            $nw_other_tnx = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3);
+            $nw_other_tnx = NairaTransaction::latest()->orderBy('updated_at','desc')->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3);
             $nw_other_tnx = $this->category_listing($user,$accountant_timestamp,$nw_other_tnx,$current_day_value);
             $nw_other_tnx = $nw_other_tnx->get();
             return $this->PayBridgeOthers($nw_other_tnx,$data,$entries);
@@ -607,8 +630,8 @@ class SummaryController extends Controller
         }
         else{
             $value = $value
-            ->where('created_at','>=', $current_day_value->format('Y-m-d')." 00:00:00")
-            ->where('created_at','<=', $current_day_value->format('Y-m-d')." 23:59:59");
+            ->where('updated_at','>=', $current_day_value->format('Y-m-d')." 00:00:00")
+            ->where('updated_at','<=', $current_day_value->format('Y-m-d')." 23:59:59");
         }
         return $value;
     }
@@ -673,33 +696,34 @@ class SummaryController extends Controller
 
         foreach ($accountant_timestamp as $at) {
             //*all Transactions
-            $allTranx = Transaction::orderBy('created_at','desc');
+            $allTranx = Transaction::orderBy('updated_at','desc');
             $allTranx = $this->sortingByAccountantTimestamp($allTranx, $at->activeTime, $at->inactiveTime);
+            // dd($allTranx, $at->activeTime, $at->inactiveTime);
             $allTransactions = $allTransactions->concat($allTranx);
 
             //*GiftCard Transactions
             $giftTranx = Transaction::where('status', 'success')->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-            })->orderBy('created_at','desc');
+            })->orderBy('updated_at','desc');
 
             $giftTranx = $this->sortingByAccountantTimestamp($giftTranx, $at->activeTime, $at->inactiveTime);
             $giftCardTransactions = $giftCardTransactions->concat($giftTranx);
 
             //*Utility Transactions
-            $utilityTranx = UtilityTransaction::orderBy('created_at','desc');
+            $utilityTranx = UtilityTransaction::orderBy('updated_at','desc');
             $utilityTranx = $this->sortingByAccountantTimestamp($utilityTranx, $at->activeTime, $at->inactiveTime);
             $utilityTransactions = $utilityTransactions->concat($utilityTranx); 
 
             //*PayBridge Transactions
-            $payBridgeTranx = NairaTransaction::orderBy('created_at','desc');
+            $payBridgeTranx = NairaTransaction::orderBy('updated_at','desc');
             $payBridgeTranx = $this->sortingByAccountantTimestamp($payBridgeTranx, $at->activeTime, $at->inactiveTime);
             $payBridgeTransactions = $payBridgeTransactions->concat($payBridgeTranx);
         }
-        $allTransactions = $allTransactions->whereBetween('created_at', [$start, $end]);
-        $giftCardTransactions =$giftCardTransactions->whereBetween('created_at', [$start, $end]);
+        $allTransactions = $allTransactions->whereBetween('updated_at', [$start, $end]);
+        $giftCardTransactions =$giftCardTransactions->whereBetween('updated_at', [$start, $end]);
         
-        $utilityTransactions = $utilityTransactions->whereBetween('created_at', [$start, $end]);
-        $payBridgeTransactions = $payBridgeTransactions->whereBetween('created_at', [$start, $end]);
+        $utilityTransactions = $utilityTransactions->whereBetween('updated_at', [$start, $end]);
+        $payBridgeTransactions = $payBridgeTransactions->whereBetween('updated_at', [$start, $end]);
         
         $gcBuyTranx = $giftCardTransactions->where('type','buy');
         $gcSellTranx = $giftCardTransactions->where('type','sell');
@@ -818,25 +842,25 @@ class SummaryController extends Controller
         //* adding data to the collection 
         foreach ($accountant_timestamp as $at) {
             //*all Transactions
-            $allTranx = Transaction::orderBy('created_at','desc');
+            $allTranx = Transaction::orderBy('updated_at','desc');
             $allTranx = $this->sortingByAccountantTimestamp($allTranx, $at->activeTime, $at->inactiveTime);
             $allTransactions = $allTransactions->concat($allTranx);
 
             //*GiftCard Transactions
             $giftTranx = Transaction::where('status', 'success')->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
-            })->orderBy('created_at','desc');
+            })->orderBy('updated_at','desc');
 
             $giftTranx = $this->sortingByAccountantTimestamp($giftTranx, $at->activeTime, $at->inactiveTime);
             $giftCardTransactions = $giftCardTransactions->concat($giftTranx);
 
             //*Utility Transactions
-            $utilityTranx = UtilityTransaction::orderBy('created_at','desc');
+            $utilityTranx = UtilityTransaction::orderBy('updated_at','desc');
             $utilityTranx = $this->sortingByAccountantTimestamp($utilityTranx, $at->activeTime, $at->inactiveTime);
             $utilityTransactions = $utilityTransactions->concat($utilityTranx); 
 
             //*PayBridge Transactions
-            $payBridgeTranx = NairaTransaction::orderBy('created_at','desc');
+            $payBridgeTranx = NairaTransaction::orderBy('updated_at','desc');
             $payBridgeTranx = $this->sortingByAccountantTimestamp($payBridgeTranx, $at->activeTime, $at->inactiveTime);
             $payBridgeTransactions = $payBridgeTransactions->concat($payBridgeTranx);
         }
@@ -953,7 +977,7 @@ class SummaryController extends Controller
         if($show_category == "utilities")
         {
             //* Utility transaction
-            $util_tnx = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc');
+            $util_tnx = UtilityTransaction::whereNotNull('id')->orderBy('updated_at', 'desc');
             $util_tnx = $this->sortingByFullDate($util_tnx, $startDate, $endDate);
             return $this->UtilitiesTransactions($util_tnx, $data, $entries);
         }
@@ -961,7 +985,7 @@ class SummaryController extends Controller
         if($show_category == "paybridge")
         {
             //* PayBridge Deposit
-            $pbDeposit = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id',1);
+            $pbDeposit = NairaTransaction::latest()->orderBy('updated_at','desc')->where('transaction_type_id',1);
             $pbDeposit = $this->sortingByFullDate($pbDeposit, $startDate, $endDate);
             return $this->PayBridgeDeposit($pbDeposit,$data, $entries);
         }
@@ -969,7 +993,7 @@ class SummaryController extends Controller
         if($show_category == "paybridgewithdrawal"){
 
             //*payBridge Withdrawal
-            $pbWithdrawal = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id',3);
+            $pbWithdrawal = NairaTransaction::latest()->orderBy('updated_at','desc')->where('transaction_type_id',3);
             $pbWithdrawal = $this->sortingByFullDate($pbWithdrawal, $startDate, $endDate);
             return $this->PayBridgeWithdrawal($pbWithdrawal,$data,$entries);
         }
@@ -977,7 +1001,7 @@ class SummaryController extends Controller
         if($show_category == "paybridgeothers"){
 
             //**Other PayBridge Transaction
-            $pbOthers = NairaTransaction::latest()->orderBy('created_at','desc')->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3);
+            $pbOthers = NairaTransaction::latest()->orderBy('updated_at','desc')->where('transaction_type_id','!=',1)->where('transaction_type_id','!=',3);
             $pbOthers = $this->sortingByFullDate($pbOthers, $startDate, $endDate);
             return $this->PayBridgeOthers($pbOthers,$data, $entries);
         }
@@ -985,10 +1009,10 @@ class SummaryController extends Controller
 
     public function sortingStartAndEnd($value ,$start,$end)
     {
-        $value = $value->where('created_at', '>=', $start." 00:00:00");
+        $value = $value->where('updated_at', '>=', $start." 00:00:00");
         if($end)
         {
-            $value = $value->where('created_at', '<=', $end." 23:59:59");
+            $value = $value->where('updated_at', '<=', $end." 23:59:59");
         }
 
         return $value->get();
@@ -996,10 +1020,10 @@ class SummaryController extends Controller
 
     public function sortingByFullDate($value ,$start,$end)
     {
-        $value = $value->where('created_at', '>=', $start);
+        $value = $value->where('updated_at', '>=', $start);
         if($end)
         {
-            $value = $value->where('created_at', '<=', $end);
+            $value = $value->where('updated_at', '<=', $end);
         }
 
         return $value->get();
@@ -1011,7 +1035,7 @@ class SummaryController extends Controller
         {
             $inactiveTime = now();
         }
-        $value = $value->where('created_at','>=',$activeTime)->where('created_at', '<=', $inactiveTime)->get();
+        $value = $value->where('updated_at','>=',$activeTime)->where('updated_at', '<=', $inactiveTime)->get();
 
         return $value;
     }

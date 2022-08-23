@@ -169,7 +169,7 @@
                                     <td>{{$t->cr_acct_name}} </td>
                                     <td>{{$t->dr_acct_name}} </td>
                                     <td>{{$t->narration}} </td>
-                                    <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
+                                    <td>{{$t->updated_at->format('d M Y h:ia ')}} </td>
                                     <td>
                                         @switch($t->status)
                                         @case('success')
@@ -308,7 +308,7 @@
                                 <td>{{$t->cr_acct_name}} </td>
                                 <td>{{$t->dr_acct_name}} </td>
                                 <td>{{$t->narration}} </td>
-                                <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
+                                <td>{{$t->updated_at->format('d M Y h:ia ')}} </td>
                                 <td>@switch($t->status)
                                     @case('success')
                                     <div class="text-success">{{$t->status}}</div>
@@ -445,7 +445,7 @@
                                 <td>{{$t->cr_acct_name}} </td>
                                 <td>{{$t->dr_acct_name}} </td>
                                 <td>{{$t->narration}} </td>
-                                <td>{{$t->created_at->format('d M Y h:ia ')}} </td>
+                                <td>{{$t->updated_at->format('d M Y h:ia ')}} </td>
                                 <td>@switch($t->status)
                                     @case('success')
                                     <div class="text-success">{{$t->status}}</div>

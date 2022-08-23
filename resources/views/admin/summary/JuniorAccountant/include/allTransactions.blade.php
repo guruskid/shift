@@ -46,7 +46,25 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                    <td class="text-center">{{ isset($all_tnx_count) ? number_format($all_tnx_count) : 0 }}</td>
+                                                    <td class="text-center">{{ isset($all_tnx_count) ? number_format($all_tnx_count) : 0 }}
+                                                        <table class="table">
+                                                            <thead>
+                                                                <th class="text-center">Buy</th>
+                                                                <th class="text-center">Sell</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                <td class="text-center">{{ isset($allCountBuy) ? number_format($allCountBuy) : 0 }} </td>
+                                                                <td class="text-center">{{ isset($allCountSell) ? number_format($allCountSell) : 0 }} </td>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <td>
+                                                                    <div>Total Naira <h6 class="text-center">₦{{ $allNairaAmountBuy }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total Naira <h6 class="text-center">₦{{ $allNairaAmountSell }}</h6></div>
+                                                                </td>
+                                                            </tfoot>
+                                                        </table>
                                                     
                                                     <td>
                                                         <table class="table">
@@ -109,7 +127,6 @@
                                                             <tfoot>
                                                                 <td>
                                                                     <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_buy_amount }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ $giftcards_totaltnx_buy_amount_naira }}</h6></div>
                                                                 </td>
                                                                 <td>
                                                                     <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_sell_amount }}</h6></div>
@@ -219,7 +236,7 @@
                                                 @endif
                                             </td>
 
-                                            <td class="text-center">{{$t->created_at->format('d M, h:ia')}} </td>
+                                            <td class="text-center">{{$t->updated_at->format('d M, h:ia')}} </td>
                                             <td class="text-center">
                                                 @switch($t->status)
                                                 @case('success')
