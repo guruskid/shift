@@ -657,12 +657,13 @@ class SummaryController extends Controller
 
     public function juniorAccountantSort($start, $end, $segment,$accountant_timestamp, $user,$entries,$show_category,$data)
     {
+        if($accountant_timestamp->count() == 0){
+            $accountant_timestamp = AccountantTimeStamp::whereDate('activeTime','<=',$end[0])
+            ->where('user_id',$user->id)->orderBy('id','DESC')->limit(10)->get();
+        }
 
-        $accountant_timestamp = AccountantTimeStamp::whereDate('activeTime','<',$start[0])
-        ->where('user_id',$user->id)->orderBy('id','DESC')->limit(5)->get();
-
-        $start = Carbon::parse($start[0]." ".$start[1]);
-        $end = CArbon::parse($end[0]." ".$end[1]);
+        $start = Carbon::parse($start[0]." ".$start[1].":00");
+        $end = Carbon::parse($end[0]." ".$end[1].":59");
 
         $allTransactions = collect();
         $giftCardTransactions = collect();
@@ -694,12 +695,11 @@ class SummaryController extends Controller
             $payBridgeTranx = $this->sortingByAccountantTimestamp($payBridgeTranx, $at->activeTime, $at->inactiveTime);
             $payBridgeTransactions = $payBridgeTransactions->concat($payBridgeTranx);
         }
-
-        $allTransactions = $allTransactions->where('created_at','>=',$start)->where('created_at','<=',$end);
-        $giftCardTransactions =$giftCardTransactions->where('created_at','>=',$start)->where('created_at','<=',$end);
+        $allTransactions = $allTransactions->whereBetween('created_at', [$start, $end]);
+        $giftCardTransactions =$giftCardTransactions->whereBetween('created_at', [$start, $end]);
         
-        $utilityTransactions = $utilityTransactions->where('created_at','>=',$start)->where('created_at','<=',$end);
-        $payBridgeTransactions = $payBridgeTransactions->where('created_at','>=',$start)->where('created_at','<=',$end);
+        $utilityTransactions = $utilityTransactions->whereBetween('created_at', [$start, $end]);
+        $payBridgeTransactions = $payBridgeTransactions->whereBetween('created_at', [$start, $end]);
         
         $gcBuyTranx = $giftCardTransactions->where('type','buy');
         $gcSellTranx = $giftCardTransactions->where('type','sell');
@@ -795,14 +795,14 @@ class SummaryController extends Controller
         $accountant_timestamp = AccountantTimeStamp::whereDate('activeTime','>=',$startDate)
         ->whereDate('activeTime','<=',$endDate)->where('user_id',$user->id)->get();
 
-        if($accountant_timestamp->count() == 0 AND $user->role == 777)
+        if($user->role == 777)
         {
             if(!isset($start)){
-                $start =[$startDate,"00:00:00"];
+                $start =[$startDate,"00:00"];
             }
             if(!isset($end))
             {
-                $end = [$endDate,"23:59:59"];
+                $end = [$endDate,"23:59"];
             }
 
             return $this->juniorAccountantSort($start, $end, $segment,$accountant_timestamp,$user,$requestDetails['entries'],$show_category,$data);
@@ -882,18 +882,17 @@ class SummaryController extends Controller
         if($startDate != null)
         {
             $start = str_replace("T"," ",$startDate);
-            $startDate = $start;
-            $requestDetails['startdate'] = $start;
+            $startDate = $start.":00";
+            $requestDetails['startdate'] = $start.":00";
         }
 
         if($endDate != null)
         {
             $end = str_replace("T"," ",$endDate);
-            $endDate = $end;
-            $requestDetails['enddate'] = $end;
+            $endDate = $end.":59";
+            $requestDetails['enddate'] = $end.":59";
         }
 
-        
         if($requestDetails['startdate'] != null)
         {
             $segment = Carbon::parse($startDate)->format('d F Y-h:ia');
@@ -905,8 +904,8 @@ class SummaryController extends Controller
         if($endDate == null)
         {
             $end = explode(" ",$startDate);
-            $endDate = $end[0]." 23:59";
-            $requestDetails['enddate'] = $end[0]." 23:59";
+            $endDate = $end[0]." 23:59:59";
+            $requestDetails['enddate'] = $end[0]." 23:59:59";
         }
 
         //*Export Data
@@ -1015,26 +1014,6 @@ class SummaryController extends Controller
         $value = $value->where('created_at','>=',$activeTime)->where('created_at', '<=', $inactiveTime)->get();
 
         return $value;
-    }
-
-    public function sellTnx_summary($created_at,$updated_at,$card_id)
-    {
-        //? sell tnx crypto
-        $crypto_tnx = Transaction::latest('id')
-            ->where('created_at', '>=', $created_at)
-            ->where('updated_at', '<=', $updated_at)
-            ->where('card_id', $card_id)->where('type', 'sell')->get();
-        return $crypto_tnx;
-    }
-
-    public function buyTnx_summary($created_at,$updated_at,$card_id)
-    {
-        //? buy tnx crypto
-        $crypto_tnx = Transaction::latest('id')
-            ->where('created_at', '>=', $created_at)
-            ->where('updated_at', '<=', $updated_at)
-            ->where('card_id', $card_id)->where('type', 'buy')->get();
-        return $crypto_tnx;
     }
 
 }

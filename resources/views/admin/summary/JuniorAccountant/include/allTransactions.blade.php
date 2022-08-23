@@ -219,7 +219,7 @@
                                                 @endif
                                             </td>
 
-                                            <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
+                                            <td class="text-center">{{$t->created_at->format('d M, h:ia')}} </td>
                                             <td class="text-center">
                                                 @switch($t->status)
                                                 @case('success')

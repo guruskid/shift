@@ -224,7 +224,7 @@
                                 </tbody>
                             </table>
                             <div class="View-all">
-                                <a href="{{route('admin.asset-transactions', 0)}}">View all </a>
+                                <a href="{{route('admin.assetsTransactions', 0)}}">View all </a>
                             </div>
                         </div>
                     </div>
@@ -311,7 +311,7 @@
                                 </tbody>
                             </table>
                             <div class="View-all">
-                                <a href="{{route('admin.asset-transactions', 1)}}">View all </a>
+                                <a href="{{route('admin.assetsTransactions', 1)}}">View all </a>
                             </div>
                         </div>
                     </div>

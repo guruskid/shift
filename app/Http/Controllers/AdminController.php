@@ -103,11 +103,11 @@ class AdminController extends Controller
 
         $g_txns = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-        })->latest()->get()->take(4);
+        })->orderBy('updated_at', 'desc')->get()->take(4);
 
         $c_txns = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 1);
-        })->latest()->get()->take(4);
+        })->orderBy('updated_at', 'desc')->get()->take(4);
 
         $n_txns = NairaTransaction::latest()->get()->take(4);
 
@@ -916,7 +916,8 @@ class AdminController extends Controller
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
         if (Auth::user()->role == 444 or Auth::user()->role == 449) {
-            $transactions = $transactions->with('user')->whereHas('asset', function ($query) {
+            $transactions = $transactions->with('user')->orderBy('updated_at', 'desc')
+            ->whereHas('asset', function ($query) {
                     $query->where('is_crypto', 0);
                 });
         }
@@ -947,15 +948,18 @@ class AdminController extends Controller
             ->where('card_id', '!=', null)
             ->distinct('card_id')
             ->get();
+
         $accountant = Transaction::with('accountant')
             ->select('accountant_id')
             ->where('accountant_id', '!=', null)
             ->distinct('accountant_id')
             ->get();
+
         $status = Transaction::select('Status')->distinct('Status')->get();
+        
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
-        })->latest();
+        })->orderBy('updated_at', 'DESC');
 
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
