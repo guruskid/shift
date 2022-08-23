@@ -62,12 +62,12 @@
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ number_format($BTCbuyUsdAmount,2, '.', ',') }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($BTCbuyNairaAmount,2, '.', ',') }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ $BTCbuyUsdAmount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $BTCbuyNairaAmount }}</h6></div>
                                                                 </td>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ number_format($BTCsellUsdAmount,2, '.', ',') }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($BTCsellNairaAmount,2, '.', ',') }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ $BTCsellUsdAmount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $BTCsellNairaAmount }}</h6></div>
                                                                 </td>
                                                             </tfoot>
                                                         </table>
@@ -86,12 +86,12 @@
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ number_format($USDTbuyUsdAmount,2, '.', ',') }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($USDTbuyNairaAmount,2, '.', ',') }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ $USDTbuyUsdAmount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $USDTbuyNairaAmount }}</h6></div>
                                                                 </td>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ number_format($USDTsellUsdAmount,2, '.', ',') }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($USDTsellNairaAmount,2, '.', ',') }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ $USDTsellUsdAmount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $USDTsellNairaAmount }}</h6></div>
                                                                 </td>
                                                             </tfoot>
                                                         </table>
@@ -108,12 +108,12 @@
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ number_format($giftcards_totaltnx_buy_amount) }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($giftcards_totaltnx_buy_amount_naira,2, '.', ',') }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_buy_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $giftcards_totaltnx_buy_amount_naira }}</h6></div>
                                                                 </td>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ number_format($giftcards_totaltnx_sell_amount) }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($giftcards_totaltnx_sell_amount_naira,2, '.', ',') }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_sell_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $giftcards_totaltnx_sell_amount_naira }}</h6></div>
                                                                 </td>
                                                             </tfoot>
                                                         </table>
