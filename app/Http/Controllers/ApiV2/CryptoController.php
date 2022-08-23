@@ -41,9 +41,23 @@ class CryptoController extends Controller
             'sell_charge' => Setting::where('name', 'bitcoin_sell_charge')->first()->value
         ];
 
+        $wallets = [$bitcoin, $usdt];
+        $total_balances = [
+            'ngn' => 0,
+            'usd' => 0
+        ];
+
+        foreach ($wallets as $w ) {
+            if ($w->wallet) {
+                $total_balances['ngn'] += $w->wallet->ngn;
+                $total_balances['usd'] += $w->wallet->usd;
+            }
+        }
+
         return response()->json([
             'success' => true,
-            'currencies' => [$bitcoin, $usdt]
+            'currencies' => $wallets,
+            'total_balance' => $total_balances
         ]);
     }
 
