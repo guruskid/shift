@@ -239,7 +239,7 @@ class UserController extends Controller
         $notify = array();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
         foreach ($notifications as $body) {
-            array_push($notify, array($body->body));
+            array_push($notify, array("notify" => $body->body));
 
         }
 
