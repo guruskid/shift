@@ -13,6 +13,7 @@ use App\Http\Controllers\UsdtController;
 use App\Setting;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class CryptoController extends Controller
@@ -63,7 +64,6 @@ class CryptoController extends Controller
 
     public function create(Request $request)
     {
-
         if (!Hash::check($request->pin, Auth::user()->pin)) {
             return response()->json([
                 'success' => false,
