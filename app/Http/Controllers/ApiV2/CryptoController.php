@@ -63,6 +63,14 @@ class CryptoController extends Controller
 
     public function create(Request $request)
     {
+
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Invalid Pin'
+            ],401);
+        }
+
         if ($request->currency_id == 1) {
             return BtcWalletController::create($request);
         } else if ($request->currency_id == 7) {
