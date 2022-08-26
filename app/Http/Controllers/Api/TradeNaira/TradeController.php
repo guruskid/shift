@@ -122,6 +122,7 @@ class TradeController extends Controller
             'agent_id' => 'required',
             'amount' => 'required',
             'pin' => 'required|min:4',
+            'account_id' => 'required',
         ]);
 
         if ($request->amount < 1000) {
