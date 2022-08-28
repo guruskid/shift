@@ -366,7 +366,11 @@ $not = $nots->last();
                 paging: true,
                 order: [
                     [0, 'desc']
-                ]
+                ],
+                lengthMenu: [
+                    [10, 100, 1000, -1],
+                    [10, 100, 1000, 'All'],
+                ],
             });
         });
 

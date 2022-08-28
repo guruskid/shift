@@ -415,7 +415,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 
     Route::get('/transactions/{status}', 'AdminController@txnByStatus')->name('admin.transactions-status');
     Route::get('/transactions/agent/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
-    Route::get('/transactions/assets/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
+    Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
+    Route::get('/assets/{id}','AdminController@assetTransac')->name('admin.assetsTransactions');
     Route::post('/edit-transactions', 'Admin\AssetTransactionController@editTransaction')->name('admin.edit_transaction');
     Route::post('/asset-transactions', 'AdminController@assetTransactionsSortByDate')->name('admin.transactions-by-date');
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');

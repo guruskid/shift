@@ -71,10 +71,14 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
     Route::get('/service-fee', 'BitcoinWalletController@serviceFee')->name('admin.service-fee');
     Route::post('/service-fee', 'BitcoinWalletController@setFee')->name('admin.set-service-fee');
+
     //sending
     Route::POST('/ethereum/send', 'EthWalletController@send')->name('admin.eth.send');
     Route::POST('/tron/send', 'TronController@send')->name('admin.tron.send');
     Route::POST('/usdt/send', 'UsdtController@send')->name('admin.usdt.send');
+
+    //BLOCKFILL ORDERS
+    Route::get('/blockfill-orders', 'BlockfillOrderController@index')->name('admin.blockfill.orders');
 });
 
 Route::group(['middleware' => 'accountant'], function () {

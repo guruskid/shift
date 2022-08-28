@@ -473,7 +473,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
                                         </td>
                                         @endif
-                                        <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
+                                        <td class="text-center">{{$t->updated_at->format('d M, H:ia')}} </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

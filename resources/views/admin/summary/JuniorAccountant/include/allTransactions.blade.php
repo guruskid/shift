@@ -19,152 +19,168 @@
                                     @endforeach
                                 @endif --}}
 
-                                @if (isset($accountant))
-                                    <select name="Accountant" class="ml-1 form-control">
-                                        <option value="null">Accountant</option>
-                                        @foreach ($accountant as $a) 
-                                            <option value="{{ $a->id }}">{{ $a->first_name ?:$a->email }}</option>
-                                        @endforeach
-                                    </select>
-                                @endif
-                                
-                                <input type="number" name="entries" class="form-control mr-1  ml-1" placeholder="Enteries">
-                                <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
-                            </div>
-                        </form>
-                        <div class="table-responsive">
-                            <div class="card card-body mb-3">
-                                @if($show_summary == true)
-                                <table class="table table-bordered">
+                                    @if (isset($accountant))
+                                        <select name="Accountant" class="ml-1 form-control">
+                                            <option value="null">Accountant</option>
+                                            @foreach ($accountant as $a)
+                                                <option value="{{ $a->id }}">{{ $a->first_name ?:$a->email }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
+
+                                    <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <div class="card card-body mb-3">
+                                    @if($show_summary == true)
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Total Transactions</th>
+                                                <th class="text-center">Total BItcoin Transactions</th>
+                                                <th class="text-center">Total USDT Transactions</th>
+                                                <th class="text-center">Total Giftcard Transactions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                    <td class="text-center">{{ isset($all_tnx_count) ? number_format($all_tnx_count) : 0 }}
+                                                        <table class="table">
+                                                            <thead>
+                                                                <th class="text-center">Buy</th>
+                                                                <th class="text-center">Sell</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                <td class="text-center">{{ isset($allCountBuy) ? number_format($allCountBuy) : 0 }} </td>
+                                                                <td class="text-center">{{ isset($allCountSell) ? number_format($allCountSell) : 0 }} </td>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <td>
+                                                                    <div>Total Naira <h6 class="text-center">₦{{ $allNairaAmountBuy }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total Naira <h6 class="text-center">₦{{ $allNairaAmountSell }}</h6></div>
+                                                                </td>
+                                                            </tfoot>
+                                                        </table>
+
+                                                    <td>
+                                                        <table class="table">
+                                                            <thead>
+                                                                <th class="text-center">Buy</th>
+                                                                <th class="text-center">Sell</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                <td class="text-center">{{ isset($BTCbuyCount) ? number_format($BTCbuyCount) : 0 }}
+                                                                    [{{sprintf('%.8f', floatval($BTCbuyQuantity))}} BTC]</td>
+                                                                <td class="text-center">{{ isset($BTCsellCount) ? number_format($BTCsellCount) : 0 }}
+                                                                    [{{sprintf('%.8f', floatval($BTCsellQuantity))  }} BTC]</td>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $BTCbuyUsdAmount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $BTCbuyNairaAmount }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $BTCsellUsdAmount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $BTCsellNairaAmount }}</h6></div>
+                                                                </td>
+                                                            </tfoot>
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table class="table">
+                                                            <thead>
+                                                                <th class="text-center">Buy</th>
+                                                                <th class="text-center">Sell</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                <td class="text-center">{{ isset($USDTbuyCount) ? number_format($USDTbuyCount) : 0 }}
+                                                                    [{{ $USDTbuyQuantity }} USDT]</td>
+                                                                <td class="text-center">{{ isset($USDTsellCount) ? number_format($USDTsellCount) : 0 }}
+                                                                    [{{ $USDTsellQuantity }} USDT]</td>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $USDTbuyUsdAmount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $USDTbuyNairaAmount }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $USDTsellUsdAmount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $USDTsellNairaAmount }}</h6></div>
+                                                                </td>
+                                                            </tfoot>
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <table class="table">
+                                                            <thead>
+                                                                <th class="text-center">Buy</th>
+                                                                <th class="text-center">Sell</th>
+                                                            </thead>
+                                                            <tbody>
+                                                                <td class="text-center">{{ isset($giftcards_totaltnx_buy) ? number_format($giftcards_totaltnx_buy) : 0 }}</td>
+                                                                <td class="text-center">{{ isset($giftcards_totaltnx_sell) ? number_format($giftcards_totaltnx_sell) : 0 }}</td>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_buy_amount }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $giftcards_totaltnx_sell_amount }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ $giftcards_totaltnx_sell_amount_naira }}</h6></div>
+                                                                </td>
+                                                            </tfoot>
+                                                        </table>
+                                                    </td>
+                                                    {{-- <td class="text-center">{{ isset($giftcards_totaltnx) ? number_format($giftcards_totaltnx) : 0 }}</td> --}}
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    @endif
+                                </div>
+                                <table class="mb-2 table table-bordered transactions-table">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Total Transactions</th>
-                                            <th class="text-center">Total BItcoin Transactions</th>
-                                            <th class="text-center">Total USDT Transactions</th>
-                                            <th class="text-center">Total Giftcard Transactions</th>
-                                        </tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Asset</th>
+                                        <th class="text-center">Trade type</th>
+                                        <th class="text-center">Currency</th>
+                                        <th class="text-center">Card type</th>
+                                        <th class="text-center">Asset value</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Total Asset</th>
+                                        <th class="text-center">Card price</th>
+                                        @if (in_array(Auth::user()->role, [444,449] ))
+                                        <th class="text-center">Cash value</th>
+                                        @endif
+                                        @if (!in_array(Auth::user()->role, [449,444] ))
+                                        <th class="text-center">User Amount</th>
+                                        @endif
+                                        @if (in_array(Auth::user()->role, [999] ))
+                                            <th class="text-center">Commission</th>
+                                            <th class="text-center">Chinese Amount</th>
+                                        @endif
+                                        @if (!in_array(Auth::user()->role, [449,444] ))
+                                        <th class="text-center">Wallet ID</th>
+                                        @endif
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">Status</th>
+                                        @if (in_array(Auth::user()->role, [999, 889] ))
+                                        <th class="text-center">Last Edit</th>
+                                        <th class="text-center">Agent</th>
+                                        <th class="text-center">Accountant</th>
+                                        @endif
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                                <td class="text-center">{{ isset($all_tnx_count) ? number_format($all_tnx_count) : 0 }}</td>
-                                                
-                                                <td>
-                                                    <table class="table">
-                                                        <thead>
-                                                            <th class="text-center">Buy</th>
-                                                            <th class="text-center">Sell</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <td class="text-center">{{ isset($BTCbuyCount) ? number_format($BTCbuyCount) : 0 }} 
-                                                                [{{sprintf('%.8f', floatval($BTCbuyQuantity))}} BTC]</td>
-                                                            <td class="text-center">{{ isset($BTCsellCount) ? number_format($BTCsellCount) : 0 }} 
-                                                                [{{sprintf('%.8f', floatval($BTCsellQuantity))  }} BTC]</td>
-                                                        </tbody>
-                                                        <tfoot>
-                                                            <td>
-                                                                <div>Total <h6 class="text-right">${{ number_format($BTCbuyUsdAmount,2, '.', ',') }}</h6></div>
-                                                                <div>Total Naira <h6 class="text-right">₦{{ number_format($BTCbuyNairaAmount,2, '.', ',') }}</h6></div>
-                                                            </td>
-                                                            <td>
-                                                                <div>Total <h6 class="text-right">${{ number_format($BTCsellUsdAmount,2, '.', ',') }}</h6></div>
-                                                                <div>Total Naira <h6 class="text-right">₦{{ number_format($BTCsellNairaAmount,2, '.', ',') }}</h6></div>
-                                                            </td>
-                                                        </tfoot>
-                                                    </table>
-                                                </td>
-                                                <td>
-                                                    <table class="table">
-                                                        <thead>
-                                                            <th class="text-center">Buy</th>
-                                                            <th class="text-center">Sell</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <td class="text-center">{{ isset($USDTbuyCount) ? number_format($USDTbuyCount) : 0 }}
-                                                                [{{ $USDTbuyQuantity }} USDT]</td>
-                                                            <td class="text-center">{{ isset($USDTsellCount) ? number_format($USDTsellCount) : 0 }}
-                                                                [{{ $USDTsellQuantity }} USDT]</td>
-                                                        </tbody>
-                                                        <tfoot>
-                                                            <td>
-                                                                <div>Total <h6 class="text-right">${{ number_format($USDTbuyUsdAmount,2, '.', ',') }}</h6></div>
-                                                                <div>Total Naira <h6 class="text-right">₦{{ number_format($USDTbuyNairaAmount,2, '.', ',') }}</h6></div>
-                                                            </td>
-                                                            <td>
-                                                                <div>Total <h6 class="text-right">${{ number_format($USDTsellUsdAmount,2, '.', ',') }}</h6></div>
-                                                                <div>Total Naira <h6 class="text-right">₦{{ number_format($USDTsellNairaAmount,2, '.', ',') }}</h6></div>
-                                                            </td>
-                                                        </tfoot>
-                                                    </table>
-                                                </td>
-                                                <td>
-                                                    <table class="table">
-                                                        <thead>
-                                                            <th class="text-center">Buy</th>
-                                                            <th class="text-center">Sell</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <td class="text-center">{{ isset($giftcards_totaltnx_buy) ? number_format($giftcards_totaltnx_buy) : 0 }}</td>
-                                                            <td class="text-center">{{ isset($giftcards_totaltnx_sell) ? number_format($giftcards_totaltnx_sell) : 0 }}</td>
-                                                        </tbody>
-                                                        <tfoot>
-                                                            <td>
-                                                                <div>Total <h6 class="text-right">${{ number_format($giftcards_totaltnx_buy_amount) }}</h6></div>
-                                                                <div>Total Naira <h6 class="text-right">₦{{ number_format($giftcards_totaltnx_buy_amount_naira,2, '.', ',') }}</h6></div>
-                                                            </td>
-                                                            <td>
-                                                                <div>Total <h6 class="text-right">${{ number_format($giftcards_totaltnx_sell_amount) }}</h6></div>
-                                                                <div>Total Naira <h6 class="text-right">₦{{ number_format($giftcards_totaltnx_sell_amount_naira,2, '.', ',') }}</h6></div>
-                                                            </td>
-                                                        </tfoot>
-                                                    </table>
-                                                </td>
-                                                {{-- <td class="text-center">{{ isset($giftcards_totaltnx) ? number_format($giftcards_totaltnx) : 0 }}</td> --}}
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                @endif
-                            </div>
-                            <table class="mb-2 table table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th class="text-center">ID</th>
-                                    <th class="text-center">Asset</th>
-                                    <th class="text-center">Trade type</th>
-                                    <th class="text-center">Currency</th>
-                                    <th class="text-center">Card type</th>
-                                    <th class="text-center">Asset value</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-center">Total Asset</th>
-                                    <th class="text-center">Card price</th>
-                                    @if (in_array(Auth::user()->role, [444,449] ))
-                                    <th class="text-center">Cash value</th>
-                                    @endif
-                                    @if (!in_array(Auth::user()->role, [449,444] ))
-                                    <th class="text-center">User Amount</th>
-                                    @endif
-                                    @if (in_array(Auth::user()->role, [999] ))
-                                        <th class="text-center">Commission</th>
-                                        <th class="text-center">Chinese Amount</th>
-                                    @endif
-                                    @if (!in_array(Auth::user()->role, [449,444] ))
-                                    <th class="text-center">Wallet ID</th>
-                                    @endif
-                                    <th class="text-center">User</th>
-                                    <th class="text-center">Date</th>
-                                    <th class="text-center">Status</th>
-                                    @if (in_array(Auth::user()->role, [999, 889] ))
-                                    <th class="text-center">Last Edit</th>
-                                    <th class="text-center">Agent</th>
-                                    <th class="text-center">Accountant</th>
-                                    @endif
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    @if (isset($all_tnx))
-                                    @foreach ($all_tnx as $t)
-                                    @php
-                                    $c = $t->card;
-                                    @endphp
+                                        @if (isset($all_tnx))
+                                        @foreach ($all_tnx as $t)
+                                        @php
+                                        $c = $t->card;
+                                        @endphp
 
                                     <tr>
                                         <td class="text-center text-muted">{{$t->uid}}</td>
@@ -219,23 +235,23 @@
                                             @endif
                                         </td>
 
-                                        <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
-                                        <td class="text-center">
-                                            @switch($t->status)
-                                            @case('success')
-                                            <div class="text-success">{{$t->status}}</div>
-                                            @break
-                                            @case("failed")
-                                            <div class="text-danger">{{$t->status}}</div>
-                                            @break
-                                            @case('declined')
-                                            <div class="text-warning">{{$t->status}}</div>
-                                            @break
-                                            @case('waiting')
-                                            <div class="text-info">{{$t->status}}</div>
-                                            @break
-                                            @default
-                                            <div class="text-success">{{$t->status}}</div>
+                                            <td class="text-center">{{$t->updated_at->format('d M, h:ia')}} </td>
+                                            <td class="text-center">
+                                                @switch($t->status)
+                                                @case('success')
+                                                <div class="text-success">{{$t->status}}</div>
+                                                @break
+                                                @case("failed")
+                                                <div class="text-danger">{{$t->status}}</div>
+                                                @break
+                                                @case('declined')
+                                                <div class="text-warning">{{$t->status}}</div>
+                                                @break
+                                                @case('waiting')
+                                                <div class="text-info">{{$t->status}}</div>
+                                                @break
+                                                @default
+                                                <div class="text-success">{{$t->status}}</div>
 
                                             @endswitch
                                         </td>
@@ -245,14 +261,14 @@
                                         <td class="text-center"> {{$t->accountant->first_name ?? 'None' }} </td>
                                         @endif
 
-                                        
-                                    </tr>
-                                    
-                                    @endforeach
-                                </tbody>
-                                    
-                                {{ $all_tnx->links() }}
-                                @endif
+
+                                        </tr>
+
+                                        @endforeach
+                                    </tbody>
+
+                                    {{-- {{ $all_tnx->links() }} --}}
+                                    @endif
 
 
                             </table>
