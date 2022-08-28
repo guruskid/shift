@@ -15,6 +15,8 @@ use App\Events\TransactionUpdated;
 use App\Mail\DantownNotification;
 use App\NairaTransaction;
 use App\Exports\DownloadUsers;
+use App\Exports\UsdtTransactions;
+use App\Exports\UsdtTransactionsExport;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\Http\Controllers\Admin\SalesController;
 use App\NairaTrade;
@@ -85,20 +87,6 @@ class AdminController extends Controller
         $users_count = User::all()->count();
 
 
-        /*  $client = new Client();
-        $url = env('RUBBIES_API') . "/balanceenquiry";
-
-        $response = $client->request('POST', $url, [
-            'json' => [
-                "accountnumber" => "0140963171"
-            ],
-            'headers' => [
-                'authorization' => env('RUBBIES_SECRET_KEY'),
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents()); */
-
-
         $rubies_balance = 0;
         $users_wallet_balance = NairaWallet::sum('amount');
         $company_balance = $rubies_balance - $users_wallet_balance;
@@ -115,11 +103,11 @@ class AdminController extends Controller
 
         $g_txns = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
-        })->latest()->get()->take(4);
+        })->orderBy('updated_at', 'desc')->get()->take(4);
 
         $c_txns = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 1);
-        })->latest()->get()->take(4);
+        })->orderBy('updated_at', 'desc')->get()->take(4);
 
         $n_txns = NairaTransaction::latest()->get()->take(4);
 
@@ -844,6 +832,59 @@ class AdminController extends Controller
         ]));
     }
 
+    public function currencyTransactions($card_id, $currency, Request $request)
+    {
+        $segment = null;
+        $category = Transaction::with('asset')
+            ->select('card_id')
+            ->where('card_id', '!=', null)
+            ->distinct('card_id')
+            ->get();
+        $accountant = Transaction::with('accountant')
+            ->select('accountant_id')
+            ->where('accountant_id', '!=', null)
+            ->distinct('accountant_id')
+            ->get();
+        $status = Transaction::select('Status')->distinct('Status')->get();
+        $transactions = Transaction::where('type', 'sell')->where('card_id', $card_id)->latest();
+
+        $start = null;
+        if(isset($request['start']))
+        {
+            $transactions = $transactions->where('created_at','>=',$request['start']." 00:00:00");
+            $segment = Carbon::parse($request['start'])->format('D d M y');
+            $start = $request['start'];
+        }
+
+        $end = null;
+        if(isset($request['end']))
+        {
+            $transactions = $transactions->where('created_at','<=',$request['end']." 23:59:59");
+            $segment .=' - ' . Carbon::parse($request['end'])->format('D d M y');
+            $end = $request['end'];
+        }
+        $segment .= " ".$currency;
+        
+        $card_price_total = $transactions->sum('card_price');
+        $cash_value_total = $transactions->sum('amount_paid');
+        $asset_value_total = $transactions->sum('amount');
+        $total_transactions = $transactions->count();
+        if (Auth::user()->role == 444 or Auth::user()->role == 449) {
+            $transactions = $transactions->with('user')->whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 0);
+                });
+        }
+
+        if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
+            return (new UsdtTransactionsExport(143,$request['start'],$request['end']))->download('usdtTransactions.xlsx');
+        }
+        $transactions = $transactions->paginate(1000);
+        return view('admin.transactions', compact([
+            'transactions', 'segment', 'accountant', 'status', 'category', 'total_transactions', 'asset_value_total', 'cash_value_total', 'card_price_total',
+            'start','end'
+        ]));
+    }
+
     public function txnByStatus($status, Request $request)
     {
         $type = Transaction::select('type')->distinct('type')->get();
@@ -875,7 +916,8 @@ class AdminController extends Controller
         $asset_value_total = $transactions->sum('amount');
         $total_transactions = $transactions->count();
         if (Auth::user()->role == 444 or Auth::user()->role == 449) {
-            $transactions = $transactions->with('user')->whereHas('asset', function ($query) {
+            $transactions = $transactions->with('user')->orderBy('updated_at', 'desc')
+            ->whereHas('asset', function ($query) {
                     $query->where('is_crypto', 0);
                 });
         }
@@ -906,15 +948,18 @@ class AdminController extends Controller
             ->where('card_id', '!=', null)
             ->distinct('card_id')
             ->get();
+
         $accountant = Transaction::with('accountant')
             ->select('accountant_id')
             ->where('accountant_id', '!=', null)
             ->distinct('accountant_id')
             ->get();
+
         $status = Transaction::select('Status')->distinct('Status')->get();
+        
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
-        })->latest();
+        })->orderBy('updated_at', 'DESC');
 
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
@@ -1290,25 +1335,6 @@ class AdminController extends Controller
         return view('admin.users', compact(['users']));
     }
 
-    /* public function verify()
-    {
-        $users = User::where('status', 'waiting')->orderBy('updated_at', 'asc')->get();
-        return view('admin.verify', compact(['users']));
-    }
-
-    public function verifyUser(Request $request)
-    {
-        $user = User::find($request->id);
-        $user->status = $request->status;
-        $user->save();
-
-        $not = Notification::create([
-            'user_id' => $user->id,
-            'title' => 'Account update',
-            'body' => 'The status of your account has been updated to ' . $user->status,
-        ]);
-        return redirect()->back()->with(['success' => 'User Status updated']);
-    } */
 
     public function walletId(Request $request)
     {
@@ -1367,28 +1393,6 @@ class AdminController extends Controller
         return view("admin.userdb");
     }
 
-    // public function downloadUserDbsearchj(Request $request)
-    // {
-    //     $request->validate([
-    //         'start' => 'required|date|string',
-    //         'end' => 'required|date|string',
-    //     ]);
-    //     $users = User::where('created_at', '>=', $request->start)->where('created_at', '<=', $request->end)->paginate(200);
-    //     // $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Asset';
-
-    //     return view('admin.userdb', compact(['users']));
-    // }
-
-    // public function exportIntoExcel()
-    // {
-    //     return Excel::download(new DownloadUsers, 'roxo.csv');
-    // }
-
-    // public function downloadUserDbsearch()
-    // {
-    //     return Excel::download(new DownloadUsers, 'roxo.xlsx');
-    //     return $datas;
-    // }
 
     public function downloadUserDbsearch()
     {

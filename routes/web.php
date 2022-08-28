@@ -411,9 +411,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
 
     Route::get('/transactions/buy', 'AdminController@buyTransac')->name('admin.buy_transac');
     Route::get('/transactions/sell', 'AdminController@sellTransac')->name('admin.sell_transac');
+    Route::get('/transactions/{card_id}/{currency}', 'AdminController@currencyTransactions')->name('admin.currency_transactions');
+
     Route::get('/transactions/{status}', 'AdminController@txnByStatus')->name('admin.transactions-status');
     Route::get('/transactions/agent/assigned', 'AdminController@assignedTransac')->name('admin.assigned-transactions');
     Route::get('/transactions/asset/{id}', 'AdminController@assetTransac')->name('admin.asset-transactions');
+    Route::get('/assets/{id}','AdminController@assetTransac')->name('admin.assetsTransactions');
     Route::post('/edit-transactions', 'Admin\AssetTransactionController@editTransaction')->name('admin.edit_transaction');
     Route::post('/asset-transactions', 'AdminController@assetTransactionsSortByDate')->name('admin.transactions-by-date');
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
@@ -522,6 +525,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant']]
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'accountant']], function () {
     Route::get('/account-officers', 'JuniorAccountantController@showAccountOfficers')->name('admin.account_officers');
+    Route::post('/add_accountantOfficers', 'JuniorAccountantController@addAccountOfficer')->name('admin.account_officers.add');
     Route::get('/junior_accountant_action/{id}/{action}', 'JuniorAccountantController@action')->name('admin.Junior_accountant_action');
 });
 
@@ -618,12 +622,40 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('call-log', 'Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
 
     Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
+    
     Route::GET('/QuarterlyInactiveUsersFromDB', function () {
         Artisan::call('check:trackingTable');
-        return redirect()->back()->with("success", "Database Populated");
+        return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
     });
-    // Route::GET('/checkkcrondrop', 'Admin\BusinessDeveloperController@CheckRecalcitrantUsersForResponded');
 
+    //?checking Active
+    Route::GET('/CheckingActiveUserOnline', function () {
+        Artisan::call('check:active');
+        return redirect()->back()->with("success", "Active Users Checked");
+    });
+
+    //? checking called Users for responded or recalcitrant
+    Route::GET('/CheckingCalledUserOnline', function () {
+        Artisan::call('check:called');
+        return redirect()->back()->with("success", "Checked Called Users");
+    });
+
+    //?checking responded 
+    Route::GET('/CheckingRespondedUserOnline', function () {
+        Artisan::call('check:Responded');
+        return redirect()->back()->with("success", "Checked Responded Users");
+    });
+
+    //?checking recalcitrant
+    Route::GET('/CheckingRecalcitrantUserOnline', function () {
+        Artisan::call('check:Recalcitrant');
+        return redirect()->back()->with("success", "Checked Recalcitrant Users");
+    });
+
+    Route::GET('/CheckingNoResponseUserOnline', function () {
+        Artisan::call('noResponse:check');
+        return redirect()->back()->with("success", "Checked No Response Users");
+    });
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
@@ -634,7 +666,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], 
     Route::GET('user/profile', 'Admin\SalesController@userProfile')->name('sales.user_profile');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']], function () {
     Route::GET('/LoadSalesUsers', 'Admin\TargetController@loadSales')->name('sales.loadSales');
     Route::POST('/addTarget', 'Admin\TargetController@addTarget')->name('sales.addTarget');
     Route::POST('/editTarget', 'Admin\TargetController@editTarget')->name('sales.editTarget');
@@ -642,7 +674,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super']], 
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'seniorAccountant']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']], function () {
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
     Route::ANY('/sortAnalytics/{type?}', 'Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
     Route::ANY('/showAnalysis/{type?}', 'Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');

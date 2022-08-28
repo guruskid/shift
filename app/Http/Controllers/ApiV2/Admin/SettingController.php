@@ -33,16 +33,16 @@ class SettingController extends Controller
                 break;
             case 889:
                 $role_name = "Senior Accountant";
-                break;  
+                break;
             case 777:
                 $role_name = "Junior Accountant";
                 break;
              case 775:
                 $role_name = "Account Officer";
-                break;   
+                break;
             case 559:
                 $role_name = "Marketing Personnel";
-                break; 
+                break;
             case 557:
                 $role_name = "Sales Personnel - Old Users";
                 break;
@@ -54,10 +54,10 @@ class SettingController extends Controller
                 break;
             case 444:
                 $role_name = "Chinese Operator";
-                break; 
+                break;
             case 449:
                 $role_name = "Chinese Administrator";
-                break;    
+                break;
             default:
             $role_name = "";
                 break;
@@ -75,13 +75,13 @@ class SettingController extends Controller
                 'user_details' => Auth::user(),
             ], 200);
         }
-        
+
         return response()->json([
             'success' => false,
             'dropdown' => $roleDropdown,
             'message' => 'Not Logged In'
         ], 401);
-        
+
     }
 
     public function editUser(Request $r)
@@ -104,6 +104,14 @@ class SettingController extends Controller
         }
 
         $user = Auth::user();
+        
+        if ($user->role != 1) {
+            return response()->json([
+                'success' => false,
+                'message' => "User cannot be updated",
+            ], 401);
+        }
+
         $user->first_name = $r->first_name;
         $user->last_name = $r->last_name;
         if($r->email != $user->email)
@@ -114,7 +122,7 @@ class SettingController extends Controller
                     'success' => false,
                     'message' => "Email is in use",
                 ], 401);
-            }   
+            }
             $user->email = $r->email;
         }
         $user->email = $r->email;
@@ -183,9 +191,9 @@ class SettingController extends Controller
         }
 
         $user = User::where('id',$r->id)->first();
-       
 
-        
+
+
         $user->first_name = $r->first_name;
         $user->last_name = $r->last_name;
         if($r->email != $user->email)
@@ -196,7 +204,7 @@ class SettingController extends Controller
                     'success' => false,
                     'message' => "Email is in use",
                 ], 401);
-            }   
+            }
             $user->email = $r->email;
         }
         $user->email = $r->email;
@@ -277,7 +285,7 @@ class SettingController extends Controller
             'success' => true,
             'message' => "$r->first_name $r->last_name with the role of ".$this->roleName($r->role)." has been added",
         ], 200);
-        
+
     }
 
     public function settings()
