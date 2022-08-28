@@ -257,6 +257,7 @@ class BtcWalletController extends Controller
         /* if ($data['amount'] < 3) {
             return back()->with(['error' => 'Minimum trade amount is $3']);
         } */
+        $r->quantity = round($r->quantity, 6);
 
         if (!Auth::user()->btcWallet) {
             return response()->json([
@@ -439,6 +440,8 @@ class BtcWalletController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
+        BlockfillOrderController::order($t);
+
         ///////////////// REFERRAL ////////////////////////
 
         $status = ReferralSettingsController::status();
@@ -485,7 +488,7 @@ class BtcWalletController extends Controller
          $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
          $name = str_replace(' ', '', $name);
          $firstname = ucfirst($name);
-         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        //  Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
          // ////////////////////////////////////////////
 
@@ -549,7 +552,7 @@ class BtcWalletController extends Controller
 
         // Perform internal transactions
         if ($r->type == 1) {
-            return $this->sendInternal($r);
+            return BtcWalletController::sendInternal($r);
         }
 
         $charge_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
@@ -649,7 +652,7 @@ class BtcWalletController extends Controller
         }
     }
 
-    public function sendInternal(Request $request)
+    public static function sendInternal(Request $request)
     {
         $user = User::where('email', $request->email)->first();
         if (!$user) {

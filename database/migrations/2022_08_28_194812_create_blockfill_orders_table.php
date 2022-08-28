@@ -17,6 +17,7 @@ class CreateBlockfillOrdersTable extends Migration
             $table->bigIncrements('id');
             $table->integer('currency_id');
             $table->integer('transaction_id');
+            $table->string('order_id')->nullable();
             $table->string('type');
             $table->string('pair');
             $table->double('quantity');

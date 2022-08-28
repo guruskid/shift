@@ -73,6 +73,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.blockfill.orders' ? 'active' : '' }}  ">
+        <a href="{{route('admin.blockfill.orders', 1)}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="logo-bitcoin"></ion-icon>
+                <span>Blockfill orders </span>
+            </div>
+        </a>
+    </li>
+
     @if ( in_array(Auth::user()->role, [889, 999, 777] ) )
     <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
         <a href="{{route('admin.junior-summary')}}"  aria-expanded="false" class="dropdown-toggle">
