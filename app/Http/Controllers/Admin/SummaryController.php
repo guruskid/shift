@@ -217,7 +217,7 @@ class SummaryController extends Controller
         {
             $days = cal_days_in_month(CAL_GREGORIAN,$month,date('Y'));
             $month_name = date("F",mktime(0,0,0,$month));
-            
+
             $month_num = $month;
             return view('admin.summary.JuniorAccountant.index',compact('days','month_name','month_num'));
         }
@@ -260,7 +260,7 @@ class SummaryController extends Controller
 
         $day= $data['day'];
         $month= $data['month'];
-        
+
         $show_summary= $data['show_summary'];
         $accountant_name = $data['accountant_name'];
 
@@ -268,7 +268,7 @@ class SummaryController extends Controller
         $all_tnx = $all_tnx->unique('id')->sortByDesc('updated_at');
 
         $this->roundUpAmount($all_tnx);
-        
+
         $all_tnx_count = $all_tnx->where('status', 'success')->count();
         $allCountBuy = $all_tnx->where('status', 'success')->where('type', 'buy')->count();
         $allCountSell = $all_tnx->where('status','success')->where('type', 'sell')->count();
@@ -293,7 +293,7 @@ class SummaryController extends Controller
 
         $BTCsellNairaAmount = $bitcoin_total_tnx_sell->sum('amount_paid');
         $BTCsellCount = $bitcoin_total_tnx_sell->count();
-        
+
         //* USDT Transaction
         $this->roundUpAmount($USDTranx);
 
@@ -348,7 +348,7 @@ class SummaryController extends Controller
 
         ]));
     }
-    
+
     public function UtilitiesTransactions($util_tnx,$data)
     {
         $segment = $data['segment'];
@@ -406,7 +406,7 @@ class SummaryController extends Controller
 
         $show_data= $data['show_data'];
         $show_category= $data['show_category'];
-        
+
         $day= $data['day'];
         $month= $data['month'];
 
@@ -415,7 +415,7 @@ class SummaryController extends Controller
 
         $nw_deposit_tnx = $nw_deposit_tnx->unique('id')->sortByDesc('updated_at');
         $nw_deposit_tnx_total = $nw_deposit_tnx->where('status','success')->count();
-        
+
         $nw_deposit_amount_paid = $nw_deposit_tnx->where('status','success')->sum('amount_paid');
         $nw_deposit_tnx_charges = $nw_deposit_tnx->where('status','success')->sum('charge');
         $nw_deposit_total_amount = $nw_deposit_tnx->where('status','success')->sum('amount');
@@ -427,7 +427,7 @@ class SummaryController extends Controller
 
         $deposit_total_pending = $deposit_total->where('status','pending')->count();
         $deposit_total_pending_amount = $deposit_total->where('status','pending')->sum('amount');
-        
+
         $averageResponseTime = $this->GetAverageResponseTime($nw_deposit_tnx);
         return view('admin.summary.JuniorAccountant.transaction',compact([
             'segment','accountant','show_data','show_category','day','month','show_summary',
@@ -520,7 +520,7 @@ class SummaryController extends Controller
             $request->session()->put('RequestDetails', $sessionData);
             return $this->sorting($request);
         }
-        
+
         $show_summary = true;
 
         $show_data = true;
@@ -711,7 +711,7 @@ class SummaryController extends Controller
             //*Utility Transactions
             $utilityTranx = UtilityTransaction::orderBy('updated_at','desc');
             $utilityTranx = $this->sortingByAccountantTimestamp($utilityTranx, $at->activeTime, $at->inactiveTime);
-            $utilityTransactions = $utilityTransactions->concat($utilityTranx); 
+            $utilityTransactions = $utilityTransactions->concat($utilityTranx);
 
             //*PayBridge Transactions
             $payBridgeTranx = NairaTransaction::orderBy('updated_at','desc');
@@ -720,10 +720,10 @@ class SummaryController extends Controller
         }
         $allTransactions = $allTransactions->whereBetween('updated_at', [$start, $end]);
         $giftCardTransactions =$giftCardTransactions->whereBetween('updated_at', [$start, $end]);
-        
+
         $utilityTransactions = $utilityTransactions->whereBetween('updated_at', [$start, $end]);
         $payBridgeTransactions = $payBridgeTransactions->whereBetween('updated_at', [$start, $end]);
-        
+
         $gcBuyTranx = $giftCardTransactions->where('type','buy');
         $gcSellTranx = $giftCardTransactions->where('type','sell');
 
@@ -779,7 +779,7 @@ class SummaryController extends Controller
         }
 
         if($startDate == "")
-        {  
+        {
             $startDate = date('Y')."-$month-$day";
         }
 
@@ -837,7 +837,7 @@ class SummaryController extends Controller
         $utilityTransactions = collect();
         $payBridgeTransactions = collect();
 
-        //* adding data to the collection 
+        //* adding data to the collection
         foreach ($accountant_timestamp as $at) {
             //*all Transactions
             $allTranx = Transaction::orderBy('updated_at','desc');
@@ -855,14 +855,14 @@ class SummaryController extends Controller
             //*Utility Transactions
             $utilityTranx = UtilityTransaction::orderBy('updated_at','desc');
             $utilityTranx = $this->sortingByAccountantTimestamp($utilityTranx, $at->activeTime, $at->inactiveTime);
-            $utilityTransactions = $utilityTransactions->concat($utilityTranx); 
+            $utilityTransactions = $utilityTransactions->concat($utilityTranx);
 
             //*PayBridge Transactions
             $payBridgeTranx = NairaTransaction::orderBy('updated_at','desc');
             $payBridgeTranx = $this->sortingByAccountantTimestamp($payBridgeTranx, $at->activeTime, $at->inactiveTime);
             $payBridgeTransactions = $payBridgeTransactions->concat($payBridgeTranx);
         }
-        
+
         $gcBuyTranx = $giftCardTransactions->where('type','buy');
         $gcSellTranx = $giftCardTransactions->where('type','sell');
 
@@ -965,7 +965,7 @@ class SummaryController extends Controller
                 $query->where('is_crypto', 0);
             })->where('type', 'sell');
             $giftcards_totaltnx_sell = $this->sortingByFullDate($giftcards_totaltnx_sell, $startDate, $endDate);
-            
+
             return $this->CryptoGiftCardTransactions($all_tnx,$bitcoin_total_tnx,$giftcards_totaltnx_buy
             ,$giftcards_totaltnx_sell,$USDTranx,$data);
         }

@@ -25,14 +25,8 @@ class SettingController extends Controller
 
     public function roleName($role_number){
         switch ($role_number) {
-            case 999:
-                $role_name = "Super Administrator";
-                break;
             case 888:
                 $role_name = "Sales Representative";
-                break;
-            case 889:
-                $role_name = "Senior Accountant";
                 break;
             case 777:
                 $role_name = "Junior Accountant";
@@ -49,6 +43,9 @@ class SettingController extends Controller
             case 556:
                 $role_name = "Sales Personnel - New Users";
                 break;
+            case 555:
+                $role_name = "Customer Happiness";
+                break;
             case 666:
                 $role_name = "Manager";
                 break;
@@ -59,7 +56,7 @@ class SettingController extends Controller
                 $role_name = "Chinese Administrator";
                 break;
             default:
-            $role_name = "";
+            $role_name = null;
                 break;
         }
         return $role_name;
@@ -103,44 +100,15 @@ class SettingController extends Controller
             ], 401);
         }
 
-        $user = Auth::user();
-        
-        if ($user->role != 1) {
-            return response()->json([
-                'success' => false,
-                'message' => "User cannot be updated",
-            ], 401);
-        }
-
-        $user->first_name = $r->first_name;
-        $user->last_name = $r->last_name;
-        if($r->email != $user->email)
-        {
-            if(User::where('email',$r->email)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Email is in use",
-                ], 401);
-            }
-            $user->email = $r->email;
-        }
-        $user->email = $r->email;
-        $user->phone = $r->phone;
-        if($r->username != $user->username)
-        {
-            if(User::where('username',$r->username)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "username is in use",
-                ], 401);
-            }
-            $user->username = $r->username;
-        }
-        $user->password = Hash::make($r->password);
-        $user->role = $r->role;
-        $user->save();
+        Auth::user()->update([
+            'first_name' => $r->first_name,
+            'last_name' => $r->last_name,
+            'email' => $r->email,
+            'phone' => $r->phone,
+            'username' => $r->username,
+            'password' => Hash::make($r->password),
+            'role' => $r->role,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -178,9 +146,10 @@ class SettingController extends Controller
             'last_name' => 'required',
             'email' => 'required',
             'phone' => 'required',
-            'password' => 'required',
+            'password' => 'required | min:8',
             'username' => 'required',
-            'role' => 'required'
+            'role' => 'required',
+            'id' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -190,44 +159,19 @@ class SettingController extends Controller
             ], 401);
         }
 
-        $user = User::where('id',$r->id)->first();
-
-
-
-        $user->first_name = $r->first_name;
-        $user->last_name = $r->last_name;
-        if($r->email != $user->email)
-        {
-            if(User::where('email',$r->email)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Email is in use",
-                ], 401);
-            }
-            $user->email = $r->email;
-        }
-        $user->email = $r->email;
-        $user->phone = $r->phone;
-        if($r->username != $user->username)
-        {
-            if(User::where('username',$r->username)->count() >=1)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => "username is in use",
-                ], 401);
-            }
-            $user->username = $r->username;
-        }
-        $user->password = Hash::make($r->password);
-        $user->role = $r->role;
-        $user->save();
+        $user = User::where('id',$r->id)->update([
+            'first_name' => $r->first_name,
+            'last_name' => $r->last_name,
+            'email' => $r->email,
+            'phone' => $r->phone,
+            'username' => $r->username,
+            'password' => Hash::make($r->password),
+            'role' => $r->role
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Updated',
-            'user_details' => $user,
+            'message' => 'Staff Data Updated',
         ], 200);
     }
 
@@ -252,15 +196,55 @@ class SettingController extends Controller
         ], 200);
     }
 
-    public function addStaff(Request $r)
+    public function getUserByEmail(Request $request, User $user)
+    {
+        $validate = Validator::make($request->all(), [
+            'email' => 'required| email',
+            'role' => 'required | integer'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validate->errors(),
+            ], 401);
+        }
+
+        $userData = $user->where('email', $request->email)->first();
+        if(!$userData) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User Does Not Exist'
+            ], 401);
+        }
+        $exportData = [
+            'id' => $userData->id,
+            'first_name' => $userData->first_name,
+            'last_name' => $userData->last_name,
+            'email' => $userData->email,
+            'phone' => $userData->phone,
+            'password' => 'Cannot be decrypted',
+            'username' => $userData->username,
+            'staffId' => $userData->staffId,
+            'role' => $userData->role
+        ];
+
+        return response()->json([
+            'success' => true,
+            'user' => $exportData
+        ], 200);
+    }
+
+    public function addStaff(Request $r, User $user)
     {
         $validate = Validator::make($r->all(), [
+            'id'=>'required',
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|unique:users',
+            'email' => 'required',
             'phone' => 'required',
-            'password' => 'required',
-            'username' => 'required|unique:users,username',
+            'password' => 'required|min:8',
+            'username' => 'required|unique:users',
             'role' => 'required'
         ]);
 
@@ -271,19 +255,42 @@ class SettingController extends Controller
             ], 401);
         }
 
-        User::create([
-            'first_name' => $r->first_name,
-            'last_name' => $r->last_name,
-            'email' => $r->email,
-            'phone' => $r->phone,
-            'password' => Hash::make($r->password),
-            'username' => $r->username,
-            'role' => $r->role,
-        ]);
+        $roleName = $this->roleName($r->role);
+        if(!$roleName)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'role does not exist',
+            ], 401);
+        }
 
+        if($r->password == 'Cannot be decrypted')
+        {
+            $user->where('id',$r->id)->update([
+                'first_name' => $r->first_name,
+                'last_name' => $r->last_name,
+                'email' => $r->email,
+                'phone' => $r->phone,
+                'username' => $r->username,
+                'role' => $r->role,
+                'status' => 'active',
+            ]);
+        }
+        else{
+            $user->where('id',$r->id)->update([
+                'first_name' => $r->first_name,
+                'last_name' => $r->last_name,
+                'email' => $r->email,
+                'phone' => $r->phone,
+                'password' => Hash::make($r->password),
+                'username' => $r->username,
+                'role' => $r->role,
+                'status' => 'active',
+            ]);
+        }
         return response()->json([
             'success' => true,
-            'message' => "$r->first_name $r->last_name with the role of ".$this->roleName($r->role)." has been added",
+            'message' => "$r->first_name $r->last_name with the role of ".$roleName." has been added",
         ], 200);
 
     }

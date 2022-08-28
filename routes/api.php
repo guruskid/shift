@@ -31,7 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/countries', 'Api\AuthController@countries' );
 
     Route::get('/check-phone/{phone}', 'Api\UserController@checkPhone');
-    Route::GET('/bitcoin-wallet/price', 'Api\BtcWalletController@btcPrice');
+    Route::GET('/bitcoin-wallet/price', 'Api\BtcWalxletController@btcPrice');
 
     Route::get('/test-fcm', 'FirebasePushNotificationController@testPush');
 

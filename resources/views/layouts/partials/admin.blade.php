@@ -306,7 +306,6 @@
                 </a>
             </li>
             @endif
-
             @if (in_array(Auth::user()->role, [999, 666, 777,775, 889] ))
                 <li class="my-3">
                     <a href="{{route('admin.chat_agents')}}"
