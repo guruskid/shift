@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Account;
 use App\Bank;
+use App\Exports\PayBridgeTransactions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebasePushNotificationController;
@@ -18,6 +19,7 @@ use App\Mail\GeneralTemplateOne;
 use App\WithdrawalQueueRange;
 use Illuminate\Support\Facades\Mail;
 use DB;
+use Excel;
 
 class TradeNairaController extends Controller
 {
@@ -43,7 +45,7 @@ class TradeNairaController extends Controller
         }
 
         $show_limit = true;
-        // $transactions = Auth::user()->agentNairaTrades()->paginate(20);
+        $exportTranx = NairaTrade::orderBy('created_at', 'desc')->get();
         $transactions = NairaTrade::orderBy('created_at', 'desc')->paginate(20);
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
@@ -103,6 +105,9 @@ class TradeNairaController extends Controller
         $withdrawal_waiting_tnx = $withdrawal_waiting->count();
         $withdrawal_waiting_amount = $withdrawal_waiting->sum('amount');
 
+        if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
+            return Excel::download(new PayBridgeTransactions($exportTranx), 'PayBridgeTransactions.xlsx');
+        }
 
         $segment = "All";
         $type = null;
@@ -136,6 +141,7 @@ class TradeNairaController extends Controller
         {
             $search = $request->session()->get('search_tnx');
         }
+
         if (!Auth::user()->agentLimits) {
             Auth::user()->agentLimits()->create();
         }
@@ -144,7 +150,7 @@ class TradeNairaController extends Controller
 
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
-        if($search)
+        if($search != null)
         {
             $transactions = NairaTrade::whereHas('user', function ($query) use ($search) {
                 $query->where('first_name','LIKE','%'.$search.'%')
@@ -153,10 +159,10 @@ class TradeNairaController extends Controller
             ->orwhere('reference','LIKE','%'.$search.'%')
             ->orderBy('created_at', 'desc')->paginate(20);
         }
-        if(!$search)
+        if($search == null)
         {
             $transactions = NairaTrade::whereNotNull('id');
-            if($type)
+            if(!in_array($type,['sortbydate','search']))
             {
                 $transactions = $transactions->where('type',$type);
 
@@ -183,7 +189,6 @@ class TradeNairaController extends Controller
                     ->orderBy('total_trax', 'desc');
             }
 
-
             if($start_date && $end_date)
             {
                 $transactions = $transactions
@@ -194,7 +199,11 @@ class TradeNairaController extends Controller
                 $transactions = $transactions
                 ->where('status',$status);
             }
+
             $transactions = $transactions->get()->sortByDesc('created_at');
+            if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
+                return Excel::download(new PayBridgeTransactions($transactions), 'PayBridgeTransactions.xlsx');
+            }
             $transactions = $transactions->paginate(20);
         }
 
@@ -212,11 +221,6 @@ class TradeNairaController extends Controller
             }
         }
         
-        
-
-        
-
-        //? top bars
             //?" all  deposit transactions
             $deposit = NairaTrade::where('type','deposit');
             if($start_date && $end_date)
