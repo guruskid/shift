@@ -124,6 +124,7 @@
                             @if ($show_category == "all")    
                                 @include('admin.summary.JuniorAccountant.include.allTransactions')
                             @endif
+                            
                             @if ($show_category == "utilities")
                                 @include('admin.summary.JuniorAccountant.include.utilities')
                             @endif

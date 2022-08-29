@@ -213,6 +213,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::get('/monthly-analytics', 'SpotLightController@monthlyAnalytics');
         Route::get('/monthly-earnings', 'DashboardOverviewController@monthlyEarnings');
         Route::get('/summary', 'DashboardOverviewController@summary');
+
+        Route::GET('/graph-analytics',  'SpotLightController@graphAnalytics');
+        Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
     });
 
 
@@ -220,6 +223,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::group(['prefix' => 'customerHappiness'], function () {
 
         Route::GET('/', 'CustomerHappinessController@overview');
+        Route::GET('/user', 'CustomerHappinessController@CustomerHappinessData');
 
         Route::POST('/activateCustomerHappiness',  'CustomerHappinessController@activateCustomerHappiness');
         Route::POST('/deactivateCustomerHappiness',  'CustomerHappinessController@deactivateCustomerHappiness');
@@ -236,10 +240,10 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
 
    //Nexus
    Route::group(['prefix' => 'nexus'], function () {
-    Route::ANY('/', 'NexusController@verificationData');
-    Route::ANY('/nexusCrypto', 'NexusController@NexusCrypto');
-    Route::ANY('/nexusGiftCard', 'NexusController@NexusGiftCard');
-    Route::ANY('/timeGraph','NexusController@timeGraph');
+    Route::GET('/', 'NexusController@verificationData');
+    Route::GET('/nexusCrypto', 'NexusController@NexusCrypto');
+    Route::GET('/nexusGiftCard', 'NexusController@NexusGiftCard');
+    Route::GET('/timeGraph','NexusController@timeGraph');
 
     });
 
@@ -249,6 +253,7 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
         Route::POST('/SortAnalytics', 'pulseAnalyticsController@sortTransactionAnalytics');
 
         Route::GET('/', 'PulseController@index');
+        Route::POST('/modal','PulseController@ModalData');
         Route::GET('/chart', 'PulseController@chart');
         Route::POST('/sortChart', 'PulseController@sortChart');
 
@@ -278,8 +283,16 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
         Route::GET('/monthly-analytics',  'SpotLightController@monthlyAnalytics');
         Route::GET('/other-graph',  'SpotLightController@otherGraph');
         Route::POST('/acquisition-cost',  'SpotLightController@getCustomerAcquisitionCost');
+<<<<<<< HEAD
         Route::GET('/number-of-users',  'SpotLightController@numberOfNewUsers');
         Route::GET('/get-users-by-date',  'SpotLightController@getNewUsersByDate');
+=======
+        Route::GET('/number-of-users',  'SpotLightController@numberOfNewUsers'); 
+        Route::GET('/get-users-by-date',  'SpotLightController@getNewUsersByDate'); 
+
+        Route::GET('/graph-analytics',  'SpotLightController@graphAnalytics');
+        Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
+>>>>>>> 633a05a820726e76aea393864eb31fba9626819f
     });
 });
 

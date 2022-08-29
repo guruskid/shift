@@ -139,5 +139,4 @@ class AnnouncementController extends Controller
             'message' => "Announcement delete successfully",
         ],200);
     }
-
 }

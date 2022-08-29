@@ -94,6 +94,8 @@ function EditTarget(user,user_target)
 
 //**View Response Data for Called Users*/
 function ViewResponse(call_log,user,call_category){
+    (call_category['id'] === 11) ? $('#v_phone').html(user['phone']) : $('#v_phone').html('');
+
     $('#v_email').html(user['first_name'] + " " + user['last_name']);
     $('#v_id').val(call_log['id']);
 

@@ -281,6 +281,7 @@
                     <div class="media">
                         <div class="media-body">
                             <h4 class="media-heading" id="v_email">User Email</h4>
+                            <h5 class="media-heading" id="v_phone"></h5>
                         </div>
                     </div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span

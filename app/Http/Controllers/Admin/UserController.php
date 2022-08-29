@@ -19,7 +19,7 @@ class UserController extends Controller
 {
     public function freezeAccount(Request $r)
     {
-        if (!Hash::check($r->pin, Auth::user()->nairaWallet->password)) {
+        if (!Hash::check($r->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Wallet pin doesnt match']);
         }
         $user_wallet = User::find($r->user_id)->nairaWallet;
@@ -35,7 +35,7 @@ class UserController extends Controller
 
     public function activateAccount(Request $r)
     {
-        if (!Hash::check($r->pin, Auth::user()->nairaWallet->password)) {
+        if (!Hash::check($r->pin, Auth::user()->pin)) {
             return back()->with(['error' => 'Wallet pin doesnt match']);
         }
         $user_wallet = User::find($r->user_id)->nairaWallet;
@@ -242,7 +242,7 @@ class UserController extends Controller
 
         $msg = "Your " . $bodyTitle . " was declined because " . $dt->reason . ". Kindly " . $fcmNotice . ".";
         $fcm_id = $verification->user->fcm_id;
-        
+
         if (!empty($fcm_id)) {
             try {
                 FirebasePushNotificationController::sendPush($fcm_id, $title, $msg);

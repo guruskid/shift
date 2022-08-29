@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\ApiV2;
 
+use App\Account;
+use App\Bank;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LiveRateController;
 use App\Http\Controllers\LoginSessionController;
@@ -10,11 +12,12 @@ use App\NairaTransaction;
 use App\Notification;
 use App\Transaction;
 use App\User;
+use App\VerificationLimit;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -23,9 +26,6 @@ class UserController extends Controller
     public function nairaWalletBalance()
     {
         $wallet = Auth::user()->nairaWallet;
-
-
-
 
         $client = new Client();
         $url = "https://api.coinbase.com/v2/prices/spot?currency=USD";
@@ -103,22 +103,18 @@ class UserController extends Controller
         ]);
     }
 
-    public function allBalance(){
+    public function allBalance()
+    {
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
         $btc_real_time = $res->value;
 
-
-
-
         $url = env('TATUM_URL') . '/tatum/rate/USD?basePair=NGN';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
         $naira_usd_real_time = $res->value;
-
-
 
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id . '?pageSize=50';
         $response = $client->request('GET', $url, [
@@ -141,7 +137,6 @@ class UserController extends Controller
 
         $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
 
-
         return response()->json([
             'success' => true,
             'btc_balance' => $btc_balance,
@@ -151,11 +146,7 @@ class UserController extends Controller
 
         ]);
 
-
-
-
     }
-
 
     public function dashboard()
     {
@@ -177,8 +168,6 @@ class UserController extends Controller
         ]);
         $accounts = json_decode($res->getBody(), true);
 
-
-
         if (empty($accounts)) {
             return response()->json([
                 'success' => false,
@@ -194,9 +183,20 @@ class UserController extends Controller
 
         $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
 
-        $res = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true");
+        function curl_get_contents($url)
+        {
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            $data = curl_exec($ch);
+            curl_close($ch);
+            return $data;
+        }
 
-        $data = json_decode($res, true);
+        $url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true";
+        $data = json_decode(curl_get_contents($url), true);
 
         $currencies = [
             [
@@ -238,11 +238,10 @@ class UserController extends Controller
 
         $notify = array();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
-         foreach($notifications as $body){
-            array_push($notify, array($body->body));
+        foreach ($notifications as $body) {
+            array_push($notify, array("notify" => $body->body));
 
-         }
-
+        }
 
         $slides = array();
         $adImages = ImageSlide::latest()->get()->take(10);
@@ -253,6 +252,23 @@ class UserController extends Controller
         $loginSession = new LoginSessionController();
         $loginSession->FindSessionData(Auth::user()->id);
 
+        $apkcurrent = "2.0.0";
+        $apkstable = "2.0.0";
+
+        $ioscurrent = "2.0.0";
+        $iosstable = "2.0.0";
+
+        $versions = [
+            [
+
+                'apkcurrent' => $apkcurrent,
+                'apkstable' => $apkstable,
+                'ioscurrent' => $ioscurrent,
+                'iosstable' => $iosstable,
+
+            ],
+        ];
+
         return response()->json([
             'success' => true,
             'btc_balance' => $btc_balance,
@@ -262,6 +278,8 @@ class UserController extends Controller
             'featured_coins' => $currencies,
             'advert_image' => $slides,
             'notifications' => $notify,
+            'version' => $versions,
+
         ]);
     }
 
@@ -431,14 +449,7 @@ class UserController extends Controller
 
     }
 
-
-
-
-
     //Level 3 Verification Begins Here
-
-
-
 
     public function updateDp(Request $r)
     {
@@ -462,8 +473,6 @@ class UserController extends Controller
             Auth::user()->dp = $imageName;
             Auth::user()->save();
 
-         ;
-
             return response()->json([
                 'success' => true,
                 'data' => 'You have successfully uploaded image.',
@@ -477,8 +486,8 @@ class UserController extends Controller
 
     }
 
-
-    public function crypto(){
+    public function crypto()
+    {
 
         $cryptoTran = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 1)->where('user_id', Auth::user()->id);
@@ -486,12 +495,10 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-             'data' => $cryptoTran
+            'data' => $cryptoTran,
         ]);
 
     }
-
-
 
     public function updateBirthday(Request $r)
     {
@@ -561,4 +568,194 @@ class UserController extends Controller
             'btc_rate' => $btc_real_time,
         ]);
     }
+    public function listOfBanks()
+    {
+        $banks = Bank::All();
+
+        return response()->json([
+            'success' => true,
+            'data' => $banks,
+        ]);
+
+    }
+
+    public function deleteBankAccount($id)
+    {
+
+        $bank = Account::find($id);
+        if ($bank->user_id != Auth::user()->id) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Not authorised',
+            ]);
+        } else {
+            $bank->delete();
+            return response()->json([
+                'success' => true,
+                'msg' => 'Account detail successfully added',
+            ]);
+        }
+    }
+
+    public function userAccounts()
+    {
+
+        $accounts = Auth::user()->accounts;
+        return response()->json([
+            'success' => true,
+            'data' => $accounts,
+        ]);
+
+    }
+
+    public function addBankAccount(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'account_name' => 'required',
+            'bank_name' => 'required',
+            'account_number' => 'required| min:10',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'msg' => $validator->errors(),
+            ], 401);
+        }
+
+        $addNew = new Account();
+        $bank = Bank::where('code', $request->bank_code)->first();
+        $addNew->user_id = Auth::user()->id;
+        $addNew->account_name = $request->account_name;
+        $addNew->bank_name = $bank->name;
+        $addNew->bank_id = $bank->id;
+        $addNew->account_number = $request->account_number;
+        $addNew->save();
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Account added successfully',
+        ]);
+
+    }
+
+    public function deleteUserAccount(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        if (Hash::check($request->password, Auth::user()->password) == false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect Password. Please try again.',
+            ]);
+        }
+
+        $updateStatus = User::where('id', Auth::user()->id)->update(['is_deleted' => 1]);
+
+        if ($updateStatus) {
+            return response()->json([
+                'success' => true,
+                'msg' => 'Account deleted successfully',
+            ]);
+
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Invalid Operation',
+            ]);
+        }
+
+    }
+
+    public function userVerification()
+    {
+
+        $verifyLimit = VerificationLimit::All();
+
+        return response()->json([
+            'success' => true,
+            'data' => $verifyLimit,
+        ]);
+    }
+
+    public function userNotify(Request $r)
+    {
+        $month = $r->input('month');
+        if ($month) {
+            $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->get();
+        } else {
+            $notifications = Auth::user()->notifications()->get();
+        }
+
+        return response()->json([
+            'success' => true,
+            'time' => $month,
+            'notification' => $notifications,
+        ]);
+    }
+
+    public function newNotify($id)
+    {
+        $notify = Auth::user()->notifications->where('id', $id)->first();
+
+        if ($notify) {
+            $notify->is_seen = 1;
+            $notify->save();
+            return response()->json([
+                'success' => true,
+                'notification' => $notify,
+
+            ]);
+
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'invalid id',
+
+            ]);
+
+        }
+
+    }
+
+    public function clearAllNotify()
+    {
+        $clearAll = Auth::user()->notifications->where('user_id', Auth::id())->all();
+        foreach ($clearAll as $notify) {
+            $notify->is_cleared = 1;
+            $notify->save();
+        }
+        return response()->json([
+            'success' => true,
+            'cleared' => 1,
+
+        ]);
+    }
+
+    public function markAllNotify()
+    {
+        $markAll = Auth::user()->notifications->where('user_id', Auth::user()->id);
+        foreach ($markAll as $notify) {
+            $notify->is_seen = 1;
+            $notify->save();
+        }
+        return response()->json([
+            'success' => true,
+            'allread' => 1,
+
+        ]);
+    }
+
 }

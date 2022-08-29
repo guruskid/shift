@@ -135,7 +135,16 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
 
-                        <div class="card-header justify-content-between">{{$segment}} Transactions
+                        <div class="card-header justify-content-between">{{$segment}} Transactions 
+                            @if(in_array(Auth::user()->role, [999, 889] ) AND str_contains($segment, 'USDT'))
+                                <form class="form-inline"
+                                    method="GET">
+                                    <input type="hidden" name="downloader" value="csv">
+                                    <input type="hidden" name="start" value="{{ $start != null ? $start : null}}">
+                                    <input type="hidden" name="end" value="{{ $end != null ? $end : null}}">
+                                    <button class="btn btn-primary">Download Table</button>
+                                </form>
+                            @endif
                             {{-- Search for all users --}}
                             <form action="@if (in_array(Auth::user()->role, [555] ))
                                             {{route('customerHappiness.search-tnxs')}}
@@ -464,7 +473,7 @@ $primary_wallets = App\BitcoinWallet::where(['type' => 'primary', 'user_id' => 1
                                             @endif
                                         </td>
                                         @endif
-                                        <td class="text-center">{{$t->created_at->format('d M, H:ia')}} </td>
+                                        <td class="text-center">{{$t->updated_at->format('d M, H:ia')}} </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

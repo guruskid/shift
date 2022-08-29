@@ -34,6 +34,12 @@ class DashboardOverviewController extends Controller {
         $aLn = (isset($customerHappiness)) ? $customerHappiness->lastst_name : null;
 
         $customerHappinessAgent = $aFn.' '.$aLn;
+
+        // $opened = ($customerHappiness) ? Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count() : 0;
+        // $closed =  ($customerHappiness) ? Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count() : 0;
+
+        $totalOpened = Ticket::where(['status'=>'open'])->count();
+        $totalClosed = Ticket::where(['status'=>'closed'])->count();
         
         $overview = [
             'users_naira_wallet' => number_format($walletTotal,'0','.',','),
@@ -66,9 +72,17 @@ class DashboardOverviewController extends Controller {
             $query->where('status','waiting');
         })->with('user')->latest()->first();
 
+        $acct_name = '';
+
+        if ($stamp) {
+            $acctn = $stamp->user;
+            $acct_name = $acctn->first_name.' '.$acctn->last_name;
+        }
+
         $acctn = $stamp->user;
 
-        $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
+        // $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
+
         $opening_balance = $stamp->opening_balance;
 
         $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])

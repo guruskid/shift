@@ -161,6 +161,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function accountantTimestamp()
     {
+
         return $this->hasMany('App\AccountantTimeStamp')->latest('id');
 
     }

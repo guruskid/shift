@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 //Register and login here and other routes that dont require authentication
 
 // Route::get('test-route', 'testController@index');
@@ -19,8 +17,7 @@ Route::post('change-password', 'AuthController@changePassword');
 Route::get('/user-db', 'UserDbController@getNameAndEmail');
 Route::POST('/add-data', 'UserDbController@addUser');
 
-
-Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
+Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
 
     //Authenticated routes here
     Route::post('/email-verification', 'AuthController@emailVerification');
@@ -40,9 +37,6 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
 
     Route::post('/update-dp', 'UserController@updateDp');
 
-
-
-
     Route::get('/dashboard', 'UserController@dashboard');
     Route::get('/naria-wallet-balance', 'UserController@nairaWalletBalance');
     Route::get('/net-wallet-balance', 'UserController@netWalletBalance');
@@ -50,10 +44,31 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
     Route::get('/profile', 'UserController@profile');
     Route::post('/update-birthday', 'UserController@updateBirthday');
 
+    //Bank STUFF
+
+    Route::get('/bank-list', 'UserController@listOfBanks');
+    Route::get('/user-banks', 'UserController@userAccounts');
+    Route::post('/add-bank-account', 'UserController@addBankAccount');
+    Route::post('/delete-bank-account/{id}', 'UserController@deleteBankAccount');
+
+    //Delete A user
+
+    Route::post('/delete-user', 'UserController@deleteUserAccount');
+
+    //Get user Verification Limit
+
+    Route::get('/user-verify-limit', 'UserController@userVerification');
+
+    //User Notification
+
+    Route::get('/user-notifier', 'UserController@userNotify');
+    Route::post('/clear-notification', 'UserController@clearAllNotify');
+    Route::post('/mark-all', 'UserController@markAllNotify');
+    Route::get('/notifier/{id}', 'UserController@newNotify');
+
     Route::get('/crypto-transaction', 'UserController@crypto');
 
     Route::get('/all-balance', 'UserController@allBalance');
-
 
     // Referral
     Route::post('/create_referral_code', 'ReferralController@create');
@@ -65,13 +80,11 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
     Route::get('/my-referrers', 'ReferralController@myReferrers');
     Route::get('/get-referrers-link', 'ReferralController@getReferralLink');
 
-
     // Transactions
     Route::GET('/bitcoin-transactions', 'TransactionController@bitcoinWalletTransactions');
     Route::GET('/naira-transactions', 'TransactionController@nairaTransactions');
     Route::GET('/giftcard-transactions', 'TransactionController@allCardTransactions');
     Route::GET('/utility-transactions', 'TransactionController@utilityTransactions');
-
 
     //?Faq
     Route::get('/all-Faq', 'FaqApiController@index');
@@ -86,7 +99,7 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
     Route::get('/all-categories', "TicketCategoryController@listofCategories");
 
     //?ticket
-    Route::post('/add-ticket' ,'TicketController@createTicket');
+    Route::post('/add-ticket', 'TicketController@createTicket');
     Route::get('/all-user-close-tickets', 'TicketController@closeTicketList');
     Route::get('/all-user-open-tickets', 'TicketController@openTicketList');
 
@@ -94,6 +107,24 @@ Route::group(['middleware' => ['auth:api','frozenUserCheckApi']], function () {
     Route::get('/ticket-messages/{ticketNo}', "ChatMessagesController@Messages");
     Route::post('/send-message', 'ChatMessagesController@sendMessage');
 
+
+    //CRYPTO APIS
+    Route::prefix('crypto')->group(function () {
+        Route::get('/currencies', 'CryptoController@index');
+        Route::post('/create', 'CryptoController@create');
+        Route::post('/sell', 'CryptoController@sell');
+        Route::post('/send', 'CryptoController@send');
+        Route::get('/transactions/{currency_id}', 'CryptoController@transactions');
+    });
+
+    Route::prefix('home')->group(function () {
+        Route::get('/', 'HomeController@index');
+    });
+
+    Route::prefix('transactions')->group(function () {
+        Route::get('/', 'TransactionController@AllUserTransactions');
+        Route::get('/show', 'TransactionController@showUserTransaction');
+    });
 
 
 });

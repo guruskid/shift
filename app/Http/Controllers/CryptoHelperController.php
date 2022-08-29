@@ -49,6 +49,7 @@ class CryptoHelperController extends Controller
         $wallet = '';
         $usd = 0;
         $ngn = 0;
+        $key = env('TATUM_KEY');
         switch ($currency_id) {
             case 0:
                 $wallet = $user->nairaWallet;
@@ -66,8 +67,9 @@ class CryptoHelperController extends Controller
                 break;
             case 7:
                 $wallet = $user->usdtWallet;
+                $key = env('TATUM_KEY_USDT');
                 $usd = LiveRateController::usdtRate();
-                $ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 7])->first()->rate;
+                $ngn = LiveRateController::usdNgn();
                 break;
 
             default:
@@ -80,7 +82,7 @@ class CryptoHelperController extends Controller
             $client = new Client();
             $url = env('TATUM_URL') . '/ledger/account/' . $wallet->account_id;
             $res = $client->request('GET', $url, [
-                'headers' => ['x-api-key' => env('TATUM_KEY')]
+                'headers' => ['x-api-key' => $key]
             ]);
 
             $accounts = json_decode($res->getBody());

@@ -56,7 +56,7 @@
             </div>
 
             <div class="row my-4">
-                @if (!in_array(Auth::user()->role, [777,775] ))
+                @if (!in_array(Auth::user()->role, [775] ))
                 <div class="col-md-4">
                     <div class="card card-body">
                         <h6 class="text-primary">Naira Wallet</h6>
