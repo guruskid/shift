@@ -26,10 +26,11 @@ class AuthController extends Controller
     {
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
+            $user->fcm_id = request('fcm_id');
             $success['token'] = $user->createToken('appToken')->accessToken;
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
-                
+
             if($user->role == 1)
             {
                 $loginSession = new LoginSessionController();
@@ -285,7 +286,8 @@ class AuthController extends Controller
             'status' => 'active',
             'referrer' => $rc,
             'password' => Hash::make($input['password']),
-            'platform' => $input['platform']
+            'platform' => $input['platform'],
+            'fcm_id' =>  request('fcm_id')
         ];
 
         if (isset($input['referral_code'])) {

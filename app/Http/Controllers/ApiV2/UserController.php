@@ -16,6 +16,7 @@ use App\VerificationLimit;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -236,6 +237,11 @@ class UserController extends Controller
             ],
         ];
 
+        //Cache for 15 minutes
+
+        Cache::put('coin', $currencies, 900);
+        $newFeatured = Cache::get('coin');
+
         $notify = array();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
         foreach ($notifications as $body) {
@@ -275,7 +281,7 @@ class UserController extends Controller
             'btc_balance_in_naira' => $naira_balance,
             'btc_balance_in_usd' => $btc_wallet->usd,
             'btc_rate' => $btc_real_time,
-            'featured_coins' => $currencies,
+            'featured_coins' => $newFeatured,
             'advert_image' => $slides,
             'notifications' => $notify,
             'version' => $versions,
