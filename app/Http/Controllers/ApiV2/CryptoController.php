@@ -192,7 +192,7 @@ class CryptoController extends Controller
         if(!in_array($type,['buy','sell'])):
             return response()->json([
                 'success' => false,
-                'message' => "Not a valid type"
+                'message' => $type." not a valid type"
             ], 401);
         endif;
 
