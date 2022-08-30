@@ -46,7 +46,8 @@ class CryptoController extends Controller
         $wallets = [$bitcoin, $usdt];
         $total_balances = [
             'ngn' => 0,
-            'usd' => 0
+            'usd' => 0,
+            'btc_balance'=> $bitcoin->wallet->balance
         ];
 
         foreach ($wallets as $w ) {
@@ -59,7 +60,8 @@ class CryptoController extends Controller
         return response()->json([
             'success' => true,
             'currencies' => $wallets,
-            'total_balance' => $total_balances
+            'total_balance' => $total_balances,
+            'UserPin' => isset(Auth::user()->pin)
         ]);
     }
 
@@ -172,11 +174,32 @@ class CryptoController extends Controller
         ]);
     }
 
-    public function allCryptoTransaction()
+    public function cryptoTransactionByType(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'type' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $type = $request->type;
+
+        if(!in_array($type,['buy','sell'])):
+            return response()->json([
+                'success' => false,
+                'message' => "Not a valid type"
+            ], 401);
+        endif;
+
         $transactions = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 1);
-        })->where('user_id',Auth::user()->id)->orderBy('created_at', 'DESC')->get();
+        })->where('type', $type)
+        ->where('user_id',Auth::user()->id)->orderBy('created_at', 'DESC')->get();
 
         return response()->json([
             'success' => true,
