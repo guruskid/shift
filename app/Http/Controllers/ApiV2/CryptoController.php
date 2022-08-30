@@ -11,6 +11,7 @@ use App\Http\Controllers\CryptoHelperController;
 use App\Http\Controllers\LiveRateController;
 use App\Http\Controllers\UsdtController;
 use App\Setting;
+use App\Transaction;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -164,6 +165,18 @@ class CryptoController extends Controller
                 $t->senderNote = 'Sending Tron';
             }
         }
+
+        return response()->json([
+            'success' => true,
+            'transactions' => $transactions
+        ]);
+    }
+
+    public function allCryptoTransaction()
+    {
+        $transactions = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 1);
+        })->where('user_id',Auth::user()->id)->orderBy('created_at', 'DESC')->get();
 
         return response()->json([
             'success' => true,
