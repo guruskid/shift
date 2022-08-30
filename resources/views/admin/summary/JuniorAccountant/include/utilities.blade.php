@@ -56,6 +56,7 @@
                                 <table class="mb-2 table table-bordered transactions-table">
                                     <thead>
                                         <tr>
+                                            <th class="text-center">S/N</th>
                                             <th class="text-center">Reference ID</th>
                                             <th class="text-center">Date</th>
                                             <th class="text-center">User</th>
@@ -69,8 +70,12 @@
                                     </thead>
                                     <tbody>
                                         @if (isset($util_tnx))
+                                        @php
+                                            $key = 0;
+                                        @endphp
                                             @foreach ($util_tnx as $t)
                                             <tr>
+                                                <td class="text-center text-muted">{{++$key}}</td>
                                                 <td class="text-center text-muted">{{$t->reference_id}}</td>
                                                 <td class="text-center text-muted">{{$t->updated_at->format('d M, H:ia')}}</td>
                                                 <td class="text-center">
