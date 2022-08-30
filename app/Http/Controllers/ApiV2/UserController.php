@@ -195,52 +195,52 @@ class UserController extends Controller
             curl_close($ch);
             return $data;
         }
+        // No longer needed
+        // $url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true";
+        // $data = json_decode(curl_get_contents($url), true);
 
-        $url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true";
-        $data = json_decode(curl_get_contents($url), true);
+        // $currencies = [
+        //     [
+        //         'name' => 'Tether',
+        //         'short_name' => 'USDT',
+        //         'rate' => $data['tether']['ngn'],
+        //         '24h_change' => $data['tether']['ngn_24h_change'],
+        //         'img' => url('/crypto/tether.png'),
+        //     ],
+        //     [
+        //         'name' => 'Bitcoin',
+        //         'short_name' => 'BTC',
+        //         'rate' => $data['bitcoin']['ngn'],
+        //         '24h_change' => $data['bitcoin']['ngn_24h_change'],
+        //         'img' => url('/crypto/bitcoin.png'),
+        //     ],
+        //     [
+        //         'name' => 'Ethereum',
+        //         'short_name' => 'ETH',
+        //         'rate' => $data['ethereum']['ngn'],
+        //         '24h_change' => $data['ethereum']['ngn_24h_change'],
+        //         'img' => url('/crypto/ethereum.png'),
+        //     ],
+        //     [
+        //         'name' => 'Litecoin',
+        //         'short_name' => 'LTC',
+        //         'rate' => $data['litecoin']['ngn'],
+        //         '24h_change' => $data['litecoin']['ngn_24h_change'],
+        //         'img' => url('/crypto/litecoin.png'),
+        //     ],
+        //     [
+        //         'name' => 'Ripple',
+        //         'short_name' => 'XRP',
+        //         'rate' => $data['ripple']['ngn'],
+        //         '24h_change' => $data['ripple']['ngn_24h_change'],
+        //         'img' => url('/crypto/xrp.png'),
+        //     ],
+        // ];
 
-        $currencies = [
-            [
-                'name' => 'Tether',
-                'short_name' => 'USDT',
-                'rate' => $data['tether']['ngn'],
-                '24h_change' => $data['tether']['ngn_24h_change'],
-                'img' => url('/crypto/tether.png'),
-            ],
-            [
-                'name' => 'Bitcoin',
-                'short_name' => 'BTC',
-                'rate' => $data['bitcoin']['ngn'],
-                '24h_change' => $data['bitcoin']['ngn_24h_change'],
-                'img' => url('/crypto/bitcoin.png'),
-            ],
-            [
-                'name' => 'Ethereum',
-                'short_name' => 'ETH',
-                'rate' => $data['ethereum']['ngn'],
-                '24h_change' => $data['ethereum']['ngn_24h_change'],
-                'img' => url('/crypto/ethereum.png'),
-            ],
-            [
-                'name' => 'Litecoin',
-                'short_name' => 'LTC',
-                'rate' => $data['litecoin']['ngn'],
-                '24h_change' => $data['litecoin']['ngn_24h_change'],
-                'img' => url('/crypto/litecoin.png'),
-            ],
-            [
-                'name' => 'Ripple',
-                'short_name' => 'XRP',
-                'rate' => $data['ripple']['ngn'],
-                '24h_change' => $data['ripple']['ngn_24h_change'],
-                'img' => url('/crypto/xrp.png'),
-            ],
-        ];
+        // //Cache for 15 minutes
 
-        //Cache for 15 minutes
-
-        Cache::put('coin', $currencies, 900);
-        $newFeatured = Cache::get('coin');
+        // Cache::put('coin', $currencies, 900);
+        // $newFeatured = Cache::get('coin');
 
         $notify = array();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
@@ -281,7 +281,6 @@ class UserController extends Controller
             'btc_balance_in_naira' => $naira_balance,
             'btc_balance_in_usd' => $btc_wallet->usd,
             'btc_rate' => $btc_real_time,
-            'featured_coins' => $newFeatured,
             'advert_image' => $slides,
             'notifications' => $notify,
             'version' => $versions,
