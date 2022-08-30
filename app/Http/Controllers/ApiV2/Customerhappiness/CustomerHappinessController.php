@@ -55,7 +55,7 @@ class CustomerHappinessController extends Controller
 
     public function transactions()
     {
-        $transactions = Transaction::with('user')->latest('id')->paginate(1000);
+        $transactions = Transaction::with('user')->latest('id')->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -64,9 +64,10 @@ class CustomerHappinessController extends Controller
         ]);
     }
 
-    public function users()
+    public function getUsers()
     {
-        $user = User::latest('id')->where('role', 1);
+        $user = User::latest('id')->where('role', 1)->withCount('user_id')->get();
+        // $transperuser = Transaction::All()->where('user_id', $id);
 
         return response()->json([
             'success' => true,
@@ -78,12 +79,15 @@ class CustomerHappinessController extends Controller
 
     public function transPerUser($id)
     {
+        $count = Transaction::where('user_id', $id)->count();
+        $transperuser = Transaction::with($count)->where('user_id', $id)->get();
 
-        $transperuser = Transaction::All()->where('user_id', $id);
+
 
         return response()->json([
             'success' => true,
             'transactions' => $transperuser,
+            // 'numberoftrn' => $count
 
         ]);
 
@@ -152,15 +156,34 @@ class CustomerHappinessController extends Controller
 
     }
 
-    // public function sortByType($type)
-    // {
+    public function filterByType($type)
+    {
 
-    //     $transactions = Transaction::where('status', $status)->latest()->paginate(10);
-    //     return response()->json([
-    //         'success' => true,
-    //         'transaction' => $transactions,
+        $transactions = Transaction::whereHas('asset', function ($fitler) use ($type) {
+            $fitler->where('is_crypto', $type);
+        })->latest('id')->paginate(10);
 
-    //     ]);
 
-    // }
+        return response()->json([
+            'success' => true,
+            'transaction' => $transactions,
+
+        ]);
+
+    }
+
+    public function filterUtility($type)
+    {
+
+
+        $transactions = UtilityTransaction::where('type','LIKE', "%{$type}%")->latest('id')->paginate(10);
+
+
+        return response()->json([
+            'success' => true,
+            'transaction' => $transactions,
+
+        ]);
+
+    }
 }

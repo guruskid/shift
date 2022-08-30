@@ -15,11 +15,16 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
 
         Route::get('/status/{status}', 'CustomerHappinessController@sortByStatus');
 
+        Route::get('/filter/{type}', 'CustomerHappinessController@filterByType');
+
+        Route::get('/filterutility/{type}', 'CustomerHappinessController@filterUtility');
 
 
 
 
-        Route::get('/users', 'CustomerHappinessController@users');
+
+
+        Route::get('/users', 'CustomerHappinessController@getUsers');
 
         Route::get('/transaction/{id}', 'CustomerHappinessController@transPerUser');
 
