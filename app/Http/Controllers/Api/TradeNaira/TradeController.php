@@ -587,18 +587,12 @@ class TradeController extends Controller
     {
         $transactions = Auth::user()->nairaTrades()->with('pops')->get();
 
-        if ($transactions->count() == 0) {
-            return response()->json([
-                'success' => false,
-                'msg' => 'No naira trades yet',
-            ]);
-        } else {
             return response()->json([
                 'success' => true,
                 'data' => $transactions,
             ]);
 
-        }
+
 
     }
 
