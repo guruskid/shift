@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers\Api\TradeNaira;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\NairaTrade;
-use App\NairaTradePop;
-use App\User;
 use App\Account;
 use App\Events\CustomNotification;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebasePushNotificationController;
 use App\Http\Controllers\GeneralSettings;
 use App\Http\Controllers\UserController;
-use App\NairaTransaction;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
 use App\Mail\GeneralTemplateOne;
+use App\NairaTrade;
+use App\NairaTradePop;
+use App\NairaTransaction;
 use App\NairaWallet;
 use App\PayBridgeAccount;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 //! things to ask
 /**
@@ -34,10 +33,9 @@ class TradeController extends Controller
     {
         $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
 
-        if($agents->count() == 0)
-        {
+        if ($agents->count() == 0) {
             $accountantTimestampSA = User::where(['role' => 889, 'status' => 'active'])
-            ->with(['nairaWallet', 'accounts'])->whereHas('accountantTimestamp', function ($query){
+                ->with(['nairaWallet', 'accounts'])->whereHas('accountantTimestamp', function ($query) {
                 $query->whereNull('inactiveTime');
             })->get();
 
@@ -71,13 +69,12 @@ class TradeController extends Controller
         $agent = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')->limit(1)->get();
         $user_wallet = $user->nairaWallet;
 
-        if($agent->count() == 0)
-        {
+        if ($agent->count() == 0) {
             $accountantTimestampSA = User::where(['role' => 889, 'status' => 'active'])
-            ->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')
-            ->whereHas('accountantTimestamp', function ($query){
-                $query->whereNull('inactiveTime');
-            })->get();
+                ->with(['nairaWallet', 'accounts'])->whereNotNull('first_name')->select('id', 'first_name', 'last_name')
+                ->whereHas('accountantTimestamp', function ($query) {
+                    $query->whereNull('inactiveTime');
+                })->get();
 
             $agent = $accountantTimestampSA;
         }
@@ -153,7 +150,7 @@ class TradeController extends Controller
             ]);
         }
 
-        $agent = User::whereIn('role',[889,777])->where(['status' => 'active', 'id' => $request->agent_id])->first();
+        $agent = User::whereIn('role', [889, 777])->where(['status' => 'active', 'id' => $request->agent_id])->first();
 
         $account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
 
@@ -309,7 +306,7 @@ class TradeController extends Controller
             ], 401);
         }
 
-        $agent = User::whereIn('role',[889,777])->where(['status' => 'active', 'id' => $request->agent_id])->limit(1)->get();
+        $agent = User::whereIn('role', [889, 777])->where(['status' => 'active', 'id' => $request->agent_id])->limit(1)->get();
 
         if (count($agent) < 1) {
             return response()->json([
@@ -419,11 +416,20 @@ class TradeController extends Controller
         // }
 
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'deposit', 'status' => 'waiting'])->get();
+        $pinCheck = User::where(Auth::user()->pin, '!=', null);
+
         if (count($trade) > 0) {
             $pendingDeposit = true;
         }
 
+        if ($pinCheck) {
+            $pin = true;
+        } else {
+            $pin = false;
+        }
+
         $user_data = [
+            'success' => true,
             'total_withdrawn_today' => $withdrawalToday,
             'total_withdrawn_this_month' => $withdrawalThisMonth,
             'daily_max' => $user->daily_max,
@@ -431,6 +437,7 @@ class TradeController extends Controller
             'naira_balance' => $user->nairaWallet->amount,
             'pending_withdrawal' => $pendingWithdrawal,
             'pending_deposit' => $pendingDeposit,
+            'pin' => $pin,
         ];
 
         return $user_data;
@@ -580,18 +587,12 @@ class TradeController extends Controller
     {
         $transactions = Auth::user()->nairaTrades()->with('pops')->get();
 
-        if ($transactions->count() == 0) {
-            return response()->json([
-                'success' => false,
-                'msg' => 'No naira trades yet',
-            ]);
-        } else {
             return response()->json([
                 'success' => true,
                 'data' => $transactions,
             ]);
 
-        }
+
 
     }
 

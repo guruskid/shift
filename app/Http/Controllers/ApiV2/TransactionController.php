@@ -85,9 +85,9 @@ class TransactionController extends Controller
 
         return response()->json([
             'success' => true,
-            'all' => $allTranx,
-            'buy' => $buyTranx,
-            'sell' => $sellTranx,
+            'allTransactions' => $allTranx,
+            'buyTransactions' => $buyTranx,
+            'sellTransactions' => $sellTranx,
         ]);
     }
 
