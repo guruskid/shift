@@ -4,12 +4,10 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
 
     //TRANSACTIONS
     Route::group(['prefix' => 'customerhappiness'], function () {
-         Route::get('/', 'CustomerHappinessController@overView');
+        Route::get('/', 'CustomerHappinessController@overView');
 
-         Route::get('/query', 'CustomerHappinessController@queries');
-         Route::get('/query/{status}', 'CustomerHappinessController@querySort');
-
-
+        Route::get('/query', 'CustomerHappinessController@queries');
+        Route::get('/query/{status}', 'CustomerHappinessController@querySort');
 
         Route::get('/transactions', 'CustomerHappinessController@transactions');
 
@@ -24,18 +22,13 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
 
         Route::get('/filterutility/{type}', 'CustomerHappinessController@filterUtility');
 
-
-
-
-
-
         Route::get('/users', 'CustomerHappinessController@getUsers');
 
         Route::get('/user/{id}', 'CustomerHappinessController@userInfo');
 
         Route::get('/transaction/{id}', 'CustomerHappinessController@transPerUser');
 
-      ;
+        ;
     });
 
 });
