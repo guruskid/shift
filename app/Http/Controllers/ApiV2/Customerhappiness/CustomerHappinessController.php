@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\ApiV2\Customerhappiness;
 
 use App\Http\Controllers\Controller;
+use App\NairaTrade;
 use App\Ticket;
 use App\Transaction;
 use App\User;
 use App\UtilityTransaction;
+use App\Verification;
 use Illuminate\Http\Request;
 
 class CustomerHappinessController extends Controller
@@ -53,9 +55,44 @@ class CustomerHappinessController extends Controller
 
     }
 
+    public function querySort($status)
+    {
+
+        $ticket = Ticket::with('user')->where('status', $status)->latest('id')->get()->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'query_summary' => $ticket,
+
+        ]);
+
+    }
+
     public function transactions()
     {
         $transactions = Transaction::with('user')->latest('id')->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'transaction' => $transactions,
+
+        ]);
+    }
+
+    public function p2pTran()
+    {
+        $transactions = NairaTrade::with('user')->latest('id')->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'transaction' => $transactions,
+
+        ]);
+    }
+
+    public function sortP2pbyStatus($status)
+    {
+        $transactions = NairaTrade::with('user')->where('status', $status)->latest('id')->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -79,15 +116,48 @@ class CustomerHappinessController extends Controller
 
     public function transPerUser($id)
     {
-        $count = Transaction::where('user_id', $id)->count();
-        $transperuser = Transaction::with($count)->where('user_id', $id)->get();
+        // $count = Transaction::where('user_id', $id)->count();
+        $transperuser = Transaction::where('user_id', $id)->latest('id')->paginate(10);
+        // $verification = Verification::where('user_id', $id)->where('status', 'success');
 
+        // if($verification->type == "ID Card"){
+        //     $level = 3;
+        // }
+        // elseif ($verification->type == "Address") {
+        //     $level = 2;
+        // }
 
+        // dd($verification->type);
 
         return response()->json([
             'success' => true,
             'transactions' => $transperuser,
             // 'numberoftrn' => $count
+
+        ]);
+
+    }
+
+    // Each user details
+
+    public function userInfo($id)
+    {
+
+        $user = User::with('nairaWallet', 'nairaTrades')->where('id', $id)->first();
+        $verification = Verification::where('user_id', $id)->first();
+
+        if ($verification->type == "ID Card" && $verification->status == "success") {
+            $level = 3;
+        } elseif ($verification->type == "Address" && $verification->status == "success") {
+            $level = 2;
+        } else {
+            $level = 1;
+        }
+
+        return response()->json([
+            'success' => true,
+            'user' => $user,
+            'verification_level' => $level,
 
         ]);
 
@@ -163,7 +233,6 @@ class CustomerHappinessController extends Controller
             $fitler->where('is_crypto', $type);
         })->latest('id')->paginate(10);
 
-
         return response()->json([
             'success' => true,
             'transaction' => $transactions,
@@ -175,9 +244,7 @@ class CustomerHappinessController extends Controller
     public function filterUtility($type)
     {
 
-
-        $transactions = UtilityTransaction::where('type','LIKE', "%{$type}%")->latest('id')->paginate(10);
-
+        $transactions = UtilityTransaction::where('type', 'LIKE', "%{$type}%")->latest('id')->paginate(10);
 
         return response()->json([
             'success' => true,
