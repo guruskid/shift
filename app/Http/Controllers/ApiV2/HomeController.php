@@ -6,7 +6,9 @@ use App\CryptoRate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CryptoHelperController;
+use App\Http\Controllers\LiveRateController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Api\BtcWalletController;
 
 class HomeController extends Controller
 {
@@ -35,6 +37,7 @@ class HomeController extends Controller
             $BTC_USD = $btcWallet->usd;
             $BTC_VOLUME = $btcWallet->balance;
         }
+        $btc_rates = BtcWalletController::fees()->getData();
 
         $USDT_NGN = 0;
         $USDT_USD = 0;
@@ -58,13 +61,17 @@ class HomeController extends Controller
 
         $featuredCoinsBTC = array();
         $featuredCoinsBTC['name'] = 'BTC';
+        $featuredCoinsBTC['image'] = env('APP_URL') . '/storage/crypto/bitcoin.png';
         $featuredCoinsBTC['balance'] = $BTC_VOLUME;
         $featuredCoinsBTC['USD_value'] = $BTC_USD;
+        $featuredCoinsBTC['coin_to_usd'] = $btc_rates->btc_to_usd;
         
         $featuredCoinsUSDT = array();
         $featuredCoinsUSDT['name'] = 'USDT';
+        $featuredCoinsUSDT['image'] = env('APP_URL') . '/storage/crypto/tether.png';
         $featuredCoinsUSDT['balance'] = (string)$USDT_VOLUME;
         $featuredCoinsUSDT['USD_value'] = $USDT_USD;
+        $featuredCoinsUSDT['coin_to_usd'] = LiveRateController::usdtRate();
 
         $featuredCoins = collect([$featuredCoinsBTC, $featuredCoinsUSDT]);
         return response()->json([

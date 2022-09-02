@@ -56,53 +56,70 @@ class TransactionController extends Controller
     public function AllUserTransactions()
     {
         $tranx = Auth::user()->transactions;
-        foreach($tranx as $tr) 
-            $tr->isUtility = 0;
-        
+        foreach($tranx as $tr): 
+            $tr->transactionType = "CryptoGiftCard";
+        endforeach;
 
         $utilTranx = Auth::user()->utilityTransaction;
-        foreach($utilTranx as $ut) 
-            $ut->isUtility = 1;
-        
+        foreach($utilTranx as $ut):
+            $ut->transactionType = "utilities";
+        endforeach;
 
-        $allTranx = collect($tranx->toArray(),$utilTranx->toArray())
+        $p2pTranx = Auth::user()->nairaTrades;
+        foreach($p2pTranx as $tr):
+            $tr->transactionType = "payBridge";
+        endforeach;
+
+        $allTranx = collect($tranx->toArray(),$utilTranx->toArray(),$p2pTranx->toArray())
         ->sortByDesc('updated_at')
         ->groupBy(function($date) {
             return Carbon::parse($date['updated_at'])->format("d F Y");
         });
 
-        $buyTranx = collect($tranx->where('type','buy')->toArray(),$utilTranx->toArray())
-        ->sortByDesc('updated_at')
-        ->groupBy(function($date) {
-            return Carbon::parse($date['updated_at'])->format("d F Y");
-        });
+        // $buyTranx = collect($tranx->where('type','buy')->toArray(),$utilTranx->toArray(),$p2pTranx->toArray())
+        // ->sortByDesc('updated_at')
+        // ->groupBy(function($date) {
+        //     return Carbon::parse($date['updated_at'])->format("d F Y");
+        // });
         
-        $sellTranx = collect($tranx->where('type','sell')->toArray())
-        ->sortByDesc('updated_at')
-        ->groupBy(function($date) {
-            return Carbon::parse($date['updated_at'])->format("d F Y");
-        });
+        // $sellTranx = collect($tranx->where('type','sell')->toArray())
+        // ->sortByDesc('updated_at')
+        // ->groupBy(function($date) {
+        //     return Carbon::parse($date['updated_at'])->format("d F Y");
+        // });
 
         return response()->json([
             'success' => true,
             'allTransactions' => $allTranx,
-            'buyTransactions' => $buyTranx,
-            'sellTransactions' => $sellTranx,
+            // 'buyTransactions' => $buyTranx,
+            // 'sellTransactions' => $sellTranx,
         ]);
     }
 
     public function showUserTransaction(Request $r)
     {
-        if($r->isUtility >= 2)
+        if(!in_array($r->transactionType,['CryptoGiftCard','utilities','payBridge']))
         {
             return response()->json([
                 'success' => false,
-                'message' => "Error Wrong Query Check"
+                'message' => "Error Wrong Transaction Type"
             ],401);
         }
 
-        $UserTranx = ($r->isUtility == 1) ? Auth::user()->utilityTransaction : Auth::user()->transactions;
-        $transaction = $UserTranx->where('id',$r->id)->first();
+        $userTranx = null;
+        if($r->transactionType == 'CryptoGiftCard'):
+            $userTranx = Auth::user()->transactions;
+        endif;
+
+        if($r->transactionType == 'utilities'):
+            $userTranx = Auth::user()->utilityTransaction;
+        endif;
+
+        if($r->transactionType == 'payBridge'):
+            $userTranx = Auth::user()->nairaTrades;
+        endif;
+
+        $transaction = $userTranx->where('id',$r->id)->first();
         
         return response()->json([
             'success' => true,
