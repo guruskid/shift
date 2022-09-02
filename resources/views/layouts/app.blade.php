@@ -363,13 +363,13 @@ $not = $nots->last();
     <script type="text/javascript">
         $(document).ready(function () {
             $('.transactions-table').DataTable({
-                paging: true,
-                order: [
-                    [0, 'desc']
-                ],
                 lengthMenu: [
                     [10, 100, 1000, -1],
                     [10, 100, 1000, 'All'],
+                ],
+                paging: true,
+                order: [
+                    [0, 'desc']
                 ],
             });
         });

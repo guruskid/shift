@@ -169,9 +169,11 @@
                                                         
                                                         @endif
                                                         @if ($type =="Responded_Users" OR $type == "Called_Users")
-                                                        <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewResponse({{$u->call_log}},{{ $u->user }},{{ $u->call_log->call_category }})">
-                                                            <span class="btn btn btn-info">View</span>
-                                                        </a>
+                                                            @if($u->call_log)
+                                                            <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewResponse({{$u->call_log}},{{ $u->user }},{{ $u->call_log->call_category }})">
+                                                                <span class="btn btn btn-info">View</span>
+                                                            </a>
+                                                            @endif
                                                         @endif
                                                     </td>
                                                     @endif

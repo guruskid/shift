@@ -14,14 +14,25 @@ use App\User;
 use App\UserTracking;
 use App\UtilityTransaction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class BusinessDeveloperController extends Controller
 {
+    public static function oldUsersArtisanCalls()
+    {
+        // Artisan::call('check:active');
+        // Artisan::call('check:called');
+        // Artisan::call('check:Responded');
+        // Artisan::call('check:Recalcitrant');
+        // Artisan::call('noResponse:check');
+    }
+
     public function index($type = null){ 
-        $total_users = User::count();
+        // BusinessDeveloperController::oldUsersArtisanCalls();
+
         $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->count();
         $CalledUsers =  UserTracking::where('Current_Cycle','Called')->count();
         $NoResponse = UserTracking::where('Current_Cycle','NoResponse')->count();
@@ -32,39 +43,46 @@ class BusinessDeveloperController extends Controller
             $type = "Quarterly_Inactive";
         }
         if($type == "NoResponse"){
-            $data_table = UserTracking::where('Current_Cycle','NoResponse')->latest('updated_at')->get()->take(20);
+            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            ->where('Current_Cycle','NoResponse')->latest('updated_at')->get()->take(20);
         }
         if($type == "Quarterly_Inactive")
         {
-            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get()->take(20);
+            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            ->where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get()->take(20);
         }
         if($type == "Called_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at')->get()->take(20);
+            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            ->where('Current_Cycle','Called')->latest('updated_at')->get()->take(20);
         }
         if($type == "Responded_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at')->get()->take(20);
+            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            ->where('Current_Cycle','Responded')->latest('updated_at')->get()->take(20);
         }
         if($type == "Recalcitrant_Users")
         {
-            $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(20);
+            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            ->where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(20);
         }
-        
-        foreach ($data_table as $u ) {
-            $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
-            if($user_tnx->count() == 0)
+
+        foreach ($data_table as $td ) {
+            $allTranx = collect()->concat($td['transactions'])->concat($td['depositTransactions'])->concat($td['utilityTransaction']);
+            $data = $allTranx->sortByDesc('created_at');
+
+            if($data->count() == 0)
             {
-                $u->last_transaction_date = 'No Transactions';
+                $td->last_transaction_date = 'No Transactions';
             }
             else{
-                $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
+                $td->last_transaction_date =  $data->first()->created_at->format('d M Y, h:ia');
             }
         }
         return view(
             'admin.business_developer.index',
             compact([
-                'data_table','total_users','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
+                'data_table','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
                 'NoResponse'
             ])
         );
@@ -121,15 +139,18 @@ class BusinessDeveloperController extends Controller
             });
         }
         $count = $data_table->count();
-        $data_table = $data_table->paginate(100);
-        foreach ($data_table as $u ) {
-            $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
-            if($user_tnx->count() == 0)
+        $data_table = $data_table->with('transactions','utilityTransaction','depositTransactions','user')->paginate(100);
+
+       foreach ($data_table as $td ) {
+            $allTranx = collect()->concat($td['transactions'])->concat($td['depositTransactions'])->concat($td['utilityTransaction']);
+            $data = $allTranx->sortByDesc('created_at');
+
+            if($data->count() == 0)
             {
-                $u->last_transaction_date = 'No Transactions';
+                $td->last_transaction_date = 'No Transactions';
             }
             else{
-                $u->last_transaction_date =  $user_tnx->first()->updated_at->format('d M Y, h:ia');
+                $td->last_transaction_date =  $data->first()->created_at->format('d M Y, h:ia');
             }
         }
         return view(
@@ -333,6 +354,37 @@ class BusinessDeveloperController extends Controller
         }
     }
 
+    public static function checkQuarterlyInactive()
+    {
+        $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->with('transactions','utilityTransaction','depositTransactions','user')->get();
+        foreach ($quarterlyInactive as $qi) {
+            $userTranx = collect()->concat($qi['transactions'])->concat($qi['utilityTransaction'])->concat($qi['depositTransactions']);
+
+            if($userTranx->count() > 0)
+            {
+                $lastTranxDate = $userTranx->sortByDesc('created_at')->first();
+                $timeFrame = $lastTranxDate->created_at->diffInMonths(now());
+                if($timeFrame < 3)
+                {
+                    if(in_array($qi->Previous_Cycle,['Active','Responded']))
+                    {
+                        UserTracking::find($qi->id)->update([
+                            'Current_Cycle'=>$qi->Previous_Cycle,
+                        ]);
+                    }
+
+                    if($qi->Previous_Cycle == "Recalcitrant")
+                    {
+                        UserTracking::find($qi->id)->update([
+                            'Current_Cycle'=>"Responded",
+                        ]);
+                    }
+                }
+            }
+
+        }
+    }
+
     public static function checkCalledUsersForRespondedAndRecalcitrant()
     {
         $called_users = UserTracking::where('Current_Cycle','Called')->with('transactions','utilityTransaction','depositTransactions','user')->get();
@@ -397,7 +449,6 @@ class BusinessDeveloperController extends Controller
                         'Recalcitrant_Cycle' => $ru->Recalcitrant_Cycle + 1,
                         'Current_Cycle'=>"QuarterlyInactive",
                         'Previous_Cycle' => "Recalcitrant",
-                        'call_log_id' => null,
                         'current_cycle_count_date' => now(),
                         'Recalcitrant_streak' => $ru->Recalcitrant_streak + 1,
                         'Responded_streak' => 0
@@ -450,8 +501,8 @@ class BusinessDeveloperController extends Controller
     }
 
     public static function QuarterlyInactiveFromOldUsersDB() {
-        UserTracking::truncate();
-        CallLog::truncate();
+        // UserTracking::truncate();
+        // CallLog::truncate();
         $all_users = User::with('transactions')->where('role',1)->latest('created_at')->get();
         foreach ($all_users as $u) {
             $userTracking = UserTracking::where('user_id',$u->id)->count();
