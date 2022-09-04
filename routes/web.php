@@ -623,10 +623,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
 
     Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
     
-    Route::GET('/QuarterlyInactiveUsersFromDB', function () {
-        Artisan::call('check:trackingTable');
-        return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
-    });
+    // Route::GET('/QuarterlyInactiveUsersFromDB', function () {
+    //     Artisan::call('check:trackingTable');
+    //     return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
+    // });
 
     //?checking Active
     Route::GET('/CheckingActiveUserOnline', function () {
@@ -656,6 +656,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         Artisan::call('noResponse:check');
         return redirect()->back()->with("success", "Checked No Response Users");
     });
+
+    Route::GET('/CheckingQuarterlyInactive', function () {
+        Artisan::call('check:quarterlyInactive');
+        return redirect()->back()->with("success", "Checked Quarterly Inactive Users");
+    });
+
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
