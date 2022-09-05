@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\ApiV2\Customerhappiness;
 
+use App\ChatMessages;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
 use App\Ticket;
+use App\TicketCategory;
 use App\Transaction;
 use App\User;
 use App\UtilityTransaction;
 use App\Verification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerHappinessController extends Controller
 {
@@ -53,6 +56,78 @@ class CustomerHappinessController extends Controller
 
         ]);
 
+    }
+
+    public function newTicket(Request $req)
+    {
+
+        $req->validate([
+            'description' => 'required',
+            'subcategory_id' => 'required',
+            'type' => 'required',
+            'channel' => 'required',
+        ]);
+
+        $agent_id = User::where('role', 555)->where('status', 'active')->first();
+
+        $ticket = Ticket::create([
+            'ticketNo' => time(),
+            'user_id' => Auth::user()->id,
+            'description' => $req->description,
+            'status' => 'open',
+            'agent_id' => $agent_id->id,
+            'subcategory_id' => $req->subcategory_id,
+            'type' => $req->type,
+            'channel' => $req->channel,
+        ]);
+
+        $category = $this->getCategory($req->subcategory_id);
+        $subcartegory = $this->getSubCategory($req->subcategory_id);
+
+        $message = "Category: " . $category . "\n" .
+        "SubCategory: " . $subcartegory . "\n" .
+        "Description: " . $req->description;
+
+        ChatMessages::create([
+            'ticket_no' => $ticket->ticketNo,
+            'user_id' => Auth::user()->id,
+            'message' => $message,
+            'is_agent' => 0,
+        ]);
+
+        if (empty($ticket)) {
+            return response()->json([
+                "success" => false,
+                "message" => "Error creating a ticket",
+            ], 500);
+        }
+
+        return response()->json([
+            "success" => true,
+            "ticketNumber" => $ticket->ticketNo,
+            "chatmessage" => $message,
+        ], 200);
+    }
+
+    public function closeTicketList()
+    {
+        $ticketList = Ticket::where('user_id', Auth::user()->id)->where('status', 'close')->latest()->get();
+
+        return response()->json([
+            "success" => true,
+            'ticketlist' => $ticketList,
+        ], 200);
+    }
+
+    public function getCategory($subcartegory_id)
+    {
+        $category_id = TicketCategory::find($subcartegory_id)->ticket_category_id;
+        return TicketCategory::find($category_id)->name;
+    }
+
+    public function getSubCategory($subcartegory_id)
+    {
+        return TicketCategory::find($subcartegory_id)->name;
     }
 
     public function querySort($status)

@@ -6,6 +6,8 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
     Route::group(['prefix' => 'customerhappiness'], function () {
         Route::get('/', 'CustomerHappinessController@overView');
 
+
+        Route::post('/query/create', 'CustomerHappinessController@newTicket');
         Route::get('/query', 'CustomerHappinessController@queries');
         Route::get('/query/{status}', 'CustomerHappinessController@querySort');
 
