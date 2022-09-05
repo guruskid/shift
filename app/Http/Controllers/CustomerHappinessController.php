@@ -34,7 +34,7 @@ class CustomerHappinessController extends Controller
 
     public function QuarterlyInactive()
     {
-        //?getting difference for users transactions 
+        //?getting difference for users transactions
     }
 
     public function chatDetails($status = null,$ticket = null)
@@ -47,7 +47,7 @@ class CustomerHappinessController extends Controller
                 return view('admin.customer_happiness.chat', compact(['userTicketsList','ticketNo','chatMessages']));
             }
             $chatMessages = null;
-            return view('admin.customer_happiness.chat', compact(['userTicketsList','ticketNo','chatMessages'])); 
+            return view('admin.customer_happiness.chat', compact(['userTicketsList','ticketNo','chatMessages']));
         }
 
         if($status == "Close"){
@@ -58,7 +58,7 @@ class CustomerHappinessController extends Controller
                 return view('admin.customer_happiness.chat', compact(['userTicketsList','ticketNo','chatMessages']));
             }
             $chatMessages = null;
-            return view('admin.customer_happiness.chat', compact(['userTicketsList','ticketNo','chatMessages'])); 
+            return view('admin.customer_happiness.chat', compact(['userTicketsList','ticketNo','chatMessages']));
         }
 
         if($status == "Closed"){
@@ -69,7 +69,7 @@ class CustomerHappinessController extends Controller
                 'closed_by'=> Auth::user()->id,
             ]);
             return redirect()->route('customerHappiness.chatdetails', 'New');
-            
+
         }
 
         if($status == "Opened"){
@@ -79,7 +79,7 @@ class CustomerHappinessController extends Controller
                 'status' => 'open',
             ]);
             return redirect()->route('customerHappiness.chatdetails', 'Close');
-            
+
         }
 
     }
@@ -97,7 +97,7 @@ class CustomerHappinessController extends Controller
         return back();
     }
 
-    //! Transaction
+    // Transaction
     public function transactions()
     {
         $transactions = Transaction::latest('id')->paginate(1000);
@@ -205,7 +205,7 @@ class CustomerHappinessController extends Controller
             $transactions = NairaTransaction::latest()->orderBy('created_at','desc')->paginate(1000);
             $segment = 'All Wallet';
             $total = $transactions->sum('amount');
-            
+
         } else {
             $transactions = NairaTransaction::where('transaction_type_id', $id)->orderBy('created_at','desc')->paginate(1000);
             $segment = TransactionType::find($id)->name;
@@ -235,8 +235,8 @@ class CustomerHappinessController extends Controller
         $data = $request->validate([
             'start' => 'date|string',
             'end' => 'date|string',
-        ]);  
-  
+        ]);
+
         if (!empty($data)) {
             $transactions['transactions'] = $transactions['transactions']
             ->where('created_at', '>=', $data['start'])
@@ -250,15 +250,15 @@ class CustomerHappinessController extends Controller
                 $transactions['transactions'] = $transactions['transactions']
                 ->where('status','=',$request->status);
             }
-            
+
 
         }
         $total = $transactions['transactions']->sum('total');
-        
+
         $total_transactions = $transactions['transactions']->count();
         $total_amount = $transactions['transactions']->sum('amount');
         $total_convenience_fee = $transactions['transactions']->sum('convenience_fee');
-        
+
         $transactions['transactions'] = $transactions['transactions']->paginate(200);
         return view('admin.utility-transactions',$transactions,compact(['type','status','total',
         'total_transactions','total_amount','total_convenience_fee']));
@@ -277,16 +277,16 @@ class CustomerHappinessController extends Controller
         if($request->segment == 'All')
         {
             $search = $request->search;
-            $conditions = ['uid','card','type','country','card_type','status'];                         
+            $conditions = ['uid','card','type','country','card_type','status'];
             $transactions = Transaction::where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
-                        });      
-            })->paginate(100); 
-            
+                        });
+            })->paginate(100);
+
 
             $segment = $request->segment;
 
@@ -296,32 +296,32 @@ class CustomerHappinessController extends Controller
         {
             $status = $request->segment;
             $search = $request->search;
-            $conditions = ['uid','card','country','card_type','status'];                         
+            $conditions = ['uid','card','country','card_type','status'];
             $transactions = Transaction::where('type', $status)->latest()->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
-                        });      
-            })->paginate(100); 
-            
+                        });
+            })->paginate(100);
+
 
             $segment = $status;
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
-        
+
         if($request->segment == 'Utility')
         {
             $search = $request->search;
-            $conditions = ['reference_id','amount','type','status'];                         
+            $conditions = ['reference_id','amount','type','status'];
             $transactions = UtilityTransaction::whereNotNull('id')->orderBy('created_at', 'desc')->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%');
-                        });      
-            })->paginate(100); 
+                        });
+            })->paginate(100);
             return view('admin.utility-transactions', compact('transactions'));
         }
         if($request->segment == 'Gift Card' || $request->segment == 'Crypto')
@@ -332,14 +332,14 @@ class CustomerHappinessController extends Controller
             $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
                 $query->where('is_crypto', $id);
             })->latest()->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
-                        });      
+                        });
             })->paginate(100);
-    
+
             $segment = $request->segment;
             return view('admin.transactions', compact(['transactions', 'segment']));
         }
@@ -349,20 +349,20 @@ class CustomerHappinessController extends Controller
             $search = $request->search;
             $conditions = ['reference','status'];
             $transactions = NairaTransaction::latest()->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%');
                         })->orWhereHas('transactionType', function($q) use($search) {
                             $q->where('name', 'like', '%' . $search . '%');
-                        });      
+                        });
             })->paginate(100);;
             $segment = 'All Wallet';
             $total = NairaTransaction::latest()->sum('amount');
 
-            
+
             return view('admin.naira_transactions', compact(['segment', 'transactions', 'total']));
-        }   
+        }
         if($request->segment == 'success' || $request->segment == 'approved' || $request->segment == 'in progress'
         || $request->segment == 'waiting'|| $request->segment == 'declined' || $request->segment == 'failed')
         {
@@ -371,12 +371,12 @@ class CustomerHappinessController extends Controller
             $status = $request->segment;
 
             $transactions = Transaction::where('status', $status)->latest()->where(function ($query) use ($conditions, $search) {
-                foreach ($conditions as $column)                                
+                foreach ($conditions as $column)
                     $query->orWhere($column, 'like',"%{$search}%")
                     ->orWhereHas('user', function($q) use($search) {
                             $q->where('first_name', 'like', '%' . $search . '%')
                             ->orWhere('last_name', 'like', '%' . $search . '%');
-                        });      
+                        });
                     })->paginate(100);
             $segment = $status;
             return view('admin.transactions', compact(['transactions', 'segment']));

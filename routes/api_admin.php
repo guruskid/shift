@@ -202,12 +202,12 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/overview', 'DashboardOverviewController@overview');
         Route::get('/number-of-new-users',  'SpotLightController@numberOfNewUsers');
-        Route::get('/get-users-by-date',  'SpotLightController@getNewUsersByDate'); 
+        Route::get('/get-users-by-date',  'SpotLightController@getNewUsersByDate');
         Route::post('/acquisition-cost',  'SpotLightController@getCustomerAcquisitionCost');
-        Route::get('/transaction-history/{type}',  'DashboardOverviewController@transactionHistory'); 
-        Route::get('/p2p-transaction-history',  'DashboardOverviewController@p2pTransactionHistory'); 
-        Route::get('/p2p-transactions-by-date',  'DashboardOverviewController@getP2pTransactionHistoryByDate'); 
-        Route::get('/crypto-transactions-by-date',  'DashboardOverviewController@getCryptoTransactionHistoryByDate'); 
+        Route::get('/transaction-history/{type}',  'DashboardOverviewController@transactionHistory');
+        Route::get('/p2p-transaction-history',  'DashboardOverviewController@p2pTransactionHistory');
+        Route::get('/p2p-transactions-by-date',  'DashboardOverviewController@getP2pTransactionHistoryByDate');
+        Route::get('/crypto-transactions-by-date',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
         Route::get('/users-verification',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
         Route::get('/users-verification', 'DashboardOverviewController@usersVerification');
         Route::get('/monthly-analytics', 'SpotLightController@monthlyAnalytics');
@@ -229,7 +229,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::POST('/deactivateCustomerHappiness',  'CustomerHappinessController@deactivateCustomerHappiness');
    });
 
-    
+
 });
 
 
@@ -251,14 +251,14 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
     Route::group(['prefix' => 'pulse'], function () {
         Route::GET('/Analytics', 'pulseAnalyticsController@pulseTransactionAnalytics');
         Route::POST('/SortAnalytics', 'pulseAnalyticsController@sortTransactionAnalytics');
-        
+
         Route::GET('/', 'PulseController@index');
         Route::POST('/modal','PulseController@ModalData');
         Route::GET('/chart', 'PulseController@chart');
         Route::POST('/sortChart', 'PulseController@sortChart');
 
     });
-    
+
     //csLifetime
     Route::group(['prefix' => 'csLifetime'], function () {
         Route::get('/', 'CustomerLifeController@index');
@@ -283,17 +283,19 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
         Route::GET('/monthly-analytics',  'SpotLightController@monthlyAnalytics');
         Route::GET('/other-graph',  'SpotLightController@otherGraph');
         Route::POST('/acquisition-cost',  'SpotLightController@getCustomerAcquisitionCost');
-        Route::GET('/number-of-users',  'SpotLightController@numberOfNewUsers'); 
-        Route::GET('/get-users-by-date',  'SpotLightController@getNewUsersByDate'); 
+
+        Route::GET('/number-of-users',  'SpotLightController@numberOfNewUsers');
+        Route::GET('/get-users-by-date',  'SpotLightController@getNewUsersByDate');
 
         Route::GET('/graph-analytics',  'SpotLightController@graphAnalytics');
         Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
+
     });
 });
 
 Route::group(['middleware' => ['auth:api', 'customerHappiness']], function(){
     Route::prefix('customer-happiness')->group(function () {
-        Route::GET('/', 'CustomerHappinessController@index');
+        Route::GET('/', 'CustomerHappinessController@overview');
         Route::GET('/p2p',  'CustomerHappinessController@p2p');
         Route::GET('/users',  'CustomerHappinessController@userProfile');
         Route::GET('/user/{email}',  'CustomerHappinessController@userSearch');

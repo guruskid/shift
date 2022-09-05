@@ -18,7 +18,7 @@ class CustomerHappiness
     {
         $user = Auth::user();
 
-        if($user->role == 555){
+        if($user->role == 555 OR $user->role == 999){
             if ($user->status != 'active') {
                 return redirect()->route('disabled');
             }
