@@ -98,7 +98,7 @@ class CustomerHappinessController extends Controller
         if (empty($ticket)) {
             return response()->json([
                 "success" => false,
-                "message" => "Error creating a ticket",
+                "message" => "Error in creating",
             ], 500);
         }
 
