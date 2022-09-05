@@ -18,4 +18,14 @@ class BlockfillOrder extends Model
     {
         return $this->belongsTo(CryptoCurrency::class, 'currency_id', 'id');
     }
+
+    /**
+     * Get the transaction that owns the BlockfillOrder
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class);
+    }
 }
