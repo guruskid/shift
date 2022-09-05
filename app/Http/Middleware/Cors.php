@@ -18,6 +18,6 @@ class Cors
         return $next($request)
         ->header("Access-Control-Allow-Origin", "*")
         ->header("Access-Control-Allow-Methods", "PUT,POST,DELETE,GET,OPTIONS",)
-        ->header("Access-Control-Allow-Headers", "Origin", "Content-Type", "X-Auth-Token", "Baerer-Token", "X-Request-With", "Content-Range", "Content-Disposition", "Content-Discription", "xsrf-Token", "x-custom-header", "ip", "Authorization");
+        ->header("Access-Control-Allow-Headers", "Origin", "Content-Type", "X-Auth-Token", "Bearer-Token", "X-Request-With", "Content-Range", "Content-Disposition", "Content-Description", "xsrf-Token", "x-custom-header", "ip", "Authorization");
     }
 }
