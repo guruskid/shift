@@ -40,13 +40,14 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('get:rate')->everyMinute();
         $schedule->command('followup:mail')->daily();
         $schedule->command('check:active')->daily();
         $schedule->command('check:called')->daily();
         $schedule->command('check:Responded')->daily();
         $schedule->command('check:Recalcitrant')->daily();
+        $schedule->command('check:quarterlyInactive')->daily(); 
         $schedule->command('noResponse:check')->daily(); 
+        $schedule->command('get:rate')->everyMinute();
     }
 
     /**
