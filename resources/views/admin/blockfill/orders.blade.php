@@ -75,6 +75,7 @@
                                     <th>#</th>
                                     <th>Currency</th>
                                     <th>Amount</th>
+                                    <th>USD</th>
                                     <th>Rate</th>
                                     <th>Date</th>
                                 </tr>
@@ -83,8 +84,10 @@
                                 @foreach ($orders as $o)
                                 <tr>
                                     <td class="text-muted">{{$o->id}}</td>
+                                    <td>{{ $o->transaction->user->first_name }}</td>
                                     <td>{{ $o->currency->name }}</td>
                                     <td>{{ $o->quantity }} BTC</td>
+                                    <td>${{ $o->usd }}</td>
                                     <td>${{ number_format($o->rate) }}</td>
                                     <td>{{ $o->created_at->format('d M y, h:ia') }}</td>
                                 </tr>

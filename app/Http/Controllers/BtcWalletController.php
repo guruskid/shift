@@ -26,6 +26,7 @@ use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\GeneralSettings;
 use App\ReferralSettings;
+use App\SystemSettings;
 
 class BtcWalletController extends Controller
 {
@@ -440,7 +441,10 @@ class BtcWalletController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
-        BlockfillOrderController::order($t);
+        //Blockfill
+        if (SystemSettings::where('name', 'BLOCKFILL')->first()->settings_value == 1) {
+            BlockfillOrderController::order($t);
+        }
 
         ///////////////// REFERRAL ////////////////////////
 
@@ -474,23 +478,23 @@ class BtcWalletController extends Controller
 
 
 
-         // ///////////////////////////////////////////////////////////
-         $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
-         $title = 'Sell Order Successful';
-         $body = 'Your order to sell ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+        // ///////////////////////////////////////////////////////////
+        $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $title = 'Sell Order Successful';
+        $body = 'Your order to sell ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
          Your new  balance is ' . $finalamountcredited . '.<br>
          Date: ' . now() . '.<br><br>
          Thank you for Trading with Dantown.';
 
-         $btn_text = '';
-         $btn_url = '';
+        $btn_text = '';
+        $btn_url = '';
 
-         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-         $name = str_replace(' ', '', $name);
-         $firstname = ucfirst($name);
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
         //  Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-         // ////////////////////////////////////////////
+        // ////////////////////////////////////////////
 
 
         return response()->json([
