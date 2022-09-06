@@ -26,6 +26,8 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
 
         Route::get('/users', 'CustomerHappinessController@getUsers');
 
+        Route::get('/search/{username}', 'CustomerHappinessController@searchUser');
+
         Route::get('/user/{id}', 'CustomerHappinessController@userInfo');
 
         Route::get('/transaction/{id}', 'CustomerHappinessController@transPerUser');

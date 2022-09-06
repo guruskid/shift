@@ -66,11 +66,13 @@ class CustomerHappinessController extends Controller
             'subcategory_id' => 'required',
             'type' => 'required',
             'channel' => 'required',
+            'username' => 'required'
         ]);
 
         $agent_id = User::where('role', 555)->where('status', 'active')->first();
 
         $ticket = Ticket::create([
+            'username' => $req->username,
             'ticketNo' => time(),
             'user_id' => Auth::user()->id,
             'description' => $req->description,
@@ -176,10 +178,29 @@ class CustomerHappinessController extends Controller
         ]);
     }
 
+    public function searchUser($username)
+    {
+
+        $user = User::where('username', 'like', '%' . $username . '%')->orWhere('first_name', 'like', '%' . $username . '%')->get();
+
+        return response()->json([
+            'success' => true,
+            'users' => $user,
+
+        ]);
+
+    }
+
     public function getUsers()
     {
-        $user = User::latest('id')->where('role', 1)->withCount('user_id')->get();
+        // $user = User::latest('id')->where('role', 1)->withCount('user_id')->get();
         // $transperuser = Transaction::All()->where('user_id', $id);
+        // $user = User::whereHas('transactions', function($q) {
+        //     $q->where('role', '1')->get();
+
+        // });
+
+        $user = User::whereHas('transactions')->withCount(['transactions'])->get()->paginate(20);
 
         return response()->json([
             'success' => true,
