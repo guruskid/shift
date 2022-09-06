@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Validator;
 
 class UsdtController extends Controller
 {
-    public function create(Request $request)
+    public static function create(Request $request)
     {
         if (Auth::user()->usdtWallet) {
             return response()->json([
@@ -145,7 +145,7 @@ class UsdtController extends Controller
         if (!Auth::user()->usdtWallet) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Please create a Tron wallet to continue'
+                'msg' => 'Please create a USDT wallet to continue'
             ]);
         }
 
@@ -268,7 +268,7 @@ class UsdtController extends Controller
     }
 
 
-    public function sell(Request $request)
+    public static function sell(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
@@ -722,7 +722,7 @@ class UsdtController extends Controller
         ]);
     }
 
-    public function send(Request $request)
+    public static function send(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'amount' => 'required|min:0',

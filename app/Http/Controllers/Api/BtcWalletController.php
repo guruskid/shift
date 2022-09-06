@@ -19,16 +19,6 @@ class BtcWalletController extends Controller
 {
     public function btcPrice()
     {
-
-        $client = new Client();
-        // $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
-        // $res = $client->request('GET', $url, [ 'headers' => ['x-api-key' => env('TATUM_KEY')] ]);
-        // $res = json_decode($res->getBody());
-        // $btc_rate = (int)$res->value;
-
-        // $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
-        // $tp = ($trading_per / 100) * $btc_rate;
-        // $btc_rate -= $tp;
         $btc_rate = LiveRateController::btcRate();
 
         $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
@@ -40,7 +30,7 @@ class BtcWalletController extends Controller
         ]);
     }
 
-    public function fees()
+    public static function fees()
     {
         $address = HdWallet::where('currency_id', 1)->first()->address;
         $amount = 0.002;
@@ -78,18 +68,18 @@ class BtcWalletController extends Controller
         ]);
     }
 
-    public function create(Request $r)
+    public static function create(Request $r)
     {
-        $validator = Validator::make($r->all(), [
-            'wallet_password' => 'required|min:4|confirmed',
-        ]);
+        // $validator = Validator::make($r->all(), [
+        //     'wallet_password' => 'required|min:4|confirmed',
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors(),
-            ], 401);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => $validator->errors(),
+        //     ], 401);
+        // }
 
         if (Auth::user()->btcWallet) {
             return response()->json([
@@ -134,7 +124,7 @@ class BtcWalletController extends Controller
 
         $btc_account_id = $body[0]->id;
         $user->customer_id = $body[0]->customerId;
-        $user->pin = $password;
+        // $user->pin = $password;
         $user->external_id = $external_id;
         $user->save();
 

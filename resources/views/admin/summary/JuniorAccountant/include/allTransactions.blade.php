@@ -1,33 +1,33 @@
 
                            {{-- all tnx start --}}
                            <form action="{{ route('admin.junior-summary-sort-details') }}" method="POST">
-                                @csrf
-                                <div class="form-inline mb-3">
-                                    <label class="mr-1">Start Date</label>
-                                    <input type="datetime-local" name="startdate"  value="{{app('request')->input('startdate')}}"class="form-control mr-1" >
+                            @csrf
+                            <div class="form-inline mb-3">
+                                <label class="mr-1">Start Date</label>
+                                <input type="datetime-local" name="startdate"  value="{{app('request')->input('startdate')}}"class="form-control mr-1" >
 
-                                    <label class="mr-1">End Date</label>
-                                    <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
+                                <label class="mr-1">End Date</label>
+                                <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
 
-                                    <input type="hidden" name="day" value="{{ $day }}">
-                                    <input type="hidden" name="month" value="{{ $month }}">
-                                    <input type="hidden" name="category" value="{{ $show_category }}">
+                                <input type="hidden" name="day" value="{{ $day }}">
+                                <input type="hidden" name="month" value="{{ $month }}">
+                                <input type="hidden" name="category" value="{{ $show_category }}">
 
-                                    {{-- @if (isset($accountant))
-                                        @foreach ($accountant as $a)
-                                            <input type="hidden" name="name" value="{{ $a->first_name }}" class="form-control mr-4">
-                                        @endforeach
-                                    @endif --}}
+                                {{-- @if (isset($accountant))
+                                    @foreach ($accountant as $a)
+                                        <input type="hidden" name="name" value="{{ $a->first_name }}" class="form-control mr-4">
+                                    @endforeach
+                                @endif --}}
 
                                     @if (isset($accountant))
                                         <select name="Accountant" class="ml-1 form-control">
                                             <option value="null">Accountant</option>
-                                            @foreach ($accountant as $a) 
+                                            @foreach ($accountant as $a)
                                                 <option value="{{ $a->id }}">{{ $a->first_name ?:$a->email }}</option>
                                             @endforeach
                                         </select>
                                     @endif
-                                    
+
                                     <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
                                 </div>
                             </form>
@@ -64,7 +64,7 @@
                                                                 </td>
                                                             </tfoot>
                                                         </table>
-                                                    
+
                                                     <td>
                                                         <table class="table">
                                                             <thead>
@@ -72,9 +72,9 @@
                                                                 <th class="text-center">Sell</th>
                                                             </thead>
                                                             <tbody>
-                                                                <td class="text-center">{{ isset($BTCbuyCount) ? number_format($BTCbuyCount) : 0 }} 
+                                                                <td class="text-center">{{ isset($BTCbuyCount) ? number_format($BTCbuyCount) : 0 }}
                                                                     [{{sprintf('%.8f', floatval($BTCbuyQuantity))}} BTC]</td>
-                                                                <td class="text-center">{{ isset($BTCsellCount) ? number_format($BTCsellCount) : 0 }} 
+                                                                <td class="text-center">{{ isset($BTCsellCount) ? number_format($BTCsellCount) : 0 }}
                                                                     [{{sprintf('%.8f', floatval($BTCsellQuantity))  }} BTC]</td>
                                                             </tbody>
                                                             <tfoot>
@@ -182,58 +182,58 @@
                                         $c = $t->card;
                                         @endphp
 
-                                        <tr>
-                                            <td class="text-center text-muted">{{$t->uid}}</td>
-                                            <td
-                                                class="text-center  {{$c == 'perfect money' || $c == 'bitcoins' || $c == 'etherum' ? 'text-info   ': '' }} ">
-                                                {{ucwords($t->card)}}</td>
-                                            <td class="text-center text-capitalize">{{$t->type}}</td>
-                                            <td class="text-center">{{$t->country}}</td>
-                                            <td class="text-center">{{$t->card_type}}</td>
-                                            <td class="text-center">{{$t->amount}}</td>
+                                    <tr>
+                                        <td class="text-center text-muted">{{$t->uid}}</td>
+                                        <td
+                                            class="text-center  {{$c == 'perfect money' || $c == 'bitcoins' || $c == 'etherum' ? 'text-info   ': '' }} ">
+                                            {{ucwords($t->card)}}</td>
+                                        <td class="text-center text-capitalize">{{$t->type}}</td>
+                                        <td class="text-center">{{$t->country}}</td>
+                                        <td class="text-center">{{$t->card_type}}</td>
+                                        <td class="text-center">{{$t->amount}}</td>
 
-                                            @if ($t->asset->is_crypto)
-                                            <td class="text-center">{{ sprintf('%.8f', floatval($t->quantity))}}</td>
-                                            @else
-                                            <td class="text-center">{{ $t->quantity}}</td>
-                                            @endif
-                                            <td class="text-center">{{ $t->amount * $t->quantity}}</td>
-                                            <td class="text-center">{{$t->card_price}}</td>
-                                            @if (in_array(Auth::user()->role, [444,449] ))
-                                            <td class="text-center">₦{{number_format($t->amount_paid)}}</td>
-                                            @endif
+                                        @if ($t->asset->is_crypto)
+                                        <td class="text-center">{{ sprintf('%.8f', floatval($t->quantity))}}</td>
+                                        @else
+                                        <td class="text-center">{{ $t->quantity}}</td>
+                                        @endif
+                                        <td class="text-center">{{ $t->amount * $t->quantity}}</td>
+                                        <td class="text-center">{{$t->card_price}}</td>
+                                        @if (in_array(Auth::user()->role, [444,449] ))
+                                        <td class="text-center">₦{{number_format($t->amount_paid)}}</td>
+                                        @endif
 
-                                            @if (!in_array(Auth::user()->role, [449,444] ))
-                                            <td class="text-center">₦{{number_format($t->amount_paid, 2, '.', ',')}}</td>
-                                            @endif
-                                            @if (in_array(Auth::user()->role, [999] ))
-                                                <td class="text-center">{{$t->commission}}</td>
-                                                <td class="text-center">₦{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
+                                        @if (!in_array(Auth::user()->role, [449,444] ))
+                                        <td class="text-center">₦{{number_format($t->amount_paid, 2, '.', ',')}}</td>
+                                        @endif
+                                        @if (in_array(Auth::user()->role, [999] ))
+                                            <td class="text-center">{{$t->commission}}</td>
+                                            <td class="text-center">₦{{number_format($t->amount_paid + $t->commission,2, '.', ',')}}</td>
 
-                                            @endif
-                                            @if (!in_array(Auth::user()->role, [449,444] ))
-                                            <td class="text-center">{{$t->wallet_id}}</td>
-                                            @endif
+                                        @endif
+                                        @if (!in_array(Auth::user()->role, [449,444] ))
+                                        <td class="text-center">{{$t->wallet_id}}</td>
+                                        @endif
 
-                                            <td class="text-center">
-                                                @if (isset($t->user))
-                                                    @if (in_array(Auth::user()->role, [555] ))
-                                                        <a
-                                                        href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
-                                                        {{$t->user->first_name." ".$t->user->last_name}}</a>
+                                        <td class="text-center">
+                                            @if (isset($t->user))
+                                                @if (in_array(Auth::user()->role, [555] ))
+                                                    <a
+                                                    href=" {{route('customerHappiness.user', [$t->user->id, $t->user->email] )}}">
+                                                    {{$t->user->first_name." ".$t->user->last_name}}</a>
+                                                @else
+                                                    @if (in_array(Auth::user()->role, [449,444] ))
+                                                    {{$t->user->first_name." ".$t->user->last_name}}
                                                     @else
-                                                        @if (in_array(Auth::user()->role, [449,444] ))
-                                                        {{$t->user->first_name." ".$t->user->last_name}}
-                                                        @else
-                                                        <a
-                                                        href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
-                                                        {{$t->user->first_name." ".$t->user->last_name}}</a>
-                                                        @endif
-
-
+                                                    <a
+                                                    href=" {{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                    {{$t->user->first_name." ".$t->user->last_name}}</a>
                                                     @endif
+
+
                                                 @endif
-                                            </td>
+                                            @endif
+                                        </td>
 
                                             <td class="text-center">{{$t->updated_at->format('d M, h:ia')}} </td>
                                             <td class="text-center">
@@ -253,24 +253,24 @@
                                                 @default
                                                 <div class="text-success">{{$t->status}}</div>
 
-                                                @endswitch
-                                            </td>
-                                            @if (in_array(Auth::user()->role, [999, 889] ))
-                                            <td class="text-center"> {{$t->last_edited}} </td>
-                                            <td class="text-center"> {{$t->agent->first_name}} </td>
-                                            <td class="text-center"> {{$t->accountant->first_name ?? 'None' }} </td>
-                                            @endif
+                                            @endswitch
+                                        </td>
+                                        @if (in_array(Auth::user()->role, [999, 889] ))
+                                        <td class="text-center"> {{$t->last_edited}} </td>
+                                        <td class="text-center"> {{$t->agent->first_name}} </td>
+                                        <td class="text-center"> {{$t->accountant->first_name ?? 'None' }} </td>
+                                        @endif
 
-                                            
+
                                         </tr>
-                                        
+
                                         @endforeach
                                     </tbody>
-                                        
+
                                     {{-- {{ $all_tnx->links() }} --}}
                                     @endif
 
 
-                                </table>
-                            </div>
-                            {{-- all tnx end --}}
+                            </table>
+                        </div>
+                        {{-- all tnx end --}}

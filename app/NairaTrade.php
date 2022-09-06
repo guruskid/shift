@@ -11,6 +11,11 @@ class NairaTrade extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function agent()
+    {
+        return $this->belongsTo(User::class,'agent_id','id');
+    }
+
     /**
      * Get all of the pops for the NairaTrade
      *

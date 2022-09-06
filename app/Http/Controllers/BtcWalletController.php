@@ -26,6 +26,7 @@ use App\Mail\GeneralTemplateOne;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\GeneralSettings;
 use App\ReferralSettings;
+use App\SystemSettings;
 
 class BtcWalletController extends Controller
 {
@@ -241,7 +242,7 @@ class BtcWalletController extends Controller
     }
 
 
-    public function sell(Request $r)
+    public static function sell(Request $r)
     {
         $validator = Validator::make($r->all(), [
             'quantity' => 'required|min:0',
@@ -257,6 +258,7 @@ class BtcWalletController extends Controller
         /* if ($data['amount'] < 3) {
             return back()->with(['error' => 'Minimum trade amount is $3']);
         } */
+        $r->quantity = round($r->quantity, 6);
 
         if (!Auth::user()->btcWallet) {
             return response()->json([
@@ -439,6 +441,11 @@ class BtcWalletController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
+        //Blockfill
+        if (SystemSettings::where('name', 'BLOCKFILL')->first()->settings_value == 1) {
+            BlockfillOrderController::order($t);
+        }
+
         ///////////////// REFERRAL ////////////////////////
 
         $status = ReferralSettingsController::status();
@@ -471,23 +478,23 @@ class BtcWalletController extends Controller
 
 
 
-         // ///////////////////////////////////////////////////////////
-         $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
-         $title = 'Sell Order Successful';
-         $body = 'Your order to sell ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
+        // ///////////////////////////////////////////////////////////
+        $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $title = 'Sell Order Successful';
+        $body = 'Your order to sell ' . $t->card . ' has been filled and your Naira wallet has been credited with₦' . number_format($t->amount_paid) . '<br>
          Your new  balance is ' . $finalamountcredited . '.<br>
          Date: ' . now() . '.<br><br>
          Thank you for Trading with Dantown.';
 
-         $btn_text = '';
-         $btn_url = '';
+        $btn_text = '';
+        $btn_url = '';
 
-         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-         $name = str_replace(' ', '', $name);
-         $firstname = ucfirst($name);
-         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
+        //  Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
 
-         // ////////////////////////////////////////////
+        // ////////////////////////////////////////////
 
 
         return response()->json([
@@ -499,7 +506,7 @@ class BtcWalletController extends Controller
 
 
 
-    public function send(Request $r)
+    public static function send(Request $r)
     {
         $data = $r->validate([
             'amount' => 'required|min:0',
@@ -549,7 +556,7 @@ class BtcWalletController extends Controller
 
         // Perform internal transactions
         if ($r->type == 1) {
-            return $this->sendInternal($r);
+            return BtcWalletController::sendInternal($r);
         }
 
         $charge_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
@@ -649,7 +656,7 @@ class BtcWalletController extends Controller
         }
     }
 
-    public function sendInternal(Request $request)
+    public static function sendInternal(Request $request)
     {
         $user = User::where('email', $request->email)->first();
         if (!$user) {

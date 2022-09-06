@@ -6,6 +6,7 @@ use App\Country;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LoginSessionController;
 use App\Mail\GeneralTemplateOne;
 use App\Mail\VerificationCodeMail;
 use App\NairaWallet;
@@ -25,10 +26,16 @@ class AuthController extends Controller
     {
             if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
             $user = Auth::user();
+            $user->fcm_id = request('fcm_id');
             $success['token'] = $user->createToken('appToken')->accessToken;
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
 
+            if($user->role == 1)
+            {
+                $loginSession = new LoginSessionController();
+                $loginSession->createSessionData($user->id);
+            }
             return response()->json([
                 'success' => true,
                 'token' => $success,
@@ -279,7 +286,8 @@ class AuthController extends Controller
             'status' => 'active',
             'referrer' => $rc,
             'password' => Hash::make($input['password']),
-            'platform' => $input['platform']
+            'platform' => $input['platform'],
+            'fcm_id' =>  request('fcm_id')
         ];
 
         if (isset($input['referral_code'])) {
@@ -292,7 +300,7 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
-        // $user->sendEmailVerificationNotification();
+      //  $user->sendEmailVerificationNotification();
 
         $auth_user = User::find($user->id);
         $success['token'] = $user->createToken('appToken')->accessToken;
@@ -321,6 +329,7 @@ class AuthController extends Controller
 
         $client = new Client();
         $url = env('TATUM_URL') . "/ledger/account/batch";
+
 
         /* try { */
         $response = $client->request('POST', $url, [
