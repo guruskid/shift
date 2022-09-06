@@ -5,8 +5,12 @@ namespace App\Http\Controllers\ApiV2;
 use App\Http\Controllers\ApiV2\Admin\UtilityController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CryptoGiftcardTransactionResource;
+use App\Http\Resources\NairaTradeResource;
+use App\Http\Resources\UtilityTransactionResource;
 use App\NairaTransaction;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
@@ -56,43 +60,19 @@ class TransactionController extends Controller
     public function AllUserTransactions()
     {
         $tranx = Auth::user()->transactions;
-        foreach($tranx as $tr): 
-            $tr->transactionType = "CryptoGiftCard";
-        endforeach;
+        $tranxData = CryptoGiftcardTransactionResource::collection($tranx);
 
         $utilTranx = Auth::user()->utilityTransaction;
-        foreach($utilTranx as $ut):
-            $ut->transactionType = "utilities";
-        endforeach;
+        $utilData = UtilityTransactionResource::collection($utilTranx);
 
         $p2pTranx = Auth::user()->nairaTrades;
-        foreach($p2pTranx as $tr):
-            $tr->transactionType = "payBridge";
-        endforeach;
+        $p2pData = NairaTradeResource::collection($p2pTranx);
 
-        $allTranx = collect($tranx->toArray(),$utilTranx->toArray(),$p2pTranx->toArray())
-        ->sortByDesc('updated_at')
-        ->groupBy(function($date) {
-            return Carbon::parse($date['updated_at'])->format("d F Y");
-        });
-
-        // $buyTranx = collect($tranx->where('type','buy')->toArray(),$utilTranx->toArray(),$p2pTranx->toArray())
-        // ->sortByDesc('updated_at')
-        // ->groupBy(function($date) {
-        //     return Carbon::parse($date['updated_at'])->format("d F Y");
-        // });
-        
-        // $sellTranx = collect($tranx->where('type','sell')->toArray())
-        // ->sortByDesc('updated_at')
-        // ->groupBy(function($date) {
-        //     return Carbon::parse($date['updated_at'])->format("d F Y");
-        // });
-
+        $allTranx = collect($tranxData,$utilData,$p2pData)
+        ->sortByDesc('updated_at');
         return response()->json([
             'success' => true,
             'allTransactions' => $allTranx,
-            // 'buyTransactions' => $buyTranx,
-            // 'sellTransactions' => $sellTranx,
         ]);
     }
 
@@ -108,15 +88,15 @@ class TransactionController extends Controller
 
         $userTranx = null;
         if($r->transactionType == 'CryptoGiftCard'):
-            $userTranx = Auth::user()->transactions;
+            $userTranx = CryptoGiftcardTransactionResource::collection(Auth::user()->transactions);
         endif;
 
         if($r->transactionType == 'utilities'):
-            $userTranx = Auth::user()->utilityTransaction;
+            $userTranx = UtilityTransactionResource::collection(Auth::user()->utilityTransaction);
         endif;
 
         if($r->transactionType == 'payBridge'):
-            $userTranx = Auth::user()->nairaTrades;
+            $userTranx =  NairaTradeResource::collection(Auth::user()->nairaTrades);
         endif;
 
         $transaction = $userTranx->where('id',$r->id)->first();
