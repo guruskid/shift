@@ -442,7 +442,7 @@ class BtcWalletController extends Controller
         Auth::user()->nairaWallet->save();
 
         //Blockfill
-        if (SystemSettings::where('name', 'BLOCKFILL')->first()->settings_value == 1) {
+        if (SystemSettings::where('settings_name', 'BLOCKFILL')->first()->settings_value == 1) {
             BlockfillOrderController::order($t);
         }
 
