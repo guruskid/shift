@@ -9,6 +9,8 @@ Route::get('/banks', 'Api\AuthController@bankList' );
 Route::group(['middleware' => 'auth:api'], function () {
 
     //BTC Wallet
+
+    // ------> THIS ENDPOINTS MAY NOT BE IN USE FOR V2 -WINSTON
     Route::group(['prefix' => 'bitcoin-wallet'], function () {
 
         Route::POST('/create', 'Api\BtcWalletController@create');
@@ -23,6 +25,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::POST('/send', 'BtcWalletController@send');
 
     });
+    // ----------->
+
     Route::post('/update-wallet-pin', 'Api\NairaWalletController@updateWalletPin');
     Route::post('/bank-details', 'Api\AuthController@addBankDetails');
     Route::GET('/naira-wallet', 'Api\NairaWalletController@index');
@@ -38,23 +42,20 @@ Route::group(['middleware' => 'auth:api'], function () {
     //Pay Cable
     Route::get('/cable', 'Api\BillsPaymentController@cable');
     Route::post('/recharge-cable', 'Api\BillsPaymentController@rechargeCable');
-    Route::post('/get-merchant/{serviveId}/{billercode}', 'BillsPaymentController@merchantVerify');
+    Route::post('/get-merchant/{serviveId}/{billercode}', 'Api\BillsPaymentController@merchantVerify');
+
+    Route::get('/get-variations/{serviveId}', 'Api\BillsPaymentController@getVariations');
 
     //Power
-    Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
-    Route::get('/get-elect-boards/{category?}', 'BillsPaymentController@getProducts');
+   // Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+    Route::get('/get-elect-boards/{category?}', 'Api\BillsPaymentController@getProducts');
 
     Route::post('/get-dec-user', 'BillsPaymentController@getUser');
     Route::post('/get-tv-packages', 'BillsPaymentController@getPackages');
 
     Route::get('/power/{category?}', 'Api\BillsPaymentController@power');
-    Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
+  //  Route::get('/get-variations/{serviveId}', 'BillsPaymentController@getVariations');
     Route::post('/electricity', 'Api\BillsPaymentController@payElectricityVtpass')->name('user.pay-electricity');
-
-    Route::get('referral-transactions', 'ApiV2\ReferralController@referralTransactions');
-    Route::post('withdraw-referral-bonus', 'ApiV2\ReferralController@withdrawReferralBonus');
-    Route::get('my-referrers', 'ApiV2\ReferralController@myReferrers');
-    Route::get('get-referrers-link', 'ApiV2\ReferralController@getReferralLink');
 
 
     // Notifications
@@ -64,7 +65,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
 
 
-    
+
 
     Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified', 'admin', 'super' ]], function () {
         Route::get('/utility/airtime', 'UserController@deleteBank');

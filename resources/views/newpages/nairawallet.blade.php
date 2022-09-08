@@ -174,6 +174,13 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                 </div>
                                             </div>
 
+                                            @if ($naira_charge and $tranx < 10)
+                                                <div class="text-center h5 py-1 text-white alert alert-info">
+                                                    <i class="fa fa-info-circle"></i>
+                                                    You have {{10 - $tranx}} free naira withdrawal(s)
+                                                </div>
+                                            @endif
+
                                             {{-- @include('newpages.tabs.naira-transfer-tab')
                                             @if($setting['settings_value'] == 1)
                                                 @include('newpages.tabs.naira-withdraw-tab')
@@ -188,7 +195,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                         <deposit-component></deposit-component>
                                                     </tab>
                                                     <tab name="Withdraw via Pay-bridge" at="withdraw">
-                                                        <withdraw-component></withdraw-component>
+                                                        <withdraw-component :free_naira_charge="{{$naira_charge}}" :tranx="{{$tranx}}"></withdraw-component>
                                                     </tab>
                                                 </tabs>
                                             </div>

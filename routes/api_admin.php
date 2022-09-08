@@ -4,7 +4,7 @@ use App\ReferralSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
+Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], function () {
 
     //UTILITIES TRANSACTIONS
     Route::group(['prefix' => 'utility-transaction'], function () {
@@ -68,15 +68,24 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
     Route::get("/all-accountant", 'AdminController@accountant');
 
 
+    // // Announcement
+    // Route::group(['prefix' => 'announcement'], function () {
+    //     Route::GET('/all',  'AnnoucementController@allAnnouncement');
+    //     Route::POST('/add',  'AnnoucementController@addAnnouncement');
+    //     Route::POST('/edit',  'AnnoucementController@editAnnoucement');
+    //     Route::POST('/delete',  'AnnoucementController@deleteAnnouncement');
+    // });
+
     // Announcement
     Route::group(['prefix' => 'announcement'], function () {
-        Route::GET('/all',  'AnnoucementController@allAnnouncement');
-        Route::POST('/add',  'AnnoucementController@addAnnouncement');
-        Route::POST('/edit',  'AnnoucementController@editAnnoucement');
-        Route::POST('/delete',  'AnnoucementController@deleteAnnouncement');
+        Route::post('/create',  'AnnouncementController@create');
+        Route::get('/all',  'AnnouncementController@getAnnouncements');
+        Route::post('/update/{id}',  'AnnouncementController@update');
+        Route::post('/update-status/{id}/{status}',  'AnnouncementController@updateStatus');
+        Route::post('/delete/{id}',  'AnnouncementController@delete');
     });
 
-    //?settings
+    //settings
     Route::group(['prefix' => 'setting'], function () {
         Route::GET('/showUser', 'SettingController@showUser');
         Route::POST('/editUser', 'SettingController@editUser');
@@ -87,16 +96,28 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         Route::GET('/removeStaff/{id}', 'SettingController@removeUser');
 
         Route::GET('/roleSelection', 'SettingController@roleSelection');
+        Route::POST('/getUserByEmail', 'SettingController@getUserByEmail');
         Route::POST('/addStaff', 'SettingController@addStaff');
 
         Route::GET('/settings', 'SettingController@settings');
         Route::POST('/updateSetting', 'SettingController@updateSettings');
 
         Route::POST('/setTarget', 'SettingController@assignSalesTarget');
+
+        Route::POST('/activateStaff', 'SettingController@activateStaff');
+        Route::POST('/deactivateStaff', 'SettingController@deactivateStaff');
     });
 
-    //?summary
+    //Accountants
+    Route::group(['prefix' => 'accountant'], function () {
+        Route::GET('/listOfAccountants', 'AccountantController@listOfAccountants');
+        Route::GET('/ChartAndTransaction', 'AccountantController@ChartAndTransactions');
+        Route::GET('/summary', 'AccountantController@summary');
+        Route::POST('/activateAccountant',  'AccountantController@activateAccountant');
+        Route::POST('/deactivateAccountant',  'AccountantController@deactivateAccountant');
+    });
 
+    //summary
     Route::group(['prefix' => 'summary'], function () {
 
         Route::GET('/timeGraph/{date?}', 'SummaryController@timeGraph');
@@ -177,42 +198,76 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
         });
     });
 
+    // Dashboard Overview
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/overview', 'DashboardOverviewController@overview');
+        Route::get('/number-of-new-users',  'SpotLightController@numberOfNewUsers');
+        Route::get('/get-users-by-date',  'SpotLightController@getNewUsersByDate');
+        Route::post('/acquisition-cost',  'SpotLightController@getCustomerAcquisitionCost');
+        Route::get('/transaction-history/{type}',  'DashboardOverviewController@transactionHistory');
+        Route::get('/p2p-transaction-history',  'DashboardOverviewController@p2pTransactionHistory');
+        Route::get('/p2p-transactions-by-date',  'DashboardOverviewController@getP2pTransactionHistoryByDate');
+        Route::get('/crypto-transactions-by-date',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
+        Route::get('/users-verification',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
+        Route::get('/users-verification', 'DashboardOverviewController@usersVerification');
+        Route::get('/monthly-analytics', 'SpotLightController@monthlyAnalytics');
+        Route::get('/monthly-earnings', 'DashboardOverviewController@monthlyEarnings');
+        Route::get('/summary', 'DashboardOverviewController@summary');
+
+        Route::GET('/graph-analytics',  'SpotLightController@graphAnalytics');
+        Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
+    });
+
+
+    //Customer Happiness
+    Route::group(['prefix' => 'customerHappiness'], function () {
+
+        Route::GET('/', 'CustomerHappinessController@overview');
+        Route::GET('/user', 'CustomerHappinessController@CustomerHappinessData');
+
+        Route::POST('/activateCustomerHappiness',  'CustomerHappinessController@activateCustomerHappiness');
+        Route::POST('/deactivateCustomerHappiness',  'CustomerHappinessController@deactivateCustomerHappiness');
+   });
+
+
 });
 
 
-Route::group(['middleware' => ['auth:api', 'coo']], function () {
+Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
     Route::get('/test', function(){
         return response()->json(['message' => 'test']);
     });
-    //?Customer Happiness
-    Route::group(['prefix' => 'customerHappiness'], function () {
 
-        Route::GET('/Overview', 'CustomerHappinessController@overview');
-        Route::POST('/addStaff', 'CustomerHappinessController@addStaff');
-        Route::GET('/showStaff/{id}', 'CustomerHappinessController@showStaff');
-        Route::POST('/editStaff', 'CustomerHappinessController@editStaff');
-        Route::GET('/removeStaff/{id}', 'CustomerHappinessController@removeUser');
-
-        Route::GET('/activateUser/{id}/{status}', 'CustomerHappinessController@activateUser');
-   });
-
-   //? Nexus
+   //Nexus
    Route::group(['prefix' => 'nexus'], function () {
-    Route::GET('/nexusOverview/{date?}', 'NexusController@verificationData');
-    Route::GET('/nexusCrypto/{date?}', 'NexusController@NexusCrypto');
-    Route::GET('/nexusGiftCard/{date?}', 'NexusController@NexusGiftCard');
+    Route::GET('/', 'NexusController@verificationData');
+    Route::GET('/nexusCrypto', 'NexusController@NexusCrypto');
+    Route::GET('/nexusGiftCard', 'NexusController@NexusGiftCard');
+    Route::GET('/timeGraph','NexusController@timeGraph');
 
     });
 
-    //? pulseTransactionsAnalytics
+    //pulseTransactionsAnalytics
     Route::group(['prefix' => 'pulse'], function () {
-        Route::GET('/Analytics/{startDate?}/{endDate?}/{transaction_type?}/{transaction_duration?}', 'pulseAnalyticsController@pulseTransactionAnalytics');
+        Route::GET('/Analytics', 'pulseAnalyticsController@pulseTransactionAnalytics');
+        Route::POST('/SortAnalytics', 'pulseAnalyticsController@sortTransactionAnalytics');
+
         Route::GET('/', 'PulseController@index');
+        Route::POST('/modal','PulseController@ModalData');
+        Route::GET('/chart', 'PulseController@chart');
+        Route::POST('/sortChart', 'PulseController@sortChart');
 
     });
-    Route::get('/customer-life', 'CustomerLifeController@index');
 
-    //TODO: Sales Analytics Route
+    //csLifetime
+    Route::group(['prefix' => 'csLifetime'], function () {
+        Route::get('/', 'CustomerLifeController@index');
+        Route::post('/sort', 'CustomerLifeController@sorting');
+        Route::get('/chart', 'CustomerLifeController@ChartData');
+        Route::post('/chartSort', 'CustomerLifeController@sortChartData');
+    });
+
+    //Sales Analytics
     Route::group(['prefix' => 'salesAnalytics'], function () {
         Route::GET('/newUsers/{category?}', 'SalesNewUsersController@loadNewUsers');
         Route::POST('/newUsersSort', 'SalesNewUsersController@sortNewUsers');
@@ -220,11 +275,27 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
          Route::GET('/oldUsers/{category?}', 'SalesOldUsersController@loadOldUsers');
          Route::POST('/oldUsersSort', 'SalesOldUsersController@sortOldUsers');
     });
+
+    Route::group(['prefix' => 'spotlight'], function () {
+        Route::GET('/stats', 'SpotLightController@stats');
+        Route::GET('/recent-transactions', 'SpotLightController@recentTransactions');
+        Route::GET('/staff-on-role', 'SpotLightController@staffOnRole');
+        Route::GET('/monthly-analytics',  'SpotLightController@monthlyAnalytics');
+        Route::GET('/other-graph',  'SpotLightController@otherGraph');
+        Route::POST('/acquisition-cost',  'SpotLightController@getCustomerAcquisitionCost');
+
+        Route::GET('/number-of-users',  'SpotLightController@numberOfNewUsers');
+        Route::GET('/get-users-by-date',  'SpotLightController@getNewUsersByDate');
+
+        Route::GET('/graph-analytics',  'SpotLightController@graphAnalytics');
+        Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
+
+    });
 });
 
-Route::group(['middleware' => ['auth:api', 'customerHappiness']], function(){
+Route::group(['middleware' => ['auth:api', 'customerHappiness', 'cors']], function(){
     Route::prefix('customer-happiness')->group(function () {
-        Route::GET('/', 'CustomerHappinessController@index');
+        Route::GET('/', 'CustomerHappinessController@overview');
         Route::GET('/p2p',  'CustomerHappinessController@p2p');
         Route::GET('/users',  'CustomerHappinessController@userProfile');
         Route::GET('/user/{email}',  'CustomerHappinessController@userSearch');

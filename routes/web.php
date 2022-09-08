@@ -596,7 +596,6 @@ Route::group(['prefix' => 'customerhappiness', 'middleware' => ['auth', 'custome
 
     Route::any('/search-transactions', 'CustomerHappinessController@search_tnx')->name('customerHappiness.search-tnxs');
 
-
     Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('ch.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('ch.junior-summary-details');
     Route::any('/sort-accountant-summary', 'Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
@@ -640,7 +639,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         return redirect()->back()->with("success", "Checked Called Users");
     });
 
-    //?checking responded 
+    //?checking responded
     Route::GET('/CheckingRespondedUserOnline', function () {
         Artisan::call('check:Responded');
         return redirect()->back()->with("success", "Checked Responded Users");

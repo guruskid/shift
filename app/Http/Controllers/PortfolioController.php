@@ -124,7 +124,12 @@ class PortfolioController extends Controller
         $ref = \Str::random(2) . time();
 
         $setting = GeneralSettings::getSetting('NAIRA_WALLET_WITHDRAWALS');
+        // $naira_ = GeneralSettings::getSetting('NAIRA_TRANSACTION_CHARGE');
 
-        return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref', 'daily_rem', 'monthly_rem', 'setting']));
+        $naira_charge = GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE');
+        $tranx = UserController::successFulNairaTrx();
+        
+
+        return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref', 'daily_rem', 'monthly_rem', 'setting','tranx','naira_charge']));
     }
 }

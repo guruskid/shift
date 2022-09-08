@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\BitcoinTransaction;
 use App\Card;
 use App\CardCurrency;
 use App\Country;
 use App\Events\CustomNotification;
-use Illuminate\Http\Request;
+use App\Http\Controllers\BillsPaymentController as BillsPayment;
 use App\Http\Controllers\Controller;
-
+use App\Mail\DantownNotification;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\Notification;
-use App\UtilityTransaction;
-use App\Http\Controllers\BillsPaymentController as BillsPayment;
-use App\Mail\DantownNotification;
 use App\User;
+use App\UtilityTransaction;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+
 // use GuzzleHttp\Client;
 
 class BillsPaymentController extends Controller
@@ -37,7 +36,7 @@ class BillsPaymentController extends Controller
         $sell = CardCurrency::where([
             'card_id' => 102,
             'currency_id' => $rates->id,
-            'buy_sell' => 2
+            'buy_sell' => 2,
         ])->first()->paymentMediums()->first();
         $trade_rate = json_decode($sell->pivot->payment_range_settings);
         $rate_naira = $trade_rate[0]->rate;
@@ -46,8 +45,8 @@ class BillsPaymentController extends Controller
         $btc_rate = $res->data->amount;
         // dd($rate_naira);
 
-        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
-        $url =  "https://vtpass.com/api/service-categories";
+        $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
+        $url = "https://vtpass.com/api/service-categories";
         $response = $client->request('GET', $url);
 
         $body = json_decode($response->getBody()->getContents());
@@ -76,7 +75,7 @@ class BillsPaymentController extends Controller
             CURLOPT_USERPWD => env('VTPASS_USERNAME') . ':' . env('VTPASS_PASSWORD'),
             CURLOPT_TIMEOUT => 120,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $postData
+            CURLOPT_POSTFIELDS => $postData,
         ]);
         $response = curl_exec($ch);
         curl_close($ch);
@@ -100,7 +99,7 @@ class BillsPaymentController extends Controller
 
         $data = [];
         foreach ($products as $key => $value) {
-            array_push($data,$value);
+            array_push($data, $value);
         }
 
         return response()->json([
@@ -114,10 +113,10 @@ class BillsPaymentController extends Controller
 
         $rule = [
             'service_id' => 'required',
-            'bundle'       => 'required',
-            'amount'      => 'required',
-            'phone'  => 'required',
-            'password' => 'required'
+            'bundle' => 'required',
+            'amount' => 'required',
+            'phone' => 'required',
+            'password' => 'required',
         ];
 
         $data = Validator::make($request->all(), $rule);
@@ -125,7 +124,7 @@ class BillsPaymentController extends Controller
         if ($data->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $data->errors()
+                'message' => $data->errors(),
             ]);
         }
 
@@ -190,7 +189,6 @@ class BillsPaymentController extends Controller
         $nt->charge = 0;
         $nt->transaction_type_id = 9;
 
-
         $nt->dr_user_id = Auth::user()->id;
         $nt->dr_wallet_id = $naira_wallet->id;
         $nt->dr_acct_name = $naira_wallet->account_name;
@@ -205,7 +203,6 @@ class BillsPaymentController extends Controller
         $postData['amount'] = $request->amount;
         $postData['phone'] = $phone;
         $postData['request_id'] = $reference;
-
 
         $body = $this->purchase($postData);
 
@@ -223,18 +220,18 @@ class BillsPaymentController extends Controller
             $total_charge = $amount + $charge;
 
             $extras = json_encode([
-                'phone' => $phone
+                'phone' => $phone,
             ]);
 
             UtilityTransaction::create([
-                'user_id'          => Auth::user()->id,
-                'reference_id'     => $reference,
-                'amount'           => $amount,
-                'convenience_fee'  => $charge,
-                'total'            => $total_charge,
-                'type'             => 'Data purchase',
-                'status'           => 'success',
-                'extras'           => $extras
+                'user_id' => Auth::user()->id,
+                'reference_id' => $reference,
+                'amount' => $amount,
+                'convenience_fee' => $charge,
+                'total' => $total_charge,
+                'type' => 'Data purchase',
+                'status' => 'success',
+                'extras' => $extras,
             ]);
 
             $accountants = User::where(['role' => 777])->orWhere(['role' => 889])->where(['status' => 'active'])->get();
@@ -255,7 +252,7 @@ class BillsPaymentController extends Controller
             return response()->json([
                 'success' => true,
                 'response_description' => 'TRANSACTION SUCCESSFUL',
-                'message' => 'Your data purchase to ' . $phone . ' was successful'
+                'message' => 'Your data purchase to ' . $phone . ' was successful',
             ]);
         } elseif ($body['code'] == 016) {
             $nt->status = 'failed';
@@ -266,7 +263,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your data purchase failed'
+                'message' => 'Your data purchase failed',
             ]);
         } elseif ($body['code'] == 021) {
             $nt->status = 'failed';
@@ -277,7 +274,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is locked'
+                'message' => 'Your account is locked',
             ]);
         } elseif ($body['code'] == 022) {
             $nt->status = 'failed';
@@ -288,7 +285,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is suspended'
+                'message' => 'Your account is suspended',
             ]);
         } elseif ($body['code'] == 024) {
             $nt->status = 'failed';
@@ -299,7 +296,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is inactive'
+                'message' => 'Your account is inactive',
             ]);
         } else {
             $nt->status = 'failed';
@@ -310,7 +307,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Please Try again later'
+                'message' => 'Please Try again later',
             ]);
         }
     }
@@ -331,8 +328,8 @@ class BillsPaymentController extends Controller
         $rule = [
             'service_id' => 'required',
             'amount' => 'required',
-            'phone'  => 'required',
-            'password' => 'required'
+            'phone' => 'required',
+            'password' => 'required',
         ];
 
         $data = Validator::make($request->all(), $rule);
@@ -340,7 +337,7 @@ class BillsPaymentController extends Controller
         if ($data->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $data->errors()
+                'message' => $data->errors(),
             ]);
         }
 
@@ -403,7 +400,6 @@ class BillsPaymentController extends Controller
         $nt->charge = 0;
         $nt->transaction_type_id = 9;
 
-
         $nt->dr_user_id = Auth::user()->id;
         $nt->dr_wallet_id = $naira_wallet->id;
         $nt->dr_acct_name = $naira_wallet->account_name;
@@ -412,15 +408,15 @@ class BillsPaymentController extends Controller
         $nt->status = 'pending';
         $nt->save();
 
-        $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
-        $url =  "https://vtpass.com/api/pay";
+        $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
+        $url = "https://vtpass.com/api/pay";
         $response = $client->request('POST', $url, [
             'json' => [
                 'request_id' => $reference,
                 'serviceID' => $request->service_id,
                 'amount' => $request->amount,
-                'phone' => $request->phone
-            ]
+                'phone' => $request->phone,
+            ],
         ]);
         $body = json_decode($response->getBody()->getContents(), true);
 
@@ -438,18 +434,18 @@ class BillsPaymentController extends Controller
             $total_charge = $amount + $charge;
 
             $extras = json_encode([
-                'phone' => $phone
+                'phone' => $phone,
             ]);
 
             UtilityTransaction::create([
-                'user_id'          => Auth::user()->id,
-                'reference_id'     => $reference,
-                'amount'           => $amount,
-                'convenience_fee'  => $charge,
-                'total'            => $total_charge,
-                'type'             => 'Recharge card purchase',
-                'status'           => 'success',
-                'extras'           => $extras
+                'user_id' => Auth::user()->id,
+                'reference_id' => $reference,
+                'amount' => $amount,
+                'convenience_fee' => $charge,
+                'total' => $total_charge,
+                'type' => 'Recharge card purchase',
+                'status' => 'success',
+                'extras' => $extras,
             ]);
 
             $title = 'Recharge card purchase';
@@ -470,7 +466,7 @@ class BillsPaymentController extends Controller
             return response()->json([
                 'success' => true,
                 'response_description' => 'TRANSACTION SUCCESSFUL',
-                'message' => 'Your airtime purchase to ' . $phone . ' was successful'
+                'message' => 'Your airtime purchase to ' . $phone . ' was successful',
             ]);
         } elseif ($body['code'] == 016) {
             $nt->status = 'failed';
@@ -559,24 +555,24 @@ class BillsPaymentController extends Controller
             $charge = $settings['settings_value'];
         }
 
-        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
-            $charge = 0;
-        }
+        // if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
+        //     $charge = 0;
+        // }
 
         $data = Validator::make($r->all(), [
             'service_id' => 'required',
             'amount' => 'required',
             'pin' => 'required',
             'metre_type' => 'required',
-            'metre_number'  => 'required',
-            'email'  => 'required',
-            'phone_number'  => 'required'
+            'metre_number' => 'required',
+            'email' => 'required',
+            'phone_number' => 'required',
         ]);
 
         if ($data->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $data->errors()
+                'message' => $data->errors(),
             ]);
         }
 
@@ -635,7 +631,7 @@ class BillsPaymentController extends Controller
             CURLOPT_USERPWD => env('VTPASS_USERNAME') . ':' . env('VTPASS_PASSWORD'),
             CURLOPT_TIMEOUT => 120,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $postData
+            CURLOPT_POSTFIELDS => $postData,
         ]);
         $response = curl_exec($ch);
         curl_close($ch);
@@ -714,7 +710,6 @@ class BillsPaymentController extends Controller
         //         $nt->current_balance = $n->amount;
         //         $nt->charge = (1 / 100) * $amount;
         //         $nt->transaction_type_id = 11;
-
 
         //         $nt->dr_user_id = Auth::user()->id;
         //         $nt->dr_wallet_id = $n->id;
@@ -800,7 +795,7 @@ class BillsPaymentController extends Controller
 
         $tranasction_status = 'pending';
 
-        if(isset($response['content']) && isset($response['content']['transactions'])) {
+        if (isset($response['content']) && isset($response['content']['transactions'])) {
             $tranasction_status = 'pending';
             $total_charge = $amount + $charge;
             $prev_bal = $n->amount;
@@ -827,17 +822,17 @@ class BillsPaymentController extends Controller
             $nt->status = 'pending';
 
             $uTrax = UtilityTransaction::create([
-                'user_id'          => Auth::user()->id,
-                'reference_id'     => $reference,
-                'amount'           => $amount,
-                'convenience_fee'  => $charge,
-                'total'            => $total_charge,
-                'type'             => 'Electricity purchase',
-                'status'           => $tranasction_status,
-                'extras'           => ''
+                'user_id' => Auth::user()->id,
+                'reference_id' => $reference,
+                'amount' => $amount,
+                'convenience_fee' => $charge,
+                'total' => $total_charge,
+                'type' => 'Electricity purchase',
+                'status' => $tranasction_status,
+                'extras' => '',
             ]);
 
-            if($response['content']['transactions']['status'] == 'delivered') {
+            if ($response['content']['transactions']['status'] == 'delivered') {
                 $tranasction_status = 'success';
 
                 $extras = json_encode([
@@ -874,27 +869,27 @@ class BillsPaymentController extends Controller
                             "to" => $phone_number,
                             "from" => "N-Alert",
                             "channel" => "dnd",
-                            "sms" => "Your electricity purchase from Dantown was successful. Token : ".$response['token'].", Units : ".$response['units'].", Reference code:".$reference."."
+                            "sms" => "Your electricity purchase from Dantown was successful. Token : " . $response['token'] . ", Units : " . $response['units'] . ", Reference code:" . $reference . ".",
                         ],
                     ]);
                     $body = json_decode($response_sms->getBody()->getContents());
                 }
 
                 $title = 'Electricity purchase';
-                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N'.$charge.' for convenience fee.
-                Token: '.$response['token']. ',
-                Unit: '. $response['units']. ',
-                Reference code:'. $reference;
+                $msg_body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N' . $charge . ' for convenience fee.
+                Token: ' . $response['token'] . ',
+                Unit: ' . $response['units'] . ',
+                Reference code:' . $reference;
 
                 $not = Notification::create([
                     'user_id' => Auth::user()->id,
                     'title' => $title,
                     'body' => $msg_body,
                 ]);
-                $body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N'.$charge.' for convenience fee.<br><br>
-                <b>Token: '.$response['token'].  '</b>,<br>
-                <b>Unit: '. $response['units']. '</b>,<br>
-                <b>Reference code:'. $reference;
+                $body = 'Your Dantown wallet has been debited with N' . $amount . ' for electricity recharge and N' . $charge . ' for convenience fee.<br><br>
+                <b>Token: ' . $response['token'] . '</b>,<br>
+                <b>Unit: ' . $response['units'] . '</b>,<br>
+                <b>Reference code:' . $reference;
                 $btn_text = '';
                 $btn_url = '';
 
@@ -906,12 +901,12 @@ class BillsPaymentController extends Controller
                 $resp = [
                     'success' => true,
                     'response_description' => 'TRANSACTION SUCCESSFUL',
-                    'message' => 'Purchase made successfully. Token : '.$response['token']
+                    'message' => 'Purchase made successfully. Token : ' . $response['token'],
                 ];
-            }else {
+            } else {
                 $resp = [
                     'success' => true,
-                    'response_description' => 'TRANSACTION IS BEING PROCESSED'
+                    'response_description' => 'TRANSACTION IS BEING PROCESSED',
                 ];
             }
 
@@ -919,12 +914,12 @@ class BillsPaymentController extends Controller
             $nt->save();
 
             return response()->json($resp);
-        }else {
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'An error occured, please try again',
                 'response_description' => 'TRANSACTION FAILURE',
-                'debug_response' => $response['response_description']
+                'debug_response' => $response['response_description'],
             ]);
         }
     }
@@ -954,18 +949,18 @@ class BillsPaymentController extends Controller
             // $charge = $settings['settings_value'];
         }
 
-        if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() <= 10) {
-            $charge = 0;
-        }
+        // if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
+        //     $charge = 0;
+        // }
 
         $data = Validator::make($r->all(), [
             'cable_provider' => 'required',
             'subscription_plan' => 'required',
-            'smartcard_number'  => 'required',
+            'smartcard_number' => 'required',
             'owner' => 'required',
             'pin' => 'required',
-            'email'  => 'required',
-            'phone_number'  => 'required'
+            'email' => 'required',
+            'phone_number' => 'required',
         ]);
 
         $user = Auth::user();
@@ -976,7 +971,7 @@ class BillsPaymentController extends Controller
         if ($data->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $data->errors()
+                'message' => $data->errors(),
             ]);
         }
 
@@ -1009,10 +1004,10 @@ class BillsPaymentController extends Controller
         $response = $this->purchase($postData);
 
         if (isset($response['content']) && isset($response['content']['transactions'])) {
-                $total_charge = $amount + $charge;
-                $prev_bal = $n->amount;
-                $n->amount -= $total_charge;
-                $n->save();
+            $total_charge = $amount + $charge;
+            $prev_bal = $n->amount;
+            $n->amount -= $total_charge;
+            $n->save();
             if ($response['content']['transactions']['status'] == 'delivered') {
 
                 $nt = new NairaTransaction();
@@ -1025,7 +1020,6 @@ class BillsPaymentController extends Controller
                 $nt->current_balance = $n->amount;
                 $nt->charge = $charge;
                 $nt->transaction_type_id = 12;
-
 
                 $nt->dr_user_id = Auth::user()->id;
                 $nt->dr_wallet_id = $n->id;
@@ -1046,14 +1040,14 @@ class BillsPaymentController extends Controller
                 $nt->save();
 
                 UtilityTransaction::create([
-                    'user_id'          => Auth::user()->id,
-                    'reference_id'     => $reference,
-                    'amount'           => $amount,
-                    'convenience_fee'  => $charge,
-                    'total'            => $total_charge,
-                    'type'             => 'Cable subscription',
-                    'status'           => 'success',
-                    'extras'           => $extras
+                    'user_id' => Auth::user()->id,
+                    'reference_id' => $reference,
+                    'amount' => $amount,
+                    'convenience_fee' => $charge,
+                    'total' => $total_charge,
+                    'type' => 'Cable subscription',
+                    'status' => 'success',
+                    'extras' => $extras,
                 ]);
 
                 $accountants = User::where(['role' => 777])->orWhere(['role' => 889])->where(['status' => 'active'])->get();
@@ -1078,7 +1072,7 @@ class BillsPaymentController extends Controller
                                 "to" => $phone_number,
                                 "from" => "N-Alert",
                                 "channel" => "dnd",
-                                "sms" => "Your cable subscription from Dantown was successful."
+                                "sms" => "Your cable subscription from Dantown was successful.",
                             ],
                         ]);
                         $body = json_decode($response_sms->getBody()->getContents());
@@ -1101,22 +1095,146 @@ class BillsPaymentController extends Controller
                 return response()->json([
                     'success' => true,
                     'response_description' => 'TRANSACTION SUCCESSFUL',
-                    'message' => 'Your cable purchase was successful'
+                    'message' => 'Your cable purchase was successful',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Oops! An error occured, please try again'
+                    'message' => 'Oops! An error occured, please try again',
                 ]);
             }
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Oops! An error occured, please try again'
+                'message' => 'Oops! An error occured, please try again',
             ]);
         }
     }
 
+    //get variation
+
+    public function getVariations($product)
+    {
+        $response = [];
+        if (!empty($product)) {
+            $ch = curl_init(env('LIVE_VTPASS_GET_VARIATIONS_URL') . $product);
+            \curl_setopt_array($ch, [
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 120,
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response, true);
+
+            if (isset($response['response_description']) && $response['response_description'] != "000") {
+                $response = [];
+            } else {
+                $response = isset($response['content']['varations']) ? $response['content']['varations'] : [];
+            }
+        }
+        if (count($response) > 0) {
+            $vars = [];
+            foreach ($response as $vr) {
+                $vars[] = [
+                    'variation_name' => $vr['name'],
+                    'variation_amount' => $vr['variation_amount'],
+                    'variation_code' => $vr['variation_code'],
+                ];
+            }
+            $response = $vars;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ]);
+
+    }
+
+    public function merchantVerify($serviceID, $billersCode)
+    {
+
+        $response = [];
+        if (!empty($serviceID) && !empty($billersCode)) {
+            $post_data = [
+                'serviceID' => $serviceID,
+                'billersCode' => $billersCode,
+            ];
+
+            $ch = curl_init(env('LIVE_VTPASS_MERCHANT_VERIFICATION_URL'));
+            \curl_setopt_array($ch, [
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_USERPWD => env('VTPASS_USERNAME') . ':' . env('VTPASS_PASSWORD'),
+                CURLOPT_TIMEOUT => 120,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $post_data,
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response, true);
+
+            if (isset($response['code']) && $response['code'] != "000") {
+                $response = [];
+            } else {
+                if (isset($response['content']['error'])) {
+                    $response = [];
+                } else {
+                    $response = isset($response['content']) ? $response['content'] : [];
+                }
+            }
+        }
+
+        if ($response === []) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Details Incorrect!',
+            ]);
+
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ]);
+    }
+
+    public static function getProducts($category = "electricity-bill")
+    {
+        $category = (
+            ($category == "airtime") ? "airtime" :
+            (($category == "data") ? "data" :
+                (($category == "tv-subscription") ? "tv-subscription" :
+                    (($category == "electricity-bill") ? "electricity-bill" :
+                        (($category == "insurance") ? "insurance" :
+                            (($category == "education") ? "education" :
+                                (($category == "funds") ? "funds" : ""))))))
+        );
+
+        $response = [];
+        if (!empty($category)) {
+            $ch = curl_init(env('LIVE_VTPASS_GET_PRODUCTS_URL') . $category);
+            \curl_setopt_array($ch, [
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 120,
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+            $response = json_decode($response, true);
+            if (isset($response['response_description']) && $response['response_description'] != "000") {
+                $response = [];
+            } else {
+                $response = $response['content'];
+
+            }
+
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ]);
+    }
     // public function bitcoinAirtime(Request $request)
     // {
     //     $request->validate([
@@ -1127,7 +1245,6 @@ class BillsPaymentController extends Controller
     //         'password' => "required"
     //     ]);
 
-
     //     if ($request->rechargetype == 'self') {
     //         $phone = Auth::user()->country->phonecode . Auth::user()->phone;
     //     } else{
@@ -1137,7 +1254,6 @@ class BillsPaymentController extends Controller
 
     //         $phone = $request->phone;
     //     }
-
 
     //     // dd($phone);
 
@@ -1151,13 +1267,11 @@ class BillsPaymentController extends Controller
     //     $trade_rate = json_decode($sell->pivot->payment_range_settings);
     //     //  dd($trade_rate);
 
-
     //     // dd($trade_rate);
 
     //     // $amt_usd= $request->amount/$trade_rate;
 
     //     $amt_usd= $request->amount/$trade_rate[0]->rate;
-
 
     //     $res = json_decode(file_get_contents("http://api.coinbase.com/v2/prices/spot?currency=USD"));
     //     // dd($res);
@@ -1228,7 +1342,7 @@ class BillsPaymentController extends Controller
     //     $bt->status = 'pending';
     //     $bt->save();
 
-    //     $client = new Client((['auth' => ['dantownrec2@gmail.com', 'D@Nto99btc']]));
+    //     $client = new Client((['auth' => [env('VTPASS_USERNAME'), env('VTPASS_PASSWORD')]]));
     //     $url = "https://sandbox.vtpass.com/api/pay";
     //     $response = $client->request('POST', $url, [
     //         'json' => [
@@ -1241,7 +1355,6 @@ class BillsPaymentController extends Controller
     //     ]);
     //     $body = json_decode($response->getBody()->getContents());
     //     // dd($body);
-
 
     //     if ($body->code == 000) {
     //         $bt->status = 'success';
@@ -1262,8 +1375,6 @@ class BillsPaymentController extends Controller
 
     //         $bt->charge = $charge_usd/$res->data->amount;
     //         $bt->save();
-
-
 
     //         $title = 'Recharge card purchase';
     //         $msg_body = 'Your Dantown wallet has been debited with N' . $request->amount . ' for recharge card purchase';
