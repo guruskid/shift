@@ -4,7 +4,7 @@ use App\ReferralSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
+Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], function () {
 
     //UTILITIES TRANSACTIONS
     Route::group(['prefix' => 'utility-transaction'], function () {
@@ -233,7 +233,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super']], function () {
 });
 
 
-Route::group(['middleware' => ['auth:api', 'coo']], function () {
+Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
     Route::get('/test', function(){
         return response()->json(['message' => 'test']);
     });
@@ -293,7 +293,7 @@ Route::group(['middleware' => ['auth:api', 'coo']], function () {
     });
 });
 
-Route::group(['middleware' => ['auth:api', 'customerHappiness']], function(){
+Route::group(['middleware' => ['auth:api', 'customerHappiness', 'cors']], function(){
     Route::prefix('customer-happiness')->group(function () {
         Route::GET('/', 'CustomerHappinessController@overview');
         Route::GET('/p2p',  'CustomerHappinessController@p2p');

@@ -20,7 +20,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
-        // \App\Http\Middleware\Cors::class,  
+        // \App\Http\Middleware\Cors::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
 
     ];
@@ -82,6 +82,7 @@ class Kernel extends HttpKernel
         'chineseAccountant' => \App\Http\Middleware\chineseAccountant::class,
         'AccountOfficer' => \App\Http\Middleware\AccountOfficer::class,
         'sales' => \App\Http\Middleware\Sales::class,
+        'cors' => \App\Http\Middleware\Cors::class,
     ];
 
     /**
