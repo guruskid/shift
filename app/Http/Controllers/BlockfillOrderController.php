@@ -36,6 +36,7 @@ class BlockfillOrderController extends Controller
             'type' => 'sell',
             'pair' => 'BTC/USDT',
             'quantity' => $transaction->quantity,
+            'usd' => $transaction->amount,
             'rate' => $transaction->card_price,
         ]);
 
