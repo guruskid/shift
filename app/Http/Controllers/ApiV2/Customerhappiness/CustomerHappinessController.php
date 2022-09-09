@@ -92,20 +92,17 @@ class CustomerHappinessController extends Controller
     public function queries()
     {
 
-        $tickets = Ticket::with('subcategories', 'user')->latest('id')->limit(5)->get();
+        $tickets = Ticket::with('subcategories', 'user')->latest('id')->limit(50)->get();
         $c_ticket_count = Ticket::where('status', 'close')->count();
         $o_ticket_count = Ticket::where('status', 'open')->count();
-        $open_ticket = Ticket::with('user')->where('status', 'open')->latest('id')->get()->paginate(10);
-        $closed_ticket = Ticket::with('user')->where('status', 'close')->latest('id')->get()->paginate(10);
+
 
         return response()->json([
             'success' => true,
             'query_summary' => $tickets,
             'query_count_closed' => $c_ticket_count,
             'query_count_open' => $o_ticket_count,
-            'all_open_queries' => $open_ticket,
-            'all_close_queries' => $closed_ticket,
-
+           
         ]);
 
     }
