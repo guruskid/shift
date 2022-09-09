@@ -562,7 +562,7 @@ class UserController extends Controller
 
         $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
 
-        $res = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true");
+        // $res = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true");
 
         return response()->json([
             'success' => true,
