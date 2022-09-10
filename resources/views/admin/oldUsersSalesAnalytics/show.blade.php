@@ -93,6 +93,13 @@
 
                                     <th>Name</th>
                                     <th>Username</th>
+                                    @if($type == 'TradesRespondedUsers')
+                                    <th>Email Address</th>
+                                    <th>Type of Asset</th>
+                                    <th>Value of Asset</th>
+                                    <th>Date</th>
+                                    <th>Agent</th>
+                                    @endif
                                     @if($type == 'calledUsers')
                                     <th>Called Date</th>
                                     <th>Called Time</th>
@@ -114,6 +121,20 @@
                                     <td>{{($t->user) ? $t->user->first_name." ".$t->user->last_name :'' }}</td>
                                     <td>{{($t->user) ?  $t->user->username: '' }}</td>
                                    
+                                    @if($type == 'TradesRespondedUsers')
+                                    <td>{{($t->user) ?  $t->user->email: '' }}</td>
+                                    <td>{{($t->tranxCard) ? $t->tranxCard : $t->card }}</td>
+                                    <td>
+                                        @if (in_array($t->card_id,$giftCardKeys))
+                                            {{ $t->quantity * $t->amount }}
+                                        @else
+                                            {{ $t->amount }}
+                                        @endif
+                                    </td>
+                                    <td>{{ $t->updated_at->format('d M y, h:ia') }}</td>
+                                    <td>{{($t->agent) ? $t->agent->first_name." ".$t->agent->last_name : 'none'  }}</td>
+                                    @endif
+
                                     @if($type == 'calledUsers')
                                         <td>{{ $t->called_date->format('d M y') }}</td>
                                         <td>{{ $t->called_date->format('h:ia') }}</td>
