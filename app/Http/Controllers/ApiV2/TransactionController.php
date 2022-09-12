@@ -70,9 +70,15 @@ class TransactionController extends Controller
 
         $allTranx = collect($tranxData,$utilData,$p2pData)
         ->sortByDesc('updated_at');
+
+        $transaction = array();
+        foreach($allTranx as $at)
+        {
+            $transaction[] = $at;
+        }
         return response()->json([
             'success' => true,
-            'allTransactions' => $allTranx,
+            'allTransactions' => $transaction,
         ]);
     }
 
