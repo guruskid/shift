@@ -97,11 +97,9 @@ class OldUsersSalesAnalytics extends Controller
     public function index($type = null, Request $request)
     {
         $request->session()->forget(['SortingKeys','startKey','endKey']);
-        //*The base loading conversion type is unique
         $conversionType = "unique";
-        //*if the type is null then assign the variable CalledUsers
+        
         $type = ($type != null) ? $type : "calledUsers";
-        //*getting sales old users 
         $salesOldUsers = User::where('role',557)->get();
 
         $start_date = now()->format('Y-m-d');
