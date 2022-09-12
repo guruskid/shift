@@ -18,12 +18,11 @@ class BlockfillOrderController extends Controller
         $url = env('BLOCKFILL_URL') . '/dantown/v1/order/place';
         $res = $client->request('POST', $url, [
             'json' => [
-                "orderType" => "Limit",
-                "price" => round($transaction->card_price),
+                "orderType" => "Market",
                 "quantity" => round($transaction->quantity, 6),
                 "side" => "Sell",
                 "symbol" => "BTC/USDT",
-                "timeInForce" => "GoodTillCancel"
+                "timeInForce" => "ImmediateOrCancel"
             ],
         ]);
 
