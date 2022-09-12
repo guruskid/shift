@@ -125,7 +125,11 @@ class OldUsersSalesAnalytics extends Controller
         $totalRespondedUserTotal = $this->RespondedTotal($RespondedUsers);
         $respondedTranxVolume = $totalRespondedUserTotal->sum('amount');
 
-        $targetCovered = $this->targetCovered($respondedTranxVolume,null);
+        $targetRespondedUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')
+        ->whereMonth('called_date',now()->month)->where('Current_Cycle','Responded')->get();
+        $targetTranxVolume = $this->RespondedTotal($targetRespondedUsers)->sum('amount');
+
+        $targetCovered = $this->targetCovered($targetTranxVolume,null);
 
         $respondedTranxNo = $respondedTransactions->count();
         $averageTimeBetweenCalls = $this->sortAverageTimeBetweenCalls($start_date,$end_date,null);
@@ -269,7 +273,8 @@ class OldUsersSalesAnalytics extends Controller
         }
         $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($noOfRespondedUsers/$noOfCalledUsers)*100;
 
-        $totalRespondedUserTotal = $this->RespondedTotal($RespondedUsers);
+        $RespondedUsersTotal = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded')->get();
+        $totalRespondedUserTotal = $this->RespondedTotal($RespondedUsersTotal);
         $respondedTranxVolume = $totalRespondedUserTotal->sum('amount');
 
         $targetCovered = ($sales_id != null) ? $this->targetCovered($respondedTranxVolume,$sales_id) : $this->targetCovered($respondedTranxVolume,null);

@@ -17,6 +17,7 @@ use App\NairaTransaction;
 use App\Exports\DownloadUsers;
 use App\Exports\UsdtTransactions;
 use App\Exports\UsdtTransactionsExport;
+use App\Exports\UserDataTransaction;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\Http\Controllers\Admin\SalesController;
 use App\NairaTrade;
@@ -1206,7 +1207,13 @@ class AdminController extends Controller
     public function users(Request $request)
     {
         $request->session()->forget('search');
-        $users = User::orderBy('created_at', 'desc')->paginate(1000);
+        $users = User::with('nairaWallet')->orderBy('created_at', 'desc')->get();
+
+        if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
+            return Excel::download(new UserDataTransaction($users), 'userData.xlsx');
+        }
+
+        $users = $users->paginate(1000);
         return view('admin.users', compact(['users']));
     }
     public function user_search(Request $request)
