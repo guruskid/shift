@@ -263,7 +263,8 @@ class AuthController extends Controller
             // 'last_name' => 'string|required',
             'username' => 'string|required|unique:users,username',
             'country_id' => 'required|integer',
-            'phone' => 'required'
+            'phone' => 'required',
+            'referal_code' => 'string|required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -287,7 +288,8 @@ class AuthController extends Controller
             'referrer' => $rc,
             'password' => Hash::make($input['password']),
             'platform' => $input['platform'],
-            'fcm_id' =>  request('fcm_id')
+            'fcm_id' =>  request('fcm_id'),
+            'referal_code' => $input['referal_code'],
         ];
 
         if (isset($input['referral_code'])) {

@@ -416,17 +416,21 @@ class TradeController extends Controller
         // }
 
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'deposit', 'status' => 'waiting'])->get();
-        $pinCheck = User::where(Auth::user()->pin, '!=', null);
+        $pinCheck = User::where('id', Auth::user()->id)->first();
+
+        // dd($pinCheck->pin);
 
         if (count($trade) > 0) {
             $pendingDeposit = true;
         }
 
-        if ($pinCheck) {
-            $pin = true;
-        } else {
-            $pin = false;
-        }
+
+        $pin = $pinCheck->pin;
+        // if ($pinCheck) {
+        //     $pin = true;
+        // } else {
+        //     $pin = NULL;
+        // }
 
         $user_data = [
             'success' => true,
