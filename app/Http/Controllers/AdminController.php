@@ -1229,7 +1229,12 @@ class AdminController extends Controller
                 ->orWhere('phone', 'LIKE', '%' . $search . '%')
                 ->orWhere('phone', 'LIKE', '%' . $search . '%')
                 ->orWhere('id', 'LIKE', '%' . $search . '%')
-                ->paginate(1000);
+                ->get();
+                if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
+                    return Excel::download(new UserDataTransaction($users), 'userData.csv');
+                }
+
+            $users = $users->paginate(1000);
             return view('admin.users', compact(['users']));
         }
     }
