@@ -1231,7 +1231,7 @@ class AdminController extends Controller
                 ->orWhere('id', 'LIKE', '%' . $search . '%')
                 ->get();
                 if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
-                    return Excel::download(new UserDataTransaction($users), 'userData.csv');
+                    return Excel::download(new UserDataTransaction($users), 'userData.xlsx');
                 }
 
             $users = $users->paginate(1000);
