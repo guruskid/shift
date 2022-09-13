@@ -61,50 +61,54 @@
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="widget widget-chart-one">
-                                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-4 mb-3"
-                                    style="border-bottom: 1px solid #C9CED6;">
-                                    <div class="list-cards-title primary-color">
-                                        <a href="#">
-                                            <span>
-                                                <svg width="31" height="31" viewBox="0 0 41 41" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <circle cx="20.5" cy="20.5" r="20.5" fill="#000070"
-                                                        fill-opacity="0.25" />
-                                                    <path
-                                                        d="M24.41 15.41L23 14L17 20L23 26L24.41 24.59L19.83 20L24.41 15.41Z"
-                                                        fill="#000070" />
-                                                </svg>
-                                            </span>
-                                            <a href="{{ route('user.assets') }}"><span class="ml-1" style="color: rgba(0, 0, 112, 0.75);font-size:16px;">Back
-                                                to
-                                                cards</span></a>
-                                        </a>
+                    @if ($hara_active == 0)
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="widget widget-chart-one">
+                                    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-4 mb-3"
+                                        style="border-bottom: 1px solid #C9CED6;">
+                                        <div class="list-cards-title primary-color">
+                                            <a href="#">
+                                                <span>
+                                                    <svg width="31" height="31" viewBox="0 0 41 41" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <circle cx="20.5" cy="20.5" r="20.5" fill="#000070"
+                                                            fill-opacity="0.25" />
+                                                        <path
+                                                            d="M24.41 15.41L23 14L17 20L23 26L24.41 24.59L19.83 20L24.41 15.41Z"
+                                                            fill="#000070" />
+                                                    </svg>
+                                                </span>
+                                                <a href="{{ route('user.assets') }}"><span class="ml-1" style="color: rgba(0, 0, 112, 0.75);font-size:16px;">Back
+                                                    to
+                                                    cards</span></a>
+                                            </a>
+                                        </div>
                                     </div>
+
+                                    @if($buy_sell == 1)
+                                        {{-- Sell --}}
+                                        @if($sell_gc_setting['settings_value'] == 1)
+                                            <gift-card-component :card="{{ $card_rates }}" :buy_sell="{{ $buy_sell }}" ></gift-card-component>
+                                        @else
+                                            <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$sell_gc_setting['notice']}}</h4>
+                                        @endif
+                                    @endif
+
+                                    @if($buy_sell == 2)
+                                        @if($buy_gc_setting['settings_value'] == '1')
+                                            {{-- Buy --}}
+                                            <gift-card-component :card="{{ $card_rates }}" :buy_sell="{{ $buy_sell }}" ></gift-card-component>
+                                        @else
+                                            <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$buy_gc_setting['notice']}}</h4>
+                                        @endif
+                                    @endif
                                 </div>
-
-                                @if($buy_sell == 1)
-                                    {{-- Sell --}}
-                                    @if($sell_gc_setting['settings_value'] == 1)
-                                        <gift-card-component :card="{{ $card_rates }}" :buy_sell="{{ $buy_sell }}" ></gift-card-component>
-                                    @else
-                                        <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$sell_gc_setting['notice']}}</h4>
-                                    @endif
-                                @endif
-
-                                @if($buy_sell == 2)
-                                    @if($buy_gc_setting['settings_value'] == '1')
-                                        {{-- Buy --}}
-                                        <gift-card-component :card="{{ $card_rates }}" :buy_sell="{{ $buy_sell }}" ></gift-card-component>
-                                    @else
-                                        <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$buy_gc_setting['notice']}}</h4>
-                                    @endif
-                                @endif
                             </div>
                         </div>
-                    </div>
+                    @else
+                        --
+                    @endif
                 </div>
             </div>
             <upload-modal-component></upload-modal-component>

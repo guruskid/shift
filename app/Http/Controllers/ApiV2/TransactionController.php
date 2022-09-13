@@ -61,18 +61,26 @@ class TransactionController extends Controller
     {
         $tranx = Auth::user()->transactions;
         $tranxData = CryptoGiftcardTransactionResource::collection($tranx);
+        $tranxData = collect($tranxData);
 
         $utilTranx = Auth::user()->utilityTransaction;
         $utilData = UtilityTransactionResource::collection($utilTranx);
+        $utilData = collect($utilData);
 
         $p2pTranx = Auth::user()->nairaTrades;
         $p2pData = NairaTradeResource::collection($p2pTranx);
+        $p2pData = collect($p2pData);
 
-        $allTranx = collect($tranxData,$utilData,$p2pData)
-        ->sortByDesc('updated_at');
+        $allTranx = collect()->concat($tranxData)->concat($utilData)->concat($p2pData)->sortByDesc('created_at');
+
+        $transaction = array();
+        foreach($allTranx as $at)
+        {
+            $transaction[] = $at;
+        }
         return response()->json([
             'success' => true,
-            'allTransactions' => $allTranx,
+            'allTransactions' => $transaction,
         ]);
     }
 

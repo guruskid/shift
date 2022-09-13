@@ -9,6 +9,7 @@ use App\Currency;
 use App\Events\NewTransaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GeneralSettings;
 use App\Http\Resources\CardResource;
 use App\Mail\DantownNotification;
 use App\Notification;
@@ -26,9 +27,11 @@ class TradeController extends Controller
     public function assets()
     {
         $assets = Card::where('buyable', 1)->orWhere('sellable', 1)->get();
+        $hara_active = GeneralSettings::getSettingValue('HARA_ACTIVE');
 
         return response()->json([
             'success' => true,
+            'hara_active' => ($hara_active == 1) ? true : false,
             'data' => $assets
         ]);
     }

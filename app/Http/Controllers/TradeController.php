@@ -70,8 +70,9 @@ class TradeController extends Controller
 
         $sell_gc_setting = GeneralSettings::getSetting('GIFTCARD_SELL');
         $buy_gc_setting = GeneralSettings::getSetting('GIFTCARD_BUY');
+        $hara_active = GeneralSettings::getSettingValue('HARA_ACTIVE');
 
-        return view('user.gift_card_calculator', compact(['card_rates', 'buy_sell', 'sell_gc_setting', 'buy_gc_setting']));
+        return view('user.gift_card_calculator', compact(['card_rates', 'buy_sell', 'sell_gc_setting', 'buy_gc_setting', 'card_name','hara_active']));
     }
 
     public function bitcoin($card_id, $buy_sell = 1)
