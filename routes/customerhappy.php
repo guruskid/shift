@@ -37,6 +37,8 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
 
         Route::get('/transaction/{id}', 'CustomerHappinessController@transPerUser');
 
+        Route::get('/transactionsall', 'CustomerHappinessController@recentTransactions');
+
         ;
     });
 

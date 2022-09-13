@@ -4,6 +4,8 @@ namespace App\Http\Controllers\ApiV2\Customerhappiness;
 
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
+use App\NairaTransaction;
+use App\NairaWallet;
 use App\Ticket;
 use App\TicketCategory;
 use App\Transaction;
@@ -92,17 +94,16 @@ class CustomerHappinessController extends Controller
     public function queries()
     {
 
-        $tickets = Ticket::with('subcategories', 'user')->latest('id')->limit(50)->get();
+        $tickets = Ticket::with('subcategories', 'user')->latest('id')->get();
         $c_ticket_count = Ticket::where('status', 'close')->count();
         $o_ticket_count = Ticket::where('status', 'open')->count();
-
 
         return response()->json([
             'success' => true,
             'query_summary' => $tickets,
             'query_count_closed' => $c_ticket_count,
             'query_count_open' => $o_ticket_count,
-           
+
         ]);
 
     }
@@ -244,7 +245,7 @@ class CustomerHappinessController extends Controller
             $year = $single->format('Y');
             $ticket = Ticket::where(DB::raw('month(created_at)'), $month)->where(DB::raw('year(created_at)'), $year)->with('user')->latest('id')->get();
         }
-           $data = $ticket;
+        $data = $ticket;
         return response()->json([
             'success' => true,
             'tickets' => $data,
@@ -322,7 +323,9 @@ class CustomerHappinessController extends Controller
     public function transPerUser($id)
     {
         // $count = Transaction::where('user_id', $id)->count();
-        $transperuser = Transaction::where('user_id', $id)->latest('id')->paginate(10);
+        // $transperuser = Transaction::with('')where('user_id', $id)->latest('id')->paginate(10);
+
+        $transperuser = NairaTransaction::where('user_id', $id)->orWhere('dr_user_id', Auth::user()->id)->latest()->with('transactionType')->get();
         // $verification = Verification::where('user_id', $id)->where('status', 'success');
 
         // if($verification->type == "ID Card"){
@@ -343,18 +346,53 @@ class CustomerHappinessController extends Controller
 
     }
 
+
+
+    public function recentTransactions() {
+
+        $tranx = Transaction::join('users', 'transactions.user_id', '=','user_id')->get('first_name','last_name','username','dp','transactions.id','user_id','card as transaction','amount_paid as amount','transactions.amount as value')    ;
+        // $tranx = Transaction::table('transactions')
+        //     ->join('users', 'transactions.user_id', '=','user_id')
+
+        //     ->select('first_name','last_name','username','dp','transactions.id','user_id','card as transaction','amount_paid as amount','transactions.amount as value',DB::raw('0 as prv_bal'),DB::raw('0 as cur_bal'),'transactions.status',DB::raw('date(transactions.created_at) as date','transactions.created_at as created_at'))
+        //     ;
+
+        dd($tranx);
+        // $tranx2 = DB::table('naira_transactions')
+        //     ->join('users', 'naira_transactions.user_id', '=', 'user_id')
+        //     ->select('first_name','last_name','username','dp','naira_transactions.id','user_id','type as transaction','amount_paid','naira_transactions.amount as value','previous_balance as prv_bal','current_balance as cur_bal','naira_transactions.status',DB::raw('date(naira_transactions.created_at) as date','naira_transactions.created_at as created_at'));
+
+        // $mergeTbl = $tranx->unionAll($tranx2);
+        // DB::table(DB::raw("({$mergeTbl->toSql()}) AS mg"))->mergeBindings($mergeTbl);
+
+        // $tranx = $mergeTbl
+        // ->orderBy('date','desc')
+        // ->paginate(20);
+
+        // return response()->json([
+        //     'success' => true,
+        //     'data' => $tranx
+        // ],200);
+    }
+
     // Each user details
 
     public function userInfo($id)
     {
 
-        $user = User::with('nairaWallet', 'nairaTrades')->where('id', $id)->first();
+        $user = User::where('id', $id)->first();
         $verification = Verification::where('user_id', $id)->first();
+        $nairaBalance = NairaWallet::where('user_id', $id)->first();
+        $lastTraded = NairaTrade::where('user_id', $id)->latest()->first();
 
-        if ($verification->type == "ID Card" && $verification->status == "success") {
-            $level = 3;
-        } elseif ($verification->type == "Address" && $verification->status == "success") {
-            $level = 2;
+        if ($verification && $user->phone_verified_at != null) {
+            if ($verification->type == "ID Card" && $verification->status == "success") {
+                $level = 3;
+            } elseif ($verification->type == "Address" && $verification->status == "success") {
+                $level = 2;
+            } else {
+                $level = 1;
+            }
         } else {
             $level = 1;
         }
@@ -362,6 +400,8 @@ class CustomerHappinessController extends Controller
         return response()->json([
             'success' => true,
             'user' => $user,
+            'balance' => $nairaBalance->amount,
+            'last_traded' => $lastTraded->created_at,
             'verification_level' => $level,
 
         ]);
