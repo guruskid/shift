@@ -17,6 +17,7 @@ class NairaTradeResource extends JsonResource
         return [
             'id' => $this->id,
             'transactionType' =>"payBridge",
+            'card' => 'PayBridge '.ucwords($this->type),
             'type' => $this->type,
             'amountNGN' =>$this->amount,
             'status' => $this->status,

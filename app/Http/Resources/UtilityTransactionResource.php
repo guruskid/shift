@@ -17,7 +17,7 @@ class UtilityTransactionResource extends JsonResource
         return [
             'id' => $this->id,
             'transactionType' =>"utilities",
-            'type' => $this->type,
+            'card' => $this->type,
             'amountNGN' =>$this->amount,
             'status' => $this->status,
             'extras' => $this->extras,
