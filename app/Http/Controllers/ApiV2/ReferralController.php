@@ -375,6 +375,23 @@ class ReferralController extends Controller
         ]);
     }
 
+    // Get Referral Code
+    public function getReferralCode(){
+        if(Auth::user()->referral_code == NULL){
+            return response()->json([
+                'success' => false,
+                'mgs' => "You don't have a referral code yet. Create one to get a referral code"
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'code' => Auth::user()->referral_code
+        ]);
+
+
+    }
+
     public static function referralBonusTest()
     {
         $status = ReferralSettingsController::status();
