@@ -4,7 +4,6 @@ namespace App\Http\Controllers\ApiV2\Customerhappiness;
 
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
-use App\NairaTransaction;
 use App\NairaWallet;
 use App\Ticket;
 use App\TicketCategory;
@@ -133,8 +132,8 @@ class CustomerHappinessController extends Controller
             'channel' => $req->channel,
         ]);
 
-        $category = $this->getCategory($req->subcategory_id);
-        $subcartegory = $this->getSubCategory($req->subcategory_id);
+        // $category = $this->getCategory($req->subcategory_id);
+        // $subcartegory = $this->getSubCategory($req->subcategory_id);
 
         // $message = "Category: " . $category . "\n" .
         // "SubCategory: " . $subcartegory . "\n" .
@@ -190,7 +189,7 @@ class CustomerHappinessController extends Controller
     public function querySort($status)
     {
 
-        $ticket = Ticket::with('user')->where('status', $status)->latest('id')->get()->paginate(10);
+        $ticket = Ticket::with('user')->where('status', $status)->latest('id')->get()->paginate(20);
 
         return response()->json([
             'success' => true,
@@ -266,7 +265,7 @@ class CustomerHappinessController extends Controller
 
     public function p2pTran()
     {
-        $transactions = NairaTrade::with('user')->latest('id')->paginate(10);
+        $transactions = NairaTrade::with('user', 'naria_transactions')->latest('id')->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -320,62 +319,32 @@ class CustomerHappinessController extends Controller
 
     }
 
+    // Each user details
+
+
     public function transPerUser($id)
     {
-        // $count = Transaction::where('user_id', $id)->count();
-        // $transperuser = Transaction::with('')where('user_id', $id)->latest('id')->paginate(10);
+        $tranx = DB::table('transactions')
+            ->join('users', 'transactions.user_id', '=', 'users.id')
+        // ->join('naira_wallets', 'transactions.user_id', '=', 'naira_wallets.id')
+            ->select('first_name', 'last_name', 'username', 'dp', 'transactions.id', 'user_id', 'card as transaction', 'amount_paid as amount', 'transactions.amount as value', DB::raw('0 as prv_bal'), DB::raw('0 as cur_bal'), 'transactions.status', DB::raw('date(transactions.created_at) as date', 'transactions.created_at as created_at'))
+        ;
+        $tranx2 = DB::table('naira_transactions')
+            ->join('users', 'naira_transactions.user_id', '=', 'users.id')
+            ->select('first_name', 'last_name', 'username', 'dp', 'naira_transactions.id', 'user_id', 'type as transaction', 'amount_paid', 'naira_transactions.amount as value', 'previous_balance as prv_bal', 'current_balance as cur_bal', 'naira_transactions.status', DB::raw('date(naira_transactions.created_at) as date', 'naira_transactions.created_at as created_at'));
 
-        $transperuser = NairaTransaction::where('user_id', $id)->orWhere('dr_user_id', Auth::user()->id)->latest()->with('transactionType')->get();
-        // $verification = Verification::where('user_id', $id)->where('status', 'success');
+        $mergeTbl = $tranx->unionAll($tranx2);
+        DB::table(DB::raw("({$mergeTbl->toSql()}) AS mg"))->mergeBindings($mergeTbl);
 
-        // if($verification->type == "ID Card"){
-        //     $level = 3;
-        // }
-        // elseif ($verification->type == "Address") {
-        //     $level = 2;
-        // }
-
-        // dd($verification->type);
+        $tranx = $mergeTbl
+            ->where('transactions.user_id', [$id])
+            ->orderBy('date', 'desc');
 
         return response()->json([
             'success' => true,
-            'transactions' => $transperuser,
-            // 'numberoftrn' => $count
-
-        ]);
-
+            'data' => $tranx,
+        ], 200);
     }
-
-
-
-    public function recentTransactions() {
-
-        $tranx = Transaction::join('users', 'transactions.user_id', '=','user_id')->get('first_name','last_name','username','dp','transactions.id','user_id','card as transaction','amount_paid as amount','transactions.amount as value')    ;
-        // $tranx = Transaction::table('transactions')
-        //     ->join('users', 'transactions.user_id', '=','user_id')
-
-        //     ->select('first_name','last_name','username','dp','transactions.id','user_id','card as transaction','amount_paid as amount','transactions.amount as value',DB::raw('0 as prv_bal'),DB::raw('0 as cur_bal'),'transactions.status',DB::raw('date(transactions.created_at) as date','transactions.created_at as created_at'))
-        //     ;
-
-        dd($tranx);
-        // $tranx2 = DB::table('naira_transactions')
-        //     ->join('users', 'naira_transactions.user_id', '=', 'user_id')
-        //     ->select('first_name','last_name','username','dp','naira_transactions.id','user_id','type as transaction','amount_paid','naira_transactions.amount as value','previous_balance as prv_bal','current_balance as cur_bal','naira_transactions.status',DB::raw('date(naira_transactions.created_at) as date','naira_transactions.created_at as created_at'));
-
-        // $mergeTbl = $tranx->unionAll($tranx2);
-        // DB::table(DB::raw("({$mergeTbl->toSql()}) AS mg"))->mergeBindings($mergeTbl);
-
-        // $tranx = $mergeTbl
-        // ->orderBy('date','desc')
-        // ->paginate(20);
-
-        // return response()->json([
-        //     'success' => true,
-        //     'data' => $tranx
-        // ],200);
-    }
-
-    // Each user details
 
     public function userInfo($id)
     {

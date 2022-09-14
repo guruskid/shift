@@ -16,7 +16,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
 
 
 
-        Route::get('/transactions', 'CustomerHappinessController@transactions');
+        Route::get('/transactions', 'CustomerHappinessController@alltransaction');
 
         Route::get('/p2p', 'CustomerHappinessController@p2pTran');
         Route::get('/p2p/{status}', 'CustomerHappinessController@sortP2pbyStatus');
@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
 
         Route::get('/transaction/{id}', 'CustomerHappinessController@transPerUser');
 
-        Route::get('/transactionsall', 'CustomerHappinessController@recentTransactions');
+        Route::get('/trans', 'CustomerHappinessController@recentTransactions');
 
         ;
     });
