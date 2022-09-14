@@ -354,39 +354,41 @@ class BtcWalletController extends Controller
                 ]
             ]);
 
-            if ($charge > 0.0000001) {
-                $send_charge = $client->request('POST', $url, [
-                    'headers' => ['x-api-key' => env('TATUM_KEY')],
-                    'json' =>  [
-                        "senderAccountId" => $hd_wallet->account_id,
-                        "recipientAccountId" => $charges_wallet->account_id,
-                        "amount" => number_format((float) $charge, 9),
-                        "anonymous" => false,
-                        "compliant" => false,
-                        "transactionCode" => uniqid(),
-                        "paymentId" => uniqid(),
-                        "baseRate" => 1,
-                        "senderNote" => 'hidden'
-                    ]
-                ]);
-            }
+            //SEND EVERYTHING TO BLOCKFILL
+            
+            // if ($charge > 0.0000001) {
+            //     $send_charge = $client->request('POST', $url, [
+            //         'headers' => ['x-api-key' => env('TATUM_KEY')],
+            //         'json' =>  [
+            //             "senderAccountId" => $hd_wallet->account_id,
+            //             "recipientAccountId" => $charges_wallet->account_id,
+            //             "amount" => number_format((float) $charge, 9),
+            //             "anonymous" => false,
+            //             "compliant" => false,
+            //             "transactionCode" => uniqid(),
+            //             "paymentId" => uniqid(),
+            //             "baseRate" => 1,
+            //             "senderNote" => 'hidden'
+            //         ]
+            //     ]);
+            // }
 
-            if ($service_fee > 0.0000001) {
-                $send_service = $client->request('POST', $url, [
-                    'headers' => ['x-api-key' => env('TATUM_KEY')],
-                    'json' =>  [
-                        "senderAccountId" => $hd_wallet->account_id,
-                        "recipientAccountId" => $service_wallet->account_id,
-                        "amount" => number_format((float) $service_fee, 9),
-                        "anonymous" => false,
-                        "compliant" => false,
-                        "transactionCode" => uniqid(),
-                        "paymentId" => uniqid(),
-                        "baseRate" => 1,
-                        "senderNote" => 'hidden'
-                    ]
-                ]);
-            }
+            // if ($service_fee > 0.0000001) {
+            //     $send_service = $client->request('POST', $url, [
+            //         'headers' => ['x-api-key' => env('TATUM_KEY')],
+            //         'json' =>  [
+            //             "senderAccountId" => $hd_wallet->account_id,
+            //             "recipientAccountId" => $service_wallet->account_id,
+            //             "amount" => number_format((float) $service_fee, 9),
+            //             "anonymous" => false,
+            //             "compliant" => false,
+            //             "transactionCode" => uniqid(),
+            //             "paymentId" => uniqid(),
+            //             "baseRate" => 1,
+            //             "senderNote" => 'hidden'
+            //         ]
+            //     ]);
+            // }
         } catch (\Exception $e) {
             //set transaction status to failed
             \Log::info($e->getResponse()->getBody());
