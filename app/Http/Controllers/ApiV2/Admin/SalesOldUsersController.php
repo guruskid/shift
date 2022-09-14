@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers\ApiV2\Admin;
 
+use App\Card;
+use App\CryptoRate;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ApiV2\Admin\CalledUserResource;
+use App\Http\Resources\ApiV2\Admin\RespondedTransactionResource;
+use App\Http\Resources\ApiV2\Admin\RespondedUserResource;
 use App\SalesTimestamp;
+use App\TargetSettings;
 use App\Transaction;
 use App\User;
 use App\UserTracking;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Validator;
 
 class SalesOldUsersController extends Controller
@@ -24,17 +31,28 @@ class SalesOldUsersController extends Controller
         $end_date = now()->format('Y-m-d');
         $end_date = Carbon::parse($end_date." 23:59:59");
 
-        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
+        $CalledUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')->where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
-        $RespondedUsers = UserTracking::where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
+        $RespondedUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')->where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
         $noOfRespondedUsers = $RespondedUsers->count();
 
         $respondedTransactions = $this->RespondedUnique($RespondedUsers);
 
-        $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($this->RespondedUnique($RespondedUsers)->count()/$noOfCalledUsers)*100;
         $respondedTranxNo = $respondedTransactions->count();
-        $respondedTranxVolume = $respondedTransactions->sum('amount');
+        $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($noOfRespondedUsers/$noOfCalledUsers)*100;
+
+        $RespondedUsersTotal = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')->where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
+        $totalRespondedUserTotal = $this->RespondedTotal($RespondedUsersTotal);
+
+        $respondedTranxVolume = $totalRespondedUserTotal->sum('amount');
+
+        $targetRespondedUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')
+        ->whereMonth('called_date',now()->month)->where('Current_Cycle','Responded')->get();
+        $targetTranxVolume = $this->RespondedTotal($targetRespondedUsers)->sum('amount');
+
+        $targetCovered = $this->targetCovered($targetTranxVolume,null);
+
         $averageTimeBetweenCalls = $this->sortAverageTimeBetweenCalls($start_date,$end_date,null);
 
         $totalCallDuration = $CalledUsers->sum('call_duration');
@@ -42,20 +60,34 @@ class SalesOldUsersController extends Controller
 
         $totalCallDuration = ($totalCallDuration == 0) ? 0 : CarbonInterval::seconds($totalCallDuration)->cascade()->forHumans();
         $averageCallDuration = ($averageCallDuration == 0) ? 0 : CarbonInterval::seconds($averageCallDuration)->cascade()->forHumans();
+
+        $quarterlyInactiveUsersNo = UserTracking::where('Current_Cycle','QuarterlyInactive')->count();
+
         if($category == 'calledUsersNo' OR $category == null)
         {
-            $table_data = $CalledUsers;
-            $this->CallDuration($table_data);
-            $table_data = $table_data->map->only(['id','user_id','name','called_date','called_time','callDuration','remark','dp'])->all();
+            $table_data = CalledUserResource::collection($CalledUsers);
             $table_data = collect($table_data);
         }
         if($category == 'respondedUsersNo'){
-            $table_data = $RespondedUsers;
-            $this->CallDuration($table_data);
-            $table_data = $table_data->map->only(['id','user_id','name','username','signUpDate','Responded_Cycle','Recalcitrant_Cycle','lastTranxDate','lastTranxVolume','dp'])->all();
+            $table_data = RespondedUserResource::collection($RespondedUsers);
             $table_data = collect($table_data);
         }
+        if($category == 'respondedUsersTrades')
+        {
+            $giftCardKeys = Card::where('is_crypto',0)->get();
+            $giftCardKeys = $giftCardKeys->pluck('id')->toArray();
+
+            $table_data = RespondedTransactionResource::customCollection($respondedTransactions, $giftCardKeys);
+            $table_data = collect($table_data);
+
+        }
         $table_data = $table_data->sortByDesc('updated_at');
+        $tranx = array();
+
+        foreach($table_data as $td)
+        {
+            $tranx[] = $td; 
+        }
 
         return response()->json([
             'success' => true,
@@ -63,12 +95,14 @@ class SalesOldUsersController extends Controller
             'calledUsersNo' => $noOfCalledUsers,
             'respondedUsersNo' => $noOfRespondedUsers,
             'respondedUsersTrades' => $respondedTranxNo,
-            'callPercentageEffectiveness' => $callPercentageEffectiveness,
-            'respondedUsersVolume' => $respondedTranxVolume,
+            'callPercentageEffectiveness' => number_format($callPercentageEffectiveness,2,".",","),
+            'respondedUsersVolume' => number_format($respondedTranxVolume,2,".",","),
             'averageCallDuration' => $averageCallDuration,
             'totalCallDuration' => $totalCallDuration,
             'averageTimeBetweenCalls' => $averageTimeBetweenCalls,
-            'data' => $table_data,
+            'quarterlyInactiveUsers' => number_format($quarterlyInactiveUsersNo),
+            'targetCovered' => number_format($targetCovered,2,".",","),
+            'data' => $tranx,
         ], 200);
     }
 
@@ -80,17 +114,11 @@ class SalesOldUsersController extends Controller
         {
             if(empty($data['start_date']))
             {
-                return response()->json([
-                    'success' => false,
-                    'message' => "start date field is empty"
-                ],401);
+                return "start date field is empty";
             }
             if(empty($data['end_date']) )
             {
-                return response()->json([
-                    'success' => false,
-                    'message' => "end date field is empty"
-                ],401);
+                return "end date field is empty";
             }
 
             $start_date = Carbon::parse($data['start_date']." 00:00:00");
@@ -100,10 +128,7 @@ class SalesOldUsersController extends Controller
         {
             if(empty($data['days']))
             {
-                return response()->json([
-                    'success' => false,
-                    'message' => "days field is empty"
-                ],401);
+                return "days field is empty";
             }
 
             $start_date = now()->subDays($data['days']);
@@ -113,17 +138,11 @@ class SalesOldUsersController extends Controller
         {
             if(empty($data['month']))
             {
-                return response()->json([
-                    'success' => false,
-                    'message' => "month field is empty"
-                ],401);
+                return "month field is empty";
             }
             if(empty($data['year']))
             {
-                return response()->json([
-                    'success' => false,
-                    'message' => "year field is empty"
-                ],401);
+                return "year field is empty";
             }
             $start_date = Carbon::createFromDate($data['year'],$data['month'],1);
             $end_date = Carbon::createFromDate($data['year'],$data['month'],1)->endOfMonth();
@@ -132,17 +151,11 @@ class SalesOldUsersController extends Controller
         {
             if(empty($data['month']))
             {
-                return response()->json([
-                    'success' => false,
-                    'message' => "month field is empty"
-                ],401);
+                return "month field is empty";
             }
             if(empty($data['year']))
             {
-                return response()->json([
-                    'success' => false,
-                    'message' => "year field is empty"
-                ],401);
+                return "year field is empty";
             }
             $start_date = Carbon::createFromDate($data['year'],$data['month'],1)->subMonths(3);
             $end_date = Carbon::createFromDate($data['year'],$data['month'],1);
@@ -152,10 +165,7 @@ class SalesOldUsersController extends Controller
         {
             if(empty($data['year']))
             {
-                return response()->json([
-                    'success' => false,
-                    'message' => "year field is empty"
-                ],401);
+                return "year field is empty";
             }
             $start_date = Carbon::createFromDate($data['year'],1,1);
             $end_date = Carbon::createFromDate($data['year'],1,1)->endOfYear();
@@ -163,7 +173,24 @@ class SalesOldUsersController extends Controller
         return [$start_date,$end_date];
     }
 
-    
+    public function SortingBySalesID($start_date, $end_date, $sales_id, $category)
+    {
+        if($category == 'called'):
+            $data = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser']);
+        endif;
+
+        if($category == 'responded'):
+            $data = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded');
+        endif;
+
+        if($sales_id != null){
+            $data = $data->where('sales_id',$sales_id)->get();            
+        }else{
+            $data = $data->get();
+        }
+
+        return $data;
+    }
 
     public function sortOldUsers(Request $request)
     {
@@ -181,6 +208,14 @@ class SalesOldUsersController extends Controller
         $time_date = $this->sortingType($request->all());
         $salesOldUsers = User::where('role',557)->get(['id','first_name','last_name','username']);
         
+        if((is_string($time_date)) == true)
+        {
+            return response()->json([
+                'success' => false,
+                'message' =>$time_date
+            ],401);
+        }
+
         $start_date = $time_date[0];
         if($start_date == null){
             $start_date = now()->format('Y-m-d');
@@ -192,22 +227,11 @@ class SalesOldUsersController extends Controller
             $end_date = now()->format('Y-m-d');
             $end_date = Carbon::parse($end_date." 23:59:59");
         }
-        
-        $CalledUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser']);
-        if($request->sales_id != null){
-            $CalledUsers = $CalledUsers->where('sales_id',$request->sales_id)->get();            
-        }else{
-            $CalledUsers = $CalledUsers->get();
-        }
-        
+
+        $CalledUsers = $this->SortingBySalesID($start_date,$end_date, $request->sales_id, 'called');
         $noOfCalledUsers = $CalledUsers->count();
-        $RespondedUsers = UserTracking::where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded');
-        
-        if($request->sales_id != null){
-            $RespondedUsers = $RespondedUsers->where('sales_id',$request->sales_id)->get();
-        }else{
-            $RespondedUsers = $RespondedUsers->get();
-        }
+
+        $RespondedUsers = $this->SortingBySalesID($start_date,$end_date, $request->sales_id, 'responded');
         $noOfRespondedUsers = $RespondedUsers->count();
 
         if($request->conversionType == "unique")
@@ -217,9 +241,15 @@ class SalesOldUsersController extends Controller
         else{
             $respondedTransactions = $this->RespondedTotal($RespondedUsers);
         }
-        $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($this->RespondedUnique($RespondedUsers)->count()/$noOfCalledUsers)*100;
+
         $respondedTranxNo = $respondedTransactions->count();
-        $respondedTranxVolume = $respondedTransactions->sum('amount');
+        $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($noOfRespondedUsers/$noOfCalledUsers)*100;
+
+        $RespondedUsersTotal = $RespondedUsers = $this->SortingBySalesID($start_date,$end_date, $request->sales_id, 'responded');
+        $totalRespondedUserTotal = $this->RespondedTotal($RespondedUsersTotal);
+        $respondedTranxVolume = $totalRespondedUserTotal->sum('amount');
+
+        $targetCovered = $this->targetCovered($respondedTranxVolume,$request->sales_id);
 
         $averageTimeBetweenCalls = $this->sortAverageTimeBetweenCalls($start_date,$end_date,$request->sales_id);
         $totalCallDuration = $CalledUsers->sum('call_duration');
@@ -228,20 +258,35 @@ class SalesOldUsersController extends Controller
         $totalCallDuration = ($totalCallDuration == 0) ? 0 : CarbonInterval::seconds($totalCallDuration)->cascade()->forHumans();
         $averageCallDuration = ($averageCallDuration == 0) ? 0 : CarbonInterval::seconds($averageCallDuration)->cascade()->forHumans();
 
+        $quarterlyInactiveUsersNo = UserTracking::where('Current_Cycle','QuarterlyInactive')
+        ->where('current_cycle_count_date','>=',$start_date)->where('current_cycle_count_date','<=',$end_date)->count();
+
         if($request->category == 'calledUsersNo' OR $request->category == null)
         {
-            $table_data = $CalledUsers;
-            $this->CallDuration($table_data);
-            $table_data = $table_data->map->only(['id','user_id','name','called_date','called_time','callDuration','remark','dp'])->all();
+            $table_data = CalledUserResource::collection($CalledUsers);
             $table_data = collect($table_data);
         }
         if($request->category == 'respondedUsersNo'){
-            $table_data = $RespondedUsers;
-            $this->CallDuration($table_data);
-            $table_data = $table_data->map->only(['id','user_id','name','username','signUpDate','Responded_Cycle','Recalcitrant_Cycle','lastTranxDate','lastTranxVolume','dp'])->all();
+            $table_data = RespondedUserResource::collection($RespondedUsers);
             $table_data = collect($table_data);
         }
+
+        if($request->category == 'respondedUsersTrades')
+        {
+            $giftCardKeys = Card::where('is_crypto',0)->get();
+            $giftCardKeys = $giftCardKeys->pluck('id')->toArray();
+
+            $table_data = RespondedTransactionResource::customCollection($respondedTransactions, $giftCardKeys);
+            $table_data = collect($table_data);
+
+        }
         $table_data = $table_data->sortByDesc('updated_at');
+        $tranx = array();
+
+        foreach($table_data as $td)
+        {
+            $tranx[] = $td; 
+        }
 
         return response()->json([
             'success' => true,
@@ -249,51 +294,53 @@ class SalesOldUsersController extends Controller
             'calledUsersNo' => $noOfCalledUsers,
             'respondedUsersNo' => $noOfRespondedUsers,
             'respondedUsersTrades' => $respondedTranxNo,
-            'callPercentageEffectiveness' => $callPercentageEffectiveness,
-            'respondedUsersVolume' => $respondedTranxVolume,
+            'callPercentageEffectiveness' => number_format($callPercentageEffectiveness,2,".",","),
+            'respondedUsersVolume' => number_format($respondedTranxVolume,2,".",","),
             'averageCallDuration' => $averageCallDuration,
             'totalCallDuration' => $totalCallDuration,
             'averageTimeBetweenCalls' => $averageTimeBetweenCalls,
-            'data' => $table_data,
+            'quarterlyInactiveUsers' => number_format($quarterlyInactiveUsersNo),
+            'targetCovered' => number_format($targetCovered,2,".",","),
+            'data' => $tranx,
         ], 200);
 
     }
 
-    public function CallDuration($table_data){
-        foreach ($table_data as $td) {
-            $called_timeStamp = $td->called_date;
-            $td->callDuration = CarbonInterval::seconds($td->call_duration)->cascade()->forHumans();
-            $td->called_date = Carbon::parse($called_timeStamp)->format('d M Y');
-            $td->called_time = Carbon::parse($called_timeStamp)->format('h:ia');
-            $td->remark = ($td->call_log) ? $td->call_log->call_response : null;
-
-            if($td->user){
-                $td->name = $td->user->first_name." ".$td->user->last_name;
-                $td->username = $td->user->username;
-                $td->dp = $td->user->dp;
-                $td->signUpDate = $td->user->created_at->format('d M Y');
-            }
-
-            $data = Transaction::where('user_id',$td->user_id)->where('status','success')->orderBy('id','desc')->first();
-            if($data)
-            {
-                $td->lastTranxDate = $data->created_at->format('d M Y');
-                $td->lastTranxVolume = $data->amount;
-            }
-        }
-    }
     public function RespondedUnique($data)
     {
+        //?do a performance check on this (to many foreach statements check execution time)
+
+        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $uniqueData = [];
         foreach($data as $d)
         {
-            $User_tnx = Transaction::where('user_id',$d->user_id)->where('updated_at','>=',$d->current_cycle_count_date)->where('status','success')->first();
-            if($User_tnx != null)
+            if($d['utilityTransaction']->count() > 0)
             {
-                $uniqueData[] = $User_tnx;
+                foreach($d['utilityTransaction']->where('created_at','>=',$d->called_date) as $util)
+                {
+                    $util->amount = $util->amount/$usdRate;
+                    $util->tranxCard = $util->type." Utility";
+                }
+            }
+
+            if($d['depositTransactions']->count() > 0)
+            {
+                foreach($d['depositTransactions']->where('created_at','>=',$d->called_date) as $deposit)
+                {
+                    $deposit->amount = $deposit->amount/$usdRate;
+                    $deposit->tranxCard = "PayBridge ".ucfirst($deposit->type);
+                }
+            }
+        
+            $allTranx = collect()->concat($d['transactions'])->concat($d['depositTransactions'])->concat($d['utilityTransaction']);
+
+            $userTranx = $allTranx->where('created_at','>=',$d->called_date)->sortByDesc('created_at')->first();
+            if($userTranx != null)
+            {
+                $uniqueData[] = $userTranx;
             }
         }
-        $uniqueData = collect($uniqueData)->sortByDesc('updated_at');
+        $uniqueData = collect($uniqueData)->sortByDesc('created_at');
         return $uniqueData;
 
     }
@@ -301,15 +348,33 @@ class SalesOldUsersController extends Controller
     public function RespondedTotal($data)
     {
         $totalData = collect([]);
+        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         foreach($data as $d)
         {
-            $User_tnx = Transaction::where('user_id',$d->user_id)->where('updated_at','>=',$d->current_cycle_count_date)->where('status','success')->get();
-            if($User_tnx != null)
+            if($d['utilityTransaction']->count() > 0)
             {
-                $totalData = $totalData->concat($User_tnx);
+                foreach($d['utilityTransaction']->where('created_at','>=',$d->called_date) as $util)
+                {
+                    $util->amount = $util->amount/$usdRate;
+                    $util->tranxCard = $util->type." Utility";
+                }
+            }
+
+            if($d['depositTransactions']->count() > 0)
+            {
+                foreach($d['depositTransactions']->where('created_at','>=',$d->called_date) as $deposit)
+                {
+                    $deposit->amount = $deposit->amount/$usdRate;
+                    $deposit->tranxCard = "PayBridge ".ucfirst($deposit->type);
+                }
+            }
+            $allTranx = collect()->concat($d['transactions'])->concat($d['depositTransactions'])->concat($d['utilityTransaction'])->where('created_at','>=',$d->called_date);
+            if($allTranx != null)
+            {
+                $totalData = $totalData->concat($allTranx);
             }
         }
-        $totalData = $totalData->sortByDesc('updated_at');
+        $totalData = $totalData->sortByDesc('created_at');
         return $totalData;
     }
 
@@ -358,5 +423,17 @@ class SalesOldUsersController extends Controller
         //*and convert readable time for humans.
         $totalTimeValue = (count($sales_timestamp) == 0) ? 0 : $avgTotalDiff/count($sales_timestamp);
         return (count($sales_timestamp) == 0) ? 0 : CarbonInterval::seconds($totalTimeValue)->cascade()->forHumans();
+    }
+
+    public function targetCovered($amount,$id)
+    {
+        $targetData = TargetSettings::query();
+        if($id != null):
+            $targetData = $targetData->where('user_id',$id)->target;
+            return (($amount/$targetData)*100);
+        endif;
+
+        $targetData = $targetData->sum('target');
+        return (($amount/$targetData)*100);
     }
 }
