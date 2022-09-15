@@ -14,7 +14,7 @@ class FaqController extends Controller
     public function getAll()
     {
 
-        $faqs = Faq::all();
+        $faqs = Faq::all()->paginate(20);
         return response()->json([
             'success' => true,
             "data" => $faqs,
@@ -188,18 +188,16 @@ class FaqController extends Controller
             ], 401);
         }
 
+        //finding category
 
-           //finding category
+        $category = FaqCategory::where('name', $request->category)->first();
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Category does not exist',
+            ]);
 
-           $category = FaqCategory::where('name', $request->category)->first();
-           if (!$category) {
-               return response()->json([
-                   'success' => false,
-                   'message' => 'Category does not exist',
-               ]);
-
-           }
-
+        }
 
         $faq = Faq::where('id', $request->id);
 
@@ -236,6 +234,19 @@ class FaqController extends Controller
             'success' => true,
             "message" => "Updated Successfully",
         ], 200);
+    }
+
+    public function sortFaq($category)
+    {
+
+        $faqs = Faq::where('category', $category)->latest('id')->get()->paginate(20);
+
+        return response()->json([
+            'success' => true,
+            'faqs' => $faqs,
+
+        ]);
+
     }
 
 }

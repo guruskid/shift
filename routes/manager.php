@@ -11,6 +11,15 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
         Route::post('addfaq', 'FaqController@addNewFaq');
         Route::post('deletefaq/{id}', 'FaqController@deleteAFaq');
         Route::post('updatefaq', 'FaqController@updateAFaq');
+        Route::post('sortfaq/{category}', 'FaqController@sortFaq');
+
+         //Announcement
+
+         Route::post('addannouncement', 'AnnouncementController@addNew');
+         Route::get('allannouncement', 'AnnouncementController@getAllAnnouncement');
+         Route::post('updateannouncement/{id}', 'AnnouncementController@update');
+         Route::post('changestatus/{id}/{status}', 'AnnouncementController@updateStatus');
+         Route::post('deleteannouncement/{id}', 'AnnouncementController@deleteAnnouncement');
 
     });
 
