@@ -4,6 +4,10 @@
 
 // Route::get('test-route', 'testController@index');
 // Route::post('register/{refcode?}', 'AuthController@register');
+
+use App\Http\Controllers\ApiV2\ReferralController;
+
+
 Route::post('register', 'AuthController@register');
 Route::post('login', 'AuthController@login');
 Route::get('mail-check', 'AuthController@verificationCodeEmail');
@@ -79,6 +83,7 @@ Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
     Route::post('/withdraw-referral-bonus', 'ReferralController@withdrawReferralBonus');
     Route::get('/my-referrers', 'ReferralController@myReferrers');
     Route::get('/get-referrers-link', 'ReferralController@getReferralLink');
+    Route::get("/get-referrers-code", [ReferralController::class, "getReferralCode"]);
 
     // Transactions
     Route::GET('/bitcoin-transactions', 'TransactionController@bitcoinWalletTransactions');
