@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Verification extends Model
 {
+    protected $appends = ['level'];
     protected $guarded = [];
 
     /**
@@ -22,5 +23,14 @@ class Verification extends Model
     public function verifiedUserBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function getLevelAttribute($level) {
+        if ($this->type === 'Address') {
+            return 2;
+        }
+        if ($this->type === 'ID Card') {
+            return 3;
+        }
     }
 }
