@@ -61,10 +61,10 @@
                     </div>
 
 
-                    @if ($hara_active == 0)
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="widget widget-chart-one">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="widget widget-chart-one">
+                                @if ($hara_active == 0)
                                     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center pb-4 mb-3"
                                         style="border-bottom: 1px solid #C9CED6;">
                                         <div class="list-cards-title primary-color">
@@ -103,12 +103,30 @@
                                             <h4 class="text-center p-2 text-white" style="background-color: #000070"><i class="fas fa-info-circle"></i> {{$buy_gc_setting['notice']}}</h4>
                                         @endif
                                     @endif
-                                </div>
+                                @else
+                                    <div class="text-center">
+                                        <p class="h5">
+                                            Dantown partners with Hara for
+                                            Gift Cards trades. What this simply mean is that all Gift Cards trade will be on Hara leaving Dantown to be only for Crypto trades.
+                                        </p>
+    
+                                        <div class="mt-4">
+                                            <div class="h3 text-black">Download Hara</div>
+                                            <div class="d-flex justify-content-between col-3 mx-auto mt-4">
+                                                <a href="https://play.google.com/store/apps/details?id=com.dantown.Dantownapp">
+                                                    <img src="{{url('images/GOOGLE_PLAY.png')}}" style="width: 115px; margin:10px" alt="">
+                                                </a>
+                                                <a href="https://apps.apple.com/US/app/id1575600937?mt=8">
+                                                    <img src="{{url('images/APPSTORE.png')}}" style="width: 115px; margin:10px" alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    @else
-                        --
-                    @endif
+                    </div>
+
                 </div>
             </div>
             <upload-modal-component></upload-modal-component>
