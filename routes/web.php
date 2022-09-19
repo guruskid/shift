@@ -679,6 +679,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::POST('/addTarget', 'Admin\TargetController@addTarget')->name('sales.addTarget');
     Route::POST('/editTarget', 'Admin\TargetController@editTarget')->name('sales.editTarget');
     Route::GET('/editStatusSales/{id}/{action}', 'Admin\TargetController@activateSales')->name('sales.action');
+
+    Route::GET('/priority', 'Admin\PriorityController@index')->name('sales.loadPriority');
+    Route::POST('/addPriority', 'Admin\PriorityController@createPriorityData')->name('sales.addPriority');
+    Route::POST('/editPriority', 'Admin\PriorityController@editPriority')->name('sales.editPriority');
+    Route::GET('/deletePriority/{id}', 'Admin\PriorityController@deletePriority')->name('sales.deletePriority');
+
 });
 
 
