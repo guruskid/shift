@@ -1,6 +1,8 @@
 <?php
 
-Route::group(['middleware' => ['auth:api', 'verified']], function () {
+use Illuminate\Support\Facades\Route;
+
+Route::group(['middleware' => ['auth:api', 'verified', 'cors']], function () {
 
     //TRANSACTIONS
     Route::group(['prefix' => 'customerhappiness'], function () {
@@ -14,9 +16,11 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
         Route::get('/querysort/find', 'CustomerHappinessController@sortByDay');
         Route::post('/queryrange/find', 'CustomerHappinessController@sortByRange');
 
+        Route::get('/select/{list}', 'CustomerHappinessController@getList');
 
 
-        Route::get('/transactions', 'CustomerHappinessController@transactions');
+
+        Route::get('/transactions', 'CustomerHappinessController@alltransaction');
 
         Route::get('/p2p', 'CustomerHappinessController@p2pTran');
         Route::get('/p2p/{status}', 'CustomerHappinessController@sortP2pbyStatus');
@@ -36,6 +40,8 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
         Route::get('/user/{id}', 'CustomerHappinessController@userInfo');
 
         Route::get('/transaction/{id}', 'CustomerHappinessController@transPerUser');
+
+        Route::get('/trans', 'CustomerHappinessController@recentTransactions');
 
         ;
     });
