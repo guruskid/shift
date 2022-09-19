@@ -107,6 +107,8 @@
                                                     @if ($type == "Quarterly_Inactive")
                                                         <th><div class="">Responded Cycle</div></th>
                                                         <th><div class="">Recalcitrant Cycle</div></th>
+                                                        <th><div class="">Transaction no</div></th>
+                                                        <th><div class="">Priority</div></th>
                                                     @endif
                                                     @if($type == "Recalcitrant_Users")
                                                         <th><div class="">Recalcitrant Date</div></th>
@@ -136,6 +138,8 @@
                                                     @if ($type == "Quarterly_Inactive")
                                                         <td>{{ ($u->Responded_Cycle == null) ? 0 : $u->Responded_Cycle }}</td>
                                                         <td>{{ ($u->Recalcitrant_Cycle == null) ? 0 : $u->Recalcitrant_Cycle  }}</td>
+                                                        <td>{{ ($u->transactionCount) ? number_format($u->transactionCount) : 0 }}</td>
+                                                        <td>{{ ($u->priority) ? $u->priority : null }}</td>
                                                     @endif
                                                     @if($type == "Recalcitrant_Users")
                                                         <td>{{ $u->updated_at->format('d M y, h:ia') }}</td>

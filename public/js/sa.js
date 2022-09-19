@@ -92,6 +92,18 @@ function EditTarget(user,user_target)
     $('#tn_number').html(user_target['target']);
 }
 
+function EditPriority(priority)
+{
+    console.log(priority['id'])
+    $('#tn_id').val(priority['id']);
+    
+    $('#tn_name').val(priority['priority_name']);
+    $('#tn_name').html(priority['priority_name']);
+
+    $('#tn_price').val(priority['priority_price']);
+    $('#tn_price').html(priority['priority_price']);
+}
+
 //**View Response Data for Called Users*/
 function ViewResponse(call_log,user,call_category){
     (call_category['id'] === 11) ? $('#v_phone').html(user['phone']) : $('#v_phone').html('');
