@@ -34,7 +34,7 @@ class RateController extends Controller
             return true;
         });
         $rates = $rates->sortBy('card_name');
-        $usd_ngn = LiveRateController::usdNgn();
+        $usd_ngn = LiveRateController::usdNgn(false);
 
         return view('admin.rates.index', compact(['cards', 'currencies', 'card_types', 'usd_ngn', 'rates']));
     }
@@ -78,7 +78,7 @@ class RateController extends Controller
             });
         }
 
-        
+
         $rates = $rates->get()->each(function ($rate) {
             $rate->card_name = $rate->cardCurrency->card->name;
             $rate->currency_name = $rate->cardCurrency->currency->name;

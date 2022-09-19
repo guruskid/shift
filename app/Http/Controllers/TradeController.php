@@ -252,7 +252,7 @@ class TradeController extends Controller
         $user = Auth::user();
         $title = 'TRANSACTION PENDING - BUY
         ';
-        $body ="Your order to   $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." is currently 
+        $body ="Your order to   $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." is currently
         <b style='color:red'>pending</b> and will be debited from your naria wallet once the transaction is successful<br>
         <b>Transaction ID: $transaction_id <br>
         Date: ".date("Y-m-d; h:ia")."</b>
