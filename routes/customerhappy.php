@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::group(['middleware' => ['auth:api', 'verified']], function () {
+Route::group(['middleware' => ['auth:api', 'verified', 'cors']], function () {
 
     //TRANSACTIONS
     Route::group(['prefix' => 'customerhappiness'], function () {
