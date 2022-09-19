@@ -199,6 +199,47 @@ class CustomerHappinessController extends Controller
 
     }
 
+    public function getList($list)
+    {
+
+        $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call'];
+        $types = ['Enquires', 'Complaint', 'Notice', 'Suggestion'];
+        $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings', 'Settings'];
+
+        $objChannel = (object) $channel;
+        $objType = (object) $categories;
+        $objCategory = (object) $channel;
+
+
+        if ($list == 'channel' || $list == 'channels') {
+            return response()->json([
+                'success' => true,
+                'channels' => $objChannel,
+
+            ]);
+
+        }
+
+        if ($list == 'types' || $list == 'type' ) {
+            return response()->json([
+                'success' => true,
+                'types' => $objType,
+
+            ]);
+
+        }
+
+        if ($list == 'categories' || $list == 'category' ) {
+            return response()->json([
+                'success' => true,
+                'categories' => $objCategory,
+
+            ]);
+
+        }
+
+    }
+
     public function sortByDay()
     {
 
@@ -320,7 +361,6 @@ class CustomerHappinessController extends Controller
     }
 
     // Each user details
-
 
     public function transPerUser($id)
     {

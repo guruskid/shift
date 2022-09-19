@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::group(['middleware' => ['auth:api', 'verified']], function () {
 
     //TRANSACTIONS
@@ -13,6 +15,8 @@ Route::group(['middleware' => ['auth:api', 'verified']], function () {
         Route::post('/queryclose/{id}', 'CustomerHappinessController@closeQuery');
         Route::get('/querysort/find', 'CustomerHappinessController@sortByDay');
         Route::post('/queryrange/find', 'CustomerHappinessController@sortByRange');
+
+        Route::get('/select/{list}', 'CustomerHappinessController@getList');
 
 
 
