@@ -106,14 +106,15 @@
                                 @else
                                     <div class="text-center">
                                         <p class="h5">
-                                            Dantown partners with Hara for
-                                            Gift Cards trades. What this simply mean is that all Gift Cards trade will be on Hara leaving Dantown to be only for Crypto trades.
+                                            All Gift Card trades has been moved to Hara our Gift Card partner. Click download below to get the <a href="https://www.hara.africa/download" target="_blank"><strong>Hara</strong></a> app now.
                                         </p>
     
                                         <div class="mt-4">
-                                            <div class="h3 text-black">Download Hara</div>
+                                            <div class="h3 text-black">
+                                                <a href="https://www.hara.africa/download" class="h3 text-black" target="_blank">Download Hara</a>
+                                            </div>
                                             <div class="d-flex justify-content-between col-3 mx-auto mt-4">
-                                                <a href="https://play.google.com/store/apps/details?id=com.dantown.Dantownapp">
+                                                <a href="https://play.google.com/store/apps/details?id=com.hara.app.hara">
                                                     <img src="{{url('images/GOOGLE_PLAY.png')}}" style="width: 115px; margin:10px" alt="">
                                                 </a>
                                                 <a href="https://apps.apple.com/US/app/id1575600937?mt=8">
