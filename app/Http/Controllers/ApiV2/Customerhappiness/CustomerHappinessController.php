@@ -116,6 +116,7 @@ class CustomerHappinessController extends Controller
             'type' => 'required',
             'channel' => 'required',
             'username' => 'required',
+            'agent_name' => 'required',
         ]);
 
         // $agent_id = User::where('role', 555)->where('status', 'active')->first();
@@ -126,7 +127,7 @@ class CustomerHappinessController extends Controller
             'agent_id' => Auth::user()->id,
             'description' => $req->description,
             'status' => 'open',
-            'agent_name' => Auth::user()->first_name . ' ' . Auth::user()->last_name,
+            'agent_name' => $req->agent_name,
             'subcategory_id' => $req->subcategory_id,
             'type' => $req->type,
             'channel' => $req->channel,
@@ -206,9 +207,9 @@ class CustomerHappinessController extends Controller
         $types = ['Enquires', 'Complaint', 'Notice', 'Suggestion'];
         $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings', 'Settings'];
 
+        $chAgents = User::where('role', 555)->pluck('first_name');
 
-
-        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $categories);
+        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $categories, 'agents' => $chAgents);
 
         return response()->json([
             'success' => true,
