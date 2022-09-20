@@ -106,13 +106,15 @@
                                 @else
                                     <div class="text-center">
                                         <p class="h5">
-                                            All Gift Card trades has been moved to Hara our Gift Card partner. Click download below to get the <a href="https://www.hara.africa/download" target="_blank"><strong>Hara</strong></a> app now.
+                                            {{-- All Gift Card trades has been moved to Hara our Gift Card partner. Click download below to get the <a href="https://www.hara.africa/download" target="_blank"><strong>Hara</strong></a> app now. --}}
+
+                                            <strong>{{ucwords(auth()->user()->username)}}</strong>, In order to provide you with a better experience, we have partnered with Hara for Giftcard services. To trade your giftcards, kindly download the Hara app on either IOS or Android by clicking on the link below.
                                         </p>
     
                                         <div class="mt-4">
-                                            <div class="h3 text-black">
+                                            {{-- <div class="h3 text-black">
                                                 <a href="https://www.hara.africa/download" class="h3 text-black" target="_blank">Download Hara</a>
-                                            </div>
+                                            </div> --}}
                                             <div class="d-flex justify-content-between col-3 mx-auto mt-4">
                                                 <a href="https://play.google.com/store/apps/details?id=com.hara.app.hara">
                                                     <img src="{{url('images/GOOGLE_PLAY.png')}}" style="width: 115px; margin:10px" alt="">
