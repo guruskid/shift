@@ -199,43 +199,22 @@ class CustomerHappinessController extends Controller
 
     }
 
-    public function getList($list)
+    public function getList()
     {
 
-        $channel = array('Facebook', 'Instagram', 'Twitter', 'Phone Call');
-        $types = array('Enquires', 'Complaint', 'Notice', 'Suggestion');
-        $categories = array('Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings', 'Settings');
+        $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call'];
+        $types = ['Enquires', 'Complaint', 'Notice', 'Suggestion'];
+        $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings', 'Settings'];
 
-        $objChannel = (object) [ $channel];
-        $objType = (object) [$types];
-        $objCategory = (object) [$categories];
 
-        if ($list == 'channel' || $list == 'channels') {
-            return response()->json([
-                'success' => true,
-                'channels' =>  $objChannel,
 
-            ]);
+        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $categories);
 
-        }
+        return response()->json([
+            'success' => true,
+            'data' => $data,
 
-        if ($list == 'types' || $list == 'type') {
-            return response()->json([
-                'success' => true,
-                'types' => $objType,
-
-            ]);
-
-        }
-
-        if ($list == 'categories' || $list == 'category') {
-            return response()->json([
-                'success' => true,
-                'categories' => $objCategory,
-
-            ]);
-
-        }
+        ]);
 
     }
 

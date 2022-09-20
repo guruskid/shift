@@ -16,7 +16,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'cors']], function () {
         Route::get('/querysort/find', 'CustomerHappinessController@sortByDay');
         Route::post('/queryrange/find', 'CustomerHappinessController@sortByRange');
 
-        Route::get('/select/{list}', 'CustomerHappinessController@getList');
+        Route::get('/queryoption/dropdown', 'CustomerHappinessController@getList');
 
 
 
