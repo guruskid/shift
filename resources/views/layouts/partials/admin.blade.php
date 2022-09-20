@@ -345,6 +345,14 @@
                     </a>
                 </li>
 
+                <li class="my-3">
+                    <a href="{{route('sales.loadPriority')}}"
+                        class=" {{ Route::currentRouteName() == 'sales.loadPriority' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-user"></i>
+                        Sales Priority
+                    </a>
+                </li>
+
             <li class="my-3">
                 <a href="{{route('admin.users')}}"
                     class=" {{ Route::currentRouteName() == 'admin.users' ? 'mm-active' : '' }} ">

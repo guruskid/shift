@@ -57,6 +57,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'sales.loadPriority' ? 'active' : '' }}  ">
+        <a href="{{route('sales.loadPriority')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="settings"></ion-icon>
+                <span>Sales Priority</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.call-categories' ? 'active' : '' }}">
         <a href="{{route('admin.call-categories')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">
