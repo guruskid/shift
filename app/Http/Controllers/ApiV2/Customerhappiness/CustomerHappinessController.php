@@ -112,11 +112,10 @@ class CustomerHappinessController extends Controller
 
         $req->validate([
             'description' => 'required',
-            'subcategory_id' => 'required',
             'type' => 'required',
             'channel' => 'required',
             'username' => 'required',
-            'agent_name' => 'required',
+            'category' => 'required',
         ]);
 
         // $agent_id = User::where('role', 555)->where('status', 'active')->first();
@@ -124,13 +123,14 @@ class CustomerHappinessController extends Controller
         $ticket = Ticket::create([
             'username' => $req->username,
             'ticketNo' => time(),
+            'user_id' => Auth::user()->id,
             'agent_id' => Auth::user()->id,
             'description' => $req->description,
             'status' => 'open',
-            'agent_name' => $req->agent_name,
-            'subcategory_id' => $req->subcategory_id,
+            'agent_name' => Auth::user()->first_name ." " .Auth::user()->last_name,
             'type' => $req->type,
             'channel' => $req->channel,
+            'category' => $req->category,
         ]);
 
         // $category = $this->getCategory($req->subcategory_id);
@@ -204,7 +204,7 @@ class CustomerHappinessController extends Controller
     {
 
         $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call'];
-        $types = ['Enquires', 'Complaint', 'Notice', 'Suggestion'];
+        $types = ['Enquiries', 'Complaint', 'Notice', 'Suggestion'];
         $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings', 'Settings'];
 
         $chAgents = User::where('role', 555)->pluck('first_name');
