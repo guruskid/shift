@@ -289,14 +289,14 @@ class AuthController extends Controller
             'password' => Hash::make($input['password']),
             'platform' => $input['platform'],
             'fcm_id' =>  request('fcm_id'),
-            'referral_code' => request('referral_code'),
+            // 'referral_code' => request('referral_code'),
         ];
 
         if (isset($input['referral_code'])) {
             $ref = User::where('referral_code',$input['referral_code'])->count();
 
             // dd($ref);
-            if ($ref >= 1) {
+            if ($ref > 0 ) {
                 $data['referred'] = 1;
                 $data['referrer'] = $input['referral_code'];
             }
