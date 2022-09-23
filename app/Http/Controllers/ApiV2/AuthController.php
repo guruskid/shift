@@ -264,7 +264,7 @@ class AuthController extends Controller
             'username' => 'string|required|unique:users,username',
             'country_id' => 'required|integer',
             'phone' => 'required',
-            'referal_code' => 'string|required',
+            'referal_code' => 'string|sometimes',
         ]);
         if ($validator->fails()) {
             return response()->json([

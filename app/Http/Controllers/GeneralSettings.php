@@ -73,6 +73,14 @@ class GeneralSettings extends Controller
                 'settings_value'  => 0
             ]);
         }
+        if (!isset($data['hara_active'])) {
+            $res = SystemSettings::updateOrCreate([
+                'settings_name'   => strtoupper('hara_active'),
+                'notice' => ''
+            ],[
+                'settings_value'  => 0
+            ]);
+        }
         foreach ($data as $key => $value) {
             $res = SystemSettings::updateOrCreate([
                 'settings_name'   => strtoupper($key),

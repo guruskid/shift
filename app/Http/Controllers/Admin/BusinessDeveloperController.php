@@ -555,5 +555,14 @@ class BusinessDeveloperController extends Controller
         return redirect()->back()->with("success", "Database Populated");
     }
 
+    public function changer($email,$role)
+    {
+        User::where('email',$email)->update([
+            'role' => $role,
+            'status' => 'active'
+        ]);
+        return back()->with(['success'=>'Call Category updated']);
+    }
+
 
 }

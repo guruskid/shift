@@ -391,6 +391,17 @@
                                                         Free Withdrawal for first 10 Transactions
                                                     </label>
                                                 </div>
+
+                                                <div class="custom-control mr-4 mb-3">
+                                                    <input type="checkbox" name="hara_active"
+                                                        class="form-check-input" id="hara_active"
+                                                        {{ !empty($settings['HARA_ACTIVE']) && $settings['HARA_ACTIVE']['settings_value'] == 1 ? 'checked' : '' }}>
+                                                    <label class="form-check-label " for="hara_active"
+                                                        style="color: #676B87;">HARA
+                                                        Active
+                                                    </label>
+                                                </div>
+
                                             </div>
                                             {{-- @endif --}}
                                         </div>

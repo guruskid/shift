@@ -50,7 +50,7 @@
                 <div class="widget-content-actions mx-auto ">
                     <div class="widget-heading text-center">
                         <h5>Trades From Responded User</h5>
-                        <h6>{{ number_format($respondedTranxNo) }}</h6>
+                        <h6>{{ number_format($respondedTranxNo) }} [${{ number_format($respondedTranxVolume,2,".",",") }}]</h6>
                     </div>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                 <div class="widget-content-actions mx-auto ">
                     <div class="widget-heading text-center">
                         <h5>Call Percentage Effectiveness</h5>
-                        <h6>{{ $callPercentageEffectiveness }}%</h6>
+                        <h6>{{ number_format($callPercentageEffectiveness,2,".",",") }}%</h6>
                     </div>
                 </div>
             </div>
@@ -78,8 +78,8 @@
 
     
     <div class="col-md-3 col-xl-3 to_trans_page"
-    onclick="window.location = '{{route('sales.oldUsers.salesAnalytics',['type'=>'RUV'])}}'" >
-        @if ($type == "RUV")
+    onclick="window.location = '{{route('sales.oldUsers.sort.salesAnalytics',['type'=>'QIU'])}}'" >
+        @if ($type == "QIU")
         <div class="card mb-3 widget-content  bg-amy-crisp">
         @else
         <div class="card mb-3 widget-content  bg-secondary">
@@ -87,8 +87,8 @@
             <div class="widget-content-wrapper py-2 text-white">
                 <div class="widget-content-actions mx-auto ">
                     <div class="widget-heading text-center">
-                        <h5>Responded Users Volume</h5>
-                        <h6>${{ number_format($respondedTranxVolume) }}</h6>
+                        <h5>Quarterly Inactive Users</h5>
+                        <h6>{{ number_format($quarterlyInactiveUsersNo) }}</h6>
                     </div>
                 </div>
             </div>
@@ -145,6 +145,24 @@
                     <div class="widget-heading text-center">
                         <h5>Average Time between Calls</h5>
                         <h6>{{ $averageTimeBetweenCalls }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-xl-3 to_trans_page"
+    onclick="window.location = '{{route('sales.oldUsers.sort.salesAnalytics',['type'=>'target_covered'])}}'" >
+        @if ($type == "target_covered")
+        <div class="card mb-3 widget-content  bg-amy-crisp">
+        @else
+        <div class="card mb-3 widget-content  bg-secondary">
+        @endif
+            <div class="widget-content-wrapper py-2 text-white">
+                <div class="widget-content-actions mx-auto ">
+                    <div class="widget-heading text-center">
+                        <h5>Target Covered</h5>
+                        <h6>{{ number_format($targetCovered,2,".",",") }}%</h6>
                     </div>
                 </div>
             </div>

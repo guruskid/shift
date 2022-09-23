@@ -59,6 +59,14 @@
                             <div class="">
                                 Recent users
                             </div>
+                            @if (in_array(Auth::user()->role,[999, 889]))
+                            <form class="btn btn-md-primary"
+                                method="GET">
+                                <input type="hidden" name="downloader" value="csv">
+                                <button class="btn btn-primary">Download Table</button>
+                            </form>
+                            @endif
+                            
                             <div class="text-right">
                                 <form action="{{ route('admin.user-search') }}" class="form-inline" method="POST">
                                     @csrf
