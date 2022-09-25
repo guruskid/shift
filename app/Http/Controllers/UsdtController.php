@@ -357,10 +357,10 @@ class UsdtController extends Controller
         $commission = ($commission / 100) * $usd_ngn_old;
         $commission = $commission * $total;
 
-        if ($request->amount < 10) {
+        if ($request->amount < 5) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Minimum trade amount is $10'
+                'msg' => 'Minimum trade amount is $5'
             ]);
         }
 
