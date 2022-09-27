@@ -291,7 +291,7 @@ class BtcWalletController extends Controller
             // $card = Card::find(102);
             // $card_id = 102;
 
-            $trade_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+            $trade_rate = LiveRateController::usdNgn();
 
             $client = new Client();
             $url = env('TATUM_URL') . '/ledger/account/customer/' . Auth::user()->customer_id . '?pageSize=50';
@@ -319,17 +319,24 @@ class BtcWalletController extends Controller
         }
 
         //Get the other currencies using currnt rate (-tp)
-        $usd = $r->quantity * $current_btc_rate;
-        $ngn = $usd * $trade_rate;
-
-
-
-        //Convert the charge to naira and subtract it from the amount paid
         $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
         $charge = ($charge / 100) * $r->quantity;
-        $charge_ngn = $charge * $r->current_rate * $trade_rate;
 
-        $ngn -= $charge_ngn;
+        $total = $r->quantity - $charge;
+        $usd = $total * $current_btc_rate;
+        $ngn = $usd * $trade_rate;
+
+        //Commission
+        $usd_ngn_old = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $commission = SettingController::get('crypto_commission');
+        $commission = ($commission / 100) * $usd_ngn_old;
+        $commission = $commission * $total;
+
+        //Convert the charge to naira and subtract it from the amount paid
+        // $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+        // $charge = ($charge / 100) * $r->quantity;
+        // $charge_ngn = $charge * $r->current_rate * $trade_rate;
+        // $ngn -= $charge_ngn;
 
 
         $reference = \Str::random(5) . Auth::user()->id;
@@ -338,6 +345,8 @@ class BtcWalletController extends Controller
         $hd_wallet = HdWallet::where('currency_id', 1)->first();
         $service_wallet = Wallet::where(['name' => 'service', 'user_id' => 1, 'currency_id' => 1])->first();
         $charges_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
+
+
 
         try {
             $send = $client->request('POST', $url, [
@@ -412,7 +421,8 @@ class BtcWalletController extends Controller
             'card' => 'bitcoin',
             'platform' => $r->platform,
             'agent_id' => 1,
-            'ngn_rate' => $trade_rate
+            'ngn_rate' => $trade_rate,
+            'commission' => $commission,
         ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;

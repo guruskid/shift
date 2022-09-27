@@ -30,20 +30,20 @@ use App\User;
 class ReferralController extends Controller
 {
     public function create() {
-        if (isset(Auth::user()->referral_code)) {
+        if (Auth::user()->referral_code != NULL) {
             return response()->json([
                 'success' => false,
-                'message' => 'You already have a referral link'
+                'message' => 'You already have a referral code!'
             ]);
         }
-        $length = 6;
-        $randomString = substr(str_shuffle(md5(time())),0,$length);
+        $length = 5;
+        $randomString = "DT".substr(str_shuffle(md5(time())),0,$length);
         $user = Auth::user();
         $user->referral_code = Str::upper($randomString);
         $user->save();
         return response()->json([
             'success' => true,
-            'message' => 'Referral link generated successfully'
+            'message' => 'Referral code generated successfully'
         ]);
     }
 
@@ -373,6 +373,23 @@ class ReferralController extends Controller
             'success' => true,
             'link' => url('/api_v2/register/'.Auth::user()->referral_code)
         ]);
+    }
+
+    // Get Referral Code
+    public function getReferralCode(){
+        if(Auth::user()->referral_code == NULL){
+            return response()->json([
+                'success' => false,
+                'mgs' => "You don't have a referral code yet. Create one to get a referral code"
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'code' => Auth::user()->referral_code
+        ]);
+
+
     }
 
     public static function referralBonusTest()

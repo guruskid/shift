@@ -353,7 +353,7 @@ class UsdtController extends Controller
 
         //Commission
         $usd_ngn_old = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
-        $commission = SettingController::get('usdt_commission');
+        $commission = SettingController::get('crypto_commission');
         $commission = ($commission / 100) * $usd_ngn_old;
         $commission = $commission * $total;
 
