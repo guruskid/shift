@@ -411,7 +411,7 @@ class BtcWalletController extends Controller
 
         $t = Auth::user()->transactions()->create([
             'card_id' => 102,
-            'type' => 'sell',
+            'type' => 'Sell',
             'amount' => $usd,
             'amount_paid' => $ngn,
             'quantity' => number_format((float) $r->quantity, 8),
@@ -664,6 +664,9 @@ class BtcWalletController extends Controller
             //set transaction status to failed
             \Log::info($e->getResponse()->getBody());
             //report($e);
+            Auth::user()->nairaWallet->amount += $ngn;
+            Auth::user()->nairaWallet->save();
+
             return response()->json([
                 'success' => false,
                 'msg' => 'An error occured here, please try again'
@@ -672,7 +675,7 @@ class BtcWalletController extends Controller
 
         $t = Auth::user()->transactions()->create([
             'card_id' => 102,
-            'type' => 'buy',
+            'type' => 'Buy',
             'amount' => $usd,
             'amount_paid' => $ngn,
             'quantity' => number_format((float) $r->quantity, 8),
