@@ -72,23 +72,20 @@ class TradeController extends Controller
         $buy_gc_setting = GeneralSettings::getSetting('GIFTCARD_BUY');
         $hara_active = GeneralSettings::getSettingValue('HARA_ACTIVE');
 
-        return view('user.gift_card_calculator', compact(['card_rates', 'buy_sell', 'sell_gc_setting', 'buy_gc_setting', 'card_name','hara_active']));
+        return view('user.gift_card_calculator', compact(['card_rates', 'buy_sell', 'sell_gc_setting', 'buy_gc_setting', 'card_name', 'hara_active']));
     }
 
     public function bitcoin($card_id, $buy_sell = 1)
     {
         $card = Card::find($card_id);
         $rates = $card->currency->first();
-        // $sell =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 2])->first()->paymentMediums()->first();
-        // $rates->sell = json_decode($sell->pivot->payment_range_settings);
-
-        // $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
-        // $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
         $sell_rate = LiveRateController::usdNgn();
+        $buy_rate = LiveRateController::usdNgn(true, 'buy');
 
         $client = new Client();
         $btc_real_time = LiveRateController::btcRate();
+        $buy_btc_real_time = LiveRateController::btcRate('buy');
 
 
         $url = env('TATUM_URL') . '/ledger/account/' . Auth::user()->btcWallet->account_id;
@@ -109,8 +106,7 @@ class TradeController extends Controller
         $buy_btc_setting = GeneralSettings::getSetting('BUY_BTC');
 
 
-        return view('newpages.bitcoin', compact(['sell_rate','rates', 'card', 'btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
-
+        return view('newpages.bitcoin', compact(['sell_rate', 'buy_rate', 'btc_real_time', 'buy_btc_real_time', 'charge', 'buy_sell', 'sell_btc_setting', 'buy_btc_setting']));
     }
 
     public function ethereum($card_id)
@@ -123,7 +119,7 @@ class TradeController extends Controller
         $buy =  CardCurrency::where(['card_id' => $card_id, 'currency_id' => $rates->id, 'buy_sell' => 1])->first()->paymentMediums()->first();
         $rates->buy = json_decode($buy->pivot->payment_range_settings);
 
-        return view('newpages.ethereum', compact(['rates','card']));
+        return view('newpages.ethereum', compact(['rates', 'card']));
     }
 
     /* Trade GiftCards */
@@ -147,7 +143,7 @@ class TradeController extends Controller
             return back()->with(['error' => 'Invalid trade details']);
         }
 
-         if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
+        if (Auth::user()->transactions()->where('status', 'waiting')->count() >= 3 || Auth::user()->transactions()->where('status', 'in progress')->count() >= 3) {
             return back()->with(['error' => 'You cant initiate a new transaction with more than 3 waiting or processing transactions']);
         }
 
@@ -163,8 +159,8 @@ class TradeController extends Controller
 
         foreach ($r->cards as $i => $total) {
             $cardType = $r->card_types[$i];
-            $payment_medium_id = PaymentMedia::where('name',$cardType)->first()->id;
-            $currency_id = Currency::where('name',$r->currencies[$i])->first()->id;
+            $payment_medium_id = PaymentMedia::where('name', $cardType)->first()->id;
+            $currency_id = Currency::where('name', $r->currencies[$i])->first()->id;
             $card_currency_id = CardCurrency::where(['card_id' => $card->id, 'currency_id' => $currency_id])->first()->id;
             $rates = CardCurrencyPaymentMedia::where(['payment_medium_id' => $payment_medium_id, 'card_currency_id' => $card_currency_id])->first();
             $rates = json_decode($rates->payment_range_settings);
@@ -217,10 +213,10 @@ class TradeController extends Controller
         broadcast(new NewTransaction($t))->toOthers();
 
         $chinese = User::where(['role' => 444, 'status' => 'active'])->get();
-                $message = '!!! New Giftcard Transaction !!!  A new Giftcard transaction has been initiated ';
-                foreach ($chinese as $acct) {
-                    broadcast(new CustomNotification($acct, $message))->toOthers();
-                }
+        $message = '!!! New Giftcard Transaction !!!  A new Giftcard transaction has been initiated ';
+        foreach ($chinese as $acct) {
+            broadcast(new CustomNotification($acct, $message))->toOthers();
+        }
 
         $title = ucwords($t->type) . ' ' . $t->card;
         $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
@@ -233,7 +229,7 @@ class TradeController extends Controller
         $fcm_id = Auth::user()->fcm_id;
         if (isset($fcm_id)) {
             try {
-                FirebasePushNotificationController::sendPush($fcm_id,$title,$body);
+                FirebasePushNotificationController::sendPush($fcm_id, $title, $body);
             } catch (\Throwable $th) {
                 //throw $th;
             }
@@ -248,15 +244,14 @@ class TradeController extends Controller
 
             $name = Auth::user()->first_name;
             Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
-
         }
         $user = Auth::user();
         $title = 'TRANSACTION PENDING - BUY
         ';
-        $body ="Your order to   $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." is currently
+        $body = "Your order to   $t->type an <b>$t->card</b> worth NGN" . number_format($t->amount_paid) . " is currently
         <b style='color:red'>pending</b> and will be debited from your naria wallet once the transaction is successful<br>
         <b>Transaction ID: $transaction_id <br>
-        Date: ".date("Y-m-d; h:ia")."</b>
+        Date: " . date("Y-m-d; h:ia") . "</b>
         ";
 
         $btn_text = '';
@@ -332,7 +327,6 @@ class TradeController extends Controller
 
             $name = Auth::user()->first_name;
             Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
-
         }
 
         return redirect()->route('user.transactions');
