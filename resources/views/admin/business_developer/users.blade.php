@@ -71,14 +71,20 @@
                             <form class="form-inline p-2"
                                 method="GET">
                                 {{-- @csrf --}}
-                                <div class="form-group mr-2">
-                                    <label for="">Start date </label>
-                                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
-                                </div>
-                                <div class="form-group mr-2">
-                                    <label for="">End date </label>
-                                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
-                                </div>
+                                @if($type != "Quarterly_Inactive")
+                                    <div class="form-group mr-2">
+                                        <label for="">Start date </label>
+                                        <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                                    </div>
+                                    <div class="form-group mr-2">
+                                        <label for="">End date </label>
+                                        <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                                    </div>
+                                @else
+                                    <div class="form-group mr-2">
+                                        <input class="form-control" name="month" type="number" placeholder="Enter Month Range">
+                                    </div>
+                                @endif
                                 @if($segment == "Call Log")
                                 <div class="form-group mr-2">
                                     <select name="status" class="form-control" required>
@@ -117,6 +123,8 @@
                                     @if ($type == "Quarterly_Inactive")
                                         <th><div class="">Responded Cycle</div></th>
                                         <th><div class="">Recalcitrant Cycle</div></th>
+                                        <th><div class="">Transaction no</div></th>
+                                        <th><div class="">Priority</div></th>
                                     @endif
                                     @if($type == "Recalcitrant_Users")
                                         <th><div class="">Recalcitrant Date</div></th>
@@ -149,6 +157,8 @@
                                     @if ($type == "Quarterly_Inactive")
                                     <td>{{ ($u->Responded_Cycle == null) ? 0 : $u->Responded_Cycle }}</td>
                                     <td>{{ ($u->Recalcitrant_Cycle == null) ? 0 : $u->Recalcitrant_Cycle  }}</td>
+                                    <td>{{ ($u->transactionCount) ? number_format($u->transactionCount) : 0 }}</td>
+                                    <td>{{ ($u->priority) ? $u->priority : null }}</td>
                                     @endif
                                     @if($type == "Recalcitrant_Users")
                                         <td>{{ $u->updated_at->format('d M y, h:ia') }}</td>

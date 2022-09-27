@@ -280,16 +280,20 @@
                                 {{ $segment }} Transactions
                             </div>
                             @if ($show_limit)
-                                @if(auth()->user()->role == 889 || auth()->user()->role == 999)
+                            @if (in_array(Auth::user()->role,[999, 889,777]))
                                     <div>
+                                        @if (in_array(Auth::user()->role,[999, 889,777]))
                                         <form class="btn btn-md-primary"
                                             method="GET">
                                             <input type="hidden" name="downloader" value="csv">
                                             <button class="btn btn-primary">Download Table</button>
                                         </form>
+                                        @endif
+                                        @if (in_array(Auth::user()->role,[999, 889]))
                                         <a href="{{ route('admin.naira-p2p.withdrawal-queue')}}" class="btn btn-primary">Withdrawal Queue Range</a>
                                         <button data-toggle="modal" data-target="#limits-modal" class="btn btn-primary">Set Trade Limits</button>
                                         <button data-toggle="modal" data-target="#account-modal" class="btn btn-primary">Set account details</button>
+                                        @endif
                                     </div>
                                 @endif
                             @endif

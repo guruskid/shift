@@ -41,7 +41,7 @@ class LiveRateController extends Controller
         return $eth_rate;
     }
 
-    public static function btcRate()
+    public static function btcRate($type = 'sell')
     {
         $client = new Client();
         $url = "https://api.coinbase.com/v2/prices/spot?currency=USD";
@@ -51,7 +51,12 @@ class LiveRateController extends Controller
 
         $trading_per = Setting::where('name', 'trading_btc_per')->first()->value ?? 0;
         $tp = ($trading_per / 100) * $btc_rate;
-        $btc_rate -= $tp;
+        if ($type == 'sell') {
+            $btc_rate -= $tp;
+        } else {
+            $btc_rate += $tp;
+        }
+
 
         return $btc_rate;
 
@@ -74,13 +79,18 @@ class LiveRateController extends Controller
     }
 
 
-    public static function usdNgn($add_com = true)
+    public static function usdNgn($add_com = true, $type = 'sell')
     {
         $rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $commission = SettingController::get('crypto_commission');
 
         if ($add_com == true) {
-            $rate = $rate - (($commission/100) * $rate);
+            if ($type == 'sell') {
+                $rate = $rate - (($commission/100) * $rate);
+            } else {
+                $rate = $rate + (($commission/100) * $rate);
+            }
+
         }
         return $rate;
 

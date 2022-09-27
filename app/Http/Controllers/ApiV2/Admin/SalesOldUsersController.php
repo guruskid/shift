@@ -31,10 +31,10 @@ class SalesOldUsersController extends Controller
         $end_date = now()->format('Y-m-d');
         $end_date = Carbon::parse($end_date." 23:59:59");
 
-        $CalledUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')->where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
+        $CalledUsers = UserTracking::with('transactions','user','call_log')->where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
-        $RespondedUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')->where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
+        $RespondedUsers = UserTracking::with('transactions','user','call_log')->where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
         $noOfRespondedUsers = $RespondedUsers->count();
 
         $respondedTransactions = $this->RespondedUnique($RespondedUsers);
@@ -42,13 +42,12 @@ class SalesOldUsersController extends Controller
         $respondedTranxNo = $respondedTransactions->count();
         $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($noOfRespondedUsers/$noOfCalledUsers)*100;
 
-        $RespondedUsersTotal = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')->where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
+        $RespondedUsersTotal = UserTracking::with('transactions','user','call_log')->where('called_date','>=',$start_date)->where('Current_Cycle','Responded')->get();
         $totalRespondedUserTotal = $this->RespondedTotal($RespondedUsersTotal);
 
         $respondedTranxVolume = $totalRespondedUserTotal->sum('amount');
 
-        $targetRespondedUsers = UserTracking::with('transactions','utilityTransaction','depositTransactions','user','call_log')
-        ->whereMonth('called_date',now()->month)->where('Current_Cycle','Responded')->get();
+        $targetRespondedUsers = UserTracking::with('transactions','user','call_log')->whereMonth('called_date',now()->month)->where('Current_Cycle','Responded')->get();
         $targetTranxVolume = $this->RespondedTotal($targetRespondedUsers)->sum('amount');
 
         $targetCovered = $this->targetCovered($targetTranxVolume,null);
@@ -309,30 +308,10 @@ class SalesOldUsersController extends Controller
     public function RespondedUnique($data)
     {
         //?do a performance check on this (to many foreach statements check execution time)
-
-        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $uniqueData = [];
         foreach($data as $d)
         {
-            if($d['utilityTransaction']->count() > 0)
-            {
-                foreach($d['utilityTransaction']->where('created_at','>=',$d->called_date) as $util)
-                {
-                    $util->amount = $util->amount/$usdRate;
-                    $util->tranxCard = $util->type." Utility";
-                }
-            }
-
-            if($d['depositTransactions']->count() > 0)
-            {
-                foreach($d['depositTransactions']->where('created_at','>=',$d->called_date) as $deposit)
-                {
-                    $deposit->amount = $deposit->amount/$usdRate;
-                    $deposit->tranxCard = "PayBridge ".ucfirst($deposit->type);
-                }
-            }
-        
-            $allTranx = collect()->concat($d['transactions'])->concat($d['depositTransactions'])->concat($d['utilityTransaction']);
+            $allTranx = collect()->concat($d['transactions']);
 
             $userTranx = $allTranx->where('created_at','>=',$d->called_date)->sortByDesc('created_at')->first();
             if($userTranx != null)
@@ -348,27 +327,9 @@ class SalesOldUsersController extends Controller
     public function RespondedTotal($data)
     {
         $totalData = collect([]);
-        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         foreach($data as $d)
         {
-            if($d['utilityTransaction']->count() > 0)
-            {
-                foreach($d['utilityTransaction']->where('created_at','>=',$d->called_date) as $util)
-                {
-                    $util->amount = $util->amount/$usdRate;
-                    $util->tranxCard = $util->type." Utility";
-                }
-            }
-
-            if($d['depositTransactions']->count() > 0)
-            {
-                foreach($d['depositTransactions']->where('created_at','>=',$d->called_date) as $deposit)
-                {
-                    $deposit->amount = $deposit->amount/$usdRate;
-                    $deposit->tranxCard = "PayBridge ".ucfirst($deposit->type);
-                }
-            }
-            $allTranx = collect()->concat($d['transactions'])->concat($d['depositTransactions'])->concat($d['utilityTransaction'])->where('created_at','>=',$d->called_date);
+            $allTranx = collect()->concat($d['transactions'])->where('created_at','>=',$d->called_date);
             if($allTranx != null)
             {
                 $totalData = $totalData->concat($allTranx);

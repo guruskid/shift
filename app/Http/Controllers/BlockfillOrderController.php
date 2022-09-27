@@ -20,7 +20,7 @@ class BlockfillOrderController extends Controller
             'json' => [
                 "orderType" => "Market",
                 "quantity" => round($transaction->quantity, 6),
-                "side" => "Sell",
+                "side" => $transaction->type,
                 "symbol" => "BTC/USDT",
                 "timeInForce" => "ImmediateOrCancel"
             ],
@@ -32,7 +32,7 @@ class BlockfillOrderController extends Controller
         BlockfillOrder::create([
             'currency_id' => $currency_id,
             'transaction_id' => $transaction->id,
-            'type' => 'sell',
+            'type' => $transaction->type,
             'pair' => 'BTC/USDT',
             'quantity' => $transaction->quantity,
             'usd' => $transaction->amount,

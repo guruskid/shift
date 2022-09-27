@@ -95,4 +95,15 @@ class CryptoHelperController extends Controller
 
         return $wallet;
     }
+
+    public static function accountBalance($account_id)
+    {
+        $client = new Client();
+        $url = env('TATUM_URL') . '/ledger/account/' . $account_id;
+        $res = $client->request('GET', $url, [
+            'headers' => ['x-api-key' => env('TATUM_KEY')]
+        ]);
+        $res = json_decode($res->getBody());
+        return $res->balance->availableBalance;
+    }
 }
