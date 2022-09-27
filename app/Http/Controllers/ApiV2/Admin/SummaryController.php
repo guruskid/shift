@@ -1,4 +1,4 @@
-`<?php
+<?php
 
 namespace App\Http\Controllers\ApiV2\Admin;
 
@@ -97,7 +97,7 @@ class SummaryController extends Controller
                 $value = $value->where('type',$type);
             }
             $value = $value->count();
-            $ct->noOfTrans = $value; 
+            $ct->noOfTrans = $value;
 
             //?users
             $value = Transaction::where('card_id',$ct->id)->whereDate("created_at",$date)->where('status', 'success');
@@ -162,7 +162,7 @@ class SummaryController extends Controller
         }
         $number_of_tranx = $number_of_tranx->map->only(['id','user_id','name','TokenPrice','coin','Amount','valueNGN','valueUSD','date','dp']);
         $number_of_tranx = collect($number_of_tranx);
-        //?getting crypto token 
+        //?getting crypto token
         $crypto_tokens = $this->cryptoAssetData($date,1);
         $tokens = Card::where('is_crypto',1)->get(['id','name']);
 
@@ -196,7 +196,7 @@ class SummaryController extends Controller
         if($r->type != null)
         {
             $number_of_tranx = $number_of_tranx->where('type',$r->type);
-        } 
+        }
 
         foreach($number_of_tranx as $nt){
             if($nt->user){
@@ -224,7 +224,7 @@ class SummaryController extends Controller
 
     }
 
-    //TODO there is need to work on this 
+    //TODO there is need to work on this
     public function giftCardTransactions()
     {
         $date = now()->format('Y-m-d');
