@@ -9,6 +9,7 @@ use App\CryptoRate;
 use App\HdWallet;
 use App\FeeWallet;
 use App\Http\Controllers\Admin\ReferralSettingsController;
+use App\Http\Controllers\Admin\SettingController;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Notification;
@@ -364,7 +365,7 @@ class BtcWalletController extends Controller
             ]);
 
             //SEND EVERYTHING TO BLOCKFILL
-            
+
             // if ($charge > 0.0000001) {
             //     $send_charge = $client->request('POST', $url, [
             //         'headers' => ['x-api-key' => env('TATUM_KEY')],
