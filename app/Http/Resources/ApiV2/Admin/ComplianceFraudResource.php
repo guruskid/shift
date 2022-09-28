@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\ApiV2\Admin;
 
-use App\Http\Controllers\ApiV2\Admin\VerificationController;
+use App\VerificationLimit;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -12,6 +12,7 @@ class ComplianceFraudResource extends JsonResource
     private static $end;
     private static $usd_rate;
     private static $type;
+    private static $verificationLimit;
     /**
      * Transform the resource into an array.
      *
@@ -20,12 +21,12 @@ class ComplianceFraudResource extends JsonResource
      */
     public function toArray($request)
     {
-        $type = self::$type;
-        $userDebitCreditDetail = $this->getUserTransactionVerificationData($this);
 
-        $verification = new VerificationController();
-        $verificationLevel = $verification->verificationHelper($this);
-        $verificationMonthlyData = $verification->maximumLevelMonthlyWithdrawal($verificationLevel);
+        $type = self::$type;
+        $userDebitCreditDetail = $this->getUserTransactionVerificationData();
+
+        $verificationLevel = $this->verificationHelper($this);
+        $verificationMonthlyData = $this->maximumLevelMonthlyWithdrawal($verificationLevel);
 
         $debitAmount = ($type == "NGN") ? $userDebitCreditDetail['debitAmountNGN'] : $userDebitCreditDetail['debitAmountUSD'];
         $creditAmount = ($type == "NGN") ? $userDebitCreditDetail['creditAmountNGN'] : $userDebitCreditDetail['creditAmountUSD'];
@@ -42,16 +43,17 @@ class ComplianceFraudResource extends JsonResource
         ];
     }
 
-    public static function sortCollection($collection, $start, $end, $usd_rate, $type) : AnonymousResourceCollection
+    public static function sortCollection($collection, $start, $end, $usd_rate, $type, $verificationLimit) : AnonymousResourceCollection
     {
         self::$start = $start;
         self::$end = $end;
         self::$usd_rate = $usd_rate;
         self::$type = $type;
+        self::$verificationLimit = $verificationLimit;
         return parent::collection($collection);
     }
 
-    public function getUserTransactionVerificationData($user)
+    public function getUserTransactionVerificationData()
     {
         $start = self::$start;
         $end = self::$end;
@@ -183,5 +185,51 @@ class ComplianceFraudResource extends JsonResource
         );
 
         return $exportData;
+    }
+
+    public function verificationHelper($user)
+    {
+        $verificationLevel = 'not Verified';
+
+        if($user->phone_verified_at != null AND $user->address_verified_at == null AND $user->idcard_verified_at == null)
+        {
+            $verificationLevel = 'Level 1';
+        }
+        if($user->phone_verified_at != null AND $user->address_verified_at != null AND $user->idcard_verified_at == null)
+        {
+            $verificationLevel = 'Level 2';
+        }
+        if($user->phone_verified_at != null AND $user->address_verified_at != null AND $user->idcard_verified_at != null)
+        {
+            $verificationLevel = 'Level 3';
+        }
+
+        return $verificationLevel;
+    }
+
+    public function maximumLevelMonthlyWithdrawal($verificationHelperData)
+    {
+        $levelNo = 0;
+        $levelMonthlyWithdrawalLimit = 0;
+
+        switch ($verificationHelperData) {
+            case 'Level 1':
+                $levelNo = 1;
+                break;
+            case 'Level 2':
+                $levelNo = 2;
+                break;
+            case 'Level 3':
+                $levelNo = 3;
+                break;
+            default:
+                $levelNo = 0;
+                break;
+        }
+        if($levelNo != 0) {
+            $levelMonthlyWithdrawalLimit = self::$verificationLimit->where('level', $levelNo)->first()->monthly_widthdrawal_limit;
+        }
+        
+        return $levelMonthlyWithdrawalLimit;
     }
 }

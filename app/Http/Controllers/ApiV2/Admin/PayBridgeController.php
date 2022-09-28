@@ -105,25 +105,44 @@ class PayBridgeController extends Controller
 
     public function activateBank($id)
     {
-        $payBridgeAccount = PayBridgeAccount::where('id',$id)->update([
+        $payBridge = PayBridgeAccount::where('id',$id);
+        $payBridgeData = $payBridge->first();
+        if($payBridgeData->status == 'active')
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "$payBridgeData->account_name [$payBridgeData->bank_name] is already activated",
+            ],200);
+        }
+        $payBridgeAccount = $payBridge->update([
             'status' => 'active',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => "$payBridgeAccount->account_name [$payBridgeAccount->bank_name] has been activated",
+            'message' => "$payBridgeData->account_name [$payBridgeData->bank_name] has been activated",
         ],200);
     }
 
     public function deactivateBank($id)
     {
-        $payBridgeAccount = PayBridgeAccount::where('id',$id)->update([
+        $payBridge = PayBridgeAccount::where('id',$id);
+        $payBridgeData = $payBridge->first();
+
+        if($payBridgeData->status == 'in-active')
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "$payBridgeData->account_name [$payBridgeData->bank_name] is already deactivated",
+            ],200);
+        }
+        $payBridgeAccount = $payBridgeData->update([
             'status' => 'in-active',
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => "$payBridgeAccount->account_name [$payBridgeAccount->bank_name] has been deactivated",
+            'message' => "$payBridgeData->account_name [$payBridgeData->bank_name] has been deactivated",
         ],200);
     }
 
@@ -164,7 +183,7 @@ class PayBridgeController extends Controller
         return response()->json([
             'success' => true,
             'depositTotal' => $p2pTabs['depositTotal'],
-            'withdrawalTotal' => $$p2pTabs['$withdrawalTotal'],
+            'withdrawalTotal' => $p2pTabs['withdrawalTotal'],
             'successDeposit' => $p2pTabs['successDeposit'],
             'successWithdrawal' => $p2pTabs['successWithdrawal'],
             'waitingDeposit' => $p2pTabs['waitingDeposit'],
@@ -269,7 +288,7 @@ class PayBridgeController extends Controller
         return response()->json([
             'success' => true,
             'depositTotal' => $p2pTabs['depositTotal'],
-            'withdrawalTotal' => $$p2pTabs['$withdrawalTotal'],
+            'withdrawalTotal' => $p2pTabs['withdrawalTotal'],
             'successDeposit' => $p2pTabs['successDeposit'],
             'successWithdrawal' => $p2pTabs['successWithdrawal'],
             'waitingDeposit' => $p2pTabs['waitingDeposit'],
@@ -291,16 +310,20 @@ class PayBridgeController extends Controller
 
         //Accountants 
         $accountants = User::whereIn('role',['777','775','889'])->get(['id','first_name','last_name']);
+        $accDetails = array();
         foreach($accountants as $accountant)
         {
-            $accountant->is_accountant = 1;
-            $accountant->name = $accountant->first_name ." ".$accountant->last_name;
+            $accDetails[] = array(
+                'id' => $accountant->id,
+                'is_accountant' => 1,
+                'name' => $accountant->first_name ." ".$accountant->last_name,
+            );
         }
 
         return response()->json([
             'success' => true,
             'status' => $status,
-            'accountants' => $accountants,
+            'accountants' => $accDetails,
         ],200);
     }
 

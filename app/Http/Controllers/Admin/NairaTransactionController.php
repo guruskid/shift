@@ -88,6 +88,7 @@ class NairaTransactionController extends Controller
         $t->narration = $r->narration;
         $t->charge = 0;
         $t->trans_msg = 'This transaction was authenticated by ' . Auth::user()->id . ' ' . Auth::user()->first_name;
+        $t->is_manual = 1;
 
         if ($r->transaction_type == 1 ) {
             //Deposit
