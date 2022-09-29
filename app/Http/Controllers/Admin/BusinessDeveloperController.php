@@ -2,22 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\AccountantTimeStamp;
 use App\CallCategory;
 use App\CallLog;
+use App\Card;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\NairaTransaction;
-use App\NewUsersTracking;
+use App\PriorityRanking;
 use App\Transaction;
 use App\User;
 use App\UserTracking;
-use App\UtilityTransaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class BusinessDeveloperController extends Controller
 {
@@ -43,32 +40,38 @@ class BusinessDeveloperController extends Controller
             $type = "Quarterly_Inactive";
         }
         if($type == "NoResponse"){
-            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            $data_table = UserTracking::with('transactions','user')
             ->where('Current_Cycle','NoResponse')->latest('updated_at')->get()->take(20);
         }
         if($type == "Quarterly_Inactive")
         {
-            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
-            ->where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get()->take(20);
+            $data_table = ($this->quarterlyInactive())->take(20);
+            return view(
+                'admin.business_developer.index',
+                compact([
+                    'data_table','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
+                    'NoResponse'
+                ])
+            );
         }
         if($type == "Called_Users")
         {
-            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            $data_table = UserTracking::with('transactions','user')
             ->where('Current_Cycle','Called')->latest('updated_at')->get()->take(20);
         }
         if($type == "Responded_Users")
         {
-            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            $data_table = UserTracking::with('transactions','user')
             ->where('Current_Cycle','Responded')->latest('updated_at')->get()->take(20);
         }
         if($type == "Recalcitrant_Users")
         {
-            $data_table = UserTracking::with('transactions','utilityTransaction','depositTransactions','user')
+            $data_table = UserTracking::with('transactions','user')
             ->where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(20);
         }
 
         foreach ($data_table as $td ) {
-            $allTranx = collect()->concat($td['transactions'])->concat($td['depositTransactions'])->concat($td['utilityTransaction']);
+            $allTranx = collect()->concat($td['transactions']);
             $data = $allTranx->sortByDesc('created_at');
 
             if($data->count() == 0)
@@ -101,8 +104,7 @@ class BusinessDeveloperController extends Controller
         }
         if($type == "Quarterly_Inactive")
         {
-            $data_table = UserTracking::where('Current_Cycle','QuarterlyInactive')->latest('updated_at');
-            $segment = "Quarterly Inactive";
+            return $this->sortQuarterlyInactive($request, $type, $call_categories);
         }
         if($type == "Called_Users")
         {
@@ -139,10 +141,10 @@ class BusinessDeveloperController extends Controller
             });
         }
         $count = $data_table->count();
-        $data_table = $data_table->with('transactions','utilityTransaction','depositTransactions','user')->paginate(100);
+        $data_table = $data_table->with('transactions','user')->paginate(100);
 
        foreach ($data_table as $td ) {
-            $allTranx = collect()->concat($td['transactions'])->concat($td['depositTransactions'])->concat($td['utilityTransaction']);
+            $allTranx = collect()->concat($td['transactions']);
             $data = $allTranx->sortByDesc('created_at');
 
             if($data->count() == 0)
@@ -153,6 +155,125 @@ class BusinessDeveloperController extends Controller
                 $td->last_transaction_date =  $data->first()->created_at->format('d M Y, h:ia');
             }
         }
+        return view(
+            'admin.business_developer.users',
+            compact([
+                'data_table','type','segment','call_categories','count'
+            ])
+        );
+    }
+
+    public function monthSort($startDate, $endDate, $table){
+        foreach($table as $t)
+        {
+            if($startDate != null AND $endDate != null)
+            {
+                $sortTranx = $t['transactions']->where('created_at','>=',$startDate)->where('created_at','<=',$endDate);
+            }else{
+                $sortTranx = $t['transactions'];
+            }
+            $transactions = $this->getCryptoTransaction($sortTranx);
+            // dd($this->priorityRanking($transactions->sum('amount')));
+            $t->priority = $this->priorityRanking($transactions->sum('amount'));
+            $t->transactionCount = $transactions->count();
+            $t->transactionAmount = $transactions->sum('amount');
+
+            if($transactions->count() == 0)
+            {
+                $t->last_transaction_date = 'No Transactions';
+            }
+            else{
+                $t->last_transaction_date =  $transactions->first()->created_at->format('d M Y, h:ia');
+            }
+        }
+        return $table;
+    }
+
+    public function getCryptoTransaction($transactions)
+    {
+        $crypto = Card::where('is_crypto',1)->get();
+        $crypto = $crypto->pluck('id')->toArray();   
+        
+        $cryptoTransactions = array();
+        foreach($transactions as $t)
+        {
+            if(in_array($t->card_id, $crypto))
+            {
+                $cryptoTransactions[] = $t;
+            }
+        }
+
+        return collect($cryptoTransactions)->sortByDesc('created_at');
+    }
+
+    public function priorityRanking($amount)
+    {
+        $rankings = PriorityRanking::orderBy('priority_price', 'ASC')->get()->toArray();
+        for($i=0; $i < count($rankings); $i++)
+        {
+            $currentKey = $i;
+            $previousKey = $i - 1;
+
+            $nextKey = $i + 1;
+            $lastKey = count($rankings) - 1;
+
+            $rankings[$currentKey]['priority_name'];
+            $rankings[$currentKey]['priority_price'];
+
+            if(isset($rankings[$nextKey])){
+                if($currentKey == 0)
+                {
+                    if($amount < $rankings[$currentKey]['priority_price']){
+                        return "Below ".$rankings[$currentKey]['priority_name'];
+                    }
+                }
+
+                if($amount >= $rankings[$currentKey]['priority_price'] AND $amount < $rankings[$nextKey]['priority_price'])
+                {
+                    return $rankings[$currentKey]['priority_name'];
+                }
+            }else{
+                return $rankings[$currentKey]['priority_name'];
+            }
+
+
+
+        }
+
+    }
+    public function quarterlyInactive()
+    {
+        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get();
+       
+        $data_table = $this->monthSort(null, null, $table);
+        $data_table = $data_table->sortByDesc('transactionAmount');
+
+        return $data_table;
+    }
+
+    public function sortQuarterlyInactive($request, $type, $call_categories)
+    {
+        $monthRange = ($request) ? $request->month : null;
+
+        $endDate = ($monthRange) ? now() : null;
+        $startDate = ($monthRange) ? now()->subMonth($monthRange) : null;
+
+        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get();
+        $segment = "Quarterly Inactive";
+
+        $data_table = $this->monthSort($startDate, $endDate, $table);
+
+
+        if($monthRange != null)
+        {
+            $data_table = $data_table->where('transactionAmount','>',0)->sortByDesc('transactionAmount');
+        }else{
+            $data_table = $data_table->sortByDesc('transactionAmount');
+        }
+        
+        $count = $data_table->count();
+        $data_table = $data_table->paginate(100);
+
         return view(
             'admin.business_developer.users',
             compact([
@@ -322,9 +443,9 @@ class BusinessDeveloperController extends Controller
     
 
     public static function checkActiveUsers(){
-        $active_users = UserTracking::where('Current_Cycle','Active')->with('transactions','utilityTransaction','depositTransactions','user')->get();
+        $active_users = UserTracking::where('Current_Cycle','Active')->with('transactions','user')->get();
         foreach ($active_users as $au) {
-            $user_tnx = collect()->concat($au['transactions'])->concat($au['utilityTransaction'])->concat($au['depositTransactions']);
+            $user_tnx = collect()->concat($au['transactions']);
             if($user_tnx->count() == 0)
             {
                 //* Checking when user was created
@@ -356,9 +477,9 @@ class BusinessDeveloperController extends Controller
 
     public static function checkQuarterlyInactive()
     {
-        $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->with('transactions','utilityTransaction','depositTransactions','user')->get();
+        $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->with('transactions','user')->get();
         foreach ($quarterlyInactive as $qi) {
-            $userTranx = collect()->concat($qi['transactions'])->concat($qi['utilityTransaction'])->concat($qi['depositTransactions']);
+            $userTranx = collect()->concat($qi['transactions']);
 
             if($userTranx->count() > 0)
             {
@@ -387,15 +508,12 @@ class BusinessDeveloperController extends Controller
 
     public static function checkCalledUsersForRespondedAndRecalcitrant()
     {
-        $called_users = UserTracking::where('Current_Cycle','Called')->with('transactions','utilityTransaction','depositTransactions','user')->get();
+        $called_users = UserTracking::where('Current_Cycle','Called')->with('transactions','user')->get();
         foreach ($called_users as $cu ) {
             $cu->called_date = Carbon::parse($cu->called_date);
  
             $userTranx = $cu['transactions']->where('created_at','>=',$cu->called_date);
-            $userUtil = $cu['utilityTransaction']->where('created_at','>=',$cu->called_date);
-
-            $userDeposit = $cu['depositTransactions']->where('created_at','>=',$cu->called_date);
-            $allTranx = collect()->concat($userTranx)->concat($userUtil)->concat($userDeposit);
+            $allTranx = collect()->concat($userTranx);
 
             if($allTranx->count() >= 1)
             {
@@ -422,15 +540,12 @@ class BusinessDeveloperController extends Controller
 
     public static function CheckRecalcitrantUsersForResponded()
     {
-        $recalcitrant_users = UserTracking::where('Current_Cycle','Recalcitrant')->with('transactions','utilityTransaction','depositTransactions','user')->get();
+        $recalcitrant_users = UserTracking::where('Current_Cycle','Recalcitrant')->with('transactions','user')->get();
         foreach ($recalcitrant_users as $ru) {
             $ru->current_cycle_count_date = Carbon::parse($ru->current_cycle_count_date);
 
             $userTranx = $ru['transactions']->where('created_at','>=',$ru->current_cycle_count_date);
-            $userUtil = $ru['utilityTransaction']->where('created_at','>=',$ru->current_cycle_count_date);
-
-            $userDeposit = $ru['depositTransactions']->where('created_at','>=',$ru->current_cycle_count_date);
-            $allTranx = collect()->concat($userTranx)->concat($userUtil)->concat($userDeposit);
+            $allTranx = collect()->concat($userTranx);
 
             if($allTranx->count() > 0)
             {
@@ -460,15 +575,12 @@ class BusinessDeveloperController extends Controller
 
     public static function CheckRespondedUsersForQualityInactive()
     {
-        $responded_users = UserTracking::where('Current_Cycle','Responded')->with('transactions','utilityTransaction','depositTransactions','user')->get();
+        $responded_users = UserTracking::where('Current_Cycle','Responded')->with('transactions','user')->get();
         foreach ($responded_users as $ru) {
             $ru->current_cycle_count_date = Carbon::parse($ru->current_cycle_count_date);
 
             $userTranx = $ru['transactions']->where('created_at','>=',$ru->current_cycle_count_date);
-            $userUtil = $ru['utilityTransaction']->where('created_at','>=',$ru->current_cycle_count_date);
-
-            $userDeposit = $ru['depositTransactions']->where('created_at','>=',$ru->current_cycle_count_date);
-            $allTranx = collect()->concat($userTranx)->concat($userUtil)->concat($userDeposit);
+            $allTranx = collect()->concat($userTranx);
 
             $monthDiff = $ru->current_cycle_count_date->diffInMonths(now());
             
