@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiV2\Admin\AccountantController;
 use App\ReferralSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -308,6 +309,12 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
             Route::POST('/sort', 'PayBridgeController@p2pSorting');
             Route::GET('/filter', 'PayBridgeController@loadFilter');
         });
+
+        Route::group(['prefix' => 'accountant'], function () {
+            Route::get("/overview/{id}", [AccountantController::class, 'AccountantOverview']);
+        });
+
+
     });
 
     Route::group(['prefix' => 'complianceAndFraud'], function () {
