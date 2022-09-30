@@ -342,6 +342,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     /* Bitcoin  */
     Route::get('/bitcoin-wallet', 'BtcWalletController@wallet')->name('user.bitcoin-wallet');
     Route::post('/sell-bitcoin', 'BtcWalletController@sell')->name('user.sell-bitcoin');
+    Route::post('/buy-bitcoin', 'BtcWalletController@buy')->name('user.sell-bitcoin');
     // Route::get('/get-bitcoin-ngn', 'BtcWalletController@getbitcoinNgn'); deprecated
     Route::post('/bitcoin-wallet-create', 'BtcWalletController@create')->name('user.bitcoin-wallet.create');
 
@@ -624,7 +625,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('call-log', 'Admin\BusinessDeveloperController@CallLog')->name('business-developer.call-log');
 
     Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
-    
+
     // Route::GET('/QuarterlyInactiveUsersFromDB', function () {
     //     Artisan::call('check:trackingTable');
     //     return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
