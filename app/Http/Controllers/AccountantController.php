@@ -105,7 +105,8 @@ class AccountantController extends Controller
             }
         }
     }
-
+ 
+    //*this should not be here
     public function AccountantOverview($id)
     {
         $accountant = User::where("id", $id)->select('id', 'first_name', 'last_name', 'email', 'phone', 'role', 'status', 'username')

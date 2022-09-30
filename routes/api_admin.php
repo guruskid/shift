@@ -310,11 +310,10 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
             Route::GET('/filter', 'PayBridgeController@loadFilter');
         });
 
-        Route::group(['prefix' => 'accountant'], function () {
-            Route::get("/overview/{id}", [AccountantController::class, 'AccountantOverview']);
-        });
+    });
 
-
+    Route::group(['prefix' => 'accountant'], function () {
+        Route::GET("/overview/{id}",'SeniorAccountant\AccountantController@AccountantOverview');
     });
 
     Route::group(['prefix' => 'complianceAndFraud'], function () {
