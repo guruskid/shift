@@ -59,7 +59,6 @@ class DashboardOverviewController extends Controller {
                 'currently_active' => SpotLightController::accountantOnRole(),
                 'last_active' => self::lastAccountantOnRole()
             ],
-            // 'number_of_new_users' => SpotLightController::getUsersByDays()
         ];
         return response()->json([
             'success' => true,
@@ -72,50 +71,68 @@ class DashboardOverviewController extends Controller {
             $query->where('status','waiting');
         })->with('user')->latest()->first();
 
+        $data = [
+            'staff_name' => '--',
+            'last_active' =>  '--',
+            'opening_balance' => '--',
+            'closing_balance' => '--',
+            'total_paid_out' => [
+                'amount' => '--',
+                'count' => '--'
+            ],
+            'total_deposit'  => [
+                'amount' => '--',
+                'count' => '--'
+            ],
+            'current_balance' => '--',
+            'pending_withdrawal' => [
+                'amount' => '--',
+                'count'  => '--'
+            ]
+        ];
+
         $acct_name = '';
 
         if ($stamp) {
             $acctn = $stamp->user;
             $acct_name = $acctn->first_name.' '.$acctn->last_name;
+
+            $opening_balance = $stamp->opening_balance;
+
+            $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
+            ->whereBetween('updated_at',[$stamp->activeTime,$stamp->inactiveTime])
+            ->get();
+
+            $dtrade = NairaTrade::where(['status' => 'success','type'=> 'deposit'])
+            ->whereBetween('updated_at',[$stamp->activeTime,$stamp->inactiveTime])
+            ->get();
+
+            $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal', 'agent_id' => $acctn->id]);
+            $paid_out = $wtrade->sum('amount');
+            $current_balance = $opening_balance - $paid_out;
+            $closing_balance = $stamp->closing_balance;
+
+            $last_active = ($stamp->inactiveTime) ? Carbon::createFromTimeString($stamp->inactiveTime)->diffForHumans() : '';
+
+            $data['staff_name'] =  $acctn->first_name.' '.$acctn->last_name;
+            $data['last_active'] =  $last_active;
+            $data['opening_balance'] = number_format($opening_balance,0,'.',',');
+            $data['closing_balance'] = number_format($closing_balance,0,'.',',');
+            $data['total_paid_out'] = [
+                'amount' => number_format($wtrade->sum('amount'),0,'.',','),
+                'count' => number_format($wtrade->count(),0,'.',',')
+            ];
+            $data['total_deposit'] = [
+                'amount' => number_format($dtrade->sum('amount'),0,'.',','),
+                'count' => number_format($dtrade->count(),0,'.',',')
+            ];
+            $data['current_balance'] = number_format($current_balance,0,'.',',');
+            $data['pending_withdrawal'] = [
+                'amount' => number_format($pending_withdrawal->sum('amount'),0,'.',','),
+                'count'  => number_format($pending_withdrawal->count(),0,'.',',')
+            ];
         }
-
-        $acctn = $stamp->user;
-
-        // $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
-
-        $opening_balance = $stamp->opening_balance;
-
-        $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
-        ->whereBetween('updated_at',[$stamp->activeTime,$stamp->inactiveTime])
-        ->get();
-
-        $dtrade = NairaTrade::where(['status' => 'success','type'=> 'deposit'])
-        ->whereBetween('updated_at',[$stamp->activeTime,$stamp->inactiveTime])
-        ->get();
-
-        $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal', 'agent_id' => $acctn->id]);
-        $paid_out = $wtrade->sum('amount');
-        $current_balance = $opening_balance - $paid_out;
-
-        return [
-            'staff_name' => $acctn->first_name.' '.$acctn->last_name,
-            'last_active' =>  Carbon::createFromTimeString($stamp->inactiveTime)->diffForHumans(),
-            'opening_balance' => $opening_balance,
-            'closing_balance' => 00,
-            'total_paid_out' => [
-                'amount' => $wtrade->sum('amount'),
-                'count' => $wtrade->count()
-            ],
-            'total_deposit'  => [
-                'amount' => $dtrade->sum('amount'),
-                'count' => $dtrade->count()
-            ],
-            'current_balance' => $current_balance ,
-            'pending_withdrawal' => [
-                'amount' => $pending_withdrawal->sum('amount'),
-                'count'  => $pending_withdrawal->count()
-            ]
-        ];
+        return $data;
     }
 
     public function getTransactionHistory() {
@@ -189,7 +206,7 @@ class DashboardOverviewController extends Controller {
         }
 
         $tranx = NairaTrade::where(DB::raw('date(created_at)'),$date)
-            ->with(['user','agent'])
+            ->with(['user','agent','naria_transaction'])
             ->limit(10)
             ->get();
 
