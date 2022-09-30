@@ -21,7 +21,20 @@ class BtcWalletController extends Controller
     {
         $btc_rate = LiveRateController::btcRate();
 
-        $usd_ngn = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $usd_ngn = LiveRateController::usdNgn();
+
+        return response()->json([
+            'success' => true,
+            'btc_usd' => $btc_rate,
+            'usd_ngn' => $usd_ngn
+        ]);
+    }
+
+    public function buyRates()
+    {
+        $btc_rate = LiveRateController::btcRate('buy');
+
+        $usd_ngn = LiveRateController::usdNgn(true, 'buy');
 
         return response()->json([
             'success' => true,
