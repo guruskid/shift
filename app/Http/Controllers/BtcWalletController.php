@@ -411,7 +411,7 @@ class BtcWalletController extends Controller
 
         $t = Auth::user()->transactions()->create([
             'card_id' => 102,
-            'type' => 'sell',
+            'type' => 'Sell',
             'amount' => $usd,
             'amount_paid' => $ngn,
             'quantity' => number_format((float) $r->quantity, 8),
@@ -513,6 +513,268 @@ class BtcWalletController extends Controller
         return response()->json([
             'success' => true,
             'msg' => 'Bitcoin sold successfully'
+        ]);
+    }
+
+    public static function buy(Request $r)
+    {
+        $validator = Validator::make($r->all(), [
+            'quantity' => 'required|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        /* if ($data['amount'] < 3) {
+            return back()->with(['error' => 'Minimum trade amount is $3']);
+        } */
+        $r->quantity = round($r->quantity, 6);
+
+        if (!Auth::user()->btcWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please create a bitcoin wallet to continue'
+            ]);
+        }
+
+        if (!Auth::user()->nairaWallet) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Please create a Naira wallet to continue'
+            ]);
+        }
+
+        try {
+
+            $client = new Client();
+
+            $current_btc_rate =  LiveRateController::btcRate('buy');
+
+            $trading_per = Setting::where('name', 'trading_btc_per')->first()->value;
+            $service_fee = ($trading_per / 100) * $r->quantity;
+
+            $trade_rate = LiveRateController::usdNgn(true, 'buy');
+
+            $user_naira_wallet = Auth::user()->nairaWallet;
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'msg' => 'Something went wrong, please try again'
+            ]);
+        }
+
+        //Get the other currencies using currnt rate
+        $charge = Setting::where('name', 'bitcoin_sell_charge')->first()->value ?? 0;
+        $charge = ($charge / 100) * $r->quantity;
+
+        $total = $r->quantity;
+        $usd = $total * $current_btc_rate;
+        $ngn = $usd * $trade_rate;
+        $total = $r->quantity - $charge;
+
+        if ($ngn > $user_naira_wallet->amount) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient Naira Wallet balance to initiate trade'
+            ]);
+        }
+
+        //Commission
+        $usd_ngn_old = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $commission = SettingController::get('crypto_commission');
+        $commission = ($commission / 100) * $usd_ngn_old;
+        $commission = $commission * $total;
+
+
+        $reference = \Str::random(5) . Auth::user()->id;
+        $url = env('TATUM_URL') . '/ledger/transaction';
+
+        $hd_wallet = HdWallet::where('currency_id', 1)->first();
+        $hd_wallet->balance = CryptoHelperController::accountBalance($hd_wallet->account_id);
+
+        $service_wallet = Wallet::where(['name' => 'service', 'user_id' => 1, 'currency_id' => 1])->first();
+        $charges_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
+
+        if ($hd_wallet->balance < $total) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Service not available, please check back later'
+            ]);
+        }
+
+        Auth::user()->nairaWallet->amount -= $ngn;
+        Auth::user()->nairaWallet->save();
+
+        try {
+            $send = $client->request('POST', $url, [
+                'headers' => ['x-api-key' => env('TATUM_KEY')],
+                'json' =>  [
+                    "senderAccountId" => $hd_wallet->account_id,
+                    "recipientAccountId" => Auth::user()->btcWallet->account_id,
+                    "amount" => number_format((float) $total, 8),
+                    "anonymous" => false,
+                    "compliant" => false,
+                    "transactionCode" => $reference,
+                    "paymentId" => $reference,
+                    "baseRate" => 1,
+                ]
+            ]);
+
+            //SEND EVERYTHING TO BLOCKFILL
+
+            // if ($charge > 0.0000001) {
+            //     $send_charge = $client->request('POST', $url, [
+            //         'headers' => ['x-api-key' => env('TATUM_KEY')],
+            //         'json' =>  [
+            //             "senderAccountId" => $hd_wallet->account_id,
+            //             "recipientAccountId" => $charges_wallet->account_id,
+            //             "amount" => number_format((float) $charge, 9),
+            //             "anonymous" => false,
+            //             "compliant" => false,
+            //             "transactionCode" => uniqid(),
+            //             "paymentId" => uniqid(),
+            //             "baseRate" => 1,
+            //             "senderNote" => 'hidden'
+            //         ]
+            //     ]);
+            // }
+
+            // if ($service_fee > 0.0000001) {
+            //     $send_service = $client->request('POST', $url, [
+            //         'headers' => ['x-api-key' => env('TATUM_KEY')],
+            //         'json' =>  [
+            //             "senderAccountId" => $hd_wallet->account_id,
+            //             "recipientAccountId" => $service_wallet->account_id,
+            //             "amount" => number_format((float) $service_fee, 9),
+            //             "anonymous" => false,
+            //             "compliant" => false,
+            //             "transactionCode" => uniqid(),
+            //             "paymentId" => uniqid(),
+            //             "baseRate" => 1,
+            //             "senderNote" => 'hidden'
+            //         ]
+            //     ]);
+            // }
+        } catch (\Exception $e) {
+            //set transaction status to failed
+            \Log::info($e->getResponse()->getBody());
+            //report($e);
+            Auth::user()->nairaWallet->amount += $ngn;
+            Auth::user()->nairaWallet->save();
+
+            return response()->json([
+                'success' => false,
+                'msg' => 'An error occured here, please try again'
+            ]);
+        }
+
+        $t = Auth::user()->transactions()->create([
+            'card_id' => 102,
+            'type' => 'Buy',
+            'amount' => $usd,
+            'amount_paid' => $ngn,
+            'quantity' => number_format((float) $r->quantity, 8),
+            'card_price' => $current_btc_rate,
+            'status' => 'success',
+            'uid' => uniqid(),
+            'user_email' => Auth::user()->email,
+            'card' => 'bitcoin',
+            'platform' => $r->platform,
+            'agent_id' => 1,
+            'ngn_rate' => $trade_rate,
+            'commission' => $commission,
+        ]);
+
+        $user = Auth::user();
+        $reference = \Str::random(2) . '-' . $t->id;
+        $n = NairaWallet::find(1);
+
+        $nt = new NairaTransaction();
+        $nt->reference = $reference;
+        $nt->amount = $t->amount_paid;
+        $nt->user_id = Auth::user()->id;
+        $nt->type = 'naira wallet';
+        $nt->previous_balance = Auth::user()->nairaWallet->amount;
+        $nt->current_balance = Auth::user()->nairaWallet->amount - $t->amount_paid;
+        $nt->charge = 0;
+        $nt->transaction_type_id = 19;
+        $nt->cr_wallet_id = $n->id;
+        $nt->dr_wallet_id = $user_naira_wallet->id;
+        $nt->cr_acct_name = 'Dantown';
+        $nt->dr_acct_name = $user->first_name . ' ' . $user->last_name;
+        $nt->narration = 'Debit for buy transaction with id ' . $t->uid;
+        $nt->trans_msg = 'This transaction was handled automatically ';
+        $nt->dr_user_id = $user->id;
+        $nt->cr_user_id = 1;
+        $nt->status = 'success';
+        $nt->save();
+
+
+
+        //Blockfill
+        if (SystemSettings::where('settings_name', 'BLOCKFILL')->first()->settings_value == 1) {
+            BlockfillOrderController::order($t);
+        }
+
+        ///////////////// REFERRAL ////////////////////////
+
+        $status = ReferralSettingsController::status();
+        if (Auth::user()->referred == 1 and $status == 1) {
+            // fund referral wallet
+            $tamount_paid = $t->amount_paid;
+            $referral_percentage = ReferralSettingsController::percent();
+            $referral_bonus = ($referral_percentage / 100) * $tamount_paid;
+
+            $getReferrer = User::where('referral_code', Auth::user()->referrer)->first();
+            $getReferrer->referral_wallet += $referral_bonus;
+            $getReferrer->save();
+
+            $rand = \Str::random(5) . $getReferrer->id;
+            $reference = \Str::upper($rand);
+
+            $nt = new NairaTransaction();
+            $nt->reference = $reference;
+            $nt->amount = $referral_bonus;
+            $nt->user_id = $getReferrer->id;
+            $nt->type = 'referral';
+            $nt->charge = 0;
+            $nt->dr_acct_name = 'Dantown';
+            $nt->narration = 'Referral bonus credit ';
+            $nt->trans_msg = 'Referral bonus';
+            $nt->dr_user_id = 1;
+            $nt->status = 'success';
+            $nt->save();
+        }
+
+
+
+        // ///////////////////////////////////////////////////////////
+        $finalamountcredited = Auth::user()->nairaWallet->amount - $t->amount_paid;
+        $title = 'Buy Order Successful';
+        $body = 'Your order to buy ' . $t->card . ' has been filled and your Naira wallet has been debited with₦' . number_format($t->amount_paid) . '<br>
+         Your new  balance is ' . $finalamountcredited . '.<br>
+         Date: ' . now() . '.<br><br>
+         Thank you for Trading with Dantown.';
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
+        //  Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+        // ////////////////////////////////////////////
+
+
+        return response()->json([
+            'success' => true,
+            'msg' => 'Bitcoin bought successfully'
         ]);
     }
 

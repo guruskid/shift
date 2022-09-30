@@ -68,7 +68,7 @@
 
 <script>
     export default {
-        props: ['rate', 'real_btc', 'card_id', 'charge'],
+        props: ['rate', 'real_btc', 'charge'],
         data() {
             return {
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

@@ -8,6 +8,7 @@ use App\CryptoCurrency;
 use App\HdWallet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CryptoHelperController;
 use App\User;
 use App\Wallet;
 use GuzzleHttp\Client;
@@ -24,36 +25,13 @@ class BtcWalletController extends Controller
         $charges_wallet = Wallet::where(['name' => 'charges', 'user_id' => 1, 'currency_id' => 1])->first();
         $migration_wallet = Wallet::where(['name' => 'migration', 'user_id' => 1, 'currency_id' => 1])->first();
 
+
+        $hd_wallet->balance = CryptoHelperController::accountBalance($hd_wallet->account_id);
+        $service_wallet->balance = CryptoHelperController::accountBalance($service_wallet->account_id);
+        $charges_wallet->balance = CryptoHelperController::accountBalance($charges_wallet->account_id);
+        $migration_wallet->balance = CryptoHelperController::accountBalance($migration_wallet->account_id);
+
         $client = new Client();
-        $url_hd = env('TATUM_URL') . '/ledger/account/' . $hd_wallet->account_id;
-        $res_hd = $client->request('GET', $url_hd, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
-        ]);
-        $res_hd = json_decode($res_hd->getBody());
-        $hd_wallet->balance = $res_hd->balance->availableBalance;
-
-        $url_service = env('TATUM_URL') . '/ledger/account/' . $service_wallet->account_id;
-        $res_service = $client->request('GET', $url_service, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
-        ]);
-        $res_service = json_decode($res_service->getBody());
-        $service_wallet->balance = $res_service->balance->availableBalance;
-
-        $url_charges = env('TATUM_URL') . '/ledger/account/' . $charges_wallet->account_id;
-        $res_charges = $client->request('GET', $url_charges, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
-        ]);
-        $res_charges = json_decode($res_charges->getBody());
-        $charges_wallet->balance = $res_charges->balance->availableBalance;
-
-        $url_migration = env('TATUM_URL') . '/ledger/account/' . $migration_wallet->account_id;
-        $res_migration = $client->request('GET', $url_migration, [
-            'headers' => ['x-api-key' => env('TATUM_KEY')]
-        ]);
-        $res_migration = json_decode($res_migration->getBody());
-        $migration_wallet->balance = $res_migration->balance->availableBalance;
-
-
         $url = env('TATUM_URL') . '/ledger/transaction/account?pageSize=50';
         $get_txns = $client->request('POST', $url, [
             'headers' => ['x-api-key' => env('TATUM_KEY')],
