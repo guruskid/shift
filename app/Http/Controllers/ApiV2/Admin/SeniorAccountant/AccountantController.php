@@ -89,6 +89,10 @@ class AccountantController extends Controller
     }
 
     public function GetActiveAccountant(){
-        
+       $data['accountant'] = User::select('id','first_name','last_name','email','phone','role','status','username')->where("status", "active")->whereHas("accountantTimestamp")->first();
+       return response()->json([
+        'success' => true,
+        'data' => $data ,
+       ], 200);
     }
 }
