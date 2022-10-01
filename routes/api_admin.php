@@ -313,7 +313,8 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
     });
 
     Route::group(['prefix' => 'accountant'], function () {
-        Route::GET("/overview/{id}",'SeniorAccountant\AccountantController@AccountantOverview');
+        Route::GET("/overview",'SeniorAccountant\AccountantController@AccountantOverview');
+        Route::GET('/get-active-accountant', 'SeniorAccountant\AccountantController@GetActiveAccountant');
     });
 
     Route::group(['prefix' => 'complianceAndFraud'], function () {
