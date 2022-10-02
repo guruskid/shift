@@ -315,6 +315,10 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
     Route::group(['prefix' => 'accountant'], function () {
         Route::GET("/overview",'SeniorAccountant\AccountantController@AccountantOverview');
         Route::GET('/get-active-accountant', 'SeniorAccountant\AccountantController@GetActiveAccountant');
+        Route::GET('/get-activation-history', 'SeniorAccountant\AccountantController@getActivationHistory');
+        Route::GET('/activate/{id}', 'SeniorAccountant\AccountantController@activateAccountant');
+        Route::GET('/deactivate/{id}', 'SeniorAccountant\AccountantController@deactivateAccountant');
+
     });
 
     Route::group(['prefix' => 'complianceAndFraud'], function () {
