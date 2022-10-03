@@ -6,6 +6,7 @@ use App\AccountantTimeStamp;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
+use App\NairaTransaction;
 use App\NairaWallet;
 use App\Transaction;
 use App\User;
@@ -247,4 +248,44 @@ class AccountantController extends Controller
             ]);
         }
     }
+
+
+    // Wallet
+
+    public function WalletOverview(){
+            $transaction =  NairaTransaction::whereHas("user")->whereIn("status", ["success", "pending"]);
+       $data['naira_wallet_history'] = $transaction->with("user")->orderBy('id', 'DESC')->paginate(25);
+        $data['total_commision_utilities'] = UtilityTransaction::whereIn('status', ['success', 'pending'])->sum("convenience_fee");
+        $data['total_user_balance'] =$transaction->sum('current_balance');
+        $data['total_withdrawal_charges'] =$transaction->sum('charge');
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
+
+
+    }
+
+    public function MonthlyWithdrawalCharges(){
+       $transaction =  NairaTransaction::whereHas("user")->whereIn("status", ["success", "pending"])->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', date('Y'));
+       $data['total_commision_utilities'] = UtilityTransaction::whereIn('status', ['success', 'pending'])->sum("convenience_fee");
+       $data['total_user_balance'] = $transaction->sum('current_balance');
+       $data['total_withdrawal_charges'] = $transaction->sum('charge');
+
+       $data['this_month'] = $transaction->selectRaw("SUM(charge) as withdrawal_charges")
+       ->selectRaw("count(id) as number_of_transactions")
+        ->selectRaw("(DATE_FORMAT(created_at, '%d-%m-%Y')) as date")
+        ->selectRaw("count('DISTINCT user_id') as unique_users")
+        ->orderBy('created_at', 'DESC')
+        ->groupBy(DB::raw("DATE_FORMAT(created_at, '%d-%m-%Y')"))
+        ->take(31)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
+    }
+
 }

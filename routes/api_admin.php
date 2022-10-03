@@ -321,6 +321,13 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
 
     });
 
+    Route::group(['prefix' => 'wallet'], function () {
+        Route::GET("/overview",'SeniorAccountant\AccountantController@WalletOverview');
+        Route::GET("/monthly-withdrawal-charges",'SeniorAccountant\AccountantController@MonthlyWithdrawalCharges');
+
+
+    });
+
     Route::group(['prefix' => 'complianceAndFraud'], function () {
         Route::GET('/users/{type?}', 'ComplianceFraudController@index');
         Route::POST('/sort', 'ComplianceFraudController@sorting');
