@@ -21,6 +21,7 @@ use App\Mail\DantownNotification;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
+use App\UserTracking;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -568,5 +569,28 @@ class UserController extends Controller
     public static function successFulNairaTrx() {
         $tranx = NairaTransaction::where(['user_id' => Auth::user()->id,'type' => 'withdrawal','status' => 'success'])->count();
         return $tranx;
+    }
+
+    public static function freeWithdrawals()
+    {
+        $user = Auth::user();
+        $userTracking = UserTracking::where('user_id', $user->id)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->first();
+
+        if($userTracking == null)
+        {
+            return 0;
+        } else {
+            return $userTracking->free_withdrawal;
+        }
+    }
+
+    public static function freeWithdrawalsReduction($number)
+    {
+        $user = Auth::user();
+        $userTracking = UserTracking::where('user_id', $user->id)->first();
+
+        $userTracking->update([
+            'free_withdrawal' => ($userTracking->free_withdrawal - $number),
+        ]);
     }
 }

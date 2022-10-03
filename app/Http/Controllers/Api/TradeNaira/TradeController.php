@@ -186,6 +186,12 @@ class TradeController extends Controller
             $charge = 0;
         }
 
+        if(UserController::freeWithdrawals() > 0 AND UserController::freeWithdrawals() <= 10)
+        {
+            $charge = 0;
+            UserController::freeWithdrawalsReduction(1);
+        }
+
         //create TXN here
         $txn = new NairaTrade();
         $txn->reference = $ref;

@@ -333,12 +333,24 @@ class BusinessDeveloperController extends Controller
                 'sales_id' => Auth::user()->id,
                 'called_date'=> $time
             ]);
+            self::freeWithdrawalActivation($request->id);
             return redirect()->back()->with(['success' => 'Call Log Added']);
         }
         else{
             return redirect()->back()->with(['error' => 'Error Adding Call Log']);
         }
 
+    }
+
+    public static function freeWithdrawalActivation($user_id)
+    {
+        $trackingData = UserTracking::where('user_id', $user_id)->first();
+        $trackingData->update([
+            'free_withdrawal' => 10
+        ]);
+
+        //? Mail Here.
+        
     }
 
     public function UpdateCallLog(Request $request)

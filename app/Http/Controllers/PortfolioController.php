@@ -128,7 +128,10 @@ class PortfolioController extends Controller
 
         $naira_charge = GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE');
         $tranx = UserController::successFulNairaTrx();
-        
+        if($tranx == 0)
+        {
+            $tranx = UserController::freeWithdrawals();
+        }        
 
         return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref', 'daily_rem', 'monthly_rem', 'setting','tranx','naira_charge']));
     }

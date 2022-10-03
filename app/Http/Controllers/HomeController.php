@@ -62,8 +62,30 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user();
-
-        $body = 'We noticed you logged in on ' . now() . '8 WAT. if this wasn\'t you, kindly change your password or contact support at support@godantown.com';
+    
+        $image = url('images/FreeWithdrawal.jpeg');
+        $body = "
+          <table border='0' cellpadding='0'  cellspacing='0' width='480'>
+            <tr>
+              <td align='center' width='400' valign='top' style='
+                  background-color: #ffffff;
+                  padding: 25px;
+                  margin-top:-30px;
+                  '>
+                <a href='#' target='_blank'>
+                  <img src='$image' width='480' height='300' style='
+                        display: block;
+                        font-family: 'Lato', Helvetica, Arial, sans-serif;
+                        color: #ffffff;
+                        font-size: 18px;
+                        background-color:none;
+                      ' border='0' />
+                </a>
+              </td>
+            </tr>
+          </table>";
+      
+        $body .= 'We noticed you logged in on ' . now() . '8 WAT. if this wasn\'t you, kindly change your password or contact support at support@godantown.com';
         $title = 'Login Confirmation';
 
         $btn_text = '';
