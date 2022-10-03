@@ -240,40 +240,61 @@ class SpotLightController extends Controller {
 
     public static function accountantOnRole() {
         $acctn = User::where(['role' => 777, 'status' => 'active'])->with('nairaWallet')->first();
-        $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
-        $opening_balance = $stamp->opening_balance;
-
-        $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
-        ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
-        ->get();
-
-        $dtrade = NairaTrade::where(['status' => 'success','type'=> 'deposit'])
-        ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
-        ->get();
-
-        $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal']);
-        $paid_out = $wtrade->sum('amount');
-        $current_balance = $opening_balance - $paid_out;
-
-
-        return [
-            'staff_name' => $acctn->first_name.' '.$acctn->last_name,
-            'opening_balance' => $opening_balance,
-            'closing_balance' => 00,
+        $data = [
+            'staff_name' => '--',
+            'opening_balance' => '--',
+            'closing_balance' => '--',
             'total_paid_out' => [
-                'amount' => $wtrade->sum('amount'),
-                'count' => $wtrade->count()
+                'amount' => '--',
+                'count' => '--'
             ],
             'total_deposit'  => [
-                'amount' => $dtrade->sum('amount'),
-                'count' => $dtrade->count()
+                'amount' => '--',
+                'count' => '--'
             ],
-            'current_balance' => $current_balance ,
+            'current_balance' => '--',
             'pending_withdrawal' => [
-                'amount' => $pending_withdrawal->sum('amount'),
-                'count'  => $pending_withdrawal->count()
+                'amount' => '--',
+                'count'  => '--'
             ]
         ];
+
+        if ($acctn) {
+            $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
+            $opening_balance = $stamp->opening_balance;
+            $closing_balance = $stamp->closing_balance;
+
+            $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
+                ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
+                ->get();
+
+            $dtrade = NairaTrade::where(['status' => 'success','type'=> 'deposit'])
+                ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
+                ->get();
+
+            $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal']);
+            $paid_out = $wtrade->sum('amount');
+            $current_balance = $opening_balance - $paid_out;
+
+            $data['staff_name'] =  $acctn->first_name.' '.$acctn->last_name;
+            $data['opening_balance'] = number_format($opening_balance,0,'.',',');
+            $data['closing_balance'] = number_format($closing_balance,0,'.',',');
+            $data['total_paid_out'] = [
+                'amount' => number_format($wtrade->sum('amount'),0,'.',','),
+                'count' => number_format($wtrade->count(),0,'.',',')
+            ];
+            $data['total_deposit'] = [
+                'amount' => number_format($dtrade->sum('amount'),0,'.',','),
+                'count' => number_format($dtrade->count(),0,'.',',')
+            ];
+            $data['current_balance'] = number_format($current_balance,0,'.',',');
+            $data['pending_withdrawal'] = [
+                'amount' => number_format($pending_withdrawal->sum('amount'),0,'.',','),
+                'count'  => number_format($pending_withdrawal->count(),0,'.',',')
+            ];
+        }
+
+        return $data;
     }
 
     public function monthlyAnalyticss(Request $request) {
