@@ -288,4 +288,124 @@ class AccountantController extends Controller
         ], 200);
     }
 
+
+    public function freezeUserWallet($userId){
+        $user = User::find($userId);
+
+
+        if(!$user)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'no data found'
+            ],401);
+        }
+
+        $name = $user->first_name . " " . $user->last_name;
+
+        if($user->status == 'not verified')
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $name." has already been deactivated"
+            ],401);
+        }
+        $user->status = 'not verified';
+        $user->save();
+
+        $userWallet = $user->nairaWallet;
+        if($userWallet):
+            $userWallet->status = 'paused';
+            $userWallet->save();
+        endif;
+
+        return response()->json([
+            'success' => true,
+            'message' => $name ." has been deactivated"
+        ],200);
+    }
+
+    public function depositWithdrawal(Request $r){
+        $r->validate([
+            'email' => 'required|email|exists:users',
+            'amount' => 'required',
+            'narration' => 'required|string',
+            'pin' => 'required',
+        ]);
+
+        if (Hash::check($r->pin, Auth::user()->pin) == false) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Incorrect Pin',
+            ]);
+        }
+        $user = User::where('email', $r->email)->first();
+
+        $wallet = $user->nairaWallet;
+
+        $t = new NairaTransaction();
+        $t->reference = uniqid();
+        $t->amount = $r->amount;
+        $t->amount_paid = $r->amount;
+        $t->previous_balance = $wallet->amount;
+        $t->user_id = $wallet->user->id;
+        $t->type = 'Naira Wallet';
+        $t->transaction_type_id = $r->transaction_type;
+        $t->narration = $r->narration;
+        $t->charge = 0;
+        $t->trans_msg = 'This transaction was authenticated by ' . Auth::user()->id . ' ' . Auth::user()->first_name;
+        $t->is_manual = 1;
+
+        if ($r->transaction_type == 1 ) {
+            //Deposit
+            $wallet->amount += $r->amount;
+            $wallet->save();
+
+            $t->current_balance = $wallet->amount;
+            $t->cr_user_id = $wallet->user->id;
+            $t->dr_user_id = 1;
+            $t->cr_wallet_id = $wallet->id;
+            $t->dr_wallet_id = 1;
+            $t->cr_acct_name = $wallet->account_name;
+            $t->dr_acct_name = 'Dantown Assets';
+            $t->status = 'success';
+            $t->save();
+
+            $title = 'Dantown wallet Credit';
+            $type = 'credit';
+        } elseif ($r->transaction_type == 8) {
+            //Deduction
+            $wallet->amount -= $r->amount;
+            $wallet->save();
+            $t->current_balance = $wallet->amount;
+            $t->dr_user_id = $wallet->user->id;
+            $t->cr_user_id = 1;
+            $t->dr_wallet_id = $wallet->id;
+            $t->cr_wallet_id = 1;
+            $t->dr_acct_name = $wallet->account_name;
+            $t->cr_acct_name = 'Dantown Assets';
+            $t->status = 'success';
+            $t->save();
+
+            $title = 'Dantown wallet Debit';
+            $type = 'debit';
+        }
+
+
+
+        $msg_body = 'Your Dantown wallet has been ' . $type . 'ed with N' . $r->amount;
+
+        $not = Notification::create([
+            'user_id' => $wallet->user->id,
+            'title' => $title,
+            'body' => $msg_body,
+        ]);
+
+
+        return response()->json([
+            'success' => true,
+            'message' => "transaction completed"
+        ],200);
+    }
+
 }

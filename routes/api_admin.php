@@ -324,6 +324,10 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
     Route::group(['prefix' => 'wallet'], function () {
         Route::GET("/overview",'SeniorAccountant\AccountantController@WalletOverview');
         Route::GET("/monthly-withdrawal-charges",'SeniorAccountant\AccountantController@MonthlyWithdrawalCharges');
+        Route::GET("/freeze-user-wallet/{userID}",'SeniorAccountant\AccountantController@freezeUserWallet');
+        Route::post("/deposit-withdrawal",'SeniorAccountant\AccountantController@depositWithdrawal');
+
+
 
 
     });
