@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiV2\Admin\AccountantController;
 use App\ReferralSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -293,6 +294,69 @@ Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
     });
 });
 
+Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], function () {
+    //payBridge
+    Route::group(['prefix' => 'payBridge'], function () {
+        Route::group(['prefix' => 'bank'], function () {
+            Route::GET('/list', 'PayBridgeController@index');
+            Route::POST('/add', 'PayBridgeController@addBank');
+            Route::GET('/show/{id}', 'PayBridgeController@showBank');
+            Route::GET('activate/{id}', 'PayBridgeController@activateBank');
+            Route::GET('deactivate/{id}', 'PayBridgeController@deactivateBank');
+        });
+        Route::group(['prefix' => 'transactions'], function () {
+            Route::GET('/list', 'PayBridgeController@p2p');
+            Route::POST('/sort', 'PayBridgeController@p2pSorting');
+            Route::GET('/filter', 'PayBridgeController@loadFilter');
+        });
+
+    });
+
+    Route::group(['prefix' => 'accountant'], function () {
+        Route::GET("/overview",'SeniorAccountant\AccountantController@AccountantOverview');
+        Route::GET('/get-active-accountant', 'SeniorAccountant\AccountantController@GetActiveAccountant');
+        Route::GET('/get-activation-history', 'SeniorAccountant\AccountantController@getActivationHistory');
+        Route::GET('/activate/{id}', 'SeniorAccountant\AccountantController@activateAccountant');
+        Route::GET('/deactivate/{id}', 'SeniorAccountant\AccountantController@deactivateAccountant');
+
+    });
+
+    Route::group(['prefix' => 'wallet'], function () {
+        Route::GET("/overview",'SeniorAccountant\AccountantController@WalletOverview');
+        Route::GET("/monthly-withdrawal-charges",'SeniorAccountant\AccountantController@MonthlyWithdrawalCharges');
+        Route::GET("/freeze-user-wallet/{userID}",'SeniorAccountant\AccountantController@freezeUserWallet');
+        Route::post("/deposit-withdrawal",'SeniorAccountant\AccountantController@depositWithdrawal');
+
+
+
+
+    });
+
+    Route::group(['prefix' => 'complianceAndFraud'], function () {
+        Route::GET('/users/{type?}', 'ComplianceFraudController@index');
+        Route::POST('/sort', 'ComplianceFraudController@sorting');
+    });
+
+    Route::group(['prefix' => 'users'], function () {
+        Route::GET('/', 'UserController@allUsers');
+        Route::POST('/sort', 'UserController@UserSort');
+        Route::GET('/show/{id}', 'UserController@showUser');
+        Route::POST('/withholdFunds', 'UserController@withholdFunds');
+        Route::POST('/clearFunds', 'UserController@clearAmount');
+        Route::GET('/freeze/{id}', 'UserController@freezeWallet');
+        Route::GET('/activate/{id}', 'UserController@activateWallet');
+    });
+    Route::group(['prefix' => 'analytics'], function () {
+        Route::GET('/', 'AnalyticsController@Analytics');
+        Route::POST('/sort', 'AnalyticsController@sortAnalytics');
+    });
+
+    Route::group(['prefix' => 'transactionAnalytics'], function () {
+        Route::GET('/', 'pulseAnalyticsController@pulseTransactionAnalytics');
+        Route::POST('/sort', 'pulseAnalyticsController@sortTransactionAnalytics');
+    });
+
+});
 Route::group(['middleware' => ['auth:api', 'customerHappiness', 'cors']], function(){
     Route::prefix('customer-happiness')->group(function () {
         Route::GET('/', 'CustomerHappinessController@overview');
