@@ -197,8 +197,8 @@ class UsdtController extends Controller
 
     public function trade()
     {
-        $sell_rate = LiveRateController::usdtNgn();
-        $buy_rate = LiveRateController::usdtBuy();
+        $sell_rate = LiveRateController::usdNgn();
+        $buy_rate = LiveRateController::usdNgn(true, 'buy');
         $amt_usd = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
         $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
@@ -224,7 +224,8 @@ class UsdtController extends Controller
 
     public function tradeApi()
     {
-        $sell_rate = LiveRateController::usdtNgn();
+        $sell_rate = LiveRateController::usdNgn();
+        $buy_rate = LiveRateController::usdNgn(true, 'buy');
         $tron_usd = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
         $charge = Setting::where('name', 'usdt_sell_charge')->first()->value;
@@ -248,6 +249,7 @@ class UsdtController extends Controller
             'success' => true,
             'data' => [
                 'sell_rate' => $sell_rate,
+                'buy_rate' => $buy_rate,
                 'wallet' => $wallet,
                 'tron_usd' => $tron_usd,
                 'charge' => $charge
@@ -551,7 +553,7 @@ class UsdtController extends Controller
 
         //Current price
         $amt_usd = LiveRateController::usdtRate();
-        $usd_ngn = LiveRateController::usdtBuy();
+        $usd_ngn = LiveRateController::usdNgn(true, 'buy');
 
 
         $usd = $request->amount * $amt_usd;
