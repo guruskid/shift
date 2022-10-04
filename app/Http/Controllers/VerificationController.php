@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\GeneralTemplateOne;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -109,5 +110,31 @@ class VerificationController extends Controller
         $firstname = ucfirst($name);
         Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         return back()->with(['success' => 'Address uploaded, please hold on while we verify your account']);
+    }
+
+    public function queryName() {
+        $bank_code = request('bank_code');
+        $acct_number = request('acct_number');
+        $client = new Client();
+        $url = 'https://app.nuban.com.ng/api/NUBAN-AGBCLVUL544?acc_no='.$acct_number.'&bank_code='.$bank_code;
+        $response = $client->request('GET', $url);
+        $body = ($response->getBody()->getContents());
+        $body = json_decode($body);
+        if (isset($body->error)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Invalid Account Details'
+            ]);
+        }
+        $acct_name = explode(' ',$body[0]->account_name);
+        $data = [
+            'first_name' => $acct_name[count($acct_name) - 1],
+            'last_name' => $acct_name[0]
+        ];
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ],200);
+
     }
 }

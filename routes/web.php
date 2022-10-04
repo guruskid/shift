@@ -224,6 +224,8 @@ Auth::routes(['verify' => true]);
 Route::get('/', 'HomeController@index')->name('welcome');
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/query-bank-name', 'VerificationController@queryName')->name('user.queryBankName');
+
 
 //Registration and verification routes
 Route::group(['middleware' => ['auth', 'verified', 'frozenUserCheck']], function () {
@@ -276,6 +278,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     Route::get('/get-bank/{id}', 'UserController@getBank');
     Route::get('/delete-bank/{id}', 'UserController@deleteBank');
     Route::get('/read-not/{id}', 'UserController@readNot');
+
+    Route::post('authenticate-wallet', "UserController@updateBank");
 
 
     Route::get('/user-details/{email}', 'UserController@getUser');

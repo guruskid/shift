@@ -91,6 +91,7 @@ class NairaWalletController extends Controller
                 'password' => Hash::make($r->password),
                 'amount_control' => $body->amountcontrol,
             ]); */
+            
         NairaWallet::create([
             'user_id' => Auth::user()->id,
             'account_number' => time(),
