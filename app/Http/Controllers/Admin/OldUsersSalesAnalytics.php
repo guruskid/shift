@@ -550,7 +550,7 @@ class OldUsersSalesAnalytics extends Controller
     {
         $targetData = TargetSettings::query();
         if($id != null):
-            $targetData = $targetData->where('user_id',$id)->target;
+            $targetData = $targetData->where('user_id',$id)->first()->target;
             return (($amount/$targetData)*100);
         endif;
 
