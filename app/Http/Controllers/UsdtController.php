@@ -503,6 +503,11 @@ class UsdtController extends Controller
 
     public function buy(Request $request)
     {
+        return response()->json([
+            'success' => false,
+            'msg' => 'Service not available'
+        ]);
+
         $validator = Validator::make($request->all(), [
             'amount' => 'required|min:0',
         ]);
