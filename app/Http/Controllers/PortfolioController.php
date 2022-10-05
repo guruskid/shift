@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Bank;
+use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\NairaTransaction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -130,7 +131,7 @@ class PortfolioController extends Controller
         $tranx = UserController::successFulNairaTrx();
         if($tranx == 0)
         {
-            $tranx = UserController::freeWithdrawals();
+            $tranx = BusinessDeveloperController::freeWithdrawals();
         }        
 
         return view('newpages.nairawallet', compact(['n', 'banks', 'nts', 'cr_total', 'dr_total', 'ref', 'daily_rem', 'monthly_rem', 'setting','tranx','naira_charge']));

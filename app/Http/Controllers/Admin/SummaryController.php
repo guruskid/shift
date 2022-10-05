@@ -294,6 +294,7 @@ class SummaryController extends Controller
         $BTCsellNairaAmount = $bitcoin_total_tnx_sell->sum('amount_paid');
         $BTCsellCount = $bitcoin_total_tnx_sell->count();
 
+
         //* USDT Transaction
         $this->roundUpAmount($USDTranx);
 

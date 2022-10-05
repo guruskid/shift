@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\TradeNaira;
 
 use App\Account;
 use App\Events\CustomNotification;
+use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebasePushNotificationController;
 use App\Http\Controllers\GeneralSettings;
@@ -186,10 +187,10 @@ class TradeController extends Controller
             $charge = 0;
         }
 
-        if(UserController::freeWithdrawals() > 0 AND UserController::freeWithdrawals() <= 10)
+        if(BusinessDeveloperController::freeWithdrawals() > 0 AND BusinessDeveloperController::freeWithdrawals() <= 10)
         {
             $charge = 0;
-            UserController::freeWithdrawalsReduction(1);
+            BusinessDeveloperController::freeWithdrawalsReduction(1);
         }
 
         //create TXN here

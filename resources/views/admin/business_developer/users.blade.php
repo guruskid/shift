@@ -61,6 +61,18 @@
                                     [{{ number_format($count) }}]
                                 @endif 
                             </div>
+                            
+                            @if($type == "Quarterly_Inactive")
+                                <form class="form-inline p-2"
+                                    method="GET">
+                                    <div class="form-group mr-2">
+                                        <input type="hidden" name="downloader" value="csv">
+                                        <input type="hidden" name="segment" value={{ $type }}>
+                                        <button class="btn btn-primary">Download Table</button>
+                                    </div>
+                                </form>
+                            @endif
+
                             <form class="form-inline p-2"
                                 method="GET">
                                 <div class="form-group mr-2">
@@ -68,9 +80,10 @@
                                 </div>
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
+
                             <form class="form-inline p-2"
                                 method="GET">
-                                {{-- @csrf --}}
+
                                 @if($type != "Quarterly_Inactive")
                                     <div class="form-group mr-2">
                                         <label for="">Start date </label>
@@ -85,16 +98,18 @@
                                         <input class="form-control" name="month" type="number" placeholder="Enter Month Range">
                                     </div>
                                 @endif
+
                                 @if($segment == "Call Log")
-                                <div class="form-group mr-2">
-                                    <select name="status" class="form-control" required>
-                                        <option value="">Select Category</option>
-                                        @foreach ($call_categories as $cc)
-                                            <option value="{{ $cc->id }}">{{ $cc->category }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    <div class="form-group mr-2">
+                                        <select name="status" class="form-control" required>
+                                            <option value="">Select Category</option>
+                                            @foreach ($call_categories as $cc)
+                                                <option value="{{ $cc->id }}">{{ $cc->category }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 @endif
+
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
                     </div>

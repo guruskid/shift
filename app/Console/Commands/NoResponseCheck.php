@@ -44,8 +44,6 @@ class NoResponseCheck extends Command
                 'Previous_Cycle' =>'NoResponse',
                 'current_cycle_count_date' => now(),
                 'Current_Cycle' => "DeadUser",
-                'sales_id' => Auth::user()->id,
-                'called_date'=> now(),
             ]);
     }
 }

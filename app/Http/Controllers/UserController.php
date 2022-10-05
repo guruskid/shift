@@ -571,26 +571,4 @@ class UserController extends Controller
         return $tranx;
     }
 
-    public static function freeWithdrawals()
-    {
-        $user = Auth::user();
-        $userTracking = UserTracking::where('user_id', $user->id)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->first();
-
-        if($userTracking == null)
-        {
-            return 0;
-        } else {
-            return $userTracking->free_withdrawal;
-        }
-    }
-
-    public static function freeWithdrawalsReduction($number)
-    {
-        $user = Auth::user();
-        $userTracking = UserTracking::where('user_id', $user->id)->first();
-
-        $userTracking->update([
-            'free_withdrawal' => ($userTracking->free_withdrawal - $number),
-        ]);
-    }
 }

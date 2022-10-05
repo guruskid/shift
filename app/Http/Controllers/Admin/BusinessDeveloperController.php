@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\CallCategory;
 use App\CallLog;
 use App\Card;
+use App\EmailChecker;
+use App\Exports\QuarterlyInactiveUsers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\GeneralTemplateOne;
 use App\PriorityRanking;
 use App\Transaction;
 use App\User;
@@ -15,33 +18,106 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BusinessDeveloperController extends Controller
 {
-    public static function oldUsersArtisanCalls()
+    public $userChunkNo;
+    public $userNo;
+
+    public function __construct()
     {
-        // Artisan::call('check:active');
-        // Artisan::call('check:called');
-        // Artisan::call('check:Responded');
-        // Artisan::call('check:Recalcitrant');
-        // Artisan::call('noResponse:check');
+        $this->chunkData();
     }
 
-    public function index($type = null){ 
-        // BusinessDeveloperController::oldUsersArtisanCalls();
+    public function chunkData()
+    {
+        $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
+        $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->count();
 
-        $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->count();
-        $CalledUsers =  UserTracking::where('Current_Cycle','Called')->count();
-        $NoResponse = UserTracking::where('Current_Cycle','NoResponse')->count();
-        $RespondedUsers =  UserTracking::where('Current_Cycle','Responded')->count();
-        $RecalcitrantUsers =  UserTracking::where('Current_Cycle','Recalcitrant')->count();
+        $this->userChunkNo = ceil($quarterlyInactive/$sales->count());
+
+        foreach($sales as $key => $s){
+            if(Auth::user()->id == $s->id)
+            {
+                $this->userNo =  $key;
+            }
+        }
+    }
+    public static function oldUsersArtisanCalls()
+    {
+        self::dailyChecks();
+    }
+    public static function dailyChecks(){
+        $DailyChecks = EmailChecker::where('name','CheckArtisanCall')->first();
+        if($DailyChecks == null)
+        {
+            EmailChecker::create([
+                'name' => 'CheckArtisanCall',
+                'timeStamp' => now(),
+            ]);
+
+            Artisan::call('check:active');
+            Artisan::call('check:called');
+            Artisan::call('check:Responded');
+            Artisan::call('check:Recalcitrant');
+            Artisan::call('noResponse:check');
+            Artisan::call('check:quarterlyInactive');
+        }
+
+        if($DailyChecks)
+        {
+            if(Carbon::parse($DailyChecks->timeStamp)->diffInDays(now()) >= 1)
+            {
+                $DailyChecks->update([
+                    'timeStamp' => now()
+                ]);
+    
+                Artisan::call('check:active');
+                Artisan::call('check:called');
+                Artisan::call('check:Responded');
+                Artisan::call('check:Recalcitrant');
+                Artisan::call('noResponse:check');
+                Artisan::call('check:quarterlyInactive');
+
+                $emailData = UserTracking::where('emailCount',1)->get();
+                foreach($emailData as $ed){
+                    self::ActivationEmail($ed->user);
+                    $ed->update([
+                        'emailCount' => 2,
+                    ]);
+                }
+
+                $user = new User();
+                $user->first_name = 'David';
+                $user->last_name = 'David';
+                $user->email = 'davidibelive@gmail.com';
+                $user->username = 'David';
+
+                self::ActivationEmail($user);
+            }
+        }
+    }
+
+
+    public function index($type = null){ 
+        self::oldUsersArtisanCalls();
+
+        $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
+        $QuarterlyInactiveUsers = $QuarterlyInactiveUsers->chunk($this->userChunkNo)[$this->userNo]->count();
+
+        $CalledUsers =  UserTracking::where('Current_Cycle','Called')->where('sales_id',Auth::user()->id)->count();
+        $NoResponse = UserTracking::where('Current_Cycle','NoResponse')->where('sales_id',Auth::user()->id)->count();
+        $RespondedUsers =  UserTracking::where('Current_Cycle','Responded')->where('sales_id',Auth::user()->id)->count();
+        $RecalcitrantUsers =  UserTracking::where('Current_Cycle','Recalcitrant')->where('sales_id',Auth::user()->id)->count();
         $call_categories = CallCategory::all();
         if($type == null){
             $type = "Quarterly_Inactive";
         }
         if($type == "NoResponse"){
             $data_table = UserTracking::with('transactions','user')
-            ->where('Current_Cycle','NoResponse')->latest('updated_at')->get()->take(20);
+            ->where('Current_Cycle','NoResponse')->where('sales_id',Auth::user()->id)->latest('updated_at')->get()->take(20);
         }
         if($type == "Quarterly_Inactive")
         {
@@ -57,17 +133,17 @@ class BusinessDeveloperController extends Controller
         if($type == "Called_Users")
         {
             $data_table = UserTracking::with('transactions','user')
-            ->where('Current_Cycle','Called')->latest('updated_at')->get()->take(20);
+            ->where('Current_Cycle','Called')->where('sales_id',Auth::user()->id)->latest('updated_at')->get()->take(20);
         }
         if($type == "Responded_Users")
         {
             $data_table = UserTracking::with('transactions','user')
-            ->where('Current_Cycle','Responded')->latest('updated_at')->get()->take(20);
+            ->where('Current_Cycle','Responded')->where('sales_id',Auth::user()->id)->latest('updated_at')->get()->take(20);
         }
         if($type == "Recalcitrant_Users")
         {
             $data_table = UserTracking::with('transactions','user')
-            ->where('Current_Cycle','Recalcitrant')->latest('updated_at')->get()->take(20);
+            ->where('Current_Cycle','Recalcitrant')->where('sales_id',Auth::user()->id)->latest('updated_at')->get()->take(20);
         }
 
         foreach ($data_table as $td ) {
@@ -93,29 +169,40 @@ class BusinessDeveloperController extends Controller
 
     public function viewCategory($type = null, Request $request)
     {
+        if($request->downloader == "csv" AND $request->segment == "Quarterly_Inactive")
+        {
+            $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
+            return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
+        }
         $call_categories = CallCategory::all();
+
         if($type == null || $type == "all_Users"){
             $data_table = UserTracking::latest('updated_at');
             $segment = "All Users";
         }
+
         if($type == "NoResponse"){
             $data_table = UserTracking::where('Current_Cycle','NoResponse')->latest('updated_at');
             $segment = "No Response";
         }
+
         if($type == "Quarterly_Inactive")
         {
             return $this->sortQuarterlyInactive($request, $type, $call_categories);
         }
+
         if($type == "Called_Users")
         {
             $data_table = UserTracking::where('Current_Cycle','Called')->latest('updated_at');
             $segment = "Called Users";
         }
+
         if($type == "Responded_Users")
         {
             $data_table = UserTracking::where('Current_Cycle','Responded')->latest('updated_at');
             $segment = "Responded Users";
         }
+
         if($type == "Recalcitrant_Users")
         {
             $data_table = UserTracking::where('Current_Cycle','Recalcitrant')->latest('updated_at');
@@ -125,6 +212,7 @@ class BusinessDeveloperController extends Controller
         {
             $data_table = $data_table->whereDate('created_at','>=',$request->start);
         }
+
         if($request->end)
         {
             $data_table = $data_table->whereDate('created_at','<=',$request->end);
@@ -141,7 +229,7 @@ class BusinessDeveloperController extends Controller
             });
         }
         $count = $data_table->count();
-        $data_table = $data_table->with('transactions','user')->paginate(100);
+        $data_table = $data_table->with('transactions','user')->where('sales_id',Auth::user()->id)->paginate(100);
 
        foreach ($data_table as $td ) {
             $allTranx = collect()->concat($td['transactions']);
@@ -236,15 +324,14 @@ class BusinessDeveloperController extends Controller
                 return $rankings[$currentKey]['priority_name'];
             }
 
-
-
         }
 
     }
     public function quarterlyInactive()
     {
-        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get();
-       
+        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->get();
+
+        $table = $table->chunk($this->userChunkNo)[$this->userNo]->sortByDesc('updated_at');
         $data_table = $this->monthSort(null, null, $table);
         $data_table = $data_table->sortByDesc('transactionAmount');
 
@@ -258,7 +345,8 @@ class BusinessDeveloperController extends Controller
         $endDate = ($monthRange) ? now() : null;
         $startDate = ($monthRange) ? now()->subMonth($monthRange) : null;
 
-        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->latest('updated_at')->get();
+        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->get();
+        $table = $table->chunk($this->userChunkNo)[$this->userNo]->sortByDesc('updated_at');
         $segment = "Quarterly Inactive";
 
         $data_table = $this->monthSort($startDate, $endDate, $table);
@@ -293,12 +381,44 @@ class BusinessDeveloperController extends Controller
         
         if($request->status == "NoResponse")
         {
-            $streak = $user_tracking->noResponse_streak;
+            self::noResponse($user_tracking, $request->id);
+            return redirect()->back()->with(['success' => 'success']);
+        }
+
+        if($request->status == 12)
+        {
+            self::multipleAccounts($user_tracking, $request->id);
+            return redirect()->back()->with(['success' => 'success']);
+        }
+
+        if($request->phoneNumber)
+        {
+            self::storeCalledData($user_tracking, $request->id,$request->feedback, $request->status, $request->phoneNumber);
+            return redirect()->back()->with(['success' => 'Call Log Added']);
+        } else {
+            return redirect()->back()->with(['error' => 'Error Adding Call Log']);
+        }
+
+    }
+    public static function multipleAccounts(UserTracking $user_tracking, $id)
+    {
+        UserTracking::where('user_id',$id)
+            ->update([
+                'Previous_Cycle' =>$user_tracking->Current_Cycle,
+                'current_cycle_count_date' => now(),
+                'Current_Cycle' => "DeadUser",
+                'sales_id' => Auth::user()->id,
+                'called_date'=> now(),
+            ]);
+    }
+    public static function noResponse(UserTracking $user_tracking, $id)
+    {
+        $streak = $user_tracking->noResponse_streak;
             if($user_tracking->Current_Cycle == "NoResponse")
             {
                 ++$streak;
             }
-            UserTracking::where('user_id',$request->id)
+            UserTracking::where('user_id',$id)
             ->update([
                 'Previous_Cycle' =>$user_tracking->Current_Cycle,
                 'current_cycle_count_date' => now(),
@@ -307,52 +427,109 @@ class BusinessDeveloperController extends Controller
                 'called_date'=> now(),
                 'noResponse_streak'=>$streak,
             ]);
-            return redirect()->back()->with(['success' => 'success']);
-        }
+    }
 
-        if($request->phoneNumber)
-        {
-            $call_log = CallLog::create([
-                'user_id'=>$request->id,
-                'call_response' =>$request->feedback,
-                'call_category_id' => $request->status
-            ]);
-            
+    public static function storeCalledData(UserTracking $user_tracking, $id, $feedback, $status, $phoneNumber)
+    {
+        $call_log = CallLog::create([
+            'user_id'=>$id,
+            'call_response' =>$feedback,
+            'call_category_id' => $status
+        ]);
+        
 
-            $time = now();
-            $openingPhoneTime = Carbon::parse($request->phoneNumber)->subSeconds(18);
-            $timeDifference = $openingPhoneTime->diffInSeconds($time);
-            UserTracking::where('user_id',$request->id)
-            ->update([
-                'call_log_id' => $call_log->id,
-                'Previous_Cycle' =>$user_tracking->Current_Cycle,
-                'Current_Cycle' => "Called",
-                'current_cycle_count_date' => $time,
-                'call_duration' => $timeDifference,
-                'call_duration_timestamp' => $time,
-                'sales_id' => Auth::user()->id,
-                'called_date'=> $time
-            ]);
-            self::freeWithdrawalActivation($request->id);
-            return redirect()->back()->with(['success' => 'Call Log Added']);
-        }
-        else{
-            return redirect()->back()->with(['error' => 'Error Adding Call Log']);
-        }
-
+        $time = now();
+        $openingPhoneTime = Carbon::parse($phoneNumber)->subSeconds(18);
+        $timeDifference = $openingPhoneTime->diffInSeconds($time);
+        UserTracking::where('user_id',$id)
+        ->update([
+            'call_log_id' => $call_log->id,
+            'Previous_Cycle' =>$user_tracking->Current_Cycle,
+            'Current_Cycle' => "Called",
+            'current_cycle_count_date' => $time,
+            'call_duration' => $timeDifference,
+            'call_duration_timestamp' => $time,
+            'sales_id' => Auth::user()->id,
+            'called_date'=> $time
+        ]);
+        self::freeWithdrawalActivation($id);
     }
 
     public static function freeWithdrawalActivation($user_id)
     {
-        $trackingData = UserTracking::where('user_id', $user_id)->first();
+        $user = User::find($user_id);
+        $trackingData = UserTracking::where('user_id', $user->id)->first();
         $trackingData->update([
-            'free_withdrawal' => 10
+            'free_withdrawal' => 10,
+            'emailCount' => 1,
         ]);
 
-        //? Mail Here.
-        
+        self::ActivationEmail($user);
     }
 
+    public static function ActivationEmail(User $user)
+    {
+        //? Mail Here.
+        //Image Data start
+        $image = url('images/FreeWithdrawal.jpeg');
+        $body = "
+          <table border='0' cellpadding='0'  cellspacing='0' width='400'>
+            <tr>
+              <td align='center' width='400' valign='top' style='
+                  background-color: #ffffff;
+                  padding: 25px;
+                  margin-top:-30px;
+                  '>
+                <a href='#' target='_blank'>
+                  <img src='$image' width='480' height='300' style='
+                        display: block;
+                        font-family: 'Lato', Helvetica, Arial, sans-serif;
+                        color: #ffffff;
+                        font-size: 18px;
+                        background-color:none;
+                      ' border='0' />
+                </a>
+              </td>
+            </tr>
+          </table>";
+          //Image Data end
+      
+        $body .= 'Your 10 free withdrawals offer is now activated and you can begin enjoying this offer immediately.<br><br>';
+        $body .= 'Kindly log in, trade your crypto, and make your withdrawals without any charges.<br><br>';
+        $body .= 'If you no longer have the Dantown app, kindly click on the Logo representing your platform below to download the app.';
+        $title = 'Free Withdrawal From Dantown';
+
+        $btn_text = '';
+        $btn_url = '';
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+    }
+
+    public static function freeWithdrawals()
+    {
+        $user = Auth::user();
+        $userTracking = UserTracking::where('user_id', $user->id)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->first();
+
+        if($userTracking == null)
+        {
+            return 0;
+        } else {
+            return $userTracking->free_withdrawal;
+        }
+    }
+
+    public static function freeWithdrawalsReduction($number)
+    {
+        $user = Auth::user();
+        $userTracking = UserTracking::where('user_id', $user->id)->first();
+
+        $userTracking->update([
+            'free_withdrawal' => ($userTracking->free_withdrawal - $number),
+        ]);
+    }
+    
     public function UpdateCallLog(Request $request)
     {
         $call_log = CallLog::Find($request->id);
