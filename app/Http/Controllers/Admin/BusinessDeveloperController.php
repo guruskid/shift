@@ -74,13 +74,6 @@ class BusinessDeveloperController extends Controller
                 'name' => 'CheckArtisanCall',
                 'timeStamp' => now(),
             ]);
-
-            Artisan::call('check:active');
-            Artisan::call('check:called');
-            Artisan::call('check:Responded');
-            Artisan::call('check:Recalcitrant');
-            Artisan::call('noResponse:check');
-            Artisan::call('check:quarterlyInactive');
         }
 
         if($DailyChecks)
