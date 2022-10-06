@@ -294,6 +294,7 @@ class SummaryController extends Controller
         $BTCsellNairaAmount = $bitcoin_total_tnx_sell->sum('amount_paid');
         $BTCsellCount = $bitcoin_total_tnx_sell->count();
 
+
         //* USDT Transaction
         $this->roundUpAmount($USDTranx);
 
@@ -557,7 +558,7 @@ class SummaryController extends Controller
             //**Bitcoin Transactions */
             $bitcoin_total_tnx = Transaction::whereNotNull('id');
             $bitcoin_total_tnx = $this->category_listing($user,$accountant_timestamp,$bitcoin_total_tnx,$current_day_value);
-            $bitcoin_total_tnx = $bitcoin_total_tnx->where('status', 'success')->where('card_id',102)->get();
+            $bitcoin_total_tnx = $bitcoin_total_tnx->where('status', 'success')->where('card','bitcoin')->get();
 
             //**USDT Transactions */
             $USDTranx = Transaction::whereNotNull('id');
@@ -729,7 +730,7 @@ class SummaryController extends Controller
 
         if($show_category == "all")
         {
-            $BTCtotalTranx = $allTransactions->where('status','success')->where('card_id',102);
+            $BTCtotalTranx = $allTransactions->where('status','success')->where('card','bitcoin');
             $USDTranx = $allTransactions->where('status', 'success')->where('card_id',143);
 
             return $this->CryptoGiftCardTransactions($allTransactions,$BTCtotalTranx,$gcBuyTranx
@@ -868,7 +869,7 @@ class SummaryController extends Controller
 
         if($show_category == "all")
         {
-            $BTCtotalTranx = $allTransactions->where('status','success')->where('card_id',102);
+            $BTCtotalTranx = $allTransactions->where('status','success')->where('card','bitcoin');
             $USDTranx = $allTransactions->where('status', 'success')->where('card_id',143);
 
             return $this->CryptoGiftCardTransactions($allTransactions,$BTCtotalTranx,$gcBuyTranx
@@ -948,8 +949,8 @@ class SummaryController extends Controller
             $all_tnx = Transaction::query();
             $all_tnx = $this->sortingByFullDate($all_tnx, $startDate, $endDate);
 
-            //* Bitcoin total transactions
-            $bitcoin_total_tnx = $all_tnx->where('status', 'success')->where('card_id',102);
+            //* Bitcoin total transactions 
+            $bitcoin_total_tnx = $all_tnx->where('status', 'success')->where('card','bitcoin');
 
             //* USDT total transactions
             $USDTranx = $all_tnx->where('status', 'success')->where('card_id',143);

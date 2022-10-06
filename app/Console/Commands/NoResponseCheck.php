@@ -39,13 +39,11 @@ class NoResponseCheck extends Command
      */
     public function handle()
     {
-        UserTracking::where('noResponse_streak','>',3)->where('Current_Cycle','!=','DeadUser')
+        UserTracking::where('noResponse_streak','>=',3)->where('Current_Cycle','!=','DeadUser')
             ->update([
                 'Previous_Cycle' =>'NoResponse',
                 'current_cycle_count_date' => now(),
                 'Current_Cycle' => "DeadUser",
-                'sales_id' => Auth::user()->id,
-                'called_date'=> now(),
             ]);
     }
 }
