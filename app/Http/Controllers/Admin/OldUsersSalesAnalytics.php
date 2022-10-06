@@ -288,8 +288,12 @@ class OldUsersSalesAnalytics extends Controller
         $totalCallDuration = ($totalCallDuration == 0) ? 0 : CarbonInterval::seconds($totalCallDuration)->cascade()->forHumans();
         $averageCallDuration = ($averageCallDuration == 0) ? 0 : CarbonInterval::seconds($averageCallDuration)->cascade()->forHumans();
 
-        $quarterlyInactiveUsersNo = UserTracking::where('Current_Cycle','QuarterlyInactive')
-        ->where('current_cycle_count_date','>=',$start_date)->where('current_cycle_count_date','<=',$end_date)->count();
+        $quarterlyInactiveUsers = UserTracking::where('Current_Cycle','QuarterlyInactive');
+        if($sales_id != null){
+            $quarterlyInactiveUsers = $quarterlyInactiveUsers->where('custodian_id',$sales_id);
+        }
+        $quarterlyInactiveUsersNo = $quarterlyInactiveUsers->count();
+
         $show_data = false;
 
         $table_data = $CalledUsers;
@@ -550,8 +554,13 @@ class OldUsersSalesAnalytics extends Controller
     {
         $targetData = TargetSettings::query();
         if($id != null):
-            $targetData = $targetData->where('user_id',$id)->first()->target;
-            return (($amount/$targetData)*100);
+            $targetData = $targetData->where('user_id',$id)->first();
+
+            if(!$targetData)
+            {
+                return 0;
+            }
+            return (($amount/$targetData->target)*100);
         endif;
 
         $targetData = $targetData->sum('target');

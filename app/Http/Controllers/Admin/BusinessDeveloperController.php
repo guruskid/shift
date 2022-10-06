@@ -24,34 +24,51 @@ use Maatwebsite\Excel\Facades\Excel;
 class BusinessDeveloperController extends Controller
 {
     public $userChunkNo;
-    public $userNo;
+    public $userNo; 
 
     public function __construct()
     {
-        $this->chunkData();
+        self::assignDefaultCallLog();
+        self::chunkData();
+        self::dailyChecks();
     }
 
-    public function chunkData()
+    public static function chunkData()
     {
         $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
-        $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->count();
+        $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
 
-        $this->userChunkNo = ceil($quarterlyInactive/$sales->count());
+        $keys = $quarterlyInactive->groupBy('custodian_id')->keys()->toArray();
+        if(in_array('',$keys)){
+            self::AssignData($quarterlyInactive, $sales);
+        }
 
-        foreach($sales as $key => $s){
-            if(Auth::user()->id == $s->id)
+        if($quarterlyInactive->groupBy('custodian_id')->count() != $sales->count()){
+            self::AssignData($quarterlyInactive, $sales);
+        }
+        
+    }
+
+    public static function AssignData($quarterlyInactive, $sales)
+    {
+        $splitNo = ceil($quarterlyInactive->count()/$sales->count());
+        $chunkData = $quarterlyInactive->chunk($splitNo);
+
+        foreach($chunkData as $key => $cd)
+        {
+            $salesPersonnel = $sales[$key]->id;
+            foreach($cd as $cdData)
             {
-                $this->userNo =  $key;
+                $cdData->update([
+                    'custodian_id' => $salesPersonnel,
+                ]);
             }
         }
     }
-    public static function oldUsersArtisanCalls()
-    {
-        self::dailyChecks();
-    }
+
     public static function dailyChecks(){
         $DailyChecks = EmailChecker::where('name','CheckArtisanCall')->first();
-        if($DailyChecks == null)
+        if(!$DailyChecks)
         {
             EmailChecker::create([
                 'name' => 'CheckArtisanCall',
@@ -100,16 +117,38 @@ class BusinessDeveloperController extends Controller
         }
     }
 
+    public static function assignDefaultCallLog()
+    {
+        $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
+        if($sales->count() == 1){
+            $callLogs = CallLog::where('sales_id', NUll)->update([
+                'sales_id' => $sales[0]->id,
+            ]);
+        }
+    }
 
     public function index($type = null){ 
-        self::oldUsersArtisanCalls();
+        $ReminderText = null;
+        $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
+        if((!$quarterlyChecks)){
+            $ReminderText = "Download Of Quarterly Inactive For Bulk Email";
+        }
 
-        $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
-        $QuarterlyInactiveUsers = $QuarterlyInactiveUsers->chunk($this->userChunkNo)[$this->userNo]->count();
+        if(isset($quarterlyChecks))
+        {
+            $timeStampMonthly = Carbon::parse($quarterlyChecks->timeStamp)->diffInMonths(now());
+            if( $timeStampMonthly >= 3):
+                $ReminderText = "Download Of Quarterly Inactive For Bulk Email";
+            endif;
+        }
 
+        
+        $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->where('custodian_id',Auth::user()->id)->count();
         $CalledUsers =  UserTracking::where('Current_Cycle','Called')->where('sales_id',Auth::user()->id)->count();
+
         $NoResponse = UserTracking::where('Current_Cycle','NoResponse')->where('sales_id',Auth::user()->id)->count();
         $RespondedUsers =  UserTracking::where('Current_Cycle','Responded')->where('sales_id',Auth::user()->id)->count();
+
         $RecalcitrantUsers =  UserTracking::where('Current_Cycle','Recalcitrant')->where('sales_id',Auth::user()->id)->count();
         $call_categories = CallCategory::all();
         if($type == null){
@@ -126,7 +165,7 @@ class BusinessDeveloperController extends Controller
                 'admin.business_developer.index',
                 compact([
                     'data_table','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
-                    'NoResponse'
+                    'NoResponse','ReminderText'
                 ])
             );
         }
@@ -162,7 +201,7 @@ class BusinessDeveloperController extends Controller
             'admin.business_developer.index',
             compact([
                 'data_table','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
-                'NoResponse'
+                'NoResponse','ReminderText'
             ])
         );
     }
@@ -171,6 +210,18 @@ class BusinessDeveloperController extends Controller
     {
         if($request->downloader == "csv" AND $request->segment == "Quarterly_Inactive")
         {
+            $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
+            if(!$quarterlyChecks)
+            {
+                EmailChecker::create([
+                    'name' => 'SendQuarterlyInactiveEmail',
+                    'timeStamp' => now(),
+                ]);
+            } else {
+                $quarterlyChecks->update([
+                    'timeStamp' => now()
+                ]);
+            }
             $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
             return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
         }
@@ -329,9 +380,7 @@ class BusinessDeveloperController extends Controller
     }
     public function quarterlyInactive()
     {
-        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->get();
-
-        $table = $table->chunk($this->userChunkNo)[$this->userNo]->sortByDesc('updated_at');
+        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->where('custodian_id',Auth::user()->id)->get();
         $data_table = $this->monthSort(null, null, $table);
         $data_table = $data_table->sortByDesc('transactionAmount');
 
@@ -345,8 +394,7 @@ class BusinessDeveloperController extends Controller
         $endDate = ($monthRange) ? now() : null;
         $startDate = ($monthRange) ? now()->subMonth($monthRange) : null;
 
-        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->get();
-        $table = $table->chunk($this->userChunkNo)[$this->userNo]->sortByDesc('updated_at');
+        $table = UserTracking::with('transactions','user')->where('Current_Cycle','QuarterlyInactive')->where('custodian_id',Auth::user()->id)->get();
         $segment = "Quarterly Inactive";
 
         $data_table = $this->monthSort($startDate, $endDate, $table);
@@ -434,7 +482,8 @@ class BusinessDeveloperController extends Controller
         $call_log = CallLog::create([
             'user_id'=>$id,
             'call_response' =>$feedback,
-            'call_category_id' => $status
+            'call_category_id' => $status,
+            'sales_id' => Auth::user()->id,
         ]);
         
 
@@ -730,7 +779,23 @@ class BusinessDeveloperController extends Controller
     public static function CheckRecalcitrantUsersForResponded()
     {
         $recalcitrant_users = UserTracking::where('Current_Cycle','Recalcitrant')->with('transactions','user')->get();
+        $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
+        $randomCountLimit = $sales->count()-1;
+
         foreach ($recalcitrant_users as $ru) {
+
+            $custodian_id = NULL;
+            if($ru->custodian_id == NULL)
+            {
+                $custodian_id = rand(0,$randomCountLimit);
+            }else{
+                $blacklist = [self::getId($sales,$ru->custodian_id)];
+                $range = range(0, $randomCountLimit);
+                $validID = array_diff($range, $blacklist);
+                shuffle($validID);
+                $custodian_id = $validID[0];
+            }
+
             $ru->current_cycle_count_date = Carbon::parse($ru->current_cycle_count_date);
 
             $userTranx = $ru['transactions']->where('created_at','>=',$ru->current_cycle_count_date);
@@ -755,16 +820,31 @@ class BusinessDeveloperController extends Controller
                         'Previous_Cycle' => "Recalcitrant",
                         'current_cycle_count_date' => now(),
                         'Recalcitrant_streak' => $ru->Recalcitrant_streak + 1,
-                        'Responded_streak' => 0
+                        'Responded_streak' => 0,
+                        'custodian_id' => $sales[$custodian_id]->id,
                     ]);
                 }
             }
         }
     }
 
+    public static function getId($sales, $id)
+    {
+        foreach($sales as $key => $s)
+        {
+            if($s->id == $id)
+            {
+                return $key;
+            }
+        }
+        return null;
+    }
     public static function CheckRespondedUsersForQualityInactive()
     {
         $responded_users = UserTracking::where('Current_Cycle','Responded')->with('transactions','user')->get();
+        $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
+        $randomCountLimit = $sales->count()-1;
+
         foreach ($responded_users as $ru) {
             $ru->current_cycle_count_date = Carbon::parse($ru->current_cycle_count_date);
 
@@ -772,6 +852,17 @@ class BusinessDeveloperController extends Controller
             $allTranx = collect()->concat($userTranx);
 
             $monthDiff = $ru->current_cycle_count_date->diffInMonths(now());
+            $custodian_id = NULL;
+            if($ru->custodian_id == NULL)
+            {
+                $custodian_id = rand(0,$randomCountLimit);
+            }else{
+                $blacklist = [self::getId($sales,$ru->custodian_id)];
+                $range = range(0, $randomCountLimit);
+                $validID = array_diff($range, $blacklist);
+                shuffle($validID);
+                $custodian_id = $validID[0];
+            }
             
             if($allTranx->count() == 0)
             {
@@ -784,7 +875,8 @@ class BusinessDeveloperController extends Controller
                         'call_log_id' => null,
                         'current_cycle_count_date' => now(),
                         'Responded_streak' => $ru->Responded_streak + 1,
-                        'Recalcitrant_streak' => 0
+                        'Recalcitrant_streak' => 0,
+                        'custodian_id' => $sales[$custodian_id]->id,
                     ]); 
                 }
             }
