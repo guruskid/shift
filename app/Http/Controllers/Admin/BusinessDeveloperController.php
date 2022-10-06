@@ -35,7 +35,7 @@ class BusinessDeveloperController extends Controller
 
     public static function chunkData()
     {
-        $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
+        $sales = User::where('role',557)->orderBy('created_at','ASC')->where('status','active')->get();
         $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
 
         $keys = $quarterlyInactive->groupBy('custodian_id')->keys()->toArray();
@@ -119,7 +119,7 @@ class BusinessDeveloperController extends Controller
 
     public static function assignDefaultCallLog()
     {
-        $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
+        $sales = User::where('role',557)->orderBy('created_at','ASC')->where('status','active')->get();
         if($sales->count() == 1){
             $callLogs = CallLog::where('sales_id', NUll)->update([
                 'sales_id' => $sales[0]->id,
@@ -779,7 +779,7 @@ class BusinessDeveloperController extends Controller
     public static function CheckRecalcitrantUsersForResponded()
     {
         $recalcitrant_users = UserTracking::where('Current_Cycle','Recalcitrant')->with('transactions','user')->get();
-        $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
+        $sales = User::where('role',557)->orderBy('created_at','ASC')->where('status','active')->get();
         $randomCountLimit = $sales->count()-1;
 
         foreach ($recalcitrant_users as $ru) {
@@ -842,7 +842,7 @@ class BusinessDeveloperController extends Controller
     public static function CheckRespondedUsersForQualityInactive()
     {
         $responded_users = UserTracking::where('Current_Cycle','Responded')->with('transactions','user')->get();
-        $sales = User::where('role',557)->orderBy('created_at','ASC')->get();
+        $sales = User::where('role',557)->orderBy('created_at','ASC')->where('status','active')->get();
         $randomCountLimit = $sales->count()-1;
 
         foreach ($responded_users as $ru) {
