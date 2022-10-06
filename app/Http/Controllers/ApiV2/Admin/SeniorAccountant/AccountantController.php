@@ -268,8 +268,23 @@ class AccountantController extends Controller
 
     }
 
-    public function MonthlyWithdrawalCharges(){
-       $transaction =  NairaTransaction::whereHas("user")->whereIn("status", ["success", "pending"])->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', date('Y'));
+    public function MonthlyWithdrawalCharges($month = NULL, $year = NULL){
+
+        $mnt = Carbon::now()->month;
+        $yr = date('Y');
+
+
+
+        if($month && $year) {
+            $mnt = date('m', strtotime($month));
+            $yr =  $year;
+
+        }
+
+        
+
+
+       $transaction =  NairaTransaction::whereHas("user")->whereIn("status", ["success", "pending"])->whereMonth('created_at', $mnt)->whereYear('created_at', $yr);
        $data['total_commision_utilities'] = UtilityTransaction::whereIn('status', ['success', 'pending'])->sum("convenience_fee");
        $data['total_user_balance'] = $transaction->sum('current_balance');
        $data['total_withdrawal_charges'] = $transaction->sum('charge');
