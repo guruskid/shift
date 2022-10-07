@@ -62,7 +62,9 @@ class PortfolioController extends Controller
             $usdt_wallet->balance = $eth->balance->availableBalance;
         }
 
-        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'usdt_wallet', 'tron_wallet', 'nw']));
+        $banks = Bank::all();
+
+        return view('newpages.choosewallet', compact(['naira', 'btc_wallet', 'usdt_wallet', 'tron_wallet', 'nw', 'banks']));
     }
 
 
@@ -70,6 +72,11 @@ class PortfolioController extends Controller
     {
         \Artisan::call('naira:limit');
         $n = Auth::user()->nairaWallet;
+        $banks = Bank::all();
+        if (Auth::user()->pin == '') {
+            return redirect()->route('user.portfolio');
+        }
+
         if (!$n) {
             return redirect()->route('user.portfolio')->with(['error' => 'No Naira wallet associated to this account']);
         }
@@ -78,9 +85,7 @@ class PortfolioController extends Controller
             return redirect()->route('user.dashboard')->with(['error' => 'Naia wallet currently froozen, please contact support for more info']);
         }
 
-
-
-        $banks = Bank::all();
+        
         $nts = NairaTransaction::where('cr_user_id', Auth::user()->id)->orWhere('dr_user_id', Auth::user()->id)->orderBy('id', 'desc')->with('transactionType')->paginate(5);
         $dr_total = 0;
         $cr_total = 0;

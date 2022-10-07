@@ -119,7 +119,7 @@ class RouteServiceProvider extends ServiceProvider
 
     public function mapTradeNairaRoutes()
     {
-        Route::prefix('trade_naira_api')
+        Route::prefix('api_v2')
                 ->middleware(['api'])
                 ->namespace($this->namespace.'\Api\TradeNaira')
                 ->group(base_path('routes/trade_naira.php'));

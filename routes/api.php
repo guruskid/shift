@@ -132,6 +132,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::GET('/all-transactions', 'Api\BtcWalletController@transactions');
             Route::POST('/trade', 'BtcWalletController@sell');
             Route::POST('/sell', 'BtcWalletController@sell'); //Future change in url
+            Route::GET('/buy-rates', 'Api\BtcWalletController@buyRates');
+            Route::POST('/buy', 'BtcWalletController@buy');
 
             Route::POST('/send', 'BtcWalletController@send');
 

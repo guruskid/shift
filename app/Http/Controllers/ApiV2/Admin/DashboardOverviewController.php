@@ -40,7 +40,7 @@ class DashboardOverviewController extends Controller {
 
         $totalOpened = Ticket::where(['status'=>'open'])->count();
         $totalClosed = Ticket::where(['status'=>'closed'])->count();
-        
+
         $overview = [
             'users_naira_wallet' => number_format($walletTotal,'0','.',','),
             'user_pulse' => [
@@ -59,7 +59,6 @@ class DashboardOverviewController extends Controller {
                 'currently_active' => SpotLightController::accountantOnRole(),
                 'last_active' => self::lastAccountantOnRole()
             ],
-            // 'number_of_new_users' => SpotLightController::getUsersByDays()
         ];
         return response()->json([
             'success' => true,
@@ -72,50 +71,68 @@ class DashboardOverviewController extends Controller {
             $query->where('status','waiting');
         })->with('user')->latest()->first();
 
+        $data = [
+            'staff_name' => '--',
+            'last_active' =>  '--',
+            'opening_balance' => '--',
+            'closing_balance' => '--',
+            'total_paid_out' => [
+                'amount' => '--',
+                'count' => '--'
+            ],
+            'total_deposit'  => [
+                'amount' => '--',
+                'count' => '--'
+            ],
+            'current_balance' => '--',
+            'pending_withdrawal' => [
+                'amount' => '--',
+                'count'  => '--'
+            ]
+        ];
+
         $acct_name = '';
 
         if ($stamp) {
             $acctn = $stamp->user;
             $acct_name = $acctn->first_name.' '.$acctn->last_name;
+
+            $opening_balance = $stamp->opening_balance;
+
+            $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
+            ->whereBetween('updated_at',[$stamp->activeTime,$stamp->inactiveTime])
+            ->get();
+
+            $dtrade = NairaTrade::where(['status' => 'success','type'=> 'deposit'])
+            ->whereBetween('updated_at',[$stamp->activeTime,$stamp->inactiveTime])
+            ->get();
+
+            $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal', 'agent_id' => $acctn->id]);
+            $paid_out = $wtrade->sum('amount');
+            $current_balance = $opening_balance - $paid_out;
+            $closing_balance = $stamp->closing_balance;
+
+            $last_active = ($stamp->inactiveTime) ? Carbon::createFromTimeString($stamp->inactiveTime)->diffForHumans() : '';
+
+            $data['staff_name'] =  $acctn->first_name.' '.$acctn->last_name;
+            $data['last_active'] =  $last_active;
+            $data['opening_balance'] = number_format($opening_balance,0,'.',',');
+            $data['closing_balance'] = number_format($closing_balance,0,'.',',');
+            $data['total_paid_out'] = [
+                'amount' => number_format($wtrade->sum('amount'),0,'.',','),
+                'count' => number_format($wtrade->count(),0,'.',',')
+            ];
+            $data['total_deposit'] = [
+                'amount' => number_format($dtrade->sum('amount'),0,'.',','),
+                'count' => number_format($dtrade->count(),0,'.',',')
+            ];
+            $data['current_balance'] = number_format($current_balance,0,'.',',');
+            $data['pending_withdrawal'] = [
+                'amount' => number_format($pending_withdrawal->sum('amount'),0,'.',','),
+                'count'  => number_format($pending_withdrawal->count(),0,'.',',')
+            ];
         }
-
-        $acctn = $stamp->user;
-
-        // $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
-
-        $opening_balance = $stamp->opening_balance;
-
-        $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
-        ->whereBetween('updated_at',[$stamp->activeTime,$stamp->inactiveTime])
-        ->get();
-
-        $dtrade = NairaTrade::where(['status' => 'success','type'=> 'deposit'])
-        ->whereBetween('updated_at',[$stamp->activeTime,$stamp->inactiveTime])
-        ->get();
-
-        $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal', 'agent_id' => $acctn->id]);
-        $paid_out = $wtrade->sum('amount');
-        $current_balance = $opening_balance - $paid_out;
-
-        return [
-            'staff_name' => $acctn->first_name.' '.$acctn->last_name,
-            'last_active' =>  Carbon::createFromTimeString($stamp->inactiveTime)->diffForHumans(),
-            'opening_balance' => $opening_balance,
-            'closing_balance' => 00,
-            'total_paid_out' => [
-                'amount' => $wtrade->sum('amount'),
-                'count' => $wtrade->count()
-            ],
-            'total_deposit'  => [
-                'amount' => $dtrade->sum('amount'),
-                'count' => $dtrade->count()
-            ],
-            'current_balance' => $current_balance ,
-            'pending_withdrawal' => [
-                'amount' => $pending_withdrawal->sum('amount'),
-                'count'  => $pending_withdrawal->count()
-            ]
-        ];
+        return $data;
     }
 
     public function getTransactionHistory() {
@@ -138,7 +155,7 @@ class DashboardOverviewController extends Controller {
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
             }
-           
+
             $dateRange[] = [
                 'date' => $dateString,
                 'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
@@ -170,7 +187,7 @@ class DashboardOverviewController extends Controller {
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
             }
-           
+
             $dateRange[] = [
                 'date' => $dateString,
                 'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
@@ -185,11 +202,11 @@ class DashboardOverviewController extends Controller {
     public function getP2pTransactionHistoryByDate() {
         $date = request('date');
         if (empty($date)) {
-            $date = Carbon::now()->format('Y-m-d');   
+            $date = Carbon::now()->format('Y-m-d');
         }
 
         $tranx = NairaTrade::where(DB::raw('date(created_at)'),$date)
-            ->with(['user','agent'])
+            ->with(['user','agent','naria_transaction'])
             ->limit(10)
             ->get();
 
@@ -202,7 +219,7 @@ class DashboardOverviewController extends Controller {
     public function getCryptoTransactionHistoryByDate() {
         $date = request('date');
         if (empty($date)) {
-            $date = Carbon::now()->format('Y-m-d');   
+            $date = Carbon::now()->format('Y-m-d');
         }
 
         $tranx = Transaction::where(DB::raw('date(created_at)'),$date)
@@ -230,12 +247,15 @@ class DashboardOverviewController extends Controller {
         ],200);
     }
 
-    public function usersVerification() {
+    public function usersVerification($type = '') {
         $users = User::get();
+
         $l1 = User::whereNotNull('phone_verified_at');
+
         $l2 = User::whereHas('verifications',function ($query) {
            $query->where(['type' => 'Address', 'status' => 'success']);
         });
+
         $l3 = User::whereHas('verifications',function ($query) {
             $query->where(['type' => 'ID Card', 'status' => 'success']);
          });
@@ -247,6 +267,30 @@ class DashboardOverviewController extends Controller {
         $pendingL3 = User::whereHas('verifications',function ($query) {
             $query->where(['type' => 'ID Card', 'status' => 'waiting']);
         });
+
+        if ($type == 'month') {
+            $l1->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+            $l2->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+            $l2->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+            $pendingL2->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+            $pendingL3->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+        }
+
+        if ($type == 'week') {
+            $l1->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+            $l2->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+            $l2->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+            $pendingL2->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+            $pendingL3->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+        }
+
+        if ($type == 'day') {
+            $l1->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+            $l2->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+            $l2->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+            $pendingL2->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+            $pendingL3->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+        }
 
         return response()->json([
             'success' => true,
@@ -285,7 +329,7 @@ class DashboardOverviewController extends Controller {
 
         $queryFrom = $dtFrom->year($year)->month($month)->startOfMonth()->addWeek($from)->weekday(0);
         $queryTo = $dtTo->year($year)->month($month)->startOfMonth()->addWeek($to);
-        
+
         $range = 7;
         $chartDataOldUsers = Transaction::select([
             DB::raw('DATE(created_at) AS date'),
@@ -330,7 +374,7 @@ class DashboardOverviewController extends Controller {
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
             }
-           
+
             $dateRange[] = [
                 'date' => $dateString,
                 'old_users_turnover' => (!isset($chartDataByDayOldUsers[$dateString]))? '0' : $chartDataByDayOldUsers[$dateString],
@@ -340,7 +384,7 @@ class DashboardOverviewController extends Controller {
             ];
             $queryFrom->addDay();
         }
-        
+
         return response()->json([
             'success' => true,
             'data' => $dateRange
@@ -384,7 +428,7 @@ class DashboardOverviewController extends Controller {
         ->where(DB::raw('MONTH(created_at)'), $month)
         ->where(DB::raw('YEAR(created_at)'), $year)
         ->sum('amount');
-        
+
         $uTranxTurnover = UtilityTransaction::where('status','success')
         ->where(DB::raw('MONTH(created_at)'), $month)
         ->where(DB::raw('YEAR(created_at)'), $year)

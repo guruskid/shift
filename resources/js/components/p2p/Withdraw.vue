@@ -33,10 +33,21 @@
       </div>
       <div class="form-group">
         <button
+          v-if="daily_rem > 0"
           type="submit"
           class="btn py-3 rounded-pill w-100"
           style="background-color: #000070; color: #fff"
           @click="processWithdrawal"
+        >
+          Continue
+        </button>
+
+        <button
+          v-else
+          type="submit"
+          class="btn py-3 rounded-pill w-100"
+          style="background-color: #000070; color: #fff"
+          data-toggle="modal" data-target="#verify-phone-notice"
         >
           Continue
         </button>
@@ -111,7 +122,7 @@
 
 <script>
 export default {
-  props: ['free_naira_charge','tranx'],
+  props: ['free_naira_charge','tranx','daily_rem'],
   data() {
     return {
       naira_charge: this.free_naira_charge,
