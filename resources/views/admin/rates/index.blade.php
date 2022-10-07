@@ -235,10 +235,21 @@
 
                             <div class="col-md-4">
                                 <form action="{{ route('admin.settings.update') }} " method="post">@csrf
-                                    <h5>Commission (%)</h5>
+                                    <h5>Sell Commission (%)</h5>
                                     <input type="hidden" name="name" value="crypto_commission">
                                     <input type="number" step="any" name="value"
                                         value="{{ AppSetting::get('crypto_commission') }}"
+                                        class="form-control mb-2">
+                                    <button class="btn btn-primary">Save</button>
+                                </form>
+                            </div>
+
+                            <div class="col-md-4">
+                                <form action="{{ route('admin.settings.update') }} " method="post">@csrf
+                                    <h5>Buy Commission (%)</h5>
+                                    <input type="hidden" name="name" value="crypto_buy_commission">
+                                    <input type="number" step="any" name="value"
+                                        value="{{ AppSetting::get('crypto_buy_commission') }}"
                                         class="form-control mb-2">
                                     <button class="btn btn-primary">Save</button>
                                 </form>

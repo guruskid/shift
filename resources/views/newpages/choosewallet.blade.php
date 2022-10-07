@@ -94,14 +94,21 @@
                                             <div>
                                                 <span class="d-block pb-0 mb-0 choosewallet_selection">Naira</span>
                                                 @if (Auth::user()->nairaWallet)
-                                                <a href="{{ route('user.naira-wallet') }}">
-                                                    <span
-                                                        class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ number_format(Auth::user()->nairaWallet->amount) }}</span><span
-                                                        style="color: #000070;"> NGN</span>
-                                                </a>
-
+                                                    @if (Auth::user()->pin != '' and Auth::user()->accounts->count() > 0)
+                                                        <a href="{{ route('user.naira-wallet') }}">
+                                                            <span
+                                                                class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ number_format(Auth::user()->nairaWallet->amount) }}</span><span
+                                                                style="color: #000070;"> NGN</span>
+                                                        </a>
+                                                    @else
+                                                        <a href="#" data-toggle="modal" data-target="#add-bank-modal">
+                                                            <span
+                                                                class="pt-0 mt-0 choosewallet_selection_amnt_equiv">{{ number_format(Auth::user()->nairaWallet->amount) }}</span><span
+                                                                style="color: #000070;"> NGN</span>
+                                                        </a>
+                                                    @endif
                                                 @else
-                                                <a href="#" data-toggle="modal" data-target="#new-naira-wallet">
+                                                <a href="#" data-toggle="modal" data-target="#add-bank-modal">
                                                     <span class="pt-0 mt-0 choosewallet_selection_amnt_equiv">Create
                                                         Naira Wallet</span>
                                                 </a>
@@ -277,6 +284,8 @@
         </div>
     </div>
 </div>
+
+@include('newpages.modals.createNairaWalletModal')
 
 {{-- create Naira Wallet --}}
 <div class="modal fade " id="new-naira-wallet">

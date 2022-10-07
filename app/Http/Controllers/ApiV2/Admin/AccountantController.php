@@ -41,7 +41,7 @@ class AccountantController extends Controller
             'WithdrawalCount' => "Not Available",
             'WithdrawalAmount' => "Not Available"
         ];
-        
+
         if($activeUser->accountantTimestamp->count() > 0){
             $startTime = $activeUser->accountantTimestamp->first()->activeTime;
             $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
@@ -81,7 +81,7 @@ class AccountantController extends Controller
                 'chart' => "Not Available"
             ],200);
         }
-        
+
         $startTime = $activeUser->accountantTimestamp->first()->activeTime;
         $endTime = ($activeUser->accountantTimestamp->first()->inactiveTime == null) ? now() : $activeUser->accountantTimestamp->first()->inactiveTime;
 
@@ -164,9 +164,9 @@ class AccountantController extends Controller
                     'message' => "$user->first_name $user->last_name is activated"
                 ],200);
             }
-            
+
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => "$user->first_name $user->last_name is already activated"
@@ -247,6 +247,8 @@ class AccountantController extends Controller
                 'user_id' => $id,
                 'activeTime' => Carbon::now(),
                 'opening_balance' => $amount,
+                'activated_by' => Auth::id(),
+                'activation_date' => Carbon::now(),
             ]);
         }
     }
@@ -265,8 +267,10 @@ class AccountantController extends Controller
                 $accountant->update([
                     'inactiveTime' => Carbon::now(),
                     'closing_balance' => $amount,
-                ]); 
-            }  
+                    'deactivated_by' => Auth::id(),
+                    'deactivation_date' =>  Carbon::now()
+                ]);
+            }
         }
     }
 
@@ -285,16 +289,16 @@ class AccountantController extends Controller
                 $roles = new SettingController();
                 $accountant->role_name = $roles->roleName($accountant->role);
                 $latest_timeStamp = $accountant->accountantTimestamp->first();
-    
+
                 $accountant->openingBalance = 'Not Available';
                 $accountant->closingBalance = 'Not Available';
-    
+
                 $accountant->totalAmountPaidOut = 'Not Available';
                 $accountant->totalDeposit = 'Not Available';
-    
+
                 $accountant->pendingWithdrawal = 'Not Available';
                 $accountant->CurrentBalance = 'Not Available';
-    
+
                 $accountant->activeTime = 'Not Available';
                 $accountant->inactiveTime = 'Not Available';
             }
@@ -302,7 +306,7 @@ class AccountantController extends Controller
                 $roles = new SettingController();
                 $accountant->role_name = $roles->roleName($accountant->role);
                 $latest_timeStamp = $accountant->accountantTimestamp->first();
-                
+
                 $openingBalance = $latest_timeStamp->opening_balance;
                 $closingBalance = $latest_timeStamp->closing_balance;
 
@@ -318,7 +322,7 @@ class AccountantController extends Controller
                 $accountant->activeTime = $latest_timeStamp->activeTime;
                 $accountant->inactiveTime = $latest_timeStamp->inactiveTime;
             }
-        }  
+        }
 
         $activeUsers = $collection->where('status', 'active');
         $inActiveUsers = $collection->where('status', 'waiting');
@@ -375,7 +379,7 @@ class AccountantController extends Controller
 
     public function TransactionsDuringActiveTime($startTime, $endTime)
     {
-        
+
         $tranx = Transaction::with('asset','user')->where('status','success')->where('created_at','>=',$startTime)->where('created_at','<=',$endTime)->get();
         foreach ($tranx as $value) {
             $value->name = $value['user']->first_name." ".$value['user']->last_name;

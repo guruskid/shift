@@ -199,7 +199,7 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                                         <deposit-component></deposit-component>
                                                     </tab>
                                                     <tab name="Withdraw via Pay-bridge" at="withdraw">
-                                                        <withdraw-component :free_naira_charge="{{$naira_charge}}" :tranx="{{$tranx}}"></withdraw-component>
+                                                        <withdraw-component :free_naira_charge="{{$naira_charge}}" :tranx="{{$tranx}}" :daily_rem="{{$daily_rem}}"></withdraw-component>
                                                     </tab>
                                                 </tabs>
                                             </div>
@@ -263,7 +263,19 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
 
 {{-- Add bank account --}}
 
+{{-- verify-phone-notice --}}
+
+<div class="modal fade item-badge-rightm" id="verify-phone-notice" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4>Please verify your phone number to initiate a withdrawal request</h4>
+                <a href="/verify-phone-number" class="btn btn-primary">Proceed</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @include('newpages.modals.addBankModal')
-
-
 @endsection

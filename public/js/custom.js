@@ -16,6 +16,14 @@ $(document).ready(function () {
         }
     });
 
+    $('#acct_numb').on('input',function (e) {
+        queryBankName();
+    });
+
+    $('#m_bank_code').on('change',function (e) {
+        queryBankName();
+    });
+
     /*  window.oncontextmenu = function () {
         return false;
     }
@@ -51,6 +59,16 @@ $(document).ready(function () {
     /* Bank Details Update */
     $("#user-bank-details").submit(function (event) {
         event.preventDefault();
+        var account_number = $('#acct_numb').val()
+        if ($('#m_first_name').val() == '' || $('#m_last_name').val() == '') {
+            alert('Invalid bank details')
+            return;
+        }
+        console.log(account_number)
+        if (account_number.length < 10) {
+            alert('Invalid account number');
+            return;
+        }
         $("#s-b").show();
         // var formData = $(this).serialize();
         var formData = $(this).serialize();
@@ -61,7 +79,36 @@ $(document).ready(function () {
             success: function (data) {
                 $("#s-b").hide();
                 if (data.success) {
-                    swal('success', 'Bank Account added')
+                    swal('success', data.msg)
+                    location.reload();
+                } else {
+                    swal('error', data.msg)
+                }
+            },
+            error: function (xhr, stat, err) {
+                console.log(err)
+                $("#s-b").hide();
+                swal('error', 'An error occured, please reload and try again');
+                console.log(err)
+                console.log(stat)
+                console.log(xhr.responseText)
+            }
+        });
+    });
+
+    $("#authenticate-wallet").submit(function (event) {
+        event.preventDefault();
+        $("#s-b").show();
+        // var formData = $(this).serialize();
+        var formData = $(this).serialize();
+        $.ajax({
+            type: "POST",
+            url: "/user/update-bank",
+            data: formData,
+            success: function (data) {
+                $("#s-b").hide();
+                if (data.success) {
+                    swal('success', data.data.msg)
                     location.reload();
                 } else {
                     swal('error', data.msg)
@@ -206,6 +253,32 @@ function getWalletBalance() {
     .fail(function (xhr, status, err) {
         console.log(xhr)
      }) */
+}
+
+function queryBankName() {
+    var acct_number = $('#acct_numb').val();
+    if (acct_number.length < 10) {
+        return;
+    }
+    $('#m_save').attr('disabled',true)
+    var bank_code = $('#m_bank_code').val();
+    $('#m_first_name').val('Loading...');
+    $('#m_last_name').val('Loading...');
+    var details = {
+        bank_code: bank_code,
+        acct_number: acct_number
+    }
+    $.get('/query-bank-name/', details, function (data,success) {
+        if (data['success']) {
+            $('#m_first_name').val(data['data']['first_name']);
+            $('#m_last_name').val(data['data']['last_name']);
+            $('#m_save').removeAttr('disabled')
+        } else {
+            $('#m_first_name').val('');
+            $('#m_last_name').val('');
+            alert(data['msg']);
+        }
+    });
 }
 
 /* Copy Wallet Id */

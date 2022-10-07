@@ -82,6 +82,7 @@ class TradeController extends Controller
 
         $sell_rate = LiveRateController::usdNgn();
         $buy_rate = LiveRateController::usdNgn(true, 'buy');
+        // dd($buy_rate);
 
         $client = new Client();
         $btc_real_time = LiveRateController::btcRate();

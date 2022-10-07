@@ -59,7 +59,6 @@ class LiveRateController extends Controller
 
 
         return $btc_rate;
-
     }
 
 
@@ -73,7 +72,7 @@ class LiveRateController extends Controller
         $rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $commission = SettingController::get('crypto_commission');
 
-        $rate = $rate - (($commission/100) * $rate);
+        $rate = $rate - (($commission / 100) * $rate);
 
         return $rate;
     }
@@ -82,18 +81,17 @@ class LiveRateController extends Controller
     public static function usdNgn($add_com = true, $type = 'sell')
     {
         $rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
-        $commission = SettingController::get('crypto_commission');
 
         if ($add_com == true) {
             if ($type == 'sell') {
-                $rate = $rate - (($commission/100) * $rate);
+                $commission = SettingController::get('crypto_commission');
+                $rate = $rate - (($commission / 100) * $rate);
             } else {
-                $rate = $rate + (($commission/100) * $rate);
+                $commission = SettingController::get('crypto_buy_commission');
+                $rate = $rate + (($commission / 100) * $rate);
             }
-
         }
         return $rate;
-
     }
 
     public static function usdtBuy()
