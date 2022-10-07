@@ -17,7 +17,7 @@ use DB;
 use Illuminate\Support\Facades\Validator;
 
 class SpotLightController extends Controller {
-    
+
     public function stats() {
         $today = Carbon::now();
         // User
@@ -159,7 +159,7 @@ class SpotLightController extends Controller {
         $acctn = User::where(['role' => 777, 'status' => 'active'])->with('nairaWallet')->first();
         $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
         $opening_balance = $stamp->opening_balance;
-        
+
         $wtrade = NairaTrade::where(['status' => 'success','type'=> 'withdrawal'])
         ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
         ->get();
@@ -181,7 +181,7 @@ class SpotLightController extends Controller {
             $repFn = $saleRep->first_name;
             $repLn = $saleRep->last_name;
         }
-        
+
         $ticketsWaiting = 0;
         $ticketsResolved = 0;
         $ticketsUnresolved = 0;
@@ -198,7 +198,7 @@ class SpotLightController extends Controller {
             $ticketsWaiting = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'open'])->count();
             $ticketsResolved = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'closed'])->count();
             $ticketsUnresolved = Ticket::where(['agent_id' => $customerHappiness->id,'status'=>'waiting'])->count();
-        } 
+        }
         $aFn = (isset($customerHappiness)) ? $customerHappiness->first_name : null;
         $aLn = (isset($customerHappiness)) ? $customerHappiness->lastst_name : null;
         $customerHappinessAgent = $aFn.' '.$aLn;
@@ -213,9 +213,9 @@ class SpotLightController extends Controller {
 
             $tranx = Transaction::where(['status' => 'success'])
             ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()])->count();
-    
+
             $declinedTranx = Transaction::where(['status' => 'declined'])
-            ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()])->count();   
+            ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()])->count();
         }
 
         return response()->json([
@@ -308,7 +308,7 @@ class SpotLightController extends Controller {
     public function monthlyAnalytics(Request $request) {
         $year = $request['year'];
         $month = $request['month'];
-        
+
         $tranx = Transaction::where('status','success')
             ->select(DB::raw("date(created_at) as date"),DB::raw("count(date(created_at)) as total"))
             ->where(DB::raw('month(created_at)'), '=', $month)
@@ -345,7 +345,7 @@ class SpotLightController extends Controller {
         $new_users = $this->formatData($users,$month,$year);
         $unique_users = $this->formatData($unique_users,$month,$year);
 
-        for ($i=0; $i < count($tranx ); $i++) { 
+        for ($i=0; $i < count($tranx ); $i++) {
             $bigData[] = [
                 'date' => $tranx[$i]['date'],
                 'no_of_transactions' => $tranx[$i]['value'],
@@ -369,12 +369,12 @@ class SpotLightController extends Controller {
             $year = $request['year'];
 
             $soy = Carbon::createFromFormat('m',$request['month'])->year($year);
-            for ($i=0; $i < 12; $i++) { 
+            for ($i=0; $i < 12; $i++) {
                 $tx = Transaction::where('status','success')
                     ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
                     ->where(DB::raw('year(created_at)'), '=', $year)
                     ->count();
-                
+
                 $users = User::where('status','active')
                     ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
                     ->where(DB::raw('year(created_at)'), '=', $year)->count();
@@ -680,7 +680,7 @@ class SpotLightController extends Controller {
 
         $bigData = [];
 
-        for ($i=0; $i < count($tranx ); $i++) { 
+        for ($i=0; $i < count($tranx ); $i++) {
             $bigData[] = [
                 'date' => $tranx[$i]['date'],
                 'dead_users' => $tranx[$i]['value'],
@@ -757,7 +757,7 @@ class SpotLightController extends Controller {
 
        $total = User::whereBetween(DB::raw('year(created_at)'),[2001,2022])
             ->get()->count();
-    
+
         $res = $amount / $total;
 
        return $year.' '.$amount.' '.date('Y').' '.$res;
@@ -783,7 +783,7 @@ class SpotLightController extends Controller {
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
             }
-           
+
             $dateRange[] = [
                 'date' => $dateString,
                 'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
@@ -805,7 +805,7 @@ class SpotLightController extends Controller {
     public function getNewUsersByDate() {
         $date = request('date');
         if (empty($date)) {
-            $date = Carbon::now()->format('Y-m-d');   
+            $date = Carbon::now()->format('Y-m-d');
         }
 
         $users = User::where(DB::raw('date(created_at)'),$date)->limit(10)->get();
@@ -826,7 +826,7 @@ class SpotLightController extends Controller {
             $chartDataByDay[$data['date']] = $data['total'];
         }
 
-        for ($i=0; $i < $eom; $i++) { 
+        for ($i=0; $i < $eom; $i++) {
             $dateString = $eod->format('Y-m-d');
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
