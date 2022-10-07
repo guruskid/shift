@@ -208,8 +208,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], functi
         Route::get('/p2p-transaction-history',  'DashboardOverviewController@p2pTransactionHistory');
         Route::get('/p2p-transactions-by-date',  'DashboardOverviewController@getP2pTransactionHistoryByDate');
         Route::get('/crypto-transactions-by-date',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
-        Route::get('/users-verification',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
-        Route::get('/users-verification', 'DashboardOverviewController@usersVerification');
+        // Route::get('/users-verification',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
+        Route::get('/users-verification/{type}', 'DashboardOverviewController@usersVerification');
         Route::get('/monthly-analytics', 'SpotLightController@monthlyAnalytics');
         Route::get('/monthly-earnings', 'DashboardOverviewController@monthlyEarnings');
         Route::get('/summary', 'DashboardOverviewController@summary');

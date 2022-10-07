@@ -40,7 +40,7 @@ class DashboardOverviewController extends Controller {
 
         $totalOpened = Ticket::where(['status'=>'open'])->count();
         $totalClosed = Ticket::where(['status'=>'closed'])->count();
-        
+
         $overview = [
             'users_naira_wallet' => number_format($walletTotal,'0','.',','),
             'user_pulse' => [
@@ -155,7 +155,7 @@ class DashboardOverviewController extends Controller {
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
             }
-           
+
             $dateRange[] = [
                 'date' => $dateString,
                 'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
@@ -187,7 +187,7 @@ class DashboardOverviewController extends Controller {
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
             }
-           
+
             $dateRange[] = [
                 'date' => $dateString,
                 'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
@@ -202,7 +202,7 @@ class DashboardOverviewController extends Controller {
     public function getP2pTransactionHistoryByDate() {
         $date = request('date');
         if (empty($date)) {
-            $date = Carbon::now()->format('Y-m-d');   
+            $date = Carbon::now()->format('Y-m-d');
         }
 
         $tranx = NairaTrade::where(DB::raw('date(created_at)'),$date)
@@ -219,7 +219,7 @@ class DashboardOverviewController extends Controller {
     public function getCryptoTransactionHistoryByDate() {
         $date = request('date');
         if (empty($date)) {
-            $date = Carbon::now()->format('Y-m-d');   
+            $date = Carbon::now()->format('Y-m-d');
         }
 
         $tranx = Transaction::where(DB::raw('date(created_at)'),$date)
@@ -247,12 +247,15 @@ class DashboardOverviewController extends Controller {
         ],200);
     }
 
-    public function usersVerification() {
+    public function usersVerification($type = '') {
         $users = User::get();
+
         $l1 = User::whereNotNull('phone_verified_at');
+
         $l2 = User::whereHas('verifications',function ($query) {
            $query->where(['type' => 'Address', 'status' => 'success']);
         });
+
         $l3 = User::whereHas('verifications',function ($query) {
             $query->where(['type' => 'ID Card', 'status' => 'success']);
          });
@@ -264,6 +267,30 @@ class DashboardOverviewController extends Controller {
         $pendingL3 = User::whereHas('verifications',function ($query) {
             $query->where(['type' => 'ID Card', 'status' => 'waiting']);
         });
+
+        if ($type == 'month') {
+            $l1->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+            $l2->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+            $l2->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+            $pendingL2->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+            $pendingL3->where(DB::raw('month(created_at)'),Carbon::now()->format('m'));
+        }
+
+        if ($type == 'week') {
+            $l1->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+            $l2->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+            $l2->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+            $pendingL2->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+            $pendingL3->where(DB::raw('week(created_at)'),Carbon::now()->weekOfYear);
+        }
+
+        if ($type == 'day') {
+            $l1->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+            $l2->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+            $l2->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+            $pendingL2->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+            $pendingL3->where(DB::raw('day(created_at)'),Carbon::now()->format('d'));
+        }
 
         return response()->json([
             'success' => true,
@@ -302,7 +329,7 @@ class DashboardOverviewController extends Controller {
 
         $queryFrom = $dtFrom->year($year)->month($month)->startOfMonth()->addWeek($from)->weekday(0);
         $queryTo = $dtTo->year($year)->month($month)->startOfMonth()->addWeek($to);
-        
+
         $range = 7;
         $chartDataOldUsers = Transaction::select([
             DB::raw('DATE(created_at) AS date'),
@@ -347,7 +374,7 @@ class DashboardOverviewController extends Controller {
             if (!isset($chartDataByDay[$dateString])) {
                 $chartDataByDay[$dateString] = 0;
             }
-           
+
             $dateRange[] = [
                 'date' => $dateString,
                 'old_users_turnover' => (!isset($chartDataByDayOldUsers[$dateString]))? '0' : $chartDataByDayOldUsers[$dateString],
@@ -357,7 +384,7 @@ class DashboardOverviewController extends Controller {
             ];
             $queryFrom->addDay();
         }
-        
+
         return response()->json([
             'success' => true,
             'data' => $dateRange
@@ -401,7 +428,7 @@ class DashboardOverviewController extends Controller {
         ->where(DB::raw('MONTH(created_at)'), $month)
         ->where(DB::raw('YEAR(created_at)'), $year)
         ->sum('amount');
-        
+
         $uTranxTurnover = UtilityTransaction::where('status','success')
         ->where(DB::raw('MONTH(created_at)'), $month)
         ->where(DB::raw('YEAR(created_at)'), $year)
