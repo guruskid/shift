@@ -45,7 +45,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapTradeNairaRoutes();
 
-        $this-> mapTradeNairaRoutesV2();
+        // $this-> mapTradeNairaRoutesV2();
 
         $this->mapTradeNairaWebRoutes();
 
@@ -120,19 +120,20 @@ class RouteServiceProvider extends ServiceProvider
 
     public function mapTradeNairaRoutes()
     {
-        Route::middleware(['api'])
-            ->namespace($this->namespace . '\Api\TradeNaira')
-            ->group(base_path('routes/trade_naira.php'));
-    }
-
-
-    public function mapTradeNairaRoutesV2()
-    {
-        Route::prefix('api_v2')
+        Route::prefix('api_v2/trade_naira_api')
             ->middleware(['api'])
             ->namespace($this->namespace . '\Api\TradeNaira')
             ->group(base_path('routes/trade_naira.php'));
     }
+
+
+    // public function mapTradeNairaRoutesV2()
+    // {
+    //     Route::prefix('api_v2')
+    //         ->middleware(['api'])
+    //         ->namespace($this->namespace . '\Api\TradeNaira')
+    //         ->group(base_path('routes/trade_naira.php'));
+    // }
 
     public function mapTradeNairaWebRoutes()
     {
