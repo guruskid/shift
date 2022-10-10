@@ -332,6 +332,27 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
 
     });
 
+    //Overview
+
+    Route::group(['prefix' => 'overview'], function () {
+        Route::GET("/",'SeniorAccountant\DashboardController@overView');
+        Route::GET('/analytics', 'SeniorAccountant\DashboardController@analytics');
+        Route::GET('/recenttrans', 'SeniorAccountant\DashboardController@recentTransactions');
+        Route::GET('/statement/{id}', 'SeniorAccountant\DashboardController@transPerUser');
+
+    });
+
+      //Rate
+
+    Route::group(['prefix' => 'rate'], function () {
+        Route::GET("/updateusd",'SeniorAccountant\RateController@updateUsd');
+        Route::GET('/updaterate', 'SeniorAccountant\RateController@updateRate');
+        Route::GET('/delete/{id}', 'SeniorAccountant\RateController@deleteRate');
+
+    });
+
+
+
     Route::group(['prefix' => 'complianceAndFraud'], function () {
         Route::GET('/users/{type?}', 'ComplianceFraudController@index');
         Route::POST('/sort', 'ComplianceFraudController@sorting');

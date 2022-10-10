@@ -285,7 +285,7 @@ class CustomerHappinessController extends Controller
 
     public function p2pTran()
     {
-        $transactions = NairaTrade::with('user', 'naria_transactions')->latest('id')->paginate(10);
+        $transactions = NairaTrade::with('user', 'naira_transactions')->latest('id')->paginate(10);
 
         return response()->json([
             'success' => true,
