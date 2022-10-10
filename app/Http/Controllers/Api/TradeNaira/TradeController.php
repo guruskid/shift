@@ -278,8 +278,7 @@ class TradeController extends Controller
             $minutes = 60;
         }
 
-        $msg = "You have successfully withdrawn the sum of ₦" . number_format($request->amount) . " from your naira wallet.
-        N/B: Payment would be made within " . $minutes . " minutes due to the withdrawal queue at the moment.";
+        $msg = "You have successfully withdrawn the sum of ₦" . number_format($request->amount) . " from your naira wallet. N/B: Payment would be made within " . $minutes . " minutes due to the withdrawal queue at the moment.";
 
         // Firebase Push Notification
         $fcm_id = Auth::user()->fcm_id;

@@ -172,11 +172,11 @@ class TradeNairaController extends Controller
                 //     }]);
                 // }]);
                 // return $transactions->get();
-    
-                // $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
+                // $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
+
                 $transactions = $transactions->with(['user' => function ($query) {
                     $query->withCount(['nairaTrades as total_trx' => function ($query) {
-                        $query->select(DB::raw("sum(amount) as sumt"));
+                        $query->where('status','success')->select(DB::raw("sum(amount) as sumt"));
                     }]);
                 }]);
 
@@ -185,8 +185,9 @@ class TradeNairaController extends Controller
                     WHERE
                     tr.user_id = naira_trades.user_id)
                     as total_trax'))
-                    ->orderBy('created_at', 'desc')
-                    ->orderBy('total_trax', 'desc');
+                    ->orderBy('total_trax', 'desc')
+                    ->orderBy('created_at', 'desc');
+
             }
 
             if($start_date && $end_date)
@@ -200,7 +201,7 @@ class TradeNairaController extends Controller
                 ->where('status',$status);
             }
 
-            $transactions = $transactions->get()->sortByDesc('created_at');
+            // $transactions = $transactions->get()->sortByDesc('created_at');
             if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
                 return Excel::download(new PayBridgeTransactions($transactions), 'PayBridgeTransactions.xlsx');
             }
@@ -220,7 +221,7 @@ class TradeNairaController extends Controller
                 $t->current_bal = $current_prev_bal->current_balance;
             }
         }
-        
+
             //?" all  deposit transactions
             $deposit = NairaTrade::where('type','deposit');
             if($start_date && $end_date)
@@ -545,10 +546,10 @@ class TradeNairaController extends Controller
 
             $title = "WITHDRAWAL UPDATE!";
             $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was declined. Kindly contact support for more information.";
-            
+
         }
 
-        
+
         // Firebase Push Notification
         $fcm_id = $nt->user->fcm_id;
         if (isset($fcm_id)) {
