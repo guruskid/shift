@@ -669,6 +669,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         return redirect()->back()->with("success", "Checked Quarterly Inactive Users");
     });
 
+    //?checking for incipientUser
+    Route::GET('/incipientUserGenerator','Admin\BusinessDeveloperController@checkForIncipientUser');
+
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {

@@ -110,6 +110,7 @@ class BusinessDeveloperController extends Controller
         }
     }
 
+
     public static function assignDefaultCallLog()
     {
         $sales = User::where('role',557)->orderBy('created_at','ASC')->where('status','active')->get();
@@ -638,6 +639,22 @@ class BusinessDeveloperController extends Controller
                 'category' => $request->feedback,
             ]);
         return back()->with(['success'=>'Call Category updated']);
+    }
+
+    public function checkForIncipientUser()
+    {
+        $users = UserTracking::with('user')->where('Current_Cycle','QuarterlyInactive')->get();
+        foreach($users as $u){
+            if($u->user->phone == NULL)
+            {
+                $u->update([
+                    'Current_Cycle' => 'incipientUser',
+                    'Previous_Cycle' => "QuarterlyInactive",
+                    'current_cycle_count_date' => now()
+                ]);
+            }
+        }
+        return back()->with(['success'=>'IncipientUser Generated']);
     }
 
     
