@@ -693,7 +693,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','salesAnalyticsAccess']], function () {
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
     Route::ANY('/sortAnalytics/{type?}', 'Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
     Route::ANY('/showAnalysis/{type?}', 'Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');

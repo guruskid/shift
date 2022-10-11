@@ -102,7 +102,7 @@ class BusinessDeveloperController extends Controller
                 $user = new User();
                 $user->first_name = 'David';
                 $user->last_name = 'David';
-                $user->email = 'davidibelive@gmail.com';
+                $user->email = 'dantownsales@gmail.com';
                 $user->username = 'David';
 
                 self::ActivationEmail($user);
@@ -121,20 +121,6 @@ class BusinessDeveloperController extends Controller
     }
 
     public function index($type = null){ 
-        $ReminderText = null;
-        $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
-        if((!$quarterlyChecks)){
-            $ReminderText = "Download Of Quarterly Inactive For Bulk Email";
-        }
-
-        if(isset($quarterlyChecks))
-        {
-            $timeStampMonthly = Carbon::parse($quarterlyChecks->timeStamp)->diffInMonths(now());
-            if( $timeStampMonthly >= 3):
-                $ReminderText = "Download Of Quarterly Inactive For Bulk Email";
-            endif;
-        }
-
         
         $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->where('custodian_id',Auth::user()->id)->count();
         $CalledUsers =  UserTracking::where('Current_Cycle','Called')->where('sales_id',Auth::user()->id)->count();
@@ -158,7 +144,7 @@ class BusinessDeveloperController extends Controller
                 'admin.business_developer.index',
                 compact([
                     'data_table','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
-                    'NoResponse','ReminderText'
+                    'NoResponse'
                 ])
             );
         }
@@ -194,30 +180,13 @@ class BusinessDeveloperController extends Controller
             'admin.business_developer.index',
             compact([
                 'data_table','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
-                'NoResponse','ReminderText'
+                'NoResponse'
             ])
         );
     }
 
     public function viewCategory($type = null, Request $request)
     {
-        if($request->downloader == "csv" AND $request->segment == "Quarterly_Inactive")
-        {
-            $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
-            if(!$quarterlyChecks)
-            {
-                EmailChecker::create([
-                    'name' => 'SendQuarterlyInactiveEmail',
-                    'timeStamp' => now(),
-                ]);
-            } else {
-                $quarterlyChecks->update([
-                    'timeStamp' => now()
-                ]);
-            }
-            $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
-            return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
-        }
         $call_categories = CallCategory::all();
 
         if($type == null || $type == "all_Users"){

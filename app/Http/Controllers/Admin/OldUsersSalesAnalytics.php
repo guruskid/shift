@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Card;
 use App\CryptoRate;
+use App\EmailChecker;
+use App\Exports\QuarterlyInactiveUsers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SalesTimestamp;
@@ -14,6 +16,7 @@ use App\UserTracking;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OldUsersSalesAnalytics extends Controller
 { 
@@ -96,6 +99,16 @@ class OldUsersSalesAnalytics extends Controller
 
     public function index($type = null, Request $request)
     {
+
+        $ReminderText = self::textForQuarterlyCheck();
+        
+
+        if($request->downloader == "csv")
+        {
+            return self::downloadCSV();
+        }
+
+
         $request->session()->forget(['SortingKeys','startKey','endKey']);
         $conversionType = "unique";
         
@@ -189,8 +202,45 @@ class OldUsersSalesAnalytics extends Controller
         return view('admin.oldUsersSalesAnalytics.index',compact([
             'show_data','segment','noOfCalledUsers','averageTimeBetweenCalls','respondedTranxVolume','respondedTranxNo','noOfRespondedUsers'
             ,'totalCallDuration','averageCallDuration','type','table_data','callPercentageEffectiveness','unique','total','salesOldUsers','years','month',
-            'respondedTranxVolume','giftCardKeys','quarterlyInactiveUsersNo','targetCovered'
+            'respondedTranxVolume','giftCardKeys','quarterlyInactiveUsersNo','targetCovered','ReminderText'
         ]));
+    }
+
+    public static function downloadCSV()
+    {
+            $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
+            if(!$quarterlyChecks)
+            {
+                EmailChecker::create([
+                    'name' => 'SendQuarterlyInactiveEmail',
+                    'timeStamp' => now(),
+                ]);
+            } else {
+                $quarterlyChecks->update([
+                    'timeStamp' => now()
+                ]);
+            }
+            $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
+            return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
+    }
+
+    public static function textForQuarterlyCheck()
+    {
+        $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
+
+        if((!$quarterlyChecks)){
+            return "Download Of Quarterly Inactive For Bulk Email";
+        }
+
+        if(isset($quarterlyChecks))
+        {
+            $timeStampMonthly = Carbon::parse($quarterlyChecks->timeStamp)->diffInMonths(now());
+            if( $timeStampMonthly >= 3):
+                return "Download Of Quarterly Inactive For Bulk Email";
+            endif;
+        }
+
+        return null;
     }
 
     public function sortingAnalytics(Request $request, $type = null)
