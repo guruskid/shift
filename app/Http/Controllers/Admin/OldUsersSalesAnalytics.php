@@ -255,10 +255,20 @@ class OldUsersSalesAnalytics extends Controller
             $conversionType = "total";
         }
 
-        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
+        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser']);
+        if(isset($sales_id)){
+            $CalledUsers = $CalledUsers->where('sales_id',$sales_id);
+        }
+        $CalledUsers = $CalledUsers->get();
+        
         $noOfCalledUsers = $CalledUsers->count();
 
-        $RespondedUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded')->get();
+        $RespondedUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded');
+        if(isset($sales_id)){
+            $RespondedUsers = $RespondedUsers->where('sales_id',$sales_id);
+        }
+        $RespondedUsers = $RespondedUsers->get();
+
         $noOfRespondedUsers = $RespondedUsers->count();
         if($conversionType == "unique")
         {
@@ -356,7 +366,7 @@ class OldUsersSalesAnalytics extends Controller
         //*start date and end date session
         $start_date = (isset($start_date)) ? $start_date : null;
         $end_date = (isset($end_date)) ? $end_date : null;
-        $sales_id = (isset($request_data['sales'])) ? $request_data['sales'] : 0;
+        $sales_id = (isset($request_data['sales'])) ? $request_data['sales'] : null;
 
         $conversionType = "unique";
         if(isset($request_data['unique']) AND $request_data['unique'] =="on"){

@@ -536,9 +536,9 @@ class BusinessDeveloperController extends Controller
           </table>";
           //Image Data end
       
-        $body .= 'Your 10 free withdrawals offer is now activated and you can begin enjoying this offer immediately.<br><br>';
+        $body .= "<div style='text-align:justify'>".'Your 10 free withdrawals offer is now activated and you can begin enjoying this offer immediately.<br><br>';
         $body .= 'Kindly log in, trade your crypto, and make your withdrawals without any charges.<br><br>';
-        $body .= 'If you no longer have the Dantown app, kindly click on the Logo representing your platform below to download the app.';
+        $body .= 'If you no longer have the Dantown app, kindly click on the Logo representing your platform below to download the app.'."</div>";
         $title = 'Free Withdrawal From Dantown';
 
         $btn_text = '';
@@ -606,9 +606,9 @@ class BusinessDeveloperController extends Controller
         {
             $data_table = $data_table->where('call_category_id', $request->status);
         }
-        $data_table = $data_table->paginate(100);
+        $data_table = $data_table->where('sales_id',Auth::user()->id)->paginate(100);
         foreach ($data_table as $u ) {
-            $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
+            $user_tnx = Transaction::where('sales_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
 
             if($user_tnx->count() == 0)
             {
