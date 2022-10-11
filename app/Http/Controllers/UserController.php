@@ -170,7 +170,7 @@ class UserController extends Controller
             // Auth::user()->save();
 
             // \Artisan::call('naira:limit');
-        // }  
+        // }
 
         if (isset($request->bank_code)) {
             $bank = Bank::where('code', $request->bank_code)->first();
@@ -181,15 +181,15 @@ class UserController extends Controller
                     'success' => false,
                     'msg' => 'Bank account already exist'
                 ]);
-            } 
-            
+            }
+
             Auth::user()->first_name = $request->first_name;
             Auth::user()->last_name = $request->last_name;
             Auth::user()->save();
 
             $a = new Account();
             $a->user_id = Auth::user()->id;
-            $a->account_name = $request->first_name .' '. $request->last_name;
+            $a->account_name = $request->account_name;
             $a->bank_name = $bank->name;
             $a->bank_id = $bank->id;
             $a->account_number = $request->account_number;
@@ -205,7 +205,7 @@ class UserController extends Controller
         if (!isset($request->bank_code) and $request->password) {
             $msg = 'Wallet pin created successfully';
         }
-        
+
         return response()->json([
             'success' => true,
             'msg' => $msg
@@ -519,7 +519,7 @@ class UserController extends Controller
         if ($a->user_id != Auth::user()->id) {
             return redirect()->back()->with(["error" => 'Invalid Operation']);
         }
-        $a->account_name = $request->first_name .' '. $request->last_name;
+        $a->account_name = $request->account_name;
         $a->bank_name = $request->bank_name;
         $a->account_number = $request->account_number;
         $a->save();

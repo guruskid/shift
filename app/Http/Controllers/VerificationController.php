@@ -126,10 +126,9 @@ class VerificationController extends Controller
                 'msg' => 'Invalid Account Details'
             ]);
         }
-        $acct_name = explode(' ',$body[0]->account_name);
+        $acct_name = $body[0]->account_name;
         $data = [
-            'first_name' => $acct_name[count($acct_name) - 1],
-            'last_name' => $acct_name[0]
+            'account_name' => $acct_name
         ];
         return response()->json([
             'success' => true,
