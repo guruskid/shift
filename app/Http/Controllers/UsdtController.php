@@ -703,7 +703,7 @@ class UsdtController extends Controller
 
         // ///////////////////////////////////////////////////////////
         $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;
-        $title = 'Sell Order Successful';
+        $title = 'Buy Order Successful';
         $body = 'Your order to buy ' . $t->card . ' has been filled and your Naira wallet has been debited with₦' . number_format($t->amount_paid) . '<br>
          Your new  balance is ' . $finalamountcredited . '.<br>
          Date: ' . now() . '.<br><br>
