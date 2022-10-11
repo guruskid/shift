@@ -269,7 +269,7 @@ function queryBankName() {
     }
     $.get('/query-bank-name/', details, function (data,success) {
         if (data['success']) {
-            $('#acct_name').val(data['data']['acct_name']);
+            $('#acct_name').val(data['data']['account_name']);
             $('#m_save').removeAttr('disabled')
         } else {
             $('#acct_name').val('');
