@@ -23,24 +23,9 @@
                                 <input type="number" onKeyPress="if(this.value.length==10) return false;" required class="form-control" name="account_number" id="acct_numb">
                             </div>
                             <div class="row">
-                                <div class="position-relative form-group col-md-6">
-                                    <label>Bank Firstname</label>
-                                    <input type="text" required class="form-control " name="first_name" id="m_first_name" readonly required>
-                                    {{-- @if (Auth::user()->accounts->count() == 0)
-                                        <input type="text" required class="form-control " name="first_name" id="first_name" readonly>
-                                    @else
-                                        <input type="text" required class="form-control" value="{{ Auth::user()->first_name }}" name="first_name" id="first_name" readonly>
-                                    @endif --}}
-                                </div>
-
-                                <div class="position-relative form-group col-md-6">
-                                    <label>Bank Lastname</label>
-                                    <input type="text" required class="form-control " name="last_name" id="m_last_name" readonly required>
-                                    {{-- @if (Auth::user()->accounts->count() == 0)
-                                        <input type="text" required class="form-control " name="last_name" id="last_name" readonly>
-                                    @else
-                                        <input type="text" required class="form-control" readonly value="{{ Auth::user()->last_name }}" name="last_name" id="last_name" readonly>
-                                    @endif --}}
+                                <div class="position-relative form-group col-md-12">
+                                    <label>Account Name</label>
+                                    <input type="text" required class="form-control " name="account_name" id="account_name" readonly required>
                                 </div>
                             </div>
                         </div>
