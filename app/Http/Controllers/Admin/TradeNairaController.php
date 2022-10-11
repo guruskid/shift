@@ -166,14 +166,6 @@ class TradeNairaController extends Controller
             {
                 $transactions = $transactions->where('type',$type);
 
-                // $transactions = $transactions->with(['user' => function ($query) {
-                //     $query->withCount(['nairaTrades as total_trx' => function ($query) {
-                //         $query->select(DB::raw("sum(amount) as sumt"));
-                //     }]);
-                // }]);
-                // return $transactions->get();
-                // $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
-
                 $transactions = $transactions->with(['user' => function ($query) {
                     $query->withCount(['nairaTrades as total_trx' => function ($query) {
                         $query->where('status','success')->select(DB::raw("sum(amount) as sumt"));
@@ -183,11 +175,10 @@ class TradeNairaController extends Controller
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
                     FROM naira_trades as tr
                     WHERE
-                    tr.user_id = naira_trades.user_id)
+                    tr.user_id = naira_trades.user_id and created_at > DATE_SUB(now(), INTERVAL 2 MONTH))
                     as total_trax'))
-                    ->orderBy('total_trax', 'desc')
-                    ->orderBy('created_at', 'desc');
-
+                    ->orderByRaw('case when `total_trax` >= 10000000 then total_trax else created_at end asc')
+                    ->orderByRaw('case when `total_trax` >= 10000000 then amount end desc');
             }
 
             if($start_date && $end_date)
