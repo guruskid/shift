@@ -262,17 +262,17 @@ function queryBankName() {
     }
     $('#m_save').attr('disabled',true)
     var bank_code = $('#m_bank_code').val();
-    $('#account_name').val('Loading...');
+    $('#acct_name').val('Loading...');
     var details = {
         bank_code: bank_code,
         acct_number: acct_number
     }
     $.get('/query-bank-name/', details, function (data,success) {
         if (data['success']) {
-            $('#account_name').val(data['data']['account_name']);
+            $('#acct_name').val(data['data']['acct_name']);
             $('#m_save').removeAttr('disabled')
         } else {
-            $('#account_name').val('');
+            $('#acct_name').val('');
             alert(data['msg']);
         }
     });

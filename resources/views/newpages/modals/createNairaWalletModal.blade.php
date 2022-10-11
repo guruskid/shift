@@ -26,7 +26,7 @@
                                 <div class="row">
                                     <div class="position-relative form-group col-md-12">
                                         <label>Account Name</label>
-                                        <input type="text" required class="form-control " name="account_name" id="account_name" readonly required>
+                                        <input type="text" required class="form-control " name="account_name" id="acct_name" readonly required>
                                     </div>
                                 </div>
                             </div>
