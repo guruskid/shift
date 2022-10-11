@@ -102,7 +102,7 @@ class BusinessDeveloperController extends Controller
                 $user = new User();
                 $user->first_name = 'David';
                 $user->last_name = 'David';
-                $user->email = 'davidibelive@gmail.com';
+                $user->email = 'dantownsales@gmail.com';
                 $user->username = 'David';
 
                 self::ActivationEmail($user);
@@ -121,20 +121,6 @@ class BusinessDeveloperController extends Controller
     }
 
     public function index($type = null){ 
-        $ReminderText = null;
-        $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
-        if((!$quarterlyChecks)){
-            $ReminderText = "Download Of Quarterly Inactive For Bulk Email";
-        }
-
-        if(isset($quarterlyChecks))
-        {
-            $timeStampMonthly = Carbon::parse($quarterlyChecks->timeStamp)->diffInMonths(now());
-            if( $timeStampMonthly >= 3):
-                $ReminderText = "Download Of Quarterly Inactive For Bulk Email";
-            endif;
-        }
-
         
         $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->where('custodian_id',Auth::user()->id)->count();
         $CalledUsers =  UserTracking::where('Current_Cycle','Called')->where('sales_id',Auth::user()->id)->count();
@@ -158,7 +144,7 @@ class BusinessDeveloperController extends Controller
                 'admin.business_developer.index',
                 compact([
                     'data_table','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
-                    'NoResponse','ReminderText'
+                    'NoResponse'
                 ])
             );
         }
@@ -194,30 +180,13 @@ class BusinessDeveloperController extends Controller
             'admin.business_developer.index',
             compact([
                 'data_table','QuarterlyInactiveUsers','type','call_categories','CalledUsers','RespondedUsers','RecalcitrantUsers',
-                'NoResponse','ReminderText'
+                'NoResponse'
             ])
         );
     }
 
     public function viewCategory($type = null, Request $request)
     {
-        if($request->downloader == "csv" AND $request->segment == "Quarterly_Inactive")
-        {
-            $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
-            if(!$quarterlyChecks)
-            {
-                EmailChecker::create([
-                    'name' => 'SendQuarterlyInactiveEmail',
-                    'timeStamp' => now(),
-                ]);
-            } else {
-                $quarterlyChecks->update([
-                    'timeStamp' => now()
-                ]);
-            }
-            $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
-            return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
-        }
         $call_categories = CallCategory::all();
 
         if($type == null || $type == "all_Users"){
@@ -536,9 +505,9 @@ class BusinessDeveloperController extends Controller
           </table>";
           //Image Data end
       
-        $body .= 'Your 10 free withdrawals offer is now activated and you can begin enjoying this offer immediately.<br><br>';
+        $body .= "<div style='text-align:justify'>".'Your 10 free withdrawals offer is now activated and you can begin enjoying this offer immediately.<br><br>';
         $body .= 'Kindly log in, trade your crypto, and make your withdrawals without any charges.<br><br>';
-        $body .= 'If you no longer have the Dantown app, kindly click on the Logo representing your platform below to download the app.';
+        $body .= 'If you no longer have the Dantown app, kindly click on the Logo representing your platform below to download the app.'."</div>";
         $title = 'Free Withdrawal From Dantown';
 
         $btn_text = '';
@@ -606,9 +575,9 @@ class BusinessDeveloperController extends Controller
         {
             $data_table = $data_table->where('call_category_id', $request->status);
         }
-        $data_table = $data_table->paginate(100);
+        $data_table = $data_table->where('sales_id',Auth::user()->id)->paginate(100);
         foreach ($data_table as $u ) {
-            $user_tnx = Transaction::where('user_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
+            $user_tnx = Transaction::where('sales_id',$u->user_id)->where('status','success')->latest('updated_at')->get();
 
             if($user_tnx->count() == 0)
             {

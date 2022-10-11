@@ -277,10 +277,10 @@ class SummaryController extends Controller
         $allNairaAmountSell = $all_tnx->where('status','success')->where('type', 'sell')->sum('amount_paid');
 
         //*Bitcoin Transaction
-        $this->roundUpAmount($bitcoin_total_tnx);
+        $bitcoin_total_tnx = $all_tnx->where('status', 'success')->where('card_id',102);
 
-        $bitcoin_total_tnx_buy = $bitcoin_total_tnx->unique('id')->where('type', 'buy');
-        $bitcoin_total_tnx_sell = $bitcoin_total_tnx->unique('id')->where('type', 'sell');
+        $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy');
+        $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell');
 
         $BTCbuyQuantity = $bitcoin_total_tnx_buy->sum('quantity');
         $BTCsellQuantity = $bitcoin_total_tnx_sell->sum('quantity');

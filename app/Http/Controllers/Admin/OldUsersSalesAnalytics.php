@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Card;
 use App\CryptoRate;
+use App\EmailChecker;
+use App\Exports\QuarterlyInactiveUsers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\SalesTimestamp;
@@ -14,6 +16,7 @@ use App\UserTracking;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OldUsersSalesAnalytics extends Controller
 { 
@@ -96,6 +99,16 @@ class OldUsersSalesAnalytics extends Controller
 
     public function index($type = null, Request $request)
     {
+
+        $ReminderText = self::textForQuarterlyCheck();
+        
+
+        if($request->downloader == "csv")
+        {
+            return self::downloadCSV();
+        }
+
+
         $request->session()->forget(['SortingKeys','startKey','endKey']);
         $conversionType = "unique";
         
@@ -189,8 +202,45 @@ class OldUsersSalesAnalytics extends Controller
         return view('admin.oldUsersSalesAnalytics.index',compact([
             'show_data','segment','noOfCalledUsers','averageTimeBetweenCalls','respondedTranxVolume','respondedTranxNo','noOfRespondedUsers'
             ,'totalCallDuration','averageCallDuration','type','table_data','callPercentageEffectiveness','unique','total','salesOldUsers','years','month',
-            'respondedTranxVolume','giftCardKeys','quarterlyInactiveUsersNo','targetCovered'
+            'respondedTranxVolume','giftCardKeys','quarterlyInactiveUsersNo','targetCovered','ReminderText'
         ]));
+    }
+
+    public static function downloadCSV()
+    {
+            $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
+            if(!$quarterlyChecks)
+            {
+                EmailChecker::create([
+                    'name' => 'SendQuarterlyInactiveEmail',
+                    'timeStamp' => now(),
+                ]);
+            } else {
+                $quarterlyChecks->update([
+                    'timeStamp' => now()
+                ]);
+            }
+            $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
+            return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
+    }
+
+    public static function textForQuarterlyCheck()
+    {
+        $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
+
+        if((!$quarterlyChecks)){
+            return "Download Of Quarterly Inactive For Bulk Email";
+        }
+
+        if(isset($quarterlyChecks))
+        {
+            $timeStampMonthly = Carbon::parse($quarterlyChecks->timeStamp)->diffInMonths(now());
+            if( $timeStampMonthly >= 3):
+                return "Download Of Quarterly Inactive For Bulk Email";
+            endif;
+        }
+
+        return null;
     }
 
     public function sortingAnalytics(Request $request, $type = null)
@@ -255,10 +305,20 @@ class OldUsersSalesAnalytics extends Controller
             $conversionType = "total";
         }
 
-        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
+        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser']);
+        if(isset($sales_id)){
+            $CalledUsers = $CalledUsers->where('sales_id',$sales_id);
+        }
+        $CalledUsers = $CalledUsers->get();
+        
         $noOfCalledUsers = $CalledUsers->count();
 
-        $RespondedUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded')->get();
+        $RespondedUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded');
+        if(isset($sales_id)){
+            $RespondedUsers = $RespondedUsers->where('sales_id',$sales_id);
+        }
+        $RespondedUsers = $RespondedUsers->get();
+
         $noOfRespondedUsers = $RespondedUsers->count();
         if($conversionType == "unique")
         {
@@ -356,7 +416,7 @@ class OldUsersSalesAnalytics extends Controller
         //*start date and end date session
         $start_date = (isset($start_date)) ? $start_date : null;
         $end_date = (isset($end_date)) ? $end_date : null;
-        $sales_id = (isset($request_data['sales'])) ? $request_data['sales'] : 0;
+        $sales_id = (isset($request_data['sales'])) ? $request_data['sales'] : null;
 
         $conversionType = "unique";
         if(isset($request_data['unique']) AND $request_data['unique'] =="on"){
