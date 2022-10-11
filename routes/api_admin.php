@@ -209,8 +209,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], functi
         Route::get('/p2p-transaction-history',  'DashboardOverviewController@p2pTransactionHistory');
         Route::get('/p2p-transactions-by-date',  'DashboardOverviewController@getP2pTransactionHistoryByDate');
         Route::get('/crypto-transactions-by-date',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
-        Route::get('/users-verification',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
-        Route::get('/users-verification', 'DashboardOverviewController@usersVerification');
+        // Route::get('/users-verification',  'DashboardOverviewController@getCryptoTransactionHistoryByDate');
+        Route::get('/users-verification/{type}', 'DashboardOverviewController@usersVerification');
         Route::get('/monthly-analytics', 'SpotLightController@monthlyAnalytics');
         Route::get('/monthly-earnings', 'DashboardOverviewController@monthlyEarnings');
         Route::get('/summary', 'DashboardOverviewController@summary');
@@ -331,6 +331,27 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
 
 
     });
+
+    //Overview
+
+    Route::group(['prefix' => 'overview'], function () {
+        Route::GET("/",'SeniorAccountant\DashboardController@overView');
+        Route::GET('/analytics', 'SeniorAccountant\DashboardController@analytics');
+        Route::GET('/recenttrans', 'SeniorAccountant\DashboardController@recentTransactions');
+        Route::GET('/statement/{id}', 'SeniorAccountant\DashboardController@transPerUser');
+
+    });
+
+      //Rate
+
+    Route::group(['prefix' => 'rate'], function () {
+        Route::GET("/updateusd",'SeniorAccountant\RateController@updateUsd');
+        Route::GET('/updaterate', 'SeniorAccountant\RateController@updateRate');
+        Route::GET('/delete/{id}', 'SeniorAccountant\RateController@deleteRate');
+
+    });
+
+
 
     Route::group(['prefix' => 'complianceAndFraud'], function () {
         Route::GET('/users/{type?}', 'ComplianceFraudController@index');

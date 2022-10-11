@@ -167,6 +167,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/send', 'UsdtController@send');
             Route::get('/trade', 'UsdtController@tradeApi');
             Route::post('/sell', 'UsdtController@sell');
+            Route::post('/buy', 'UsdtController@buy');
         });
 
     });
