@@ -150,7 +150,8 @@ class UsdtController extends Controller
         }
 
 
-        $sell_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $sell_rate =  LiveRateController::usdNgn();
+        $buy_rate = LiveRateController::usdNgn(true, 'buy');
         $rate = LiveRateController::usdtRate();
         $wallet = Auth::user()->usdtWallet;
 
@@ -186,6 +187,7 @@ class UsdtController extends Controller
         return response()->json([
             'success' => true,
             'date' => [
+                'buy_rate' => $buy_rate,
                 'sell_rate' => $sell_rate,
                 'wallet' => $wallet,
                 'rate' => $rate,
