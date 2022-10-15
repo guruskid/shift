@@ -184,7 +184,7 @@ class UsdtController extends Controller
             }
         }
 
-        Log::info("I got here calling the usdt");
+        \Log::info("I got here calling the usdt");
 
         return response()->json([
             'success' => true,
