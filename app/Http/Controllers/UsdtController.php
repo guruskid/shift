@@ -184,7 +184,7 @@ class UsdtController extends Controller
             }
         }
 
-        \Log::info([$buy_rate, $sell_rate, $wallet, $rate, $transactions]);
+        // \Log::info([$buy_rate, $sell_rate, $wallet, $rate, $transactions]);
 
         return response()->json([
             'success' => true,
