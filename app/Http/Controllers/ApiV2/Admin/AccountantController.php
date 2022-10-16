@@ -392,4 +392,14 @@ class AccountantController extends Controller
         $exportData = $tranx->map->only(['id','name','TransactionName','card','AmountNGN','valueUSD','status','date']);
         return collect($exportData);
     }
+
+    public function listOfAccountantOfficers(){
+        $listOfAccountant = User::select('first_name','last_name','role','status')
+        ->where('role',777)->get();
+
+        return response()->json([
+            'success' => true,
+            'accountant_officers' => $listOfAccountant
+        ],200);
+    }
 }

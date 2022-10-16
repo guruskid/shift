@@ -32,7 +32,10 @@ class ComplianceFraudResource extends JsonResource
         $creditAmount = ($type == "NGN") ? $userDebitCreditDetail['creditAmountNGN'] : $userDebitCreditDetail['creditAmountUSD'];
 
         return [
+
             'id' => $this->id,
+            'username' => $this->username,
+            'name' => $this->first_name . " ". $this->last_name,
             'signupDate' => $this->created_at->format('d/m/Y'),
             'maximumWithdrawal' => $verificationMonthlyData,
             'DebitCount' => $userDebitCreditDetail['debitDataCount'],
@@ -94,24 +97,24 @@ class ComplianceFraudResource extends JsonResource
         $payBridgeDebit = $payBridge->where('type','withdrawal');
         $pbData = $this->utilityPayBridgeSummary($payBridgeDebit);
 
-        $pbTranxCount = $pbData['count']; 
+        $pbTranxCount = $pbData['count'];
         $pbTranxAmountNGN = $pbData['amountNGN'];
         $pbTranxAmountUSD = $pbData['amountUSD'];
 
         //Utility
         $utilData = $this->utilityPayBridgeSummary($Utility);
 
-        $utilDataCount = $utilData['count']; 
-        $utilDataAmountNGN = $utilData['amountNGN']; 
-        $utilDataAmountUSD = $utilData['amountUSD']; 
+        $utilDataCount = $utilData['count'];
+        $utilDataAmountNGN = $utilData['amountNGN'];
+        $utilDataAmountUSD = $utilData['amountUSD'];
 
         //Crypto
         $CryptoDeposit = $transactions->where('type','buy');
 
         $cryptoData = $this->transactionSummary($CryptoDeposit);
-        $tranxDataCount = $cryptoData['count']; 
-        $tranxDataAmountNGN = $cryptoData['amountNGN']; 
-        $tranxDataAmountUSD = $cryptoData['amountUSD']; 
+        $tranxDataCount = $cryptoData['count'];
+        $tranxDataAmountNGN = $cryptoData['amountNGN'];
+        $tranxDataAmountUSD = $cryptoData['amountUSD'];
 
         $exportData = array(
             'pbTranxCount' => $pbTranxCount,
@@ -132,16 +135,16 @@ class ComplianceFraudResource extends JsonResource
     {
         $payBridgeDebit = $payBridge->where('type','deposit');
         $pbData = $this->utilityPayBridgeSummary($payBridgeDebit);
-        $pbTranxCount = $pbData['count']; 
+        $pbTranxCount = $pbData['count'];
         $pbTranxAmountNGN = $pbData['amountNGN'];
         $pbTranxAmountUSD = $pbData['amountUSD'];
 
 
         $CryptoDeposit = $transactions->where('type','sell');
         $cryptoData = $this->transactionSummary($CryptoDeposit);
-        $tranxDataCount = $cryptoData['count']; 
-        $tranxDataAmountNGN = $cryptoData['amountNGN']; 
-        $tranxDataAmountUSD = $cryptoData['amountUSD']; 
+        $tranxDataCount = $cryptoData['count'];
+        $tranxDataAmountNGN = $cryptoData['amountNGN'];
+        $tranxDataAmountUSD = $cryptoData['amountUSD'];
 
         $exportData = array(
             'pbTranxCount' => $pbTranxCount,
@@ -229,7 +232,7 @@ class ComplianceFraudResource extends JsonResource
         if($levelNo != 0) {
             $levelMonthlyWithdrawalLimit = self::$verificationLimit->where('level', $levelNo)->first()->monthly_widthdrawal_limit;
         }
-        
+
         return $levelMonthlyWithdrawalLimit;
     }
 }

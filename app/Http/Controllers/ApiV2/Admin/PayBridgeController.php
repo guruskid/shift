@@ -52,7 +52,7 @@ class PayBridgeController extends Controller
         return response()->json([
             'success' => true,
             'message' => "Account has been created successfully",
-        ],200);
+        ],201);
     }
 
     public function showBank($id)
@@ -150,7 +150,7 @@ class PayBridgeController extends Controller
     {
         $depositTotal = $transactions->where('type','deposit')->count();
         $withdrawalTotal = $transactions->where('type','withdrawal')->count();
-        
+
         $successDeposit = $transactions->where('type','deposit')->where('status','success')->count();
         $successWithdrawal = $transactions->where('type','withdrawal')->where('status','success')->count();
 
@@ -211,7 +211,7 @@ class PayBridgeController extends Controller
             case 'Successful':
                 $status_name = 'success';
                 break;
-            
+
             default:
                 $status_name = "All";
                 break;
@@ -308,7 +308,7 @@ class PayBridgeController extends Controller
             ['id'=>null, 'is_accountant' => 0, 'name' => 'Successful'],
         ]);
 
-        //Accountants 
+        //Accountants
         $accountants = User::whereIn('role',['777','775','889'])->get(['id','first_name','last_name']);
         $accDetails = array();
         foreach($accountants as $accountant)
