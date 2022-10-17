@@ -21,6 +21,7 @@ use App\Mail\DantownNotification;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
+use App\UserTracking;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -591,4 +592,5 @@ class UserController extends Controller
         $tranx = NairaTransaction::where(['user_id' => Auth::user()->id,'type' => 'withdrawal','status' => 'success'])->count();
         return $tranx;
     }
+
 }

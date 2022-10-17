@@ -177,7 +177,11 @@ $countries = App\Country::orderBy('phonecode', 'asc')->get();
                                             @if ($naira_charge and $tranx < 10)
                                                 <div class="text-center h5 py-1 text-white alert alert-info">
                                                     <i class="fa fa-info-circle"></i>
+                                                    @if($userTrackingFreeTransfers == null)
                                                     You have {{10 - $tranx}} free naira withdrawal(s)
+                                                    @else
+                                                    You have {{$tranx}} free naira withdrawal(s)
+                                                    @endif
                                                 </div>
                                             @endif
 

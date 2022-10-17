@@ -55,7 +55,7 @@ class ComplianceFraudController extends Controller
     }
 
     public function loadData($start, $end, $type)
-    {  
+    {
         $verificationLimit = VerificationLimit::orderBy('created_at','DESC')->get(['level','monthly_widthdrawal_limit']);
         $usd_rate = self::$usd_rate;
         $users = User::with('transactions','nairaTrades','utilityTransaction')->get();
