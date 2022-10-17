@@ -504,7 +504,6 @@ class TradeController extends Controller
             'success' => true,
             'reference' => $ref,
             'id' => $txn->id,
-
         ]);
     }
 
@@ -749,10 +748,20 @@ class TradeController extends Controller
 
     public function accounts()
     {
-        $accts = Auth::user()->accounts;
+        $accounts = array();
+        $accts = Auth::user()->accounts->where('status','active');
+
+        foreach ($accts as $a) {
+            if($a->activateBy == null):
+                $accounts[] = $a;
+            elseif (now() >= $a->activateBy):
+                $accounts[] = $a;
+            endif;
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $accts,
+            'data' => collect($accounts),
         ]);
     }
 }

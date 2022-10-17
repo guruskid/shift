@@ -101,7 +101,6 @@ class OldUsersSalesAnalytics extends Controller
     {
 
         $ReminderText = self::textForQuarterlyCheck();
-        
 
         if($request->downloader == "csv")
         {
@@ -121,7 +120,7 @@ class OldUsersSalesAnalytics extends Controller
         $end_date = now()->format('Y-m-d');
         $end_date = Carbon::parse($end_date." 23:59:59");
 
-        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
+        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->whereIn('Current_Cycle',['Called','Responded','Recalcitrant'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
         $RespondedUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)
@@ -208,20 +207,20 @@ class OldUsersSalesAnalytics extends Controller
 
     public static function downloadCSV()
     {
-            $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
-            if(!$quarterlyChecks)
-            {
-                EmailChecker::create([
-                    'name' => 'SendQuarterlyInactiveEmail',
-                    'timeStamp' => now(),
-                ]);
-            } else {
-                $quarterlyChecks->update([
-                    'timeStamp' => now()
-                ]);
-            }
-            $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->get();
-            return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
+        $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
+        if(!$quarterlyChecks)
+        {
+            EmailChecker::create([
+                'name' => 'SendQuarterlyInactiveEmail',
+                'timeStamp' => now(),
+            ]);
+        } else {
+            $quarterlyChecks->update([
+                'timeStamp' => now()
+            ]);
+        }
+        $quarterlyInactive = UserTracking::whereIn('Current_Cycle',['QuarterlyInactive'])->with('user')->get();
+        return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
     }
 
     public static function textForQuarterlyCheck()
@@ -241,6 +240,20 @@ class OldUsersSalesAnalytics extends Controller
         }
 
         return null;
+    }
+
+    public function refreshDownloadDate(){
+        $emailData = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
+        $timestamp = Carbon::parse($emailData->timeStamp);
+        $monthDiff = $timestamp->diffInMonths(now());
+        if($monthDiff < 3)
+        {
+            $emailData->update([
+                'timeStamp' => $timestamp->subMonth(4),
+            ]);
+        }
+
+        return back()->with(['success'=>'Date Refreshed']);
     }
 
     public function sortingAnalytics(Request $request, $type = null)
@@ -305,7 +318,7 @@ class OldUsersSalesAnalytics extends Controller
             $conversionType = "total";
         }
 
-        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser']);
+        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereIn('Current_Cycle',['Called','Responded','Recalcitrant']);
         if(isset($sales_id)){
             $CalledUsers = $CalledUsers->where('sales_id',$sales_id);
         }
@@ -446,7 +459,7 @@ class OldUsersSalesAnalytics extends Controller
         
         $segment .= " to ".$end_date->format('d M Y');
 
-        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
+        $CalledUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->whereIn('Current_Cycle',['Called','Responded','Recalcitrant'])->get();
         $noOfCalledUsers = $CalledUsers->count();
 
         $RespondedUsers = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded')->get();
@@ -581,7 +594,7 @@ class OldUsersSalesAnalytics extends Controller
                 }
                 //* for each timestamp check the called users 
                 $calledUsers = UserTracking::where('called_date','>=',$st->activeTime)
-                ->where('called_date','<=',$st->inactiveTime)->whereNotIn('Current_Cycle',['QuarterlyInactive','NoResponse','DeadUser'])->get();
+                ->where('called_date','<=',$st->inactiveTime)->whereIn('Current_Cycle',['Called','Responded','Recalcitrant'])->get();
                 $previousDatetime = null;
                 //* allocate the previous call duration timestamp to be able to calculate time difference
                 foreach ($calledUsers as $cu) {

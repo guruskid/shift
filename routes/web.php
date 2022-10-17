@@ -704,4 +704,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','salesAnalyt
     Route::GET('/oldSalesAnalytics/{type?}', 'Admin\OldUsersSalesAnalytics@index')->name('sales.oldUsers.salesAnalytics');
     Route::ANY('/showAnalysisOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@showAllData')->name('sales.oldUsers.show.salesAnalytics');
     Route::ANY('/sortAnalyticsOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');
+    Route::GET('/refreshTableData', 'Admin\OldUsersSalesAnalytics@refreshDownloadDate');
 });
