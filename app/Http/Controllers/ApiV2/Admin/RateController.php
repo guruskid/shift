@@ -95,4 +95,17 @@ class RateController extends Controller
             'message' => 'Rate has been successfully updated'
         ]);
     }
+
+    public function overview(){
+
+
+        $data['usdt_rate'] = LiveRateController::usdtRate();
+        $data['btc_rate'] = LiveRateController::btcRate();
+        $data['usdt_btc_commision'] = LiveRateController::usdNgn();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
+    }
 }

@@ -405,10 +405,9 @@ Route::group(['middleware' =>['auth:api', 'accountant', 'cors']], function () {
         });
 
         Route::prefix('rate')->group(function () {
-            Route::get('/overview', 'RateController@index');
+            Route::get('/overview', 'RateController@overview');
             Route::get('/delete/{id}', 'RateController@deleteRate');
             Route::get('/update', 'RateController@updateRate');
-
         });
 
 
