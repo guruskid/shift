@@ -545,6 +545,12 @@ Route::group(['middleware' => ['auth:api',  'cors']], function(){
             Route::put('/{id}', 'ContentController@updateBlogHeading');
             Route::delete('/{id}', 'ContentController@deleteBlogHeading');
         });
+        // Blog posts
+        Route::prefix('blog')->group(function () {
+            Route::post('/', 'ContentController@storeBlog');
+            // Route::put('/{id}', 'ContentController@updateBlogHeading');
+            // Route::delete('/{id}', 'ContentController@deleteBlogHeading');
+        });
 
 
     });

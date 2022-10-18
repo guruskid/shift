@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\ApiV2\Admin;
 
+use App\Blog;
 use App\BlogCategory;
 use App\BlogHeading;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
+use Intervention\Image\Facades\Image;
+
+use Illuminate\Support\Facades\Storage;
 class ContentController extends Controller
 {
     //
@@ -172,5 +178,69 @@ class ContentController extends Controller
             'success' => true,
             'message' => "Blog Heading deleted"
         ], 200);
+    }
+
+
+    // Blog section'draft',
+
+    public function storeBlog(Request $request){
+        $validator =  Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            "description" => "required|min:100|max:250",
+            'image' => 'image|mimes:jpeg,JPEG,png,jpg,svg|max:5048|required',
+            "body" => "required",
+            "status" => "in:draft,published",
+            "blog_heading_id" => "sometimes|exists:blog_headings,id",
+            "blog_category_id" => "sometimes|exists:blog_categories,id"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->messages()
+            ], 422);
+        }
+        $image =  $request->file('image');
+        $status = $request->status;
+        $publishedAt = null;
+        if ($status == 'published') {
+            $publishedAt = now();
+        }
+        Blog::create([
+            "title" => $request->title,
+            "description" => $request->description,
+            "body" => $request->body,
+            "image" => $this->blogPostImage($image),
+            "status" => $request->status ?? "draft",
+            "published_at" => $publishedAt,
+            "blog_heading_id" => $request->blog_heading_id ?? null,
+            "blog_heading_id" => $request->blog_category_id ?? null,
+            "author_id" => Auth::user()->id
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Blog created"
+        ], 200);
+
+
+    }
+
+    private function blogPostImage($image){
+
+        $image_name = time().".". $image->getClientOriginalExtension();
+        $destinationPath = public_path('/thumbnail');
+
+        $resize_image = Image::make($image->getRealPath());
+        $resize_image->resize(300, 300, function($constraint){
+            $constraint->aspectRatio();
+        })->save($destinationPath. "/". $image_name);
+
+        $destinationPath= public_path('/images');
+
+        $image->move($destinationPath, $image_name);
+      return  $image_name;
+
+
     }
 }

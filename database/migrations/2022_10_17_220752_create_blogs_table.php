@@ -22,7 +22,11 @@ class CreateBlogsTable extends Migration
             $table->bigInteger('blog_category_id')
             ->foreign('blog_category_id')
             ->references('id')
-            ->on('blog_categories');
+            ->on('blog_categories')->nullable();
+            $table->bigInteger('blog_heading_id')
+            ->foreign('blog_heading_id')
+            ->references('id')
+            ->on('blog_headings')->nullable();
             $table->string('slug', 255)->unique()->nullable();
             $table->string('image')->nullable();
             $table->string('title', 255)->nullable();
