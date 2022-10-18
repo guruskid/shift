@@ -177,9 +177,11 @@ class TradeNairaController extends Controller
                     WHERE
                     tr.user_id = naira_trades.user_id and created_at > DATE_SUB(now(), INTERVAL 2 MONTH))
                     as total_trax'))
-                    ->orderBy('amount','desc')
-                    ->orderBy('created_at','asc')
-                    ->orderByRaw('case when `total_trax` >= 10000 then total_trax end desc');
+                    // ->orderBy('created_at','asc')
+                    ->orderByRaw('case when `total_trax` >= 10000000 then amount end desc')
+                    ->orderByRaw('case when `total_trax` < 10000000 then created_at end asc')
+                    ->orderByRaw('case when `total_trax` >= 10000000 then total_trax end desc')
+                    ;
 
             }
 

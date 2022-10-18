@@ -321,8 +321,8 @@
                                     <tr>
                                         <td>{{ $key+1 }}</td>
                                         <td>
-                                            {{-- @if ($t->user->total_trx > 10000000) --}}
-                                            @if ($t->user->total_trx > 10000)
+                                            @if ($t->user->total_trx > 10000000)
+                                            {{-- @if ($t->user->total_trx > 10000) --}}
                                                 <span><i class="fa fa-star" style="color: green;"></i></span> {{$t->user->total_trx}}
                                             @endif
                                             {{ $t->user->first_name .' '. $t->user->last_name }}</td>
@@ -445,7 +445,7 @@
                                     </select>
                                     <span id="HideDeclinedButton" onclick="pay_bridge_decline('reason_for_decline_div{{ $t->id }}','HideDeclinedButton')"
                                         class="mt-2 btn btn-block c-rounded bg-custom-gradient txn-btn">Proceed</span>
-        
+
                                 </div>
 
                                 <div class="form-group d-none" id="reason_for_decline_div{{ $t->id }}">
@@ -461,12 +461,12 @@
                         {{-- <span id="HideDeclinedButton" onclick="pay_bridge_decline('reason_for_decline_verification_div{{ $t->id }}','HideDeclinedButton')"
                             class="btn btn-block c-rounded bg-custom-gradient txn-btn">Decline</span> --}}
 
-                        
-{{-- 
+
+{{--
                         <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
                             Decline
                         </button> --}}
-                        
+
 
                     </div>
                 </div>
