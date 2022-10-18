@@ -530,3 +530,18 @@ Route::group(['middleware' => ['auth:api', 'customerHappiness', 'cors']], functi
     });
 });
 
+
+Route::group(['middleware' => ['auth:api',  'cors']], function(){
+    Route::prefix('content')->group(function () {
+        Route::prefix('category')->group(function () {
+            Route::get('/', 'ContentController@addBlogCategory');
+            Route::put('/{id}', 'ContentController@updateBlogCategory');
+            Route::delete('/{id}', 'ContentController@deleteBlogCategory');
+        })
+;
+        //
+
+
+    });
+});
+

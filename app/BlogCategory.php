@@ -10,5 +10,5 @@ class BlogCategory extends Model
     //
     use SoftDeletes;
     protected $fillable = ['title', "is_published"];
-    protected $hidden = ["created_at", "updated_at"];
+    protected $hidden = ["created_at", "updated_at", "deleted_at"];
 }

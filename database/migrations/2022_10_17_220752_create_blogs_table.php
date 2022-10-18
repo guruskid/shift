@@ -24,6 +24,7 @@ class CreateBlogsTable extends Migration
             ->references('id')
             ->on('blog_categories');
             $table->string('slug', 255)->unique()->nullable();
+            $table->string('image')->nullable();
             $table->string('title', 255)->nullable();
             $table->text('description')->nullable();
             $table->text('body')->nullable();
