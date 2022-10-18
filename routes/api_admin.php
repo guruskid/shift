@@ -548,8 +548,10 @@ Route::group(['middleware' => ['auth:api',  'cors']], function(){
         // Blog posts
         Route::prefix('blog')->group(function () {
             Route::post('/', 'ContentController@storeBlog');
-            // Route::put('/{id}', 'ContentController@updateBlogHeading');
-            // Route::delete('/{id}', 'ContentController@deleteBlogHeading');
+            Route::get('/', 'ContentController@fetchBlogPosts');
+            Route::delete('/{id}', 'ContentController@destroyBlog');
+
+
         });
 
 

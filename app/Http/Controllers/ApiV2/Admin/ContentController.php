@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
 use Illuminate\Support\Facades\Storage;
+
 class ContentController extends Controller
 {
     //
@@ -132,7 +133,7 @@ class ContentController extends Controller
     public function updateBlogHeading(Request $request, $id)
     {
         $blogHeading = BlogHeading::find($id);
-        if (is_null( $blogHeading)) {
+        if (is_null($blogHeading)) {
             return response()->json([
                 'success' => false,
                 'message' => "Blog Heading does not exist"
@@ -164,7 +165,7 @@ class ContentController extends Controller
 
     public function deleteBlogHeading($id)
     {
-        $blogHeading= BlogHeading::find($id);
+        $blogHeading = BlogHeading::find($id);
         if (is_null($blogHeading)) {
             return response()->json([
                 'success' => false,
@@ -183,7 +184,8 @@ class ContentController extends Controller
 
     // Blog section'draft',
 
-    public function storeBlog(Request $request){
+    public function storeBlog(Request $request)
+    {
         $validator =  Validator::make($request->all(), [
             'title' => 'required|max:255',
             "description" => "required|min:100|max:250",
@@ -222,25 +224,63 @@ class ContentController extends Controller
             'success' => true,
             'message' => "Blog created"
         ], 200);
-
-
     }
 
-    private function blogPostImage($image){
+    private function blogPostImage($image)
+    {
 
-        $image_name = time().".". $image->getClientOriginalExtension();
+        $image_name = time() . "." . $image->getClientOriginalExtension();
         $destinationPath = public_path('/thumbnail');
 
         $resize_image = Image::make($image->getRealPath());
-        $resize_image->resize(300, 300, function($constraint){
+        $resize_image->resize(300, 300, function ($constraint) {
             $constraint->aspectRatio();
-        })->save($destinationPath. "/". $image_name);
+        })->save($destinationPath . "/" . $image_name);
 
-        $destinationPath= public_path('/images');
+        $destinationPath = public_path('/images');
 
         $image->move($destinationPath, $image_name);
-      return  $image_name;
-
-
+        return  $image_name;
     }
+
+
+    public function fetchBlogPosts()
+    {
+        $data['posts'] = Blog::where("status", "published")->with(
+            [
+                'categories' => function ($query) {
+                    $query->select('id', 'title');
+                },
+                'headings' => function ($query) {
+                    $query->select("id", "title");
+                },
+
+            ],
+        )->select('id', "title", "status", "description", "blog_heading_id", "blog_category_id")->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
+    }
+
+    public function destroyBlog($id)
+{
+
+    try {
+        $ids = explode(",", $id);
+        Blog::whereIn("id", $ids)->delete();
+        return response()->json([
+            'success' => true,
+            'message' => "blog deleted"
+        ], 200);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'message' => $th->getMessage()
+        ], 400);
+    }
+}
+
+
 }

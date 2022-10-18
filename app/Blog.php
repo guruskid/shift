@@ -11,7 +11,7 @@ class Blog extends Model
 {
     use SoftDeletes;
     protected $fillable = ["author_id", "slug", "title", "description", "body", 'published_at', "status", "blog_category_id", "blog_heading_id", 'image'];
-    protected $hidden = ["created_at", "updated_at", "deleted_at"];
+    protected $hidden = ["created_at", "updated_at", "deleted_at", "author_id", "blog_heading_id", "blog_category_id"];
 
 
     protected static function boot() {
@@ -28,6 +28,14 @@ class Blog extends Model
         $blog->slug = $count ? "{$slug}-{$count}" : $slug;
 
         });
+    }
+
+    public function categories(){
+        return $this->belongsTo(BlogCategory::class, 'blog_category_id', 'id')->where("is_published", true);
+    }
+
+    public function headings(){
+        return $this->belongsTo(BlogHeading::class, 'blog_heading_id', "id")->where('is_published', true);
     }
 
 }
