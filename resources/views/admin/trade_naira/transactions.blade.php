@@ -321,8 +321,9 @@
                                     <tr>
                                         <td>{{ $key+1 }}</td>
                                         <td>
-                                            @if ($t->user->total_trx > 10000000)
-                                                <span><i class="fa fa-star" style="color: green;"></i></span>
+                                            {{-- @if ($t->user->total_trx > 10000000) --}}
+                                            @if ($t->user->total_trx > 10000)
+                                                <span><i class="fa fa-star" style="color: green;"></i></span> {{$t->user->total_trx}}
                                             @endif
                                             {{ $t->user->first_name .' '. $t->user->last_name }}</td>
                                         <td>{{ $t->user->phone }}</td>
