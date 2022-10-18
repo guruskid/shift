@@ -152,7 +152,7 @@ class TradeNairaController extends Controller
         $account = Auth::user()->accounts->first();
         if($search != null)
         {
-            $transactions = NairaTrade::whereHas('user', function ($query) use ($search) {
+            $transactions = NairaTrade::with('user')->whereHas('user', function ($query) use ($search) {
                 $query->where('first_name','LIKE','%'.$search.'%')
                 ->orWhere('phone','LIKE','%'.$search.'%');
             })
@@ -161,32 +161,24 @@ class TradeNairaController extends Controller
         }
         if($search == null)
         {
-            $transactions = NairaTrade::whereNotNull('id');
+            $transactions = NairaTrade::with('user')->whereNotNull('id');
             if(!in_array($type,['sortbydate','search']))
             {
                 $transactions = $transactions->where('type',$type);
 
-                // $transactions = $transactions->with(['user' => function ($query) {
-                //     $query->withCount(['nairaTrades as total_trx' => function ($query) {
-                //         $query->select(DB::raw("sum(amount) as sumt"));
-                //     }]);
-                // }]);
-                // return $transactions->get();
-    
-                // $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount) 
                 $transactions = $transactions->with(['user' => function ($query) {
                     $query->withCount(['nairaTrades as total_trx' => function ($query) {
-                        $query->select(DB::raw("sum(amount) as sumt"));
+                        $query->where('status','success')->select(DB::raw("sum(amount) as sumt"));
                     }]);
                 }]);
 
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
                     FROM naira_trades as tr
                     WHERE
-                    tr.user_id = naira_trades.user_id)
+                    tr.user_id = naira_trades.user_id and created_at > DATE_SUB(now(), INTERVAL 2 MONTH))
                     as total_trax'))
-                    ->orderBy('created_at', 'desc')
-                    ->orderBy('total_trax', 'desc');
+                    ->orderByRaw('case when `total_trax` >= 10000000 then total_trax else created_at end asc')
+                    ->orderByRaw('case when `total_trax` >= 10000000 then amount end desc');
             }
 
             if($start_date && $end_date)
@@ -200,7 +192,7 @@ class TradeNairaController extends Controller
                 ->where('status',$status);
             }
 
-            $transactions = $transactions->get()->sortByDesc('created_at');
+            // $transactions = $transactions->get()->sortByDesc('created_at');
             if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
                 return Excel::download(new PayBridgeTransactions($transactions), 'PayBridgeTransactions.xlsx');
             }
@@ -220,7 +212,7 @@ class TradeNairaController extends Controller
                 $t->current_bal = $current_prev_bal->current_balance;
             }
         }
-        
+
             //?" all  deposit transactions
             $deposit = NairaTrade::where('type','deposit');
             if($start_date && $end_date)
@@ -514,6 +506,66 @@ class TradeNairaController extends Controller
         return back()->with(['success' => 'Limits uppdated']);
     }
 
+    public static function declinedWithdrawalMailData($reason, NairaTrade $nairaTrade)
+    {
+        $reasonData = null;
+        $suggestion = null;
+        $timeData = null;
+
+        $account = $nairaTrade->account;
+
+        switch ($reason) {
+            case 'Bank network issues':
+                $reasonData = "of bank network issues";
+                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated for three hours';
+                $timeData = 'definite';
+                break;
+            case 'Exceeded bank limit':
+                $reasonData = "your bank account has exceeded it's limit";
+                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated for three hours';
+                $timeData = 'definite';
+                break;
+            case 'Incorrect bank details':
+                $reasonData = "of incorrect bank details";
+                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated';
+                $timeData = 'indefinite';
+                break;
+            case 'A mismatch in name':
+                $reasonData = "of a mismatch in name";
+                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated';
+                $timeData = 'indefinite';
+                break;
+
+            default:
+                $reasonData = "of bank network issues";
+                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated for three hours';
+                $timeData = 'definite';
+                break;
+        }
+        return[
+            'reason' => $reasonData,
+            'suggestion' => $suggestion,
+            'timeFrame' => $timeData,
+        ];
+    }
+
+    public static function sendDeclinedMail($reasonData, $suggestion, NairaTrade $nairaTrade)
+    {
+        $user = $nairaTrade->user;
+
+        $body = "We cannot proceed with your withdrawal <br>";
+        $body .= "This is because <b> $reasonData </b><br><br>";
+        $body .= "<b> $suggestion </b><br><br>";
+        $body .= "Kindly contact support for more information";
+        $title = 'WITHDRAWAL UPDATE!';
+
+        $btn_text = '';
+        $btn_url = '';
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+    }
     public function declineTrade(Request $request, NairaTrade $transaction)
     {
         if (!Hash::check($request->pin, Auth::user()->pin)) {
@@ -523,7 +575,6 @@ class TradeNairaController extends Controller
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
         }
-
 
         $title = "DEPOSIT UPDATE!";
         $msg ="Your deposit transaction of ₦".number_format($transaction->amount)." was declined. Kindly contact support for more information.";
@@ -544,11 +595,17 @@ class TradeNairaController extends Controller
             $transfer_charges_wallet->save();
 
             $title = "WITHDRAWAL UPDATE!";
-            $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was declined. Kindly contact support for more information.";
+            $reasonData = self::declinedWithdrawalMailData($request->reason, $transaction);
+
+            $reason = $reasonData['reason'];
+            $suggestion = $reasonData['suggestion'];
+            $timeFrame  =  $reasonData['timeFrame'];
+            $account = $transaction->account;
+            $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was declined. This is because $reason. Kindly contact support for more information.";
             
         }
 
-        
+
         // Firebase Push Notification
         $fcm_id = $nt->user->fcm_id;
         if (isset($fcm_id)) {
@@ -566,6 +623,10 @@ class TradeNairaController extends Controller
 
         $transaction->status = 'cancelled';
         $transaction->save();
+        if ($transaction->type == 'withdrawal') {
+            self::activateAccountDuration($timeFrame, $account);
+            self::sendDeclinedMail($reason, $suggestion, $transaction);
+        }
 
         return back()->with(['success' => 'Transaction cancelled']);
     }
@@ -893,5 +954,18 @@ class TradeNairaController extends Controller
         $nt->save();
 
         return back()->with(['success' => 'Account debited successfully']);
+    }
+
+    public static function activateAccountDuration($duration, Account $account)
+    {
+        if($duration == 'indefinite'){
+            $account->update([
+                'status'=>'in-active',
+            ]);
+        } else {
+            $account->update([
+                'activateBy' => now()->addHours(3),
+            ]);
+        }
     }
 }

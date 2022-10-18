@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['prefix' =>'trade_naira_api','middleware' => 'auth:api'], function () {
+Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/agents', 'TradeController@getAgent');
     Route::get('/transactions', 'TradeController@transactions');
     Route::post('/buy_naira', 'TradeController@buyNaira');

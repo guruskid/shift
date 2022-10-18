@@ -64,7 +64,7 @@ $(document).ready(function () {
             alert('Invalid bank details')
             return;
         }
-        console.log(account_number)
+        // console.log(account_number)
         if (account_number.length < 10) {
             alert('Invalid account number');
             return;
@@ -262,20 +262,17 @@ function queryBankName() {
     }
     $('#m_save').attr('disabled',true)
     var bank_code = $('#m_bank_code').val();
-    $('#m_first_name').val('Loading...');
-    $('#m_last_name').val('Loading...');
+    $('#acct_name').val('Loading...');
     var details = {
         bank_code: bank_code,
         acct_number: acct_number
     }
     $.get('/query-bank-name/', details, function (data,success) {
         if (data['success']) {
-            $('#m_first_name').val(data['data']['first_name']);
-            $('#m_last_name').val(data['data']['last_name']);
+            $('#acct_name').val(data['data']['account_name']);
             $('#m_save').removeAttr('disabled')
         } else {
-            $('#m_first_name').val('');
-            $('#m_last_name').val('');
+            $('#acct_name').val('');
             alert(data['msg']);
         }
     });

@@ -278,8 +278,7 @@ class TradeController extends Controller
             $minutes = 60;
         }
 
-        $msg = "You have successfully withdrawn the sum of ₦" . number_format($request->amount) . " from your naira wallet.
-        N/B: Payment would be made within " . $minutes . " minutes due to the withdrawal queue at the moment.";
+        $msg = "You have successfully withdrawn the sum of ₦" . number_format($request->amount) . " from your naira wallet. N/B: Payment would be made within " . $minutes . " minutes due to the withdrawal queue at the moment.";
 
         // Firebase Push Notification
         $fcm_id = Auth::user()->fcm_id;
@@ -505,7 +504,6 @@ class TradeController extends Controller
             'success' => true,
             'reference' => $ref,
             'id' => $txn->id,
-
         ]);
     }
 
@@ -750,10 +748,20 @@ class TradeController extends Controller
 
     public function accounts()
     {
-        $accts = Auth::user()->accounts;
+        $accounts = array();
+        $accts = Auth::user()->accounts->where('status','active');
+
+        foreach ($accts as $a) {
+            if($a->activateBy == null):
+                $accounts[] = $a;
+            elseif (now() >= $a->activateBy):
+                $accounts[] = $a;
+            endif;
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $accts,
+            'data' => collect($accounts),
         ]);
     }
 }

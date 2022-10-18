@@ -669,6 +669,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
         return redirect()->back()->with("success", "Checked Quarterly Inactive Users");
     });
 
+    //?checking for incipientUser
+    Route::GET('/incipientUserGenerator','Admin\BusinessDeveloperController@checkForIncipientUser');
+
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], function () {
@@ -693,7 +696,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
 });
 
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','salesAnalyticsAccess']], function () {
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
     Route::ANY('/sortAnalytics/{type?}', 'Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
     Route::ANY('/showAnalysis/{type?}', 'Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
@@ -701,4 +704,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']],
     Route::GET('/oldSalesAnalytics/{type?}', 'Admin\OldUsersSalesAnalytics@index')->name('sales.oldUsers.salesAnalytics');
     Route::ANY('/showAnalysisOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@showAllData')->name('sales.oldUsers.show.salesAnalytics');
     Route::ANY('/sortAnalyticsOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');
+    Route::GET('/refreshTableData', 'Admin\OldUsersSalesAnalytics@refreshDownloadDate');
 });

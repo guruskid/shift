@@ -61,17 +61,6 @@
                                     [{{ number_format($count) }}]
                                 @endif 
                             </div>
-                            
-                            @if($type == "Quarterly_Inactive")
-                                <form class="form-inline p-2"
-                                    method="GET">
-                                    <div class="form-group mr-2">
-                                        <input type="hidden" name="downloader" value="csv">
-                                        <input type="hidden" name="segment" value={{ $type }}>
-                                        <button class="btn btn-primary">Download Table</button>
-                                    </div>
-                                </form>
-                            @endif
 
                             <form class="form-inline p-2"
                                 method="GET">

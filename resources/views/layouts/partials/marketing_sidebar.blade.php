@@ -17,6 +17,15 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'sales.oldUsers.salesAnalytics' ? 'active' : '' }}  ">
+        <a href="{{route('sales.oldUsers.salesAnalytics')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="analytics-outline"></ion-icon>
+                <span>Sales Old Users</span>
+            </div>
+        </a>
+    </li>
+
 
     <li class="menu {{ Route::currentRouteName() == 'logout' ? 'active' : '' }}">
         <a href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" aria-expanded="false" class="dropdown-toggle">

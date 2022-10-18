@@ -441,6 +441,11 @@ $not = $nots->last();
             showit(selectedOption)
         }
 
+        const pay_bridge_decline = (openOption, closeOption) => {
+            showit(openOption);
+            hideit(closeOption);
+        }
+
     </script>
 
     <script>

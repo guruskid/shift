@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AnnouncementController extends Controller
 {
-   
+
     public function create(Request $request) {
         $data = $request->all();
         $validate = Validator::make($data, [
@@ -56,7 +56,7 @@ class AnnouncementController extends Controller
             'data' => $announcement
         ],200);
     }
-    
+
     public function update(Request $request, $id) {
         $data = $request->all();
         $validate = Validator::make($data, [
@@ -86,7 +86,7 @@ class AnnouncementController extends Controller
             $extension = $file->getClientOriginalExtension();
             $filenametostore = uniqid() . '.' . $extension;
             Storage::put('public/announcement/' . $filenametostore, fopen($file, 'r+'));
-            $data['image'] = $filenametostore;   
+            $data['image'] = $filenametostore;
         }
 
         $announcement->update($data);

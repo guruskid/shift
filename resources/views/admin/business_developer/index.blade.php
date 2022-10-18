@@ -9,9 +9,6 @@
                 <h5>Dashboard Home</h5>
                 <P>Hi {{ Auth::user()->first_name ?? Auth::user()->username }}, good to see you again</P>
             </div>
-            @if(isset($ReminderText))
-            <h6 class="pl-5">Important Information <span class="badge bg-secondary text-white">{{$ReminderText}}</span></h6>
-            @endif
         </div>
             <div class="row layout-top-spacing">
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"

@@ -321,7 +321,7 @@
                                     <tr>
                                         <td>{{ $key+1 }}</td>
                                         <td>
-                                            @if ($t->user->total_trx > 5000000)
+                                            @if ($t->user->total_trx > 10000000)
                                                 <span><i class="fa fa-star" style="color: green;"></i></span>
                                             @endif
                                             {{ $t->user->first_name .' '. $t->user->last_name }}</td>
@@ -432,15 +432,41 @@
                     <div class="modal-body p-4">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group">
+
+                                <div class="form-group mt-1">
+                                    <input type="hidden" name="user_id" value="{{$t->user->id}}">
+                                    <label for="reason" class="text-danger">Reason for Declining </label>
+                                    <select name="reason" id="" class="form-control">
+                                        <option value="Bank network issues">Bank network issues</option>
+                                        <option value="Exceeded bank limit">Exceeded bank limit</option>
+                                        <option value="Incorrect bank details">Incorrect bank details</option>
+                                        <option value="A mismatch in name">A mismatch in name</option>
+                                    </select>
+                                    <span id="HideDeclinedButton" onclick="pay_bridge_decline('reason_for_decline_div{{ $t->id }}','HideDeclinedButton')"
+                                        class="mt-2 btn btn-block c-rounded bg-custom-gradient txn-btn">Proceed</span>
+        
+                                </div>
+
+                                <div class="form-group d-none" id="reason_for_decline_div{{ $t->id }}">
                                     <label for="">Wallet pin </label>
                                     <input type="password" name="pin" required class="form-control">
+
+                                    <div class="form-group mt-2">
+                                        <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">Decline</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        {{-- <span id="HideDeclinedButton" onclick="pay_bridge_decline('reason_for_decline_verification_div{{ $t->id }}','HideDeclinedButton')"
+                            class="btn btn-block c-rounded bg-custom-gradient txn-btn">Decline</span> --}}
+
+                        
+{{-- 
                         <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
                             Decline
-                        </button>
+                        </button> --}}
+                        
+
                     </div>
                 </div>
             </form>

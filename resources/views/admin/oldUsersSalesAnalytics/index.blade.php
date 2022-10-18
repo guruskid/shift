@@ -48,6 +48,18 @@
                             </i>
                         </div>
                         <div>{{ $segment }}</div>
+                        @if (in_array(Auth::user()->role,[559]))
+                            @if($ReminderText != null)
+                                <h6 class="pl-5 text-danger">{{ $ReminderText }}</h6>
+                            @endif
+                            <form class="form-inline p-2"
+                                method="GET">
+                                <div class="form-group mr-2">
+                                    <input type="hidden" name="downloader" value="csv">
+                                    <button class="btn btn-primary btn-sm">Download Quarterly Inactive</button>
+                                </div>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>
