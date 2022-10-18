@@ -45,22 +45,22 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                    <td class="text-center">{{ isset($all_tnx_count) ? number_format($all_tnx_count) : 0 }}
+                                                    <td class="text-center">{{ number_format($all_tnx_count) }}
                                                         <table class="table">
                                                             <thead>
                                                                 <th class="text-center">Buy</th>
                                                                 <th class="text-center">Sell</th>
                                                             </thead>
                                                             <tbody>
-                                                                <td class="text-center">{{ isset($allCountBuy) ? number_format($allCountBuy) : 0 }} </td>
-                                                                <td class="text-center">{{ isset($allCountSell) ? number_format($allCountSell) : 0 }} </td>
+                                                                <td class="text-center">{{ number_format($allCountBuy) }} </td>
+                                                                <td class="text-center">{{ number_format($allCountSell) }} </td>
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
-                                                                    <div>Total Naira <h6 class="text-center">₦{{ $allNairaAmountBuy }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-center">₦{{ number_format($allNairaAmountBuy) }}</h6></div>
                                                                 </td>
                                                                 <td>
-                                                                    <div>Total Naira <h6 class="text-center">₦{{ $allNairaAmountSell }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-center">₦{{ number_format($allNairaAmountSell) }}</h6></div>
                                                                 </td>
                                                             </tfoot>
                                                         </table>
@@ -72,19 +72,19 @@
                                                                 <th class="text-center">Sell</th>
                                                             </thead>
                                                             <tbody>
-                                                                <td class="text-center">{{ isset($BTCbuyCount) ? number_format($BTCbuyCount) : 0 }}
+                                                                <td class="text-center">{{ number_format($BTCbuyCount) }}
                                                                     [{{sprintf('%.8f', floatval($BTCbuyQuantity))}} BTC]</td>
-                                                                <td class="text-center">{{ isset($BTCsellCount) ? number_format($BTCsellCount) : 0 }}
+                                                                <td class="text-center">{{ number_format($BTCsellCount) }}
                                                                     [{{sprintf('%.8f', floatval($BTCsellQuantity))  }} BTC]</td>
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ $BTCbuyUsdAmount }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ $BTCbuyNairaAmount }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ number_format($BTCbuyUsdAmount) }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($BTCbuyNairaAmount) }}</h6></div>
                                                                 </td>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ $BTCsellUsdAmount }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ $BTCsellNairaAmount }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ number_format($BTCsellUsdAmount) }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($BTCsellNairaAmount) }}</h6></div>
                                                                 </td>
                                                             </tfoot>
                                                         </table>
@@ -96,19 +96,19 @@
                                                                 <th class="text-center">Sell</th>
                                                             </thead>
                                                             <tbody>
-                                                                <td class="text-center">{{ isset($USDTbuyCount) ? number_format($USDTbuyCount) : 0 }}
+                                                                <td class="text-center">{{ number_format($USDTbuyCount) }}
                                                                     [{{ $USDTbuyQuantity }} USDT]</td>
-                                                                <td class="text-center">{{ isset($USDTsellCount) ? number_format($USDTsellCount) : 0 }}
+                                                                <td class="text-center">{{ number_format($USDTsellCount)}}
                                                                     [{{ $USDTsellQuantity }} USDT]</td>
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ $USDTbuyUsdAmount }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ $USDTbuyNairaAmount }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ number_format($USDTbuyUsdAmount) }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($USDTbuyNairaAmount) }}</h6></div>
                                                                 </td>
                                                                 <td>
-                                                                    <div>Total <h6 class="text-right">${{ $USDTsellUsdAmount }}</h6></div>
-                                                                    <div>Total Naira <h6 class="text-right">₦{{ $USDTsellNairaAmount }}</h6></div>
+                                                                    <div>Total <h6 class="text-right">${{ number_format($USDTsellUsdAmount) }}</h6></div>
+                                                                    <div>Total Naira <h6 class="text-right">₦{{ number_format($USDTsellNairaAmount) }}</h6></div>
                                                                 </td>
                                                             </tfoot>
                                                         </table>
@@ -120,8 +120,8 @@
                                                                 <th class="text-center">Sell</th>
                                                             </thead>
                                                             <tbody>
-                                                                <td class="text-center">{{ isset($giftcards_totaltnx_buy) ? number_format($giftcards_totaltnx_buy) : 0 }}</td>
-                                                                <td class="text-center">{{ isset($giftcards_totaltnx_sell) ? number_format($giftcards_totaltnx_sell) : 0 }}</td>
+                                                                <td class="text-center">{{ number_format($giftcards_totaltnx_buy) }}</td>
+                                                                <td class="text-center">{{ number_format($giftcards_totaltnx_sell) }}</td>
                                                             </tbody>
                                                             <tfoot>
                                                                 <td>
