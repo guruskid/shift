@@ -172,34 +172,15 @@ class TradeNairaController extends Controller
                     }]);
                 }]);
 
-                // $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
-                //     FROM naira_trades as tr
-                //     WHERE
-                //     tr.user_id = naira_trades.user_id and created_at > DATE_SUB(now(), INTERVAL 2 MONTH))
-                //     as total_trax'))
-                //     ->orderByRaw('case when `total_trax` >= 10000000 then total_trax else created_at end asc')
-                //     ->orderByRaw('case when `total_trax` >= 10000000 then amount end desc');
-
-
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
                     FROM naira_trades as tr
                     WHERE
-                    tr.user_id = naira_trades.user_id and created_at > DATE_SUB(now(), INTERVAL 20000 MONTH))
+                    tr.user_id = naira_trades.user_id and created_at > DATE_SUB(now(), INTERVAL 2 MONTH))
                     as total_trax'))
                     ->orderBy('amount','desc')
                     ->orderBy('created_at','asc')
                     ->orderByRaw('case when `total_trax` >= 10000 then total_trax end desc');
 
-                // $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
-                //     FROM naira_trades as tr
-                //     WHERE
-                //     tr.user_id = naira_trades.user_id and created_at > DATE_SUB(now(), INTERVAL 200 MONTH))
-                //     as total_trax'))
-                //     ->orderBy('amount','desc')
-                //     // ->orderByRaw('case when `total_trax` >= 10000 then total_trax else created_at end asc')
-                //     ->orderByRaw('case when `total_trax` >= 10000 then created_at end desc')
-                //     // ->orderByRaw('case when `total_trax` >= 10000 then amount end desc')
-                //     ;
             }
 
             if($start_date && $end_date)
