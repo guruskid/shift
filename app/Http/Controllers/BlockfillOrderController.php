@@ -21,7 +21,7 @@ class BlockfillOrderController extends Controller
                 "orderType" => "Market",
                 "quantity" => round($transaction->quantity, 6),
                 "side" => $transaction->type,
-                "symbol" => "BTC/USDT",
+                "symbol" => "BTC/USDT_TRX",
                 "timeInForce" => "ImmediateOrCancel"
             ],
         ]);
@@ -33,7 +33,7 @@ class BlockfillOrderController extends Controller
             'currency_id' => $currency_id,
             'transaction_id' => $transaction->id,
             'type' => $transaction->type,
-            'pair' => 'BTC/USDT',
+            'pair' => 'BTC/USDT_TRX',
             'quantity' => $transaction->quantity,
             'usd' => $transaction->amount,
             'rate' => $transaction->card_price,
