@@ -13,7 +13,7 @@ class AddSlugToBlogHeader extends Migration
      */
     public function up()
     {
-        Schema::table('blog_headers', function (Blueprint $table) {
+        Schema::table('blog_headings', function (Blueprint $table) {
             $table->string("slug")->unique();
         });
     }
@@ -25,7 +25,7 @@ class AddSlugToBlogHeader extends Migration
      */
     public function down()
     {
-        Schema::table('blog_headers', function (Blueprint $table) {
+        Schema::table('blog_headings', function (Blueprint $table) {
             $table->dropColumn('slug');
         });
     }
