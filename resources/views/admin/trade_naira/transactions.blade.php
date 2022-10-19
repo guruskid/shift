@@ -437,10 +437,14 @@
                                     <input type="hidden" name="user_id" value="{{$t->user->id}}">
                                     <label for="reason" class="text-danger">Reason for Declining </label>
                                     <select name="reason" id="" class="form-control">
+                                        @if($t->type == 'withdrawal')
                                         <option value="Bank network issues">Bank network issues</option>
                                         <option value="Exceeded bank limit">Exceeded bank limit</option>
                                         <option value="Incorrect bank details">Incorrect bank details</option>
                                         <option value="A mismatch in name">A mismatch in name</option>
+                                        @else
+                                        <option value="payment not received">Payment Not Recieved</option>
+                                        @endif;
                                     </select>
                                     <span id="HideDeclinedButton" onclick="pay_bridge_decline('reason_for_decline_div{{ $t->id }}','HideDeclinedButton')"
                                         class="mt-2 btn btn-block c-rounded bg-custom-gradient txn-btn">Proceed</span>

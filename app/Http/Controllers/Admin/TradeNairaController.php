@@ -506,58 +506,70 @@ class TradeNairaController extends Controller
         return back()->with(['success' => 'Limits uppdated']);
     }
 
-    public static function declinedWithdrawalMailData($reason, NairaTrade $nairaTrade)
+    public static function declinedMailData($reason, NairaTrade $nairaTrade)
     {
         $reasonData = null;
-        $suggestion = null;
-        $timeData = null;
+        $bankDetails = NULL;
+        $timeData = NULL;
+        $body = NULL;
+
+
+        if($nairaTrade->type == 'withdrawal'):
+            $account = $nairaTrade->account;
+            $bankDetails = '<b>('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.')</b>';
+        endif;
 
         $account = $nairaTrade->account;
 
         switch ($reason) {
             case 'Bank network issues':
                 $reasonData = "of bank network issues";
-                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated for three hours';
+                $body .= "<div style='text-align:justify'>";
+                $body.= "We just noticed network issues with your receiving bank $bankDetails, please try again in 3 hours time or if it's urgent select another account and try again";
+                $body .= "</div>";
                 $timeData = 'definite';
                 break;
             case 'Exceeded bank limit':
                 $reasonData = "your bank account has exceeded it's limit";
-                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated for three hours';
+                $body .= "<div style='text-align:justify'>";
+                $body .= "We just noticed your account $bankDetails has reached it's limit, please try again in 3 hours time or if it's urgent select another account and try again";
+                $body .= "</div>";
                 $timeData = 'definite';
                 break;
             case 'Incorrect bank details':
                 $reasonData = "of incorrect bank details";
-                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated';
+                $body .= "<div style='text-align:justify'>";
+                $body .= "For the security of your funds we have temporarily suspended this account details $bankDetails as a result of incorrect Bank details, please select an account with the appropriate details to continue your transaction";
+                $body .= "</div>";
                 $timeData = 'indefinite';
                 break;
             case 'A mismatch in name':
                 $reasonData = "of a mismatch in name";
-                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated';
+                $body .= "<div style='text-align:justify'>";
+                $body .= "For the security of your funds we have temporarily suspended this account details $bankDetails as a result of a mismatch in name, please select an account detail that matches the name which you created your account with";
+                $body .= "</div>";
                 $timeData = 'indefinite';
                 break;
-
+            case 'payment not received':
+                $body .= "<div style='text-align:justify'>";
+                $body .= "<b>Your deposit was declined because your transfer has not been received, please confirm with your bank or please resend the deposit<b>";
+                $body .= "</div>";
+                $timeData = null;
+                break;
             default:
-                $reasonData = "of bank network issues";
-                $suggestion = 'Please note your account ('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.') has been deactivated for three hours';
-                $timeData = 'definite';
+            
                 break;
         }
         return[
             'reason' => $reasonData,
-            'suggestion' => $suggestion,
+            'body' => $body,
             'timeFrame' => $timeData,
         ];
     }
 
-    public static function sendDeclinedMail($reasonData, $suggestion, NairaTrade $nairaTrade)
+    public static function sendDeclinedMail($title, $body, NairaTrade $nairaTrade)
     {
         $user = $nairaTrade->user;
-
-        $body = "We cannot proceed with your withdrawal <br>";
-        $body .= "This is because <b> $reasonData </b><br><br>";
-        $body .= "<b> $suggestion </b><br><br>";
-        $body .= "Kindly contact support for more information";
-        $title = 'WITHDRAWAL UPDATE!';
 
         $btn_text = '';
         $btn_url = '';
@@ -575,14 +587,17 @@ class TradeNairaController extends Controller
         if ($transaction->status != 'waiting') {
             return back()->with(['error' => 'Invalid transaction']);
         }
+        $reasonData = self::declinedMailData($request->reason, $transaction);
+        $reason = $reasonData['reason'];
+        $body= $reasonData['body'];
+        $timeFrame  =  $reasonData['timeFrame'];
 
         $title = "DEPOSIT UPDATE!";
         $msg ="Your deposit transaction of ₦".number_format($transaction->amount)." was declined. Kindly contact support for more information.";
 
-
         $nt = NairaTransaction::where('reference', $transaction->reference)->first();
+        
 
-        // dd($transaction);
         if ($transaction->type == 'withdrawal') {
             # credit the user
             $user_wallet = $nt->user->nairaWallet;
@@ -595,16 +610,10 @@ class TradeNairaController extends Controller
             $transfer_charges_wallet->save();
 
             $title = "WITHDRAWAL UPDATE!";
-            $reasonData = self::declinedWithdrawalMailData($request->reason, $transaction);
-
-            $reason = $reasonData['reason'];
-            $suggestion = $reasonData['suggestion'];
-            $timeFrame  =  $reasonData['timeFrame'];
             $account = $transaction->account;
             $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was declined. This is because $reason. Kindly contact support for more information.";
-            
+            self::activateAccountDuration($timeFrame, $account);
         }
-
 
         // Firebase Push Notification
         $fcm_id = $nt->user->fcm_id;
@@ -623,11 +632,8 @@ class TradeNairaController extends Controller
 
         $transaction->status = 'cancelled';
         $transaction->save();
-        if ($transaction->type == 'withdrawal') {
-            self::activateAccountDuration($timeFrame, $account);
-            self::sendDeclinedMail($reason, $suggestion, $transaction);
-        }
 
+        self::sendDeclinedMail($title, $body, $transaction);
         return back()->with(['success' => 'Transaction cancelled']);
     }
 
