@@ -216,7 +216,7 @@ class ContentController extends Controller
             "status" => $request->status ?? "draft",
             "published_at" => $publishedAt,
             "blog_heading_id" => $request->blog_heading_id ?? null,
-            "blog_heading_id" => $request->blog_category_id ?? null,
+            "blog_category_id" => $request->blog_category_id ?? null,
             "author_id" => Auth::user()->id
         ]);
 
@@ -265,22 +265,96 @@ class ContentController extends Controller
     }
 
     public function destroyBlog($id)
-{
+    {
 
-    try {
-        $ids = explode(",", $id);
-        Blog::whereIn("id", $ids)->delete();
+        try {
+            $ids = explode(",", $id);
+            Blog::whereIn("id", $ids)->delete();
+            return response()->json([
+                'success' => true,
+                'message' => "blog deleted"
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 400);
+        }
+    }
+
+    public function showPost($id)
+    {
+        $data['posts'] = Blog::where("id", $id)->with(
+            [
+                'categories' => function ($query) {
+                    $query->select('id', 'title');
+                },
+                'headings' => function ($query) {
+                    $query->select("id", "title");
+                },
+
+            ],
+        )->select('id', "title", "status", "description", "blog_heading_id", "blog_category_id", "body")->get();
+
         return response()->json([
             'success' => true,
-            'message' => "blog deleted"
+            'data' => $data
         ], 200);
-    } catch (\Throwable $th) {
-        return response()->json([
-            'success' => false,
-            'message' => $th->getMessage()
-        ], 400);
     }
-}
+
+    public function updateBlog(Request $request, $id)
+    {
+        $blog = Blog::find($id);
+        if (is_null($$blog)) {
+            return response()->json([
+                'success' => false,
+                'message' => "Blog  does not exist"
+            ], 404);
+        }
+        $validator =  Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            "description" => "required|min:100|max:250",
+            'image' => 'sometimes|image|mimes:jpeg,JPEG,png,jpg,svg|max:5048',
+            "body" => "required",
+            "status" => "in:draft,published",
+            "blog_heading_id" => "sometimes|exists:blog_headings,id",
+            "blog_category_id" => "sometimes|exists:blog_categories,id"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->messages()
+            ], 422);
+        }
+
+        if ($image = $request->hasFile('image')) {
+            $blog->image =  $this->blogPostImage($image);
+        }
+
+        $status = $request->status;
+        $publishedAt = $blog->published_at;
+        if ($status == 'published' && $blog->published_at != null) {
+            $publishedAt = now();
+        }
 
 
+
+
+        $blog->title = $request->title;
+        $blog->description = $request->description;
+        $blog->body = $request->body;
+        $blog->status->heard = $request->title;
+        $blog->published_at =  $publishedAt;
+        $blog->blog_category_id = $request->blog_category_id;
+        $blog->blog_heading_id = $request->blog_heading_id;
+
+        $blog->save();
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $blog
+        ], 200);
+    }
 }

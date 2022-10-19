@@ -531,7 +531,7 @@ Route::group(['middleware' => ['auth:api', 'customerHappiness', 'cors']], functi
 });
 
 
-Route::group(['middleware' => ['auth:api',  'cors']], function(){
+Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function(){
     Route::prefix('content')->group(function () {
         // Blog Category
         Route::prefix('category')->group(function () {
@@ -549,7 +549,9 @@ Route::group(['middleware' => ['auth:api',  'cors']], function(){
         Route::prefix('blog')->group(function () {
             Route::post('/', 'ContentController@storeBlog');
             Route::get('/', 'ContentController@fetchBlogPosts');
+            Route::get('/{id}', 'ContentController@showPost');
             Route::delete('/{id}', 'ContentController@destroyBlog');
+            Route::put('/{id}', 'ContentController@updateBlog');
 
 
         });
