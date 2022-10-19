@@ -152,7 +152,7 @@ class TradeNairaController extends Controller
         $account = Auth::user()->accounts->first();
         if($search != null)
         {
-            $transactions = NairaTrade::with('user')->whereHas('user', function ($query) use ($search) {
+            $transactions = NairaTrade::whereHas('user', function ($query) use ($search) {
                 $query->where('first_name','LIKE','%'.$search.'%')
                 ->orWhere('phone','LIKE','%'.$search.'%');
             })
@@ -161,7 +161,7 @@ class TradeNairaController extends Controller
         }
         if($search == null)
         {
-            $transactions = NairaTrade::with('user')->whereNotNull('id');
+            $transactions = NairaTrade::whereNotNull('id');
             if(!in_array($type,['sortbydate','search']))
             {
                 $transactions = $transactions->where('type',$type);
@@ -177,8 +177,12 @@ class TradeNairaController extends Controller
                     WHERE
                     tr.user_id = naira_trades.user_id and created_at > DATE_SUB(now(), INTERVAL 2 MONTH))
                     as total_trax'))
-                    ->orderByRaw('case when `total_trax` >= 10000000 then total_trax else created_at end asc')
-                    ->orderByRaw('case when `total_trax` >= 10000000 then amount end desc');
+                    // ->orderBy('created_at','asc')
+                    ->orderByRaw('case when `total_trax` >= 10000000 then amount end desc')
+                    ->orderByRaw('case when `total_trax` < 10000000 then created_at end asc')
+                    ->orderByRaw('case when `total_trax` >= 10000000 then total_trax end desc')
+                    ;
+
             }
 
             if($start_date && $end_date)
@@ -592,6 +596,7 @@ class TradeNairaController extends Controller
         $body= $reasonData['body'];
         $timeFrame  =  $reasonData['timeFrame'];
 
+
         $title = "DEPOSIT UPDATE!";
         $msg ="Your deposit transaction of ₦".number_format($transaction->amount)." was declined. Kindly contact support for more information.";
 
@@ -960,18 +965,5 @@ class TradeNairaController extends Controller
         $nt->save();
 
         return back()->with(['success' => 'Account debited successfully']);
-    }
-
-    public static function activateAccountDuration($duration, Account $account)
-    {
-        if($duration == 'indefinite'){
-            $account->update([
-                'status'=>'in-active',
-            ]);
-        } else {
-            $account->update([
-                'activateBy' => now()->addHours(3),
-            ]);
-        }
     }
 }

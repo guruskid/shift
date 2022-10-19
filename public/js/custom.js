@@ -65,7 +65,7 @@ $(document).ready(function () {
             return;
         }
         // console.log(account_number)
-        if (account_number.length < 10) {
+        if (account_number != undefined && account_number.length < 10) {
             alert('Invalid account number');
             return;
         }
