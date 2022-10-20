@@ -621,6 +621,9 @@ class TradeNairaController extends Controller
         
 
         if ($transaction->type == 'withdrawal') {
+            $account = $transaction->account;
+            self::activateAccountDuration($timeFrame, $account);
+
             # credit the user
             $user_wallet = $nt->user->nairaWallet;
             $user_wallet->amount += $nt->amount;
@@ -632,9 +635,7 @@ class TradeNairaController extends Controller
             $transfer_charges_wallet->save();
 
             $title = "WITHDRAWAL UPDATE!";
-            $account = $transaction->account;
             $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was declined. This is because $reason. Kindly contact support for more information.";
-            self::activateAccountDuration($timeFrame, $account);
         }
 
         // Firebase Push Notification
@@ -982,5 +983,18 @@ class TradeNairaController extends Controller
         $nt->save();
 
         return back()->with(['success' => 'Account debited successfully']);
+    }
+
+    public static function activateAccountDuration($duration, Account $account)
+    {
+        if($duration == 'indefinite'){
+            $account->update([
+                'status'=>'in-active',
+            ]);
+        } else {
+            $account->update([
+                'activateBy' => now()->addHours(3),
+            ]);
+        }
     }
 }
