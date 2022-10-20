@@ -48,6 +48,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/get-bank-name', 'Api\AuthController@getBankName');
         Route::get('/logout', 'Api\AuthController@logout');
 
+
+        //New Stuff
+        Route::get('/verify-bank-name', 'Api\AuthController@verifyBankName');
+
         // Airtime
         Route::get('/airtime', 'Api\BillsPaymentController@airtime');
         Route::post('/buy-airtime', 'Api\BillsPaymentController@buyAirtime');

@@ -427,6 +427,54 @@ class AuthController extends Controller
     }
 
 
+    //New Way
+
+    //Verify Account
+
+
+    public function verifyBankName(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'bank_code' => 'required',
+            'account_number' => 'required| min:10 | max:10',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'msg' => $validator->errors(),
+            ], 401);
+        }
+
+
+        $bank_code = $request->bank_code;
+        $acct_number = $request->account_number;
+        $client = new Client();
+        $url = 'https://app.nuban.com.ng/api/NUBAN-AGBCLVUL544?acc_no='.$acct_number.'&bank_code='.$bank_code;
+        $response = $client->request('GET', $url);
+        $body = ($response->getBody()->getContents());
+        $body = json_decode($body);
+        if (isset($body->error)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Invalid Account Details'
+            ]);
+        }
+        $acct_name = $body[0]->account_name;
+        $data = [
+            'account_name' => $acct_name
+        ];
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ],200);
+
+    }
+
+
+
+
     public function addBankDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
