@@ -966,4 +966,17 @@ class TradeNairaController extends Controller
 
         return back()->with(['success' => 'Account debited successfully']);
     }
+
+    public static function activateAccountDuration($duration, Account $account)
+    {
+        if($duration == 'indefinite'){
+            $account->update([
+                'status'=>'in-active',
+            ]);
+        } else {
+            $account->update([
+                'activateBy' => now()->addHours(3),
+            ]);
+        }
+    }
 }
