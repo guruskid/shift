@@ -450,11 +450,25 @@ class AuthController extends Controller
 
         $bank_code = $request->bank_code;
         $acct_number = $request->account_number;
+
+
+        $checker = Bank::where('code', $request->bank_code)->first();
+
+        // dd($checker);
+        if (!$checker) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bank doesn\'t exist',
+            ]);
+        }
+
         $client = new Client();
         $url = 'https://app.nuban.com.ng/api/NUBAN-AGBCLVUL544?acc_no='.$acct_number.'&bank_code='.$bank_code;
         $response = $client->request('GET', $url);
         $body = ($response->getBody()->getContents());
         $body = json_decode($body);
+
+
         if (isset($body->error)) {
             return response()->json([
                 'success' => false,
@@ -469,6 +483,70 @@ class AuthController extends Controller
             'success' => true,
             'data' => $data
         ],200);
+
+    }
+
+
+
+    public function addNewDetails(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'bank_id' => 'required',
+            'account_number' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            /* 'phone' => 'required', */
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $s = Bank::find($request->bank_id);
+        if (!$s) {
+            return response()->json([
+                'success' => false,
+                'data' => $s,
+                'message' => 'Bank doesn\'t exist',
+            ]);
+        }
+        $err = 0;
+
+        /* Check if its duplicate */
+        $accts = Auth::user()->accounts;
+        foreach ($accts as $a ) {
+            if ($a->account_number == $request->account_number && $a->bank_name == $s->name ) {
+                $err += 1;
+            }
+        }
+
+        if ($err == 0) {
+            $a = new Account();
+            $a->user_id = Auth::user()->id;
+            $a->account_name = $request->first_name .' '. $request->last_name;;
+            $a->bank_name = $s->name;
+            $a->bank_id = $s->id;
+            $a->account_number = $request->account_number;
+            $a->save();
+        }
+
+        Auth::user()->first_name = $request->first_name;
+        Auth::user()->last_name = $request->last_name;
+        Auth::user()->save();
+
+        return response()->json([
+            'success' => true,
+            'user' => Auth::user(),
+            'bank_accounts' => Auth::user()->accounts,
+            'naira_wallet' => Auth::user()->nairaWallet,
+        ]);
+
+        if (Auth::user()->nairaWallet()->count() > 0) {
+
+        }
+
 
     }
 
