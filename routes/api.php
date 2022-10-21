@@ -51,6 +51,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         //New Stuff
         Route::get('/verify-bank-name', 'Api\AuthController@verifyBankName');
+        Route::post('/add-bank-account', 'Api\AuthController@addNewDetails');
 
         // Airtime
         Route::get('/airtime', 'Api\BillsPaymentController@airtime');

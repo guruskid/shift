@@ -493,8 +493,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'bank_id' => 'required',
             'account_number' => 'required',
-            'first_name' => 'required',
-            'last_name' => 'required',
+            'bank_name' => 'required',
+
             /* 'phone' => 'required', */
         ]);
         if ($validator->fails()) {
@@ -505,6 +505,8 @@ class AuthController extends Controller
         }
 
         $s = Bank::find($request->bank_id);
+
+        // dd($s);
         if (!$s) {
             return response()->json([
                 'success' => false,
@@ -512,6 +514,7 @@ class AuthController extends Controller
                 'message' => 'Bank doesn\'t exist',
             ]);
         }
+
         $err = 0;
 
         /* Check if its duplicate */
@@ -525,15 +528,18 @@ class AuthController extends Controller
         if ($err == 0) {
             $a = new Account();
             $a->user_id = Auth::user()->id;
-            $a->account_name = $request->first_name .' '. $request->last_name;;
+            $a->account_name = $request->bank_name;
             $a->bank_name = $s->name;
             $a->bank_id = $s->id;
             $a->account_number = $request->account_number;
             $a->save();
         }
 
-        Auth::user()->first_name = $request->first_name;
-        Auth::user()->last_name = $request->last_name;
+
+        $updated = explode(' ',trim($request->bank_name));
+
+        Auth::user()->first_name = $updated[0];
+        Auth::user()->last_name = strstr($request->bank_name," ");
         Auth::user()->save();
 
         return response()->json([
@@ -542,10 +548,6 @@ class AuthController extends Controller
             'bank_accounts' => Auth::user()->accounts,
             'naira_wallet' => Auth::user()->nairaWallet,
         ]);
-
-        if (Auth::user()->nairaWallet()->count() > 0) {
-
-        }
 
 
     }
