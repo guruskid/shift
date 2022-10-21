@@ -446,6 +446,29 @@ $not = $nots->last();
             hideit(closeOption);
         }
 
+        const copyData = (id) => {
+            var copyText = document.getElementById(id);
+            copyText.select();
+            document.execCommand('copy');
+            alert("You copied: " + copyText.value);
+        }
+
+        function buttonSelect(id, status, uid){
+            var approve = document.getElementById(id);
+            approve.value = status;
+
+            if(status == 'approve' || status == 'unresolved'){
+                showit('p2p_pin-'+uid);
+                hideit('p2p_buttongroup-'+uid);
+            }
+
+            if(status == 'decline') {
+                showit('p2p_pin-'+uid);
+                showit('p2p_dropdown-'+uid);
+                hideit('p2p_buttongroup-'+uid);
+            }
+        }
+
     </script>
 
     <script>
