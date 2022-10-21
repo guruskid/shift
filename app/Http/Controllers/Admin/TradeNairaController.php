@@ -46,42 +46,31 @@ class TradeNairaController extends Controller
 
         $show_limit = true;
         $exportTranx = NairaTrade::orderBy('created_at', 'desc')->get();
-        $transactions = NairaTrade::orderBy('created_at', 'desc')->paginate(20);
+        $transactions = NairaTrade::with('naira_transactions','account')->orderBy('created_at', 'desc')->paginate(20);
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
 
-        foreach ($transactions as $t) {
-            if ($t->type == 'withdrawal') {
-                $a = Account::find($t->account_id);
-                $acct = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
-                $t->acct_details = $acct;
-            }
-            $current_prev_bal = NairaTransaction::where('reference',$t->reference)->latest()->first();
-            if(isset($current_prev_bal))
-            {
-                $t->prev_bal = $current_prev_bal->previous_balance;
-                $t->current_bal = $current_prev_bal->current_balance;
-            }
-
-        }
-
-        //? top bars
         //?" all  deposit transactions
         $deposit = NairaTrade::where('type','deposit')->get();
         $deposit_all_tnx = $deposit->count();
 
         //? successful Deposit
-        $deposit_success = NairaTrade::where('type','deposit')->where('status','success')->get();
+        $deposit_success = $deposit->where('status','success');
         $deposit_success_tnx = $deposit_success->count();
         $deposit_success_amount = $deposit_success->sum('amount');
 
+        //? unresolved Deposit
+        $deposit_unresolved = $deposit->where('status','unresolved');
+        $deposit_unresolved_tnx = $deposit_unresolved->count();
+        $deposit_unresolved_amount = $deposit_unresolved->sum('amount');
+
         //? declined Deposit
-        $deposit_denied = NairaTrade::where('type','deposit')->where('status','cancelled')->get();
+        $deposit_denied = $deposit->where('status','cancelled');
         $deposit_denied_tnx = $deposit_denied->count();
         $deposit_denied_amount = $deposit_denied->sum('amount');
 
         //? waiting Deposit
-        $deposit_waiting = NairaTrade::where('type','deposit')->where('status','waiting')->get();
+        $deposit_waiting = $deposit->where('status','waiting');
         $deposit_waiting_tnx = $deposit_waiting->count();
         $deposit_waiting_amount = $deposit_waiting->sum('amount');
 
@@ -91,17 +80,21 @@ class TradeNairaController extends Controller
         $withdrawal_all_tnx = $withdrawal->count();
 
         //? successful withdrawal
-        $withdrawal_success = NairaTrade::where('type','withdrawal')->where('status','success')->get();
+        $withdrawal_success = $withdrawal->where('status','success');
         $withdrawal_success_tnx = $withdrawal_success->count();
         $withdrawal_success_amount = $withdrawal_success->sum('amount');
 
+        $withdrawal_unresolved = $withdrawal->where('status','unresolved');
+        $withdrawal_unresolved_tnx = $withdrawal_unresolved->count();
+        $withdrawal_unresolved_amount = $withdrawal_unresolved->sum('amount');
+
         //? declined withdrawal
-        $withdrawal_denied = NairaTrade::where('type','withdrawal')->where('status','cancelled')->get();
+        $withdrawal_denied = $withdrawal->where('status','cancelled');
         $withdrawal_denied_tnx = $withdrawal_denied->count();
         $withdrawal_denied_amount = $withdrawal_denied->sum('amount');
 
         //? waiting withdrawal
-        $withdrawal_waiting = NairaTrade::where('type','withdrawal')->where('status','waiting')->get();
+        $withdrawal_waiting = $withdrawal->where('status','waiting');
         $withdrawal_waiting_tnx = $withdrawal_waiting->count();
         $withdrawal_waiting_amount = $withdrawal_waiting->sum('amount');
 
@@ -117,8 +110,10 @@ class TradeNairaController extends Controller
             'transactions', 'show_limit', 'banks', 'account','segment',
             'deposit_all_tnx','deposit_success_tnx','deposit_success_amount',
             'deposit_denied_tnx','deposit_denied_amount','deposit_waiting_tnx','deposit_waiting_amount',
+            'deposit_unresolved_tnx','deposit_unresolved_amount',
             'withdrawal_all_tnx','withdrawal_success_tnx','withdrawal_success_amount',
-            'withdrawal_denied_tnx','withdrawal_denied_amount','withdrawal_waiting_tnx','withdrawal_waiting_amount'
+            'withdrawal_denied_tnx','withdrawal_denied_amount','withdrawal_waiting_tnx','withdrawal_waiting_amount',
+            'withdrawal_unresolved_tnx','withdrawal_unresolved_amount'
 
         ]));
     }
@@ -201,27 +196,6 @@ class TradeNairaController extends Controller
             }
             $transactions = $transactions->paginate(20);
         }
-
-        //?Refactor this
-        foreach ($transactions as $t) {
-            if ($t->type == 'withdrawal') {
-                $a = Account::find($t->account_id);
-                $acct = $a['account_name'] . ', ' . $a['bank_name'] . ', ' . $a['account_number'];
-                $t->acct_details = $acct;
-            }
-            $current_prev_bal = NairaTransaction::where('reference',$t->reference)->latest()->first();
-            if(isset($current_prev_bal))
-            {
-                $t->prev_bal = $current_prev_bal->previous_balance;
-                $t->current_bal = $current_prev_bal->current_balance;
-            }
-        }
-        //? change here 
-
-
-        //! stop calling various db call multiple times
-
-
             //?" all  deposit transactions
             $deposit = NairaTrade::where('type','deposit');
             if($start_date && $end_date)
@@ -236,24 +210,16 @@ class TradeNairaController extends Controller
 
             //? successful Deposit
             $deposit_success = $deposit->where('status','success');
-            if($start_date && $end_date)
-            {
-                $deposit_success = $deposit_success
-                ->where('updated_at','>=',$start_date)
-                ->where('updated_at','<=',$end_date);
-            }
             $deposit_success_tnx = $deposit_success->count();
             $deposit_success_amount = $deposit_success->sum('amount');
 
+            //? unresolved Deposit
+            $deposit_unresolved = $deposit->where('status','unresolved');
+            $deposit_unresolved_tnx = $deposit_unresolved->count();
+            $deposit_unresolved_amount = $deposit_unresolved->sum('amount');
 
             //? declined Deposit
             $deposit_denied = $deposit->where('status','cancelled');
-            if($start_date && $end_date)
-            {
-                $deposit_denied = $deposit_denied
-                ->where('updated_at','>=',$start_date)
-                ->where('updated_at','<=',$end_date);
-            }
             $deposit_denied_tnx = $deposit_denied->count();
             $deposit_denied_amount = $deposit_denied->sum('amount');
 
@@ -261,18 +227,12 @@ class TradeNairaController extends Controller
 
             //? waiting Deposit
             $deposit_waiting = $deposit->where('status','waiting');
-            if($start_date && $end_date)
-            {
-                $deposit_waiting = $deposit_waiting
-                ->where('updated_at','>=',$start_date)
-                ->where('updated_at','<=',$end_date);
-            }
             $deposit_waiting_tnx = $deposit_waiting->count();
             $deposit_waiting_amount = $deposit_waiting->sum('amount');
 
 
 
-            //?" all  withdrawal transactions
+            //? all  withdrawal transactions
             $withdrawal = NairaTrade::where('type','withdrawal');
             if($start_date && $end_date)
             {
@@ -287,38 +247,23 @@ class TradeNairaController extends Controller
 
             //? successful withdrawal
             $withdrawal_success = $withdrawal->where('status','success');
-            if($start_date && $end_date)
-            {
-                $withdrawal_success = $withdrawal_success
-                ->where('updated_at','>=',$start_date)
-                ->where('updated_at','<=',$end_date);
-            }
             $withdrawal_success_tnx = $withdrawal_success->count();
             $withdrawal_success_amount = $withdrawal_success->sum('amount');
 
-
+            //? unresolved Withdrawal
+            $withdrawal_unresolved = $withdrawal->where('status','unresolved');
+            $withdrawal_unresolved_tnx = $withdrawal_unresolved->count();
+            $withdrawal_unresolved_amount = $withdrawal_unresolved->sum('amount');
 
             //? declined withdrawal
-            $withdrawal_denied = $withdrawal->where('type','withdrawal')->where('status','cancelled');
-            if($start_date && $end_date)
-            {
-                $withdrawal_denied = $withdrawal_denied
-                ->where('updated_at','>=',$start_date)
-                ->where('updated_at','<=',$end_date);
-            }
+            $withdrawal_denied = $withdrawal->where('status','cancelled');
             $withdrawal_denied_tnx = $withdrawal_denied->count();
             $withdrawal_denied_amount = $withdrawal_denied->sum('amount');
 
 
 
             //? waiting withdrawal
-            $withdrawal_waiting = $withdrawal->where('type','withdrawal')->where('status','waiting');
-            if($start_date && $end_date)
-            {
-                $withdrawal_waiting = $withdrawal_waiting
-                ->where('updated_at','>=',$start_date)
-                ->where('updated_at','<=',$end_date);
-            }
+            $withdrawal_waiting = $withdrawal->where('status','waiting');
             $withdrawal_waiting_tnx = $withdrawal_waiting->count();
             $withdrawal_waiting_amount = $withdrawal_waiting->sum('amount');
 
@@ -338,8 +283,10 @@ class TradeNairaController extends Controller
             'transactions', 'show_limit', 'banks', 'account','segment',
              'deposit_all_tnx','deposit_success_tnx','deposit_success_amount',
             'deposit_denied_tnx','deposit_denied_amount','deposit_waiting_tnx','deposit_waiting_amount',
+            'deposit_unresolved_tnx','deposit_unresolved_amount',
             'withdrawal_all_tnx','withdrawal_success_tnx','withdrawal_success_amount',
-            'withdrawal_denied_tnx','withdrawal_denied_amount','withdrawal_waiting_tnx','withdrawal_waiting_amount'
+            'withdrawal_denied_tnx','withdrawal_denied_amount','withdrawal_waiting_tnx','withdrawal_waiting_amount',
+            'withdrawal_unresolved_amount','withdrawal_unresolved_tnx',
              ));
     }
 
@@ -466,6 +413,7 @@ class TradeNairaController extends Controller
         $deposit_success_tnx = $deposit_success->count();
         $deposit_success_amount = $deposit_success->sum('amount');
 
+
         //? declined Deposit
         $deposit_denied = $user->agentNairaTrades()->where('type','deposit')->where('status','cancelled')->get();
         $deposit_denied_tnx = $deposit_denied->count();
@@ -525,6 +473,38 @@ class TradeNairaController extends Controller
         Auth::user()->agentLimits()->update($data);
 
         return back()->with(['success' => 'Limits uppdated']);
+    }
+
+    public function assignStatusAction(Request $request, NairaTrade $transaction){
+        if($request->id != $transaction->id){
+            return back()->with(['error' => 'Error Invalid Action']);
+        }
+
+        //approve
+        return back()->with(['success' => 'Error Invalid Action']);
+        if($request->status == 'approve'){
+            if($transaction->type == 'withdrawal'){
+               $withdrawal =  $this->confirmSell($request, $transaction);
+               $status = $withdrawal['status'];
+               $message = $withdrawal['message'];
+               if($status == 'success'){
+                return back()->with(['success' => $message]);
+               } else {
+                return back()->with(['error' => $message]);
+               }
+               
+               return back()->with([$status => $message]);
+            } else {
+               $deposit =  $this->confirm($request, $transaction);
+               $status = $deposit['status'];
+               $message = $deposit['message'];
+               return back()->with([$status => $message]);
+            }
+        }
+
+        //decline
+
+        //unresolved
     }
 
     public static function declinedMailData($reason, NairaTrade $nairaTrade)
@@ -754,14 +734,20 @@ class TradeNairaController extends Controller
     public function confirm(Request $request, NairaTrade $transaction)
     {
         if (!Hash::check($request->pin, Auth::user()->pin)) {
-            return back()->with(['error' => 'Incorrect pin']);
+            return [
+                'status' => 'error',
+                'message' => 'Incorrect pin'
+            ];
         }
 
         $user = $transaction->user;
         $user_wallet = $transaction->user->nairaWallet;
 
         if ($transaction->status != 'waiting') {
-            return back()->with(['error' => 'Invalid transaction']);
+            return [
+                'status' => 'error',
+                'message' => 'Invalid transaction'
+            ];
         }
 
         $nt = NairaTransaction::where('reference', $transaction->reference)->first();
@@ -810,13 +796,19 @@ class TradeNairaController extends Controller
             }
         }
 
-        return back()->with(['success' => 'Transaction confirmed']);
+        return [
+            'status' => 'success',
+            'message' => 'Transaction confirmed'
+        ];
     }
 
     public function confirmSell(Request $request, NairaTrade $transaction)
     {
         if (!Hash::check($request->pin, Auth::user()->pin)) {
-            return back()->with(['error' => 'Incorrect pin']);
+            return [
+                'status' => 'error',
+                'message' => 'Incorrect pin'
+            ];
         }
 
         $user = $transaction->user;
@@ -829,7 +821,10 @@ class TradeNairaController extends Controller
 
 
         if ($transaction->status != 'waiting') {
-            return back()->with(['error' => 'Invalid transaction']);
+            return [
+                'status' => 'error',
+                'message' => 'Invalid transaction'
+            ];
         }
 
         $nt = NairaTransaction::where('reference', $transaction->reference)->first();
@@ -883,7 +878,10 @@ class TradeNairaController extends Controller
             }
         }
 
-        return back()->with(['success' => 'Transaction confirmed']);
+        return [
+            'status' => 'success',
+            'message' => 'Transaction confirmed'
+        ];
     }
 
     public function topup(Request $request)
