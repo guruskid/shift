@@ -706,3 +706,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','salesAnalyt
     Route::ANY('/sortAnalyticsOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');
     Route::GET('/refreshTableData', 'Admin\OldUsersSalesAnalytics@refreshDownloadDate');
 });
+
+Route::group(['prefix' => 'trx'], function () {
+    Route::GET('/transactions/{type?}', 'AdminController@gcTransactionsForHara');
+    Route::GET('/transaction/{id}', 'AdminController@gcTransactionForHara');
+    Route::POST('/edit-transaction', 'Admin\AssetTransactionController@editTransactionHara');
+});

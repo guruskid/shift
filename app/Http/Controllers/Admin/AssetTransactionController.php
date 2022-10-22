@@ -39,11 +39,11 @@ class AssetTransactionController extends Controller
 
         $actualFeedback = "";
 
-            if($r->status == "failed"){
-                $actualFeedback = $r->failfeedbackstatus;
-            }elseif($r->status == "declined"){
-                $actualFeedback = $r->declinefeedbackstatus;
-            }
+        if($r->status == "failed"){
+            $actualFeedback = $r->failfeedbackstatus;
+        }elseif($r->status == "declined"){
+            $actualFeedback = $r->declinefeedbackstatus;
+        }
 
         $t = Transaction::find($r->id);
 
@@ -142,6 +142,122 @@ class AssetTransactionController extends Controller
 
 
         return redirect()->back()->with(['success' => 'Transaction updated']);
+    }
+
+    public function editTransactionHara(Request $r)
+    {
+        if (in_array($r->admin_role,[444,449,999]) and $r->status == 'success') {
+            return $this->payTransactionChinese($r);
+        }
+
+        $actualFeedback = "";
+
+        if($r->status == "failed"){
+            $actualFeedback = $r->failfeedbackstatus;
+        }elseif($r->status == "declined"){
+            $actualFeedback = $r->declinefeedbackstatus;
+        }
+
+        $t = Transaction::find($r->id);
+
+        $amount_paid = $r->amount_paid;
+
+        // finding the commision percentage
+        //?percentage diffrence
+        $percentage = ($t->commission/($t->amount_paid+$t->commission));
+        $commision =  $amount_paid * $percentage;
+        $user_amount = $amount_paid - $commision;
+
+        $percentage = ceil(($t->commission/((($t->card_price + $t->commission) * $t->quantity))) * 100);
+        $commision = round(($percentage / 100) * $r->amount_paid,2);
+        $amount_paid = round($r->amount_paid - $commision,2);
+
+        $t->card = Card::find($r->card_id)->name;
+        $t->card_id = $r->card_id;
+        $t->type = $r->trade_type;
+        $t->country = $r->country;
+        $t->amount = $r->amount;
+        $t->amount_paid = $amount_paid;
+        $t->commission = $commision;
+        if($r->admin_role !=888){
+            $t->status = $r->status;
+        }
+        $t->feedback = $actualFeedback;
+        $t->quantity = $r->quantity;
+        $t->last_edited = $r->admin_email;
+        $t->save();
+
+        $user = $t->user; //Users should see success when a transaction is approved
+        if ($t->status == 'approved') {
+            $t->stats = 'success';
+        } else {
+            $t->stats = $t->status;
+        }
+
+        $body = 'The status of your transaction to  ' . $t->type . ' ' . $t->card .
+            ' worth of ₦' . number_format($t->amount_paid) . ' has been updated to ' . $t->stats;
+        $title = 'Transaction update';
+        $not = Notification::create([
+            'user_id' => $user->id,
+            'title' => $title,
+            'body' => $body,
+        ]);
+
+        // if ($t->status == 'success') {
+            // Firebase Push Notification
+            $fcm_id = $t->user->fcm_id;
+            if (isset($fcm_id)) {
+                try {
+                    FirebasePushNotificationController::sendPush($fcm_id,$title,$body);
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+            }
+        // }
+
+        // broadcast(new TransactionUpdated($user))->toOthers();
+        if ($t->status == 'success' && $t->user->notificationSetting->trade_email == 1) {
+            $title = 'Transaction Successful';
+            Mail::to($user->email)->send(new DantownNotification($title, $body, 'Go to Wallet', route('user.naira-wallet')));
+
+
+            $user = Auth::user();
+        $title = 'TRANSACTION PENDING - BUY
+        ';
+        $body ="Your order to $t->type an <b>$t->card</b> worth NGN". number_format($t->amount_paid) ." was
+        <b style='color:green'>$t->stats</b> and will be debited from your naria wallet once the transaction is successful<br>
+        <b>Transaction ID: $t->uid <br>
+        Date: ".date("Y-m-d; h:ia")."<br><br>
+        </b>
+        ";
+
+
+        $btn_text = '';
+        $btn_url = '';
+
+        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+        $name = str_replace(' ', '', $name);
+        $firstname = ucfirst($name);
+        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+
+        // /////////////////////////////////////////////
+
+        }
+
+        /* Broadcast to all active accountants if approved for payment */
+        if ($r->status == 'approved') {
+            $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
+            $message = 'A new transaction has been approved for payment ' . $t->id;
+            foreach ($accountants as $acct) {
+                broadcast(new CustomNotification($acct, $message))->toOthers();
+            }
+        }
+
+        return response()->json([
+            'data' => 'Transaction updated'
+        ], 200);
+
+        // return redirect()->back()->with(['success' => 'Transaction updated']);
     }
 
     public function payTransaction(Request $r)
@@ -246,6 +362,17 @@ class AssetTransactionController extends Controller
 
     public function payTransactionChinese(Request $r)
     {
+        $approvedFromHara = false;
+        if (isset($r->admin_role)) {
+            $adminEmail = $r->admin_email;
+            $accountant_id = null;
+            $approveBy = $adminEmail;
+            $approvedFromHara = true;
+        }else{
+            $adminEmail = Auth::user()->email;
+            $accountant_id = Auth::user()->id;
+            $approveBy = $adminEmail;
+        }
         $n = NairaWallet::find(1); /* Admin general Wallet */
         $t = Transaction::find($r->id);
         $user_wallet = $t->user->nairaWallet;
@@ -256,6 +383,11 @@ class AssetTransactionController extends Controller
         $amount_paid = round($r->amount_paid - $commision,2);
 
         if ($t->status == 'success') {
+            if ($approvedFromHara) {
+                return response()->json([
+                    'data' => 'Transaction already completed'
+                ], 200);
+            }
             return back()->with(['error' => 'Transaction already completed']);
         }
 
@@ -267,10 +399,13 @@ class AssetTransactionController extends Controller
         $t->amount_paid = $amount_paid;
         $t->commission = $commision;
         $t->quantity = $r->quantity;
-        $t->last_edited = Auth::user()->email;
+        $t->last_edited = $adminEmail;
         $t->save();
 
         if (!$user_wallet) {
+            return response()->json([
+                'data' => 'User wallet not found'
+            ], 200);
             return back()->with(['error' => 'User wallet not found']);
         }
 
@@ -319,18 +454,18 @@ class AssetTransactionController extends Controller
 
 
         $nt->narration = 'Payment for transaction with id ' . $t->uid;
-        $nt->trans_msg = 'This transaction was approved by ' . Auth::user()->email;
+        $nt->trans_msg = 'This transaction was approved by ' . $approveBy;
         $nt->status = 'success';
         $nt->save();
 
         /* Update Transaction satus */
         $t->status = 'success';
-        $t->accountant_id = Auth::user()->id;
+        $t->accountant_id = $accountant_id;
         $t->save();
 
         $title = 'Dantown wallet ' . $type;
         $msg_body = 'Your Dantown wallet has been ' . $type . 'ed with N' . $amount . ' desc: Payment for transaction with id ' . $t->uid;
-        
+
         // Firebase Push Notification
         $fcm_id = $t->user->fcm_id;
         if (isset($fcm_id)) {
@@ -358,8 +493,11 @@ class AssetTransactionController extends Controller
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
         /* $snd_sms = $client->request('GET', $sms_url); */
 
+        return response()->json([
+            'data' => 'Transfer made successfully'
+        ], 200);
+
         return back()->with(['success' => 'Transfer made successfully']);
     }
-
 
 }

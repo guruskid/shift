@@ -610,6 +610,35 @@ class AdminController extends Controller
         ]));
     }
 
+    public function gcTransactionsForHara($type = '') {
+        $transactions =  Transaction::with(['user'])->WhereHas('asset', function ($q) {
+            $q->where('is_crypto', 0);
+        })->orderBy('updated_at', 'desc')->take(20);
+
+        if ($type != '') {
+            $transactions = $transactions->where('status',$type);
+        }
+
+        $transactions = $transactions->get();
+        return response()->json([
+            'data' => [
+                'transactions' => $transactions
+            ],
+        ], 200);
+    }
+
+    public function gcTransactionForHara($id) {
+        $transaction = Transaction::with(['batchPops' =>function ($query) {
+            $query->with('user');
+        }])->find($id);
+        $transaction->batchPops->each(function ($item) {
+            $item->path = asset('storage/pop/'.$item->path);
+        });
+        return response()->json([
+            'data' => $transaction
+        ], 200);
+    }
+
     public function search_tnx(Request $request)
     {
         // dd($request);
@@ -865,7 +894,7 @@ class AdminController extends Controller
             $end = $request['end'];
         }
         $segment .= " ".$currency;
-        
+
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
@@ -957,7 +986,7 @@ class AdminController extends Controller
             ->get();
 
         $status = Transaction::select('Status')->distinct('Status')->get();
-        
+
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
         })->orderBy('updated_at', 'DESC');
