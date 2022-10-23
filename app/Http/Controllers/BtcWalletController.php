@@ -699,8 +699,8 @@ class BtcWalletController extends Controller
         $nt->amount = $t->amount_paid;
         $nt->user_id = Auth::user()->id;
         $nt->type = 'naira wallet';
-        $nt->previous_balance = Auth::user()->nairaWallet->amount;
-        $nt->current_balance = Auth::user()->nairaWallet->amount - $t->amount_paid;
+        $nt->current_balance = Auth::user()->nairaWallet->amount;
+        $nt->previous_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $nt->charge = 0;
         $nt->transaction_type_id = 19;
         $nt->cr_wallet_id = $n->id;
