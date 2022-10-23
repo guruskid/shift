@@ -244,6 +244,8 @@
                                                     <th class="text-center">Cr. Account</th>
                                                     <th class="text-center">Dr. Account</th>
                                                     <th class="text-center">Amount</th>
+                                                    <th class="text-center">Prev.</th>
+                                                    <th class="text-center">Cur.</th>
                                                     <th class="text-center">Narration</th>
                                                     <th class="text-center">Type</th>
                                                     <th class="text-center">Trans. Type</th>
@@ -258,6 +260,8 @@
                                                     <td class="text-center">{{$t->cr_acct_name}}</td>
                                                     <td class="text-center">{{$t->dr_acct_name}}</td>
                                                     <td class="text-center">₦{{number_format($t->amount)}}</td>
+                                                    <td class="text-center">₦{{number_format($t->previous_balance)}}</td>
+                                                    <td class="text-center">₦{{number_format($t->current_balance)}}</td>
                                                     <td class="text-center">{{$t->narration}}</td>
                                                     <td class="text-center">{{$t->transactionType->name}}</td>
                                                     <td class="text-center">{{ucwords($t->trans_type)}}</td>
