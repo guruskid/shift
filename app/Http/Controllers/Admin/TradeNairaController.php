@@ -479,32 +479,89 @@ class TradeNairaController extends Controller
         if($request->id != $transaction->id){
             return back()->with(['error' => 'Error Invalid Action']);
         }
-
-        //approve
-        return back()->with(['success' => 'Error Invalid Action']);
-        if($request->status == 'approve'){
+        
             if($transaction->type == 'withdrawal'){
-               $withdrawal =  $this->confirmSell($request, $transaction);
-               $status = $withdrawal['status'];
-               $message = $withdrawal['message'];
-               if($status == 'success'){
-                return back()->with(['success' => $message]);
-               } else {
-                return back()->with(['error' => $message]);
-               }
-               
-               return back()->with([$status => $message]);
+                //Approve
+                if($request->status == 'approve'){
+                    $withdrawal =  $this->confirmSell($request, $transaction);
+                    $status = $withdrawal['status'];
+                    $message = $withdrawal['message'];
+                    return back()->with([$status => $message]);
+                }
+                //decline 
+                if($request->status == 'decline'){
+                    $withdrawal =  $this->declineTrade($request, $transaction);
+                    $status = $withdrawal['status'];
+                    $message = $withdrawal['message'];
+                    return back()->with([$status => $message]);
+                }
+                //unresolved
+                if($request->status == 'unresolved'){
+                    $withdrawal =  $this->unresolvedTrade($request, $transaction);
+                    $status = $withdrawal['status'];
+                    $message = $withdrawal['message'];
+                    return back()->with([$status => $message]);
+                }
+
             } else {
-               $deposit =  $this->confirm($request, $transaction);
-               $status = $deposit['status'];
-               $message = $deposit['message'];
-               return back()->with([$status => $message]);
+               if($request->status == 'approve'){
+                    $deposit =  $this->confirm($request, $transaction);
+                    $status = $deposit['status'];
+                    $message = $deposit['message'];
+                    return back()->with([$status => $message]);
+                }
+                //decline 
+                if($request->status == 'decline'){
+                    $deposit =  $this->declineTrade($request, $transaction);
+                    $status = $deposit['status'];
+                    $message = $deposit['message'];
+                    return back()->with([$status => $message]);
+                }
+            }
+    }
+
+    public function unresolvedTrade(Request $request, NairaTrade $transaction)
+    {
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return [
+                'status' => 'error',
+                'message' => 'Incorrect pin'
+            ];
+        }
+
+        if ($transaction->status != 'waiting') {
+            return [
+                'status' => 'error',
+                'message' => 'Invalid transaction'
+            ];
+        }
+        $account = $transaction->account;
+
+        $title = "WITHDRAWAL UPDATE!";
+        $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." is being processed, Please hold on it might take a little while. Kindly contact support for more information.";
+
+        $bankDetails = '<b>('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.')</b>';
+        $body = "<div style='text-align:justify'>";
+        $body .= "Payment have been to your account $bankDetails.<br> Kindly note we are having issue with your recipient bank, sorry for the inconvenience";
+        $body .= "</div>";
+
+        $fcm_id = $transaction->user->fcm_id;
+        if (isset($fcm_id)) {
+            try {
+                FirebasePushNotificationController::sendPush($fcm_id,$title,$msg);
+            } catch (\Throwable $th) {
+                //throw $th;
             }
         }
 
-        //decline
+        $transaction->status = 'unresolved';
+        $transaction->save();
 
-        //unresolved
+        self::sendMail($title, $body, $transaction);
+        return [
+            'status' => 'success',
+            'message' => 'updated Successfully'
+        ];
     }
 
     public static function declinedMailData($reason, NairaTrade $nairaTrade)
@@ -568,7 +625,7 @@ class TradeNairaController extends Controller
         ];
     }
 
-    public static function sendDeclinedMail($title, $body, NairaTrade $nairaTrade)
+    public static function sendMail($title, $body, NairaTrade $nairaTrade)
     {
         $user = $nairaTrade->user;
 
@@ -582,11 +639,17 @@ class TradeNairaController extends Controller
     public function declineTrade(Request $request, NairaTrade $transaction)
     {
         if (!Hash::check($request->pin, Auth::user()->pin)) {
-            return back()->with(['error' => 'Incorrect pin']);
+            return [
+                'status' => 'error',
+                'message' => 'Incorrect pin'
+            ];
         }
 
         if ($transaction->status != 'waiting') {
-            return back()->with(['error' => 'Invalid transaction']);
+            return [
+                'status' => 'error',
+                'message' => 'Invalid transaction'
+            ];
         }
         $reasonData = self::declinedMailData($request->reason, $transaction);
         $reason = $reasonData['reason'];
@@ -636,8 +699,11 @@ class TradeNairaController extends Controller
         $transaction->status = 'cancelled';
         $transaction->save();
 
-        self::sendDeclinedMail($title, $body, $transaction);
-        return back()->with(['success' => 'Transaction cancelled']);
+        self::sendMail($title, $body, $transaction);
+        return [
+            'status' => 'success',
+            'message' => 'Transaction cancelled'
+        ];
     }
 
     public function refundTrade(Request $request, NairaTrade $transaction)
@@ -820,7 +886,7 @@ class TradeNairaController extends Controller
         $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
 
 
-        if ($transaction->status != 'waiting') {
+        if (!in_array($transaction->status,['waiting','unresolved'])) {
             return [
                 'status' => 'error',
                 'message' => 'Invalid transaction'

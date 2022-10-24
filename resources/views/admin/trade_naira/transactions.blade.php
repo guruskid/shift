@@ -386,13 +386,19 @@
 
                                         <td>
                                             <div class="btn-group">
-                                                @if ($t->status == 'waiting')
+                                                @if (in_array($t->status,['waiting','unresolved']))
                                                     <button data-toggle="modal" data-target="#pay-view--{{ $t->id }}" class="btn btn-primary">Pay</button>
                                                     {{-- <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
                                                     <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button> --}}
                                                 
-                                                @elseif($t->status == 'success' && in_array(Auth::user()->role, [999, 889]) )
-                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#refund-modal-{{ $t->id }}">Refund</button>
+                                                @elseif($t->status == 'success')
+                                                    @if(in_array(Auth::user()->role, [999, 889]))
+                                                        <button class="btn btn-danger" data-toggle="modal" data-target="#refund-modal-{{ $t->id }}">Refund</button>
+                                                        <button data-toggle="modal" data-target="#pay-view--{{ $t->id }}" class="btn btn-primary">View</button>
+                                                    @else
+                                                        <button data-toggle="modal" data-target="#pay-view--{{ $t->id }}" class="btn btn-primary">View</button>
+                                                    @endif
+                                                    
                                                 @endif
                                             </div>
                                         </td>
@@ -438,11 +444,13 @@
                                 <label class="mt-2" for="reason" >Account Number</label>
                                 <div class="input-group mb-2">
                                     <input type="text" input class="form-control" type="text" id="accountNumbercopy" value="{{$t->account->account_number}}" disabled>
+                                    @if($t->status != 'success')
                                     <div class="input-group-append">
                                       <span class="input-group-text" id="basic-addon2" onclick="copyData('accountNumbercopy')">
                                         <img src="{{asset('svg/copy_btn.svg')}}" />
                                       </span>
                                     </div>
+                                    @endif
                                 </div>
 
                                 <label class="mt-2" for="reason">Bank Name</label>
@@ -452,28 +460,45 @@
                                 <label class="mt-2" for="reason">Amount</label>
                                 <div class="input-group mb-2">
                                     <input type="text" input class="form-control" type="text" id="amountcopy" value="{{$t->amount}}" disabled>
+                                    @if($t->status != 'success')
                                     <div class="input-group-append">
                                       <span class="input-group-text" id="basic-addon2" onclick="copyData('amountcopy')">
                                         <img src="{{asset('svg/copy_btn.svg')}}" />
                                       </span>
                                     </div>
+                                    @endif
                                 </div>
 
+                                @if($t->status == 'success')
+                                <label for="reason" >Ref Num</label>
+                                <input type="text" input class="form-control mb-2" type="text" value="{{$t->reference}}" disabled>
+
+                                <label for="reason" >Status</label>
+                                <input type="text" input class="form-control mb-2" type="text" value="{{$t->status}}" disabled>
+                                @endif
+                                @if($t->status != 'success')
                                 <div class="btn-toolbar float-right" role="toolbar" id="p2p_buttongroup-{{ $t->id }}">
                                     <div class="btn-group mr-2 float-right" role="group" aria-label="First group">
                                       <button type="button" onclick="buttonSelect('statusInput-{{ $t->id }}','approve',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Approve</button>
                                     </div>
+                                    @if($t->status != 'unresolved')
                                     <div class="btn-group mr-2 float-right" role="group">
                                       <button type="button" onclick="buttonSelect('statusInput-{{ $t->id }}','decline',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Decline</button>
                                     </div>
-                                    <div class="btn-group mr-2 float-right" role="group">
-                                      <button type="button"onclick="buttonSelect('statusInput-{{ $t->id }}','unresolved',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">unresolved</button>
-                                    </div>
+                                    @endif
+
+                                    @if($t->type == 'withdrawal' AND $t->status != 'unresolved')
+                                        <div class="btn-group mr-2 float-right" role="group">
+                                        <button type="button"onclick="buttonSelect('statusInput-{{ $t->id }}','unresolved',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">unresolved</button>
+                                        </div>
+                                    @endif
+                                    
                                     <div class="btn-group mr-2 float-right" role="group">
                                         <button type="button" data-dismiss="modal" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Go Back</button>
                                     </div>
                                   </div>
-                            </div>
+                                </div>
+                                @endif
 
                             <input type="hidden" name="status" id="statusInput-{{ $t->id }}">
                             <input type="hidden" name="id" value="{{ $t->id }}">
