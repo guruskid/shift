@@ -11,6 +11,7 @@ use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Setting;
+use App\Wallet;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -89,6 +90,7 @@ class UsdtController extends Controller
             'currency_id' => 7,
             'name' => Auth::user()->email,
             'address' => $address,
+            'status' => 'pending'
         ]);
 
         return response()->json([
@@ -306,6 +308,17 @@ class UsdtController extends Controller
 
         $user_wallet = Auth::user()->usdtWallet;
         $user_wallet->balance = $accounts->balance->availableBalance;
+
+        if ($user_wallet->status == 'pending') {
+            $activate = UsdtController::activate($user_wallet)->getData();
+
+            if ($activate->success == false) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $activate->message
+                ]);
+            }
+        }
 
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
 
@@ -770,6 +783,17 @@ class UsdtController extends Controller
         $user_wallet = Auth::user()->usdtWallet;
         $user_wallet->balance = $accounts->balance->availableBalance;
 
+        if ($user_wallet->status == 'pending') {
+            $activate = UsdtController::activate($user_wallet)->getData();
+
+            if ($activate->success == false) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $activate->message
+                ]);
+            }
+        }
+
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
         $sub_total = round(($request->amount  + $charge), 3);
@@ -856,5 +880,58 @@ class UsdtController extends Controller
         }
 
         return response()->json(['success' => true, 'msg' => 'USDT sent successfully']);
+    }
+
+    public static function activate($wallet)
+    {
+        $index = Contract::where('address', $wallet->address)->first()->index;
+        $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
+
+        $fees_wallet = FeeWallet::where('name', 'usdt_fees')->first();
+        $fees_wallet->balance = CryptoHelperController::feeWalletBalance(7);
+
+        $fee_limit = 50;
+        if ($fees_wallet->balance < $fee_limit) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Service not available'
+            ]);
+        }
+
+        $client = new Client();
+
+        $url_contract = env('TATUM_URL') . '/gas-pump/activate';
+        try {
+            $res_contract = $client->request('POST', $url_contract, [
+                'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
+                'json' =>  [
+                    "chain" => "TRON",
+                    "owner" => $fees_wallet->address,
+                    "from" => (int)$index,
+                    "to" => (int)$index,
+                    "feeLimit" => $fee_limit,
+                    "signatureId" => $hd_wallet->private_key,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occured, please try again'
+            ]);
+        }
+
+        $send_res = json_decode($res_contract->getBody());
+        if (!isset($send_res->signatureId)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'A server error occured, please try again'
+            ]);
+        }
+
+        $wallet->status = 'activated';
+        $wallet->save();
+
+        return response()->json(['success' => true]);
     }
 }

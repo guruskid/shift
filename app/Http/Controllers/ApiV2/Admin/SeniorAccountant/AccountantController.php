@@ -108,10 +108,23 @@ class AccountantController extends Controller
 
     public function getActivationHistory()
     {
-        $accountant = User::whereHas('accountantTimestamp')->whereIn('role', [777, 775, 889])->with('accountantTimestamp', 'accountantTimestamp.activatedBy')->get();
+        // $accountant = User::whereHas('accountantTimestamp')->whereIn('role', [777, 775, 889])->with('accountantTimestamp', 'accountantTimestamp.activatedBy')->get();
+
+        $data['accountant'] = User::whereHas('accountantTimestamp')->whereIn('role', [777, 775, 889])->with(
+            ['accountantTimestamp' => function ($query) {
+            $query->select('id', 'user_id', "activation_date", "deactivation_date", "activated_by");
+        },
+        'accountantTimestamp.activatedBy' => function ($query) {
+            $query->select("id", "first_name", "last_name");
+        },
+
+
+    ],)->select('id', "role", "dp", "first_name", "last_name", "status")->get();
+
+
         return response()->json([
             'success' => true,
-            'data' => $accountant,
+            'data' => $data,
         ], 200);
     }
 
@@ -281,7 +294,7 @@ class AccountantController extends Controller
 
         }
 
-        
+
 
 
        $transaction =  NairaTransaction::whereHas("user")->whereIn("status", ["success", "pending"])->whereMonth('created_at', $mnt)->whereYear('created_at', $yr);

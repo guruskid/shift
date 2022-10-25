@@ -87,12 +87,10 @@
                 <div class="col-md-6 mb-5">
                     <form action="{{ route('admin.tether.deploy-contract') }}" method="POST" class="form-inline mb-3">@csrf
                         <select name="count" id="" class="form-control mr-2">
-                            <option value="2">2 (60TRX)</option>
-                            <option value="5">5 (200TRX)</option>
-                            <option value="10">10 (300TRX)</option>
-                            <option value="100">100 (3,000 TRX)</option>
+                            <option value="2">2 (Free) </option>
+                            <option value="500">500 (Free) </option>
                         </select>
-                        <button class="btn btn-primary ">Deploy Contract</button>
+                        <button class="btn btn-primary ">Generate addresses</button>
                     </form>
                     <div class="card card-body">
                         <h5 class="mb-2">Pending Contracts</h5>

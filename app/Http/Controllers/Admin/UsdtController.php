@@ -239,64 +239,51 @@ class UsdtController extends Controller
     public function deployContract(Request $request)
     {
         $fees_wallet = FeeWallet::where('name', 'usdt_fees')->first();
-        $fees_wallet->balance = CryptoHelperController::feeWalletBalance(7);
-        $key = env('USDT_KEY');
-        $fee_limit = 0;
+        $hd = HdWallet::where('currency_id', 7)->first();
+        $amount = $request->count;
 
-        switch ($request->count) {
-            case 2:
-                $fee_limit = 60;
-                break;
-            case 5:
-                $fee_limit = 200;
-                break;
-            case 10:
-                $fee_limit = 300;
-                break;
-            case 100:
-                $fee_limit = 3000;
-                break;
-            case 270:
-                $fee_limit = 8000;
-                break;
-            default:
-                $fee_limit = 2000;
-                break;
-        }
+        $hd->from += $amount;
+        $hd->to += $amount;
+        $hd->save();
 
-        if ($fees_wallet->balance < $fee_limit) {
-            return back()->with(['error' => 'Insufficient fee wallet balance']);
-        }
         $client = new Client();
 
-        $url_contract = env('TATUM_URL') . '/blockchain/sc/custodial/batch';
+        $url_contract = env('TATUM_URL') . '/gas-pump';
         try {
             $res_contract = $client->request('POST', $url_contract, [
                 'headers' => ['x-api-key' => env('TATUM_KEY_USDT')],
                 'json' =>  [
                     "chain" => "TRON",
-                    "fromPrivateKey" => $key,
-                    "batchCount" => (int)$request->count,
                     "owner" => $fees_wallet->address,
-                    "feeLimit"  => $fee_limit,
+                    "from" => (int)$hd->from,
+                    "to" => (int)$hd->to,
                 ]
             ]);
         } catch (\Exception $e) {
             report($e);
-            return back()->with(['error' => 'An error occured while deploying the contract']);
+            return back()->with(['error' => 'An error occured while generating addresses']);
         }
 
         $res = json_decode($res_contract->getBody());
-        Contract::create([
-            'hash' => $res->txId,
-            'type' => 'transaction',
-            'currency_id' => 7
-        ]);
+        $count = 0;
+        foreach ($res as $r) {
+            // check if address already exists
+            if (!Contract::where('hash', $r)->exists()) {
+                Contract::create([
+                    'hash' => $r,
+                    'index' => $hd->from + $count,
+                    'type' => 'address',
+                    'currency_id' => 7
+                ]);
+                $count++;
+            }
+        }
 
-        return back()->with(['success' => 'Contract deployed successfully']);
+        return back()->with(['success' => $count . ' addresses created successfully']);
     }
 
-    public function activate($id)
+
+    public function activate($id) //Deprecated
     {
         $contract = Contract::find($id);
 

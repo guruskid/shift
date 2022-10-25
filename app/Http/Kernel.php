@@ -84,6 +84,7 @@ class Kernel extends HttpKernel
         'sales' => \App\Http\Middleware\Sales::class,
         'salesAnalyticsAccess' => \App\Http\Middleware\salesAnalyticsAccess::class,
         'cors' => \App\Http\Middleware\Cors::class,
+        'contentCurator' =>  \App\Http\Middleware\ContentCurator::class,
     ];
 
     /**
