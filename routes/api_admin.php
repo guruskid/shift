@@ -530,3 +530,33 @@ Route::group(['middleware' => ['auth:api', 'customerHappiness', 'cors']], functi
     });
 });
 
+
+Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function(){
+    Route::prefix('content')->group(function () {
+        // Blog Category
+        Route::prefix('category')->group(function () {
+            Route::post('/', 'ContentController@addBlogCategory');
+            Route::put('/{id}', 'ContentController@updateBlogCategory');
+            Route::delete('/{id}', 'ContentController@deleteBlogCategory');
+        });
+        // Blog Heading
+        Route::prefix('heading')->group(function () {
+            Route::post('/', 'ContentController@addBlogHeading');
+            Route::put('/{id}', 'ContentController@updateBlogHeading');
+            Route::delete('/{id}', 'ContentController@deleteBlogHeading');
+        });
+        // Blog posts
+        Route::prefix('blog')->group(function () {
+            Route::post('/', 'ContentController@storeBlog');
+            Route::get('/', 'ContentController@fetchBlogPosts');
+            Route::get('/{id}', 'ContentController@showPost');
+            Route::delete('/{id}', 'ContentController@destroyBlog');
+            Route::put('/{id}', 'ContentController@updateBlog');
+
+
+        });
+
+
+    });
+});
+
