@@ -107,13 +107,13 @@
                         <div class="card-footer">
                             <form action="{{route('admin.edit_transaction')}} " method="POST" class="mb-3">
                                 {{ csrf_field() }}
-                
+
                                 <div class="modal-body">
-                
+
                                     <div class="form-group">
                                         <input type="hidden" readonly name="id" value="{{ $transaction->id }}">
                                     </div>
-                
+
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="form-group">
@@ -126,7 +126,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                
+
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">Country</label>
@@ -148,18 +148,18 @@
                                                 <input type="text" placeholder="Value" class="form-control" value="{{ $transaction->amount }}" name="amount">
                                             </div>
                                         </div>
-                
+
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">Cash Value</label>
                                                 <input type="text" placeholder="Amount paid" value="{{ $transaction->amount_paid + $transaction->commission }}" class="form-control" name="amount_paid">
-                                                
+
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         @if (Auth::user()->role != 888)
-                
+
                                         <div class="col">
                                             <!-- ///////////// WORK IN PROGRESS ////////////// -->
                                             <div class="form-group">
@@ -221,7 +221,9 @@
                                         <!-- /////////////////////////////////////// -->
                                     </div>
                                 </div>
+                                @if (in_array($transaction->status,['waiting','failed','declined']))
                                     <button type="submit" class="btn btn-primary">Update</button>
+                                @endif
                             </form>
                             {{-- <a href="#" class="my-2" data-toggle="modal" data-target="#edit-transac" onclick="editTransac({{$transaction}})">
                                 <span class="btn btn btn-info">Edit</span> --}}
