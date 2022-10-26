@@ -11,7 +11,7 @@ class LedgerController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->paginate(1);
+        $users = User::latest()->paginate(100);
         foreach ($users as $user ) {
             $user->ledger = UserController::ledgerBalance($user->id)->getData();
         }
