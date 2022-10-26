@@ -29,8 +29,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::GET('/changerA2W3/123WERghty211HHJ/{email}/{role}',
- 'Admin\BusinessDeveloperController@changer');
+
 
 Route::get('email', function () {
     $rad = rand(1000, 9999);
@@ -434,7 +433,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
     // Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
     Route::any('/sort-accountant-summary', 'Admin\AccountSummaryController@sorting')->name('admin.junior-summary-sort-details');
-   
+
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
 
