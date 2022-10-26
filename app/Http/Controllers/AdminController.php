@@ -1279,7 +1279,7 @@ class AdminController extends Controller
         $user = User::find($id);
         $transactions = $user->transactions;
 
-        $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->orderBy('id', 'desc')->paginate(20);
+        $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->orderBy('id', 'desc')->paginate(2000);
         $dr_total = 0;
         $cr_total = 0;
         foreach ($wallet_txns as $t) {

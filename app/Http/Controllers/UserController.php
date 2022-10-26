@@ -40,8 +40,8 @@ class UserController extends Controller
             $user = User::find($user_id);
         }
 
-        $cr = $user->nairaTransactions()->where('type', 'Credit')->sum('amount');
-        $dr = $user->nairaTransactions()->where('type', 'Debit')->sum('amount');
+        $cr = NairaTransaction::where('cr_user_id', $user->id)->sum('amount');
+        $dr = NairaTransaction::where('dr_user_id', $user->id)->sum('amount');
         $ledger_balance = $cr - $dr;
 
         return response()->json([
