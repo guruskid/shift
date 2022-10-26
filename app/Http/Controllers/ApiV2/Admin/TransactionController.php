@@ -121,10 +121,6 @@ class TransactionController extends Controller
     public function overview(Request $req)
     {
 
-
-
-
-
         $total_number_utility_transactions = UtilityTransaction::whereIn('status', ['success', 'pending'])->count();
         $total_assets_value = Transaction::where('status', 'success')->sum('amount');
         $total_card_price =Transaction::where('status', 'success')->sum('card_price');
@@ -143,11 +139,13 @@ class TransactionController extends Controller
         // recent transactions
         $tranx = DB::table('transactions')
             ->whereIn('transactions.status', ['success', 'pending'])
-            ->join('users', 'transactions.user_id', '=', 'users.id');
+            ->join('users', 'transactions.user_id', '=', 'users.id')
+            ->join("users as accountants", 'transactions.agent_id',  '=', 'accountants.id');
 
         // naira Transaction table
         $tranx2 = DB::table('naira_transactions')
             ->join('users', 'naira_transactions.user_id', '=', 'users.id');
+            // ->join();
 
 
         if ($req->transaction_type_id) {
@@ -165,12 +163,12 @@ class TransactionController extends Controller
 
 
 
-        $tranx = $tranx->select('first_name', 'last_name', 'username', 'dp', 'transactions.id', 'user_id', 'card as transaction', 'amount_paid as amount', 'transactions.amount as value', DB::raw('0 as prv_bal'), DB::raw('0 as cur_bal'), 'transactions.status', DB::raw('date(transactions.created_at) as date', 'transactions.created_at as created_at'));
-        $tranx2 = $tranx2->select('first_name', 'last_name', 'username', 'dp','naira_transactions.id', 'user_id', 'type as transaction', 'amount_paid', 'naira_transactions.amount as value', 'previous_balance as prv_bal', 'current_balance as cur_bal', 'naira_transactions.status', DB::raw('date(naira_transactions.created_at) as date', 'naira_transactions.created_at as created_at'));
+        $tranx = $tranx->select("accountants.username AS accountant_username", "accountants.email AS accountant_email",'users.first_name', 'users.last_name', 'users.username', 'users.dp', 'transactions.id', 'user_id', 'card as transaction', 'amount_paid as amount', 'transactions.amount as value', DB::raw('0 as prv_bal'), DB::raw('0 as cur_bal'), 'transactions.status', DB::raw('date(transactions.created_at) as date', 'transactions.created_at as created_at'));
+        $tranx2 = $tranx2->select("users.id","users.phone",'users.first_name', 'users.last_name', 'users.username', 'users.dp','naira_transactions.id', 'user_id', 'type as transaction', 'amount_paid', 'naira_transactions.amount as value', 'previous_balance as prv_bal', 'current_balance as cur_bal', 'naira_transactions.status', DB::raw('date(naira_transactions.created_at) as date', 'naira_transactions.created_at as created_at'));
         // merge table
         $mergeTbl = $tranx->unionAll($tranx2);
         DB::table(DB::raw("({$mergeTbl->toSql()}) AS mg"))->mergeBindings($mergeTbl);
-        $data['transactions'] =  $mergeTbl->orderBy('id', 'desc')->paginate();
+        $data['transactions'] =  $mergeTbl->orderBy('id', 'desc')->paginate(25);
         // }
 
 

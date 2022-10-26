@@ -451,74 +451,67 @@ Route::group(['middleware' =>['auth:api', 'accountant', 'cors']], function () {
     });
 
 
-    // Route::prefix('accounting-officer')->group(function () {
+    Route::prefix('accounting-officer')->group(function () {
 
-    //     Route::prefix('overview')->group(function () {
-    //         Route::get('/paybridge-transactions', 'DashboardOverviewController@paybridgeTransactions');
-    //         Route::get('/recent-transactions', 'DashboardOverviewController@recentTransactions');
-    //         Route::get('/compliance-fraud', 'DashboardOverviewController@complianceFraud');
-    //         Route::get('/summary', 'DashboardOverviewController@juniorAccountantSummary');
+        Route::prefix('overview')->group(function () {
 
-    //     });
-
-    //    // paybridge
-
-    //     Route::prefix('payBridge')->group(function () {
-    //         Route::group(['prefix' => 'bank'], function () {
-    //             Route::GET('/list', 'PayBridgeController@index');
-    //             Route::POST('/add', 'PayBridgeController@addBank');
-    //             Route::GET('/show/{id}', 'PayBridgeController@showBank');
-    //             Route::GET('activate/{id}', 'PayBridgeController@activateBank');
-    //             Route::GET('deactivate/{id}', 'PayBridgeController@deactivateBank');
-    //         });
-    //     });
-
-    //     Route::prefix('rate')->group(function () {
-    //         Route::get('/overview', 'RateController@overview');
-    //         Route::get('/delete/{id}', 'RateController@deleteRate');
-    //         Route::get('/update', 'RateController@updateRate');
-    //     });
-
-
-    //     // transactions
-    //     Route::prefix('transactions')->group(function () {
-    //         Route::get('/overview', 'TransactionController@overview');
-
-    //     });
-
-    //     // Notification
-    //     Route::prefix('notifications')->group(function () {
-    //         Route::get('/', 'NotificationsController@index');
-    //         Route::get('/show/{id}', 'NotificationsController@show');
-    //         Route::get('/read-all-clear-all', 'NotificationsController@mark_clear_all');
-
-    //     });
-
-    //     Route::prefix('verifications')->group(function () {
-    //         Route::get('/overview', 'VerificationsController@overview');
-    //         Route::get('/decline', 'VerificationsController@approveVerification');
-    //         Route::get('/approve', 'VerificationsController@approveVerification');
-
-
-    //     });
-
-
-    //     Route::prefix('accountants')->group(function () {
-    //         Route::get('/list', 'AccountantController@listOfAccountantOfficers');
-
-
-    //     });
+            Route::get('/analytics', 'DashboardOverviewController@accountingOfficerOverview');
+            Route::get('/current-rate', 'DashboardOverviewController@currentRate');
 
 
 
+        });
+
+        Route::prefix('session-summary')->group(function () {
+            Route::get('/', 'SummarySessionController@index');
+
+        });
+
+        Route::prefix('transactions')->group(function () {
+            Route::get('/summary', 'TransactionController@overview');
 
 
 
+            Route::prefix('p2p')->group(function () {
+                Route::get('/overview', 'PayBridgeController@p2pTransactionsSUmmary');
+                Route::get('/transaction-overview', 'PayBridgeController@p2pTransactions');
+                Route::get('/sort-by-accountant/{accountant_id}', 'PayBridgeController@sortP2PByAccountant');
+                Route::get('/analytics', 'PayBridgeController@p2pAnalytics');
+
+            });
+
+        });
 
 
+        // transactions
+        Route::prefix('transactions')->group(function () {
+            Route::prefix('overview')->group(function () {
+                Route::get('/', 'TransactionController@overview');
+            });
 
-    // });
+        });
+
+        // Notification
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', 'NotificationsController@index');
+            Route::get('/show/{id}', 'NotificationsController@show');
+            Route::get('/read-all-clear-all', 'NotificationsController@mark_clear_all');
+        });
+
+        Route::prefix('verifications')->group(function () {
+            Route::get('/overview', 'VerificationsController@overview');
+            Route::get('/decline', 'VerificationsController@approveVerification');
+            Route::get('/approve', 'VerificationsController@approveVerification');
+        });
+
+        Route::prefix('accountants')->group(function () {
+            Route::get('/list', 'AccountantController@listOfAccountantOfficers');
+
+        });
+    });
 });
+
+
 
 Route::group(['middleware' => ['auth:api', 'customerHappiness', 'cors']], function(){
     Route::prefix('customer-happiness')->group(function () {
@@ -552,7 +545,6 @@ Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function
             Route::get('/{id}', 'ContentController@showPost');
             Route::delete('/{id}', 'ContentController@destroyBlog');
             Route::put('/{id}', 'ContentController@updateBlog');
-
 
         });
 
