@@ -85,9 +85,9 @@
                                         <tr class="{{ $status }} ">
                                             <td class="text-muted">{{ $u->id }}</td>
                                             <td>{{ ucwords($u->first_name) }}</td>
-                                            <td>{{ $u->ledger->cr }}</td>
-                                            <td>{{ $u->ledger->dr }}</td>
-                                            <td>{{ $u->ledger->balance }}</td>
+                                            <td>₦{{ number_format($u->ledger->cr) }}</td>
+                                            <td>₦{{ number_format($u->ledger->dr) }}</td>
+                                            <td>₦{{ number_format($u->ledger->balance) }}</td>
                                             <td>₦{{ $u->nairaWallet ? number_format($u->nairaWallet->amount) : 0 }} </td>
                                             <td>{{ $u->created_at->format('d M y') }}</td>
                                             <td>
