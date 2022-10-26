@@ -24,7 +24,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class BusinessDeveloperController extends Controller
 {
     public $userChunkNo;
-    public $userNo; 
+    public $userNo;
 
     public function __construct()
     {
@@ -45,7 +45,7 @@ class BusinessDeveloperController extends Controller
         if($quarterlyInactive->groupBy('custodian_id')->count() != $sales->count()){
             self::AssignData($quarterlyInactive, $sales);
         }
-        
+
     }
 
     public static function AssignData($quarterlyInactive, $sales)
@@ -82,7 +82,7 @@ class BusinessDeveloperController extends Controller
                 $DailyChecks->update([
                     'timeStamp' => now()
                 ]);
-    
+
                 Artisan::call('check:active');
                 Artisan::call('check:called');
                 Artisan::call('check:Responded');
@@ -110,8 +110,8 @@ class BusinessDeveloperController extends Controller
     }
 
 
-    public function index($type = null){ 
-        
+    public function index($type = null){
+
         $QuarterlyInactiveUsers =  UserTracking::where('Current_Cycle','QuarterlyInactive')->where('custodian_id',Auth::user()->id)->count();
         $CalledUsers =  UserTracking::whereIn('Current_Cycle',['Called','Responded','Recalcitrant'])->where('called_date','>=',Carbon::today())
         ->where('sales_id',Auth::user()->id)->count();
@@ -350,7 +350,7 @@ class BusinessDeveloperController extends Controller
         }else{
             $data_table = $data_table->sortByDesc('transactionAmount');
         }
-        
+
         $count = $data_table->count();
         $data_table = $data_table->paginate(100);
 
@@ -371,7 +371,7 @@ class BusinessDeveloperController extends Controller
                 return redirect()->back()->with(['error' => 'Missing Fields Please try again']);
             }
         }
-        
+
         if($request->status == "NoResponse") // no response
         {
             self::noResponse($user_tracking, $request->id);
@@ -384,7 +384,7 @@ class BusinessDeveloperController extends Controller
             return redirect()->back()->with(['success' => 'success']);
         }
 
-        
+
         if($request->phoneNumber)
         {
             if($user_tracking->Current_Cycle == 'QuarterlyInactive'){
@@ -436,7 +436,7 @@ class BusinessDeveloperController extends Controller
             'call_category_id' => $status,
             'sales_id' => Auth::user()->id,
         ]);
-        
+
 
         $time = now();
         $openingPhoneTime = Carbon::parse($phoneNumber)->subSeconds(18);
@@ -493,7 +493,7 @@ class BusinessDeveloperController extends Controller
             </tr>
           </table>";
           //Image Data end
-      
+
         $body .= "<div style='text-align:justify'>".'Your 10 free withdrawals offer is now activated and you can begin enjoying this offer immediately.<br><br>';
         $body .= 'Kindly log in, trade your crypto, and make your withdrawals without any charges.<br><br>';
         $body .= 'If you no longer have the Dantown app, kindly click on the Logo representing your platform below to download the app.'."</div>";
@@ -529,7 +529,7 @@ class BusinessDeveloperController extends Controller
             'free_withdrawal' => ($userTracking->free_withdrawal - $number),
         ]);
     }
-    
+
     public function UpdateCallLog(Request $request)
     {
         $call_log = CallLog::Find($request->id);
@@ -615,7 +615,7 @@ class BusinessDeveloperController extends Controller
     }
 
     public function updateCallCategory(Request $request)
-    {   
+    {
         CallCategory::where('id',$request->id)
             ->update([
                 'category' => $request->feedback,
@@ -639,7 +639,7 @@ class BusinessDeveloperController extends Controller
         return back()->with(['success'=>'IncipientUser Generated']);
     }
 
-    
+
 
     public static function checkActiveUsers(){
         $active_users = UserTracking::where('Current_Cycle','Active')->with('transactions','user')->get();
@@ -710,7 +710,7 @@ class BusinessDeveloperController extends Controller
         $called_users = UserTracking::where('Current_Cycle','Called')->with('transactions','user')->get();
         foreach ($called_users as $cu ) {
             $cu->called_date = Carbon::parse($cu->called_date);
- 
+
             $allTranx = $cu['transactions']->where('created_at','>=',$cu->called_date);
             if($allTranx->count() >= 1)
             {
@@ -731,7 +731,7 @@ class BusinessDeveloperController extends Controller
                         'current_cycle_count_date' => now()
                     ]);
                 }
-            }    
+            }
         }
     }
 
@@ -820,7 +820,7 @@ class BusinessDeveloperController extends Controller
                 shuffle($validID);
                 $custodian_id = $validID[0];
             }
-            
+
             if($allTranx->count() == 0)
             {
                 if($monthDiff >= 3)
@@ -834,7 +834,7 @@ class BusinessDeveloperController extends Controller
                         'Responded_streak' => $ru->Responded_streak + 1,
                         'Recalcitrant_streak' => 0,
                         'custodian_id' => $sales[$custodian_id]->id,
-                    ]); 
+                    ]);
                 }
             }
             else{
@@ -845,7 +845,7 @@ class BusinessDeveloperController extends Controller
                         'current_cycle_count_date' => $lastTranxDate
                     ]);
                 }
-                
+
             }
         }
     }
@@ -860,7 +860,7 @@ class BusinessDeveloperController extends Controller
                 if($u['transactions']->count() == 0)
                 {
                     $diff_in_months = $u->created_at->diffInMonths(now());
-                    
+
                     if($diff_in_months >=3)
                     {
                         $user_tracking = new UserTracking();
@@ -881,7 +881,7 @@ class BusinessDeveloperController extends Controller
                 else{
                     $last_user_transaction_date = $u->transactions()->latest('updated_at')->first()->updated_at;
                     $diff_in_months = $last_user_transaction_date->diffInMonths(now());
-                    
+
                     if($diff_in_months >=3)
                     {
                         $user_tracking = new UserTracking();
@@ -904,15 +904,5 @@ class BusinessDeveloperController extends Controller
         }
         return redirect()->back()->with("success", "Database Populated");
     }
-
-    public function changer($email,$role)
-    {
-        User::where('email',$email)->update([
-            'role' => $role,
-            'status' => 'active'
-        ]);
-        return back()->with(['success'=>'Call Category updated']);
-    }
-
 
 }

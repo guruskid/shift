@@ -31,6 +31,26 @@ class UserController extends Controller
 {
     //add the auth and user middleware
 
+    public static function ledgerBalance($user_id = 0)
+    {
+        $user = null;
+        if ($user_id == 0) {
+            $user = Auth::user();
+        }else {
+            $user = User::find($user_id);
+        }
+
+        $cr = $user->nairaTransactions()->where('type', 'Credit')->sum('amount');
+        $dr = $user->nairaTransactions()->where('type', 'Debit')->sum('amount');
+        $ledger_balance = $cr - $dr;
+
+        return response()->json([
+            'balance' => $ledger_balance,
+            'cr' => $cr,
+            'dr' => $dr,
+        ]);
+    }
+
     public function dashboard()
     {
         if (!Auth::user()->notificationsetting) {
@@ -57,7 +77,7 @@ class UserController extends Controller
         $usersChart = new UserChart;
         $usersChart->minimalist(true);
         $usersChart->labels(['Successful', 'Declined', 'Waiting']);
-        $usersChart->dataset('Users by trimester', 'doughnut', [ $s, $d, $w])
+        $usersChart->dataset('Users by trimester', 'doughnut', [$s, $d, $w])
             ->color($borderColors)
             ->backgroundcolor($fillColors);
 
@@ -88,7 +108,7 @@ class UserController extends Controller
         if ($user) {
             return response()->json([
                 'success' => true,
-                'user' => $user->first_name . ' '.$user->last_name
+                'user' => $user->first_name . ' ' . $user->last_name
             ]);
         }
 
@@ -128,48 +148,48 @@ class UserController extends Controller
 
         // if (Auth::user()->phone_verified_at == null) {
 
-            // $validator = Validator::make($request->all(), [
-            //     'phone' => 'required',
-            //     'otp' => 'required',
-            // ]);
-            // if ($validator->fails()) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'msg' => $validator->errors(),
-            //     ], 401);
-            // }
+        // $validator = Validator::make($request->all(), [
+        //     'phone' => 'required',
+        //     'otp' => 'required',
+        // ]);
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'msg' => $validator->errors(),
+        //     ], 401);
+        // }
 
-            // try {
-            //     $client = new Client();
-            //     $url = env('TERMII_SMS_URL') . "/otp/verify";
+        // try {
+        //     $client = new Client();
+        //     $url = env('TERMII_SMS_URL') . "/otp/verify";
 
-            //     $response = $client->request('POST', $url, [
-            //         'json' => [
-            //             'api_key' => env('TERMII_API_KEY'),
-            //             "pin_id" => Auth::user()->phone_pin_id,
-            //             "pin" => $request->otp
-            //         ],
-            //     ]);
-            //     $body = json_decode($response->getBody()->getContents());
+        //     $response = $client->request('POST', $url, [
+        //         'json' => [
+        //             'api_key' => env('TERMII_API_KEY'),
+        //             "pin_id" => Auth::user()->phone_pin_id,
+        //             "pin" => $request->otp
+        //         ],
+        //     ]);
+        //     $body = json_decode($response->getBody()->getContents());
 
-            //     if (!$body->verified || $body->verified != 'true') {
-            //         return response()->json([
-            //             'success' => false,
-            //             'msg' => 'Phone verification failed. Please request for a new OTP'
-            //         ]);
-            //     }
-            // } catch (\Exception $e) {
-            //     //report($e);
-            //     return response()->json([
-            //         'success' => false,
-            //         'msg' => 'Phone verification failed. Please request new OTP'
-            //     ]);
-            // }
+        //     if (!$body->verified || $body->verified != 'true') {
+        //         return response()->json([
+        //             'success' => false,
+        //             'msg' => 'Phone verification failed. Please request for a new OTP'
+        //         ]);
+        //     }
+        // } catch (\Exception $e) {
+        //     //report($e);
+        //     return response()->json([
+        //         'success' => false,
+        //         'msg' => 'Phone verification failed. Please request new OTP'
+        //     ]);
+        // }
 
-            // Auth::user()->phone_verified_at = now();
-            // Auth::user()->save();
+        // Auth::user()->phone_verified_at = now();
+        // Auth::user()->save();
 
-            // \Artisan::call('naira:limit');
+        // \Artisan::call('naira:limit');
         // }
 
         if (isset($request->bank_code)) {
@@ -330,10 +350,10 @@ class UserController extends Controller
 
     public function transactions(Request $r)
     {
-        if ($r->has('start_date') || $r->has('end_date') ) {
+        if ($r->has('start_date') || $r->has('end_date')) {
             $transactions = Auth::user()->transactions()->where('created_at', '>=', $r->start_date)
-            ->where('created_at', '<=', $r->end_date)->latest()->get();
-        }else{
+                ->where('created_at', '<=', $r->end_date)->latest()->get();
+        } else {
             $transactions = Auth::user()->transactions()->paginate(10);
         }
         foreach ($transactions as $t) {
@@ -468,8 +488,8 @@ class UserController extends Controller
                 $nt->save();
             }
 
-            $title = ucwords($t->type).' '.$t->card;
-            $body = 'Your order to ' . $t->type.' '.$t->card.' worth of ₦'.number_format($t->amount_paid).' has been initiated successfully';
+            $title = ucwords($t->type) . ' ' . $t->card;
+            $body = 'Your order to ' . $t->type . ' ' . $t->card . ' worth of ₦' . number_format($t->amount_paid) . ' has been initiated successfully';
             $not = Notification::create([
                 'user_id' => Auth::user()->id,
                 'title' => $title,
@@ -481,15 +501,13 @@ class UserController extends Controller
 
                 $title = 'Transaction Pending';
 
-            $btn_text = '';
-            $btn_url = '';
+                $btn_text = '';
+                $btn_url = '';
 
-            $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
-            $name = str_replace(' ', '', $name);
-            $firstname = ucfirst($name);
-            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
-
-
+                $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
+                $name = str_replace(' ', '', $name);
+                $firstname = ucfirst($name);
+                Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
             }
 
             return response()->json(['success' => true, 'data' => $t]);
@@ -499,7 +517,6 @@ class UserController extends Controller
             'success' => false,
             'msg' => 'Something seems wrong, please input your trade details and try again',
         ]);
-
     }
 
     public function viewTransac($id, $uid)
@@ -533,7 +550,7 @@ class UserController extends Controller
         $month =  $request->input('month');
         if ($month) {
             $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->paginate(10);
-        }else{
+        } else {
             $notifications = Auth::user()->notifications()->paginate(10);
         }
 
@@ -565,7 +582,7 @@ class UserController extends Controller
             case 't-e':
                 Auth::user()->notificationSetting->trade_email = $v;
                 break;
-            //Mobile
+                //Mobile
             case 'w-s2':
                 Auth::user()->notificationSetting->wallet_sms = $v;
                 break;
@@ -588,9 +605,9 @@ class UserController extends Controller
         return response()->json(["success" => true]);
     }
 
-    public static function successFulNairaTrx() {
-        $tranx = NairaTransaction::where(['user_id' => Auth::user()->id,'type' => 'withdrawal','status' => 'success'])->count();
+    public static function successFulNairaTrx()
+    {
+        $tranx = NairaTransaction::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal', 'status' => 'success'])->count();
         return $tranx;
     }
-
 }
