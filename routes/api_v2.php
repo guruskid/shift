@@ -118,6 +118,7 @@ Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
         Route::get('/currencies', 'CryptoController@index');
         Route::post('/create', 'CryptoController@create');
         Route::post('/sell', 'CryptoController@sell');
+        Route::post('/buy', 'CryptoController@buy');
         Route::post('/send', 'CryptoController@send');
         Route::get('/transactions/{currency_id}', 'CryptoController@transactions');
         Route::get('/transactionByType', 'CryptoController@cryptoTransactionByType');

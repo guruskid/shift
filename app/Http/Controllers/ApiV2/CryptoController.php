@@ -117,6 +117,36 @@ class CryptoController extends Controller
         }
     }
 
+
+    public function buy(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|min:0',
+            'currency_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        if ($request->currency_id == 1) {
+            $request->merge([
+                'quantity' => $request->amount
+            ]);
+            return ControllersBtcWalletController::buy($request);
+        } else if ($request->currency_id == 7) {
+            return UsdtController::buyUsdt($request);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Invalid currency selected'
+            ]);
+        }
+    }
+
     public function send(Request $request)
     {
         $request->validate([
