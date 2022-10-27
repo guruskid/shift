@@ -53,6 +53,24 @@
                 </div>
 
                 <div class="row">
+                    <div class="col-md-4">
+                        <div class="card card-body shadow">
+                            <h4 class="text-center">Negative Ledger</h4>
+                            <a href="{{ route('admin.negative-ledger') }}" class="btn btn-primary">View</a>
+                        </div>
+                    </div>
+
+                    @foreach ($extra_data as $data)
+                        <div class="col-md-4">
+                            <div class="card card-body shadow">
+                                <h4 class="text-center">{{ $data['name'] }}</h4>
+                                <h5 class="text-center">{{ $data['value'] }}</h5>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive p-3">
                             <table class="align-middle mb-0 table table-borderless table-striped table-hover">
