@@ -16,6 +16,8 @@ class HomeController extends Controller
         $user = Auth::user();
         $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
 
+        //  dd($usdRate);
+
         $nairaWalletNGN = 0;
         $nairaWalletUSD = 0;
 
@@ -40,7 +42,7 @@ class HomeController extends Controller
         $USDT_NGN = 0;
         $USDT_USD = 0;
         $USDT_VOLUME = 0;
-        
+
         if($user->usdtWallet)
         {
             $usdtWallet = CryptoHelperController::balance(7);
@@ -48,7 +50,7 @@ class HomeController extends Controller
             $USDT_USD = $usdtWallet->usd;
             $USDT_VOLUME = $usdtWallet->balance;
         }
-        
+
         $netWalletBalanceNGN = $nairaWalletNGN + $BTC_NGN + $USDT_NGN;
         $netWalletBalanceUSD = $nairaWalletUSD + $BTC_USD + $USDT_USD;
 
@@ -63,13 +65,15 @@ class HomeController extends Controller
         $featuredCoinsBTC['balance'] = $BTC_VOLUME;
         $featuredCoinsBTC['USD_value'] = $BTC_USD;
         $featuredCoinsBTC['coin_to_usd'] = LiveRateController::btcRate();
-        
+        $featuredCoinsBTC['coin_to_ng'] = LiveRateController::btcRate() * $usdRate;
+
         $featuredCoinsUSDT = array();
         $featuredCoinsUSDT['name'] = 'USDT';
         $featuredCoinsUSDT['image'] = env('APP_URL') . '/storage/crypto/tether.png';
         $featuredCoinsUSDT['balance'] = (string)$USDT_VOLUME;
         $featuredCoinsUSDT['USD_value'] = $USDT_USD;
         $featuredCoinsUSDT['coin_to_usd'] = LiveRateController::usdtRate();
+        $featuredCoinsUSDT['coin_to_ng'] = $usdRate;
 
         $featuredCoins = collect([$featuredCoinsBTC, $featuredCoinsUSDT]);
         return response()->json([

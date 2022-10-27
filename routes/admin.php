@@ -79,6 +79,11 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
     //BLOCKFILL ORDERS
     Route::get('/blockfill-orders', 'BlockfillOrderController@index')->name('admin.blockfill.orders');
+
+    //Ledger system
+    Route::get('/ledger', 'LedgerController@index')->name('admin.ledger');
+    Route::get('/negative-ledger', 'LedgerController@negative')->name('admin.negative-ledger');
+
 });
 
 Route::group(['middleware' => 'accountant'], function () {
