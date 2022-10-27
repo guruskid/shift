@@ -23,6 +23,8 @@ class CryptoController extends Controller
     {
         $bitcoin = CryptoCurrency::find(1);
         $usdt = CryptoCurrency::find(7);
+        $data['usdt_rate'] = LiveRateController::usdtRate();
+        $data["btc_rate"] = LiveRateController::btcRate();
 
         $bitcoin->wallet = CryptoHelperController::balance(1);
         $bitcoin->network = "BRP-20";
@@ -61,6 +63,7 @@ class CryptoController extends Controller
 
         return response()->json([
             'success' => true,
+            'rates' => $data,
             'currencies' => $wallets,
             'total_balance' => $total_balances,
             'UserPin' => isset(Auth::user()->pin)
@@ -138,7 +141,7 @@ class CryptoController extends Controller
             ]);
             return ControllersBtcWalletController::buy($request);
         } else if ($request->currency_id == 7) {
-            return UsdtController::buyUsdt($request);
+            return UsdtController::buy($request);
         } else {
             return response()->json([
                 'success' => false,
