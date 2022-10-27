@@ -498,6 +498,17 @@ class BtcWalletController extends Controller
             $nt->save();
         }
 
+        $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
+
+        if ($agents->count() == 0) {
+            $accountantTimestampSA = User::where(['role' => 889, 'status' => 'active'])
+                ->with(['nairaWallet', 'accounts'])->whereHas('accountantTimestamp', function ($query) {
+                $query->whereNull('inactiveTime');
+            })->get();
+
+            $agents = $accountantTimestampSA;
+        }
+
         if($is_flagged == 1){
             $user = Auth::user();
             $type = 'Bulk Credit';
@@ -507,6 +518,7 @@ class BtcWalletController extends Controller
             $flaggedTranx->transaction_id = $t->id;
             $flaggedTranx->reference_id = $nt->reference;
             $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
+            $flaggedTranx->accountant_id = $agents[0]->id;
             $flaggedTranx->save();
         }
 

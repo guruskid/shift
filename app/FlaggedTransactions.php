@@ -28,4 +28,9 @@ class FlaggedTransactions extends Model
         return $this->belongsTo(NairaTrade::class,'transaction_id','id');
     }
 
+    public function accountant()
+    {
+        return $this->belongsTo(User::class,'accountant_id','id');
+    }
+
 }

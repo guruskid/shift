@@ -21,6 +21,7 @@ class CreateFlaggedTransactionsTable extends Migration
             $table->bigInteger('transaction_id');
             $table->string('reference_id');
             $table->integer('previousTransactionAmount');
+            $table->bigInteger('accountant_id')->nullable();
         });
     }
 

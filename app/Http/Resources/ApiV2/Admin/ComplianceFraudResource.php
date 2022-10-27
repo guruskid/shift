@@ -43,6 +43,8 @@ class ComplianceFraudResource extends JsonResource
             'CreditCount' => $userDebitCreditDetail['creditDataCount'],
             'CreditAmount' => $creditAmount,
             'Verification' => $verificationLevel,
+            'AvailableBalance' => isset($this->nairaWallet) ? ($this->nairaWallet->amount - $this->nairaWallet->withheld_amount) : 0,
+            'LedgerBalance' => isset($this->nairaWallet) ? $this->nairaWallet->amount : 0,
         ];
     }
 

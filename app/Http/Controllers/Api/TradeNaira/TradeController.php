@@ -279,6 +279,7 @@ class TradeController extends Controller
             $flaggedTranx->transaction_id = $txn->id;
             $flaggedTranx->reference_id = $nt->reference;
             $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
+            $flaggedTranx->accountant_id = $request->agent_id;
             $flaggedTranx->save();
         }
 
