@@ -25,7 +25,7 @@ class LedgerController extends Controller
     {
 
         $users = collect();
-        User::latest()->chunk(500, function ($us) use ($users) {
+        User::latest()->chunk(100, function ($us) use ($users) {
             foreach ($us as $user) {
                 $user->ledger = UserController::ledgerBalance($user->id)->getData();
                 if ($user->ledger->balance < 0) {
