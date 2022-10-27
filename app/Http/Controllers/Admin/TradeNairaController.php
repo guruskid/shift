@@ -171,6 +171,7 @@ class TradeNairaController extends Controller
                         $query->where('status','success')->select(DB::raw("sum(amount) as sumt"));
                     }]);
                 }]);
+                
 
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
                     FROM naira_trades as tr
@@ -602,7 +603,7 @@ class TradeNairaController extends Controller
             $timeFrame  =  $reasonData['timeFrame'];
             $account = $transaction->account;
             $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was declined. This is because $reason. Kindly contact support for more information.";
-            
+
         }
 
 
