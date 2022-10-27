@@ -19,6 +19,7 @@ use App\Exports\UsdtTransactions;
 use App\Exports\UsdtTransactionsExport;
 use App\Exports\UserDataTransaction;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
+use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Http\Controllers\Admin\SalesController;
 use App\NairaTrade;
 use Excel;
@@ -148,6 +149,7 @@ class AdminController extends Controller
                 ])
             );
         } else if (Auth::user()->role == 889 || Auth::user()->role == 777 || Auth::user()->role == 775) { //Accountants
+            $flaggedTransactionCount = FlaggedTransactionsController::count();
             return view(
                 'admin.accountant_dashboard',
                 compact([
@@ -156,7 +158,7 @@ class AdminController extends Controller
                     'g_txns', 'c_txns', 'n_txns',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount',
-                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges', 'old_charges'
+                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges', 'old_charges','flaggedTransactionCount'
                 ])
             );
         } else if (Auth::user()->role == 559) { //Marketing

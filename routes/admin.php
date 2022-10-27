@@ -89,6 +89,12 @@ Route::group(['middleware' => 'accountant'], function () {
         Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
         Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
     });
+
+    Route::prefix('flagged')->group(function () {
+        Route::get('/{type?}', 'FlaggedTransactionsController@index')->name('admin.flagged.home');
+        Route::get('/clear/{flaggedTransaction}', 'FlaggedTransactionsController@clear')->name('admin.flagged.clear');
+    });
+
 });
 
 

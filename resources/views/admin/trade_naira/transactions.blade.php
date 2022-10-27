@@ -93,10 +93,10 @@
                 </form>
             </div>
             <div class="row mt-2">
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit']) }}">
-                        <div class="card mb-1 widget-content @if ($type == 'deposit' AND $status == null)
+                        <div class="card mb-1 widget-content p-4 @if ($type == 'deposit' AND $status == null)
                         bg-primary
                          @endif">
                             <div class="widget-content-wrapper">
@@ -113,10 +113,10 @@
                         </div>
                     </a>
                 </div>
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal']) }}">
-                        <div class="card mb-1 widget-content @if ($type == 'withdrawal' AND $status == null)
+                        <div class="card mb-1 widget-content p-4 @if ($type == 'withdrawal' AND $status == null)
                             bg-primary
                         @endif">
                             <div class="widget-content-wrapper ">
@@ -133,10 +133,10 @@
                         </div>
                     </a>
                 </div>
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit','status'=>'unresolved']) }}">
-                        <div class="card mb-1 widget-content @if ($type == 'deposit' AND $status == "unresolved")
+                        <div class="card mb-1 widget-content p-4 @if ($type == 'deposit' AND $status == "unresolved")
                         bg-primary
                     @endif">
                             <div class="widget-content-wrapper">
@@ -153,7 +153,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal','status'=>'unresolved']) }}">
                         <div class="card mb-1 widget-content
@@ -176,10 +176,10 @@
                         </div>
                     </a>
                 </div>
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit','status'=>'success']) }}">
-                        <div class="card mb-1 widget-content
+                        <div class="card mb-1 widget-content 
                         @if ($type == 'deposit' AND $status == "success")
                          bg-primary
                         @endif">
@@ -201,10 +201,10 @@
             </div>
 
             <div class="row mt-2">
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit','status'=>'waiting']) }}">
-                        <div class="card mb-1 widget-content
+                        <div class="card mb-1 widget-content p-4
                         @if ($type == 'deposit' AND $status == "waiting")
                          bg-primary
                         @endif">
@@ -222,7 +222,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal','status'=>'waiting']) }}">
                         <div class="card mb-1 widget-content @if ($type == 'withdrawal' AND $status == "waiting")
@@ -242,10 +242,10 @@
                         </div>
                     </a>
                 </div>
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit','status'=>'cancelled']) }}">
-                        <div class="card mb-1 widget-content
+                        <div class="card mb-1 widget-content p-4
                         @if ($type == 'deposit' AND $status == "cancelled")
                          bg-primary
                         @endif">
@@ -263,7 +263,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal','status'=>'cancelled']) }}">
                         <div class="card mb-1 widget-content @if ($type == 'withdrawal' AND $status == "cancelled")
@@ -284,7 +284,7 @@
                     </a>
                 </div>
 
-                <div class="col">
+                <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'withdrawal','status'=>'success']) }}">
                         <div class="card mb-1 widget-content @if ($type == 'withdrawal' AND $status == "success")
@@ -340,11 +340,21 @@
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Reference</th>
+                                        @if ((!in_array($status,['waiting','unresolved'])) AND in_array($type,['withdrawal','deposit']))
+                                        @if($type == 'withdrawal')
+                                        <th>Account Number</th>
+                                        <th>Bank Name</th>
+                                        @endif
+                                        <th>Amount</th>
+                                        @endif
+
                                         <th>Prev Balance</th>
                                         <th>Current Balance</th>
                                         <th>Date</th>
                                         <th>Status</th>
+                                        @if(!in_array($status,[null,'cancelled']))
                                         <th>Action</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -358,6 +368,13 @@
                                             @endif
                                             {{ $t->user->first_name .' '. $t->user->last_name }}</td>
                                         <td>{{ $t->reference }}</td>
+                                        @if ((!in_array($status,['waiting','unresolved'])) AND in_array($type,['withdrawal','deposit']))
+                                            @if($type == 'withdrawal')
+                                            <td>{{ isset($t->account) ? $t->account->account_number : ''}}</td>
+                                            <td>{{ isset($t->account) ? $t->account->bank_name : ''}}</td>
+                                            @endif
+                                            <td class="text-danger">{{ isset($t->amount) ? $t->amount : ''}}</td>
+                                        @endif
                                         <td>₦{{ number_format($t->naira_transactions->previous_balance) }}</td>
                                         <td>₦{{ number_format($t->naira_transactions->current_balance) }}</td>
                                         <td>{{ $t->created_at->format('d m y, h:ia') }}</td>
@@ -386,19 +403,18 @@
 
                                         <td>
                                             <div class="btn-group">
-                                                @if (in_array($t->status,['waiting','unresolved']))
-                                                    <button data-toggle="modal" data-target="#pay-view--{{ $t->id }}" class="btn btn-primary">Pay</button>
-                                                    {{-- <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
-                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button> --}}
-                                                
-                                                @elseif($t->status == 'success')
-                                                    @if(in_array(Auth::user()->role, [999, 889]))
-                                                        <button class="btn btn-danger" data-toggle="modal" data-target="#refund-modal-{{ $t->id }}">Refund</button>
-                                                        <button data-toggle="modal" data-target="#pay-view--{{ $t->id }}" class="btn btn-primary">View</button>
-                                                    @else
-                                                        <button data-toggle="modal" data-target="#pay-view--{{ $t->id }}" class="btn btn-primary">View</button>
-                                                    @endif
+                                                @if(!in_array($status,[null,'cancelled']))
+                                                    @if (in_array($t->status,['waiting','unresolved']))
+                                                        <button data-toggle="modal" data-target="#pay-view-{{ $t->id }}" class="btn btn-primary">Pay</button>
+                                                        {{-- <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
+                                                        <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button> --}}
                                                     
+                                                    @elseif($t->status == 'success')
+                                                        @if(in_array(Auth::user()->role, [999, 889]))
+                                                            <button class="btn btn-danger" data-toggle="modal" data-target="#refund-modal-{{ $t->id }}">Refund</button>
+                                                        @endif
+                                                        
+                                                    @endif
                                                 @endif
                                             </div>
                                         </td>
@@ -418,37 +434,52 @@
     </div>
 </div>
 
-@if(!empty($transactions))
-    {{-- Confirm trade approval modal --}}
+
+@if (in_array($status,['waiting','unresolved']))
     @foreach ($transactions as $t)
-    <div class="modal fade " id="pay-view--{{ $t->id }}">
-        <div class="modal-dialog  ">
+    <div class="modal fade" id="pay-view-{{ $t->id }}">
+        <div class="modal-dialog">
                 <form action="{{route('admin.naira-p2p.update', $t)}}" id="freeze-form" method="post"> @method('put')
                 @csrf
-                <div class="modal-content  c-rounded">
+                <div class="modal-content c-rounded">
+                    <div class="modal-header bg-light c-rounded-top p-4 ">
+                        
+                    </div>
                     <!-- Modal Header -->
                     <div class="modal-header bg-light c-rounded-top p-4 ">
-                        <h4 class="modal-title">{{ ucwords($status)." ".ucwords($type) }}</h4>
-                        <button type="button" class="close bg-light " data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">{{ ucwords($status)." ".ucwords($type) }}
+                            @if($status == 'unresolved')
+                            <p class="text-warning">{{ now()->diffForHumans($t->updated_at) }}</p>
+                            @endif
+                        </h4>
+                        <button type="button" class="close bg-light" data-dismiss="modal">&times;</button>
+                        
                     </div>
+                    
                     <!-- Modal body -->
 
                     <div class="modal-body p-4">
                         <div class="row">
-                            <div class="col-md-12">
+                            @if($t->is_flagged == 1)
+                            <div class="col-md-12 mb-2">
+                                <div class="bg-danger text-white text-center">This Transaction is flagged <br>Contact the Junior Accountant to Confirm Action</div>
+                            <div>
+                            @endif
+
+                            <div class="col-md-12 mt-2">
                                 <label for="reason" >Name</label>
-                                <input type="text" input class="form-control mb-2" type="text" value="{{$t->user->first_name." ".$t->user->last_name}}" disabled>
+                                <input type="text" class="form-control mb-2" type="text" value="{{$t->user->first_name." ".$t->user->last_name}}" disabled>
 
 
                                 @if($t->type == 'withdrawal')
                                 <label class="mt-2" for="reason" >Account Number</label>
                                 <div class="input-group mb-2">
-                                    <input type="text" input class="form-control" type="text" id="accountNumbercopy" value="{{$t->account->account_number}}" disabled>
+                                    <input type="text" class="form-control" type="text" id="accountNumbercopy" value="{{$t->account->account_number}}" disabled>
                                     @if($t->status != 'success')
                                     <div class="input-group-append">
-                                      <span class="input-group-text" id="basic-addon2" onclick="copyData('accountNumbercopy')">
+                                        <span class="input-group-text" id="basic-addon2" onclick="copyData('accountNumbercopy')">
                                         <img src="{{asset('svg/copy_btn.svg')}}" />
-                                      </span>
+                                        </span>
                                     </div>
                                     @endif
                                 </div>
@@ -462,9 +493,9 @@
                                     <input type="text" input class="form-control" type="text" id="amountcopy" value="{{$t->amount}}" disabled>
                                     @if($t->status != 'success')
                                     <div class="input-group-append">
-                                      <span class="input-group-text" id="basic-addon2" onclick="copyData('amountcopy')">
+                                        <span class="input-group-text" id="basic-addon2" onclick="copyData('amountcopy')">
                                         <img src="{{asset('svg/copy_btn.svg')}}" />
-                                      </span>
+                                        </span>
                                     </div>
                                     @endif
                                 </div>
@@ -479,11 +510,11 @@
                                 @if($t->status != 'success')
                                 <div class="btn-toolbar float-right" role="toolbar" id="p2p_buttongroup-{{ $t->id }}">
                                     <div class="btn-group mr-2 float-right" role="group" aria-label="First group">
-                                      <button type="button" onclick="buttonSelect('statusInput-{{ $t->id }}','approve',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Approve</button>
+                                        <button type="button" onclick="buttonSelect('statusInput-{{ $t->id }}','approve',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Approve</button>
                                     </div>
                                     @if($t->status != 'unresolved')
                                     <div class="btn-group mr-2 float-right" role="group">
-                                      <button type="button" onclick="buttonSelect('statusInput-{{ $t->id }}','decline',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Decline</button>
+                                        <button type="button" onclick="buttonSelect('statusInput-{{ $t->id }}','decline',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Decline</button>
                                     </div>
                                     @endif
 
@@ -496,7 +527,7 @@
                                     <div class="btn-group mr-2 float-right" role="group">
                                         <button type="button" data-dismiss="modal" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Go Back</button>
                                     </div>
-                                  </div>
+                                    </div>
                                 </div>
                                 @endif
 
@@ -530,110 +561,6 @@
 
 
                         </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    @endforeach
-@endif
-
-@if(!empty($transactions))
-    {{-- Confirm trade approval modal --}}
-    @foreach ($transactions as $t)
-    <div class="modal fade " id="confirm-modal-{{ $t->id }}">
-        <div class="modal-dialog  ">
-            @if($t->type == 'withdrawal')
-                <form action="{{route('admin.naira-p2p.confirm-sell', $t)}}" id="freeze-form" method="post"> @method('put')
-            @else
-                <form action="{{route('admin.naira-p2p.confirm', $t)}}" id="freeze-form" method="post"> @method('put')
-            @endif
-                @csrf
-                <div class="modal-content  c-rounded">
-                    <!-- Modal Header -->
-                    <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
-                        <h4 class="modal-title">Confirm Trade <i class="fa fa-paper-plane"></i></h4>
-                        <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
-                    </div>
-                    <!-- Modal body -->
-
-                    <div class="modal-body p-4">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="">Wallet pin </label>
-                                    <input type="password" name="pin" required class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
-                            Confirm
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    @endforeach
-@endif
-
-@if(!empty($transactions))
-    {{-- Confirm trade approval modal --}}
-    @foreach ($transactions as $t)
-    <div class="modal fade " id="cancel-modal-{{ $t->id }}">
-        <div class="modal-dialog">
-            <form action="{{route('admin.naira-p2p.cancel-trade', $t)}}" id="freeze-form" method="post"> @method('put')
-                @csrf
-                <div class="modal-content  c-rounded">
-                    <!-- Modal Header -->
-                    <div class="modal-header bg-custom-gradient c-rounded-top p-4 ">
-                        <h4 class="modal-title">Decline Trade <i class="fa fa-paper-plane"></i></h4>
-                        <button type="button" class="close bg-light rounded-circle " data-dismiss="modal">&times;</button>
-                    </div>
-                    <!-- Modal body -->
-
-                    <div class="modal-body p-4">
-                        <div class="row">
-                            <div class="col-md-12">
-
-                                <div class="form-group mt-1">
-                                    <input type="hidden" name="user_id" value="{{$t->user->id}}">
-                                    <label for="reason" class="text-danger">Reason for Declining </label>
-                                    <select name="reason" id="" class="form-control">
-                                        @if($t->type == 'withdrawal')
-                                        <option value="Bank network issues">Bank network issues</option>
-                                        <option value="Exceeded bank limit">Exceeded bank limit</option>
-                                        <option value="Incorrect bank details">Incorrect bank details</option>
-                                        <option value="A mismatch in name">A mismatch in name</option>
-                                        @else
-                                        <option value="payment not received">Payment Not Recieved</option>
-                                        @endif;
-                                    </select>
-                                    <span id="HideDeclinedButton" onclick="pay_bridge_decline('reason_for_decline_div{{ $t->id }}','HideDeclinedButton')"
-                                        class="mt-2 btn btn-block c-rounded bg-custom-gradient txn-btn">Proceed</span>
-
-                                </div>
-
-                                <div class="form-group d-none" id="reason_for_decline_div{{ $t->id }}">
-                                    <label for="">Wallet pin </label>
-                                    <input type="password" name="pin" required class="form-control">
-
-                                    <div class="form-group mt-2">
-                                        <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">Decline</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- <span id="HideDeclinedButton" onclick="pay_bridge_decline('reason_for_decline_verification_div{{ $t->id }}','HideDeclinedButton')"
-                            class="btn btn-block c-rounded bg-custom-gradient txn-btn">Decline</span> --}}
-
-
-{{--
-                        <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
-                            Decline
-                        </button> --}}
-
-
                     </div>
                 </div>
             </form>
@@ -755,4 +682,39 @@
     </div>
 @endif
 @endif
+
+<script>
+
+
+    const __st_id = (activity) => document.getElementById(activity)
+
+    const hideit = (ide) => {
+        __st_id(ide).classList.remove("d-block")
+        __st_id(ide).classList.add("d-none")
+    }
+
+    const showit = (ide) => {
+        __st_id(ide).classList.remove("d-none")
+        __st_id(ide).classList.add("d-block")
+    }
+    
+    const buttonSelect = (id, status, uid) => {
+        var approve = document.getElementById(id);
+        approve.value = status;
+
+        if(status == 'approve' || status == 'unresolved'){
+            showit('p2p_pin-'+uid);
+            hideit('p2p_buttongroup-'+uid);
+        }
+
+        if(status == 'decline') {
+            showit('p2p_pin-'+uid);
+            showit('p2p_dropdown-'+uid);
+            hideit('p2p_buttongroup-'+uid);
+        }
+    }
+
+</script>
 @endsection
+
+

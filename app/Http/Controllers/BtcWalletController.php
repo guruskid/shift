@@ -8,6 +8,8 @@ use App\CardCurrency;
 use App\CryptoRate;
 use App\HdWallet;
 use App\FeeWallet;
+use App\FlaggedTransactions;
+use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Http\Controllers\Admin\ReferralSettingsController;
 use App\Http\Controllers\Admin\SettingController;
 use App\NairaTransaction;
@@ -409,6 +411,12 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        $is_flagged = 0;
+        if($ngn >= 1000000):
+            $is_flagged = 1;
+            $lastTranxAmount = FlaggedTransactionsController::getLastTransaction(Auth::user());
+        endif;
+
         $t = Auth::user()->transactions()->create([
             'card_id' => 102,
             'type' => 'Sell',
@@ -424,6 +432,7 @@ class BtcWalletController extends Controller
             'agent_id' => 1,
             'ngn_rate' => $trade_rate,
             'commission' => $commission,
+            'is_flagged' => $is_flagged,
         ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;
@@ -489,7 +498,17 @@ class BtcWalletController extends Controller
             $nt->save();
         }
 
-
+        if($is_flagged == 1){
+            $user = Auth::user();
+            $type = 'Bulk Credit';
+            $flaggedTranx =  new FlaggedTransactions();
+            $flaggedTranx->type = $type;
+            $flaggedTranx->user_id = Auth::user()->id;
+            $flaggedTranx->transaction_id = $t->id;
+            $flaggedTranx->reference_id = $nt->reference;
+            $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
+            $flaggedTranx->save();
+        }
 
         // ///////////////////////////////////////////////////////////
         $finalamountcredited = Auth::user()->nairaWallet->amount + $t->amount_paid;

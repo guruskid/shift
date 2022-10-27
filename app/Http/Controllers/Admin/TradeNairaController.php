@@ -46,12 +46,14 @@ class TradeNairaController extends Controller
 
         $show_limit = true;
         $exportTranx = NairaTrade::orderBy('created_at', 'desc')->get();
-        $transactions = NairaTrade::with('naira_transactions','account')->orderBy('created_at', 'desc')->paginate(20);
+        $transactions = NairaTrade::with('naira_transactions','account')->orderBy('created_at', 'desc')
+        ->where('is_dailyLimit',0)->where('is_monthlyLimit',0)->paginate(20);
         $banks = Bank::all();
         $account = Auth::user()->accounts->first();
 
         //?" all  deposit transactions
-        $deposit = NairaTrade::where('type','deposit')->get();
+        $deposit = NairaTrade::where('type','deposit')
+        ->where('is_dailyLimit',0)->where('is_monthlyLimit',0)->get();
         $deposit_all_tnx = $deposit->count();
 
         //? successful Deposit
@@ -76,7 +78,8 @@ class TradeNairaController extends Controller
 
 
         //?" all  withdrawal transactions
-        $withdrawal = NairaTrade::where('type','withdrawal')->get();
+        $withdrawal = NairaTrade::where('type','withdrawal')
+        ->where('is_dailyLimit',0)->where('is_monthlyLimit',0)->get();
         $withdrawal_all_tnx = $withdrawal->count();
 
         //? successful withdrawal
@@ -153,7 +156,7 @@ class TradeNairaController extends Controller
         }
 
         if($search == null){
-            $transactions = NairaTrade::whereNotNull('id');
+            $transactions = NairaTrade::where('is_dailyLimit',0)->where('is_monthlyLimit',0);
             if(!in_array($type,['sortbydate','search']))
             {
                 if($type != NULL):
@@ -190,14 +193,20 @@ class TradeNairaController extends Controller
                 ->where('status',$status);
             }
 
-            // $transactions = $transactions->get()->sortByDesc('created_at');
+            if($status == 'unresolved')
+            {
+                $transactions = $transactions->orderBy('updated_at', 'ASC');
+            }
+
             if(isset($request['downloader']) AND $request['downloader'] == 'csv'){
                 return Excel::download(new PayBridgeTransactions($transactions), 'PayBridgeTransactions.csv');
             }
             $transactions = $transactions->paginate(20);
+            
+            
         }
             //?" all  deposit transactions
-            $deposit = NairaTrade::where('type','deposit');
+            $deposit = NairaTrade::where('type','deposit')->where('is_dailyLimit',0)->where('is_monthlyLimit',0);
             if($start_date && $end_date)
             {
                 $deposit = $deposit
@@ -223,17 +232,13 @@ class TradeNairaController extends Controller
             $deposit_denied_tnx = $deposit_denied->count();
             $deposit_denied_amount = $deposit_denied->sum('amount');
 
-
-
             //? waiting Deposit
             $deposit_waiting = $deposit->where('status','waiting');
             $deposit_waiting_tnx = $deposit_waiting->count();
             $deposit_waiting_amount = $deposit_waiting->sum('amount');
 
-
-
             //? all  withdrawal transactions
-            $withdrawal = NairaTrade::where('type','withdrawal');
+            $withdrawal = NairaTrade::where('type','withdrawal')->where('is_dailyLimit',0)->where('is_monthlyLimit',0);
             if($start_date && $end_date)
             {
                 $withdrawal = $withdrawal
@@ -542,7 +547,7 @@ class TradeNairaController extends Controller
 
         $bankDetails = '<b>('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.')</b>';
         $body = "<div style='text-align:justify'>";
-        $body .= "Payment have been to your account $bankDetails.<br> Kindly note we are having issue with your recipient bank, sorry for the inconvenience";
+        $body .= "Payment of ₦".number_format($transaction->amount) ." have been to your account $bankDetails.<br> Kindly note we are having issue with your recipient bank, If you don’t receive payment after 24 hours please reach out to your bank.";
         $body .= "</div>";
 
         $fcm_id = $transaction->user->fcm_id;
