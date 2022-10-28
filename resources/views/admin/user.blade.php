@@ -252,6 +252,7 @@
                                                     <td class="text-center"><strong>₦{{number_format($ledger->cr)}} </strong></td>
                                                 </tr>
                                                 <tr>
+                                                    <th class="text-center">id</th>
                                                     <th class="text-center">Reference id</th>
                                                     <th class="text-center">Cr. Account</th>
                                                     <th class="text-center">Dr. Account</th>
@@ -268,6 +269,7 @@
                                             <tbody>
                                                 @foreach ($wallet_txns as $t)
                                                 <tr>
+                                                    <td class="text-center">{{$t->id}}</td>
                                                     <td class="text-center">{{$t->reference}}</td>
                                                     <td class="text-center">{{$t->cr_acct_name}}</td>
                                                     <td class="text-center">{{$t->dr_acct_name}}</td>
