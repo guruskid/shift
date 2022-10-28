@@ -271,8 +271,8 @@
                                                 <tr>
                                                     <td class="text-center">{{$t->id}}</td>
                                                     <td class="text-center">{{$t->reference}}</td>
-                                                    <td class="text-center">{{$t->cr_acct_name}}</td>
-                                                    <td class="text-center">{{$t->dr_acct_name}}</td>
+                                                    <td class="text-center">{{$t->cr_user_id}}</td>
+                                                    <td class="text-center">{{$t->dr_user_id}}</td>
                                                     <td class="text-center">₦{{number_format($t->amount)}}</td>
                                                     <td class="text-center">₦{{number_format($t->previous_balance)}}</td>
                                                     <td class="text-center">₦{{number_format($t->current_balance)}}</td>
