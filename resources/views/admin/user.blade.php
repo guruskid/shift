@@ -240,6 +240,18 @@
                                         <table class="mb-2 transactions-table table " id="nt-table">
                                             <thead>
                                                 <tr>
+                                                    <td class="text-center"><strong>Ledger Balance</strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($ledger->balance)}} </strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center"><strong>Debit Total</strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($ledger->dr)}} </strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center"><strong>Credit Total</strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($ledger->cr)}} </strong></td>
+                                                </tr>
+                                                <tr>
                                                     <th class="text-center">Reference id</th>
                                                     <th class="text-center">Cr. Account</th>
                                                     <th class="text-center">Dr. Account</th>
@@ -270,16 +282,7 @@
                                                     </td>
                                                 </tr>
                                                 @endforeach
-                                                <tr>
-                                                    <td class="text-center"><strong>Debit Total</strong></td>
-                                                    <td class="text-center"><strong>₦{{number_format($dr_total)}}
-                                                        </strong></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-center"><strong>Credit Total</strong></td>
-                                                    <td class="text-center"><strong>₦{{number_format($cr_total)}}
-                                                        </strong></td>
-                                                </tr>
+
                                             </tbody>
                                             {{$wallet_txns->links()}}
                                         </table>
