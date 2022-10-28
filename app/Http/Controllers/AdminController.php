@@ -1282,21 +1282,8 @@ class AdminController extends Controller
         $transactions = $user->transactions;
 
         $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->orderBy('id', 'desc')->paginate(2000);
-        $dr_total = 0;
-        $cr_total = 0;
-        foreach ($wallet_txns as $t) {
-            if ($t->cr_user_id == $user->id) {
-                $t->trans_type = 'Credit';
-                if ($t->status == 'success') {
-                    $cr_total += $t->amount;
-                }
-            } else {
-                $t->trans_type = 'Debit';
-                if ($t->status == 'success') {
-                    $dr_total += $t->amount;
-                }
-            }
-        }
+        $ledger = UserController::ledgerBalance()->getData();
+
 
         if ($user->btcWallet) {
             $btc_wallet = $user->btcWallet;
@@ -1367,7 +1354,7 @@ class AdminController extends Controller
         return view('admin.user', compact([
             'user', 'transactions', 'wallet_txns', 'btc_wallet',
             'usdt_wallet', 'usdt_transactions',
-            'btc_transactions', 'dr_total', 'cr_total', 'verifications'
+            'btc_transactions', 'ledger', 'verifications'
         ]));
     }
 

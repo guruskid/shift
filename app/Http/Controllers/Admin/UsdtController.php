@@ -242,8 +242,7 @@ class UsdtController extends Controller
         $hd = HdWallet::where('currency_id', 7)->first();
         $amount = $request->count;
 
-        $hd->from += $amount;
-        $hd->to += $amount;
+        $hd->to = $hd->from + $amount - 1;
         $hd->save();
 
         $client = new Client();
@@ -278,6 +277,10 @@ class UsdtController extends Controller
                 $count++;
             }
         }
+
+        $hd->from += $amount;
+        $hd->save();
+
 
         return back()->with(['success' => $count . ' addresses created successfully']);
     }
