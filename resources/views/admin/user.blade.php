@@ -252,6 +252,10 @@
                                                     <td class="text-center"><strong>₦{{number_format($ledger->cr)}} </strong></td>
                                                 </tr>
                                                 <tr>
+                                                    <td class="text-center"><strong>L-Log</strong></td>
+                                                    <td class="text-center"><strong> {{ $log->count() }} - ₦{{number_format($log->sum('amount'))}} </strong></td>
+                                                </tr>
+                                                <tr>
                                                     <th class="text-center">id</th>
                                                     <th class="text-center">Reference id</th>
                                                     <th class="text-center">Cr. Account</th>
