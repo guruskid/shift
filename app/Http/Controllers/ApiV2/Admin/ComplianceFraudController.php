@@ -151,7 +151,7 @@ class ComplianceFraudController extends Controller
         $endDate = Carbon::createFromDate($year,$month,1)->endOfMonth();
 
         $allFlaggedTransactions = FlaggedTransactions::with('naira_transaction','transaction','nairaTrade','user','accountant')
-        ->where('created_at','>=',$startDate)->where('created_at','<=',$startDate)->get();
+        ->where('created_at','>=',$startDate)->where('created_at','<=',$endDate)->get();
         return $this->loadFlaggedTransaction($allFlaggedTransactions);
     }
 
@@ -170,7 +170,7 @@ class ComplianceFraudController extends Controller
                     'maxWithdrawal' => $max_withdrawal,
                     'TransactionType' => $transaction->transaction->card,
                     'AmountFlagged' => $transaction->transaction->amount_paid,
-                    'Accountant' => $transaction->accountant->first_name." ".$transaction->accountant->last_name,
+                    'Accountant' => isset($transaction->accountant) ? ($transaction->accountant->first_name." ".$transaction->accountant->last_name) : 'not Available',
                     'verification' => $verificationLevel,
                 ];
             } else{
@@ -182,7 +182,7 @@ class ComplianceFraudController extends Controller
                     'maxWithdrawal' => $max_withdrawal,
                     'TransactionType' => "PayBridge ".$transaction->nairaTrade->type,
                     'AmountFlagged' => $transaction->nairaTrade->amount,
-                    'Accountant' => $transaction->accountant->first_name." ".$transaction->accountant->last_name,
+                    'Accountant' => isset($transaction->accountant) ? ($transaction->accountant->first_name." ".$transaction->accountant->last_name) : 'not Available',
                     'verification' => $verificationLevel,
                 ];
             }

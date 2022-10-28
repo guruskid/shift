@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\FlaggedTransactions;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Mail\GeneralTemplateOne;
-use Illuminate\Support\Facades\Auth;
+use App\User;
 
 class FlaggedTransactionsController extends Controller
 {
@@ -83,16 +81,36 @@ class FlaggedTransactionsController extends Controller
     public static function userDailyMonthlyLimit($user,$amount)
     {
         //check daily
-        $daily_total = $user->nairaTransactions()->whereDate('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        $daily_total = $user->nairaTransactions()->whereDate('created_at', now())->whereIn('status',['success','pending'])->whereIn('transaction_type_id', [3, 2])->sum('amount');
         $daily_rem = $user->daily_max - ($daily_total + $amount);
 
         //check Monthly
-        $monthly_total = $user->nairaTransactions()->whereYear('created_at', now())->whereMonth('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        $monthly_total = $user->nairaTransactions()->whereYear('created_at', now())->whereIn('status',['success','pending'])->whereMonth('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
         $monthly_rem = $user->monthly_max - ($monthly_total + $amount);
 
         return [
             'daily' => $daily_rem,
             'monthly' => $monthly_rem
         ];
+    }
+
+    public static function getCurrentAccountant()
+    {
+        $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
+
+        if ($agents->count() == 0) {
+            $accountantTimestampSA = User::where(['role' => 889, 'status' => 'active'])
+                ->with(['nairaWallet', 'accounts'])->whereHas('accountantTimestamp', function ($query) {
+                $query->whereNull('inactiveTime');
+            })->get();
+
+            $agents = $accountantTimestampSA;
+        }
+
+        if(isset($agents[0])){
+            return $agents[0]->id;
+        } else {
+            return NULL;
+        }
     }
 }

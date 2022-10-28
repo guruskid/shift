@@ -446,13 +446,6 @@ $not = $nots->last();
             hideit(closeOption);
         }
 
-        const copyData = (id) => {
-            var copyText = document.getElementById(id);
-            copyText.select();
-            document.execCommand('copy');
-            alert("You copied: " + copyText.value);
-        }
-
     </script>
 
     <script>

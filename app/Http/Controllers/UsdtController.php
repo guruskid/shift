@@ -506,18 +506,8 @@ class UsdtController extends Controller
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
 
-        $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
-
-        if ($agents->count() == 0) {
-            $accountantTimestampSA = User::where(['role' => 889, 'status' => 'active'])
-                ->with(['nairaWallet', 'accounts'])->whereHas('accountantTimestamp', function ($query) {
-                $query->whereNull('inactiveTime');
-            })->get();
-
-            $agents = $accountantTimestampSA;
-        }
-
-        if($is_flagged == 1){
+        if($t->is_flagged == 1){
+            $agent_id = FlaggedTransactionsController::getCurrentAccountant();
             $user = Auth::user();
             $type = 'Bulk Credit';
             $flaggedTranx =  new FlaggedTransactions();
@@ -526,7 +516,7 @@ class UsdtController extends Controller
             $flaggedTranx->transaction_id = $t->id;
             $flaggedTranx->reference_id = $nt->reference;
             $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
-            $flaggedTranx->accountant_id = $agents[0]->id;
+            $flaggedTranx->accountant_id = $agent_id;
             $flaggedTranx->save();
         }
 

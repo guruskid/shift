@@ -477,7 +477,7 @@
                                     <input type="text" class="form-control" type="text" id="accountNumbercopy" value="{{$t->account->account_number}}" disabled>
                                     @if($t->status != 'success')
                                     <div class="input-group-append">
-                                        <span class="input-group-text" id="basic-addon2" onclick="copyData('accountNumbercopy')">
+                                        <span class="input-group-text" id="basic-addon2" onclick="copyData('accountNumbercopy', 'Account Number')">
                                         <img src="{{asset('svg/copy_btn.svg')}}" />
                                         </span>
                                     </div>
@@ -493,7 +493,7 @@
                                     <input type="text" input class="form-control" type="text" id="amountcopy" value="{{$t->amount}}" disabled>
                                     @if($t->status != 'success')
                                     <div class="input-group-append">
-                                        <span class="input-group-text" id="basic-addon2" onclick="copyData('amountcopy')">
+                                        <span class="input-group-text" id="basic-addon2" onclick="copyData('amountcopy','Amount')">
                                         <img src="{{asset('svg/copy_btn.svg')}}" />
                                         </span>
                                     </div>
@@ -713,6 +713,15 @@
             hideit('p2p_buttongroup-'+uid);
         }
     }
+
+    const copyData = (id, type) => {
+        console.log('hi');
+        var copyText = document.getElementById(id);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); 
+        document.execCommand("copy");
+        swal(type+" copied: " + copyText.value);
+        }
 
 </script>
 @endsection

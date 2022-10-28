@@ -120,11 +120,11 @@ class PortfolioController extends Controller
 
         // return $nts;
 
-        $daily_total = Auth::user()->nairaTransactions()->whereDate('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        $daily_total = Auth::user()->nairaTransactions()->whereDate('created_at', now())->whereIn('status',['success','pending'])->whereIn('transaction_type_id', [3, 2])->sum('amount');
         $daily_rem = Auth::user()->daily_max - $daily_total;
 
         //check Monthly
-        $monthly_total = Auth::user()->nairaTransactions()->whereYear('created_at', now())->whereMonth('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        $monthly_total = Auth::user()->nairaTransactions()->whereYear('created_at', now())->whereIn('status',['success','pending'])->whereMonth('created_at', now())->whereIn('transaction_type_id', [3, 2])->sum('amount');
         $monthly_rem = Auth::user()->monthly_max - $monthly_total;
 
         $ref = \Str::random(2) . time();
