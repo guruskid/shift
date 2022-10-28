@@ -1280,7 +1280,7 @@ class AdminController extends Controller
         $transactions = $user->transactions;
 
         $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->latest()->paginate(2000);
-        $ledger = UserController::ledgerBalance()->getData();
+        $ledger = UserController::ledgerBalance($id)->getData();
 
 
         if ($user->btcWallet) {
