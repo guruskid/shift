@@ -702,7 +702,11 @@ class TradeNairaController extends Controller
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
         $name = str_replace(' ', '', $name);
         $firstname = ucfirst($name);
-        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        try {
+            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        } catch (\Throwable $th) {
+            \Log::info($th);
+        }
 
         $title = "DEPOSIT UPDATE!";
         $msg ="Your deposit transaction of ₦".number_format($transaction->amount)." was successful.";
@@ -772,7 +776,11 @@ class TradeNairaController extends Controller
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
         $name = str_replace(' ', '', $name);
         $firstname = ucfirst($name);
-        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        try {
+            Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        } catch (\Throwable $th) {
+            \Log::info($th);
+        }
 
         $msg ="You have successfully withdrawn the sum of ₦".number_format($transaction->amount)." to ".$user_account->account_name."( ".$user_account->bank_name.", ".$user_account->account_number.")";
 

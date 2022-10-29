@@ -45,8 +45,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('check:called')->daily();
         $schedule->command('check:Responded')->daily();
         $schedule->command('check:Recalcitrant')->daily();
-        $schedule->command('check:quarterlyInactive')->daily(); 
-        $schedule->command('noResponse:check')->daily(); 
+        $schedule->command('check:quarterlyInactive')->daily();
+        $schedule->command('noResponse:check')->daily();
         $schedule->command('get:rate')->everyMinute();
     }
 
