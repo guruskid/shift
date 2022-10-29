@@ -240,10 +240,29 @@
                                         <table class="mb-2 transactions-table table " id="nt-table">
                                             <thead>
                                                 <tr>
+                                                    <td class="text-center"><strong>Ledger Balance</strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($ledger->balance)}} </strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center"><strong>Debit Total</strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($ledger->dr)}} </strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center"><strong>Credit Total</strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($ledger->cr)}} </strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center"><strong>L-Log</strong></td>
+                                                    <td class="text-center"><strong> {{ $log->count() }} - ₦{{number_format($log->sum('amount'))}} </strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center">id</th>
                                                     <th class="text-center">Reference id</th>
                                                     <th class="text-center">Cr. Account</th>
                                                     <th class="text-center">Dr. Account</th>
                                                     <th class="text-center">Amount</th>
+                                                    <th class="text-center">Prev.</th>
+                                                    <th class="text-center">Cur.</th>
                                                     <th class="text-center">Narration</th>
                                                     <th class="text-center">Type</th>
                                                     <th class="text-center">Trans. Type</th>
@@ -254,10 +273,13 @@
                                             <tbody>
                                                 @foreach ($wallet_txns as $t)
                                                 <tr>
+                                                    <td class="text-center">{{$t->id}}</td>
                                                     <td class="text-center">{{$t->reference}}</td>
-                                                    <td class="text-center">{{$t->cr_acct_name}}</td>
-                                                    <td class="text-center">{{$t->dr_acct_name}}</td>
+                                                    <td class="text-center">{{$t->cr_user_id}}</td>
+                                                    <td class="text-center">{{$t->dr_user_id}}</td>
                                                     <td class="text-center">₦{{number_format($t->amount)}}</td>
+                                                    <td class="text-center">₦{{number_format($t->previous_balance)}}</td>
+                                                    <td class="text-center">₦{{number_format($t->current_balance)}}</td>
                                                     <td class="text-center">{{$t->narration}}</td>
                                                     <td class="text-center">{{$t->transactionType->name}}</td>
                                                     <td class="text-center">{{ucwords($t->trans_type)}}</td>
@@ -266,16 +288,7 @@
                                                     </td>
                                                 </tr>
                                                 @endforeach
-                                                <tr>
-                                                    <td class="text-center"><strong>Debit Total</strong></td>
-                                                    <td class="text-center"><strong>₦{{number_format($dr_total)}}
-                                                        </strong></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-center"><strong>Credit Total</strong></td>
-                                                    <td class="text-center"><strong>₦{{number_format($cr_total)}}
-                                                        </strong></td>
-                                                </tr>
+
                                             </tbody>
                                             {{$wallet_txns->links()}}
                                         </table>

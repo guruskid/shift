@@ -610,6 +610,35 @@ class AdminController extends Controller
         ]));
     }
 
+    public function gcTransactionsForHara($type = '') {
+        $transactions =  Transaction::with(['user'])->WhereHas('asset', function ($q) {
+            $q->where('is_crypto', 0);
+        })->orderBy('updated_at', 'desc')->take(20);
+
+        if ($type != '') {
+            $transactions = $transactions->where('status',$type);
+        }
+
+        $transactions = $transactions->get();
+        return response()->json([
+            'data' => [
+                'transactions' => $transactions
+            ],
+        ], 200);
+    }
+
+    public function gcTransactionForHara($id) {
+        $transaction = Transaction::with(['batchPops' =>function ($query) {
+            $query->with('user');
+        }])->find($id);
+        $transaction->batchPops->each(function ($item) {
+            $item->path = asset('storage/pop/'.$item->path);
+        });
+        return response()->json([
+            'data' => $transaction
+        ], 200);
+    }
+
     public function search_tnx(Request $request)
     {
         // dd($request);
@@ -865,7 +894,7 @@ class AdminController extends Controller
             $end = $request['end'];
         }
         $segment .= " ".$currency;
-        
+
         $card_price_total = $transactions->sum('card_price');
         $cash_value_total = $transactions->sum('amount_paid');
         $asset_value_total = $transactions->sum('amount');
@@ -957,7 +986,7 @@ class AdminController extends Controller
             ->get();
 
         $status = Transaction::select('Status')->distinct('Status')->get();
-        
+
         $transactions = Transaction::whereHas('asset', function ($query) use ($id) {
             $query->where('is_crypto', $id);
         })->orderBy('updated_at', 'DESC');
@@ -1250,22 +1279,11 @@ class AdminController extends Controller
         $user = User::find($id);
         $transactions = $user->transactions;
 
-        $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->orderBy('id', 'desc')->paginate(20);
-        $dr_total = 0;
-        $cr_total = 0;
-        foreach ($wallet_txns as $t) {
-            if ($t->cr_user_id == $user->id) {
-                $t->trans_type = 'Credit';
-                if ($t->status == 'success') {
-                    $cr_total += $t->amount;
-                }
-            } else {
-                $t->trans_type = 'Debit';
-                if ($t->status == 'success') {
-                    $dr_total += $t->amount;
-                }
-            }
-        }
+        $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->latest()->paginate(2000);
+        $ledger = UserController::ledgerBalance($id)->getData();
+
+        $log = $user->nairaTransactions()->where('cr_user_id', '!=', $user->id)->where('dr_user_id', '!=', $user->id)->get();
+
 
         if ($user->btcWallet) {
             $btc_wallet = $user->btcWallet;
@@ -1334,9 +1352,9 @@ class AdminController extends Controller
         $verifications = $user->verifications;
 
         return view('admin.user', compact([
-            'user', 'transactions', 'wallet_txns', 'btc_wallet',
+            'user', 'transactions', 'wallet_txns', 'btc_wallet', 'log',
             'usdt_wallet', 'usdt_transactions',
-            'btc_transactions', 'dr_total', 'cr_total', 'verifications'
+            'btc_transactions', 'ledger', 'verifications'
         ]));
     }
 

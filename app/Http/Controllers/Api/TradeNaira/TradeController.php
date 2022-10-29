@@ -301,6 +301,7 @@ class TradeController extends Controller
         $validator = Validator::make($request->all(), [
             'agent_id' => 'integer|required',
             'amount' => 'integer|required',
+            'platform' => 'required'
         ]);
 
         // dd("check");

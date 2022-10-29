@@ -28,7 +28,7 @@ class RateController extends Controller
         $usd_ngn = LiveRateController::usdNgn();
 
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'cards' => $cards,
             'currencies' => $currencies,
             'card_types' => $card_types,
@@ -36,5 +36,76 @@ class RateController extends Controller
             'rates' => $rates
         ]);
 
+    }
+
+    public function deleteRate($id)
+    {
+
+        $rate = CardCurrencyPaymentMedium::find($id);
+        if (is_null($rate)) {
+            return response()->json(["success" => false, 'message' => "rate does not exist"], 404);
+        }
+
+        $rate->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Rate has been successfully deleted!'
+        ], 200);
+
+
+
+
+    }
+
+
+    public function updateRate(Request $request)
+    {
+
+        $request->validate([
+            'card_currency_id' => 'required|integer',
+            'values' => 'required',
+            'rates' => 'required'
+        ]);
+
+
+        $card_currency = CardCurrency::findOrFail($request->card_currency_id);
+        $value = $request->values;
+        $rate = $request->rates;
+
+        $rates = [];
+        foreach ($value as $key => $value) {
+            if ($value != null && $rate[$key] != null) {
+                $s = [
+                    'value' => $value,
+                    'rate' => $rate[$key]
+                ];
+                array_push($rates, $s);
+            }
+        }
+
+
+            $rate = CardCurrencyPaymentMedium::updateOrCreate(
+                ['card_currency_id' => $card_currency->id, 'payment_medium_id' => $request->payment_medium_id],
+                ['payment_range_settings' => json_encode($rates)]
+            );
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Rate has been successfully updated'
+        ]);
+    }
+
+    public function overview(){
+
+
+        $data['usdt_rate'] = LiveRateController::usdtRate();
+        $data['btc_rate'] = LiveRateController::btcRate();
+        $data['usdt_btc_commision'] = LiveRateController::usdNgn();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
     }
 }

@@ -21,7 +21,7 @@ class DashboardController extends Controller
     {
 
 
-        $monthly = Carbon::now('Africa/Lagos')->startOfMonth();
+        $monthly = Carbon::now('Africa/Lagos')->startOfMonth()->format('Y-m-d');
 
 
         $walletTotal = NairaWallet::sum('amount');

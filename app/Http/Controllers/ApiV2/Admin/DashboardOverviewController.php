@@ -7,16 +7,26 @@ use App\Http\Controllers\Admin\UtilityTransactions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
+use App\NairaTransaction;
 use App\NairaWallet;
 use App\Ticket;
 use App\Transaction;
 use App\User;
 use App\Wallet;
+use App\CryptoRate;
+use App\Http\Controllers\LiveRateController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\ApiV2\Admin\ComplianceFraudResource;
 use App\UtilityTransaction;
-
+use App\VerificationLimit;
 class DashboardOverviewController extends Controller {
+
+    private static $usd_rate;
+    public function __construct()
+    {
+        self::$usd_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+    }
     public function overview() {
         $walletTotal = NairaWallet::sum('amount');
         $customerHappiness = User::where(['role' => 555, 'status' => 'active'])->with('nairaWallet')->first();
@@ -446,4 +456,108 @@ class DashboardOverviewController extends Controller {
             ]
         ],200);
     }
+
+
+    public function paybridgeTransactions(){
+       $data['paybridge_transactions'] =  NairaTransaction::select( 'user_id',"current_balance", "previous_balance", "status", 'type', 'amount_paid', 'amount', 'created_at')->whereHas("user")->with(['user' => function ($query) {
+        $query->select("id","first_name", "last_name", "username");
+    }])->latest()->take(3)->get();
+
+    // $data['compliance'] = ComplianceFraudController::index();
+
+
+
+    return response()->json([
+        'success' => true,
+        'data' => $data,
+    ]);
+    }
+
+    public function recentTransactions(){
+
+
+
+
+        $tranx = DB::table('transactions')
+            ->join('users', 'transactions.user_id', '=', 'users.id')
+            ->select('first_name','last_name','username','dp','transactions.id','user_id','card as transaction','amount_paid as amount','transactions.amount as value',DB::raw('0 as prv_bal'),DB::raw('0 as cur_bal'),'transactions.status',DB::raw('date(transactions.created_at) as date','transactions.created_at as created_at'))
+            ;
+        $tranx2 = DB::table('naira_transactions')
+            ->join('users', 'naira_transactions.user_id', '=', 'users.id')
+            ->select('first_name','last_name','username','dp','naira_transactions.id','user_id','type as transaction','amount_paid','naira_transactions.amount as value','previous_balance as prv_bal','current_balance as cur_bal','naira_transactions.status',DB::raw('date(naira_transactions.created_at) as date','naira_transactions.created_at as created_at'));
+
+        $mergeTbl = $tranx->unionAll($tranx2);
+        DB::table(DB::raw("({$mergeTbl->toSql()}) AS mg"))->mergeBindings($mergeTbl);
+
+        $tranx = $mergeTbl
+        ->orderBy('date','desc')
+        ->take(3)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $tranx,
+        ],200);
+    }
+
+
+    public function complianceFraud(){
+        $type =  'NGN' ;
+        $startDate = now()->startOfMonth();
+        $endDate = now()->endOfMonth();
+
+        return $this->loadData($startDate, $endDate, $type);
+    }
+
+    private function loadData($start, $end, $type)
+    {
+        $verificationLimit = VerificationLimit::orderBy('created_at','DESC')->get(['level','monthly_widthdrawal_limit']);
+        $usd_rate = self::$usd_rate;
+        $users = User::with('transactions','nairaTrades','utilityTransaction')->get();
+
+        $userData = ComplianceFraudResource::sortCollection($users, $start, $end, $usd_rate, $type, $verificationLimit);
+        $userData = collect($userData)->sortByDesc('id')->take(5);
+
+        $data = array();
+        foreach($userData as $ud)
+        {
+           $data[] =  [
+
+                'id' => $ud['id'],
+                'name' => $ud['name'],
+                "username" => $ud['username'],
+                'signupDate' => $ud['signupDate'],
+                'maximumWithdrawal' => $ud['maximumWithdrawal'],
+                'DebitCount' => $ud['DebitCount'],
+                'DebitAmount' => $ud['DebitAmount'],
+                'CreditCount' => $ud['CreditCount'],
+                'CreditAmount' => $ud['CreditAmount'],
+                'VerificationLevel' => $ud['Verification'],
+            ];
+        }
+        return response()->json([
+            'success' => true,
+            'usersData' => $data,
+        ], 200);
+    }
+
+    public function juniorAccountantSummary(Request $req){
+        $data['total_deposit'] = NairaTransaction::whereIn('status', ['success', 'pending'])->where('transaction_type_id', 2)->sum('amount');
+        $data['total_withdrawal'] =  NairaTransaction::whereIn('status', ['success', 'pending'])->where('transaction_type_id', 3)->sum('amount');
+        $data['balance'] = NairaWallet::sum('amount');
+
+
+        if ($req->usd) {
+            $data['current_rate'] = LiveRateController::usdtRate();
+        }else {
+            $data['current_rate'] = LiveRateController::usdNgn();
+        }
+        $data['active_accountant'] =  $accountant = User::select('first_name', 'last_name', 'role', 'status')->where("status", "active")->whereHas("accountantTimestamp")->first();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ], 200);
+    }
+
+
 }
