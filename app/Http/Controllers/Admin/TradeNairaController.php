@@ -547,7 +547,7 @@ class TradeNairaController extends Controller
 
         $bankDetails = '<b>('.$account->account_name.', '.$account->bank_name.', '. $account->account_number.')</b>';
         $body = "<div style='text-align:justify'>";
-        $body .= "Payment of ₦".number_format($transaction->amount) ." have been to your account $bankDetails.<br> Kindly note we are having issue with your recipient bank, If you don’t receive payment after 24 hours please reach out to your bank.";
+        $body .= "Your payment of ₦".number_format($transaction->amount) ." has been sent to your account $bankDetails.<br><br>Kindly note If you don’t receive payment after 24 hours, please reach out to your bank.";
         $body .= "</div>";
 
         $fcm_id = $transaction->user->fcm_id;

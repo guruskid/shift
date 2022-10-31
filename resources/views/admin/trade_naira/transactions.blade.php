@@ -352,6 +352,9 @@
                                         <th>Current Balance</th>
                                         <th>Date</th>
                                         <th>Status</th>
+                                        @if(in_array($status,['unresolved']))
+                                        <th>Time Duration</th>
+                                        @endif
                                         @if(!in_array($status,[null,'cancelled']))
                                         <th>Action</th>
                                         @endif
@@ -377,7 +380,7 @@
                                         @endif
                                         <td>₦{{ number_format($t->naira_transactions->previous_balance) }}</td>
                                         <td>₦{{ number_format($t->naira_transactions->current_balance) }}</td>
-                                        <td>{{ $t->created_at->format('d m y, h:ia') }}</td>
+                                        <td>{{ $t->created_at->format('d M y, h:ia') }}</td>
                                         <td>
                                             @switch($t->status)
                                                 @case('success')
@@ -400,6 +403,9 @@
                                                     <span>{{ ucwords($t->status) }}</span>
                                             @endswitch
                                         </td>
+                                        @if(in_array($status,['unresolved']))
+                                        <td>{{ now()->diffForHumans($t->updated_at) }}</td>
+                                        @endif
 
                                         <td>
                                             <div class="btn-group">
@@ -462,24 +468,26 @@
                         <div class="row">
                             @if($t->is_flagged == 1)
                             <div class="col-md-12 mb-2">
-                                <div class="bg-danger text-white text-center">This Transaction is flagged <br>Contact the Junior Accountant to Confirm Action</div>
+                                <div class="bg-danger text-white text-center">This Transaction is flagged for Bulk Withdrawal<br>Contact the Junior Accountant to Confirm Action</div>
                             <div>
                             @endif
-
                             <div class="col-md-12 mt-2">
                                 <label for="reason" >Name</label>
                                 <input type="text" class="form-control mb-2" type="text" value="{{$t->user->first_name." ".$t->user->last_name}}" disabled>
 
+                                @php
+                                    $name = $t->user->first_name." ".$t->user->last_name;
+                                @endphp
 
                                 @if($t->type == 'withdrawal')
                                 <label class="mt-2" for="reason" >Account Number</label>
                                 <div class="input-group mb-2">
-                                    <input type="text" class="form-control" type="text" id="accountNumbercopy" value="{{$t->account->account_number}}" disabled>
+                                    <input type="text" class="form-control" type="text" id="accountNumbercopy" value="{{$t->account->account_number}}" readonly>
                                     @if($t->status != 'success')
                                     <div class="input-group-append">
-                                        <span class="input-group-text" id="basic-addon2" onclick="copyData('accountNumbercopy', 'Account Number')">
+                                        <button data-clipboard-target="#accountNumbercopy" class="input-group-text" id="accNoCopy" onclick="copyData('accountNumbercopy', '{{ $name }} Account Number is')">
                                         <img src="{{asset('svg/copy_btn.svg')}}" />
-                                        </span>
+                                        </button>
                                     </div>
                                     @endif
                                 </div>
@@ -490,12 +498,12 @@
 
                                 <label class="mt-2" for="reason">Amount</label>
                                 <div class="input-group mb-2">
-                                    <input type="text" input class="form-control" type="text" id="amountcopy" value="{{$t->amount}}" disabled>
+                                    <input type="text" input class="form-control" type="text" id="amountcopy" value="{{$t->amount}}" readonly>
                                     @if($t->status != 'success')
                                     <div class="input-group-append">
-                                        <span class="input-group-text" id="basic-addon2" onclick="copyData('amountcopy','Amount')">
+                                        <button data-clipboard-target="#amountcopy" class="input-group-text" id="amountNoCopy" onclick="copyData('amountcopy','{{ $name }} Amount is')">
                                         <img src="{{asset('svg/copy_btn.svg')}}" />
-                                        </span>
+                                        </button>
                                     </div>
                                     @endif
                                 </div>
@@ -683,6 +691,9 @@
 @endif
 @endif
 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+
 <script>
 
 
@@ -717,11 +728,12 @@
     const copyData = (id, type) => {
         console.log('hi');
         var copyText = document.getElementById(id);
-        copyText.select();
-        copyText.setSelectionRange(0, 99999); 
-        document.execCommand("copy");
+        var clipboard = new ClipboardJS(copyText);
         swal(type+" copied: " + copyText.value);
         }
+
+    const clipboard = new ClipboardJS('#accNoCopy');
+    const clipboard2 = new ClipboardJS('#amountNoCopy');
 
 </script>
 @endsection
