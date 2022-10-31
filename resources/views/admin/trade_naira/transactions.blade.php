@@ -728,7 +728,6 @@
     const copyData = (id, type) => {
         console.log('hi');
         var copyText = document.getElementById(id);
-        var clipboard = new ClipboardJS(copyText);
         swal(type+" copied: " + copyText.value);
         }
 
