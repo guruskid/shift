@@ -15,30 +15,15 @@ class NotificationController extends Controller
     public function index()
     {
         $user_id = Auth::user()->id;
+        $isBirthday = Auth::user()->birthday_status;
         $nots = Notification::where('user_id', 0)->orWhere('user_id', $user_id)->orderBy('created_at', 'desc')->get();
         return response()->json([
             'success' => true,
             'data' => $nots,
+            'isBirthday' => intval($isBirthday)
         ]);
     }
 
-    public function isBirthday()
-    {
-
-        $today = Carbon::now()->format('d/m');
-
-        $users = User::where('birthday', $today)->get();
-
-        JobsBirthday::dispatch($users);
-
-          return response()->json([
-            'success' => true,
-            'data' => 'Birthday sent',
-        ]);
-
-
-
-    }
 
     public function read($id)
     {

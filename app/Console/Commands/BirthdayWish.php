@@ -45,24 +45,15 @@ class BirthdayWish extends Command
         $today = Carbon::now()->format('d/m');
 
         $users = User::where('birthday', $today)->get();
-
-
+        User::where('birthday', $today)->update(['birthday_status' => 1]);
+        User::where('birthday', '!=', $today)->update(['birthday_status' => 0]);
 
         foreach($users as $user){
-             $user->birthday_status = 1;
-             Mail::to($user->email)->send(new Birthday());
 
+             Mail::to($user->email)->send(new Birthday());
 
             }
 
-        // JobsBirthday::dispatch($users);
 
-        //   return response()->json([
-        //     'success' => true,
-        //     'data' => 'Birthday sent',
-        // ]);
-
-
-        \Log::info("Cron is working fine!");
     }
 }

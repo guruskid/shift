@@ -55,6 +55,13 @@ Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
     Route::post('/add-bank-account', 'UserController@addBankAccount');
     Route::post('/delete-bank-account/{id}', 'UserController@deleteBankAccount');
 
+    //New Bank Stuff
+
+    Route::post('/verify-user-bank', 'UserController@verifyBankName');
+    Route::post('/add-user-bank-account', 'UserController@addBankAccDetails');
+
+
+
     //Delete A user
 
     Route::post('/delete-user', 'UserController@deleteUserAccount');

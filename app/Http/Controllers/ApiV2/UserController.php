@@ -16,7 +16,6 @@ use App\VerificationLimit;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -612,6 +611,127 @@ class UserController extends Controller
         ]);
 
     }
+
+    //Verify Account
+
+    public function verifyBankName(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'bank_code' => 'required',
+            'account_number' => 'required| min:10 | max:10',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'msg' => $validator->errors(),
+            ], 401);
+        }
+
+        $bank_code = $request->bank_code;
+        $acct_number = $request->account_number;
+
+        $checker = Bank::where('code', $request->bank_code)->first();
+
+        // dd($checker);
+        if (!$checker) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bank doesn\'t exist',
+            ]);
+        }
+
+        $client = new Client();
+        $url = 'https://app.nuban.com.ng/api/NUBAN-AGBCLVUL544?acc_no=' . $acct_number . '&bank_code=' . $bank_code;
+        $response = $client->request('GET', $url);
+        $body = ($response->getBody()->getContents());
+        $body = json_decode($body);
+
+        if (isset($body->error)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Invalid Account Details',
+            ]);
+        }
+        $acct_name = $body[0]->account_name;
+        $data = [
+            'account_name' => $acct_name,
+        ];
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ], 200);
+
+    }
+
+    //New Way
+
+    public function addBankAccDetails(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'bank_id' => 'required',
+            'account_number' => 'required',
+            'bank_name' => 'required',
+            'account_name' => 'required',
+
+            /* 'phone' => 'required', */
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        $s = Bank::find($request->bank_id);
+
+        // dd($s);
+        if (!$s) {
+            return response()->json([
+                'success' => false,
+                'data' => $s,
+                'message' => 'Bank doesn\'t exist',
+            ]);
+        }
+
+        $err = 0;
+
+        /* Check if its duplicate */
+        $accts = Auth::user()->accounts;
+        foreach ($accts as $a) {
+            if ($a->account_number == $request->account_number && $a->bank_name == $s->name) {
+                $err += 1;
+            }
+        }
+
+        if ($err == 0) {
+            $a = new Account();
+            $a->user_id = Auth::user()->id;
+            $a->account_name = $request->bank_name;
+            $a->bank_name = $s->name;
+            $a->bank_id = $s->id;
+            $a->account_number = $request->account_number;
+            $a->save();
+        }
+
+        $updated = explode(' ', trim($request->bank_name));
+
+        Auth::user()->first_name = $updated[0];
+        Auth::user()->last_name = strstr($request->bank_name, " ");
+        Auth::user()->save();
+
+        return response()->json([
+            'success' => true,
+            'user' => Auth::user(),
+            'bank_accounts' => Auth::user()->accounts,
+            'naira_wallet' => Auth::user()->nairaWallet,
+        ]);
+
+    }
+
+    // OLd Way
 
     public function addBankAccount(Request $request)
     {
