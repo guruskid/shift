@@ -13,16 +13,28 @@ class FlaggedTransactionsController extends Controller
         $show_data = true;
         $transactions = NULL;
 
-        if($type == NULL){
-            $show_data = false;
+        if($type == NULL OR $type == 'clearWithdrawal'){
+            $type = 'clearWithdrawal';
+            $transactions = FlaggedTransactions::with('naira_transaction','nairaTrade','transaction','user')->orderBy('updated_at','DESC')
+            ->WhereHas('transaction', function ($query) {
+                $query->where('is_flagged', 0);
+            })->orWhereHas('nairaTrade', function ($query) {
+                $query->where('is_flagged', 0);
+            })->get();
         }
 
         if($type == 'bulkCredit'){
-            $transactions = FlaggedTransactions::with('naira_transaction','transaction','user')->where('type','Bulk Credit')->get();
+            $transactions = FlaggedTransactions::with('naira_transaction','transaction','user')->where('type','Bulk Credit')->latest()
+            ->whereHas('transaction', function ($query) {
+                $query->where('is_flagged', 1);
+            })->get();
         }
 
         if($type == 'withdrawal'){
-            $transactions = FlaggedTransactions::with('naira_transaction','nairaTrade','user')->where('type','Withdrawal')->get();
+            $transactions = FlaggedTransactions::with('naira_transaction','nairaTrade','user')->where('type','Withdrawal')->latest()
+            ->whereHas('nairaTrade', function ($query) {
+                $query->where('is_flagged', 1);
+            })->get();
         }
         return view('admin.flagged.index', compact([
             'show_data','type','transactions'

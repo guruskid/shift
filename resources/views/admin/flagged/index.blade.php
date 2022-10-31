@@ -57,6 +57,23 @@
             <div class="row mb-2">
                 <div class="col-md-3">
                     {{-- bg-primary text-white --}}
+                    <a href="{{ route('admin.flagged.home', ['clearWithdrawal']) }}">
+                        <div class="card mb-1 widget-content @if (isset($type) AND $type == "clearWithdrawal")
+                        bg-primary
+                         @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h6 class="text-center @if (isset($type) AND $type == "clearWithdrawal")
+                                    text-white
+                                     @endif">All Cleared Withdrawal</h6>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.flagged.home', ['bulkCredit']) }}">
                         <div class="card mb-1 widget-content @if (isset($type) AND $type == "bulkCredit")
                         bg-primary
@@ -89,6 +106,7 @@
                         </div>
                     </a>
                 </div>
+                
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -112,6 +130,7 @@
                                             <th class="text-center">Amount Credited</th>
                                             <th class="text-center">Last Amount Credited</th>
                                             <th class="text-center">SignedUp Date</th>
+                                            <th class="text-center">Date</th>
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -130,6 +149,7 @@
                                                 <td class="text-center text-muted">₦{{ number_format($t->transaction->amount_paid)}}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->previousTransactionAmount)}}</td>
                                                 <td class="text-center text-muted">{{ $t->user->created_at->format('d M y, H:ia')}}</td>
+                                                <td class="text-center text-muted">{{ $t->created_at->format('d M y, h:ia')}}</td>
                                                 <td class="text-center text-muted">
                                                     @if($t->transaction->is_flagged == 1)
                                                         <a href="{{route('admin.flagged.clear', [$t->id] )}}">
@@ -167,6 +187,7 @@
                                         <th class="text-center">Daily Limit</th>
                                         <th class="text-center">Monthly Limit</th>
                                         <th class="text-center">SignedUp Date</th>
+                                        <th class="text-center">Date</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                     </thead>
@@ -197,6 +218,7 @@
                                                 <td class="text-center text-muted">₦{{ number_format($t->user->daily_max)}}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->user->monthly_max)}}</td>
                                                 <td class="text-center text-muted">{{ $t->user->created_at->format('d M y, H:ia')}}</td>
+                                                <td class="text-center text-muted">{{ $t->created_at->format('d M y, h:ia')}}</td>
                                                 <td class="text-center text-muted">
                                                     @if($t->nairaTrade->is_flagged == 1)
                                                         <a href="{{route('admin.flagged.clear', [$t] )}}">
@@ -210,6 +232,71 @@
                                                         
                                                     @endif
                                                 </td>
+                                            </tr>
+                                            @endforeach
+                                        
+                                    </tbody>
+
+
+                                </table>
+                            </div>
+                            @endif
+
+                            @if ($type == "clearWithdrawal")
+                            <div class="table-responsive">
+                                <table class="mb-2 table table-bordered transactions-table">
+                                    <thead>
+                                        <tr>
+                                        <th class="text-center">S/N</th>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Previous Balance</th>
+                                        <th class="text-center">Current Balance</th>
+                                        <th class="text-center">Transaction</th>
+                                        <th class="text-center">Amount</th>
+                                        <th class="text-center">Last Amount </th>
+                                        <th class="text-center">Verfication Level</th>
+                                        <th class="text-center">Daily Limit</th>
+                                        <th class="text-center">Monthly Limit</th>
+                                        <th class="text-center">SignedUp Date</th>
+                                        <th class="text-center">Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                            @php
+                                                $key = 0;
+                                            @endphp
+                                            @foreach ($transactions as $t)
+                                            <tr>
+                                                <td class="text-center text-muted">{{ ++ $key }}</td>
+                                                <td class="text-center text-muted">{{ $t->user->first_name." ".$t->user->last_name}}</td>
+                                                <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->previous_balance) }}</td>
+                                                <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->current_balance) }}</td>
+                                                <td class="text-center text-muted">
+                                                    @if ($t->transaction)
+                                                    {{ $t->transaction->card }}
+                                                    @else
+                                                    PayBridge {{ $t->nairaTrade->type }}
+                                                    @endif
+                                                </td>
+                                                <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->amount)}}</td>
+                                                <td class="text-center text-muted">₦{{ number_format($t->previousTransactionAmount)}}</td>
+                                                <td class="text-center text-muted">
+                                                    @if($t->user->phone_verified_at != null AND $t->user->address_verified_at == null AND $t->user->idcard_verified_at == null)
+                                                         {{'Level 1'}}
+                                                    @endif
+                                                    @if($t->user->phone_verified_at != null AND $t->user->address_verified_at != null AND $t->user->idcard_verified_at == null)
+                                                        {{ 'Level 2' }}
+                                                    @endif
+                                                    @if($t->user->phone_verified_at != null AND $t->user->address_verified_at != null AND $t->user->idcard_verified_at != null)
+                                                        {{ 'Level 3' }}
+                                                    @endif
+                                                    </td>
+
+                                                <td class="text-center text-muted">₦{{ number_format($t->user->daily_max)}}</td>
+                                                <td class="text-center text-muted">₦{{ number_format($t->user->monthly_max)}}</td>
+                                                <td class="text-center text-muted">{{ $t->user->created_at->format('d M y, h:ia')}}</td>
+                                                <td class="text-center text-muted">{{ $t->created_at->format('d M y, h:ia')}}</td>
                                             </tr>
                                             @endforeach
                                         
