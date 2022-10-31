@@ -494,6 +494,7 @@ class AuthController extends Controller
             'bank_id' => 'required',
             'account_number' => 'required',
             'bank_name' => 'required',
+            'account_name' => 'required',
 
             /* 'phone' => 'required', */
         ]);
@@ -554,7 +555,7 @@ class AuthController extends Controller
 
 
 
-
+     //This is not longer in use
     public function addBankDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
