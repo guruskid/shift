@@ -949,7 +949,7 @@ class SummaryController extends Controller
             $all_tnx = Transaction::query();
             $all_tnx = $this->sortingByFullDate($all_tnx, $startDate, $endDate);
 
-            //* Bitcoin total transactions 
+            //* Bitcoin total transactions
             $bitcoin_total_tnx = $all_tnx->where('status', 'success')->where('card','bitcoin');
 
             //* USDT total transactions

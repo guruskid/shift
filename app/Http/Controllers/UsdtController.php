@@ -520,7 +520,7 @@ class UsdtController extends Controller
         ]);
     }
 
-    public function buy(Request $request)
+    public static function buy(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
@@ -741,6 +741,9 @@ class UsdtController extends Controller
             'msg' => 'USDT bought successfully'
         ]);
     }
+
+   
+
 
     public static function send(Request $request)
     {

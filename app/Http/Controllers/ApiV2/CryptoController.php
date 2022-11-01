@@ -23,6 +23,8 @@ class CryptoController extends Controller
     {
         $bitcoin = CryptoCurrency::find(1);
         $usdt = CryptoCurrency::find(7);
+        $data['usdt_rate'] = LiveRateController::usdtRate();
+        $data["btc_rate"] = LiveRateController::btcRate();
 
         $bitcoin->wallet = CryptoHelperController::balance(1);
         $bitcoin->network = "BRP-20";
@@ -61,6 +63,7 @@ class CryptoController extends Controller
 
         return response()->json([
             'success' => true,
+            'rates' => $data,
             'currencies' => $wallets,
             'total_balance' => $total_balances,
             'UserPin' => isset(Auth::user()->pin)
@@ -109,6 +112,36 @@ class CryptoController extends Controller
             return ControllersBtcWalletController::sell($request);
         } else if ($request->currency_id == 7) {
             return UsdtController::sell($request);
+        } else {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Invalid currency selected'
+            ]);
+        }
+    }
+
+
+    public function buy(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'amount' => 'required|min:0',
+            'currency_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+
+        if ($request->currency_id == 1) {
+            $request->merge([
+                'quantity' => $request->amount
+            ]);
+            return ControllersBtcWalletController::buy($request);
+        } else if ($request->currency_id == 7) {
+            return UsdtController::buy($request);
         } else {
             return response()->json([
                 'success' => false,
