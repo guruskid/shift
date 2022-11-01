@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\TradeNaira;
 
 use App\Account;
 use App\Events\CustomNotification;
+use App\FlaggedTransactions;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
+use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebasePushNotificationController;
 use App\Http\Controllers\GeneralSettings;
@@ -143,7 +145,7 @@ class TradeController extends Controller
             ]);
         }
 
-        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal', 'status' => 'waiting'])->get();
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->where( 'status','waiting')->get();
         if (count($trade) > 0) {
             return response()->json([
                 'success' => false,
@@ -193,6 +195,38 @@ class TradeController extends Controller
             BusinessDeveloperController::freeWithdrawalsReduction(1);
         }
 
+        $is_flagged = 0;
+        $totalTransactionsAmount = FlaggedTransactionsController::dailyTotal(Auth::user(),$request->amount);
+        
+        if($totalTransactionsAmount>= 1000000):
+            $is_flagged = 1;
+            $lastTranxAmount = FlaggedTransactionsController::getLastWithdrawal(Auth::user());
+        endif;
+
+        // daily and monthly check
+        $withdrawalCheck = FlaggedTransactionsController::userDailyMonthlyLimit(Auth::user(),$request->amount);
+        $dailyLimit = $withdrawalCheck['daily'];
+        $monthlyLimit = $withdrawalCheck['monthly'];
+        $is_daily = 0;
+        $is_monthly = 0;
+
+        if($dailyLimit < 0)
+        {
+            $is_daily = 1;
+            return response()->json([
+                'success' => false,
+                'message' => "Daily Limit Exceeded",
+            ]);
+        }
+
+        if($monthlyLimit < 0)
+        {
+            $is_monthly = 1;
+            return response()->json([
+                'success' => false,
+                'message' => "Monthly Limit Exceeded",
+            ]);
+        }
         //create TXN here
         $txn = new NairaTrade();
         $txn->reference = $ref;
@@ -202,6 +236,9 @@ class TradeController extends Controller
         $txn->status = 'waiting';
         $txn->type = 'withdrawal';
         $txn->account_id = $request->account_id;
+        $txn->is_flagged = $is_flagged;
+        $txn->is_dailyLimit = $is_daily;
+        $txn->is_monthlyLimit = $is_monthly;
         // $txn->platform = $request->platform;
         $txn->save();
 
@@ -234,6 +271,19 @@ class TradeController extends Controller
         $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
         $transfer_charges_wallet->amount += $nt->charge;
         $transfer_charges_wallet->save();
+
+        if($is_flagged == 1){
+            $user = Auth::user();
+            $type = 'Withdrawal';
+            $flaggedTranx =  new FlaggedTransactions();
+            $flaggedTranx->type = $type;
+            $flaggedTranx->user_id = Auth::user()->id;
+            $flaggedTranx->transaction_id = $txn->id;
+            $flaggedTranx->reference_id = $nt->reference;
+            $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
+            $flaggedTranx->accountant_id = $request->agent_id;
+            $flaggedTranx->save();
+        }
 
         $title = 'Pay-Bridge withdrawal(pending)';
         $paybridge_account = PayBridgeAccount::where(['status' => 'active', 'account_type' => 'withdrawal'])->first();
@@ -412,7 +462,7 @@ class TradeController extends Controller
         $pendingWithdrawal = false;
         $pendingDeposit = false;
 
-        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal', 'status' => 'waiting'])->get();
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->whereIn( 'status','waiting')->get();
         if (count($trade) > 0) {
             $pendingWithdrawal = true;
         }
