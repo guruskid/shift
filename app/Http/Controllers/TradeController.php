@@ -156,7 +156,6 @@ class TradeController extends Controller
         $batch_id = uniqid();
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
         $r->buy_sell == 1 ? $buy_sell = 'buy' : $buy_sell = 'sell';
-        $transaction_id = uniqid();
 
         foreach ($r->cards as $i => $total) {
             $cardType = $r->card_types[$i];
@@ -174,6 +173,7 @@ class TradeController extends Controller
                 }
             }
 
+            $transaction_id = uniqid();
 
             $commission = $t_amount - $r->totals[$i];
 
