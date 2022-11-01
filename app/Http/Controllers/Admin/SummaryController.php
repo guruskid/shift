@@ -208,7 +208,7 @@ class SummaryController extends Controller
             $date = date('Y').'-'.$month.'-'.$day;
             $dates= Carbon::parse($date);
 
-            return AccountSummaryController::loadSummary($month, $day);
+            // return AccountSummaryController::loadSummary($month, $day);
             $segment = $dates->format("M d");
             $show_data = false;
 

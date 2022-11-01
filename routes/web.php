@@ -202,7 +202,7 @@ Route::get('/newsignup', function () {
 
 
 Route::get('test', function () {
-    dd(LiveRateController::btcRate());
+    // dd(LiveRateController::btcRate());
     /* $emailJob = (); */
 
     // dispatch(new RegistrationEmailJob('shean@gmail.com'));
