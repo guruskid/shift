@@ -2,6 +2,13 @@
 @section('content')
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
+
+        @if(in_array(Auth::user()->role,[889, 777]))
+            <div class="d-flex justify-content-between">
+                <div></div>
+            <div><a href="{{ route('admin.flagged.home') }}">Flagged Transactions <span class="badge bg-warning text-white">{{number_format($flaggedTransactionCount)}}</span></a></div>
+            </div>
+        @endif
         <div class="dashboard-title d-flex">
             <ion-icon name="home-outline"></ion-icon>
             <div class="description">
