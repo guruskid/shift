@@ -168,7 +168,7 @@ class TradeNairaController extends Controller
                         $query->where('status','success')->select(DB::raw("sum(amount) as sumt"));
                     }]);
                 }]);
-                
+
 
                 $transactions = $transactions->select("*",\DB::raw('(SELECT SUM(amount)
                     FROM naira_trades as tr
@@ -203,8 +203,8 @@ class TradeNairaController extends Controller
                 return Excel::download(new PayBridgeTransactions($transactions), 'PayBridgeTransactions.csv');
             }
             $transactions = $transactions->paginate(20);
-            
-            
+
+
         }
             //?" all  deposit transactions
             $deposit = NairaTrade::where('type','deposit')->where('is_dailyLimit',0)->where('is_monthlyLimit',0);
@@ -485,7 +485,7 @@ class TradeNairaController extends Controller
         if($request->id != $transaction->id){
             return back()->with(['error' => 'Error Invalid Action']);
         }
-        
+
             if($transaction->type == 'withdrawal'){
                 //Approve
                 if($request->status == 'approve'){
@@ -494,7 +494,7 @@ class TradeNairaController extends Controller
                     $message = $withdrawal['message'];
                     return back()->with([$status => $message]);
                 }
-                //decline 
+                //decline
                 if($request->status == 'decline'){
                     $withdrawal =  $this->declineTrade($request, $transaction);
                     $status = $withdrawal['status'];
@@ -516,7 +516,7 @@ class TradeNairaController extends Controller
                     $message = $deposit['message'];
                     return back()->with([$status => $message]);
                 }
-                //decline 
+                //decline
                 if($request->status == 'decline'){
                     $deposit =  $this->declineTrade($request, $transaction);
                     $status = $deposit['status'];
@@ -621,7 +621,7 @@ class TradeNairaController extends Controller
                 $timeData = null;
                 break;
             default:
-            
+
                 break;
         }
         return[
@@ -667,7 +667,7 @@ class TradeNairaController extends Controller
         $msg ="Your deposit transaction of ₦".number_format($transaction->amount)." was declined. Kindly contact support for more information.";
 
         $nt = NairaTransaction::where('reference', $transaction->reference)->first();
-        
+
 
         if ($transaction->type == 'withdrawal') {
             $account = $transaction->account;
@@ -685,10 +685,6 @@ class TradeNairaController extends Controller
 
             $title = "WITHDRAWAL UPDATE!";
             $msg ="Your withdrawal transaction of ₦".number_format($transaction->amount)." was declined. This is because $reason. Kindly contact support for more information.";
-<<<<<<< HEAD
-
-=======
->>>>>>> master
         }
 
         // Firebase Push Notification
