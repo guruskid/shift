@@ -79,6 +79,11 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
 
     //BLOCKFILL ORDERS
     Route::get('/blockfill-orders', 'BlockfillOrderController@index')->name('admin.blockfill.orders');
+
+    //Ledger system
+    Route::get('/ledger', 'LedgerController@index')->name('admin.ledger');
+    Route::get('/negative-ledger', 'LedgerController@negative')->name('admin.negative-ledger');
+
 });
 
 Route::group(['middleware' => 'accountant'], function () {
@@ -89,6 +94,12 @@ Route::group(['middleware' => 'accountant'], function () {
         Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
         Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
     });
+
+    Route::prefix('flagged')->group(function () {
+        Route::get('/{type?}', 'FlaggedTransactionsController@index')->name('admin.flagged.home');
+        Route::get('/clear/{flaggedTransaction}', 'FlaggedTransactionsController@clear')->name('admin.flagged.clear');
+    });
+
 });
 
 
@@ -152,6 +163,7 @@ Route::group(['middleware' => ['AccountOfficer'] ], function () {
         Route::post('/set-limits', 'TradeNairaController@setLimits')->name('admin.naira-p2p.set-limits');
         Route::put('/confirm/{transaction}', 'TradeNairaController@confirm')->name('admin.naira-p2p.confirm');
         Route::put('/confirm-sell/{transaction}', 'TradeNairaController@confirmSell')->name('admin.naira-p2p.confirm-sell');
+        Route::put('/update-trade/{transaction}', 'TradeNairaController@assignStatusAction')->name('admin.naira-p2p.update');
         Route::put('/cancel-trade/{transaction}', 'TradeNairaController@declineTrade')->name('admin.naira-p2p.cancel-trade');
         Route::put('/refund-trade/{transaction}', 'TradeNairaController@refundTrade')->name('admin.naira-p2p.refund-trade');
         Route::post('/update-bank-details', 'TradeNairaController@updateBankdetails')->name('agent.update-bank');

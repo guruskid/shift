@@ -19,6 +19,7 @@ use App\Exports\UsdtTransactions;
 use App\Exports\UsdtTransactionsExport;
 use App\Exports\UserDataTransaction;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
+use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Http\Controllers\Admin\SalesController;
 use App\NairaTrade;
 use Excel;
@@ -148,6 +149,7 @@ class AdminController extends Controller
                 ])
             );
         } else if (Auth::user()->role == 889 || Auth::user()->role == 777 || Auth::user()->role == 775) { //Accountants
+            $flaggedTransactionCount = FlaggedTransactionsController::count();
             return view(
                 'admin.accountant_dashboard',
                 compact([
@@ -156,7 +158,7 @@ class AdminController extends Controller
                     'g_txns', 'c_txns', 'n_txns',
                     'buyCash', 'sellCash', 'buyCount', 'sellCount',
                     'pBuyCash', 'pSellCash', 'pBuyCount', 'pSellCount',
-                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges', 'old_charges'
+                    'users_wallet_balance', 'rubies_balance', 'company_balance', 'charges', 'old_charges','flaggedTransactionCount'
                 ])
             );
         } else if (Auth::user()->role == 559) { //Marketing
@@ -1279,22 +1281,11 @@ class AdminController extends Controller
         $user = User::find($id);
         $transactions = $user->transactions;
 
-        $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->orderBy('id', 'desc')->paginate(20);
-        $dr_total = 0;
-        $cr_total = 0;
-        foreach ($wallet_txns as $t) {
-            if ($t->cr_user_id == $user->id) {
-                $t->trans_type = 'Credit';
-                if ($t->status == 'success') {
-                    $cr_total += $t->amount;
-                }
-            } else {
-                $t->trans_type = 'Debit';
-                if ($t->status == 'success') {
-                    $dr_total += $t->amount;
-                }
-            }
-        }
+        $wallet_txns = NairaTransaction::where('cr_user_id', $user->id)->orWhere('dr_user_id', $user->id)->latest()->paginate(2000);
+        $ledger = UserController::ledgerBalance($id)->getData();
+
+        $log = $user->nairaTransactions()->where('cr_user_id', '!=', $user->id)->where('dr_user_id', '!=', $user->id)->get();
+
 
         if ($user->btcWallet) {
             $btc_wallet = $user->btcWallet;
@@ -1363,9 +1354,9 @@ class AdminController extends Controller
         $verifications = $user->verifications;
 
         return view('admin.user', compact([
-            'user', 'transactions', 'wallet_txns', 'btc_wallet',
+            'user', 'transactions', 'wallet_txns', 'btc_wallet', 'log',
             'usdt_wallet', 'usdt_transactions',
-            'btc_transactions', 'dr_total', 'cr_total', 'verifications'
+            'btc_transactions', 'ledger', 'verifications'
         ]));
     }
 

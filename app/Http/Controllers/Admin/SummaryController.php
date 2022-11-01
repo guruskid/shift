@@ -270,17 +270,17 @@ class SummaryController extends Controller
         $this->roundUpAmount($all_tnx);
 
         $all_tnx_count = $all_tnx->where('status', 'success')->count();
-        $allCountBuy = $all_tnx->where('status', 'success')->where('type', 'buy')->count();
-        $allCountSell = $all_tnx->where('status','success')->where('type', 'sell')->count();
+        $allCountBuy = $all_tnx->where('status', 'success')->whereIn('type', ['buy','Buy'])->count();
+        $allCountSell = $all_tnx->where('status','success')->whereIn('type', ['sell','Sell'])->count();
 
-        $allNairaAmountBuy = $all_tnx->where('status', 'success')->where('type', 'buy')->sum('amount_paid');
-        $allNairaAmountSell = $all_tnx->where('status','success')->where('type', 'sell')->sum('amount_paid');
+        $allNairaAmountBuy = $all_tnx->where('status', 'success')->whereIn('type', ['buy','Buy'])->sum('amount_paid');
+        $allNairaAmountSell = $all_tnx->where('status','success')->whereIn('type', ['sell','Sell'])->sum('amount_paid');
 
         //*Bitcoin Transaction
         $bitcoin_total_tnx = $all_tnx->where('status', 'success')->where('card_id',102);
 
-        $bitcoin_total_tnx_buy = $bitcoin_total_tnx->where('type', 'buy');
-        $bitcoin_total_tnx_sell = $bitcoin_total_tnx->where('type', 'sell');
+        $bitcoin_total_tnx_buy = $bitcoin_total_tnx->whereIn('type', ['buy','Buy']);
+        $bitcoin_total_tnx_sell = $bitcoin_total_tnx->whereIn('type', ['sell','Sell']);
 
         $BTCbuyQuantity = $bitcoin_total_tnx_buy->sum('quantity');
         $BTCsellQuantity = $bitcoin_total_tnx_sell->sum('quantity');
@@ -298,8 +298,8 @@ class SummaryController extends Controller
         //* USDT Transaction
         $this->roundUpAmount($USDTranx);
 
-        $USDTbuyTranx = $USDTranx->unique('id')->where('type', 'buy');
-        $USDTsellTranx = $USDTranx->unique('id')->where('type', 'sell');
+        $USDTbuyTranx = $USDTranx->unique('id')->whereIn('type', ['sell','Sell']);
+        $USDTsellTranx = $USDTranx->unique('id')->whereIn('type', ['sell','Sell']);
 
         $USDTbuyQuantity = $USDTbuyTranx->sum('quantity');
         $USDTsellQuantity = $USDTsellTranx->sum('quantity');

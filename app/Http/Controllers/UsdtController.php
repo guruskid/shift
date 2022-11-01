@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Contract;
 use App\CryptoRate;
 use App\FeeWallet;
+use App\FlaggedTransactions;
 use App\HdWallet;
+use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
 use App\Setting;
+use App\User;
 use App\Wallet;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -452,6 +455,12 @@ class UsdtController extends Controller
             return response()->json(['success' => false, 'msg' => 'An error occured, please try again']);
         }
 
+        $is_flagged = 0;
+        if($ngn >= 1000000):
+            $is_flagged = 1;
+            $lastTranxAmount = FlaggedTransactionsController::getLastTransaction(Auth::user());
+        endif;
+
         $t = Auth::user()->transactions()->create([
             'card_id' => 143,
             'type' => 'sell',
@@ -466,6 +475,7 @@ class UsdtController extends Controller
             'agent_id' => 1,
             'ngn_rate' => $usd_ngn,
             'commission' => $commission,
+            'is_flagged' => $is_flagged,
         ]);
 
         $user_naira_wallet = Auth::user()->nairaWallet;
@@ -495,6 +505,20 @@ class UsdtController extends Controller
 
         Auth::user()->nairaWallet->amount += $t->amount_paid;
         Auth::user()->nairaWallet->save();
+
+        if($t->is_flagged == 1){
+            $agent_id = FlaggedTransactionsController::getCurrentAccountant();
+            $user = Auth::user();
+            $type = 'Bulk Credit';
+            $flaggedTranx =  new FlaggedTransactions();
+            $flaggedTranx->type = $type;
+            $flaggedTranx->user_id = Auth::user()->id;
+            $flaggedTranx->transaction_id = $t->id;
+            $flaggedTranx->reference_id = $nt->reference;
+            $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
+            $flaggedTranx->accountant_id = $agent_id;
+            $flaggedTranx->save();
+        }
 
         // ///////////////////////////////////////////////////////////
         $finalamountcredited = Auth::user()->nairaWallet->amount;
@@ -702,8 +726,8 @@ class UsdtController extends Controller
         $nt->amount = $t->amount_paid;
         $nt->user_id = Auth::user()->id;
         $nt->type = 'naira wallet';
-        $nt->previous_balance = Auth::user()->nairaWallet->amount;
-        $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $nt->current_balance = Auth::user()->nairaWallet->amount;
+        $nt->previous_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
         $nt->charge = 0;
         $nt->transaction_type_id = 5;
         $nt->cr_wallet_id = $n->id;

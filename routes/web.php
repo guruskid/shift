@@ -29,8 +29,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::GET('/changerA2W3/123WERghty211HHJ/{email}/{role}',
- 'Admin\BusinessDeveloperController@changer');
+
 
 Route::get('email', function () {
     $rad = rand(1000, 9999);
@@ -203,7 +202,7 @@ Route::get('/newsignup', function () {
 
 
 Route::get('test', function () {
-    dd(LiveRateController::btcRate());
+    // dd(LiveRateController::btcRate());
     /* $emailJob = (); */
 
     // dispatch(new RegistrationEmailJob('shean@gmail.com'));
@@ -432,7 +431,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
     Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
-    Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
+    // Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
+    Route::any('/sort-accountant-summary', 'Admin\AccountSummaryController@sorting')->name('admin.junior-summary-sort-details');
+
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
 
@@ -606,7 +607,8 @@ Route::group(['prefix' => 'customerhappiness', 'middleware' => ['auth', 'custome
 
     Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('ch.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('ch.junior-summary-details');
-    Route::any('/sort-accountant-summary', 'Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
+    // Route::any('/sort-accountant-summary', 'Admin\SummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
+    Route::post('/sort-accountant-summary', 'Admin\AccountSummaryController@sort_tnx')->name('ch.junior-summary-sort-details');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing']], function () {
