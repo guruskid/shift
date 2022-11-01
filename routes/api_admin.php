@@ -356,6 +356,12 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
     Route::group(['prefix' => 'complianceAndFraud'], function () {
         Route::GET('/users/{type?}', 'ComplianceFraudController@index');
         Route::POST('/sort', 'ComplianceFraudController@sorting');
+        Route::GET('/user/{id}', 'ComplianceFraudController@getUser');
+
+        Route::group(['prefix' => 'flagged'], function () {
+            Route::GET('/', 'ComplianceFraudController@flaggedTransactions');
+            Route::POST('/sort', 'ComplianceFraudController@sortFlaggedTransaction');
+        });   
     });
 
     Route::group(['prefix' => 'users'], function () {
