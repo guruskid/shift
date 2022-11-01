@@ -64,6 +64,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::GET('/notification/settings', 'Api\NotificationController@settings');
     Route::POST('/notification/settings', 'Api\NotificationController@updateSettings');
 
+    Route::GET('/isbirthday', 'Api\NotificationController@isBirthday');
+
 
 
 

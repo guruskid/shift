@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Notification;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\Birthday as JobsBirthday;
+use App\Notification;
+use App\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
@@ -12,10 +15,12 @@ class NotificationController extends Controller
     public function index()
     {
         $user_id = Auth::user()->id;
+        $isBirthday = Auth::user()->birthday_status;
         $nots = Notification::where('user_id', 0)->orWhere('user_id', $user_id)->orderBy('created_at', 'desc')->get();
         return response()->json([
             'success' => true,
-            'data' => $nots
+            'data' => $nots,
+            'isBirthday' => intval($isBirthday)
         ]);
     }
 
@@ -37,7 +42,7 @@ class NotificationController extends Controller
             'success' => true,
             'data' => Auth::user()->notificationSetting,
         ]);
-        
+
     }
 
     public function updateSettings(Request $r)
