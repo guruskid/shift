@@ -145,7 +145,7 @@ class TradeController extends Controller
             ]);
         }
 
-        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->whereIn( 'status',['waiting','unresolved'])->get();
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->where( 'status','waiting')->get();
         if (count($trade) > 0) {
             return response()->json([
                 'success' => false,
@@ -196,7 +196,9 @@ class TradeController extends Controller
         }
 
         $is_flagged = 0;
-        if($request->amount >= 1000000):
+        $totalTransactionsAmount = FlaggedTransactionsController::dailyTotal(Auth::user(),$request->amount);
+        
+        if($totalTransactionsAmount>= 1000000):
             $is_flagged = 1;
             $lastTranxAmount = FlaggedTransactionsController::getLastWithdrawal(Auth::user());
         endif;
@@ -460,7 +462,7 @@ class TradeController extends Controller
         $pendingWithdrawal = false;
         $pendingDeposit = false;
 
-        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->whereIn( 'status',['waiting','unresolved'])->get();
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->whereIn( 'status','waiting')->get();
         if (count($trade) > 0) {
             $pendingWithdrawal = true;
         }

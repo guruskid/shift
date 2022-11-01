@@ -106,6 +106,12 @@ class FlaggedTransactionsController extends Controller
         ];
     }
 
+    public static function dailyTotal($user, $amount){
+        $daily = $user->nairaTransactions()->whereDate('created_at', now())->whereIn('status',['success','pending'])->whereIn('transaction_type_id', [3, 2])->sum('amount');
+        $dailyTotal = $daily + $amount;
+        return $dailyTotal;
+    }
+
     public static function getCurrentAccountant()
     {
         $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
