@@ -462,7 +462,7 @@ class TradeController extends Controller
         $pendingWithdrawal = false;
         $pendingDeposit = false;
 
-        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->whereIn( 'status','waiting')->get();
+        $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->where('status','waiting')->get();
         if (count($trade) > 0) {
             $pendingWithdrawal = true;
         }
