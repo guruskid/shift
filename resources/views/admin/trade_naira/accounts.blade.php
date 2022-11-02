@@ -90,12 +90,18 @@
                                         <td>{{ $account->status }}</td>
                                         <td>
                                             <div class="btn-group">
-                                                <button data-toggle="modal" data-target="#edit-modal-{{ $account->id }}" class="btn btn-primary">Edit</button>
+                                                @if(in_array(Auth::user()->role,[889,999,777]))
+                                                    <button data-toggle="modal" data-target="#edit-modal-{{ $account->id }}" class="btn btn-primary">Edit</button>
+                                                @endif
+
+                                                @if(in_array(Auth::user()->role,[889,999]))
+                                                    <button data-toggle="modal" data-target="#delete-modal-{{ $account->id }}" class="btn btn-danger ml-2">Delete</button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
 
-                                    
+
                                     @endforeach
                                 </tbody>
                             </table>
@@ -116,7 +122,7 @@
                     <form action="{{ route('agent.update-account') }}" method="POST" class="mb-4">@csrf
                         <div class="form-row ">
                             <input type="hidden" value="{{$account->id}}" name="id">
-                            @if(Auth::user()->role == 889)
+                            @if(in_array(Auth::user()->role,[889,999]))
                             <div class="col-md-12">
                                 <div class="position-relative form-group">
                                     <label>Bank Name</label>
@@ -160,6 +166,29 @@
                         <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
                             <i class="spinner-border spinner-border-sm" id="s-b" style="display: none;"></i>
                             Update
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+
+@foreach($accounts as $key => $account)
+    {{-- Edit Modal --}}
+    <div class="modal fade " id="delete-modal-{{ $account->id }}">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form action="{{ route('agent.delete-paybridge-account') }}" method="POST" class="mb-4">@csrf
+                        <div class="form-row ">
+                            <input type="hidden" value="{{$account->id}}" name="id">
+                            <div>
+                                Are you sure?
+                            </div>
+                        </div>
+                        <button type="submit" id="sign-up-btn" class="mt-2 btn btn-outline-primary">
+                            Delete
                         </button>
                     </form>
                 </div>

@@ -366,6 +366,12 @@ class TradeNairaController extends Controller
         return redirect()->back()->with(["success" => 'Account Updated']);
     }
 
+    public function deleteAccount(Request $request) {
+        $account = PayBridgeAccount::find($request['id']);
+        $account->delete();
+        return redirect()->back()->with(["success" => 'Account Deleted']);
+    }
+
     public function updateBankDetails(Request $request)
     {
         $a = Account::find($request->id);

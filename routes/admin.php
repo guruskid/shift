@@ -93,6 +93,7 @@ Route::group(['middleware' => 'accountant'], function () {
 
         Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
         Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
+        Route::post('/delete-paybridge-account', 'TradeNairaController@deleteAccount')->name('agent.delete-paybridge-account');
     });
 
     Route::prefix('flagged')->group(function () {
