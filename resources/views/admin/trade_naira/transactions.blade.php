@@ -692,8 +692,6 @@
 @endif
 
 <script src="{{asset('assets/scripts/sweetalert.min.js')}} "></script>
-<script src="{{ asset('assets/scripts/clipboard.min.js') }}"></script>
-
 <script>
 
 
@@ -727,11 +725,17 @@
 
     const copyData = (id, type) => {
         var copyText = document.getElementById(id);
-        swal(type+" copied: " + copyText.value);
-        }
-
-    const clipboard = new ClipboardJS('#accNoCopy');
-    const clipboard2 = new ClipboardJS('#amountNoCopy');
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard
+        .writeText(copyText.value)
+        .then(() => {
+            swal(type+" copied: " + copyText.value);
+        })
+        .catch(() => {
+            swal("something went wrong");
+        });
+    }
 
 </script>
 @endsection
