@@ -411,7 +411,8 @@
                                             <div class="btn-group">
                                                 @if(!in_array($status,[null,'cancelled']))
                                                     @if (in_array($t->status,['waiting','unresolved']))
-                                                        <button data-toggle="modal" data-target="#pay-view-{{ $t->id }}" class="btn btn-primary">Pay</button>
+                                                        {{-- <button data-toggle="modal" data-target="#pay-view-{{ $t->id }}" class="btn btn-primary">Pay</button> --}}
+                                                        <a class="text-white" href="{{ route('admin.naira-p2p.view', $t) }}"><button  class="btn btn-primary">Pay</button></a>
                                                         {{-- <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
                                                         <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button> --}}
                                                     
