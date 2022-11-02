@@ -487,6 +487,16 @@ class TradeNairaController extends Controller
         return back()->with(['success' => 'Limits uppdated']);
     }
 
+    public function viewTransactions(NairaTrade $transaction, Request $request)
+    {
+        $type = $transaction->type;
+        $status = $transaction->status;
+        $t = $transaction;
+        return view('admin.trade_naira.view', compact([
+            't','type','status'
+        ]));
+    }
+
     public function assignStatusAction(Request $request, NairaTrade $transaction){
         if($request->id != $transaction->id){
             return back()->with(['error' => 'Error Invalid Action']);
@@ -646,7 +656,11 @@ class TradeNairaController extends Controller
         $name = ($user->first_name == " ") ? $user->username : $user->first_name;
         $name = str_replace(' ', '', $name);
         $firstname = ucfirst($name);
-        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        try {
+            Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        } catch (\Throwable $th) {
+            \Log::info($th);
+        }
     }
     public function declineTrade(Request $request, NairaTrade $transaction)
     {

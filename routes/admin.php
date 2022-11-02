@@ -164,7 +164,11 @@ Route::group(['middleware' => ['AccountOfficer'] ], function () {
         Route::post('/set-limits', 'TradeNairaController@setLimits')->name('admin.naira-p2p.set-limits');
         Route::put('/confirm/{transaction}', 'TradeNairaController@confirm')->name('admin.naira-p2p.confirm');
         Route::put('/confirm-sell/{transaction}', 'TradeNairaController@confirmSell')->name('admin.naira-p2p.confirm-sell');
+
         Route::put('/update-trade/{transaction}', 'TradeNairaController@assignStatusAction')->name('admin.naira-p2p.update');
+        Route::get('/view-trade/{transaction}', 'TradeNairaController@viewTransactions')->name('admin.naira-p2p.view');
+
+
         Route::put('/cancel-trade/{transaction}', 'TradeNairaController@declineTrade')->name('admin.naira-p2p.cancel-trade');
         Route::put('/refund-trade/{transaction}', 'TradeNairaController@refundTrade')->name('admin.naira-p2p.refund-trade');
         Route::post('/update-bank-details', 'TradeNairaController@updateBankdetails')->name('agent.update-bank');

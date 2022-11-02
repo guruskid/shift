@@ -411,7 +411,8 @@
                                             <div class="btn-group">
                                                 @if(!in_array($status,[null,'cancelled']))
                                                     @if (in_array($t->status,['waiting','unresolved']))
-                                                        <button data-toggle="modal" data-target="#pay-view-{{ $t->id }}" class="btn btn-primary">Pay</button>
+                                                        {{-- <button data-toggle="modal" data-target="#pay-view-{{ $t->id }}" class="btn btn-primary">Pay</button> --}}
+                                                        <a class="text-white" href="{{ route('admin.naira-p2p.view', $t) }}"><button  class="btn btn-primary">Pay</button></a>
                                                         {{-- <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
                                                         <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button> --}}
                                                     
@@ -691,9 +692,7 @@
 @endif
 @endif
 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
-
+<script src="{{asset('assets/scripts/sweetalert.min.js')}} "></script>
 <script>
 
 
@@ -726,13 +725,18 @@
     }
 
     const copyData = (id, type) => {
-        console.log('hi');
         var copyText = document.getElementById(id);
-        swal(type+" copied: " + copyText.value);
-        }
-
-    const clipboard = new ClipboardJS('#accNoCopy');
-    const clipboard2 = new ClipboardJS('#amountNoCopy');
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard
+        .writeText(copyText.value)
+        .then(() => {
+            swal(type+" copied: " + copyText.value);
+        })
+        .catch(() => {
+            swal("something went wrong");
+        });
+    }
 
 </script>
 @endsection
