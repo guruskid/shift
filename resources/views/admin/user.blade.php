@@ -299,7 +299,7 @@
                                 <div class="tab-pane" id="btc-txns" role="tabpanel">
                                     <div class="table-responsive">
                                         <table
-                                            class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                                            class="align-middle mb-4 table table-bordered table-striped  ">
                                             <thead>
                                                 <tr>
                                                     {{-- <th>ID</th> --}}
@@ -340,7 +340,7 @@
                                 <div class="tab-pane" id="usdt-txns" role="tabpanel">
                                     <div class="table-responsive">
                                         <table
-                                            class="align-middle mb-4 table table-bordered table-striped transactions-table ">
+                                            class="align-middle mb-4 table table-bordered table-striped">
                                             <thead>
                                                 <tr>
                                                     {{-- <th>ID</th> --}}
