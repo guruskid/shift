@@ -691,8 +691,8 @@
 @endif
 @endif
 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+<script src="{{asset('assets/scripts/sweetalert.min.js')}} "></script>
+<script src="{{ asset('assets/scripts/clipboard.min.js') }}"></script>
 
 <script>
 
@@ -726,7 +726,6 @@
     }
 
     const copyData = (id, type) => {
-        console.log('hi');
         var copyText = document.getElementById(id);
         swal(type+" copied: " + copyText.value);
         }
