@@ -261,6 +261,7 @@ class SpotLightController extends Controller {
 
         if ($acctn) {
             $stamp = AccountantTimeStamp::where(['user_id' => $acctn->id])->latest()->first();
+
             $opening_balance = $stamp->opening_balance;
             $closing_balance = $stamp->closing_balance;
 
@@ -277,6 +278,8 @@ class SpotLightController extends Controller {
             $current_balance = $opening_balance - $paid_out;
 
             $data['staff_name'] =  $acctn->first_name.' '.$acctn->last_name;
+            $data['email'] = $acctn->email;
+            $data['mobile_number'] = $acctn->phone;
             $data['opening_balance'] = number_format($opening_balance,0,'.',',');
             $data['closing_balance'] = number_format($closing_balance,0,'.',',');
             $data['total_paid_out'] = [
@@ -646,9 +649,47 @@ class SpotLightController extends Controller {
         return $users_no_transactions + $dead_users;
     }
 
+    public static function dead_Users_one_month_Count(){
+        $users = User::where("status", "active")
+        ->whereDoesntHave('transactions', function ($query){
+            $query->where(DB::raw('date(created_at)'),'<',Carbon::now()->subMonth(1)->format('Y-m-d'));
+
+        })
+
+        ->count();
+        return $users;
+    }
+
+    public static function new_user_percentage_one_month(){
+        $differenceInpercentage = 0;
+        $previousMonthUsers = User::where("status", "active")->whereMonth('created_at', now()->month - 1)->count();
+        $thisMonthUsers = User::where("status", "active")->whereMonth('created_at', now()->month)->count();
+if ($previousMonthUsers > 0) {
+// If it has decreased then it will give you a percentage with '-'
+$differenceInpercentage = ($thisMonthUsers - $previousMonthUsers) * 100 / $previousMonthUsers;
+} else {
+$differenceInpercentage = $thisMonthUsers > 0 ? '100%' : '0%';
+}
+return $differenceInpercentage;
+
+    }
+
     public static function resurrectedUsersCount() {
         $users1 = User::whereHas('transactions', function ($query) {
                 $query->whereNotBetween('created_at',[Carbon::now()->subMonth(6),Carbon::now()->subMonth(1)]);
+            })->pluck('id');
+
+        $users2 = User::whereHas('transactions', function ($query) {
+            $query->where(DB::raw('date(created_at)'),Carbon::now()->format('Y-m-d'))
+                ->where(DB::raw('date(created_at)'),'=',Carbon::now()->format('Y-m-d'));
+        })->whereIn('id',$users1)
+        ->count();
+        return $users2;
+    }
+
+    public static function resurrected_one_month_Users_Count() {
+        $users1 = User::whereHas('transactions', function ($query) {
+                $query->whereNotBetween('created_at',[Carbon::now()->subMonth(2),Carbon::now()->subMonth(1)]);
             })->pluck('id');
 
         $users2 = User::whereHas('transactions', function ($query) {
