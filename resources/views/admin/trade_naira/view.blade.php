@@ -58,7 +58,7 @@
                         <div class="table-responsive">
                             <div>
                                 <div class="modal-dialog">
-                                        <form action="{{route('admin.naira-p2p.update', $t)}}" id="freeze-form" method="post"> @method('put')
+                                        <form action="{{route('admin.naira-p2p.update', $t)}}" id="p2pViewForm" method="post"> @method('put')
                                         @csrf
                                         <div class="modal-content c-rounded">
                                             <div class="modal-header bg-light c-rounded-top p-4 ">
@@ -175,9 +175,11 @@
                                                             <label for="">Wallet pin </label>
                                                             <input type="password" name="pin" required class="form-control">
                                                         </div>
-                                                        <button class="btn btn-block c-rounded bg-custom-gradient txn-btn">
-                                                            Confirm
-                                                        </button>
+                                                        <div id="p2p_button--{{ $t->id }}">
+                                                            <button id="submitStatus--{{ $t->id }}" onclick="disableNairaTradeButton('submitStatus--{{ $t->id }}')" class="btn btn-block c-rounded bg-custom-gradient txn-btn">
+                                                                Confirm
+                                                            </button>
+                                                        </div>
                                                     </div>
                         
                         

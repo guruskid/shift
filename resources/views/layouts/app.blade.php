@@ -559,20 +559,33 @@ $not = $nots->last();
         }
 
         const buttonSelect = (id, status, uid) => {
-        var approve = document.getElementById(id);
-        approve.value = status;
+            var approve = document.getElementById(id);
+            approve.value = status;
 
-        if(status == 'approve' || status == 'unresolved'){
-            showit('p2p_pin-'+uid);
-            hideit('p2p_buttongroup-'+uid);
+            if(status == 'approve' || status == 'unresolved'){
+                showit('p2p_pin-'+uid);
+                hideit('p2p_buttongroup-'+uid);
+            }
+
+            if(status == 'decline') {
+                showit('p2p_pin-'+uid);
+                showit('p2p_dropdown-'+uid);
+                hideit('p2p_buttongroup-'+uid);
+            }
+        }
+        const hideNairaTradeButton = (id) =>{
+            var button = document.getElementById(id);
+            hideit(id);
         }
 
-        if(status == 'decline') {
-            showit('p2p_pin-'+uid);
-            showit('p2p_dropdown-'+uid);
-            hideit('p2p_buttongroup-'+uid);
+        const disableNairaTradeButton = (id) => {
+            var button = document.getElementById(id);
+            var form = document.getElementById('p2pViewForm');
+            form.submit();
+            button.disabled = true;
         }
-    }
+
+
     </script>
 
     {{-- @if(Auth::user()->role == 444 OR Auth::user()->role == 449 OR Auth::user()->role == 999) --}}

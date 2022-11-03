@@ -501,28 +501,26 @@ class TradeNairaController extends Controller
         if($request->id != $transaction->id){
             return back()->with(['error' => 'Error Invalid Action']);
         }
-
+        $request->session()->put('previous_status', $transaction->status);
             if($transaction->type == 'withdrawal'){
                 //Approve
                 if($request->status == 'approve'){
                     $withdrawal =  $this->confirmSell($request, $transaction);
                     $status = $withdrawal['status'];
                     $message = $withdrawal['message'];
-                    return back()->with([$status => $message]);
+                    
                 }
                 //decline
                 if($request->status == 'decline'){
                     $withdrawal =  $this->declineTrade($request, $transaction);
                     $status = $withdrawal['status'];
                     $message = $withdrawal['message'];
-                    return back()->with([$status => $message]);
                 }
                 //unresolved
                 if($request->status == 'unresolved'){
                     $withdrawal =  $this->unresolvedTrade($request, $transaction);
                     $status = $withdrawal['status'];
                     $message = $withdrawal['message'];
-                    return back()->with([$status => $message]);
                 }
 
             } else {
@@ -530,16 +528,16 @@ class TradeNairaController extends Controller
                     $deposit =  $this->confirm($request, $transaction);
                     $status = $deposit['status'];
                     $message = $deposit['message'];
-                    return back()->with([$status => $message]);
                 }
                 //decline
                 if($request->status == 'decline'){
                     $deposit =  $this->declineTrade($request, $transaction);
                     $status = $deposit['status'];
                     $message = $deposit['message'];
-                    return back()->with([$status => $message]);
                 }
             }
+            $prev_status = $request->session()->get('previous_status');
+            return redirect()->route('admin.naira-p2p.type',['type'=>$transaction->type, 'status'=>$prev_status])->with([$status => $message]);
     }
 
     public function unresolvedTrade(Request $request, NairaTrade $transaction)
