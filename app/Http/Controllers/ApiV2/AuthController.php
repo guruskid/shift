@@ -259,7 +259,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
-            // 'first_name' => 'string|required',
+            'first_name' => 'string|required',
             // 'last_name' => 'string|required',
             'username' => 'string|required|unique:users,username',
             'country_id' => 'required|integer',
@@ -277,8 +277,8 @@ class AuthController extends Controller
         $external_id = $username . '-' . uniqid();
 
         $data = [
-            'first_name' => ' ',
-            'last_name' => ' ',
+            'first_name' => $input['first_name'],
+            // 'last_name' => $input['last_name'],
             'phone' => $input['phone'],
             'username' => $input['username'],
             'country_id' => $input['country_id'],
