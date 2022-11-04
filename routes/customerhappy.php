@@ -35,7 +35,7 @@ Route::group(['middleware' => ['auth:api', 'verified', 'cors']], function () {
 
         Route::get('/users', 'CustomerHappinessController@getUsers');
 
-        Route::get('/search/{username}', 'CustomerHappinessController@searchUser');
+        Route::get('/search/{email}', 'CustomerHappinessController@searchUser');
 
         Route::get('/user/{id}', 'CustomerHappinessController@userInfo');
 
