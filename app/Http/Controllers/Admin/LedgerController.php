@@ -25,22 +25,24 @@ class LedgerController extends Controller
     {
 
         $users = collect();
-        // User::latest()->chunk(100, function ($us) use ($users) {
-        //     foreach ($us as $user) {
-        //         $user->ledger = UserController::ledgerBalance($user->id)->getData();
-        //         if ($user->ledger->balance < 0) {
-        //             $users->push($user);
-        //         }
-        //     }
-        // });
-
-        $us =  User::paginate(200);
-        foreach ($us as $user) {
-            $user->ledger = UserController::ledgerBalance($user->id)->getData();
-            if ($user->ledger->balance < 0) {
-                $users->push($user);
+        User::latest()->chunk(100, function ($us) use ($users) {
+            foreach ($us as $user) {
+                $user->ledger = UserController::ledgerBalance($user->id)->getData();
+                if ($user->ledger->balance < 0) {
+                    $users->push($user);
+                }
             }
-        }
+        });
+
+        $users->paginate(200);
+
+        // $us =  User::paginate(200);
+        // foreach ($us as $user) {
+        //     $user->ledger = UserController::ledgerBalance($user->id)->getData();
+        //     if ($user->ledger->balance < 0) {
+        //         $users->push($user);
+        //     }
+        // }
 
         $extra_data = [
             [
