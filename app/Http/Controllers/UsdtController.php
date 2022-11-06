@@ -909,8 +909,9 @@ class UsdtController extends Controller
         return response()->json(['success' => true, 'msg' => 'USDT sent successfully']);
     }
 
-    public static function activate($wallet)
+    public static function activate($w)
     {
+        $wallet = Auth::user()->usdtWallet;
         $index = Contract::where('hash', $wallet->address)->first()->index;
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
 
