@@ -766,7 +766,7 @@ class UsdtController extends Controller
         ]);
     }
 
-   
+
 
 
     public static function send(Request $request)
@@ -911,7 +911,7 @@ class UsdtController extends Controller
 
     public static function activate($wallet)
     {
-        $index = Contract::where('address', $wallet->address)->first()->index;
+        $index = Contract::where('hash', $wallet->address)->first()->index;
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
 
         $fees_wallet = FeeWallet::where('name', 'usdt_fees')->first();
