@@ -313,7 +313,7 @@ class UsdtController extends Controller
         $user_wallet->balance = $accounts->balance->availableBalance;
 
         if ($user_wallet->status == 'pending') {
-            $activate = UsdtController::activate($user_wallet)->getData();
+            $activate = UsdtController::activate(Auth::user()->usdtWallet)->getData();
 
             if ($activate->success == false) {
                 return response()->json([
@@ -811,7 +811,7 @@ class UsdtController extends Controller
         $user_wallet->balance = $accounts->balance->availableBalance;
 
         if ($user_wallet->status == 'pending') {
-            $activate = UsdtController::activate($user_wallet)->getData();
+            $activate = UsdtController::activate(Auth::user()->usdtWallet)->getData();
 
             if ($activate->success == false) {
                 return response()->json([
