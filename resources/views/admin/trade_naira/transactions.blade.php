@@ -691,54 +691,6 @@
     </div>
 @endif
 @endif
-
-<script src="{{asset('assets/scripts/sweetalert.min.js')}} "></script>
-<script>
-
-
-    const __st_id = (activity) => document.getElementById(activity)
-
-    const hideit = (ide) => {
-        __st_id(ide).classList.remove("d-block")
-        __st_id(ide).classList.add("d-none")
-    }
-
-    const showit = (ide) => {
-        __st_id(ide).classList.remove("d-none")
-        __st_id(ide).classList.add("d-block")
-    }
-    
-    const buttonSelect = (id, status, uid) => {
-        var approve = document.getElementById(id);
-        approve.value = status;
-
-        if(status == 'approve' || status == 'unresolved'){
-            showit('p2p_pin-'+uid);
-            hideit('p2p_buttongroup-'+uid);
-        }
-
-        if(status == 'decline') {
-            showit('p2p_pin-'+uid);
-            showit('p2p_dropdown-'+uid);
-            hideit('p2p_buttongroup-'+uid);
-        }
-    }
-
-    const copyData = (id, type) => {
-        var copyText = document.getElementById(id);
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        navigator.clipboard
-        .writeText(copyText.value)
-        .then(() => {
-            swal(type+" copied: " + copyText.value);
-        })
-        .catch(() => {
-            swal("something went wrong");
-        });
-    }
-
-</script>
 @endsection
 
 
