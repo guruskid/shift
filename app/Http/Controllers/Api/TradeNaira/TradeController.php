@@ -197,7 +197,7 @@ class TradeController extends Controller
 
         $is_flagged = 0;
         $totalTransactionsAmount = FlaggedTransactionsController::dailyTotal(Auth::user(),$request->amount);
-        
+
         if($totalTransactionsAmount>= 1000000):
             $is_flagged = 1;
             $lastTranxAmount = FlaggedTransactionsController::getLastWithdrawal(Auth::user());
@@ -433,7 +433,7 @@ class TradeController extends Controller
         $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
         $message = '!!! Deposit Transaction !!!  A new Deposit transaction has been initiated ';
         foreach ($accountants as $acct) {
-            broadcast(new CustomNotification($acct, $message))->toOthers();
+            // broadcast(new CustomNotification($acct, $message))->toOthers();
         }
 
         $msg = "Congratulations! You have successfully deposited $request->amount, your Dantown wallet would be credited once payment is confirmed.";
