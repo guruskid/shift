@@ -738,7 +738,7 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(), [
             'account_name' => 'required',
-            'bank_name' => 'required',
+            'bank_code' => 'required',
             'account_number' => 'required| min:10',
 
         ]);
@@ -750,13 +750,34 @@ class UserController extends Controller
             ], 401);
         }
 
-        $addNew = new Account();
         $bank = Bank::where('code', $request->bank_code)->first();
+
+        if ($bank == null) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Incorrect Bank',
+            ]);
+        }
+
+        $addNew = new Account();
         $addNew->user_id = Auth::user()->id;
         $addNew->account_name = $request->account_name;
         $addNew->bank_name = $bank->name;
         $addNew->bank_id = $bank->id;
         $addNew->account_number = $request->account_number;
+
+        $duplicateChecker = Account::where('user_id', Auth::user()->id)->where('bank_id', $addNew->bank_id)->first();
+
+        //    dd($duplicateChecker);
+        if ($duplicateChecker != null) {
+
+            return response()->json([
+                'success' => false,
+                'msg' => 'Account Already added',
+            ]);
+
+        }
+
         $addNew->save();
 
         return response()->json([
