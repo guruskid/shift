@@ -414,7 +414,6 @@ class TradeNairaController extends Controller
         //         $t->prev_bal = $current_prev_bal->previous_balance;
         //         $t->current_bal = $current_prev_bal->current_balance;
         //     }
-
         // }
         //?" all  deposit transactions
         $deposit = $user->agentNairaTrades()->where('type','deposit')->get();
@@ -512,43 +511,49 @@ class TradeNairaController extends Controller
         if($request->id != $transaction->id){
             return back()->with(['error' => 'Error Invalid Action']);
         }
-        $request->session()->put('previous_status', $transaction->status);
-            if($transaction->type == 'withdrawal'){
-                //Approve
-                if($request->status == 'approve'){
-                    $withdrawal =  $this->confirmSell($request, $transaction);
-                    $status = $withdrawal['status'];
-                    $message = $withdrawal['message'];
-                    
-                }
-                //decline
-                if($request->status == 'decline'){
-                    $withdrawal =  $this->declineTrade($request, $transaction);
-                    $status = $withdrawal['status'];
-                    $message = $withdrawal['message'];
-                }
-                //unresolved
-                if($request->status == 'unresolved'){
-                    $withdrawal =  $this->unresolvedTrade($request, $transaction);
-                    $status = $withdrawal['status'];
-                    $message = $withdrawal['message'];
-                }
 
-            } else {
-               if($request->status == 'approve'){
-                    $deposit =  $this->confirm($request, $transaction);
-                    $status = $deposit['status'];
-                    $message = $deposit['message'];
-                }
-                //decline
-                if($request->status == 'decline'){
-                    $deposit =  $this->declineTrade($request, $transaction);
-                    $status = $deposit['status'];
-                    $message = $deposit['message'];
-                }
+        $request->session()->put('previous_status', $transaction->status);
+        if($transaction->type == 'withdrawal'){
+            //Approve
+            if($request->status == 'approve'){
+                $withdrawal =  $this->confirmSell($request, $transaction);
+                $status = $withdrawal['status'];
+                $message = $withdrawal['message'];
+                
             }
+            //decline
+            if($request->status == 'decline'){
+                $withdrawal =  $this->declineTrade($request, $transaction);
+                $status = $withdrawal['status'];
+                $message = $withdrawal['message'];
+            }
+            //unresolved
+            if($request->status == 'unresolved'){
+                $withdrawal =  $this->unresolvedTrade($request, $transaction);
+                $status = $withdrawal['status'];
+                $message = $withdrawal['message'];
+            }
+
+        } else {
+            if($request->status == 'approve'){
+                $deposit =  $this->confirm($request, $transaction);
+                $status = $deposit['status'];
+                $message = $deposit['message'];
+            }
+            //decline
+            if($request->status == 'decline'){
+                $deposit =  $this->declineTrade($request, $transaction);
+                $status = $deposit['status'];
+                $message = $deposit['message'];
+            }
+        }
+
+        if($status != 'success'){
+            return back()->with([$status => $message]);
+        } else {
             $prev_status = $request->session()->get('previous_status');
             return redirect()->route('admin.naira-p2p.type',['type'=>$transaction->type, 'status'=>$prev_status])->with([$status => $message]);
+        }
     }
 
     public function unresolvedTrade(Request $request, NairaTrade $transaction)
@@ -884,7 +889,7 @@ class TradeNairaController extends Controller
         $name = str_replace(' ', '', $name);
         $firstname = ucfirst($name);
         try {
-            Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+            Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         } catch (\Throwable $th) {
             \Log::info($th);
         }

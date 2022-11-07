@@ -10,7 +10,7 @@
                                     <input type="datetime-local" name="enddate" value="{{app('request')->input('enddate')}}" class="form-control mr-1" >
                                     <input type="hidden" name="day" value="{{ $day }}">
                                     <input type="hidden" name="month" value="{{ $month }}">
-                                    <input type="hidden" name="category" value="{{ $show_category }}">
+                                    <input type="hidden" name="category" value="{{ $showCategory }}">
                                     {{-- @if (isset($accountant))
                                         @foreach ($accountant as $a)
                                             <input type="hidden" name="name" value="{{ $a->first_name }}" class="form-control mr-4">
@@ -32,7 +32,7 @@
                             <div class="table-responsive">
                                         
                                 <div class="card card-body mb-3">
-                                    @if($show_summary == true)
+                                    @if($showSummary == true)
                                     <table class="table ">
                                         <thead>
                                             <tr>
@@ -44,10 +44,10 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                    <td class="text-center">{{ isset($util_total_tnx) ? number_format($util_total_tnx) : 0 }}</td>
-                                                    <td class="text-center">₦ {{ isset($util_tnx_amount) ? number_format($util_tnx_amount) : 0 }}</td>
-                                                    <td class="text-center">₦ {{ isset($util_tnx_fee) ? number_format($util_tnx_fee) : 0 }}</td>
-                                                    <td class="text-center">₦ {{ isset($util_amount_paid) ? number_format($util_amount_paid) : 0 }}</td>
+                                                    <td class="text-center">{{ isset($utilitiesTotalCount) ? number_format($utilitiesTotalCount) : 0 }}</td>
+                                                    <td class="text-center">₦ {{ isset($utilitiesTotalAmount) ? number_format($utilitiesTotalAmount) : 0 }}</td>
+                                                    <td class="text-center">₦ {{ isset($utilitiesTotalContinenceFee) ? number_format($utilitiesTotalContinenceFee) : 0 }}</td>
+                                                    <td class="text-center">₦ {{ isset($utilitiesTotal) ? number_format($utilitiesTotal) : 0 }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -69,11 +69,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (isset($util_tnx))
+                                        @if (isset($utilityTransactions))
                                         @php
                                             $key = 0;
                                         @endphp
-                                            @foreach ($util_tnx as $t)
+                                            @foreach ($utilityTransactions as $t)
                                             <tr>
                                                 <td class="text-center text-muted">{{++$key}}</td>
                                                 <td class="text-center text-muted">{{$t->reference_id}}</td>
