@@ -34,7 +34,15 @@ class LedgerController extends Controller
             }
         });
 
-        $users = $users->paginate(200);
+        $users->paginate(200);
+
+        // $us =  User::paginate(200);
+        // foreach ($us as $user) {
+        //     $user->ledger = UserController::ledgerBalance($user->id)->getData();
+        //     if ($user->ledger->balance < 0) {
+        //         $users->push($user);
+        //     }
+        // }
 
         $extra_data = [
             [

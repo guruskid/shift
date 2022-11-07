@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Mail\Birthday;
+use App\Notification;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -49,6 +50,15 @@ class BirthdayWish extends Command
         User::where('birthday', '!=', $today)->update(['birthday_status' => 0]);
 
         foreach($users as $user){
+
+            $title = 'Happy Birthday';
+            $body = 'Happy Birthday to you. May the best of your birthdays be today, and today be the least of those yet to come';
+            $not = Notification::create([
+                'user_id' => $user->id,
+                'title' => $title,
+                'body' => $body,
+                'is_birthday' => 1,
+            ]);
 
              Mail::to($user->email)->send(new Birthday());
 

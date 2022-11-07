@@ -221,11 +221,7 @@
                                         <!-- /////////////////////////////////////// -->
                                     </div>
                                 </div>
-<<<<<<< HEAD
-                                @if (!in_array($transaction->status,['waiting','failed','declined']))
-=======
                                 @if (in_array($transaction->status,['waiting']))
->>>>>>> master
                                     <button type="submit" class="btn btn-primary">Update</button>
                                 @endif
                             </form>
