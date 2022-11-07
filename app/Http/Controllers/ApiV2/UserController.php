@@ -671,12 +671,10 @@ class UserController extends Controller
     public function addBankAccDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'bank_id' => 'required',
-            'account_number' => 'required',
-            'bank_name' => 'required',
             'account_name' => 'required',
+            'bank_code' => 'required',
+            'account_number' => 'required| min:10',
 
-            /* 'phone' => 'required', */
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -685,38 +683,43 @@ class UserController extends Controller
             ], 401);
         }
 
-        $s = Bank::find($request->bank_id);
+        $bank = Bank::where('code', $request->bank_code)->first();
 
-        // dd($s);
-        if (!$s) {
+        if ($bank == null) {
             return response()->json([
                 'success' => false,
-                'data' => $s,
-                'message' => 'Bank doesn\'t exist',
+                'msg' => 'Incorrect Bank',
             ]);
         }
 
-        $err = 0;
 
-        /* Check if its duplicate */
-        $accts = Auth::user()->accounts;
-        foreach ($accts as $a) {
-            if ($a->account_number == $request->account_number && $a->bank_name == $s->name) {
-                $err += 1;
-            }
+        $addNew = new Account();
+        $addNew->user_id = Auth::user()->id;
+        $addNew->account_name = $request->account_name;
+        $addNew->bank_name = $bank->name;
+        $addNew->bank_id = $bank->id;
+        $addNew->account_number = $request->account_number;
+
+        $duplicateChecker = Account::where('user_id', Auth::user()->id)->where('bank_id', $addNew->bank_id)->first();
+
+        //    dd($duplicateChecker);
+        if ($duplicateChecker != null) {
+
+            return response()->json([
+                'success' => false,
+                'msg' => 'Account Already added',
+            ]);
+
         }
 
-        if ($err == 0) {
-            $a = new Account();
-            $a->user_id = Auth::user()->id;
-            $a->account_name = $request->bank_name;
-            $a->bank_name = $s->name;
-            $a->bank_id = $s->id;
-            $a->account_number = $request->account_number;
-            $a->save();
-        }
+        $addNew->save();
 
-        $updated = explode(' ', trim($request->bank_name));
+        return response()->json([
+            'success' => true,
+            'msg' => 'Account added successfully',
+        ]);
+
+        $updated = explode(' ', trim($request->account_name));
 
         Auth::user()->first_name = $updated[0];
         Auth::user()->last_name = strstr($request->bank_name, " ");
