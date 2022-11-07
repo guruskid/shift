@@ -42,6 +42,12 @@ class Transaction extends Model
         return $this->belongsTo('App\Card', 'card_id', 'id');
     }
 
+    public function naira_transactions(){
+        return $this->belongsTo(NairaTransaction::class,'naira_transaction_id','id');
+    }
+
+
+
 
 
 }

@@ -116,8 +116,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], functi
         Route::GET('/summary', 'AccountantController@summary');
         Route::POST('/activateAccountant',  'AccountantController@activateAccountant');
         Route::POST('/deactivateAccountant',  'AccountantController@deactivateAccountant');
+        Route::GET('/get-currently-active-accountant', 'AccountantController@getCurrentActiveAccountant');
+        Route::GET('/get-last-active-accountant', 'AccountantController@getLastActiveAccountant');
     });
-
     //summary
     Route::group(['prefix' => 'summary'], function () {
 
@@ -361,7 +362,7 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
         Route::group(['prefix' => 'flagged'], function () {
             Route::GET('/', 'ComplianceFraudController@flaggedTransactions');
             Route::POST('/sort', 'ComplianceFraudController@sortFlaggedTransaction');
-        });   
+        });
     });
 
     Route::group(['prefix' => 'users'], function () {
