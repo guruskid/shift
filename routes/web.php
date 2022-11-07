@@ -714,3 +714,15 @@ Route::group(['prefix' => 'trx'], function () {
     Route::GET('/transaction/{id}', 'AdminController@gcTransactionForHara');
     Route::POST('/edit-transaction', 'Admin\AssetTransactionController@editTransactionHara');
 });
+
+
+Route::get('testing', function () {
+    event(new App\Events\NotifyAccountant('Someone'));
+    return "Event has been sent!";
+});
+
+
+Route::get('testinger', function () {
+
+    return view('testing');
+});
