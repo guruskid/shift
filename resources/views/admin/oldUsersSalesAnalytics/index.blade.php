@@ -55,8 +55,17 @@
                             <form class="form-inline p-2"
                                 method="GET">
                                 <div class="form-group mr-2">
-                                    <input type="hidden" name="downloader" value="csv">
+                                    <input type="hidden" name="downloader" value="quarterly">
                                     <button class="btn btn-primary btn-sm">Download Quarterly Inactive</button>
+                                </div>
+                            </form>
+
+
+                            <form class="form-inline p-2"
+                                method="GET">
+                                <div class="form-group mr-2">
+                                    <input type="hidden" name="downloader" value="active">
+                                    <button class="btn btn-primary btn-sm">Download Active Users</button>
                                 </div>
                             </form>
                         @endif
