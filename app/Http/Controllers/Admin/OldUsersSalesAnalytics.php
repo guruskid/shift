@@ -353,7 +353,11 @@ class OldUsersSalesAnalytics extends Controller
         }
         $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($noOfRespondedUsers/$noOfCalledUsers)*100;
 
-        $RespondedUsersTotal = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded')->get();
+        $RespondedUsersTotal = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded');
+        if(isset($sales_id)){
+            $RespondedUsersTotal = $RespondedUsersTotal->where('sales_id',$sales_id);
+        }
+        $RespondedUsersTotal = $RespondedUsersTotal->get();
         $totalRespondedUserTotal = $this->RespondedTotal($RespondedUsersTotal);
         $respondedTranxVolume = $totalRespondedUserTotal->sum('amount');
 
