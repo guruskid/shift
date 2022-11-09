@@ -64,7 +64,7 @@ class LedgerController extends Controller
 
     public static function resolve()
     {
-        $users = User::where('ledger_resolved', false)->take(500)->get();
+        $users = User::where('ledger_resolved', false)->take(100)->get();
         foreach ($users as $user) {
             $ledger_bal = UserController::ledgerBalance($user->id)->getData()->balance;
             if (!$user->nairaWallet) {
