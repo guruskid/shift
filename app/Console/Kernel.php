@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
         CheckRespondedUsers::class,
         CheckRecalcitrantUsers::class,
         NoResponseCheck::class,
-        BirthdayWish::class
+        BirthdayWish::class,
     ];
 
     /**
