@@ -39,5 +39,7 @@ class ResolveLedger extends Command
     public function handle()
     {
         LedgerController::resolve();
+
+        return true;
     }
 }
