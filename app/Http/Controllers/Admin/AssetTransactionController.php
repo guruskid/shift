@@ -147,7 +147,7 @@ class AssetTransactionController extends Controller
     public function editTransactionHara(Request $r)
     {
         if (in_array($r->admin_role,[444,449,999]) and $r->status == 'success') {
-            return $this->payTransactionChinese($r);
+            return $this->payTransactionChinese($r,2);
         }
 
         $actualFeedback = "";
@@ -360,7 +360,7 @@ class AssetTransactionController extends Controller
     }
 
 
-    public function payTransactionChinese(Request $r)
+    public function payTransactionChinese(Request $r, $type = 1)
     {
         $approvedFromHara = false;
         if (isset($r->admin_role)) {
@@ -493,9 +493,11 @@ class AssetTransactionController extends Controller
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
         /* $snd_sms = $client->request('GET', $sms_url); */
 
-        return response()->json([
-            'data' => 'Transfer made successfully'
-        ], 200);
+        if ($type != 1) {
+            return response()->json([
+                'data' => 'Transfer made successfully'
+            ], 200);
+        }
 
         return back()->with(['success' => 'Transfer made successfully']);
     }
