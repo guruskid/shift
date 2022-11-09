@@ -42,7 +42,8 @@ class UserController extends Controller
 
         $cr = NairaTransaction::where(['cr_user_id' => $user->id, 'status' => 'success'])->sum('amount');
         $dr = NairaTransaction::where(['dr_user_id' => $user->id, 'status' => 'success'])->sum('amount');
-        $ledger_balance = $cr - $dr;
+        $waiting = NairaTransaction::where(['dr_user_id' => $user_id, 'status' => 'pending'])->sum('amount');
+        $ledger_balance = $cr - $dr - $waiting;
 
         return response()->json([
             'balance' => $ledger_balance,

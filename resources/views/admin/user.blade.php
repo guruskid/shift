@@ -240,6 +240,10 @@
                                         <table class="mb-2 transactions-table table " id="nt-table">
                                             <thead>
                                                 <tr>
+                                                    <td class="text-center"><strong>Wallet Balance</strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($user->nairaWallet->amount)}} </strong></td>
+                                                </tr>
+                                                <tr>
                                                     <td class="text-center"><strong>Ledger Balance</strong></td>
                                                     <td class="text-center"><strong>₦{{number_format($ledger->balance)}} </strong></td>
                                                 </tr>
