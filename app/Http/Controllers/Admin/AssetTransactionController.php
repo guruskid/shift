@@ -34,7 +34,7 @@ class AssetTransactionController extends Controller
     public function editTransaction(Request $r)
     {
         if (in_array(Auth::user()->role,[444,449,999]) and $r->status == 'success') {
-            return $this->payTransactionChinese($r);
+            return $this->payTransactionChinese($r,1);
         }
 
         $actualFeedback = "";
@@ -493,7 +493,8 @@ class AssetTransactionController extends Controller
         $sms_url = 'https://www.bulksmsnigeria.com/api/v1/sms/create?api_token=' . $token . '&from=Dantown&to=' . $to . '&body=' . $msg_body . '&dnd=2';
         /* $snd_sms = $client->request('GET', $sms_url); */
 
-        if ($type != 1) {
+
+        if ($type == 2) {
             return response()->json([
                 'data' => 'Transfer made successfully'
             ], 200);
