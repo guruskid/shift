@@ -37,6 +37,6 @@ class GetCurrentRate extends Command
      */
     public function handle()
     {
-        \Log::info("I was called");
+        // \Log::info("I was called");
     }
 }

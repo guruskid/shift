@@ -96,7 +96,7 @@ class LedgerController extends Controller
                 $nt->cr_user_id = $user->id;
                 $nt->dr_user_id = 1;
                 $nt->status = 'success';
-                $nt->created_at = "2021-08-17 15:21:38";
+                $nt->created_at = "2020-08-17 15:21:38";
                 $nt->save();
             } else if ($ledger_bal > $user->nairaWallet->amount) {
                 // debit txn
@@ -122,16 +122,13 @@ class LedgerController extends Controller
                 $nt->dr_user_id = $user->id;
                 $nt->cr_user_id = 1;
                 $nt->status = 'success';
-                $nt->created_at = "2021-08-17 15:21:38";
+                $nt->created_at = "2020-08-17 15:21:38";
                 $nt->save();
             }
 
             $user->ledger_resolved = true;
             $user->save();
-            echo $user->email . "-" . $r_amt . "<br>";
         }
-        echo $users->count() . "<br>";
-        echo "done";
         // return true;
     }
 }
