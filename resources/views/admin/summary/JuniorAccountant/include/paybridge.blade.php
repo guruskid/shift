@@ -73,6 +73,17 @@
         @if($showSummary == true)
                 <table class="table ">
                     <thead>
+                        @if($showCategory == "paybridgewithdrawal")
+                        <tr>
+                            <th class="text-center">Total Withdrawal Transactions</th>
+                            <th class="text-center">Total Withdrawal Amount Paid</th>
+                            <th class="text-center">Total Withdrawal Charges</th>
+                            <th class="text-center">Total Withdrawal Amount</th>
+                            <th class="text-center">Average Response Time</th>
+                            <th class="text-center">Pending Withdrawal Today</th>
+                            <th class="text-center">Pending Withdrawal Total</th>
+                        </tr>
+                        @else
                         <tr>
                             <th class="text-center">Total Deposit Transactions</th>
                             <th class="text-center">Total Deposit Amount Paid</th>
@@ -82,6 +93,7 @@
                             <th class="text-center">Pending Deposit Today</th>
                             <th class="text-center">Pending Deposit Total</th>
                         </tr>
+                        @endif
                     </thead>
                     <tbody>
                         <tr>
