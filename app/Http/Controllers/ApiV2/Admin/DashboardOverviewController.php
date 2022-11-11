@@ -294,8 +294,12 @@ class DashboardOverviewController extends Controller
         if ($type == 'p2p') {
 
             $data['count'] =    $this->p2pTransactionHistoryDetails()->latest()->limit(7)->get()
-                ->groupBy(fn ($t) => $t->created_at->format('Y-m-d'))
-                ->map(fn ($d) => count($d));
+                ->groupBy(function($t) {
+                    return $t->created_at->format('Y-m-d');
+                })
+                ->map(function($d) {
+                    return count($d);
+                });
             // $tranx = $this->p2pTransactionHistory();
             // start
             $p2pTrx =  $this->p2pTransactionHistoryDetails()->latest()->get();
@@ -316,7 +320,6 @@ class DashboardOverviewController extends Controller
             });
         } elseif ($type == 'crypto') {
             $cryptoTrx =
-
                 Transaction::whereHas('asset', function ($query) {
                     $query->where('is_crypto', 0);
                 })
@@ -324,9 +327,14 @@ class DashboardOverviewController extends Controller
                     $query->select('*');
                 })
                 ->with("naira_transactions", "user");
+
                 $data['count'] =  $cryptoTrx->latest()->limit(7)->get()
-                ->groupBy(fn ($t) => $t->created_at->format('Y-m-d'))
-                ->map(fn ($d) => count($d));
+                ->groupBy(function($t) {
+                    return $t->created_at->format('Y-m-d');
+                })
+                ->map(function($d) {
+                    return count($d);
+                });
                 $pt =  $cryptoTrx->get();
 
                 $data['tranx'] = $pt->map(function ($item) {
