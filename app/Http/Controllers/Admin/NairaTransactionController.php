@@ -75,6 +75,7 @@ class NairaTransactionController extends Controller
         }
         $user = User::where('email', $r->email)->first();
 
+        $systemBalance = NairaWallet::sum('amount');
         $wallet = $user->nairaWallet;
 
         $t = new NairaTransaction();
@@ -95,7 +96,11 @@ class NairaTransactionController extends Controller
             $wallet->amount += $r->amount;
             $wallet->save();
 
+            $currentSystemBalance = NairaWallet::sum('amount');
+
             $t->current_balance = $wallet->amount;
+            $t->system_previous_balance = $systemBalance;
+            $t->system_current_balance =  $currentSystemBalance;
             $t->cr_user_id = $wallet->user->id;
             $t->dr_user_id = 1;
             $t->cr_wallet_id = $wallet->id;
@@ -111,7 +116,10 @@ class NairaTransactionController extends Controller
             //Deduction
             $wallet->amount -= $r->amount;
             $wallet->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
             $t->current_balance = $wallet->amount;
+            $t->system_previous_balance = $systemBalance;
+            $t->system_current_balance =  $currentSystemBalance;
             $t->dr_user_id = $wallet->user->id;
             $t->cr_user_id = 1;
             $t->dr_wallet_id = $wallet->id;
@@ -161,6 +169,7 @@ class NairaTransactionController extends Controller
             'admin_account' => 'required|integer',
             'ref' => 'required|unique:naira_transactions,reference',
         ]);
+        $systemBalance = NairaWallet::sum('amount');
         $admin_account = NairaWallet::where(['user_id' => 1, 'id' => $r->admin_account])->firstOrFail();
         $n = Auth::user()->nairaWallet;
 
@@ -182,6 +191,7 @@ class NairaTransactionController extends Controller
         $admin_account->amount -= $amount;
         $admin_account->save();
 
+        $currentSystemBalance = NairaWallet::sum('amount');
         $msg = 'Transaction initiated';
         $nt = new NairaTransaction();
         $nt->reference = $reference;
@@ -189,6 +199,8 @@ class NairaTransactionController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $admin_account->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transfer_charge = 0;
         $nt->sms_charge = 0;

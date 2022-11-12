@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserController;
 use App\NairaTransaction;
+use App\NairaWallet;
 use App\User;
 
 class LedgerController extends Controller
@@ -64,6 +65,7 @@ class LedgerController extends Controller
 
     public static function resolve()
     {
+        $systemBalance = NairaWallet::sum('amount');
         $users = User::where('ledger_resolved', false)->take(100)->get();
         foreach ($users as $user) {
             $ledger_bal = UserController::ledgerBalance($user->id)->getData()->balance;
@@ -78,6 +80,7 @@ class LedgerController extends Controller
                 $amt = $user->nairaWallet->amount - $ledger_bal;
                 $r_amt = "+" . $amt;
 
+                $currentSystemBalance = NairaWallet::sum('amount');
                 $nt = new NairaTransaction();
                 $nt->reference =  \Str::random(5) . $user->id;
                 $nt->amount = $amt;
@@ -85,6 +88,8 @@ class LedgerController extends Controller
                 $nt->type = 'naira wallet';
                 $nt->current_balance = $user->nairaWallet->amount;
                 $nt->previous_balance = $user->nairaWallet->amount;
+                $nt->system_previous_balance = $systemBalance;
+                $nt->system_current_balance =  $currentSystemBalance;
                 $nt->charge = 0;
                 $nt->transaction_type_id = 27;
                 $nt->dr_wallet_id = 1;
@@ -103,7 +108,7 @@ class LedgerController extends Controller
                 $amt = $ledger_bal - $user->nairaWallet->amount;
                 $r_amt = "-" . $amt;
 
-
+                $currentSystemBalance = NairaWallet::sum('amount');
                 $nt = new NairaTransaction();
                 $nt->reference =  \Str::random(5) . $user->id;
                 $nt->amount = $amt;
@@ -111,6 +116,8 @@ class LedgerController extends Controller
                 $nt->type = 'naira wallet';
                 $nt->current_balance = $user->nairaWallet->amount;
                 $nt->previous_balance = $user->nairaWallet->amount;
+                $nt->system_previous_balance = $systemBalance;
+                $nt->system_current_balance =  $currentSystemBalance;
                 $nt->charge = 0;
                 $nt->transaction_type_id = 26;
                 $nt->cr_wallet_id = 1;

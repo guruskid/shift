@@ -230,6 +230,7 @@ class ReferralController extends Controller
             ]);
         }
 
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
         $user->referral_wallet = $user->referral_wallet - $r->quantity;
         $user->save();
@@ -239,6 +240,10 @@ class ReferralController extends Controller
         $reference = \Str::random(2) . '-' . $t->id;
         $n = NairaWallet::find(1);
 
+        Auth::user()->nairaWallet->amount += $t->amount_paid;
+        Auth::user()->nairaWallet->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
+
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $t->amount_paid;
@@ -246,6 +251,8 @@ class ReferralController extends Controller
         $nt->type = 'naira wallet';
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 20;
         $nt->dr_wallet_id = $n->id;
@@ -259,9 +266,7 @@ class ReferralController extends Controller
         $nt->status = 'success';
         $nt->save();
 
-        Auth::user()->nairaWallet->amount += $t->amount_paid;
-        Auth::user()->nairaWallet->save();
-
+    
         return response()->json([
             'success' => true,
             'message' => 'Bitcoin sold successfully'
@@ -311,15 +316,29 @@ class ReferralController extends Controller
             ]);
         }
 
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
 
         $rand = \Str::random(5) . $user->id;
         $reference = \Str::upper($rand);
 
+        $new_balance = Auth::user()->nairaWallet->amount + $user->referral_wallet;
+
+        $user->referral_wallet = 0;
+        $user->save();
+
+        // $user->nairaWallet->amount = $new_balance;
+        $nWallet = NairaWallet::where('user_id', Auth::user()->id)->get()[0];
+        $nWallet->amount = $new_balance;
+        $nWallet->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
+
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $user->referral_wallet;
         $nt->user_id = $user->id;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->type = 'referral';
         $nt->charge = 0;
         $nt->dr_acct_name = 'Dantown';
@@ -330,7 +349,7 @@ class ReferralController extends Controller
         $nt->save();
 
 
-        $new_balance = Auth::user()->nairaWallet->amount + $user->referral_wallet;
+        
 
         $title = 'Referral bonus withdrawal';
         $body = 'Your withdrawal of ' . number_format($user->referral_wallet) . ' referral bonus was successful <br>
@@ -344,15 +363,6 @@ class ReferralController extends Controller
         $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
         Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
-
-
-        $user->referral_wallet = 0;
-        $user->save();
-
-        // $user->nairaWallet->amount = $new_balance;
-        $nWallet = NairaWallet::where('user_id', Auth::user()->id)->get()[0];
-        $nWallet->amount = $new_balance;
-        $nWallet->save();
 
         return response()->json([
             'success' => true,

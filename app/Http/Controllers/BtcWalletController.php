@@ -436,10 +436,16 @@ class BtcWalletController extends Controller
             'is_flagged' => $is_flagged,
         ]);
 
+        $systemBalance = NairaWallet::sum('amount');
+
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
         $reference = \Str::random(2) . '-' . $t->id;
         $n = NairaWallet::find(1);
+
+        Auth::user()->nairaWallet->amount += $t->amount_paid;
+        Auth::user()->nairaWallet->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $nt = new NairaTransaction();
         $nt->reference = $reference;
@@ -448,6 +454,8 @@ class BtcWalletController extends Controller
         $nt->type = 'naira wallet';
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 20;
         $nt->dr_wallet_id = $n->id;
@@ -460,9 +468,6 @@ class BtcWalletController extends Controller
         $nt->dr_user_id = 1;
         $nt->status = 'success';
         $nt->save();
-
-        Auth::user()->nairaWallet->amount += $t->amount_paid;
-        Auth::user()->nairaWallet->save();
 
         //Blockfill
         if (SystemSettings::where('settings_name', 'BLOCKFILL')->first()->settings_value == 1) {
@@ -478,9 +483,12 @@ class BtcWalletController extends Controller
             $referral_percentage = ReferralSettingsController::percent();
             $referral_bonus = ($referral_percentage / 100) * $tamount_paid;
 
+            $systemBalance = NairaWallet::sum('amount');
+
             $getReferrer = User::where('referral_code', Auth::user()->referrer)->get()[0];
             $getReferrer->referral_wallet += $referral_bonus;
             $getReferrer->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
 
             $rand = \Str::random(5) . $getReferrer->id;
             $reference = \Str::upper($rand);
@@ -489,6 +497,8 @@ class BtcWalletController extends Controller
             $nt->reference = $reference;
             $nt->amount = $referral_bonus;
             $nt->user_id = $getReferrer->id;
+            $nt->system_previous_balance = $systemBalance;
+            $nt->system_current_balance =  $currentSystemBalance;
             $nt->type = 'referral';
             $nt->charge = 0;
             $nt->dr_acct_name = 'Dantown';
@@ -628,6 +638,7 @@ class BtcWalletController extends Controller
                 'msg' => 'Service not available, please check back later'
             ]);
         }
+        $systemBalance = NairaWallet::sum('amount');
 
         Auth::user()->nairaWallet->amount -= $ngn;
         Auth::user()->nairaWallet->save();
@@ -686,8 +697,11 @@ class BtcWalletController extends Controller
             //set transaction status to failed
             \Log::info($e->getResponse()->getBody());
             //report($e);
+
+            
             Auth::user()->nairaWallet->amount += $ngn;
             Auth::user()->nairaWallet->save();
+            
 
             return response()->json([
                 'success' => false,
@@ -695,6 +709,7 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        $currentSystemBalance = NairaWallet::sum('amount');
         $t = Auth::user()->transactions()->create([
             'card_id' => 102,
             'type' => 'Buy',
@@ -723,6 +738,8 @@ class BtcWalletController extends Controller
         $nt->type = 'naira wallet';
         $nt->current_balance = Auth::user()->nairaWallet->amount;
         $nt->previous_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 19;
         $nt->cr_wallet_id = $n->id;
@@ -751,11 +768,11 @@ class BtcWalletController extends Controller
             $tamount_paid = $t->amount_paid;
             $referral_percentage = ReferralSettingsController::percent();
             $referral_bonus = ($referral_percentage / 100) * $tamount_paid;
-
+            $systemBalance = NairaWallet::sum('amount');
             $getReferrer = User::where('referral_code', Auth::user()->referrer)->first();
             $getReferrer->referral_wallet += $referral_bonus;
             $getReferrer->save();
-
+            $currentSystemBalance = NairaWallet::sum('amount');
             $rand = \Str::random(5) . $getReferrer->id;
             $reference = \Str::upper($rand);
 
@@ -763,6 +780,8 @@ class BtcWalletController extends Controller
             $nt->reference = $reference;
             $nt->amount = $referral_bonus;
             $nt->user_id = $getReferrer->id;
+            $nt->system_previous_balance = $systemBalance;
+            $nt->system_current_balance =  $currentSystemBalance;
             $nt->type = 'referral';
             $nt->charge = 0;
             $nt->dr_acct_name = 'Dantown';

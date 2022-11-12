@@ -757,6 +757,8 @@ class TradeNairaController extends Controller
             return back()->with(['error' => 'Invalid transaction']);
         }
 
+        $systemBalance = NairaWallet::sum('amount');
+        
         $nt = NairaTransaction::where('reference', $transaction->reference)->first();
 
         if ($transaction->status == 'success') {
@@ -764,6 +766,15 @@ class TradeNairaController extends Controller
 
                 // return $nt->user->nairaWallet->id;
 
+                
+                $nt->user->nairaWallet->amount += $nt->amount;
+                $nt->user->nairaWallet->save();
+
+                //Send back the charges
+                $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
+                $transfer_charges_wallet->amount -= $nt->charge;
+                $transfer_charges_wallet->save();
+                $currentSystemBalance = NairaWallet::sum('amount');
                 $ref = \Str::random(3) . time();
 
                 $n = new NairaTransaction();
@@ -774,6 +785,8 @@ class TradeNairaController extends Controller
                 $n->type = 'refund';
                 $n->previous_balance = $nt->previous_balance;
                 $n->current_balance = $nt->current_balance;
+                $nt->system_previous_balance = $systemBalance;
+                $nt->system_current_balance =  $currentSystemBalance;
                 $n->charge = $nt->charge;
                 $n->transfer_charge = $nt->transfer_charge;
                 $n->transaction_type_id = 18;
@@ -785,17 +798,14 @@ class TradeNairaController extends Controller
                 $n->dr_user_id = $nt->cr_user_id;
                 $n->status = 'success';
                 $n->save();
-
-                $nt->user->nairaWallet->amount += $nt->amount;
-                $nt->user->nairaWallet->save();
-
-                //Send back the charges
-                $transfer_charges_wallet = NairaWallet::where('account_number', 0000000001)->first();
-                $transfer_charges_wallet->amount -= $nt->charge;
-                $transfer_charges_wallet->save();
+                
 
             }else {
-
+                # debit the user
+                $user_wallet = $nt->user->nairaWallet;
+                $user_wallet->amount -= $nt->amount;
+                $user_wallet->save();
+                $currentSystemBalance = NairaWallet::sum('amount');
                 $ref = \Str::random(3) . time();
 
                 $n = new NairaTransaction();
@@ -806,6 +816,8 @@ class TradeNairaController extends Controller
                 $n->type = 'deposit';
                 $n->previous_balance = $nt->user->nairaWallet->amount;
                 $n->current_balance = $nt->user->nairaWallet->amount - $nt->amount;
+                $nt->system_previous_balance = $systemBalance;
+                $nt->system_current_balance =  $currentSystemBalance;
                 $n->charge = $nt->charge;
                 $n->transfer_charge = $nt->transfer_charge;
                 $n->transaction_type_id = 18;
@@ -817,11 +829,6 @@ class TradeNairaController extends Controller
                 $n->dr_user_id = $nt->cr_user_id;
                 $n->status = 'success';
                 $n->save();
-
-                # debit the user
-                $user_wallet = $nt->user->nairaWallet;
-                $user_wallet->amount -= $nt->amount;
-                $user_wallet->save();
 
             }
         }
@@ -1017,17 +1024,21 @@ class TradeNairaController extends Controller
             return back()->with(['error' => 'Incorrect pin']);
         }
 
-
+        $systemBalance = NairaWallet::sum('amount');
         //create txn
         $prev_bal = $user_wallet->amount;
         $user_wallet->amount += $data['amount'];
         $user_wallet->save();
+
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $nt = new NairaTransaction();
         $nt->reference = time();
         $nt->amount = $data['amount'];
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transfer_charge = 0;
         $nt->sms_charge = 0;
@@ -1067,17 +1078,20 @@ class TradeNairaController extends Controller
             return back()->with(['error' => 'Incorrect pin']);
         }
 
-
+        $systemBalance = NairaWallet::sum('amount');
         //create txn
         $prev_bal = $user_wallet->amount;
         $user_wallet->amount -= $data['amount'];
         $user_wallet->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $nt = new NairaTransaction();
         $nt->reference = time();
         $nt->amount = $data['amount'];
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transfer_charge = 0;
         $nt->sms_charge = 0;

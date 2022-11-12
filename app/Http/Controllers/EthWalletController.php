@@ -478,11 +478,16 @@ class EthWalletController extends Controller
             'card' => 'ethereum',
             'agent_id' => 1
         ]);
-
+        $systemBalance = NairaWallet::sum('amount');
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
         $reference = \Str::random(2) . '-' . $t->id;
         $n = NairaWallet::find(1);
+
+        Auth::user()->nairaWallet->amount += $t->amount_paid;
+        Auth::user()->nairaWallet->save();
+
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $nt = new NairaTransaction();
         $nt->reference = $reference;
@@ -491,6 +496,8 @@ class EthWalletController extends Controller
         $nt->type = 'naira wallet';
         $nt->previous_balance = Auth::user()->nairaWallet->amount;
         $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 23;
         $nt->dr_wallet_id = $n->id;
@@ -503,9 +510,6 @@ class EthWalletController extends Controller
         $nt->dr_user_id = 1;
         $nt->status = 'success';
         $nt->save();
-
-        Auth::user()->nairaWallet->amount += $t->amount_paid;
-        Auth::user()->nairaWallet->save();
 
         return response()->json([
             'success' => true,

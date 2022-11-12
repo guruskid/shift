@@ -24,12 +24,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
-//! things to ask
-/**
- * todo: 1. pb withdrawal success where is the agent viewing and accepting transactions
- * ?things that will be worked on withdrawal pending success and deposit success.
- * ?withdrawal pending is after 1 hour of no action withdrawal cancelled by system after 3 days of no action
- */
+
 class TradeController extends Controller
 {
     public function agents()
@@ -242,10 +237,12 @@ class TradeController extends Controller
         // $txn->platform = $request->platform;
         $txn->save();
 
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
         $user_wallet = Auth::user()->nairaWallet;
         $user_wallet->amount -= $request->amount;
         $user_wallet->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $nt = new NairaTransaction();
         $nt->reference = $ref;
@@ -255,6 +252,8 @@ class TradeController extends Controller
         $nt->type = 'withdrawal';
         $nt->previous_balance = $user_wallet->amount + $request->amount;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = $charge;
         $nt->transfer_charge = $charge;
         $nt->transaction_type_id = 3;
@@ -381,9 +380,10 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3) . time();
-
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
         $user_wallet = $user->nairaWallet;
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         //create TXN here
         $txn = new NairaTrade();
@@ -403,6 +403,8 @@ class TradeController extends Controller
         $nt->type = 'deposit';
         $nt->previous_balance = $user_wallet->amount;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 1;
         $nt->cr_wallet_id = $user_wallet->id;

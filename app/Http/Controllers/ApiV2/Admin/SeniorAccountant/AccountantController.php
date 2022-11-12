@@ -368,7 +368,7 @@ class AccountantController extends Controller
             ]);
         }
         $user = User::where('email', $r->email)->first();
-
+        $systemBalance = NairaWallet::sum('amount');
         $wallet = $user->nairaWallet;
 
         $t = new NairaTransaction();
@@ -388,8 +388,11 @@ class AccountantController extends Controller
             //Deposit
             $wallet->amount += $r->amount;
             $wallet->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
 
             $t->current_balance = $wallet->amount;
+            $t->system_previous_balance = $systemBalance;
+            $t->system_current_balance =  $currentSystemBalance;
             $t->cr_user_id = $wallet->user->id;
             $t->dr_user_id = 1;
             $t->cr_wallet_id = $wallet->id;
@@ -405,7 +408,10 @@ class AccountantController extends Controller
             //Deduction
             $wallet->amount -= $r->amount;
             $wallet->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
             $t->current_balance = $wallet->amount;
+            $t->system_previous_balance = $systemBalance;
+            $t->system_current_balance =  $currentSystemBalance;
             $t->dr_user_id = $wallet->user->id;
             $t->cr_user_id = 1;
             $t->dr_wallet_id = $wallet->id;
