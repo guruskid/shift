@@ -240,6 +240,9 @@ Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
         return response()->json(['message' => 'test']);
     });
 
+
+    Route::GET('/global-search',  'SpotLightController@globalSearch');
+
    //Nexus
    Route::group(['prefix' => 'nexus'], function () {
     Route::GET('/', 'NexusController@verificationData');

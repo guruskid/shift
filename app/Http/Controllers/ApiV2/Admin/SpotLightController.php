@@ -559,7 +559,7 @@ class SpotLightController extends Controller {
             // $soy = Carbon::now()->startOfYear();
             $soy = Carbon::createFromFormat('m',$request['month'])->year($year);
 
-            
+
             for ($i=0; $i < 12; $i++) {
                 $turn_over_dollar = Transaction::where('status','success')
                     ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount) as total"))
@@ -955,5 +955,14 @@ return $differenceInpercentage;
             ];
         }
         return $chartData;
+    }
+
+    public function globalSearch(){
+
+        $item = request("search");
+        $transaction = Transaction::query()->select("id", "user_email AS email", "card AS name", "created_at")->where("card", 'LIKE', "%".$item."%");
+        $user = User::query()->select("id", "email", "first_name AS name", "created_at")->where("first_name", "LIKE", "%".$item."%");
+        $result = $user->union($transaction)->latest()->paginate(25);
+        return response()->json($result);
     }
 }
