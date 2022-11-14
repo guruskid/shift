@@ -102,7 +102,7 @@
                                 <td class="text-center">₦ {{ isset($payBridgeTransactionsCharges) ? number_format($payBridgeTransactionsCharges) : 0 }}</td>
                                 <td class="text-center">₦ {{ isset($payBridgeTransactionsAmount) ? number_format($payBridgeTransactionsAmount) :0 }}</td>
                                 <td class="text-center">{{ $averageResponseTime }}</td>
-                                <td class="text-center">[{{ isset($payBridgeTransactionsPendingAmount) ? number_format($payBridgeTransactionsPendingAmount) :0 }}] ₦ {{ isset($nw_deposit_pending_amount) ? number_format($nw_deposit_pending_amount) :0 }}</td>
+                                <td class="text-center">[{{ isset($payBridgeTransactionsPendingCount) ? number_format($payBridgeTransactionsPendingCount) :0 }}] ₦ {{ isset($payBridgeTransactionsPendingAmount) ? number_format($payBridgeTransactionsPendingAmount) :0 }}</td>
                                 
                                 <td class="text-center">
                                     [{{ isset($pendingTotalCount) ? number_format($pendingTotalCount) :0 }}]
