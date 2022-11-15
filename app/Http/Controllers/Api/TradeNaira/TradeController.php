@@ -140,12 +140,12 @@ class TradeController extends Controller
                 'message' => $validator->errors(),
             ], 401);
         }
-        // if (!Hash::check($request->pin, Auth::user()->pin)) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'msg' => 'Incorrect wallet pin',
-        //     ]);
-        // }
+        if (!Hash::check($request->pin, Auth::user()->pin)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Incorrect wallet pin',
+            ]);
+        }
 
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->where( 'status','waiting')->get();
         if (count($trade) > 0) {

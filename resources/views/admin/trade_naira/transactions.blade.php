@@ -378,8 +378,8 @@
                                             @endif
                                             <td class="text-danger">{{ isset($t->amount) ? $t->amount : ''}}</td>
                                         @endif
-                                        {{-- <td>₦{{ number_format($t->naira_transactions->previous_balance) }}</td>
-                                        <td>₦{{ number_format($t->naira_transactions->current_balance) }}</td> --}}
+                                        <td>₦{{ number_format($t->naira_transactions->previous_balance) }}</td>
+                                        <td>₦{{ number_format($t->naira_transactions->current_balance) }}</td>
                                         <td>{{ $t->created_at->format('d M y, h:ia') }}</td>
                                         <td>
                                             @switch($t->status)
