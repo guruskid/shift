@@ -179,7 +179,7 @@
                 <div class="col mw-100 mh-100">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.naira-p2p.type',['type' => 'deposit','status'=>'success']) }}">
-                        <div class="card mb-1 widget-content 
+                        <div class="card mb-1 widget-content
                         @if ($type == 'deposit' AND $status == "success")
                          bg-primary
                         @endif">
@@ -394,7 +394,7 @@
                                                 @case('cancelled')
                                                 <span class="text-danger">{{ 'Declined' }}</span>
                                                     @break
-                                                
+
                                                 @case('waiting')
                                                     <span class="text-primary">{{ ucwords($t->status) }}</span>
                                                     @break
@@ -415,12 +415,12 @@
                                                         <a class="text-white" href="{{ route('admin.naira-p2p.view', $t) }}"><button  class="btn btn-primary">Pay</button></a>
                                                         {{-- <button data-toggle="modal" data-target="#confirm-modal-{{ $t->id }}" class="btn btn-primary">Approve</button>
                                                         <button class="btn btn-danger" data-toggle="modal" data-target="#cancel-modal-{{ $t->id }}">Cancel</button> --}}
-                                                    
+
                                                     @elseif($t->status == 'success')
                                                         @if(in_array(Auth::user()->role, [999, 889]))
                                                             <button class="btn btn-danger" data-toggle="modal" data-target="#refund-modal-{{ $t->id }}">Refund</button>
                                                         @endif
-                                                        
+
                                                     @endif
                                                 @endif
                                             </div>
@@ -450,7 +450,7 @@
                 @csrf
                 <div class="modal-content c-rounded">
                     <div class="modal-header bg-light c-rounded-top p-4 ">
-                        
+
                     </div>
                     <!-- Modal Header -->
                     <div class="modal-header bg-light c-rounded-top p-4 ">
@@ -460,9 +460,9 @@
                             @endif
                         </h4>
                         <button type="button" class="close bg-light" data-dismiss="modal">&times;</button>
-                        
+
                     </div>
-                    
+
                     <!-- Modal body -->
 
                     <div class="modal-body p-4">
@@ -532,7 +532,7 @@
                                         <button type="button"onclick="buttonSelect('statusInput-{{ $t->id }}','unresolved',{{ $t->id }})" class="mt-2 btn btn-outline-primary c-rounded txn-btn">unresolved</button>
                                         </div>
                                     @endif
-                                    
+
                                     <div class="btn-group mr-2 float-right" role="group">
                                         <button type="button" data-dismiss="modal" class="mt-2 btn btn-outline-primary c-rounded txn-btn">Go Back</button>
                                     </div>
@@ -691,6 +691,54 @@
     </div>
 @endif
 @endif
+
+<script src="{{asset('assets/scripts/sweetalert.min.js')}} "></script>
+<script>
+
+
+    const __st_id = (activity) => document.getElementById(activity)
+
+    const hideit = (ide) => {
+        __st_id(ide).classList.remove("d-block")
+        __st_id(ide).classList.add("d-none")
+    }
+
+    const showit = (ide) => {
+        __st_id(ide).classList.remove("d-none")
+        __st_id(ide).classList.add("d-block")
+    }
+
+    const buttonSelect = (id, status, uid) => {
+        var approve = document.getElementById(id);
+        approve.value = status;
+
+        if(status == 'approve' || status == 'unresolved'){
+            showit('p2p_pin-'+uid);
+            hideit('p2p_buttongroup-'+uid);
+        }
+
+        if(status == 'decline') {
+            showit('p2p_pin-'+uid);
+            showit('p2p_dropdown-'+uid);
+            hideit('p2p_buttongroup-'+uid);
+        }
+    }
+
+    const copyData = (id, type) => {
+        var copyText = document.getElementById(id);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard
+        .writeText(copyText.value)
+        .then(() => {
+            swal(type+" copied: " + copyText.value);
+        })
+        .catch(() => {
+            swal("something went wrong");
+        });
+    }
+
+</script>
 @endsection
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NotifyAccountant;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\SummaryController;
 use App\Http\Controllers\LiveRateController;
@@ -400,6 +401,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     // To be move to super Admin dashboard later
     // Route::GET('/payout-history', 'ChineseController@payouthistory')->name('admin.payout_history');
     ////////////
+
+    Route::GET('/transnotifications', 'AdminController@transNotification');
     Route::GET('/get-transaction-count', 'AdminController@countTransaction');
     Route::GET('/get-rate/{id}', 'AdminController@getRate');
     Route::GET('/get-transac/{id}', 'AdminController@getTransac');
@@ -714,3 +717,4 @@ Route::group(['prefix' => 'trx'], function () {
     Route::GET('/transaction/{id}', 'AdminController@gcTransactionForHara');
     Route::POST('/edit-transaction', 'Admin\AssetTransactionController@editTransactionHara');
 });
+

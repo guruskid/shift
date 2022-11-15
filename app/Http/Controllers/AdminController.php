@@ -1390,6 +1390,29 @@ class AdminController extends Controller
         return view('admin.notification', compact(['notifications']));
     }
 
+
+    public function transNotification(Request $request)
+    {
+        $month =  $request->input('month');
+        if ($month) {
+            $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->paginate(10);
+        } else {
+            $notifications = Auth::user()->notifications()->paginate(10);
+        }
+
+        return view('admin.transnotification', compact('notifications', 'month'));
+    }
+
+
+    public function readNot($id)
+    {
+        $n = Auth::user()->notifications->where('id', $id)->first();
+        $n->is_seen = 1;
+        $n->save();
+        return response()->json(['success' => true]);
+    }
+
+
     public function addNotification(Request $r)
     {
         $n = new Notification();
