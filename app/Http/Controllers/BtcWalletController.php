@@ -415,7 +415,7 @@ class BtcWalletController extends Controller
         // if($ngn >= 10):
         if($ngn >= 1000000):
             $is_flagged = 1;
-            $lastTranxAmount = FlaggedTransactionsController::getLastTransaction(Auth::user());
+            $lastTranxAmount = FlaggedTransactionsController::getLastTransaction(Auth::user()->id);
         endif;
 
         $t = Auth::user()->transactions()->create([
@@ -467,6 +467,7 @@ class BtcWalletController extends Controller
         $nt->cr_user_id = $user->id;
         $nt->dr_user_id = 1;
         $nt->status = 'success';
+        $nt->is_flagged = $t->is_flagged;
         $nt->save();
 
         //Blockfill
@@ -510,6 +511,7 @@ class BtcWalletController extends Controller
         }
 
         if($t->is_flagged == 1){
+            $narration = "BTC transaction for the day is greater than 1 million";
             $agent_id = FlaggedTransactionsController::getCurrentAccountant();
             $user = Auth::user();
             $type = 'Bulk Credit';
@@ -520,6 +522,7 @@ class BtcWalletController extends Controller
             $flaggedTranx->reference_id = $nt->reference;
             $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
             $flaggedTranx->accountant_id = $agent_id;
+            $flaggedTranx->narration = $narration;
             $flaggedTranx->save();
         }
 

@@ -18,6 +18,8 @@ use App\NairaTransaction;
 use App\NairaWallet;
 use App\PayBridgeAccount;
 use App\User;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -170,6 +172,27 @@ class TradeController extends Controller
             ]);
         }
 
+        if($account->status != 'active'){
+            return response()->json([
+                'success' => false,
+                'message' => "This Account number is not active for Withdrawal",
+            ]);
+        }
+
+        if(($account->activateBy != null) AND (now() <= $account->activateBy)){
+            $options = [
+                'join' => ', ',
+                'parts' => 2,
+                'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+            ];
+              
+            $time = Carbon::parse($account->activateBy)->diffForHumans(now(), $options);
+            return response()->json([
+                'success' => false,
+                'message' => "This Account number will be active $time after",
+            ]);
+        }
+
         if (Auth::user()->nairaWallet->amount < $request->amount) {
             return response()->json([
                 'success' => false,
@@ -193,9 +216,9 @@ class TradeController extends Controller
         $is_flagged = 0;
         $totalTransactionsAmount = FlaggedTransactionsController::dailyTotal(Auth::user(),$request->amount);
 
-        if($totalTransactionsAmount>= 1000000):
+        if($totalTransactionsAmount >= 1000000):
             $is_flagged = 1;
-            $lastTranxAmount = FlaggedTransactionsController::getLastWithdrawal(Auth::user());
+            $lastTranxAmount = FlaggedTransactionsController::getLastWithdrawal(Auth::user()->id);
         endif;
 
         // daily and monthly check
@@ -205,8 +228,7 @@ class TradeController extends Controller
         $is_daily = 0;
         $is_monthly = 0;
 
-        if($dailyLimit < 0)
-        {
+        if($dailyLimit < 0){
             $is_daily = 1;
             return response()->json([
                 'success' => false,
@@ -214,8 +236,7 @@ class TradeController extends Controller
             ]);
         }
 
-        if($monthlyLimit < 0)
-        {
+        if($monthlyLimit < 0){
             $is_monthly = 1;
             return response()->json([
                 'success' => false,
@@ -264,6 +285,7 @@ class TradeController extends Controller
         $nt->cr_user_id = 1;
         $nt->dr_user_id = $user->id;
         $nt->status = 'pending';
+        $nt->is_flagged = $txn->is_flagged;
         $nt->save();
 
         //Transfer the charges
@@ -272,6 +294,7 @@ class TradeController extends Controller
         $transfer_charges_wallet->save();
 
         if($is_flagged == 1){
+            $narration = "withdrawal for the day is greater than 1 million";
             $user = Auth::user();
             $type = 'Withdrawal';
             $flaggedTranx =  new FlaggedTransactions();
@@ -281,6 +304,7 @@ class TradeController extends Controller
             $flaggedTranx->reference_id = $nt->reference;
             $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
             $flaggedTranx->accountant_id = $request->agent_id;
+            $flaggedTranx->narration = $narration;
             $flaggedTranx->save();
         }
 

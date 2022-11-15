@@ -135,6 +135,23 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                 </tbody>
                             </table>
                             @endif
+                            @if (in_array(Auth::user()->role, [999,899,777]))
+                            <h6 class="card-header mt-4 ">System Balance Information</h6>
+                            <table class="align-middle mb-4 table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">System Previous Balance</th>
+                                        <th class="text-center">System Current Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td class="text-center text-muted">{{ number_format($complianceCheck->system_previous_balance) }}</td>
+                                            <td class="text-center text-muted">₦ {{ number_format($complianceCheck->system_current_balance) }}</td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                            @endif
                             <table class="align-middle mb-4 table table-bordered table-striped transactions-table ">
                                 <thead>
                                     <tr>
@@ -147,6 +164,12 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <th>Total</th>
                                         <th>Prev. Bal </th>
                                         <th>Cur. Bal</th>
+                                        @if(in_array(Auth::user()->role,[999,889,777]))
+                                        <th>Bal Diff</th>
+                                        <th>Sys. Prev. Bal</th>
+                                        <th>Sys. Cur. Bal</th>
+                                        <th>Sys. Bal. Diff</th>
+                                        @endif
                                         <th>Cr. Acct.</th>
                                         <th>Debit Acct.</th>
                                         <th>Narration</th>
@@ -179,6 +202,21 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>₦{{number_format($t->amount) }} </td>
                                         <td>₦{{number_format($t->previous_balance) }}</td>
                                         <td>₦{{number_format($t->current_balance) }} </td>
+                                        @if (in_array(Auth::user()->role, [999, 889]))
+                                            @if(($t->current_balance - $t->previous_balance) < 0)
+                                            <td class="text-danger">₦{{number_format(($t->current_balance - $t->previous_balance)) }} </td>
+                                            @else
+                                            <td class="text-success">₦{{number_format(($t->current_balance - $t->previous_balance)) }} </td>
+                                            @endif
+                                            
+                                            <td>₦{{number_format($t->system_previous_balance) }} </td>
+                                            <td>₦{{number_format($t->system_current_balance) }} </td>
+                                            @if(($t->system_current_balance - $t->system_previous_balance) < 0)
+                                            <td class="text-danger">₦{{number_format(($t->system_current_balance - $t->system_previous_balance)) }} </td>
+                                            @else
+                                            <td class="text-success">₦{{number_format(($t->system_current_balance - $t->system_previous_balance)) }} </td>
+                                            @endif
+                                        @endif
                                         <td>{{$t->cr_acct_name}} </td>
                                         <td>{{$t->dr_acct_name}} </td>
                                         <td>{{$t->narration}} </td>
