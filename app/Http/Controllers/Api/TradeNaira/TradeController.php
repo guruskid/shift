@@ -187,7 +187,7 @@ class TradeController extends Controller
                 'parts' => 2,
                 'syntax' => CarbonInterface::DIFF_ABSOLUTE,
             ];
-              
+
             $time = Carbon::parse($account->activateBy)->diffForHumans(now(), $options);
             return response()->json([
                 'success' => false,
@@ -328,7 +328,7 @@ class TradeController extends Controller
         $btn_url = '';
 
          //New Notification
-         $users = User::where('role', 777)->orWhere('role', 889)->get();
+         $users = User::where('role', 777)->orWhere('role', 889)->orWhere('role', 775)->get();
          $title = 'Withdrawal Initiated';
          $body = Auth::user()->first_name . " just made a withdrawal request worth ₦" . $nt->amount;
 
@@ -474,7 +474,7 @@ class TradeController extends Controller
         $btn_url = '';
         //New Notification
 
-        $users = User::where('role', 777)->orWhere('role', 889)->get();
+        $users = User::where('role', 777)->orWhere('role', 889)->orWhere('role', 775)->get();
         $title = 'Deposit Initiated';
         $body = Auth::user()->first_name . " says he/she has just deposited ₦" . $nt->amount;
 
