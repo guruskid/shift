@@ -132,6 +132,16 @@ class SpotLightController extends Controller {
         ], 200);
     }
 
+    public function newRecentTransactions(){
+        $data = Transaction::whereHas("naira_transactions")->with('naira_transactions')->latest()->paginate(20);
+
+        return response()->json($data);
+
+
+    }
+
+
+
     public function recentTransactions() {
         $tranx = DB::table('transactions')
             ->join('users', 'transactions.user_id', '=', 'users.id')
@@ -176,8 +186,9 @@ class SpotLightController extends Controller {
         $saleTimeStamp = null;
         $repFn = '';
         $repLn = '';
-        if ($saleRep) {
-            $saleTimeStamp = SalesTimestamp::where(['user_id' => $saleRep->id])->latest()->first();
+
+        if (!empty($saleRep)) {
+            $saleTimeStamp = SalesTimestamp::whereHas("user")->where(['user_id' => $saleRep->id])->latest()->first();
             $repFn = $saleRep->first_name;
             $repLn = $saleRep->last_name;
         }
@@ -185,13 +196,20 @@ class SpotLightController extends Controller {
         $ticketsWaiting = 0;
         $ticketsResolved = 0;
         $ticketsUnresolved = 0;
-        $saleTimeStamp = SalesTimestamp::where(['user_id' => $saleRep->id])->latest()->first();
+        // $saleTimeStamp = SalesTimestamp::whereHas("user")->where(['user_id' => $saleRep->id])->latest()->first();
+        $tranx = "";
+        $declinedTranx = "";
+        if(!empty($saleRep)){
+            $tranx = Transaction::where(['status' => 'success'])
+            ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
 
-        $tranx = Transaction::where(['status' => 'success'])
-        ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
 
-        $declinedTranx = Transaction::where(['status' => 'declined'])
-        ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
+            $declinedTranx = Transaction::where(['status' => 'declined'])
+            ->whereBetween('updated_at',[$saleTimeStamp->activeTime,Carbon::now()]);
+        }
+
+
+
 
         $customerHappiness = User::where(['role' => 555, 'status' => 'active'])->with('nairaWallet')->first();
         if ($customerHappiness) {
@@ -273,7 +291,7 @@ class SpotLightController extends Controller {
                 ->whereBetween('updated_at',[$stamp->activeTime,Carbon::now()])
                 ->get();
 
-            $pending_withdrawal = NairaTrade::where(['status' => 'success','type'=> 'withdrawal']);
+            $pending_withdrawal = NairaTrade::where(['status' => 'pending','type'=> 'withdrawal']);
             $paid_out = $wtrade->sum('amount');
             $current_balance = $opening_balance - $paid_out;
 
@@ -534,13 +552,23 @@ class SpotLightController extends Controller {
         $type = $request['type'];
         $bigData = [];
 
+
         if ($type == 'monthly') {
             $year = $request['year'];
 
             // $soy = Carbon::now()->startOfYear();
             $soy = Carbon::createFromFormat('m',$request['month'])->year($year);
+
+
             for ($i=0; $i < 12; $i++) {
-                $turn_over = Transaction::where('status','success')
+                $turn_over_dollar = Transaction::where('status','success')
+                    ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount) as total"))
+                    ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
+                    ->where(DB::raw('year(created_at)'), '=', $year)
+                    ->groupBy('date')
+                    ->first();
+
+                    $turn_over_naira = Transaction::where('status','success')
                     ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
                     ->where(DB::raw('month(created_at)'), '=', $soy->format('m'))
                     ->where(DB::raw('year(created_at)'), '=', $year)
@@ -549,7 +577,8 @@ class SpotLightController extends Controller {
 
                 $bigData[] = [
                     'x_tick' => $soy->format('M'),
-                    'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
+                    'turn_over_dollar' => (isset($turn_over_dollar->total)) ? $turn_over_dollar->total : 0,
+                    'turn_over_naira' => (isset($turn_over_naira->total)) ? $turn_over_naira->total : 0
                 ];
                 $soy->addMonth();
             }
@@ -572,15 +601,22 @@ class SpotLightController extends Controller {
                 $to = $now->format('jS M');
                 $tick = $to.' - '.$from;
 
-                $turn_over = Transaction::where('status','success')
-                    ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
+                $turn_over_dollar = Transaction::where('status','success')
+                    ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount) as total"))
                     ->whereBetween('created_at',[$tod,$frmd])
                     ->groupBy('date')
                     ->first();
 
+                $turn_over_naira = Transaction::where('status','success')
+                ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
+                ->whereBetween('created_at',[$tod,$frmd])
+                ->groupBy('date')
+                ->first();
+
                 $bigData[] = [
                     'x_tick' => $tick,
-                    'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
+                    'turn_over_dollar' => (isset($turn_over_dollar->total)) ? $turn_over_dollar->total : 0,
+                    'turn_over_naira' => (isset($turn_over_naira->total)) ? $turn_over_naira->total : 0
                 ];
             }
 
@@ -599,7 +635,13 @@ class SpotLightController extends Controller {
                 $to = $startFrom->subMonth(2)->format('M Y');
                 $tick = $from.' - '.$to;
 
-                $turn_over = Transaction::where('status','success')
+                $turn_over_dollar = Transaction::where('status','success')
+                    ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount) as total"))
+                    ->whereBetween(DB::raw('date(created_at)'),[$startFrom->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')])
+                    ->groupBy('date')
+                    ->first();
+
+                    $turn_over_naira = Transaction::where('status','success')
                     ->select(DB::raw("date(created_at) as date"),DB::raw("sum(amount_paid) as total"))
                     ->whereBetween(DB::raw('date(created_at)'),[$startFrom->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')])
                     ->groupBy('date')
@@ -607,7 +649,8 @@ class SpotLightController extends Controller {
 
                 $bigData[] = [
                     'x_tick' => $tick,
-                    'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
+                    'turn_over_dollar' => (isset($turn_over_dollar->total)) ? $turn_over_dollar->total : 0,
+                    'turn_over_naira' => (isset($turn_over_naira->total)) ? $turn_over_naira->total : 0
                 ];
             }
 
@@ -619,15 +662,22 @@ class SpotLightController extends Controller {
             $period = 100;
 
             for ($i=0; $i < 10; $i++) {
-                $turn_over = Transaction::where('status','success')
+                $turn_over_dollar = Transaction::where('status','success')
                     ->select(DB::raw("year(created_at) as date"),DB::raw("sum(amount_paid) as total"))
+                    ->where(DB::raw('year(created_at)'),$startFrom->format('Y'))
+                    ->groupBy('date')
+                    ->first();
+
+                    $turn_over_naira = Transaction::where('status','success')
+                    ->select(DB::raw("year(created_at) as date"),DB::raw("sum(amount) as total"))
                     ->where(DB::raw('year(created_at)'),$startFrom->format('Y'))
                     ->groupBy('date')
                     ->first();
 
                 $bigData[] = [
                     'x_tick' => $startFrom->format('Y'),
-                    'turn_over' => (isset($turn_over->total)) ? $turn_over->total : 0
+                    'turn_over_dollar' => (isset($turn_over_dollar->total)) ? $turn_over_dollar->total : 0,
+                    'turn_over_naira' => (isset($turn_over_naira->total)) ? $turn_over_naira->total : 0
                 ];
                 $startFrom->subYear();
             }
@@ -870,7 +920,7 @@ return $differenceInpercentage;
             $date = Carbon::now()->format('Y-m-d');
         }
 
-        $users = User::where(DB::raw('date(created_at)'),$date)->limit(10)->get();
+        $users = User::where(DB::raw('date(created_at)'),$date)->latest()->limit(10)->get();
 
         return response()->json([
             'success' => true,
@@ -905,5 +955,14 @@ return $differenceInpercentage;
             ];
         }
         return $chartData;
+    }
+
+    public function globalSearch(){
+
+        $item = request("search");
+        $transaction = Transaction::query()->select("id", "user_email AS email", "card AS name", "created_at")->where("card", 'LIKE', "%".$item."%");
+        $user = User::query()->select("id", "email", "first_name AS name", "created_at")->where("first_name", "LIKE", "%".$item."%");
+        $result = $user->union($transaction)->latest()->paginate(25);
+        return response()->json($result);
     }
 }

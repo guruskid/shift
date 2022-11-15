@@ -240,6 +240,9 @@ Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
         return response()->json(['message' => 'test']);
     });
 
+
+    Route::GET('/global-search',  'SpotLightController@globalSearch');
+
    //Nexus
    Route::group(['prefix' => 'nexus'], function () {
     Route::GET('/', 'NexusController@verificationData');
@@ -280,7 +283,8 @@ Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
 
     Route::group(['prefix' => 'spotlight'], function () {
         Route::GET('/stats', 'SpotLightController@stats');
-        Route::GET('/recent-transactions', 'SpotLightController@recentTransactions');
+        // Route::GET('/recent-transactions', 'SpotLightController@recentTransactions');
+        Route::GET('/recent-transactions', 'SpotLightController@newRecentTransactions');
         Route::GET('/staff-on-role', 'SpotLightController@staffOnRole');
         Route::GET('/monthly-analytics',  'SpotLightController@monthlyAnalytics');
         Route::GET('/other-graph',  'SpotLightController@otherGraph');
