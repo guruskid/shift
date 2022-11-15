@@ -52,7 +52,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('check:quarterlyInactive')->daily();
         $schedule->command('noResponse:check')->daily();
         $schedule->command('birthday:wish')->dailyAt('08:00');
-        $schedule->command('ledger:resolve')->everyTenMinutes();
+        $schedule->command('ledger:resolve')->everyFiveMinutes();
     }
 
     /**
