@@ -1120,8 +1120,10 @@ class AdminController extends Controller
         $total_amount_paid = $transactions->sum('amount_paid');
         $total_charges = $transactions->sum('charge');
         $transactions = $transactions->paginate(1000);
+
+        $complianceCheck = NairaTransaction::orderBy('id','DESC')->first();
         return view('admin.naira_transactions', compact([
-            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges'
+            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges','complianceCheck'
         ]));
     }
     public function walletTransactionsSortByDate(Request $request)

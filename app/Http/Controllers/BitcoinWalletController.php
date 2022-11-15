@@ -290,6 +290,7 @@ class BitcoinWalletController extends Controller
 
         $transaction = $t;
         $btc_txn_type = 0;
+        $systemBalance = NairaWallet::sum('amount');
         $user_naira_wallet = $transaction->user->nairaWallet;
         $user_btc_wallet = $transaction->user->bitcoinWallet;
         $old_user_btc_balance = $user_btc_wallet->balance;
@@ -310,6 +311,7 @@ class BitcoinWalletController extends Controller
             /* Deduct cost from user naira wallet and create new naira wallet transaction */
             $user_naira_wallet->amount -= $transaction->amount_paid;
             $user_naira_wallet->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
 
             $reference = \Str::random(2) . '-' . $transaction->id;
             $n = NairaWallet::find(1);
@@ -320,6 +322,8 @@ class BitcoinWalletController extends Controller
             $nt->type = 'naira wallet';
             $nt->previous_balance = $old_user_naira_balance;
             $nt->current_balance = $user_naira_wallet->amount;
+            $nt->system_previous_balance = $systemBalance;
+            $nt->system_current_balance =  $currentSystemBalance;
             $nt->charge = 0;
             $nt->transaction_type_id = 5;
             $nt->cr_wallet_id = $n->id;
@@ -352,6 +356,7 @@ class BitcoinWalletController extends Controller
 
             $user_naira_wallet->amount += $transaction->amount_paid;
             $user_naira_wallet->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
 
             //Create naira txn
             $reference = \Str::random(2) . '-' . $transaction->id;
@@ -363,6 +368,8 @@ class BitcoinWalletController extends Controller
             $nt->type = 'naira wallet';
             $nt->previous_balance = $old_user_naira_balance;
             $nt->current_balance = $user_naira_wallet->amount;
+            $nt->system_previous_balance = $systemBalance;
+            $nt->system_current_balance =  $currentSystemBalance;
             $nt->charge = 0;
             $nt->transaction_type_id = 4;
             $nt->dr_wallet_id = $n->id;

@@ -412,7 +412,7 @@ class BitcoinWalletController extends Controller
         /* Update User Balance */
         $u_old_n_balance =  $user_naira_wallet->amount;
         $u_old_b_balance = $user->bitcoinWallet->balance;
-
+        $systemBalance = NairaWallet::sum('amount');
         if ($transaction->type == 'buy') {
             $charge = Setting::where('name', 'bitcoin_buy_charge')->first()->value ?? 0;
             $charge = ($charge / 100) * $transaction->quantity;
@@ -431,6 +431,7 @@ class BitcoinWalletController extends Controller
             $user_naira_wallet->save();
 
             $reference = \Str::random(2) . '-' . $transaction->id;
+            $currentSystemBalance = NairaWallet::sum('amount');
             $n = NairaWallet::find(1);
             $nt = new NairaTransaction();
             $nt->reference = $reference;
@@ -439,6 +440,8 @@ class BitcoinWalletController extends Controller
             $nt->type = 'naira wallet';
             $nt->previous_balance = $u_old_n_balance;
             $nt->current_balance = $user_naira_wallet->amount;
+            $nt->system_previous_balance = $systemBalance;
+            $nt->system_current_balance =  $currentSystemBalance;
             $nt->charge = 0;
             $nt->transaction_type_id = 5;
             $nt->cr_wallet_id = $n->id;
@@ -476,6 +479,7 @@ class BitcoinWalletController extends Controller
             //Create naira txn
             $reference = \Str::random(2) . '-' . $transaction->id;
             $n = NairaWallet::find(1);
+            $currentSystemBalance = NairaWallet::sum('amount');
             $nt = new NairaTransaction();
             $nt->reference = $reference;
             $nt->amount = $transaction->amount_paid;
@@ -483,6 +487,8 @@ class BitcoinWalletController extends Controller
             $nt->type = 'naira wallet';
             $nt->previous_balance = $u_old_n_balance;
             $nt->current_balance = $user_naira_wallet->amount;
+            $nt->system_previous_balance = $systemBalance;
+            $nt->system_current_balance =  $currentSystemBalance;
             $nt->charge = 0;
             $nt->transaction_type_id = 4;
             $nt->dr_wallet_id = $n->id;

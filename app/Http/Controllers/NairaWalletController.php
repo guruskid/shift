@@ -262,6 +262,7 @@ class NairaWalletController extends Controller
             return redirect()->back()->with(['error' => 'Monthly limit exceeded, please upgrade your account limits from the account settings page.']);
         }
 
+        $systemBalance = NairaWallet::sum('amount');
         $n = Auth::user()->nairaWallet;
 
         if (Hash::check($r->pin, Auth::user()->pin) == false) {
@@ -283,6 +284,7 @@ class NairaWalletController extends Controller
         $prev_bal = $n->amount;
         $n->amount -= $r->amount;
         $n->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $msg = 'Transaction initiated';
         $nt = new NairaTransaction();
@@ -291,6 +293,8 @@ class NairaWalletController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $n->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = $charge;
         $nt->transfer_charge = 61.38;
         $nt->sms_charge = 2.55;
@@ -445,7 +449,7 @@ class NairaWalletController extends Controller
             return redirect()->back()->with(['error' => 'Monthly limit exceeded, please upgrade your account limits from the account settings page.']);
         }
 
-
+        $systemBalance = NairaWallet::sum('amount');
         $n = Auth::user()->nairaWallet;
 
         if (Hash::check($r->pin, Auth::user()->pin) == false) {
@@ -466,6 +470,7 @@ class NairaWalletController extends Controller
         $prev_bal = $n->amount;
         $n->amount -= $r->amount;
         $n->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $msg = 'Transaction initiated';
         $nt = new NairaTransaction();
@@ -474,6 +479,8 @@ class NairaWalletController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $n->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = $charge;
         $nt->transfer_charge = 100;
         $nt->sms_charge = 0;
@@ -537,7 +544,7 @@ class NairaWalletController extends Controller
             'id' => 'required',
             'pin' => 'required',
         ]);
-
+        $systemBalance = NairaWallet::sum('amount');
         $n = NairaWallet::find(1); /* Admin general Wallet */
         $t = Transaction::find($r->id);
         $user_wallet = $t->user->nairaWallet;
@@ -578,7 +585,7 @@ class NairaWalletController extends Controller
             $dr_acct_name = $t->user->first_name;
         }
 
-
+        $currentSystemBalance = NairaWallet::sum('amount');
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
@@ -588,6 +595,8 @@ class NairaWalletController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = $tid;
 
@@ -647,7 +656,7 @@ class NairaWalletController extends Controller
             'id' => 'required',
             'pin' => 'required',
         ]);
-
+        $systemBalance = NairaWallet::sum('amount');
         $n = NairaWallet::find(1); /* Admin general Wallet */
         $t = NairaTransaction::find($r->id);
         $user_wallet = $t->user->nairaWallet;
@@ -668,6 +677,7 @@ class NairaWalletController extends Controller
         $user_wallet->save();
         $tt = 'credited';
 
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $nt = new NairaTransaction();
         $nt->reference = $reference;
@@ -678,6 +688,8 @@ class NairaWalletController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 18;
 
@@ -773,10 +785,12 @@ class NairaWalletController extends Controller
 
     public function callback(Request $r)
     {
+        $systemBalance = NairaWallet::sum('amount');
         $nw = NairaWallet::where('account_number', $r->craccount)->first();
         $prev_bal = $nw->amount;
         $nw->amount += $r->amount;
         $nw->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $ttid = 1;
         if ($nw->user->role == 999) {
@@ -805,6 +819,8 @@ class NairaWalletController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $nw->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = $ttid;
 

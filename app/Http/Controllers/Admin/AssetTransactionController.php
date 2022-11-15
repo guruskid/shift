@@ -267,6 +267,7 @@ class AssetTransactionController extends Controller
             'pin' => 'required',
         ]);
 
+        $systemBalance = NairaWallet::sum('amount');
         $n = NairaWallet::find(1); /* Admin general Wallet */
         $t = Transaction::find($r->id);
         $user_wallet = $t->user->nairaWallet;
@@ -294,7 +295,7 @@ class AssetTransactionController extends Controller
         }
 
         $user_wallet->save();
-
+        $currentSystemBalance = NairaWallet::sum('amount');
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
@@ -304,6 +305,8 @@ class AssetTransactionController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
 
         if ($t->type == 'sell') {
@@ -362,6 +365,7 @@ class AssetTransactionController extends Controller
 
     public function payTransactionChinese(Request $r)
     {
+        $systemBalance = NairaWallet::sum('amount');
         $approvedFromHara = false;
         if (isset($r->admin_role)) {
             $adminEmail = $r->admin_email;
@@ -420,7 +424,7 @@ class AssetTransactionController extends Controller
         }
 
         $user_wallet->save();
-
+        $currentSystemBalance = NairaWallet::sum('amount');
         $nt = new NairaTransaction();
         $nt->reference = $reference;
         $nt->amount = $amount;
@@ -430,6 +434,8 @@ class AssetTransactionController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
 
         if ($t->type == 'sell') {

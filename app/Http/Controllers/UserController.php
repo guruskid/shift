@@ -385,6 +385,7 @@ class UserController extends Controller
             }
         }
 
+        $systemBalance = NairaWallet::sum('amount');
         $country = '';
         $tmp_amount = $r->amount;
         $equiv = 0;
@@ -463,7 +464,7 @@ class UserController extends Controller
 
                 $reference = \Str::random(2) . '-' . $t->id;
                 $n = NairaWallet::find(1);
-
+                $currentSystemBalance = NairaWallet::sum('amount');
                 $nt = new NairaTransaction();
                 $nt->reference = $reference;
                 $nt->amount = $r->amount_paid;
@@ -473,6 +474,8 @@ class UserController extends Controller
 
                 $nt->previous_balance = $prev_bal;
                 $nt->current_balance = Auth::user()->nairaWallet->amount;
+                $nt->system_previous_balance = $systemBalance;
+                $nt->system_current_balance =  $currentSystemBalance;
                 $nt->charge = 0;
                 $nt->transaction_type_id = 5;
 
