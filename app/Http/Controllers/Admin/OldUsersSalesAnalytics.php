@@ -102,12 +102,13 @@ class OldUsersSalesAnalytics extends Controller
 
         $ReminderText = self::textForQuarterlyCheck();
 
-        if($request->downloader == "csv")
-        {
-            return self::downloadCSV();
+        if($request->downloader == "quarterly"){
+            return self::downloadQuarterlyCSV();
         }
 
-
+        if($request->downloader == "active"){
+            return self::downloadActiveCSV();
+        }
         $request->session()->forget(['SortingKeys','startKey','endKey']);
         $conversionType = "unique";
         
@@ -205,7 +206,7 @@ class OldUsersSalesAnalytics extends Controller
         ]));
     }
 
-    public static function downloadCSV()
+    public static function downloadQuarterlyCSV()
     {
         $quarterlyChecks = EmailChecker::where('name','SendQuarterlyInactiveEmail')->first();
         if(!$quarterlyChecks)
@@ -219,8 +220,14 @@ class OldUsersSalesAnalytics extends Controller
                 'timeStamp' => now()
             ]);
         }
-        $quarterlyInactive = UserTracking::whereIn('Current_Cycle',['QuarterlyInactive'])->with('user')->get();
+        $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->with('user')->get();
         return Excel::download(new QuarterlyInactiveUsers($quarterlyInactive), 'quarterlyInactive.csv');
+    }
+
+    public static function downloadActiveCSV()
+    {
+        $activeUsers = UserTracking::where('Current_Cycle','Active')->with('user')->get();
+        return Excel::download(new QuarterlyInactiveUsers($activeUsers), 'activeUsers.csv');
     }
 
     public static function textForQuarterlyCheck()
@@ -346,7 +353,11 @@ class OldUsersSalesAnalytics extends Controller
         }
         $callPercentageEffectiveness = ($noOfCalledUsers == 0) ? 0 : ($noOfRespondedUsers/$noOfCalledUsers)*100;
 
-        $RespondedUsersTotal = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded')->get();
+        $RespondedUsersTotal = UserTracking::with('transactions','user')->where('called_date','>=',$start_date)->where('called_date','<=',$end_date)->where('Current_Cycle','Responded');
+        if(isset($sales_id)){
+            $RespondedUsersTotal = $RespondedUsersTotal->where('sales_id',$sales_id);
+        }
+        $RespondedUsersTotal = $RespondedUsersTotal->get();
         $totalRespondedUserTotal = $this->RespondedTotal($RespondedUsersTotal);
         $respondedTranxVolume = $totalRespondedUserTotal->sum('amount');
 

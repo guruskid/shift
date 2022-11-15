@@ -48,8 +48,8 @@
                             </i>
                         </div>
                         <div> 
-                            @if(isset($accountant_name))
-                                {{ $accountant_name }}<br>
+                            @if(isset($accountantName))
+                                {{ $accountantName }}<br>
                             @endif 
                             @if(isset($segment))
                                 {{ $segment }} Transactions 
@@ -63,12 +63,12 @@
                 <div class="col-md-3">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.junior-summary-details', [ $month , $day, 'all']) }}">
-                        <div class="card mb-1 widget-content @if (isset($show_category) AND $show_category == "all")
+                        <div class="card mb-1 widget-content @if (isset($showCategory) AND $showCategory == "all")
                         bg-primary
                          @endif">
                             <div class="widget-content-wrapper">
                                 <div class="widget-heading">
-                                    <h6 class="text-center @if (isset($show_category) AND $show_category == "all")
+                                    <h6 class="text-center @if (isset($showCategory) AND $showCategory == "all")
                                     text-white
                                      @endif">Crypto and Giftcards</h5>
                                 </div>
@@ -80,12 +80,12 @@
                 <div class="col-md-3">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.junior-summary-details', [ $month , $day, 'utilities']) }}">
-                        <div class="card mb-1 widget-content @if (isset($show_category) AND $show_category == "utilities")
+                        <div class="card mb-1 widget-content @if (isset($showCategory) AND $showCategory == "utilities")
                         bg-primary
                          @endif">
                             <div class="widget-content-wrapper">
                                 <div class="widget-heading">
-                                    <h6 class="text-center @if (isset($show_category) AND $show_category == "utilities")
+                                    <h6 class="text-center @if (isset($showCategory) AND $showCategory == "utilities")
                                     text-white
                                      @endif">Utilities</h6>
                                 </div>
@@ -97,12 +97,12 @@
                 <div class="col-md-3">
                     {{-- bg-primary text-white --}}
                     <a href="{{ route('admin.junior-summary-details', [ $month , $day, 'paybridge']) }}">
-                        <div class="card mb-1 widget-content @if ( isset($show_category) AND strpos($show_category,'paybridge') !== false)
+                        <div class="card mb-1 widget-content @if ( isset($showCategory) AND strpos($showCategory,'paybridge') !== false)
                         bg-primary
                          @endif">
                             <div class="widget-content-wrapper">
                                 <div class="widget-heading">
-                                    <h6 class="text-center @if (isset($show_category) AND strpos($show_category,'paybridge') !== false)
+                                    <h6 class="text-center @if (isset($showCategory) AND strpos($showCategory,'paybridge') !== false)
                                     text-white
                                      @endif">Paybridge</h6>
                                 </div>
@@ -117,20 +117,19 @@
                 </div>
 
 
-                @if ($show_data != false)
+                @if ($showData != false)
                 <div class="col-md-12">
                     <div class="main-card mb-3 card">
                         <div class="card-body">
-                            @if ($show_category == "all")    
+                            @if ($showCategory == "all")    
                                 @include('admin.summary.JuniorAccountant.include.allTransactions')
                             @endif
                             
-                            @if ($show_category == "utilities")
+                            @if ($showCategory == "utilities")
                                 @include('admin.summary.JuniorAccountant.include.utilities')
                             @endif
 
-                            @if ($show_category == "paybridge" OR $show_category == "paybridgewithdrawal" OR 
-                            $show_category == "paybridgeothers")
+                            @if ($showCategory == "paybridge" OR $showCategory == "paybridgewithdrawal")
                                 @include('admin.summary.JuniorAccountant.include.paybridge')
                             @endif
                         </div>

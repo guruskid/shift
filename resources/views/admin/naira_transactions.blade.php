@@ -54,9 +54,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                         <div> {{$segment}} Transactions
                             <div class="page-title-subheading">
                                 <h6 class="d-inline">₦{{ number_format($total) }} </h6>
-                                {{-- <a href="{{ route('admin.naira-transaction.create') }}"> --}}
-                                <button class="btn btn-primary">Add new transaction</button>
-                                {{-- </a> --}}
+
                             </div>
                         </div>
                     </div>
@@ -194,7 +192,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                              </td>
                                         @if (in_array(Auth::user()->role, [999, 889] ) && $t->status == 'pending' )
                                         <td>
-                                            <button data-toggle="modal" data-target="#refund-modal"
+                                            {{-- <button data-toggle="modal" data-target="#refund-modal"
                                                 onclick="confirmRefund({{$t->id}}, {{$t->user}}, '{{number_format($t->amount)}}' )"
                                                 class="btn mb-1 btn-sm btn-outline-success">
                                                 Refund
@@ -204,16 +202,16 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                                 onclick="queryTransaction({{$t->id}})"
                                                 class="btn mb-1 btn-sm btn-outline-success">
                                                 Query
-                                            </button>
+                                            </button> --}}
                                         </td>
 
                                         @elseif (Auth::user()->role == 777 && $t->status == 'pending' )
                                         <td>
-                                            <button data-toggle="modal" data-target="#query-modal"
+                                            {{-- <button data-toggle="modal" data-target="#query-modal"
                                                 onclick="queryTransaction({{$t->id}})"
                                                 class="btn mb-1 btn-sm btn-outline-success">
                                                 Query
-                                            </button>
+                                            </button> --}}
                                         </td>
                                         @else
                                         <td>..</td>

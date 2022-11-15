@@ -310,7 +310,6 @@ class UsdtController extends Controller
         $accounts = json_decode($res->getBody());
 
         $user_wallet = Auth::user()->usdtWallet;
-        $user_wallet->balance = $accounts->balance->availableBalance;
 
         if ($user_wallet->status == 'pending') {
             $activate = UsdtController::activate($user_wallet)->getData();
@@ -322,6 +321,9 @@ class UsdtController extends Controller
                 ]);
             }
         }
+
+        $user_wallet->balance = $accounts->balance->availableBalance;
+
 
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
 
@@ -766,7 +768,7 @@ class UsdtController extends Controller
         ]);
     }
 
-   
+
 
 
     public static function send(Request $request)
@@ -808,7 +810,6 @@ class UsdtController extends Controller
         $accounts = json_decode($res->getBody());
 
         $user_wallet = Auth::user()->usdtWallet;
-        $user_wallet->balance = $accounts->balance->availableBalance;
 
         if ($user_wallet->status == 'pending') {
             $activate = UsdtController::activate($user_wallet)->getData();
@@ -821,6 +822,9 @@ class UsdtController extends Controller
             }
         }
 
+        $user_wallet->balance = $accounts->balance->availableBalance;
+
+        
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
         $sub_total = round(($request->amount  + $charge), 3);
@@ -911,7 +915,7 @@ class UsdtController extends Controller
 
     public static function activate($wallet)
     {
-        $index = Contract::where('address', $wallet->address)->first()->index;
+        $index = Contract::where('hash', $wallet->address)->first()->index;
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
 
         $fees_wallet = FeeWallet::where('name', 'usdt_fees')->first();

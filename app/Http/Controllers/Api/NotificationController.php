@@ -19,8 +19,7 @@ class NotificationController extends Controller
         $nots = Notification::where('user_id', 0)->orWhere('user_id', $user_id)->orderBy('created_at', 'desc')->get();
         return response()->json([
             'success' => true,
-            'data' => $nots,
-            'isBirthday' => intval($isBirthday)
+            'data' => $nots
         ]);
     }
 

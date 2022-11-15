@@ -83,6 +83,8 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     //Ledger system
     Route::get('/ledger', 'LedgerController@index')->name('admin.ledger');
     Route::get('/negative-ledger', 'LedgerController@negative')->name('admin.negative-ledger');
+    Route::get('/resolve-ledger', 'LedgerController@resolve');
+    Route::get('/resolve-ledger-transactions', 'LedgerController@resolveTransactions')->name('admin.resolve-transactions');
 
 });
 

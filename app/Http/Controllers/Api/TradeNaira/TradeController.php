@@ -475,7 +475,7 @@ class TradeController extends Controller
         $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
         $message = '!!! Deposit Transaction !!!  A new Deposit transaction has been initiated ';
         foreach ($accountants as $acct) {
-            broadcast(new CustomNotification($acct, $message))->toOthers();
+            // broadcast(new CustomNotification($acct, $message))->toOthers();
         }
 
         $msg = "Congratulations! You have successfully deposited $request->amount, your Dantown wallet would be credited once payment is confirmed.";
