@@ -75,6 +75,9 @@ class LedgerController extends Controller
             $r_amt = "";
             if ($ledger_bal < $user->nairaWallet->amount) {
                 //credit txn
+                $user->ledger_resolved = true;
+                $user->save();
+
                 $amt = $user->nairaWallet->amount - $ledger_bal;
                 $r_amt = "+" . $amt;
 
@@ -100,6 +103,9 @@ class LedgerController extends Controller
                 $nt->save();
             } else if ($ledger_bal > $user->nairaWallet->amount) {
                 // debit txn
+                $user->ledger_resolved = true;
+                $user->save();
+
                 $amt = $ledger_bal - $user->nairaWallet->amount;
                 $r_amt = "-" . $amt;
 
@@ -129,6 +135,5 @@ class LedgerController extends Controller
             $user->ledger_resolved = true;
             $user->save();
         }
-        // return true;
     }
 }
