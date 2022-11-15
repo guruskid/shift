@@ -110,6 +110,11 @@ $not = $nots->last();
 
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.21/fh-3.1.7/r-2.2.5/datatables.min.js">
     </script>
+ @if(Auth::user()->role == 889 OR Auth::user()->role == 777)
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css" integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js" integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@endif
 </head>
 
 <body>
@@ -624,8 +629,35 @@ $not = $nots->last();
             countInProgressTransaction()
         }, 2000);
 
+
     </script>
     @endif
+
+    @if(Auth::user()->role == 889 OR Auth::user()->role == 777)
+    <script>
+
+        // Enable pusher logging - don't include this in production
+        // Pusher.logToConsole = true;
+
+        var pusher = new Pusher('fbdb049e7d44a6f2e382', {
+          cluster: 'mt1'
+        });
+
+        var channel = pusher.subscribe('notify');
+        channel.bind('transaction', function(data) {
+          alert(JSON.stringify(data));
+
+          iziToast.success({
+            timeout: 20000,
+            position: 'topRight',
+        title: 'New Transaction',
+        message: data.info
+    });
+
+
+        });
+      </script>
+       @endif
     @endauth
 
 

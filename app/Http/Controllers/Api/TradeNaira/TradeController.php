@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\TradeNaira;
 
 use App\Account;
 use App\Events\CustomNotification;
+use App\Events\NotifyAccountant;
 use App\FlaggedTransactions;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\Http\Controllers\Admin\FlaggedTransactionsController;
@@ -16,6 +17,7 @@ use App\NairaTrade;
 use App\NairaTradePop;
 use App\NairaTransaction;
 use App\NairaWallet;
+use App\Notification;
 use App\PayBridgeAccount;
 use App\User;
 use Illuminate\Http\Request;
@@ -302,6 +304,12 @@ class TradeController extends Controller
         $btn_text = '';
         $btn_url = '';
 
+         //New Notification
+
+         $notify =Auth::user()->first_name . " just made a withdrawal request worth ₦" . $nt->amount;
+         $transId = $txn->id;
+         NotifyAccountant::dispatch($notify, $transId);
+
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
         $name = explode(' ', $name);
         $firstname = ucfirst($name[0]);
@@ -424,6 +432,25 @@ class TradeController extends Controller
 
         $btn_text = '';
         $btn_url = '';
+        //New Notification
+
+        $users = User::where('role', 777)->orWhere('role', 889)->get();
+        $title = 'New Transaction Initiated';
+        $body = Auth::user()->first_name . " says he/she has just deposited ₦" . $nt->amount;
+
+        foreach($users as $user){
+             Notification::create([
+                'user_id' => $user->id,
+                'title' => $title,
+                'body' => $body,
+            ]);
+
+           }
+
+
+        $notify =Auth::user()->first_name . " says he/she has just deposited ₦" . $nt->amount;
+        $transId =$txn->id;
+        NotifyAccountant::dispatch($notify, $transId);
 
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
         $name = explode(' ', $name);

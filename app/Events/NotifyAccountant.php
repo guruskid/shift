@@ -14,35 +14,24 @@ class NotifyAccountant implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    // public $username;
 
-    // public $message;
-
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    // public function __construct($username)
-    // {
-    //     $this->username = $username;
-    //     $this->message  =  $username ." . liked your status";
-    // }
-
-    public $message;
-
-    public function __construct($message)
+    public $info;
+    public $id;
+    public function __construct($info, $id)
     {
-        $this->message = $message;
+        $this->info = $info;
+        $this->id = $id;
     }
 
     public function broadcastOn()
     {
-        return ['complaints'];
+        return ['notify'];
     }
 
     public function broadcastAs()
     {
-        return 'my-event';
+        // logger('Worked');
+
+        return 'transaction';
     }
 }

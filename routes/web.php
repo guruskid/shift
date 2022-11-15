@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NotifyAccountant;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\SummaryController;
 use App\Http\Controllers\LiveRateController;
@@ -717,7 +718,8 @@ Route::group(['prefix' => 'trx'], function () {
 
 
 Route::get('testing', function () {
-    event(new App\Events\NotifyAccountant('Someone'));
+    logger('testing');
+    event(new NotifyAccountant('Praise'));
     return "Event has been sent!";
 });
 
