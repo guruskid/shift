@@ -636,21 +636,18 @@ $not = $nots->last();
     @if(Auth::user()->role == 889 OR Auth::user()->role == 777)
     <script>
 
-        // Enable pusher logging - don't include this in production
-        // Pusher.logToConsole = true;
-
         var pusher = new Pusher('fbdb049e7d44a6f2e382', {
           cluster: 'mt1'
         });
 
         var channel = pusher.subscribe('notify');
         channel.bind('transaction', function(data) {
-          alert(JSON.stringify(data));
+        //   alert(JSON.stringify(data));
 
           iziToast.success({
-            timeout: 20000,
+            timeout: 25000,
             position: 'topRight',
-        title: 'New Transaction',
+        title: '<a href="https://app.dantownms.com/admin/transnotifications" target="_blank">New Transaction </a>',
         message: data.info
     });
 

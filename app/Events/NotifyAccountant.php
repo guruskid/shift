@@ -16,11 +16,11 @@ class NotifyAccountant implements ShouldBroadcast
 
 
     public $info;
-    public $id;
-    public function __construct($info, $id)
+
+    public function __construct($info)
     {
         $this->info = $info;
-        $this->id = $id;
+
     }
 
     public function broadcastOn()

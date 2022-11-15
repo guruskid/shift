@@ -305,10 +305,24 @@ class TradeController extends Controller
         $btn_url = '';
 
          //New Notification
+         $users = User::where('role', 777)->orWhere('role', 889)->get();
+         $title = 'Withdrawal Initiated';
+         $body = Auth::user()->first_name . " just made a withdrawal request worth ₦" . $nt->amount;
+
+         foreach($users as $user){
+              Notification::create([
+                 'user_id' => $user->id,
+                 'title' => $title,
+                 'body' => $body,
+                 'id_link' => $txn->id
+             ]);
+
+            }
+
 
          $notify =Auth::user()->first_name . " just made a withdrawal request worth ₦" . $nt->amount;
-         $transId = $txn->id;
-         NotifyAccountant::dispatch($notify, $transId);
+        //  $transId = $txn->id;
+         NotifyAccountant::dispatch($notify);
 
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
         $name = explode(' ', $name);
@@ -435,7 +449,7 @@ class TradeController extends Controller
         //New Notification
 
         $users = User::where('role', 777)->orWhere('role', 889)->get();
-        $title = 'New Transaction Initiated';
+        $title = 'Deposit Initiated';
         $body = Auth::user()->first_name . " says he/she has just deposited ₦" . $nt->amount;
 
         foreach($users as $user){
@@ -443,14 +457,15 @@ class TradeController extends Controller
                 'user_id' => $user->id,
                 'title' => $title,
                 'body' => $body,
+                'id_link' => $txn->id
             ]);
 
            }
 
 
         $notify =Auth::user()->first_name . " says he/she has just deposited ₦" . $nt->amount;
-        $transId =$txn->id;
-        NotifyAccountant::dispatch($notify, $transId);
+        // $transId =$txn->id;
+        NotifyAccountant::dispatch($notify);
 
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
         $name = explode(' ', $name);

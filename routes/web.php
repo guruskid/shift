@@ -401,6 +401,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     // To be move to super Admin dashboard later
     // Route::GET('/payout-history', 'ChineseController@payouthistory')->name('admin.payout_history');
     ////////////
+
+    Route::GET('/transnotifications', 'AdminController@transNotification');
     Route::GET('/get-transaction-count', 'AdminController@countTransaction');
     Route::GET('/get-rate/{id}', 'AdminController@getRate');
     Route::GET('/get-transac/{id}', 'AdminController@getTransac');
@@ -716,15 +718,3 @@ Route::group(['prefix' => 'trx'], function () {
     Route::POST('/edit-transaction', 'Admin\AssetTransactionController@editTransactionHara');
 });
 
-
-Route::get('testing', function () {
-    logger('testing');
-    event(new NotifyAccountant('Praise'));
-    return "Event has been sent!";
-});
-
-
-Route::get('testinger', function () {
-
-    return view('testing');
-});
