@@ -73,7 +73,7 @@ $unread = Auth::user()->notifications()->where('is_seen', 0)->count();
             ])
         !!};
     </script>
-     @if(Auth::user()->role == 889 OR Auth::user()->role == 777)
+     @if(Auth::user()->role == 889 OR Auth::user()->role == 777 OR Auth::user()->role == 775)
      <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css" integrity="sha512-DIW4FkYTOxjCqRt7oS9BFO+nVOwDL4bzukDyDtMO7crjUZhwpyrWBFroq+IqRe6VnJkTpRAS6nhDvf0w+wHmxg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
      <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js" integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -338,7 +338,7 @@ $unread = Auth::user()->notifications()->where('is_seen', 0)->count();
      <script src="{{asset('js/sa.js?v=7')}}"></script>
      @endif
 
-     @if(Auth::user()->role == 889 OR Auth::user()->role == 777)
+     @if(Auth::user()->role == 889 OR Auth::user()->role == 777 OR Auth::user()->role == 775)
      <script>
 
          var pusher = new Pusher('9a1545beffb83093b6cb', {
