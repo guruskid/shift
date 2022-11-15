@@ -636,8 +636,8 @@ $not = $nots->last();
     @if(Auth::user()->role == 889 OR Auth::user()->role == 777)
     <script>
 
-        var pusher = new Pusher('fbdb049e7d44a6f2e382', {
-          cluster: 'mt1'
+        var pusher = new Pusher('9a1545beffb83093b6cb', {
+          cluster: 'eu'
         });
 
         var channel = pusher.subscribe('notify');
