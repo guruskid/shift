@@ -640,7 +640,7 @@ class BillsPaymentController extends Controller
         $nt->user_id = Auth::user()->id;
         $nt->type = 'recharge card';
         $nt->previous_balance = $balance;
-        $nt->current_balance = $new_balance;
+        $nt->current_balance = $priceDeduction;
 
         $nt->system_previous_balance = $systemBalance;
         $nt->system_current_balance =  $currentSystemBalance;
@@ -836,7 +836,7 @@ class BillsPaymentController extends Controller
         $nt->user_id = Auth::user()->id;
         $nt->type = 'mobile data';
         $nt->previous_balance = $balance;
-        $nt->current_balance = $new_balance;
+        $nt->current_balance = $priceDeduction;
 
         $nt->system_previous_balance = $systemBalance;
         $nt->system_current_balance =  $currentSystemBalance;
