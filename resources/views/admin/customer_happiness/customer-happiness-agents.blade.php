@@ -89,7 +89,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                         <th class="text-center">Name</th>
                                         <th class="text-center">Email</th>
                                         <th class="text-center">Phone</th>
-                                        <th class="text-center">No Transac.</th>
+                                        {{-- <th class="text-center">No Transac.</th> --}}
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
@@ -102,7 +102,7 @@ $all_users= App\User::orderBy('email', 'asc' )->get();
                                         <td class="text-center">{{ucwords($u->first_name .' '.$u->last_name)}}</td>
                                         <td class="text-center">{{$u->email}}</td>
                                         <td class="text-center">{{$u->phone}}</td>
-                                        <td class="text-center">{{$u->approvedTransactions()->count()}}</td>
+                                        {{-- <td class="text-center">{{$u->approvedTransactions()->count()}}</td> --}}
                                         <td class="text-center">
                                             @switch($u->status)
                                             @case('verified')
