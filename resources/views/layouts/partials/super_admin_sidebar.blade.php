@@ -255,6 +255,14 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.customerHappinessAgent' ? 'active' : '' }}">
+        <a href="{{route('admin.customerHappinessAgent')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Customer Happiness</span>
+            </div>
+        </a>
+    </li>
 
     <li class="menu {{ Route::currentRouteName() == 'admin.referral' ? 'active' : '' }}">
         <a href="{{route('admin.referral')}}" aria-expanded="false" class="dropdown-toggle" >

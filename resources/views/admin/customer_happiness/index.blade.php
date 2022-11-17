@@ -30,7 +30,7 @@
                         <div class="widget-heading">
                             <div>
                                 <h5 class="">Called Users </h5>
-                                
+
                             </div>
                             <div class="widget-n">
                                 <h5>500</h5>
@@ -77,9 +77,9 @@
                     </div>
                 </div>
 
-            
 
-            
+
+
 
 
             <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
@@ -136,9 +136,9 @@
                                     @if (auth()->user()->role ==555)
                                     <div class="View-all">
                                         <a href="{{route('admin.asset-transactions', 0)}}">View all </a>
-                                    </div>   
+                                    </div>
                                     @endif
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -244,7 +244,7 @@
                             @endif
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="w-100"></div>
                 <div class="widget widget-table-two">
@@ -301,11 +301,11 @@
                     </div>
                 </div>
 
-                
+
             </div>
 
 
-            
+
 
 
         </div>
