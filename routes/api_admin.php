@@ -539,6 +539,7 @@ Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function
     Route::prefix('content')->group(function () {
         // Blog Category
         Route::prefix('category')->group(function () {
+            Route::get('/', 'ContentController@FetchCategories');
             Route::post('/', 'ContentController@addBlogCategory');
             Route::put('/{id}', 'ContentController@updateBlogCategory');
             Route::delete('/{id}', 'ContentController@deleteBlogCategory');
@@ -546,6 +547,7 @@ Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function
         // Blog Heading
         Route::prefix('heading')->group(function () {
             Route::post('/', 'ContentController@addBlogHeading');
+            Route::get('/', 'ContentController@fetchBlogHeadings');
             Route::put('/{id}', 'ContentController@updateBlogHeading');
             Route::delete('/{id}', 'ContentController@deleteBlogHeading');
         });
