@@ -45,6 +45,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], functi
         Route::GET('/p2p',  'TransactionController@p2p');
         Route::GET('/transactions-per-day',  'TransactionController@transactionsPerDay');
         Route::GET('/transactions-by-date',  'TransactionController@transactionsByDate');
+        Route::GET('/transaction-trial-1',  'TransactionController@trialTransactions1');
+        Route::GET('/transaction-trial-2',  'TransactionController@trialTransactions2');
     });
 
     // Transaction Count

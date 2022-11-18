@@ -178,4 +178,40 @@ class TransactionController extends Controller
             'data' => $data,
         ], 200);
     }
+
+    public function trialTransactions1(){
+        $nairaTransactions = NairaTransaction::whereIn('transaction_type_id',[20,19,24,5,4])->orderBy('id','DESC')->paginate(100);
+        $transactions = Transaction::orderBy('id','DESC')->paginate(100);
+        $array = [];
+        foreach($nairaTransactions as $nt){
+            $tranx = $transactions->where('uid',substr($nt->narration,-13,13))->first();
+            if($tranx){
+                $tranx->nairaTransaction = $nt;
+                $array[] = $tranx;
+            } else {
+                $array[] = $nt;
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'usersData' => $array,
+        ], 200);
+    }
+
+    public function trialTransactions2()
+    {
+        $researches = DB::table('naira_transactions')
+        ->whereIn('transaction_type_id',[20,19,24,5,4])
+        ->join('transactions',DB::raw("SUBSTRING(naira_transactions.narration, -13, 13)"), '=', 'transactions.uid')
+        ->select('transactions.id','transactions.uid','transactions.user_email','transactions.user_id','transactions.card','transactions.type','transactions.amount','transactions.amount_paid',
+                'transactions.status','transactions.card_type','transactions.quantity','transactions.card_price','transactions.created_at','transactions.updated_at','transactions.ngn_rate',
+                'naira_transactions.previous_balance','naira_transactions.current_balance', DB::raw("SUBSTRING(naira_transactions.narration, -13, 13) as naira_transactions_uid"))
+        ->orderBy('transactions.id','DESC')
+        ->paginate(100);
+
+        return response()->json([
+            'success' => true,
+            'usersData' => $researches,
+        ], 200);
+    }
 }
