@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Bank;
+use App\FlaggedTransactions;
 use App\NairaTransaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Mail\WalletAlert;
 use App\NairaWallet;
 use App\Notification;
@@ -75,6 +77,29 @@ class NairaTransactionController extends Controller
         }
         $user = User::where('email', $r->email)->first();
 
+        $narration = NULL;
+        $isFlagged = 0;
+        $dailyMonthlyFlaggedData = FlaggedTransactionsController::userDailyMonthlyManualDeposit($user, $r->amount);
+
+        $dailyFlaggedData = $dailyMonthlyFlaggedData['daily'];
+        $monthlyFlaggedData = $dailyMonthlyFlaggedData['monthly'];
+
+        if($monthlyFlaggedData >= 1000000){
+            $isFlagged = 1;
+            $narration = "Manual Deposit for the month is greater than 1 million";
+        }
+
+        if($dailyFlaggedData >= 1000000){
+            $isFlagged = 1;
+            $narration = "Manual Deposit for the day is greater than 1 million";
+        }
+
+        if($isFlagged == 1){
+            $lastTranxAmount = FlaggedTransactionsController::getLastTransaction($user->id);
+        }
+        
+
+        $systemBalance = NairaWallet::sum('amount');
         $wallet = $user->nairaWallet;
 
         $t = new NairaTransaction();
@@ -89,13 +114,18 @@ class NairaTransactionController extends Controller
         $t->charge = 0;
         $t->trans_msg = 'This transaction was authenticated by ' . Auth::user()->id . ' ' . Auth::user()->first_name;
         $t->is_manual = 1;
+        $t->is_flagged = $isFlagged;
 
         if ($r->transaction_type == 1 ) {
             //Deposit
             $wallet->amount += $r->amount;
             $wallet->save();
 
+            $currentSystemBalance = NairaWallet::sum('amount');
+
             $t->current_balance = $wallet->amount;
+            $t->system_previous_balance = $systemBalance;
+            $t->system_current_balance =  $currentSystemBalance;
             $t->cr_user_id = $wallet->user->id;
             $t->dr_user_id = 1;
             $t->cr_wallet_id = $wallet->id;
@@ -105,13 +135,30 @@ class NairaTransactionController extends Controller
             $t->status = 'success';
             $t->save();
 
+            if($t->is_flagged == 1){
+                $agent_id = Auth::user()->id;
+                $type = 'Manual Deposit';
+                $flaggedTranx =  new FlaggedTransactions();
+                $flaggedTranx->type = $type;
+                $flaggedTranx->user_id = $user->id;
+                $flaggedTranx->transaction_id = $t->id;
+                $flaggedTranx->reference_id = $t->reference;
+                $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
+                $flaggedTranx->accountant_id = $agent_id;
+                $flaggedTranx->narration = $narration;
+                $flaggedTranx->save();
+            }
+
             $title = 'Dantown wallet Credit';
             $type = 'credit';
         } elseif ($r->transaction_type == 8) {
             //Deduction
             $wallet->amount -= $r->amount;
             $wallet->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
             $t->current_balance = $wallet->amount;
+            $t->system_previous_balance = $systemBalance;
+            $t->system_current_balance =  $currentSystemBalance;
             $t->dr_user_id = $wallet->user->id;
             $t->cr_user_id = 1;
             $t->dr_wallet_id = $wallet->id;
@@ -161,6 +208,7 @@ class NairaTransactionController extends Controller
             'admin_account' => 'required|integer',
             'ref' => 'required|unique:naira_transactions,reference',
         ]);
+        $systemBalance = NairaWallet::sum('amount');
         $admin_account = NairaWallet::where(['user_id' => 1, 'id' => $r->admin_account])->firstOrFail();
         $n = Auth::user()->nairaWallet;
 
@@ -182,6 +230,7 @@ class NairaTransactionController extends Controller
         $admin_account->amount -= $amount;
         $admin_account->save();
 
+        $currentSystemBalance = NairaWallet::sum('amount');
         $msg = 'Transaction initiated';
         $nt = new NairaTransaction();
         $nt->reference = $reference;
@@ -189,6 +238,8 @@ class NairaTransactionController extends Controller
 
         $nt->previous_balance = $prev_bal;
         $nt->current_balance = $admin_account->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transfer_charge = 0;
         $nt->sms_charge = 0;

@@ -237,8 +237,12 @@
                                 {{--Naira Wallet Transactions --}}
                                 <div class="tab-pane" id="tab-eg11-4" role="tabpanel">
                                     <div class="table-responsive">
-                                        <table class="mb-2 transactions-table table " id="nt-table">
+                                        <table class="mb-2  table " id="nt-table">
                                             <thead>
+                                                <tr>
+                                                    <td class="text-center"><strong>Wallet Balance</strong></td>
+                                                    <td class="text-center"><strong>₦{{number_format($user->nairaWallet->amount)}} </strong></td>
+                                                </tr>
                                                 <tr>
                                                     <td class="text-center"><strong>Ledger Balance</strong></td>
                                                     <td class="text-center"><strong>₦{{number_format($ledger->balance)}} </strong></td>

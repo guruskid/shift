@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\TradeNaira;
 
 use App\Account;
 use App\Events\CustomNotification;
+use App\Events\NotifyAccountant;
 use App\FlaggedTransactions;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\Http\Controllers\Admin\FlaggedTransactionsController;
@@ -16,20 +17,18 @@ use App\NairaTrade;
 use App\NairaTradePop;
 use App\NairaTransaction;
 use App\NairaWallet;
+use App\Notification;
 use App\PayBridgeAccount;
 use App\User;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
-//! things to ask
-/**
- * todo: 1. pb withdrawal success where is the agent viewing and accepting transactions
- * ?things that will be worked on withdrawal pending success and deposit success.
- * ?withdrawal pending is after 1 hour of no action withdrawal cancelled by system after 3 days of no action
- */
+
 class TradeController extends Controller
 {
     public function agents()
@@ -175,6 +174,27 @@ class TradeController extends Controller
             ]);
         }
 
+        if($account->status != 'active'){
+            return response()->json([
+                'success' => false,
+                'message' => "This Account number is not active for Withdrawal",
+            ]);
+        }
+
+        if(($account->activateBy != null) AND (now() <= $account->activateBy)){
+            $options = [
+                'join' => ', ',
+                'parts' => 2,
+                'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+            ];
+
+            $time = Carbon::parse($account->activateBy)->diffForHumans(now(), $options);
+            return response()->json([
+                'success' => false,
+                'message' => "This Account number will be active $time after",
+            ]);
+        }
+
         if (Auth::user()->nairaWallet->amount < $request->amount) {
             return response()->json([
                 'success' => false,
@@ -197,10 +217,10 @@ class TradeController extends Controller
 
         $is_flagged = 0;
         $totalTransactionsAmount = FlaggedTransactionsController::dailyTotal(Auth::user(),$request->amount);
-        
-        if($totalTransactionsAmount>= 1000000):
+
+        if($totalTransactionsAmount >= 1000000):
             $is_flagged = 1;
-            $lastTranxAmount = FlaggedTransactionsController::getLastWithdrawal(Auth::user());
+            $lastTranxAmount = FlaggedTransactionsController::getLastWithdrawal(Auth::user()->id);
         endif;
 
         // daily and monthly check
@@ -210,8 +230,7 @@ class TradeController extends Controller
         $is_daily = 0;
         $is_monthly = 0;
 
-        if($dailyLimit < 0)
-        {
+        if($dailyLimit < 0){
             $is_daily = 1;
             return response()->json([
                 'success' => false,
@@ -219,8 +238,7 @@ class TradeController extends Controller
             ]);
         }
 
-        if($monthlyLimit < 0)
-        {
+        if($monthlyLimit < 0){
             $is_monthly = 1;
             return response()->json([
                 'success' => false,
@@ -242,10 +260,12 @@ class TradeController extends Controller
         // $txn->platform = $request->platform;
         $txn->save();
 
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
         $user_wallet = Auth::user()->nairaWallet;
         $user_wallet->amount -= $request->amount;
         $user_wallet->save();
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         $nt = new NairaTransaction();
         $nt->reference = $ref;
@@ -255,6 +275,8 @@ class TradeController extends Controller
         $nt->type = 'withdrawal';
         $nt->previous_balance = $user_wallet->amount + $request->amount;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = $charge;
         $nt->transfer_charge = $charge;
         $nt->transaction_type_id = 3;
@@ -265,6 +287,7 @@ class TradeController extends Controller
         $nt->cr_user_id = 1;
         $nt->dr_user_id = $user->id;
         $nt->status = 'pending';
+        $nt->is_flagged = $txn->is_flagged;
         $nt->save();
 
         //Transfer the charges
@@ -273,6 +296,7 @@ class TradeController extends Controller
         $transfer_charges_wallet->save();
 
         if($is_flagged == 1){
+            $narration = "withdrawal for the day is greater than 1 million";
             $user = Auth::user();
             $type = 'Withdrawal';
             $flaggedTranx =  new FlaggedTransactions();
@@ -282,6 +306,7 @@ class TradeController extends Controller
             $flaggedTranx->reference_id = $nt->reference;
             $flaggedTranx->previousTransactionAmount = $lastTranxAmount;
             $flaggedTranx->accountant_id = $request->agent_id;
+            $flaggedTranx->narration = $narration;
             $flaggedTranx->save();
         }
 
@@ -301,6 +326,26 @@ class TradeController extends Controller
 
         $btn_text = '';
         $btn_url = '';
+
+         //New Notification
+         $users = User::where('role', 777)->orWhere('role', 889)->orWhere('role', 775)->get();
+         $title = 'Withdrawal Initiated';
+         $body = Auth::user()->first_name . " just made a withdrawal request worth ₦" . $nt->amount;
+
+         foreach($users as $user){
+              Notification::create([
+                 'user_id' => $user->id,
+                 'title' => $title,
+                 'body' => $body,
+                 'id_link' => $txn->id
+             ]);
+
+            }
+
+
+         $notify =Auth::user()->first_name . " just made a withdrawal request worth ₦" . $nt->amount;
+        //  $transId = $txn->id;
+         NotifyAccountant::dispatch($notify);
 
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
         $name = explode(' ', $name);
@@ -363,7 +408,7 @@ class TradeController extends Controller
             ], 401);
         }
 
-        $agent = User::whereIn('role', [889, 777])->where(['status' => 'active', 'id' => $request->agent_id])->limit(1)->get();
+         $agent = User::whereIn('role', [889, 777])->where(['status' => 'active', 'id' => $request->agent_id])->limit(1)->get();
 
         if (count($agent) < 1) {
             return response()->json([
@@ -381,9 +426,10 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3) . time();
-
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
         $user_wallet = $user->nairaWallet;
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         //create TXN here
         $txn = new NairaTrade();
@@ -403,6 +449,8 @@ class TradeController extends Controller
         $nt->type = 'deposit';
         $nt->previous_balance = $user_wallet->amount;
         $nt->current_balance = $user_wallet->amount;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 1;
         $nt->cr_wallet_id = $user_wallet->id;
@@ -424,6 +472,26 @@ class TradeController extends Controller
 
         $btn_text = '';
         $btn_url = '';
+        //New Notification
+
+        $users = User::where('role', 777)->orWhere('role', 889)->orWhere('role', 775)->get();
+        $title = 'Deposit Initiated';
+        $body = Auth::user()->first_name . " says he/she has just deposited ₦" . $nt->amount;
+
+        foreach($users as $user){
+             Notification::create([
+                'user_id' => $user->id,
+                'title' => $title,
+                'body' => $body,
+                'id_link' => $txn->id
+            ]);
+
+           }
+
+
+        $notify =Auth::user()->first_name . " says he/she has just deposited ₦" . $nt->amount;
+        // $transId =$txn->id;
+        NotifyAccountant::dispatch($notify);
 
         $name = (Auth::user()->first_name == " ") ? Auth::user()->username : Auth::user()->first_name;
         $name = explode(' ', $name);
@@ -433,7 +501,7 @@ class TradeController extends Controller
         $accountants = User::where(['role' => 777, 'status' => 'active'])->orWhere(['role' => 889, 'status' => 'active'])->get();
         $message = '!!! Deposit Transaction !!!  A new Deposit transaction has been initiated ';
         foreach ($accountants as $acct) {
-            broadcast(new CustomNotification($acct, $message))->toOthers();
+            // broadcast(new CustomNotification($acct, $message))->toOthers();
         }
 
         $msg = "Congratulations! You have successfully deposited $request->amount, your Dantown wallet would be credited once payment is confirmed.";

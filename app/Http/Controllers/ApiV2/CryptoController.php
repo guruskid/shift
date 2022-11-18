@@ -33,17 +33,21 @@ class CryptoController extends Controller
         $bitcoin->rates = [
             'send_charge' => $btc_rates->send_fee,
             'coin_to_usd' => $btc_rates->btc_to_usd,
-            'usd_to_ngn' => $btc_rates->usd_to_ngn,
+            'usd_to_ngn' => LiveRateController::usdNgn(), // Similar to sell rate
+            'buy_rate' => LiveRateController::usdNgn(true, 'buy'),
+            'sell_rate' => LiveRateController::usdNgn(),
             'sell_charge' => Setting::where('name', 'bitcoin_sell_charge')->first()->value
         ];
 
         $usdt->wallet = CryptoHelperController::balance(7);
-        $usdt->network = "ERC-20";
+        $usdt->network = "TRC-20";
         $usdt->image = env('APP_URL') . '/storage/crypto/tether.png';
         $usdt->rates = [
             'send_charge' => Setting::where('name', 'usdt_send_charge')->first()->value,
             'coin_to_usd' => LiveRateController::usdtRate(),
             'usd_to_ngn' => LiveRateController::usdNgn(),
+            'buy_rate' => LiveRateController::usdNgn(true, 'buy'),
+            'sell_rate' => LiveRateController::usdNgn(),
             'sell_charge' => Setting::where('name', 'bitcoin_sell_charge')->first()->value
         ];
 

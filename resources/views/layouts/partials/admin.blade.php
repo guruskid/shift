@@ -414,6 +414,14 @@
                         Accountants
                     </a>
                 </li>
+
+                <li class="my-3">
+                    <a href="{{route('admin.customerHappinessAgent')}}"
+                        class=" {{ Route::currentRouteName() == 'admin.customerHappinessAgent' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-users"></i>
+                        Customer Happiness
+                    </a>
+                </li>
             @endif
             @if(Auth::user()->role == 889 )
             <li class="my-3">

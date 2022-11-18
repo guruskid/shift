@@ -73,6 +73,17 @@
         @if($showSummary == true)
                 <table class="table ">
                     <thead>
+                        @if($showCategory == "paybridgewithdrawal")
+                        <tr>
+                            <th class="text-center">Total Withdrawal Transactions</th>
+                            <th class="text-center">Total Withdrawal Amount Paid</th>
+                            <th class="text-center">Total Withdrawal Charges</th>
+                            <th class="text-center">Total Withdrawal Amount</th>
+                            <th class="text-center">Average Response Time</th>
+                            <th class="text-center">Pending Withdrawal Today</th>
+                            <th class="text-center">Pending Withdrawal Total</th>
+                        </tr>
+                        @else
                         <tr>
                             <th class="text-center">Total Deposit Transactions</th>
                             <th class="text-center">Total Deposit Amount Paid</th>
@@ -82,6 +93,7 @@
                             <th class="text-center">Pending Deposit Today</th>
                             <th class="text-center">Pending Deposit Total</th>
                         </tr>
+                        @endif
                     </thead>
                     <tbody>
                         <tr>
@@ -90,13 +102,29 @@
                                 <td class="text-center">₦ {{ isset($payBridgeTransactionsCharges) ? number_format($payBridgeTransactionsCharges) : 0 }}</td>
                                 <td class="text-center">₦ {{ isset($payBridgeTransactionsAmount) ? number_format($payBridgeTransactionsAmount) :0 }}</td>
                                 <td class="text-center">{{ $averageResponseTime }}</td>
-                                <td class="text-center">[{{ isset($payBridgeTransactionsPendingAmount) ? number_format($payBridgeTransactionsPendingAmount) :0 }}] ₦ {{ isset($nw_deposit_pending_amount) ? number_format($nw_deposit_pending_amount) :0 }}</td>
+                                <td class="text-center">[{{ isset($payBridgeTransactionsPendingCount) ? number_format($payBridgeTransactionsPendingCount) :0 }}] ₦ {{ isset($payBridgeTransactionsPendingAmount) ? number_format($payBridgeTransactionsPendingAmount) :0 }}</td>
                                 
                                 <td class="text-center">
                                     [{{ isset($pendingTotalCount) ? number_format($pendingTotalCount) :0 }}]
                                         ₦ {{ isset($pendingTotalAmount) ? number_format($pendingTotalAmount) :0 }}
                                 </td>
                         </tr>
+                    </tbody>
+                </table>
+
+                <h6 class="card-header mt-4 ">System Balance Information</h6>
+                <table class="align-middle mb-2 table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center">System Previous Balance</th>
+                            <th class="text-center">System Current Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            <tr>
+                                <td class="text-center text-muted">{{ isset($payBridgeTransactions->first()->system_previous_balance) ? number_format($payBridgeTransactions->first()->system_previous_balance) : 0 }}</td>
+                                <td class="text-center text-muted">₦ {{ isset($payBridgeTransactions->first()->system_current_balance) ? number_format($payBridgeTransactions->first()->system_current_balance) : 0 }}</td>
+                            </tr>
                     </tbody>
                 </table>
             @endif
@@ -114,6 +142,12 @@
                     <th>Total</th>
                     <th>Prev. Bal </th>
                     <th>Cur. Bal</th>
+                    @if(in_array(Auth::user()->role,[999,889,777]))
+                        <th>Bal Diff</th>
+                        <th>Sys. Prev. Bal</th>
+                        <th>Sys. Cur. Bal</th>
+                        <th>Sys. Bal. Diff</th>
+                    @endif
                     <th>Cr. Acct.</th>
                     <th>Debit Acct.</th>
                     <th>Narration</th>
@@ -147,6 +181,21 @@
                             <td>₦{{number_format($t->amount) }} </td>
                             <td>₦{{number_format($t->previous_balance) }}</td>
                             <td>₦{{number_format($t->current_balance) }} </td>
+                            @if (in_array(Auth::user()->role, [999, 889]))
+                                @if(($t->current_balance - $t->previous_balance) < 0)
+                                <td class="text-danger">₦{{number_format(($t->current_balance - $t->previous_balance)) }} </td>
+                                @else
+                                <td class="text-success">₦{{number_format(($t->current_balance - $t->previous_balance)) }} </td>
+                                @endif
+                                
+                                <td>₦{{number_format($t->system_previous_balance) }} </td>
+                                <td>₦{{number_format($t->system_current_balance) }} </td>
+                                @if(($t->system_current_balance - $t->system_previous_balance) < 0)
+                                <td class="text-danger">₦{{number_format(($t->system_current_balance - $t->system_previous_balance)) }} </td>
+                                @else
+                                <td class="text-success">₦{{number_format(($t->system_current_balance - $t->system_previous_balance)) }} </td>
+                                @endif
+                            @endif
                             <td>{{$t->cr_acct_name}} </td>
                             <td>{{$t->dr_acct_name}} </td>
                             <td>{{$t->narration}} </td>

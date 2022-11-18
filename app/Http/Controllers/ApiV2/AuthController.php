@@ -464,7 +464,7 @@ class AuthController extends Controller
     public function sendOtp(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|unique:users,phone',
+            'phone' => 'required',
             'country_id' => 'required',
         ]);
         if ($validator->fails()) {

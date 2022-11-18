@@ -110,5 +110,5 @@ class AccountantController extends Controller
         }
     }
 
- 
+
 }

@@ -1120,8 +1120,10 @@ class AdminController extends Controller
         $total_amount_paid = $transactions->sum('amount_paid');
         $total_charges = $transactions->sum('charge');
         $transactions = $transactions->paginate(1000);
+
+        $complianceCheck = NairaTransaction::orderBy('id','DESC')->first();
         return view('admin.naira_transactions', compact([
-            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges'
+            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges','complianceCheck'
         ]));
     }
     public function walletTransactionsSortByDate(Request $request)
@@ -1387,6 +1389,29 @@ class AdminController extends Controller
 
         return view('admin.notification', compact(['notifications']));
     }
+
+
+    public function transNotification(Request $request)
+    {
+        $month =  $request->input('month');
+        if ($month) {
+            $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->paginate(10);
+        } else {
+            $notifications = Auth::user()->notifications()->paginate(10);
+        }
+
+        return view('admin.transnotification', compact('notifications', 'month'));
+    }
+
+
+    public function readNot($id)
+    {
+        $n = Auth::user()->notifications->where('id', $id)->first();
+        $n->is_seen = 1;
+        $n->save();
+        return response()->json(['success' => true]);
+    }
+
 
     public function addNotification(Request $r)
     {

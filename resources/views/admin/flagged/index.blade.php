@@ -65,7 +65,7 @@
                                 <div class="widget-heading">
                                     <h6 class="text-center @if (isset($type) AND $type == "clearWithdrawal")
                                     text-white
-                                     @endif">All Cleared Withdrawal</h6>
+                                     @endif">All Cleared</h6>
                                 </div>
                                 
                             </div>
@@ -99,13 +99,30 @@
                                 <div class="widget-heading">
                                     <h6 class="text-center @if (isset($type) AND $type == "withdrawal")
                                     text-white
-                                     @endif">Withdrawals</h6>
+                                     @endif">Bulk Debit</h6>
                                 </div>
                                 
                             </div>
                         </div>
                     </a>
                 </div>
+
+                {{-- <div class="col-md-3">
+                    <a href="{{ route('admin.flagged.home', ['withdrawal']) }}">
+                        <div class="card mb-1 widget-content @if (isset($type) AND $type == "withdrawal")
+                        bg-primary
+                         @endif">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h6 class="text-center @if (isset($type) AND $type == "withdrawal")
+                                    text-white
+                                     @endif">Manual Deposits</h6>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </a>
+                </div> --}}
                 
             </div>
             <div class="row">
@@ -129,8 +146,10 @@
                                             <th class="text-center">Transaction</th>
                                             <th class="text-center">Amount Credited</th>
                                             <th class="text-center">Last Amount Credited</th>
+                                            <th class="text-center">Ledger Balance</th>
                                             <th class="text-center">SignedUp Date</th>
                                             <th class="text-center">Date</th>
+                                            <th class="text-center">Narration</th>
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -145,22 +164,48 @@
                                                 <td class="text-center text-muted">{{ $t->user->first_name." ".$t->user->last_name}}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->previous_balance) }}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->current_balance) }}</td>
+                                                
+                                                @if($t->type == 'Bulk Credit')
                                                 <td class="text-center text-muted">{{ $t->transaction->card }}</td>
-                                                <td class="text-center text-muted">₦{{ number_format($t->transaction->amount_paid)}}</td>
+                                                @elseif($t->type == 'Manual Deposit')
+                                                <td class="text-center text-muted">Manual Deposit</td>
+                                                @endif
+                                                
+                                                <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->amount)}}</td>
+                                                
                                                 <td class="text-center text-muted">₦{{ number_format($t->previousTransactionAmount)}}</td>
+                                                
+                                                @if($t->ledger->balance < 0)
+                                                <td class="text-center text-danger">₦{{ number_format($t->ledger->balance)}}</td>
+                                                @else
+                                                <td class="text-center text-muted">₦{{ number_format($t->ledger->balance)}}</td>
+                                                @endif
                                                 <td class="text-center text-muted">{{ $t->user->created_at->format('d M y, H:ia')}}</td>
                                                 <td class="text-center text-muted">{{ $t->created_at->format('d M y, h:ia')}}</td>
+                                                <td class="text-center text-muted">{{ isset($t->narration) ? $t->narration :  'none' }}</td>
                                                 <td class="text-center text-muted">
-                                                    @if($t->transaction->is_flagged == 1)
-                                                        <a href="{{route('admin.flagged.clear', [$t->id] )}}">
-                                                            <span class="btn btn-sm btn-primary">Clear</span>
-                                                        </a>
+                                                    @if($t->type == 'Bulk Credit')
+                                                        @if($t->transaction->is_flagged == 1)
+                                                            <a href="{{route('admin.flagged.clear', [$t->id] )}}">
+                                                                <span class="btn btn-sm btn-primary">Clear</span>
+                                                            </a>
 
-                                                        <a href="{{route('admin.user', [$t->user->id, $t->user->email] )}}">
-                                                            <span class="btn btn-sm btn-warning">View History</span>
-                                                        </a>
+                                                            <a href="{{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                                <span class="btn btn-sm btn-warning">View History</span>
+                                                            </a>    
+                                                        @endif
+                                                    @endif
 
-                                                        
+                                                    @if($t->type == 'Manual Deposit')
+                                                        @if($t->naira_transaction->is_flagged == 1)
+                                                            <a href="{{route('admin.flagged.clear', [$t->id] )}}">
+                                                                <span class="btn btn-sm btn-primary">Clear</span>
+                                                            </a>
+
+                                                            <a href="{{route('admin.user', [$t->user->id, $t->user->email] )}}">
+                                                                <span class="btn btn-sm btn-warning">View History</span>
+                                                            </a>                
+                                                        @endif
                                                     @endif
                                                 </td>
                                             </tr>
@@ -184,10 +229,12 @@
                                         <th class="text-center">Verfication Level</th>
                                         <th class="text-center">Withdrawal Amount</th>
                                         <th class="text-center">Previous Withdrawal Amount</th>
+                                        <th class="text-center">Ledger Balance</th>
                                         <th class="text-center">Daily Limit</th>
                                         <th class="text-center">Monthly Limit</th>
                                         <th class="text-center">SignedUp Date</th>
                                         <th class="text-center">Date</th>
+                                        <th class="text-center">Narration</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                     </thead>
@@ -215,10 +262,17 @@
                                                 </td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->amount)}}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->previousTransactionAmount)}}</td>
+                                                @if($t->ledger->balance < 0)
+                                                <td class="text-center text-danger">₦{{ number_format($t->ledger->balance)}}</td>
+                                                @else
+                                                <td class="text-center text-muted">₦{{ number_format($t->ledger->balance)}}</td>
+                                                @endif
+                                                
                                                 <td class="text-center text-muted">₦{{ number_format($t->user->daily_max)}}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->user->monthly_max)}}</td>
                                                 <td class="text-center text-muted">{{ $t->user->created_at->format('d M y, H:ia')}}</td>
                                                 <td class="text-center text-muted">{{ $t->created_at->format('d M y, h:ia')}}</td>
+                                                <td class="text-center text-muted">{{ isset($t->narration) ? $t->narration :  'none' }}</td>
                                                 <td class="text-center text-muted">
                                                     @if($t->nairaTrade->is_flagged == 1)
                                                         <a href="{{route('admin.flagged.clear', [$t] )}}">
@@ -254,10 +308,12 @@
                                         <th class="text-center">Transaction</th>
                                         <th class="text-center">Amount</th>
                                         <th class="text-center">Last Amount </th>
+                                        <th class="text-center">Ledger Balance</th>
                                         <th class="text-center">Verfication Level</th>
                                         <th class="text-center">Daily Limit</th>
                                         <th class="text-center">Monthly Limit</th>
                                         <th class="text-center">SignedUp Date</th>
+                                        <th class="text-center">Narration</th>
                                         <th class="text-center">Date</th>
                                     </tr>
                                     </thead>
@@ -273,14 +329,28 @@
                                                 <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->previous_balance) }}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->current_balance) }}</td>
                                                 <td class="text-center text-muted">
-                                                    @if ($t->transaction)
-                                                    {{ $t->transaction->card }}
-                                                    @else
-                                                    PayBridge {{ $t->nairaTrade->type }}
-                                                    @endif
+                                                @switch($t->type)
+                                                    @case('Bulk Credit')
+                                                        {{ $t->transaction->card }}
+                                                        @break
+                                                    @case('Manual Deposit')
+                                                        Manual Deposit
+                                                        @break
+                                                    @case('Withdrawal')
+                                                        PayBridge {{ $t->nairaTrade->type }}
+                                                        @break
+
+                                                    @default
+                                                        Not Available
+                                                @endswitch
                                                 </td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->naira_transaction->amount)}}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->previousTransactionAmount)}}</td>
+                                                @if($t->ledger->balance < 0)
+                                                <td class="text-center text-danger">₦{{ number_format($t->ledger->balance)}}</td>
+                                                @else
+                                                <td class="text-center text-muted">₦{{ number_format($t->ledger->balance)}}</td>
+                                                @endif
                                                 <td class="text-center text-muted">
                                                     @if($t->user->phone_verified_at != null AND $t->user->address_verified_at == null AND $t->user->idcard_verified_at == null)
                                                          {{'Level 1'}}
@@ -296,6 +366,7 @@
                                                 <td class="text-center text-muted">₦{{ number_format($t->user->daily_max)}}</td>
                                                 <td class="text-center text-muted">₦{{ number_format($t->user->monthly_max)}}</td>
                                                 <td class="text-center text-muted">{{ $t->user->created_at->format('d M y, h:ia')}}</td>
+                                                <td class="text-center text-muted">{{ isset($t->narration) ? $t->narration :  'none' }}</td>
                                                 <td class="text-center text-muted">{{ $t->created_at->format('d M y, h:ia')}}</td>
                                             </tr>
                                             @endforeach

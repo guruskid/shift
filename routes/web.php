@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NotifyAccountant;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\SummaryController;
 use App\Http\Controllers\LiveRateController;
@@ -400,6 +401,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     // To be move to super Admin dashboard later
     // Route::GET('/payout-history', 'ChineseController@payouthistory')->name('admin.payout_history');
     ////////////
+
+    Route::GET('/transnotifications', 'AdminController@transNotification');
     Route::GET('/get-transaction-count', 'AdminController@countTransaction');
     Route::GET('/get-rate/{id}', 'AdminController@getRate');
     Route::GET('/get-transac/{id}', 'AdminController@getTransac');
@@ -429,15 +432,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/view-transaction/{id}/{uid}', 'AdminController@viewTransac')->name('admin.view-transaction');
 
     Route::get('/chat/{id}', 'ChatController@index')->name('admin.chat');
+
     Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
-    // Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
     Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
 
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
 
     Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
+
+    Route::get('/customer-happiness', 'Admin\CustomerHappinessController@index')->name('admin.customerHappinessAgent');
+    Route::post('/add-happiness-agent', 'Admin\CustomerHappinessController@addAgent')->name('happiness.addAgent');
+    Route::get('/customer-happiness-action/{id}/{action}', 'Admin\CustomerHappinessController@action')->name('happiness.action');
 });
 
 
@@ -531,6 +538,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'seniorAccountant']]
     Route::post('/clear-transfer-charges', 'AdminController@clearTransferCharges')->name('admin.clear-transfer-charges');
     Route::post('/clear-sms-charges', 'AdminController@clearSmsCharges')->name('admin.clear-sms-charges');
 });
+
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'accountant']], function () {
     Route::get('/account-officers', 'JuniorAccountantController@showAccountOfficers')->name('admin.account_officers');
@@ -714,3 +722,4 @@ Route::group(['prefix' => 'trx'], function () {
     Route::GET('/transaction/{id}', 'AdminController@gcTransactionForHara');
     Route::POST('/edit-transaction', 'Admin\AssetTransactionController@editTransactionHara');
 });
+

@@ -2,23 +2,24 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Admin\LedgerController;
 use Illuminate\Console\Command;
 
-class GetCurrentRate extends Command
+class ResolveLedger extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'get:rate';
+    protected $signature = 'ledger:resolve';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Get the current BTC rate';
+    protected $description = 'This checks for users with wrong ledger balances and resolves them';
 
     /**
      * Create a new command instance.
@@ -37,6 +38,8 @@ class GetCurrentRate extends Command
      */
     public function handle()
     {
-        // \Log::info("I was called");
+        LedgerController::resolve();
+
+        return true;
     }
 }

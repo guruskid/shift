@@ -11,7 +11,6 @@ use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Illuminate\Support\Facades\Auth;
 
 class AccountSummaryController extends Controller
 {

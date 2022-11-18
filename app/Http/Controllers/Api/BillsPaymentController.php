@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\DantownNotification;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
+use App\NairaWallet;
 use App\Notification;
 use App\User;
 use App\UtilityTransaction;
@@ -131,6 +132,7 @@ class BillsPaymentController extends Controller
         $phone = $request->phone;
 
         $user = Auth::user();
+        $systemBalance = NairaWallet::sum('amount');
 
         $naira_wallet = $user->nairaWallet;
         $balance = $naira_wallet->amount;
@@ -175,6 +177,7 @@ class BillsPaymentController extends Controller
         $new_balance = $naira_wallet->update([
             "amount" => $priceDeduction,
         ]);
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         // dd('stop here');
         $reference = rand(111111, 999999) . time();
@@ -185,7 +188,9 @@ class BillsPaymentController extends Controller
         $nt->user_id = Auth::user()->id;
         $nt->type = 'mobile data';
         $nt->previous_balance = $balance;
-        $nt->current_balance = $new_balance;
+        $nt->current_balance = $priceDeduction;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 9;
 
@@ -342,7 +347,7 @@ class BillsPaymentController extends Controller
         }
 
         $phone = $request->phone;
-
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
         $naira_wallet = $user->nairaWallet;
         $balance = $naira_wallet->amount;
@@ -386,6 +391,7 @@ class BillsPaymentController extends Controller
         $new_balance = $naira_wallet->update([
             "amount" => $priceDeduction,
         ]);
+        $currentSystemBalance = NairaWallet::sum('amount');
 
         // dd('stop here');
         $reference = rand(111111, 999999) . time();
@@ -396,7 +402,9 @@ class BillsPaymentController extends Controller
         $nt->user_id = Auth::user()->id;
         $nt->type = 'recharge card';
         $nt->previous_balance = $balance;
-        $nt->current_balance = $new_balance;
+        $nt->current_balance = $priceDeduction;
+        $nt->system_previous_balance = $systemBalance;
+        $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
         $nt->transaction_type_id = 9;
 
@@ -575,7 +583,7 @@ class BillsPaymentController extends Controller
                 'message' => $data->errors(),
             ]);
         }
-
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
         $n = $user->nairaWallet;
         $balance = $n->amount;
@@ -801,6 +809,7 @@ class BillsPaymentController extends Controller
             $prev_bal = $n->amount;
             $n->amount -= $total_charge;
             $n->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
 
             $nt = new NairaTransaction();
             $nt->reference = $reference;
@@ -810,6 +819,9 @@ class BillsPaymentController extends Controller
 
             $nt->previous_balance = $prev_bal;
             $nt->current_balance = $n->amount;
+            $nt->system_previous_balance = $systemBalance;
+            $nt->system_current_balance =  $currentSystemBalance;
+
             $nt->charge = $charge;
             $nt->transaction_type_id = 11;
 
@@ -963,6 +975,7 @@ class BillsPaymentController extends Controller
             'phone_number' => 'required',
         ]);
 
+        $systemBalance = NairaWallet::sum('amount');
         $user = Auth::user();
         $n = $user->nairaWallet;
         $amount = $r->amount;
@@ -1008,6 +1021,7 @@ class BillsPaymentController extends Controller
             $prev_bal = $n->amount;
             $n->amount -= $total_charge;
             $n->save();
+            $currentSystemBalance = NairaWallet::sum('amount');
             if ($response['content']['transactions']['status'] == 'delivered') {
 
                 $nt = new NairaTransaction();
@@ -1018,6 +1032,8 @@ class BillsPaymentController extends Controller
 
                 $nt->previous_balance = $prev_bal;
                 $nt->current_balance = $n->amount;
+                $nt->system_previous_balance = $systemBalance;
+                $nt->system_current_balance =  $currentSystemBalance;
                 $nt->charge = $charge;
                 $nt->transaction_type_id = 12;
 
