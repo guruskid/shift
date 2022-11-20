@@ -452,8 +452,8 @@ class BtcWalletController extends Controller
         $nt->amount = $t->amount_paid;
         $nt->user_id = Auth::user()->id;
         $nt->type = 'naira wallet';
-        $nt->previous_balance = Auth::user()->nairaWallet->amount;
-        $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $nt->previous_balance = Auth::user()->nairaWallet->amount - $t->amount_paid;
+        $nt->current_balance = Auth::user()->nairaWallet->amount ;
         $nt->system_previous_balance = $systemBalance;
         $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
@@ -701,10 +701,10 @@ class BtcWalletController extends Controller
             \Log::info($e->getResponse()->getBody());
             //report($e);
 
-            
+
             Auth::user()->nairaWallet->amount += $ngn;
             Auth::user()->nairaWallet->save();
-            
+
 
             return response()->json([
                 'success' => false,
