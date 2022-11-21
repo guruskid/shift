@@ -471,7 +471,10 @@ class BtcWalletController extends Controller
         $nt->save();
 
         //Blockfill
+        \Log::info("I got here 1");
+
         if (SystemSettings::where('settings_name', 'BLOCKFILL')->first()->settings_value == 1) {
+            \Log::info("I got here 2");
             BlockfillOrderController::order($t);
         }
 
