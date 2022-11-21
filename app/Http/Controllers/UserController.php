@@ -204,9 +204,16 @@ class UserController extends Controller
                 ]);
             }
 
-            Auth::user()->first_name = $request->first_name;
-            Auth::user()->last_name = $request->last_name;
+
+            $updated = explode(' ', trim($request->account_name));
+
+            Auth::user()->first_name = $updated[0];
+            Auth::user()->last_name = strstr($request->account_name, " ");
             Auth::user()->save();
+
+            // Auth::user()->first_name = $request->first_name;
+            // Auth::user()->last_name = $request->last_name;
+            // Auth::user()->save();
 
             $a = new Account();
             $a->user_id = Auth::user()->id;
