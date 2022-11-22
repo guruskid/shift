@@ -622,6 +622,14 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($ngn > ($ledger_balance + 10)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient Naira Wallet balance to initiate trade'
+            ]);
+        }
+
         //Commission
         $usd_ngn_old = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $commission = SettingController::get('crypto_commission');

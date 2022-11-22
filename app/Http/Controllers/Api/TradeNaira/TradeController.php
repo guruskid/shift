@@ -202,6 +202,14 @@ class TradeController extends Controller
             ]);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount  > ($ledger_balance + 10)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient wallet balance'
+            ]);
+        }
+
         $ref = \Str::random(3) . time();
         $charge = 100;
 
