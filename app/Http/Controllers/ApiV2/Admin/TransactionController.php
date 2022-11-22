@@ -209,6 +209,15 @@ class TransactionController extends Controller
         ->orderBy('transactions.id','DESC')
         ->paginate(100);
 
+        $researches = DB::table('naira_transactions')
+        ->whereIn('transaction_type_id',[20,19,24,5,4])
+        ->join('transactions',DB::raw("SUBSTRING_INDEX(naira_transactions.narration,' ', -1)"), '=', 'transactions.uid')
+        ->select('transactions.id','transactions.uid','transactions.user_email','transactions.user_id','transactions.card','transactions.type','transactions.amount','transactions.amount_paid',
+                'transactions.status','transactions.card_type','transactions.quantity','transactions.card_price','transactions.created_at','transactions.updated_at','transactions.ngn_rate',
+                'naira_transactions.previous_balance','naira_transactions.current_balance', DB::raw("SUBSTRING_INDEX(naira_transactions.narration,' ', -1) as naira_transactions_uid"))
+        ->orderBy('transactions.id','DESC')
+        ->paginate(100);
+
         return response()->json([
             'success' => true,
             'usersData' => $researches,
