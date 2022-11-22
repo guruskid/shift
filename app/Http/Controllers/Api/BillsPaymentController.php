@@ -279,7 +279,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is locked',
+                'message' => 'Service is currently unavailable, please try again later',
             ]);
         } elseif ($body['code'] == 022) {
             $nt->status = 'failed';
@@ -290,7 +290,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is suspended',
+                'message' => 'Service is currently unavailable, please try again later',
             ]);
         } elseif ($body['code'] == 024) {
             $nt->status = 'failed';
@@ -301,7 +301,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is inactive',
+                'message' => 'Service is currently unavailable, please try again later',
             ]);
         } else {
             $nt->status = 'failed';
@@ -497,7 +497,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is locked',
+                'message' => 'Service is currently unavailable, please try again later',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         } elseif ($body['code'] == 022) {
@@ -509,7 +509,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is suspended',
+                'message' => 'Service is currently unavailable, please try again later',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         } elseif ($body['code'] == 024) {
@@ -521,7 +521,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is inactive',
+                'message' => 'Service is currently unavailable, please try again later',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         } else {
@@ -1438,7 +1438,7 @@ class BillsPaymentController extends Controller
 
     //         return response()->json([
     //             'success' => false,
-    //             'message' => 'Your account is locked',
+    //             'message' => 'Service is currently unavailable, please try again later',
     //             'response_description' => 'TRANSACTION FAILURE',
     //         ]);
     //     }
@@ -1452,7 +1452,7 @@ class BillsPaymentController extends Controller
 
     //         return response()->json([
     //             'success' => false,
-    //             'message' => 'Your account is suspended',
+    //             'message' => 'Service is currently unavailable, please try again later',
     //             'response_description' => 'TRANSACTION FAILURE',
     //         ]);
     //     }
@@ -1466,7 +1466,7 @@ class BillsPaymentController extends Controller
 
     //         return response()->json([
     //             'success' => false,
-    //             'message' => 'Your account is inactive',
+    //             'message' => 'Service is currently unavailable, please try again later',
     //             'response_description' => 'TRANSACTION FAILURE',
     //         ]);
     //      }

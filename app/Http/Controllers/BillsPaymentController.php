@@ -458,7 +458,7 @@ class BillsPaymentController extends Controller
 
         $nt->system_previous_balance = $systemBalance;
         $nt->system_current_balance =  $currentSystemBalance;
-        
+
         $nt->charge = ($charge / 100) * $amount;
         $nt->transaction_type_id = 9;
 
@@ -560,15 +560,15 @@ class BillsPaymentController extends Controller
          }
 
          elseif ($body->response_description == 021) {
-            return back()->with(['error'=> 'Your account is locked']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
 
          elseif ($body->response_description == 022) {
-            return back()->with(['error'=> 'Your account is suspended']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
 
          elseif ($body->response_description == 024) {
-            return back()->with(['error'=> 'Your account is inactive']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
     }
 
@@ -722,7 +722,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is locked']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
         }
 
         elseif ($body->code == 022){
@@ -732,7 +732,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is suspended']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
         }
 
         elseif ($body->code == 024) {
@@ -742,7 +742,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is inactive']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
 
         // elseif ($body->code == 083){
@@ -916,7 +916,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is locked']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
         }
 
         elseif ($body['code'] == 022){
@@ -926,7 +926,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is suspended']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
         }
 
         elseif ($body['code'] == 024) {
@@ -936,7 +936,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is inactive']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
 
         // elseif ($body->code == 083){
@@ -1132,7 +1132,7 @@ class BillsPaymentController extends Controller
     //             "balance" => $balance,
     //         ]);
 
-    //         return back()->with(['error'=> 'Your account is locked']);
+    //         return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
     //     }
 
     //     elseif ($body->code == 022){
@@ -1142,7 +1142,7 @@ class BillsPaymentController extends Controller
     //             "balance" => $balance,
     //         ]);
 
-    //         return back()->with(['error'=> 'Your account is suspended']);
+    //         return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
     //     }
 
     //     elseif ($body->code == 024) {
@@ -1152,7 +1152,7 @@ class BillsPaymentController extends Controller
     //             "amount" => $balance,
     //         ]);
 
-    //         return back()->with(['error'=> 'Your account is inactive']);
+    //         return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
     //      }
 
     //     else{
@@ -1270,7 +1270,7 @@ class BillsPaymentController extends Controller
 
         $nt->system_previous_balance = $systemBalance;
         $nt->system_current_balance =  $currentSystemBalance;
-        
+
         $nt->charge = (1 / 100) * $amount;
         $nt->transaction_type_id = 11;
 
@@ -1517,7 +1517,7 @@ class BillsPaymentController extends Controller
 
             $nt->system_previous_balance = $systemBalance;
             $nt->system_current_balance =  $currentSystemBalance;
-        
+
             $nt->charge = $charge;
             $nt->transaction_type_id = 11;
 
