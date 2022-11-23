@@ -273,6 +273,11 @@ class BillsPaymentController extends Controller
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($total_charge > $ledger_balance) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
+        }
+
         $reference = rand(111111,999999).time();
         $postData['serviceID'] = $r->cable_provider;
         $postData['variation_code'] = $r->subscription_plan;
@@ -624,6 +629,11 @@ class BillsPaymentController extends Controller
             return back()->with(['error' => 'Maximum Amount is ₦25000']);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount > $ledger_balance) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
+        }
+
         $priceDeduction = $balance - $request->amount;
         $new_balance = $naira_wallet->update([
             "amount" => $priceDeduction,
@@ -816,6 +826,11 @@ class BillsPaymentController extends Controller
 
         if($request->amount > $balance){
             return back()->with(['error'=> 'Insufficient balance']);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount > $ledger_balance) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
         }
 
         $priceDeduction = $balance - $request->amount;
@@ -1472,7 +1487,7 @@ class BillsPaymentController extends Controller
 
         $amount = $r->amount + $charge;
         if ($amount > $n->amount) {
-            return redirect()->back()->with(['error' => 'Insufficient funds']);
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
         }
 
         if($r->amount < 100){
@@ -1481,6 +1496,11 @@ class BillsPaymentController extends Controller
 
         if($r->amount > 100000){
             return redirect()->back()->with(['error' => 'Maximium amount is ₦100000']);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($r->amount > ($ledger_balance + $charge)) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
         }
 
         $reference = rand(111111,999999).time();
