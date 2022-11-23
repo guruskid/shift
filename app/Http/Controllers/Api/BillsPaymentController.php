@@ -172,6 +172,15 @@ class BillsPaymentController extends Controller
             ]);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount > $ledger_balance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
         $priceDeduction = $balance - $request->amount;
 
         $new_balance = $naira_wallet->update([
@@ -383,6 +392,15 @@ class BillsPaymentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Maximium amount is ₦25000',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount > $ledger_balance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         }
@@ -617,6 +635,15 @@ class BillsPaymentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Maximium amount is ₦100000',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($r->amount > $ledger_balance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         }
@@ -999,6 +1026,15 @@ class BillsPaymentController extends Controller
         $total_charge = $amount + $charge;
 
         if ($total_charge > $n->amount) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($total_charge > $ledger_balance) {
             return response()->json([
                 'success' => false,
                 'message' => 'Insufficient balance',
