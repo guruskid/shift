@@ -476,15 +476,7 @@ class CustomerHappinessController extends Controller
     {
 
         $airtime = NairaTransaction::where('type', 'recharge card')->with('user')->latest()->paginate(10);
-        $electricity = NairaTransaction::where('type', 'elecriciy bills')->with('user')->latest()->paginate(10);
-
-        if ($type == 'airtime') {
-            return response()->json([
-                'success' => true,
-                'transaction' => $airtime,
-
-            ]);
-        }
+        $electricity = NairaTransaction::where('type', 'electricity bills')->with('user')->latest()->paginate(10);
 
         if ($type == 'power') {
             return response()->json([
@@ -494,6 +486,17 @@ class CustomerHappinessController extends Controller
             ]);
 
         }
+
+
+        if ($type == 'airtime') {
+            return response()->json([
+                'success' => true,
+                'transaction' => $airtime,
+
+            ]);
+        }
+
+
 
     }
 
