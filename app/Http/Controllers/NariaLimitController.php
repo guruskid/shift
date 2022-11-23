@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\VerificationLimit;
 
 class NariaLimitController extends Controller
 {
@@ -22,6 +22,10 @@ class NariaLimitController extends Controller
             $v_progress += 25;
         }
 
+        $level1 = VerificationLimit::where('level', 1)->first();
+        $level2 = VerificationLimit::where('level', 2)->first();
+        $level3 = VerificationLimit::where('level', 3)->first();
+
         $userDetails->v_progress = $v_progress;
 
         switch ($v_progress) {
@@ -32,28 +36,28 @@ class NariaLimitController extends Controller
                 break;
 
             case 50:
-                $userDetails->daily_max = 500000;
-                $userDetails->monthly_max = 5000000;
+                $userDetails->daily_max = $level1->daily_widthdrawal_limit;
+                $userDetails->monthly_max = $level1->monthly_widthdrawal_limit;
                 $userDetails->save();
                 break;
 
             case 75:
-                $userDetails->daily_max = 2000000;
-                $userDetails->monthly_max = 60000000;
+                $userDetails->daily_max = $level2->daily_widthdrawal_limit;
+                $userDetails->monthly_max = $level2->monthly_widthdrawal_limit;
                 $userDetails->save();
                 break;
 
             case 100:
-                $userDetails->daily_max = 10000000;
-                $userDetails->monthly_max = 99000000;
+                $userDetails->daily_max = $level3->daily_widthdrawal_limit;
+                $userDetails->monthly_max = $level3->monthly_widthdrawal_limit;
                 $userDetails->save();
                 break;
 
-            default:
-                $userDetails->daily_max = 30000;
-                $userDetails->monthly_max = 300000;
-                $userDetails->save();
-                break;
+            // default:
+            //     $userDetails->daily_max = $level1->daily_widthdrawal_limit;
+            //     $userDetails->monthly_max = $level1->monthly_widthdrawal_limit;
+            //     $userDetails->save();
+            //     break;
         }
 
         $userDetails->save();
