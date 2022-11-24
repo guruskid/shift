@@ -273,6 +273,11 @@ class BillsPaymentController extends Controller
             return redirect()->back()->with(['error' => 'Insufficient funds']);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($total_charge > $ledger_balance) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
+        }
+
         $reference = rand(111111,999999).time();
         $postData['serviceID'] = $r->cable_provider;
         $postData['variation_code'] = $r->subscription_plan;
@@ -458,7 +463,7 @@ class BillsPaymentController extends Controller
 
         $nt->system_previous_balance = $systemBalance;
         $nt->system_current_balance =  $currentSystemBalance;
-        
+
         $nt->charge = ($charge / 100) * $amount;
         $nt->transaction_type_id = 9;
 
@@ -560,15 +565,15 @@ class BillsPaymentController extends Controller
          }
 
          elseif ($body->response_description == 021) {
-            return back()->with(['error'=> 'Your account is locked']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
 
          elseif ($body->response_description == 022) {
-            return back()->with(['error'=> 'Your account is suspended']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
 
          elseif ($body->response_description == 024) {
-            return back()->with(['error'=> 'Your account is inactive']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
     }
 
@@ -622,6 +627,11 @@ class BillsPaymentController extends Controller
 
         if($request->amount > 25000){
             return back()->with(['error' => 'Maximum Amount is ₦25000']);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount > $ledger_balance) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
         }
 
         $priceDeduction = $balance - $request->amount;
@@ -722,7 +732,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is locked']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
         }
 
         elseif ($body->code == 022){
@@ -732,7 +742,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is suspended']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
         }
 
         elseif ($body->code == 024) {
@@ -742,7 +752,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is inactive']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
 
         // elseif ($body->code == 083){
@@ -816,6 +826,11 @@ class BillsPaymentController extends Controller
 
         if($request->amount > $balance){
             return back()->with(['error'=> 'Insufficient balance']);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount > $ledger_balance) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
         }
 
         $priceDeduction = $balance - $request->amount;
@@ -916,7 +931,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is locked']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
         }
 
         elseif ($body['code'] == 022){
@@ -926,7 +941,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is suspended']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
         }
 
         elseif ($body['code'] == 024) {
@@ -936,7 +951,7 @@ class BillsPaymentController extends Controller
                 "amount" => $balance,
             ]);
 
-            return back()->with(['error'=> 'Your account is inactive']);
+            return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
          }
 
         // elseif ($body->code == 083){
@@ -1132,7 +1147,7 @@ class BillsPaymentController extends Controller
     //             "balance" => $balance,
     //         ]);
 
-    //         return back()->with(['error'=> 'Your account is locked']);
+    //         return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
     //     }
 
     //     elseif ($body->code == 022){
@@ -1142,7 +1157,7 @@ class BillsPaymentController extends Controller
     //             "balance" => $balance,
     //         ]);
 
-    //         return back()->with(['error'=> 'Your account is suspended']);
+    //         return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
     //     }
 
     //     elseif ($body->code == 024) {
@@ -1152,7 +1167,7 @@ class BillsPaymentController extends Controller
     //             "amount" => $balance,
     //         ]);
 
-    //         return back()->with(['error'=> 'Your account is inactive']);
+    //         return back()->with(['error'=> 'Service is currently unavailable, please try again later']);
     //      }
 
     //     else{
@@ -1270,7 +1285,7 @@ class BillsPaymentController extends Controller
 
         $nt->system_previous_balance = $systemBalance;
         $nt->system_current_balance =  $currentSystemBalance;
-        
+
         $nt->charge = (1 / 100) * $amount;
         $nt->transaction_type_id = 11;
 
@@ -1472,7 +1487,7 @@ class BillsPaymentController extends Controller
 
         $amount = $r->amount + $charge;
         if ($amount > $n->amount) {
-            return redirect()->back()->with(['error' => 'Insufficient funds']);
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
         }
 
         if($r->amount < 100){
@@ -1481,6 +1496,11 @@ class BillsPaymentController extends Controller
 
         if($r->amount > 100000){
             return redirect()->back()->with(['error' => 'Maximium amount is ₦100000']);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($r->amount > ($ledger_balance + $charge)) {
+            return redirect()->back()->with(['error' => 'Insufficient balance']);
         }
 
         $reference = rand(111111,999999).time();
@@ -1517,7 +1537,7 @@ class BillsPaymentController extends Controller
 
             $nt->system_previous_balance = $systemBalance;
             $nt->system_current_balance =  $currentSystemBalance;
-        
+
             $nt->charge = $charge;
             $nt->transaction_type_id = 11;
 

@@ -452,8 +452,8 @@ class BtcWalletController extends Controller
         $nt->amount = $t->amount_paid;
         $nt->user_id = Auth::user()->id;
         $nt->type = 'naira wallet';
-        $nt->previous_balance = Auth::user()->nairaWallet->amount;
-        $nt->current_balance = Auth::user()->nairaWallet->amount + $t->amount_paid;
+        $nt->previous_balance = Auth::user()->nairaWallet->amount - $t->amount_paid;
+        $nt->current_balance = Auth::user()->nairaWallet->amount ;
         $nt->system_previous_balance = $systemBalance;
         $nt->system_current_balance =  $currentSystemBalance;
         $nt->charge = 0;
@@ -471,7 +471,10 @@ class BtcWalletController extends Controller
         $nt->save();
 
         //Blockfill
+        \Log::info("I got here 1");
+
         if (SystemSettings::where('settings_name', 'BLOCKFILL')->first()->settings_value == 1) {
+            \Log::info("I got here 2");
             BlockfillOrderController::order($t);
         }
 
@@ -619,6 +622,14 @@ class BtcWalletController extends Controller
             ]);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($ngn > ($ledger_balance + 10)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient Naira Wallet balance to initiate trade'
+            ]);
+        }
+
         //Commission
         $usd_ngn_old = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
         $commission = SettingController::get('crypto_commission');
@@ -701,10 +712,10 @@ class BtcWalletController extends Controller
             \Log::info($e->getResponse()->getBody());
             //report($e);
 
-            
+
             Auth::user()->nairaWallet->amount += $ngn;
             Auth::user()->nairaWallet->save();
-            
+
 
             return response()->json([
                 'success' => false,

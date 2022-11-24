@@ -26,6 +26,17 @@
         </a>
     </li>
 
+    @if (in_array(Auth::user()->role,[999,559]))
+        <li class="menu {{ Route::currentRouteName() == 'admin.customerHappinessAgent' ? 'active' : '' }}">
+            <a href="{{route('admin.customerHappinessAgent')}}" aria-expanded="false" class="dropdown-toggle" >
+                <div class="">
+                    <ion-icon name="people-circle-outline"></ion-icon>
+                    <span>Customer Happiness</span>
+                </div>
+            </a>
+        </li>
+    @endif
+
 
     <li class="menu {{ Route::currentRouteName() == 'logout' ? 'active' : '' }}">
         <a href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" aria-expanded="false" class="dropdown-toggle">

@@ -441,10 +441,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
 
     Route::POST('/payout', 'AdminController@payout')->name('admin.payout');
-
-    Route::get('/customer-happiness', 'Admin\CustomerHappinessController@index')->name('admin.customerHappinessAgent');
-    Route::post('/add-happiness-agent', 'Admin\CustomerHappinessController@addAgent')->name('happiness.addAgent');
-    Route::get('/customer-happiness-action/{id}/{action}', 'Admin\CustomerHappinessController@action')->name('happiness.action');
 });
 
 
@@ -628,6 +624,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing'
     Route::GET('/view/users/{type?}', 'MarketingController@viewUsersCategory')->name('admin.users.view.type');
     Route::GET('/view/transactions/{month}/{type}', 'MarketingController@viewTransactionsByMonth')->name('admin.transaction.view.month');
     Route::GET('/view/users/{month}/{type}', 'MarketingController@viewUsersByMonth')->name('admin.users.view.month');
+
+    Route::get('/customer-happiness', 'Admin\CustomerHappinessController@index')->name('admin.customerHappinessAgent');
+    Route::post('/add-happiness-agent', 'Admin\CustomerHappinessController@addAgent')->name('happiness.addAgent');
+    Route::get('/customer-happiness-action/{id}/{action}', 'Admin\CustomerHappinessController@action')->name('happiness.action');
 });
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
     Route::GET('/Categories/{type?}', 'Admin\BusinessDeveloperController@index')->name('business-developer.user-category');

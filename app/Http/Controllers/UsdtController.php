@@ -618,6 +618,14 @@ class UsdtController extends Controller
             ]);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($ngn  > ($ledger_balance + 10)) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Insufficient ledger balance to initiate trade'
+            ]);
+        }
+
         $blockchain_fee = 200;
         $fee_wallet_balance = CryptoHelperController::feeWalletBalance(7);
         if ($fee_wallet_balance < $blockchain_fee) {
@@ -834,7 +842,7 @@ class UsdtController extends Controller
 
         $user_wallet->balance = $accounts->balance->availableBalance;
 
-        
+
         $hd_wallet = HdWallet::where(['currency_id' => 7])->first();
         $charge = Setting::where('name', 'usdt_send_charge')->first()->value;
         $sub_total = round(($request->amount  + $charge), 3);
