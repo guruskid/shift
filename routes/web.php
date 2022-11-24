@@ -296,7 +296,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified', 'checkNam
     Route::POST('/change-password', 'UserController@password')->name('user.change_password');
     Route::POST('/reset-email', 'UserController@resetEmail')->name('user.reset-email');
     Route::POST('/profile-picture', 'UserController@profilePicture')->name('user.dp');
-    Route::POST('/user-bank-details', 'UserController@updateBankDetails')->name('user.update_bank_details');
+    Route::POST('/user-bank-details', 'UserController@updateBank')->name('user.update_bank_details');
     Route::get('/view-transaction/{id}/{uid}', 'UserController@viewTransac')->name('user.view-transaction');
 
     Route::get('/notifications', 'UserController@notifications')->name('user.notifications');

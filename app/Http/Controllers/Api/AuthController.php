@@ -4,24 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Account;
 use App\Bank;
-use App\BitcoinWallet;
 use App\Country;
 use App\HdWallet;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\FirebasePushNotificationController;
 use App\Http\Controllers\LoginSessionController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use App\User;
-use Illuminate\Support\Facades\Hash;
-use App\Mail\DantownNotification;
 use App\NairaWallet;
 use App\Notification;
+use App\User;
 use App\UserTracking;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Mail;
-use RestApis\Blockchain\Constants;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -44,11 +39,10 @@ class AuthController extends Controller
 
             if (null !== request('fcm_id')) {
                 $user->update([
-                    'fcm_id' => request('fcm_id')
+                    'fcm_id' => request('fcm_id'),
                 ]);
             }
-            if($user->role == 1)
-            {
+            if ($user->role == 1) {
                 $loginSession = new LoginSessionController();
                 $loginSession->createSessionData($user->id);
             }
@@ -69,7 +63,6 @@ class AuthController extends Controller
             ], 401);
         }
     }
-
 
     public function register(Request $request)
     {
@@ -103,7 +96,7 @@ class AuthController extends Controller
             'external_id' => $external_id,
             'status' => 'active',
             'password' => Hash::make($input['password']),
-            'platform' => $input['platform']
+            'platform' => $input['platform'],
         ]);
 
         $user->sendEmailVerificationNotification();
@@ -124,8 +117,8 @@ class AuthController extends Controller
         ]);
 
         UserTracking::create([
-            'user_id' =>$user->id,
-            'Current_Cycle' => "Active"
+            'user_id' => $user->id,
+            'Current_Cycle' => "Active",
         ]);
 
         $btc_hd = HdWallet::where('currency_id', 1)->first();
@@ -146,17 +139,16 @@ class AuthController extends Controller
                             "accountingCurrency" => "USD",
                             "customerCountry" => "NG",
                             "externalId" => $external_id,
-                            "providerCountry" => "NG"
+                            "providerCountry" => "NG",
                         ],
                         "compliant" => false,
-                        "accountingCurrency" => "USD"
-                    ]
-                ]
+                        "accountingCurrency" => "USD",
+                    ],
+                ],
             ],
         ]);
 
         $body = json_decode($response->getBody());
-
 
         $btc_account_id = $body[0]->id;
         $user->customer_id = $body[0]->customerId;
@@ -168,8 +160,8 @@ class AuthController extends Controller
             'headers' => ['x-api-key' => env('TATUM_KEY')],
             'json' => [
                 "addresses" => [
-                    ["accountId" => $btc_account_id]
-                ]
+                    ["accountId" => $btc_account_id],
+                ],
             ],
         ]);
 
@@ -182,7 +174,6 @@ class AuthController extends Controller
             'address' => $address_body[0]->address,
         ]);
 
-
         $title = 'Bitcoin Wallet created';
         $msg_body = 'Congratulations your Dantown Bitcoin Wallet has been created successfully, you can now send, receive, buy and sell Bitcoins in the wallet. ';
         $not = Notification::create([
@@ -191,26 +182,25 @@ class AuthController extends Controller
             'body' => $msg_body,
         ]);
 
-
-
-
         return response()->json([
             'success' => true,
             'token' => $success,
-            'user' => $auth_user
+            'user' => $auth_user,
         ]);
     }
 
-    public function saveFcm() {
+    public function saveFcm()
+    {
         if (null !== request('fcm_id')) {
             $user = Auth::user();
             $user->update([
-                'fcm_id' => request('fcm_id')
+                'fcm_id' => request('fcm_id'),
             ]);
         }
     }
 
-    public function deleteAccount(Request $request) {
+    public function deleteAccount(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'password' => 'required',
         ]);
@@ -221,7 +211,7 @@ class AuthController extends Controller
             ], 401);
         }
 
-        if(!Hash::check($request['password'],Auth::user()->password)) {
+        if (!Hash::check($request['password'], Auth::user()->password)) {
             return response()->json([
                 'success' => false,
                 'message' => ["Incorrect Password"],
@@ -241,7 +231,7 @@ class AuthController extends Controller
         $banks = Bank::orderBy('name', 'asc')->get();
         return response()->json([
             'success' => true,
-            'data' => $banks
+            'data' => $banks,
         ]);
     }
 
@@ -249,7 +239,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => Country::all()
+            'data' => Country::all(),
         ]);
     }
 
@@ -272,7 +262,7 @@ class AuthController extends Controller
         $response = $client->request('POST', $url, [
             'json' => [
                 "accountnumber" => $r->account_number,
-                "bankcode" => $r->bank_code
+                "bankcode" => $r->bank_code,
             ],
             'headers' => [
                 'authorization' => env('RUBBIES_SECRET_KEY'),
@@ -282,12 +272,12 @@ class AuthController extends Controller
         if ($body->responsecode == 00) {
             return response()->json([
                 'success' => true,
-                'acct' => $body->accountname
+                'acct' => $body->accountname,
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'msg' => $body->responsemessage
+                'msg' => $body->responsemessage,
             ]);
         }
     }
@@ -307,7 +297,7 @@ class AuthController extends Controller
                 'json' => [
                     'api_key' => env('TERMII_API_KEY'),
                     "pin_id" => Auth::user()->phone_pin_id,
-                    "pin" => $r->otp
+                    "pin" => $r->otp,
                 ],
             ]);
             $body = json_decode($response->getBody()->getContents());
@@ -315,14 +305,14 @@ class AuthController extends Controller
             if (!$body->verified || $body->verified != 'true') {
                 return response()->json([
                     'success' => false,
-                    'msg' => 'Phone verification failed. Please request for a new OTP'
+                    'msg' => 'Phone verification failed. Please request for a new OTP',
                 ]);
             }
         } catch (\Exception $e) {
             report($e);
             return response()->json([
                 'success' => false,
-                'msg' => 'Phone verification failed. Please request for a new OTP'
+                'msg' => 'Phone verification failed. Please request for a new OTP',
             ]);
         }
 
@@ -333,7 +323,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => Auth::user()
+            'data' => Auth::user(),
         ]);
     }
 
@@ -355,21 +345,21 @@ class AuthController extends Controller
         $country = Country::find($request->country_id);
         $full_num = $country->phonecode . $request->phone;
 
-            $response = $client->request('POST', $url, [
-                'json' => [
-                    'api_key' => env('TERMII_API_KEY'),
-                    "message_type" => "NUMERIC",
-                    "to" => $full_num,
-                    "from" => "N-Alert",
-                    "channel" => "dnd",
-                    "pin_attempts" => 4,
-                    "pin_time_to_live" =>  10,
-                    "pin_length" => 6,
-                    "pin_placeholder" => "< 1234 >",
-                    "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
-                    "pin_type" => "NUMERIC"
-                ],
-            ]);
+        $response = $client->request('POST', $url, [
+            'json' => [
+                'api_key' => env('TERMII_API_KEY'),
+                "message_type" => "NUMERIC",
+                "to" => $full_num,
+                "from" => "N-Alert",
+                "channel" => "dnd",
+                "pin_attempts" => 4,
+                "pin_time_to_live" => 10,
+                "pin_length" => 6,
+                "pin_placeholder" => "< 1234 >",
+                "message_text" => "Your Dantown verification pin is < 1234 > This pin will be invalid after 10 minutes",
+                "pin_type" => "NUMERIC",
+            ],
+        ]);
         $body = json_decode($response->getBody()->getContents());
 
         if ($body->status == 200) {
@@ -383,7 +373,7 @@ class AuthController extends Controller
             ]);
         }
         return response()->json([
-            'msg' => 'An error occured while resending OTP, please try again'
+            'msg' => 'An error occured while resending OTP, please try again',
         ]);
     }
 
@@ -403,11 +393,11 @@ class AuthController extends Controller
                 "from" => "N-Alert",
                 "channel" => "dnd",
                 "pin_attempts" => 4,
-                "pin_time_to_live" =>  10,
+                "pin_time_to_live" => 10,
                 "pin_length" => 6,
                 "pin_placeholder" => "< 1234 >",
                 "message_text" => "Your Dantown confirmation code is < 1234 >, valid for 10 minutes, one-time use only",
-                "pin_type" => "NUMERIC"
+                "pin_type" => "NUMERIC",
             ],
         ]);
         $body = json_decode($response->getBody()->getContents());
@@ -422,17 +412,16 @@ class AuthController extends Controller
         }
         return response()->json([
             'success' => false,
-            'msg' => 'An error occured while resending OTP, please try again'
+            'msg' => 'An error occured while resending OTP, please try again',
         ]);
     }
-
 
     //New Way
 
     //Verify Account
 
-
-    public function verifyBankName(Request $request) {
+    public function verifyBankName(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'bank_code' => 'required',
@@ -447,10 +436,8 @@ class AuthController extends Controller
             ], 401);
         }
 
-
         $bank_code = $request->bank_code;
         $acct_number = $request->account_number;
-
 
         $checker = Bank::where('code', $request->bank_code)->first();
 
@@ -463,30 +450,27 @@ class AuthController extends Controller
         }
 
         $client = new Client();
-        $url = 'https://app.nuban.com.ng/api/NUBAN-AGBCLVUL544?acc_no='.$acct_number.'&bank_code='.$bank_code;
+        $url = 'https://app.nuban.com.ng/api/NUBAN-AGBCLVUL544?acc_no=' . $acct_number . '&bank_code=' . $bank_code;
         $response = $client->request('GET', $url);
         $body = ($response->getBody()->getContents());
         $body = json_decode($body);
 
-
         if (isset($body->error)) {
             return response()->json([
                 'success' => false,
-                'msg' => 'Invalid Account Details'
+                'msg' => 'Invalid Account Details',
             ]);
         }
         $acct_name = $body[0]->account_name;
         $data = [
-            'account_name' => $acct_name
+            'account_name' => $acct_name,
         ];
         return response()->json([
             'success' => true,
-            'data' => $data
-        ],200);
+            'data' => $data,
+        ], 200);
 
     }
-
-
 
     public function addNewDetails(Request $request)
     {
@@ -512,7 +496,6 @@ class AuthController extends Controller
             ]);
         }
 
-
         $addNew = new Account();
         $addNew->user_id = Auth::user()->id;
         $addNew->account_name = $request->account_name;
@@ -521,6 +504,33 @@ class AuthController extends Controller
         $addNew->account_number = $request->account_number;
 
         $duplicateChecker = Account::where('user_id', Auth::user()->id)->where('bank_id', $addNew->bank_id)->first();
+
+        //Check for different account entirely
+
+        $initialAccount = Account::where('user_id', Auth::user()->id)->first();
+
+        if ($initialAccount != null) {
+
+            $fromDB = strtoupper($initialAccount->account_name);
+            $incoming = strtoupper($request->account_name);
+
+            $previous = explode(' ', $fromDB);
+            $newOne = explode(' ', $incoming);
+
+            $joinToCompare = array_intersect($previous, $newOne);
+
+            $determiner = (count($joinToCompare) * 100 / count($previous));
+
+            if ($determiner < 60) {
+
+                return response()->json([
+                    'success' => false,
+                    'msg' => 'Account does not match the previous one',
+                ]);
+
+            }
+
+        }
 
         //    dd($duplicateChecker);
         if ($duplicateChecker != null) {
@@ -533,7 +543,6 @@ class AuthController extends Controller
         }
 
         $addNew->save();
-
 
         $updated = explode(' ', trim($request->account_name));
 
@@ -548,13 +557,9 @@ class AuthController extends Controller
             'naira_wallet' => Auth::user()->nairaWallet,
         ]);
 
-
-
     }
 
-
-
-     //This is not longer in use
+    //This is not longer in use
     public function addBankDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -583,8 +588,8 @@ class AuthController extends Controller
 
         /* Check if its duplicate */
         $accts = Auth::user()->accounts;
-        foreach ($accts as $a ) {
-            if ($a->account_number == $request->account_number && $a->bank_name == $s->name ) {
+        foreach ($accts as $a) {
+            if ($a->account_number == $request->account_number && $a->bank_name == $s->name) {
                 $err += 1;
             }
         }
@@ -592,7 +597,7 @@ class AuthController extends Controller
         if ($err == 0) {
             $a = new Account();
             $a->user_id = Auth::user()->id;
-            $a->account_name = $request->first_name .' '. $request->last_name;;
+            $a->account_name = $request->first_name . ' ' . $request->last_name;
             $a->bank_name = $s->name;
             $a->bank_id = $s->id;
             $a->account_number = $request->account_number;
@@ -615,57 +620,57 @@ class AuthController extends Controller
         }
 
         /* $callback = route('recieve-funds.callback');
-        $client = new Client();
-        $url = env('RUBBIES_API') . "/createvirtualaccount";
+    $client = new Client();
+    $url = env('RUBBIES_API') . "/createvirtualaccount";
 
-        $response = $client->request('POST', $url, [
-            'json' => [
-                'virtualaccountname' => Auth::user()->first_name,
-                'amount' => '0',
-                'amountcontrol' => 'VARIABLEAMOUNT',
-                'daysactive' => 30,
-                'minutesactive' => 30,
-                'callbackurl' => $callback,
-            ],
-            'headers' => [
-                'authorization' => env('RUBBIES_SECRET_KEY'),
-            ],
-        ]);
-        $body = json_decode($response->getBody()->getContents());
-        if ($body->responsecode == 00) {
+    $response = $client->request('POST', $url, [
+    'json' => [
+    'virtualaccountname' => Auth::user()->first_name,
+    'amount' => '0',
+    'amountcontrol' => 'VARIABLEAMOUNT',
+    'daysactive' => 30,
+    'minutesactive' => 30,
+    'callbackurl' => $callback,
+    ],
+    'headers' => [
+    'authorization' => env('RUBBIES_SECRET_KEY'),
+    ],
+    ]);
+    $body = json_decode($response->getBody()->getContents());
+    if ($body->responsecode == 00) {
 
-            $naira_wallet = Auth::user()->nairaWallet()->create([
-                'account_number' => $body->virtualaccount,
-                'account_name' => $body->virtualaccountname,
-                'bank_name' => $body->bankname,
-                'bank_code' => $body->bankcode,
-                'amount' => $body->amount,
-                'password' => '',
-                'amount_control' => $body->amountcontrol,
-            ]);
+    $naira_wallet = Auth::user()->nairaWallet()->create([
+    'account_number' => $body->virtualaccount,
+    'account_name' => $body->virtualaccountname,
+    'bank_name' => $body->bankname,
+    'bank_code' => $body->bankcode,
+    'amount' => $body->amount,
+    'password' => '',
+    'amount_control' => $body->amountcontrol,
+    ]);
 
-            $title = 'Dantown wallet created';
-            $msg_body = 'Your Dantown wallet has been created successfully, you can now send money, recieve money, pay bills and do more with your Dantown wallet. Your account number is ' . $body->virtualaccount;
-            $not = Notification::create([
-                'user_id' => Auth::user()->id,
-                'title' => $title,
-                'body' => $msg_body,
-            ]);
+    $title = 'Dantown wallet created';
+    $msg_body = 'Your Dantown wallet has been created successfully, you can now send money, recieve money, pay bills and do more with your Dantown wallet. Your account number is ' . $body->virtualaccount;
+    $not = Notification::create([
+    'user_id' => Auth::user()->id,
+    'title' => $title,
+    'body' => $msg_body,
+    ]);
 
-            Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to wallet', route('user.naira-wallet') ));
+    Mail::to(Auth::user()->email)->send(new DantownNotification($title, $msg_body, 'Go to wallet', route('user.naira-wallet') ));
 
-            return response()->json([
-                'success' => true,
-                'user' => Auth::user(),
-                'bank_accounts' => Auth::user()->accounts,
-                'naira_wallet' => $naira_wallet,
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => $body->responsemessage,
-            ]);
-        } */
+    return response()->json([
+    'success' => true,
+    'user' => Auth::user(),
+    'bank_accounts' => Auth::user()->accounts,
+    'naira_wallet' => $naira_wallet,
+    ]);
+    } else {
+    return response()->json([
+    'success' => false,
+    'message' => $body->responsemessage,
+    ]);
+    } */
     }
 
     public function sendBvnOtp($bvn)
@@ -676,7 +681,7 @@ class AuthController extends Controller
         $response = $client->request('POST', $url, [
             'json' => [
                 "reference" => time(),
-                "bvn" => $bvn
+                "bvn" => $bvn,
             ],
             'headers' => [
                 'authorization' => env('RUBBIES_SECRET_KEY'),
@@ -686,19 +691,17 @@ class AuthController extends Controller
         if ($body->responsecode != "00") {
             return response()->json([
                 'success' => false,
-                "msg" => $body->responsemessage
+                "msg" => $body->responsemessage,
             ]);
         }
         $phone = '';
         if (strlen($body->phoneNumber) == 11) {
-            $phone = '234'. substr($body->phoneNumber, 1);
-        }elseif (strlen($body->phoneNumber) == 13) {
+            $phone = '234' . substr($body->phoneNumber, 1);
+        } elseif (strlen($body->phoneNumber) == 13) {
             $phone = $body->phoneNumber;
-        }else{
+        } else {
             $phone = $body->phoneNumber;
         }
-
-
 
         $client = new Client();
         $url = env('TERMII_SMS_URL') . "/otp/send";
@@ -711,11 +714,11 @@ class AuthController extends Controller
                 "from" => "N-Alert",
                 "channel" => "dnd",
                 "pin_attempts" => 4,
-                "pin_time_to_live" =>  10,
+                "pin_time_to_live" => 10,
                 "pin_length" => 6,
                 "pin_placeholder" => "< 1234 >",
                 "message_text" => "Your Dantown confirmation code is < 1234 >, valid for 10 minutes, one-time use only",
-                "pin_type" => "NUMERIC"
+                "pin_type" => "NUMERIC",
             ],
         ]);
         $body = json_decode($response->getBody()->getContents());
@@ -727,12 +730,12 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'msg' =>  'An OTP has been sent to the phone number '.$phone.' to confirm your BVN',
+                'msg' => 'An OTP has been sent to the phone number ' . $phone . ' to confirm your BVN',
             ]);
         }
         return response()->json([
             'success' => false,
-            'msg' => "OTP could not be sent to the associated phone number"
+            'msg' => "OTP could not be sent to the associated phone number",
         ]);
     }
 
@@ -757,7 +760,7 @@ class AuthController extends Controller
                 'json' => [
                     'api_key' => env('TERMII_API_KEY'),
                     "pin_id" => Auth::user()->phone_pin_id,
-                    "pin" => $r->otp
+                    "pin" => $r->otp,
                 ],
             ]);
             $body = json_decode($response->getBody()->getContents());
@@ -765,17 +768,16 @@ class AuthController extends Controller
             if (!$body->verified || $body->verified != 'true') {
                 return response()->json([
                     'success' => false,
-                    'msg' => "Phone verification failed. Please try again"
+                    'msg' => "Phone verification failed. Please try again",
                 ]);
             }
         } catch (\Exception $e) {
             report($e);
             return response()->json([
                 'success' => false,
-                'msg' => "Phone verification failed. Please request new OTP"
+                'msg' => "Phone verification failed. Please request new OTP",
             ]);
         }
-
 
         Auth::user()->bvn_verified_at = now();
         Auth::user()->bvn = $r->bvn;
@@ -794,12 +796,12 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Logout successfully'
+                'message' => 'Logout successfully',
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Unable to Logout'
+                'message' => 'Unable to Logout',
             ]);
         }
     }
