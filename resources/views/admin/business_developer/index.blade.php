@@ -10,6 +10,47 @@
                 <P>Hi {{ Auth::user()->first_name ?? Auth::user()->username }}, good to see you again</P>
             </div>
         </div>
+        <div class="row layout-top-spacing">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 layout-spacing"
+            onclick="window.location = '{{ route('business-developer.user-category',['type'=>'Quarterly_Inactive']) }}'">
+                <div class="widget widget-chart-one @if(isset($salesCategory) AND $salesCategory =='old') bg-primary @endif">
+                    <div class="widget-heading">
+                        <div>
+                            <b><h3 class="@if(isset($salesCategory) AND $salesCategory =='old') text-white @endif">Old Users</h3></b>
+                            <h6 class="@if(isset($salesCategory) AND $salesCategory =='old') text-white @endif">Quarterly Inactive</h6>
+                            <h6 class="@if(isset($salesCategory) AND $salesCategory =='old') text-white @endif">Called Users</h6>
+                            <h6 class="@if(isset($salesCategory) AND $salesCategory =='old') text-white @endif">Responded Users</h6>
+                        </div>
+                        <div class="widget-n">
+                            <h5>Value</h5>
+                            <h5>{{ $QuarterlyInactiveUsersCount }}</h5>
+                            <h5>{{ $calledUsersCount }}</h5>
+                            <h5>{{ $RespondedUsersCount }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 layout-spacing"
+            onclick="window.location = '{{ route('business-developer.user-category',['type'=>'NoResponse']) }}'">
+                <div class="widget widget-chart-one @if(isset($salesCategory) AND $salesCategory =='new') bg-primary @endif">
+                    <div class="widget-heading">
+                        <div>
+                            <b><h3 class="@if(isset($salesCategory) AND $salesCategory =='new') text-white @endif">New Users </h3></b>
+                            <h6 class="@if(isset($salesCategory) AND $salesCategory =='new') text-white @endif">New Inactive Users</h6>
+                            <h6 class="@if(isset($salesCategory) AND $salesCategory =='new') text-white @endif">Called New Users</h6>
+                            <h6 class="@if(isset($salesCategory) AND $salesCategory =='new') text-white @endif">Unresponsive</h6>
+                        </div>
+                        <div class="widget-n">
+                            <h5>{{ $NoResponseCount }}</h5>
+                            <h5>{{ $NoResponseCount }}</h5>
+                            <h5>{{ $NoResponseCount }}</h5>
+                            <h5>{{ $NoResponseCount }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
             <div class="row layout-top-spacing">
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
                 onclick="window.location = '{{ route('business-developer.user-category',['type'=>'Quarterly_Inactive']) }}'">
@@ -19,7 +60,7 @@
                                 <h5 class="@if(isset($type) AND $type =='Quarterly_Inactive') text-white @endif">Quaterly Inactive Users </h5>
                             </div>
                             <div class="widget-n">
-                                <h5>{{ $QuarterlyInactiveUsers }}</h5>
+                                <h5>{{ $QuarterlyInactiveUsersCount }}</h5>
                             </div>
                         </div>
                     </div>
@@ -33,7 +74,7 @@
                                 <h5 class="@if(isset($type) AND $type =='NoResponse') text-white @endif">No Response </h5>
                             </div>
                             <div class="widget-n">
-                                <h5>{{ $NoResponse }}</h5>
+                                <h5>{{ $NoResponseCount }}</h5>
                             </div>
                         </div>
                     </div>
@@ -47,7 +88,7 @@
                                 <h5 class="@if(isset($type) AND $type =='Called_Users') text-white @endif">Called Users</h5>
                             </div>
                             <div class="widget-n">
-                                <h5>{{ $CalledUsers }}</h5>
+                                <h5>{{ $calledUsersCount }}</h5>
                             </div>
                         </div>
                     </div>
@@ -60,7 +101,7 @@
                                 <h5 class="@if(isset($type) AND $type =='Responded_Users') text-white @endif">Responded Users</h5>
                             </div>
                             <div class="widget-n">
-                                <h5>{{ $RespondedUsers }}</h5>
+                                <h5>{{ $RespondedUsersCount }}</h5>
                             </div>
                         </div>
                     </div>
@@ -73,7 +114,7 @@
                                 <h5 class="@if(isset($type) AND $type =='Recalcitrant_Users') text-white @endif">Recalcitrant Users</h5>
                             </div>
                             <div class="widget-n">
-                                <h5>{{ $RecalcitrantUsers }}</h5>
+                                <h5>{{ $RecalcitrantUsersCount }}</h5>
                             </div>
                         </div>
                     </div>

@@ -11,6 +11,7 @@ use App\Console\Commands\CheckRespondedUsers;
 use App\Console\Commands\GetCurrentRate;
 use App\Console\Commands\NoResponseCheck;
 use App\Console\Commands\ResolveLedger;
+use App\Console\Commands\salesOldDailyConfig;
 use App\Http\Controllers\MarketingController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -32,6 +33,7 @@ class Kernel extends ConsoleKernel
         NoResponseCheck::class,
         BirthdayWish::class,
         ResolveLedger::class,
+        salesOldDailyConfig::class,
     ];
 
     /**
@@ -51,6 +53,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('check:Recalcitrant')->daily();
         $schedule->command('check:quarterlyInactive')->daily();
         $schedule->command('noResponse:check')->daily();
+        $schedule->command('sales:config')->daily();
         $schedule->command('birthday:wish')->dailyAt('08:00');
         $schedule->command('ledger:resolve')->everyFiveMinutes();
     }

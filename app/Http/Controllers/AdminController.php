@@ -21,6 +21,7 @@ use App\Exports\UserDataTransaction;
 use App\Http\Controllers\Admin\BusinessDeveloperController;
 use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Http\Controllers\Admin\SalesController;
+use App\Http\Controllers\Admin\SalesHelperController;
 use App\NairaTrade;
 use Excel;
 use App\NairaWallet;
@@ -238,7 +239,7 @@ class AdminController extends Controller
                 ])
             );
         } else if (Auth::user()->role == 557) { //business_Developer
-            return (new BusinessDeveloperController)->index();
+            return (new SalesHelperController)->NewUserOldUserActiveUserFlow('old',NULL);
         } else if (Auth::user()->role == 556) { //Sales Personal
             return (new SalesController)->index();
         }
