@@ -943,6 +943,7 @@ class BillsPaymentController extends Controller
                     'message' => 'Purchase made successfully. Token : ' . $response['token'],
                 ];
             } else {
+                $nt->status = 'failed';
                 $resp = [
                     'success' => true,
                     'response_description' => 'TRANSACTION IS BEING PROCESSED',
