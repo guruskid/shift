@@ -69,6 +69,22 @@ class UtilityTransactions extends Controller
         if(isset($response['content']) && isset($response['content']['transactions'])) {
             if($response['content']['transactions']['status'] == 'delivered') {
                 if ($transaction->type == 'Cable subscription') {
+
+                    try {
+                        $title = 'Cable subscription';
+                        $msg_body = 'Your Dantown wallet has been debited with N' . $nt->amount . ' for cable subscription and N' . $nt->charge . ' for convenience fee.';
+
+                        $not = Notification::create([
+                            'user_id' => $nt->user->id,
+                            'title' => $title,
+                            'body' => $msg_body,
+                        ]);
+
+                        Mail::to($nt->user->email)->send(new DantownNotification($title, $msg_body, '', ''));
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
+
                     $extras = json_encode([
                         'type' => $response['content']['transactions']['product_name'],
                         'subscription_plan' => '',
@@ -76,6 +92,36 @@ class UtilityTransactions extends Controller
                         'price' => $response['content']['transactions']['unit_price'],
                     ]);
                 }elseif ($transaction->type == 'Electricity purchase') {
+
+                    try {
+                        $body = 'Your Dantown wallet has been debited with N' . $nt->amount . ' for electricity recharge and N' . $nt->charge . ' for convenience fee.<br><br>
+                        <b>Token: ' . $response['token'] . '</b>,<br>
+                        <b>Unit: ' . $response['units'] . '</b>,<br>
+                        <b>Reference code:' . $nt->reference;
+                        $btn_text = '';
+                        $btn_url = '';
+
+                        $title = 'Electricity purchase';
+
+                        $name = ($nt->user->first_name == " ") ? $nt->user->username : $nt->user->first_name;
+                        $name = explode(' ', $name);
+                        $firstname = ucfirst($name[0]);
+                        Mail::to($nt->user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
+
+                    $body = 'Your Dantown wallet has been debited with N' . $nt->amount . ' for electricity recharge and N' . $nt->charge . ' for convenience fee.
+                    Token: ' . $response['token'] . ',
+                    Unit: ' . $response['units'] . ',
+                    Reference code:' . $nt->reference;
+
+                    $not = Notification::create([
+                        'user_id' => $nt->user->id,
+                        'title' => $title,
+                        'body' => $body,
+                    ]);
+
                     $extras = json_encode([
                         'token' => $response['token'],
                         'purchased_code' => $response['purchased_code'],
@@ -92,10 +138,14 @@ class UtilityTransactions extends Controller
                     'status' => 'success',
                     'extras' => $extras
                 ]);
+
                 return back()->with(['success' => 'Transaction processed']);
             }else{
                 if($response['content']['transactions']['status'] == 'failed') {
                     $transaction->update([
+                        'status' => 'failed'
+                    ]);
+                    $nt->update([
                         'status' => 'failed'
                     ]);
                     $wallet->amount = $wallet->amount + $transaction->amount;
