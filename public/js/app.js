@@ -54969,7 +54969,7 @@ var render = function() {
                   _vm._s(
                     _vm.amount >= 1000
                       ? _vm.amount -
-                          (_vm.naira_charge === 1 && _vm.tranx < 10 ? 0 : 100)
+                          (_vm.naira_charge === 1 && _vm.tranx < 10 ? 0 : 50)
                       : "0"
                   )
                 )
