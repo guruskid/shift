@@ -48,6 +48,11 @@ class ContentController extends Controller
         ], 201);
     }
 
+    public function FetchCategories(){
+        $data = BlogCategory::where("is_published", true)->paginate(20);
+        return response()->json($data);
+    }
+
     public function updateBlogCategory(Request $request, $id)
     {
         $blogCategory = BlogCategory::find($id);
@@ -128,6 +133,11 @@ class ContentController extends Controller
             'success' => true,
             'message' => "Blog Heading created"
         ], 201);
+    }
+
+    public function fetchBlogHeadings(){
+        $data = BlogHeading::where("is_published", true)->paginate(20);
+        return response()->json($data);
     }
 
     public function updateBlogHeading(Request $request, $id)

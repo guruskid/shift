@@ -45,6 +45,8 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], functi
         Route::GET('/p2p',  'TransactionController@p2p');
         Route::GET('/transactions-per-day',  'TransactionController@transactionsPerDay');
         Route::GET('/transactions-by-date',  'TransactionController@transactionsByDate');
+        Route::GET('/transaction-trial-1',  'TransactionController@trialTransactions1');
+        Route::GET('/transaction-trial-2',  'TransactionController@trialTransactions2');
     });
 
     // Transaction Count
@@ -116,8 +118,9 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], functi
         Route::GET('/summary', 'AccountantController@summary');
         Route::POST('/activateAccountant',  'AccountantController@activateAccountant');
         Route::POST('/deactivateAccountant',  'AccountantController@deactivateAccountant');
+        Route::GET('/get-currently-active-accountant', 'AccountantController@getCurrentActiveAccountant');
+        Route::GET('/get-last-active-accountant', 'AccountantController@getLastActiveAccountant');
     });
-
     //summary
     Route::group(['prefix' => 'summary'], function () {
 
@@ -239,6 +242,9 @@ Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
         return response()->json(['message' => 'test']);
     });
 
+
+    Route::GET('/global-search',  'SpotLightController@globalSearch');
+
    //Nexus
    Route::group(['prefix' => 'nexus'], function () {
     Route::GET('/', 'NexusController@verificationData');
@@ -279,7 +285,8 @@ Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
 
     Route::group(['prefix' => 'spotlight'], function () {
         Route::GET('/stats', 'SpotLightController@stats');
-        Route::GET('/recent-transactions', 'SpotLightController@recentTransactions');
+        // Route::GET('/recent-transactions', 'SpotLightController@recentTransactions');
+        Route::GET('/recent-transactions', 'SpotLightController@newRecentTransactions');
         Route::GET('/staff-on-role', 'SpotLightController@staffOnRole');
         Route::GET('/monthly-analytics',  'SpotLightController@monthlyAnalytics');
         Route::GET('/other-graph',  'SpotLightController@otherGraph');
@@ -534,6 +541,7 @@ Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function
     Route::prefix('content')->group(function () {
         // Blog Category
         Route::prefix('category')->group(function () {
+            Route::get('/', 'ContentController@FetchCategories');
             Route::post('/', 'ContentController@addBlogCategory');
             Route::put('/{id}', 'ContentController@updateBlogCategory');
             Route::delete('/{id}', 'ContentController@deleteBlogCategory');
@@ -541,6 +549,7 @@ Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function
         // Blog Heading
         Route::prefix('heading')->group(function () {
             Route::post('/', 'ContentController@addBlogHeading');
+            Route::get('/', 'ContentController@fetchBlogHeadings');
             Route::put('/{id}', 'ContentController@updateBlogHeading');
             Route::delete('/{id}', 'ContentController@deleteBlogHeading');
         });

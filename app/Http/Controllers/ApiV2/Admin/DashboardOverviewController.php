@@ -33,7 +33,9 @@ class DashboardOverviewController extends Controller
         self::$usd_rate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
     }
     public function overview()
+
     {
+
         $walletTotal = NairaWallet::sum('amount');
         $customerHappiness = User::where(['role' => 555, 'status' => 'active'])->with('nairaWallet')->first();
         $opened = 0;
@@ -57,12 +59,19 @@ class DashboardOverviewController extends Controller
         $totalOpened = Ticket::where(['status' => 'open'])->count();
         $totalClosed = Ticket::where(['status' => 'closed'])->count();
 
+
+
+        $totalUser = User::where("status", "active")->count();
+        $deadUsersCount = SpotLightController::dead_Users_one_month_Count();
+        $ressurectedUser = SpotLightController::resurrected_one_month_Users_Count();
+
         $overview = [
             'users_naira_wallet' => number_format($walletTotal, '0', '.', ','),
             'user_pulse' => [
-                'dead_users' => '10%',
-                'resurrected_user' => '12%',
-                'new_users' => '14%'
+                'total_user_count' =>  $totalUser,
+                'dead_users' =>  round(($deadUsersCount / $totalUser) * 100, 2),
+                'resurrected_user' =>  round(($ressurectedUser / $totalUser) * 100, 2),
+                'new_users' => SpotLightController::new_user_percentage_one_month()
             ],
             'customer_happiness' => [
                 'staff_name' => $customerHappinessAgent,
@@ -185,8 +194,16 @@ class DashboardOverviewController extends Controller
         return ($dateRange);
     }
 
+    private static function p2pTransactionHistoryDetails()
+    {
+        $data = NairaTrade::whereHas('naira_transactions')->with("naira_transactions", "user");
+        // $data = NairaTrade::whereHas('naira_transactions')->where("created_at", Carbon::today())->with("naira_transactions", "user")->latest()->limit(10)->get();
+        return $data;
+    }
+
     public function p2pTransactionHistory()
     {
+
         $range = 30;
         $chartData = NairaTrade::select([
             DB::raw('DATE(created_at) AS date'),
@@ -225,10 +242,28 @@ class DashboardOverviewController extends Controller
             $date = Carbon::now()->format('Y-m-d');
         }
 
-        $tranx = NairaTrade::where(DB::raw('date(created_at)'), $date)
+        $Prptranx = NairaTrade::where(DB::raw('date(created_at)'), $date)
             ->with(['user', 'agent', 'naria_transaction'])
+            ->latest()
             ->limit(10)
             ->get();
+
+            $tranx = $Prptranx->map(function ($item) {
+
+                return [
+                      'reference' => $item->reference,
+                    'amount' => $item->naira_transactions->amount,
+                    "user" => $item->user->first_name . " " . $item->user->first_name,
+                    "username" => $item->user->username,
+                    "dp" => $item->user->dp,
+                    "previous_balance" => $item->naira_transactions->previous_balance,
+                    "current_balance" => $item->naira_transactions->current_balance,
+                    "date" => $item->created_at,
+                    "status"  => $item->status,
+                    "type" => $item->type,
+                    "accountant" => $item->agent->first_name . " " . $item->user->first_name
+                ];
+            });
 
         return response()->json([
             'success' => true,
@@ -256,16 +291,77 @@ class DashboardOverviewController extends Controller
 
     public function transactionHistory($type)
     {
-        $tranx = [];
+
+        // $tranx = [];
         if ($type == 'p2p') {
-            $tranx = $this->p2pTransactionHistory();
+
+            $data['count'] =    $this->p2pTransactionHistoryDetails()->latest()->limit(7)->get()
+                ->groupBy(function($t) {
+                    return $t->created_at->format('Y-m-d');
+                })
+                ->map(function($d) {
+                    return count($d);
+                });
+            // $tranx = $this->p2pTransactionHistory();
+            // start
+            $p2pTrx =  $this->p2pTransactionHistoryDetails()->latest()->get();
+            $data['tranx'] = $p2pTrx->map(function ($item) {
+
+                return [
+                      'reference' => $item->reference,
+                    'amount' => $item->naira_transactions->amount,
+                    "user" => $item->user->first_name . " " . $item->user->first_name,
+                    "username" => $item->user->username,
+                    "dp" => $item->user->dp,
+                    "previous_balance" => $item->naira_transactions->previous_balance,
+                    "current_balance" => $item->naira_transactions->current_balance,
+                    "date" => $item->created_at,
+                    "status"  => $item->status,
+                    "type" => $item->type
+                ];
+            });
         } elseif ($type == 'crypto') {
-            $tranx = $this->getTransactionHistory();
+            $cryptoTrx =
+                Transaction::whereHas('asset', function ($query) {
+                    $query->where('is_crypto', 0);
+                })
+                ->whereHas('naira_transactions', function ($query) {
+                    $query->select('*');
+                })
+                ->with("naira_transactions", "user");
+
+                $data['count'] =  $cryptoTrx->latest()->limit(7)->get()
+                ->groupBy(function($t) {
+                    return $t->created_at->format('Y-m-d');
+                })
+                ->map(function($d) {
+                    return count($d);
+                });
+                $pt =  $cryptoTrx->get();
+
+                $data['tranx'] = $pt->map(function ($item) {
+
+                    return [
+                          'reference' => $item->reference,
+                        'amount' => $item->naira_transactions->amount,
+                        "user" => $item->user->first_name . " " . $item->user->first_name,
+                        "username" => $item->user->username,
+                        "dp" => $item->user->dp,
+                        "previous_balance" => $item->naira_transactions->previous_balance,
+                        "current_balance" => $item->naira_transactions->current_balance,
+                        "date" => $item->created_at,
+                        "status"  => $item->status,
+                        "type" => $item->type
+                    ];
+        });
+
+
+            // $this->getTransactionHistory();
         }
 
         return response()->json([
             'success' => true,
-            'data' => $tranx
+            'data' => $data
         ], 200);
     }
 
@@ -785,66 +881,4 @@ class DashboardOverviewController extends Controller
             'data' => $data,
         ], 200);
     }
-
-
-    public function accountingOfficerOverview()
-    {
-        $accountant = User::select('id', 'first_name', 'last_name', 'email', 'phone', 'role', 'status', 'username')->where("status", "active")->whereHas("accountantTimestamp")->with('accountantTimestamp')->first();
-
-        if ($accountant->accountantTimestamp->count() > 0) {
-            $startTime = $accountant->accountantTimestamp->first()->activeTime;
-            $endTime = ($accountant->accountantTimestamp->first()->inactiveTime == null) ? now() : $accountant->accountantTimestamp->first()->inactiveTime;
-
-            $naira_transactions_deposit = NairaTransaction::whereIn('status', ['success', 'pending'])->where('transaction_type_id', 2)->where('created_at', '>=', $startTime)->where('created_at', '<=', $endTime)->sum('amount');
-            $naira_transactions_withdrawal = NairaTransaction::whereIn('status', ['success', 'pending'])->where('transaction_type_id', 3)->where('created_at', '>=', $startTime)->where('created_at', '<=', $endTime)->sum('amount');
-        }
-
-        $data['naira_transactions_deposit'] = $naira_transactions_deposit ?? 0;
-        $data['naira_transactions_withdrawal'] =  $naira_transactions_withdrawal ?? 0;
-        $data['naira_transactions_withdrawal_balance'] = "";
-        $data['naira_transactions_deposit_balance'] = "";
-        $data['pending_p2p_deposit_transactions_total'] = NairaTrade::where('status', 'pending')->where("type", "deposit")->sum('amount');
-        $data['pending_p2p_deposit_transactions_count'] = NairaTrade::where('status', 'pending')->where("type", "deposit")->count();
-        $data['pending_p2p_withdraw_transactions_total'] = NairaTrade::where('status', 'pending')->where("type", "withdraw")->sum('amount');
-        $data['pending_p2p_withdraw_transactions_count'] = NairaTrade::where('status', 'pending')->where("type", "withdraw")->count();
-        $data["paybridge_accounts"] = PayBridgeAccount::where("status", "active")->select("account_name", "bank_name", "account_number")->take(2)->get();
-
-
-        $tranx = DB::table('transactions')
-            ->join('users', 'transactions.user_id', '=', 'users.id')
-            // ->join('naira_wallets', 'transactions.user_id', '=', 'naira_wallets.id')
-            ->select('first_name', 'last_name', 'username', 'dp', 'transactions.id', 'user_id', 'card as transaction', 'amount_paid as amount', 'transactions.amount as value', DB::raw('0 as prv_bal'), DB::raw('0 as cur_bal'), 'transactions.status', DB::raw('date(transactions.created_at) as date', 'transactions.created_at as created_at'));
-        $tranx2 = DB::table('naira_transactions')
-            ->join('users', 'naira_transactions.user_id', '=', 'users.id')
-            ->select('first_name', 'last_name', 'username', 'dp', 'naira_transactions.id', 'user_id', 'type as transaction', 'amount_paid', 'naira_transactions.amount as value', 'previous_balance as prv_bal', 'current_balance as cur_bal', 'naira_transactions.status', DB::raw('date(naira_transactions.created_at) as date', 'naira_transactions.created_at as created_at'));
-
-        $mergeTbl = $tranx->unionAll($tranx2);
-        DB::table(DB::raw("({$mergeTbl->toSql()}) AS mg"))->mergeBindings($mergeTbl);
-
-        $data["recent_transactions"] = $mergeTbl
-            ->orderBy('id', 'desc')
-            ->take(5)->get();
-
-        $data["paybridge_transactions"] =  DB::table('naira_transactions')
-            ->join('users', 'naira_transactions.user_id', '=', 'users.id')->select("naira_transactions.id", "charge", "type", "dp", "first_name", "last_name", "username", "amount", "previous_balance as prv_bal", 'current_balance as cur_bal', 'naira_transactions.status')->take(5)->orderBy('id', 'desc')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ], 200);
-    }
-
-
-  public function currentRate(Request $req){
-    if ($req->currency =="usd") {
-        $data['current_rate'] = LiveRateController::usdtRate();
-    } else {
-        $data['current_rate'] = LiveRateController::usdNgn();
-    }
-
-    return response()->json([
-        'success' => true,
-        'data' => $data,
-    ], 200);
-  }
 }

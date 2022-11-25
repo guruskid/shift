@@ -29,9 +29,30 @@ class AccountantController extends Controller
             'accountant' => $listOfAccountant
         ],200);
     }
+    public function getCurrentActiveAccountant(){
+       $data = SpotLightController::accountantOnRole();
 
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
+
+    }
+
+    public function getLastActiveAccountant(){
+       $data = DashboardOverviewController::lastAccountantOnRole();
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
+
+    }
     public function summary()
     {
+
         $activeUser = User::select('id','first_name','last_name','email','phone','role','status','username')
         ->with('accountantTimestamp')->whereIn('role',[777,775, 889])->where('status', 'active')->first();
 

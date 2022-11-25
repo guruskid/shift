@@ -116,6 +116,7 @@ class CustomerHappinessController extends Controller
             'channel' => 'required',
             'username' => 'required',
             'category' => 'required',
+            'status'  => ['required','in:open,close'],
         ]);
 
         // $agent_id = User::where('role', 555)->where('status', 'active')->first();
@@ -126,7 +127,7 @@ class CustomerHappinessController extends Controller
             'user_id' => Auth::user()->id,
             'agent_id' => Auth::user()->id,
             'description' => $req->description,
-            'status' => 'open',
+            'status' => $req->status,
             'agent_name' => Auth::user()->first_name ." " .Auth::user()->last_name,
             'type' => $req->type,
             'channel' => $req->channel,
@@ -204,12 +205,13 @@ class CustomerHappinessController extends Controller
     {
 
         $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call'];
-        $types = ['Enquiries', 'Complaint', 'Notice', 'Suggestion'];
-        $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings', 'Settings'];
+        $types = ['Enquiry', 'Complaint', 'Notice', 'Suggestion'];
+        $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings'];
+        $status = ['close', 'open'];
 
         $chAgents = User::where('role', 555)->pluck('first_name');
 
-        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $categories, 'agents' => $chAgents);
+        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $categories, 'agents' => $chAgents, 'status' => $status);
 
         return response()->json([
             'success' => true,
@@ -305,10 +307,10 @@ class CustomerHappinessController extends Controller
         ]);
     }
 
-    public function searchUser($username)
+    public function searchUser($email)
     {
 
-        $user = User::where('username', 'like', '%' . $username . '%')->orWhere('first_name', 'like', '%' . $username . '%')->get();
+        $user = User::where('email', 'like', '%' . $email . '%')->get();
 
         return response()->json([
             'success' => true,
