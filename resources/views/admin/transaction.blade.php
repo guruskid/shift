@@ -221,7 +221,7 @@
                                         <!-- /////////////////////////////////////// -->
                                     </div>
                                 </div>
-                                @if (in_array($transaction->status,['waiting']))
+                                @if (!in_array($transaction->status,['success','declined','failed']))
                                     <button type="submit" class="btn btn-primary">Update</button>
                                 @endif
                             </form>
