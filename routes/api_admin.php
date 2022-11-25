@@ -361,7 +361,7 @@ Route::group(['middleware' => ['auth:api', 'seniorAccountant', 'cors']], functio
         Route::group(['prefix' => 'flagged'], function () {
             Route::GET('/', 'ComplianceFraudController@flaggedTransactions');
             Route::POST('/sort', 'ComplianceFraudController@sortFlaggedTransaction');
-        });   
+        });
     });
 
     Route::group(['prefix' => 'users'], function () {

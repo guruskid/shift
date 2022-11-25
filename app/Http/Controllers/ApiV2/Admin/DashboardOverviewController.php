@@ -14,6 +14,7 @@ use App\Transaction;
 use App\User;
 use App\Wallet;
 use App\CryptoRate;
+use App\FlaggedTransactions;
 use App\Http\Controllers\LiveRateController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ use App\Http\Resources\ApiV2\Admin\ComplianceFraudResource;
 use App\PayBridgeAccount;
 use App\UtilityTransaction;
 use App\VerificationLimit;
+use Carbon\CarbonPeriod;
 
 class DashboardOverviewController extends Controller
 {
@@ -357,27 +359,27 @@ class DashboardOverviewController extends Controller
             DB::raw('DATE(created_at) AS date'),
             DB::raw('SUM(amount) AS value')
         ])
-            ->whereHas('user', function ($query) {
-                $query->where(DB::raw('DATE(created_at)'), '<', Carbon::now()->subMonth(3));
-            })
-            ->whereBetween(DB::raw('DATE(created_at)'), [$queryFrom->format('Y-m-d'), $queryTo->format('Y-m-d')])
-            ->groupBy('date')
-            ->orderBy('date', 'ASC')
-            ->get()
-            ->toArray();
+        ->whereHas('user', function ($query) {
+            $query->where(DB::raw('DATE(created_at)'), '<', Carbon::now()->subMonth(3));
+        })
+        ->whereBetween(DB::raw('DATE(created_at)'), [$queryFrom->format('Y-m-d'), $queryTo->format('Y-m-d')])
+        ->groupBy('date')
+        ->orderBy('date', 'ASC')
+        ->get()
+        ->toArray();
 
         $chartDataNewUsers = Transaction::select([
             DB::raw('DATE(created_at) AS date'),
             DB::raw('SUM(amount) AS value')
         ])
-            ->whereHas('user', function ($query) {
-                $query->where(DB::raw('DATE(created_at)'), '>', Carbon::now()->subMonth(3));
-            })
-            ->whereBetween(DB::raw('DATE(created_at)'), [$queryFrom->format('Y-m-d'), $queryTo->format('Y-m-d')])
-            ->groupBy('date')
-            ->orderBy('date', 'ASC')
-            ->get()
-            ->toArray();
+        ->whereHas('user', function ($query) {
+            $query->where(DB::raw('DATE(created_at)'), '>', Carbon::now()->subMonth(3));
+        })
+        ->whereBetween(DB::raw('DATE(created_at)'), [$queryFrom->format('Y-m-d'), $queryTo->format('Y-m-d')])
+        ->groupBy('date')
+        ->orderBy('date', 'ASC')
+        ->get()
+        ->toArray();
 
 
         $dateRange = [];
@@ -413,7 +415,7 @@ class DashboardOverviewController extends Controller
         ], 200);
     }
 
-    public function summary()
+    public function summaryBk()
     {
         $month = request('month');
         $year = request('year');
@@ -471,6 +473,219 @@ class DashboardOverviewController extends Controller
     }
 
 
+    public function summary()
+    {
+        $month = request('month');
+        $year = request('year');
+        $type = request('type');
+
+
+        $number_and_volume_of_sell_transactions = Transaction::where(['status' => 'success', 'type' => 'sell']);
+        $number_and_volume_of_buy_transactions = Transaction::where(['status' => 'success', 'type' => 'buy']);
+        $number_and_volume_of_airtime_and_data_transactions = UtilityTransaction::where(['status' => 'success'])->orWhere(['type' => 'Recharge card purchase'])->orWhere(['type' => 'Data purchase']);
+        $number_and_volume_of_deposits = NairaTrade::where(['status' => 'success', 'type' => 'deposit']);
+        $number_and_volume_of_withdrawals = NairaTrade::where(['status' => 'success', 'type' => 'withdrawal']);
+        $number_and_volume_of_paybills_transactions =  UtilityTransaction::where(['status' => 'success'])->orWhere(['type' => 'Electricity purchase'])->orWhere(['type' => 'Cable subscription']);
+        $number_and_volume_of_manual_debits = FlaggedTransactions::where('type','Withdrawal');
+        $number_and_volume_of_manual_credits = FlaggedTransactions::where('type','Manual Deposit');
+
+        $sellTransactionChange = Transaction::where(['status' => 'success', 'type' => 'sell']);
+        $buyTransactionChange = Transaction::where(['status' => 'success', 'type' => 'buy']);
+        $airtimeDataChange = UtilityTransaction::where(['status' => 'success'])->orWhere(['type' => 'Recharge card purchase'])->orWhere(['type' => 'Data purchase']);
+        $cableElectricityChange = UtilityTransaction::where(['status' => 'success'])->orWhere(['type' => 'Recharge card purchase'])->orWhere(['type' => 'Data purchase']);
+        $depositChange = NairaTrade::where(['status' => 'success', 'type' => 'deposit']);
+        $withdrawalChange = NairaTrade::where(['status' => 'success', 'type' => 'withdrawal']);
+        $manualCreditChange = FlaggedTransactions::where('type','Manual Deposit');
+        $manualDebitChange = FlaggedTransactions::where('type','Withdrawal');
+
+        if ($type == 'month') {
+            $month = request('month');
+            $date = Carbon::createFromFormat('Y-m',$month);
+            $month = $date->format('m');
+            $year = $date->format('Y');
+
+            $number_and_volume_of_sell_transactions = $number_and_volume_of_sell_transactions->where(DB::raw('month(created_at)'), '=', $month)->where(DB::raw('year(created_at)'), '=', $year);
+            $number_and_volume_of_buy_transactions = $number_and_volume_of_buy_transactions->where(DB::raw('month(created_at)'), '=', $month)->where(DB::raw('year(created_at)'), '=', $year);
+            $number_and_volume_of_airtime_and_data_transactions = $number_and_volume_of_airtime_and_data_transactions->where(DB::raw('month(created_at)'), '=', $month)->where(DB::raw('year(created_at)'), '=', $year);
+            $number_and_volume_of_deposits = $number_and_volume_of_deposits->where(DB::raw('month(created_at)'), '=', $month)->where(DB::raw('year(created_at)'), '=', $year);
+            $number_and_volume_of_withdrawals = $number_and_volume_of_withdrawals->where(DB::raw('month(created_at)'), '=', $month)->where(DB::raw('year(created_at)'), '=', $year);
+            $number_and_volume_of_paybills_transactions = $number_and_volume_of_paybills_transactions->where(DB::raw('month(created_at)'), '=', $month)->where(DB::raw('year(created_at)'), '=', $year);
+            $number_and_volume_of_manual_debits = $number_and_volume_of_manual_debits->where(DB::raw('month(created_at)'), '=', $month)->where(DB::raw('year(created_at)'), '=', $year);
+            $number_and_volume_of_manual_credits = $number_and_volume_of_manual_credits->where(DB::raw('month(created_at)'), '=', $month)->where(DB::raw('year(created_at)'), '=', $year);
+
+            $totalTransactionAmt = Transaction::sum('amount_paid');
+            $firstTransactionDate = Transaction::first()->created_at;
+            $firstTransactionDate = Carbon::parse($firstTransactionDate);
+            $monthCount = count(CarbonPeriod::create($firstTransactionDate->format('Y-m'), '1 month', $date->format('Y-m')));
+            $avgMonthlyTransactions = $totalTransactionAmt / $monthCount;
+
+            $sellTransactionChange = round((($number_and_volume_of_sell_transactions->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $buyTransactionChange = round((($number_and_volume_of_buy_transactions->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $airtimeDataChange = round((($number_and_volume_of_airtime_and_data_transactions->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $depositChange = round((($number_and_volume_of_deposits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $withdrawalChange = round((($number_and_volume_of_withdrawals->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $cableElectricityChange = round((($number_and_volume_of_paybills_transactions->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $manualCreditChange = round((($number_and_volume_of_manual_credits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $manualDebitChange = round((($number_and_volume_of_manual_debits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+        }
+
+        if ($type == 'day') {
+            $date = request('date');
+
+            $number_and_volume_of_sell_transactions = $number_and_volume_of_sell_transactions->where(DB::raw('date(created_at)'), '=', $date);
+            $number_and_volume_of_buy_transactions = $number_and_volume_of_buy_transactions->where(DB::raw('date(created_at)'), '=', $date);
+            $number_and_volume_of_airtime_and_data_transactions = $number_and_volume_of_airtime_and_data_transactions->where(DB::raw('date(created_at)'), '=', $date);
+            $number_and_volume_of_deposits = $number_and_volume_of_deposits->where(DB::raw('date(created_at)'), '=', $date);
+            $number_and_volume_of_withdrawals = $number_and_volume_of_withdrawals->where(DB::raw('date(created_at)'), '=', $date);
+            $number_and_volume_of_paybills_transactions = $number_and_volume_of_paybills_transactions->where(DB::raw('date(created_at)'), '=', $date);
+            $number_and_volume_of_manual_debits = $number_and_volume_of_manual_debits->where(DB::raw('date(created_at)'), '=', $date);
+            $number_and_volume_of_manual_credits = $number_and_volume_of_manual_credits->where(DB::raw('date(created_at)'), '=', $date);
+
+
+            $firstTransactionDate = Transaction::first()->created_at;
+            $fdate = Carbon::parse($firstTransactionDate);
+            $totalTransactionsDays = $fdate->diffInDays($date);
+            $totalTransactions = Transaction::where('type','sell')->sum('amount_paid');
+            $avgDailyTransactions = $totalTransactions / $totalTransactionsDays;
+
+            $sellTransactionChange = round((($number_and_volume_of_sell_transactions->sum('amount') - $avgDailyTransactions) / $avgDailyTransactions) * 100);
+            $buyTransactionChange = round((($number_and_volume_of_buy_transactions->sum('amount') - $avgDailyTransactions) / $avgDailyTransactions) * 100);
+            $airtimeDataChange = round((($number_and_volume_of_airtime_and_data_transactions->sum('amount') - $avgDailyTransactions) / $avgDailyTransactions) * 100);
+            $depositChange = round((($number_and_volume_of_deposits->sum('amount') - $avgDailyTransactions) / $avgDailyTransactions) * 100);
+            $withdrawalChange = round((($number_and_volume_of_withdrawals->sum('amount') - $avgDailyTransactions) / $avgDailyTransactions) * 100);
+            $cableElectricityChange = round((($number_and_volume_of_paybills_transactions->sum('amount') - $avgDailyTransactions) / $avgDailyTransactions) * 100);
+            $manualCreditChange = round((($number_and_volume_of_manual_credits->sum('previousTransactionAmount') - $avgDailyTransactions) / $avgDailyTransactions) * 100);
+            $manualDebitChange = round((($number_and_volume_of_manual_debits->sum('previousTransactionAmount') - $avgDailyTransactions) / $avgDailyTransactions) * 100);
+        }
+
+        if ($type == 'year') {
+            $year = request('year');
+
+            $number_and_volume_of_sell_transactions = $number_and_volume_of_sell_transactions->where(DB::raw('Year(created_at)'), '=', $year);
+            $number_and_volume_of_buy_transactions = $number_and_volume_of_buy_transactions->where(DB::raw('Year(created_at)'), '=', $year);
+            $number_and_volume_of_airtime_and_data_transactions = $number_and_volume_of_airtime_and_data_transactions->where(DB::raw('Year(created_at)'), '=', $year);
+            $number_and_volume_of_deposits = $number_and_volume_of_deposits->where(DB::raw('Year(created_at)'), '=', $year);
+            $number_and_volume_of_withdrawals = $number_and_volume_of_withdrawals->where(DB::raw('Year(created_at)'), '=', $year);
+            $number_and_volume_of_paybills_transactions = $number_and_volume_of_paybills_transactions->where(DB::raw('Year(created_at)'), '=', $year);
+            $number_and_volume_of_manual_debits = $number_and_volume_of_manual_debits->where(DB::raw('Year(created_at)'), '=', $year);
+            $number_and_volume_of_manual_credits = $number_and_volume_of_manual_credits->where(DB::raw('Year(created_at)'), '=', $year);
+
+
+            $totalTransactionAmt = Transaction::sum('amount');
+            $firstTransactionDate = Transaction::first()->created_at;
+            $firstTransactionDate = Carbon::parse($firstTransactionDate);
+            $date = Carbon::createFromFormat('Y',$year);
+            $monthCount = count(CarbonPeriod::create($firstTransactionDate->format('Y-m-d'), '1 year', $date->format('Y-m-d')));
+            $avgYearlyTransactions = $totalTransactionAmt / $monthCount;
+
+            $sellTransactionChange = round((($number_and_volume_of_sell_transactions->sum('amount') - $avgYearlyTransactions) / $avgYearlyTransactions) * 100);
+            $buyTransactionChange = round((($number_and_volume_of_buy_transactions->sum('amount') - $avgYearlyTransactions) / $avgYearlyTransactions) * 100);
+            $airtimeDataChange = round((($number_and_volume_of_airtime_and_data_transactions->sum('amount') - $avgYearlyTransactions) / $avgYearlyTransactions) * 100);
+            $depositChange = round((($number_and_volume_of_deposits->sum('amount') - $avgYearlyTransactions) / $avgYearlyTransactions) * 100);
+            $withdrawalChange = round((($number_and_volume_of_withdrawals->sum('amount') - $avgYearlyTransactions) / $avgYearlyTransactions) * 100);
+            $cableElectricityChange = round((($number_and_volume_of_paybills_transactions->sum('amount') - $avgYearlyTransactions) / $avgYearlyTransactions) * 100);
+            $manualCreditChange = round((($number_and_volume_of_manual_credits->sum('previousTransactionAmount') - $avgYearlyTransactions) / $avgYearlyTransactions) * 100);
+            $manualDebitChange = round((($number_and_volume_of_manual_debits->sum('previousTransactionAmount') - $avgYearlyTransactions) / $avgYearlyTransactions) * 100);
+
+        }
+
+        if ($type == 'quarterly') {
+            $month = request('month');
+            $startFrom = Carbon::createFromFormat('Y-m',$month);
+
+            $number_and_volume_of_sell_transactions = $number_and_volume_of_sell_transactions
+                ->whereBetween(DB::raw('date(created_at)'),[Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')]);
+            $number_and_volume_of_buy_transactions = $number_and_volume_of_buy_transactions
+                ->whereBetween(DB::raw('date(created_at)'),[Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')]);
+            $number_and_volume_of_airtime_and_data_transactions = $number_and_volume_of_airtime_and_data_transactions
+                ->whereBetween(DB::raw('date(created_at)'),[Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')]);
+            $number_and_volume_of_deposits = $number_and_volume_of_deposits
+                ->whereBetween(DB::raw('date(created_at)'),[Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')]);
+            $number_and_volume_of_withdrawals = $number_and_volume_of_withdrawals
+                ->whereBetween(DB::raw('date(created_at)'),[Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')]);
+            $number_and_volume_of_paybills_transactions = $number_and_volume_of_paybills_transactions
+                ->whereBetween(DB::raw('date(created_at)'),[Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')]);
+            $number_and_volume_of_manual_debits = $number_and_volume_of_manual_debits
+                ->whereBetween(DB::raw('date(created_at)'),[Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')]);
+            $number_and_volume_of_manual_credits = $number_and_volume_of_manual_credits
+                ->whereBetween(DB::raw('date(created_at)'),[Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d'),$startFrom->format('Y-m-d')]);
+
+
+            $totalTransactionAmt = Transaction::sum('amount');
+            $firstTransactionDate = Transaction::first()->created_at;
+            $firstTransactionDate = Carbon::parse($firstTransactionDate);
+            $date = Carbon::createFromFormat('Y-m',$month);
+            $monthCount = count(CarbonPeriod::create($firstTransactionDate->format('Y-m'), '3 month', Carbon::createFromFormat('Y-m',$month)->subMonth(2)->format('Y-m-d')));
+            $avgQuarterlyTransactions = $totalTransactionAmt / $monthCount;
+
+            $sellTransactionChange = round((($number_and_volume_of_sell_transactions->sum('amount') - $avgQuarterlyTransactions) / $avgQuarterlyTransactions) * 100);
+            $buyTransactionChange = round((($number_and_volume_of_buy_transactions->sum('amount') - $avgQuarterlyTransactions) / $avgQuarterlyTransactions) * 100);
+            $airtimeDataChange = round((($number_and_volume_of_airtime_and_data_transactions->sum('amount') - $avgQuarterlyTransactions) / $avgQuarterlyTransactions) * 100);
+            $depositChange = round((($number_and_volume_of_deposits->sum('amount') - $avgQuarterlyTransactions) / $avgQuarterlyTransactions) * 100);
+            $withdrawalChange = round((($number_and_volume_of_withdrawals->sum('amount') - $avgQuarterlyTransactions) / $avgQuarterlyTransactions) * 100);
+            $cableElectricityChange = round((($number_and_volume_of_paybills_transactions->sum('amount') - $avgQuarterlyTransactions) / $avgQuarterlyTransactions) * 100);
+            $manualCreditChange = round((($number_and_volume_of_manual_credits->sum('previousTransactionAmount') - $avgQuarterlyTransactions) / $avgQuarterlyTransactions) * 100);
+            $manualDebitChange = round((($number_and_volume_of_manual_debits->sum('previousTransactionAmount') - $avgQuarterlyTransactions) / $avgQuarterlyTransactions) * 100);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'number_and_volume_of_sell_transactions' => [
+                    'total_count' => number_format($number_and_volume_of_sell_transactions->count()),
+                    'total_amount' => number_format($number_and_volume_of_sell_transactions->sum('amount')),
+                    'percentage_change' => $sellTransactionChange
+                ],
+                'number_and_volume_of_buy_transactions' => [
+                    'total_count' => number_format($number_and_volume_of_buy_transactions->count()),
+                    'total_amount' => number_format($number_and_volume_of_buy_transactions->sum('amount')),
+                    'percentage_change' => $buyTransactionChange
+                ],
+                'number_and_volume_of_airtime_and_data_transactions' => [
+                    'total_count' => number_format($number_and_volume_of_airtime_and_data_transactions->count()),
+                    'total_amount' => number_format($number_and_volume_of_airtime_and_data_transactions->sum('amount')),
+                    'percentage_change' => $airtimeDataChange
+                ],
+                'number_and_volume_of_paybills_transactions' => [
+                    'total_count' => number_format($number_and_volume_of_paybills_transactions->count()),
+                    'total_amount' => number_format($number_and_volume_of_paybills_transactions->sum('amount')),
+                    'percentage_change' => $cableElectricityChange
+                ],
+                'number_and_volume_of_deposits' => [
+                    'total_count' => number_format($number_and_volume_of_deposits->count()),
+                    'total_amount' => number_format($number_and_volume_of_deposits->sum('amount')),
+                    'percentage_change' => $depositChange
+                ],
+                'number_and_volume_of_withdrawals' => [
+                    'total_count' => number_format($number_and_volume_of_withdrawals->count()),
+                    'total_amount' => number_format($number_and_volume_of_withdrawals->sum('amount')),
+                    'percentage_change' => $withdrawalChange
+                ],
+                'number_and_volume_of_manual_credits' => [
+                    'total_count' => number_format($number_and_volume_of_manual_credits->count()),
+                    'total_amount' => number_format($number_and_volume_of_manual_credits->sum('previousTransactionAmount')),
+                    'percentage_change' => $manualCreditChange
+                ],
+                'number_and_volume_of_manual_debits' => [
+                    'total_count' => number_format($number_and_volume_of_manual_debits->count()),
+                    'total_amount' => number_format($number_and_volume_of_manual_debits->sum('previousTransactionAmount')),
+                    'percentage_change' => $manualDebitChange
+                ],
+                'customers_feedback' => [
+                    'total_count' => "100",
+                    'good' => [
+                        'total' => "600",
+                        'percentage_change' => 30
+                    ],
+                    'bad' => [
+                        'total' => "600",
+                        'percentage_change' => -72
+                    ]
+                ]
+            ]
+        ], 200);
+    }
+
     public function paybridgeTransactions()
     {
         $data['paybridge_transactions'] =  NairaTransaction::select('user_id', "current_balance", "previous_balance", "status", 'type', 'amount_paid', 'amount', 'created_at')->whereHas("user")->with(['user' => function ($query) {
@@ -489,9 +704,6 @@ class DashboardOverviewController extends Controller
 
     public function recentTransactions()
     {
-
-
-
 
         $tranx = DB::table('transactions')
             ->join('users', 'transactions.user_id', '=', 'users.id')
