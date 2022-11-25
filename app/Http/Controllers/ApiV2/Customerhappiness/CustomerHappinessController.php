@@ -475,8 +475,49 @@ class CustomerHappinessController extends Controller
     public function filterByType($type)
     {
 
-        $airtime = NairaTransaction::where('type', 'recharge card')->with('user')->latest()->paginate(10);
-        $electricity = NairaTransaction::where('type', 'electricity bills')->with('user')->latest()->paginate(10);
+        $airtime = NairaTransaction::with('utility')->where('type', 'recharge card')->with('user')->latest()->paginate(10);
+        $electricity = NairaTransaction::with('utility')->where('type', 'electricity bills')->with('user')->latest()->paginate(10);
+        $data = NairaTransaction::with('utility')->where('type', 'mobile data')->with('user')->latest()->paginate(10);
+        $cable = NairaTransaction::with('utility')->where('type', 'cable')->with('user')->latest()->paginate(10);
+
+
+
+
+
+        if ($type == 'giftcard') {
+            $nairaTransactions = NairaTransaction::with('user')->orderBy('id', 'DESC')->paginate(100);
+
+
+            $gcard = Transaction::orderBy('id', 'DESC')->whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            });
+
+
+            // dd($gcard);
+            // $transactions = Transaction::with('user')->orderBy('id', 'DESC')->paginate(100);
+            $array = [];
+
+            foreach ($nairaTransactions as $nt) {
+
+                $giftCard_transaction =  $gcard->where('uid', substr($nt->narration, -13, 13))->get();
+
+
+                if ($giftCard_transaction) {
+                    $giftCard_transaction->nairaTransaction = $nt;
+                    $array[] = $giftCard_transaction;
+                } else {
+                    $array[] = $nt;
+                }
+            }
+            return response()->json([
+                'success' => true,
+                'usersData' => $array,
+            ], 200);
+        }
+
+
+
+
 
         if ($type == 'power') {
             return response()->json([
@@ -486,8 +527,6 @@ class CustomerHappinessController extends Controller
             ]);
 
         }
-
-
         if ($type == 'airtime') {
             return response()->json([
                 'success' => true,
@@ -495,6 +534,27 @@ class CustomerHappinessController extends Controller
 
             ]);
         }
+        if ($type == 'data') {
+            return response()->json([
+                'success' => true,
+                'transaction' => $data,
+
+            ]);
+        }
+
+        if ($type == 'cable') {
+            return response()->json([
+                'success' => true,
+                'transaction' => $cable,
+
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'msg' => "Wrong filter type",
+
+        ]);
 
 
 
