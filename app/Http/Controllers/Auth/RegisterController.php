@@ -80,6 +80,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+
+        // dd(12);
         $emailJob = (new RegistrationEmailJob($data['email']));
         dispatch($emailJob);
 
