@@ -172,6 +172,15 @@ class BillsPaymentController extends Controller
             ]);
         }
 
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount > $ledger_balance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
         $priceDeduction = $balance - $request->amount;
 
         $new_balance = $naira_wallet->update([
@@ -279,7 +288,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is locked',
+                'message' => 'Service is currently unavailable, please try again later',
             ]);
         } elseif ($body['code'] == 022) {
             $nt->status = 'failed';
@@ -290,7 +299,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is suspended',
+                'message' => 'Service is currently unavailable, please try again later',
             ]);
         } elseif ($body['code'] == 024) {
             $nt->status = 'failed';
@@ -301,7 +310,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is inactive',
+                'message' => 'Service is currently unavailable, please try again later',
             ]);
         } else {
             $nt->status = 'failed';
@@ -383,6 +392,15 @@ class BillsPaymentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Maximium amount is ₦25000',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($request->amount > $ledger_balance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         }
@@ -497,7 +515,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is locked',
+                'message' => 'Service is currently unavailable, please try again later',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         } elseif ($body['code'] == 022) {
@@ -509,7 +527,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is suspended',
+                'message' => 'Service is currently unavailable, please try again later',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         } elseif ($body['code'] == 024) {
@@ -521,7 +539,7 @@ class BillsPaymentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is inactive',
+                'message' => 'Service is currently unavailable, please try again later',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         } else {
@@ -617,6 +635,15 @@ class BillsPaymentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Maximium amount is ₦100000',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($r->amount > $ledger_balance) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
                 'response_description' => 'TRANSACTION FAILURE',
             ]);
         }
@@ -999,6 +1026,15 @@ class BillsPaymentController extends Controller
         $total_charge = $amount + $charge;
 
         if ($total_charge > $n->amount) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Insufficient balance',
+                'response_description' => 'TRANSACTION FAILURE',
+            ]);
+        }
+
+        $ledger_balance = UserController::ledgerBalance()->getData()->balance;
+        if ($total_charge > $ledger_balance) {
             return response()->json([
                 'success' => false,
                 'message' => 'Insufficient balance',
@@ -1438,7 +1474,7 @@ class BillsPaymentController extends Controller
 
     //         return response()->json([
     //             'success' => false,
-    //             'message' => 'Your account is locked',
+    //             'message' => 'Service is currently unavailable, please try again later',
     //             'response_description' => 'TRANSACTION FAILURE',
     //         ]);
     //     }
@@ -1452,7 +1488,7 @@ class BillsPaymentController extends Controller
 
     //         return response()->json([
     //             'success' => false,
-    //             'message' => 'Your account is suspended',
+    //             'message' => 'Service is currently unavailable, please try again later',
     //             'response_description' => 'TRANSACTION FAILURE',
     //         ]);
     //     }
@@ -1466,7 +1502,7 @@ class BillsPaymentController extends Controller
 
     //         return response()->json([
     //             'success' => false,
-    //             'message' => 'Your account is inactive',
+    //             'message' => 'Service is currently unavailable, please try again later',
     //             'response_description' => 'TRANSACTION FAILURE',
     //         ]);
     //      }
