@@ -17,8 +17,8 @@ class UtilityTransactions extends Controller
         $data = $request->validate([
             'start' => 'date|string',
             'end' => 'date|string',
-        ]);  
-  
+        ]);
+
         if (!empty($data)) {
             $transactions['transactions'] = $transactions['transactions']
             ->where('created_at', '>=', $data['start'])
@@ -32,15 +32,15 @@ class UtilityTransactions extends Controller
                 $transactions['transactions'] = $transactions['transactions']
                 ->where('status','=',$request->status);
             }
-            
+
 
         }
         $total = $transactions['transactions']->sum('total');
-        
+
         $total_transactions = $transactions['transactions']->count();
         $total_amount = $transactions['transactions']->sum('amount');
         $total_convenience_fee = $transactions['transactions']->sum('convenience_fee');
-        
+
         $transactions['transactions'] = $transactions['transactions']->paginate(200);
         return view('admin.utility-transactions',$transactions,compact(['type','status','total',
         'total_transactions','total_amount','total_convenience_fee']));
@@ -74,7 +74,7 @@ class UtilityTransactions extends Controller
                         'subscription_plan' => '',
                         'decoder_number' => $response['content']['transactions']['unique_element'],
                         'price' => $response['content']['transactions']['unit_price'],
-                    ]);  
+                    ]);
                 }elseif ($transaction->type == 'Electricity purchase') {
                     $extras = json_encode([
                         'token' => $response['token'],
@@ -141,7 +141,7 @@ class UtilityTransactions extends Controller
     //                     'subscription_plan' => '',
     //                     'decoder_number' => $response['content']['transactions']['unique_element'],
     //                     'price' => $response['content']['transactions']['unit_price'],
-    //                 ]);  
+    //                 ]);
     //             }elseif ($transaction->type == 'Electricity purchase') {
     //                 $extras = json_encode([
     //                     'token' => $response['token'],
