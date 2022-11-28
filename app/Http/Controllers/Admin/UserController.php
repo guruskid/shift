@@ -252,7 +252,19 @@ class UserController extends Controller
         }
 
         $verification->status = 'failed';
+
+        if ($dt->type == 'Address'){
+            $verification->user->address_verified_at = NULL;
+            $verification->user->save();
+        }
+        else {
+            $verification->user->idcard_verified_at = NULL;
+            $verification->user->save();
+        }
+
+
         $verification->save();
+        // dd( $verification->user->address_verified_at);
 
         Notification::create([
             'user_id' => $verification->user->id,
