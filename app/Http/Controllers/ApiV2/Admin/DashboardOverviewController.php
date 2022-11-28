@@ -292,34 +292,43 @@ class DashboardOverviewController extends Controller
     public function transactionHistory($type)
     {
 
+
+
+
+
         // $tranx = [];
         if ($type == 'p2p') {
 
-            $data['count'] =    $this->p2pTransactionHistoryDetails()->latest()->limit(7)->get()
-                ->groupBy(function($t) {
-                    return $t->created_at->format('Y-m-d');
-                })
-                ->map(function($d) {
-                    return count($d);
-                });
-            // $tranx = $this->p2pTransactionHistory();
-            // start
-            $p2pTrx =  $this->p2pTransactionHistoryDetails()->latest()->get();
-            $data['tranx'] = $p2pTrx->map(function ($item) {
+            return response()->json([
+                'success' => true,
+                'data' => SpotLightController::getTransactionByDay()
+            ],200);
 
-                return [
-                      'reference' => $item->reference,
-                    'amount' => $item->naira_transactions->amount,
-                    "user" => $item->user->first_name . " " . $item->user->first_name,
-                    "username" => $item->user->username,
-                    "dp" => $item->user->dp,
-                    "previous_balance" => $item->naira_transactions->previous_balance,
-                    "current_balance" => $item->naira_transactions->current_balance,
-                    "date" => $item->created_at,
-                    "status"  => $item->status,
-                    "type" => $item->type
-                ];
-            });
+            // $data['count'] =    $this->p2pTransactionHistoryDetails()->latest()->limit(7)->get()
+            //     ->groupBy(function($t) {
+            //         return $t->created_at->format('Y-m-d');
+            //     })
+            //     ->map(function($d) {
+            //         return count($d);
+            //     });
+            // // $tranx = $this->p2pTransactionHistory();
+            // // start
+            // $p2pTrx =  $this->p2pTransactionHistoryDetails()->latest()->get();
+            // $data['tranx'] = $p2pTrx->map(function ($item) {
+
+            //     return [
+            //           'reference' => $item->reference,
+            //         'amount' => $item->naira_transactions->amount,
+            //         "user" => $item->user->first_name . " " . $item->user->first_name,
+            //         "username" => $item->user->username,
+            //         "dp" => $item->user->dp,
+            //         "previous_balance" => $item->naira_transactions->previous_balance,
+            //         "current_balance" => $item->naira_transactions->current_balance,
+            //         "date" => $item->created_at,
+            //         "status"  => $item->status,
+            //         "type" => $item->type
+            //     ];
+            // });
         } elseif ($type == 'crypto') {
             $cryptoTrx =
                 Transaction::whereHas('asset', function ($query) {
