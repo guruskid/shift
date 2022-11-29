@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiV2\Customerhappiness;
 
 use App\Http\Controllers\Controller;
 use App\NairaTrade;
+use App\NairaTransaction;
 use App\NairaWallet;
 use App\Ticket;
 use App\TicketCategory;
@@ -116,7 +117,7 @@ class CustomerHappinessController extends Controller
             'channel' => 'required',
             'username' => 'required',
             'category' => 'required',
-            'status'  => ['required','in:open,close'],
+            'status' => ['required', 'in:open,close'],
         ]);
 
         // $agent_id = User::where('role', 555)->where('status', 'active')->first();
@@ -128,7 +129,7 @@ class CustomerHappinessController extends Controller
             'agent_id' => Auth::user()->id,
             'description' => $req->description,
             'status' => $req->status,
-            'agent_name' => Auth::user()->first_name ." " .Auth::user()->last_name,
+            'agent_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
             'type' => $req->type,
             'channel' => $req->channel,
             'category' => $req->category,
@@ -274,15 +275,61 @@ class CustomerHappinessController extends Controller
 
     }
 
-    public function transactions()
+    // public function transactions()
+    // {
+    //     $transactions = Transaction::with('user')->latest('id')->paginate(10);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'transaction' => $transactions,
+
+    //     ]);
+    // }
+
+    public function trialTransactions1()
     {
-        $transactions = Transaction::with('user')->latest('id')->paginate(10);
+        $nairaTransactions = NairaTransaction::whereIn('transaction_type_id', [20, 19, 24, 5, 4])->orderBy('id', 'DESC')->paginate(100);
+        $transactions = Transaction::with('user')->orderBy('id', 'DESC')->paginate(100);
+        $array = [];
+        foreach ($nairaTransactions as $nt) {
+            $tranx = $transactions->where('uid', substr($nt->narration, -13, 13))->first();
+            if ($tranx) {
+                $tranx->nairaTransaction = $nt;
+                $array[] = $tranx;
+            } else {
+                $array[] = $nt;
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'usersData' => $array,
+        ], 200);
+    }
+
+    public function trialTransactions2()
+    {
+        $researches = DB::table('naira_transactions')
+            ->whereIn('transaction_type_id', [20, 19, 24, 5, 4])
+            ->join('transactions', DB::raw("SUBSTRING(naira_transactions.narration, -13, 13)"), '=', 'transactions.uid')
+            ->select('transactions.id', 'transactions.uid', 'transactions.user_email', 'transactions.user_id', 'transactions.card', 'transactions.type', 'transactions.amount', 'transactions.amount_paid',
+                'transactions.status', 'transactions.card_type', 'transactions.quantity', 'transactions.card_price', 'transactions.created_at', 'transactions.updated_at', 'transactions.ngn_rate',
+                'naira_transactions.previous_balance', 'naira_transactions.current_balance', DB::raw("SUBSTRING(naira_transactions.narration, -13, 13) as naira_transactions_uid"))
+            ->orderBy('transactions.id', 'DESC')
+            ->paginate(100);
+
+        $researches = DB::table('naira_transactions')
+            ->whereIn('transaction_type_id', [20, 19, 24, 5, 4])
+            ->join('transactions', DB::raw("SUBSTRING_INDEX(naira_transactions.narration,' ', -1)"), '=', 'transactions.uid')
+            ->select('transactions.id', 'transactions.uid', 'transactions.user_email', 'transactions.user_id', 'transactions.card', 'transactions.type', 'transactions.amount', 'transactions.amount_paid',
+                'transactions.status', 'transactions.card_type', 'transactions.quantity', 'transactions.card_price', 'transactions.created_at', 'transactions.updated_at', 'transactions.ngn_rate',
+                'naira_transactions.previous_balance', 'naira_transactions.current_balance', DB::raw("SUBSTRING_INDEX(naira_transactions.narration,' ', -1) as naira_transactions_uid"))
+            ->orderBy('transactions.id', 'DESC')
+            ->paginate(100);
 
         return response()->json([
             'success' => true,
-            'transaction' => $transactions,
-
-        ]);
+            'usersData' => $researches,
+        ], 200);
     }
 
     public function p2pTran()
@@ -298,7 +345,19 @@ class CustomerHappinessController extends Controller
 
     public function sortP2pbyStatus($status)
     {
-        $transactions = NairaTrade::with('user')->where('status', $status)->latest('id')->paginate(10);
+        $transactions = NairaTrade::where('status', $status)->get();
+
+        dd($transactions->status);
+
+        if ($status != "cancelled" || $status != "pending" || $status != "success") {
+
+            return response()->json([
+                'success' => false,
+                'message' => "No such status",
+
+            ]);
+
+        }
 
         return response()->json([
             'success' => true,
@@ -416,15 +475,88 @@ class CustomerHappinessController extends Controller
     public function filterByType($type)
     {
 
-        $transactions = Transaction::whereHas('asset', function ($fitler) use ($type) {
-            $fitler->where('is_crypto', $type);
-        })->latest('id')->paginate(10);
+        $airtime = NairaTransaction::with('utility')->where('type', 'recharge card')->with('user')->latest()->paginate(10);
+        $electricity = NairaTransaction::with('utility')->where('type', 'electricity bills')->with('user')->latest()->paginate(10);
+        $data = NairaTransaction::with('utility')->where('type', 'mobile data')->with('user')->latest()->paginate(10);
+        $cable = NairaTransaction::with('utility')->where('type', 'cable')->with('user')->latest()->paginate(10);
+
+
+
+
+
+        if ($type == 'giftcard') {
+            $nairaTransactions = NairaTransaction::with('user')->orderBy('id', 'DESC')->paginate(100);
+
+
+            $gcard = Transaction::orderBy('id', 'DESC')->whereHas('asset', function ($query) {
+                $query->where('is_crypto', 0);
+            });
+
+
+            // dd($gcard);
+            // $transactions = Transaction::with('user')->orderBy('id', 'DESC')->paginate(100);
+            $array = [];
+
+            foreach ($nairaTransactions as $nt) {
+
+                $giftCard_transaction =  $gcard->where('uid', substr($nt->narration, -13, 13))->get();
+
+
+                if ($giftCard_transaction) {
+                    $giftCard_transaction->nairaTransaction = $nt;
+                    $array[] = $giftCard_transaction;
+                } else {
+                    $array[] = $nt;
+                }
+            }
+            return response()->json([
+                'success' => true,
+                'usersData' => $array,
+            ], 200);
+        }
+
+
+
+
+
+        if ($type == 'power') {
+            return response()->json([
+                'success' => true,
+                'transaction' => $electricity,
+
+            ]);
+
+        }
+        if ($type == 'airtime') {
+            return response()->json([
+                'success' => true,
+                'transaction' => $airtime,
+
+            ]);
+        }
+        if ($type == 'data') {
+            return response()->json([
+                'success' => true,
+                'transaction' => $data,
+
+            ]);
+        }
+
+        if ($type == 'cable') {
+            return response()->json([
+                'success' => true,
+                'transaction' => $cable,
+
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-            'transaction' => $transactions,
+            'success' => false,
+            'msg' => "Wrong filter type",
 
         ]);
+
+
 
     }
 

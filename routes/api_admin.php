@@ -284,7 +284,8 @@ Route::group(['middleware' => ['auth:api', 'coo', 'cors']], function () {
     });
 
     Route::group(['prefix' => 'spotlight'], function () {
-        Route::GET('/stats', 'SpotLightController@stats');
+        Route::GET('/stats', 'SpotLightController@newStats');
+        // Route::GET('/new-stats', 'SpotLightController@newStats');
         // Route::GET('/recent-transactions', 'SpotLightController@recentTransactions');
         Route::GET('/recent-transactions', 'SpotLightController@newRecentTransactions');
         Route::GET('/staff-on-role', 'SpotLightController@staffOnRole');

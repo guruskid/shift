@@ -519,7 +519,7 @@ class TradeNairaController extends Controller
                 $withdrawal =  $this->confirmSell($request, $transaction);
                 $status = $withdrawal['status'];
                 $message = $withdrawal['message'];
-                
+
             }
             //decline
             if($request->status == 'decline'){
@@ -758,7 +758,7 @@ class TradeNairaController extends Controller
         }
 
         $systemBalance = NairaWallet::sum('amount');
-        
+
         $nt = NairaTransaction::where('reference', $transaction->reference)->first();
 
         if ($transaction->status == 'success') {
@@ -766,7 +766,7 @@ class TradeNairaController extends Controller
 
                 // return $nt->user->nairaWallet->id;
 
-                
+
                 $nt->user->nairaWallet->amount += $nt->amount;
                 $nt->user->nairaWallet->save();
 
@@ -798,7 +798,7 @@ class TradeNairaController extends Controller
                 $n->dr_user_id = $nt->cr_user_id;
                 $n->status = 'success';
                 $n->save();
-                
+
 
             }else {
                 # debit the user
