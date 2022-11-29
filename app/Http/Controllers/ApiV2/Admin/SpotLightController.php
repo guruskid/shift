@@ -1171,6 +1171,43 @@ return $differenceInpercentage;
        return $year.' '.$amount.' '.date('Y').' '.$res;
     }
 
+    public static function getTransactionByDay(){
+        $range = 30;
+        $chartData = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 0);
+        })
+        ->whereHas('naira_transactions', function ($query) {
+            $query->select('*');
+        })->select([
+            DB::raw('DATE(created_at) AS date'),
+            DB::raw('COUNT(id) AS count'),
+        ])
+        ->groupBy('date')
+        ->orderBy('date', 'ASC')
+        ->get()->toArray();
+        $dateRange = [];
+        $chartDataByDay = [];
+        foreach ($chartData as $data) {
+            $chartDataByDay[$data['date']] = $data['count'];
+        }
+        $date = new Carbon;
+        for ($i = 0; $i < $range - 1; $i++) {
+            $dateString = $date->format('Y-m-d');
+            if (!isset($chartDataByDay[$dateString])) {
+                $chartDataByDay[$dateString] = 0;
+            }
+
+            $dateRange[] = [
+                'date' => $dateString,
+                'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
+                'days' => substr($date->format('l'), 0, 3),
+                'date_day' => $date->format('d')
+            ];
+            $date->subDay();
+        }
+        return ($dateRange);
+    }
+
     public static function getUsersByDays() {
         $range = 30;
         $chartData = User::select([
