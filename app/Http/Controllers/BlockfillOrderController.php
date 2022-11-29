@@ -12,7 +12,7 @@ class BlockfillOrderController extends Controller
 {
     public static function order(Transaction $transaction)
     {
-       
+
         // return;
         $client = new Client();
         $url = env('BLOCKFILL_URL') . '/dantown/v1/order/place';
@@ -26,7 +26,7 @@ class BlockfillOrderController extends Controller
             ],
         ]);
 
-        \Log::info($res->getBody());
+        // \Log::info($res->getBody());
 
         $currency_id = 1;
         BlockfillOrder::create([
