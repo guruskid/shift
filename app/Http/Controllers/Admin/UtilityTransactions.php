@@ -66,6 +66,8 @@ class UtilityTransactions extends Controller
         curl_close($ch);
         $response = json_decode($response,true);
 
+        dd($response);
+
         if(isset($response['content']) && isset($response['content']['transactions'])) {
             if($response['content']['transactions']['status'] == 'delivered') {
                 if ($transaction->type == 'Cable subscription') {
