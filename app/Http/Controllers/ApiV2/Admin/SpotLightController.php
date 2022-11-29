@@ -46,7 +46,7 @@ class SpotLightController extends Controller {
 
         $transactionCollections =  $transactions->values();
         $daily_transaction_change = 0;
-        if (  $transactionCollections->count() >= 1) {
+        if (  $transactionCollections->count() >= 2) {
             $today_transactions = $transactionCollections->get(0)->count;
         $yesterday_transactions = $transactionCollections->get(1)->count;
         $daily_transaction_percentage = ((  $today_transactions -   $yesterday_transactions) /   $yesterday_transactions) * 100;
@@ -63,7 +63,7 @@ class SpotLightController extends Controller {
 
             $transactionsVolumeCollections =  $transactionsVolume->values();
         $daily_transaction_volume__change = 0;
-        if (  $transactionsVolumeCollections->count() >= 1) {
+        if (  $transactionsVolumeCollections->count() >= 2) {
             $today_volume_transactions =  $transactionsVolumeCollections->get(0)->total;
         $yesterday_volume_transactions =  $transactionsVolumeCollections->get(1)->total;
         $daily_transaction_volume_percentage = ((  $today_volume_transactions -   $yesterday_volume_transactions) /   $yesterday_volume_transactions) * 100;
@@ -82,7 +82,7 @@ class SpotLightController extends Controller {
         $verificationCollection = $verification->values();
         $daily_verification_change = 0;
 
-        if ($verificationCollection->count() >= 1) {
+        if ($verificationCollection->count() >= 2) {
             $today_verification =  $verificationCollection->get(0)->count;
         $yesterday_verification =  $verificationCollection->get(1)->count;
         $daily_verification_percentage = (($today_verification -   $yesterday_verification) /   $yesterday_verification) * 100;
@@ -99,7 +99,7 @@ class SpotLightController extends Controller {
             $uniqueUsersCollection = $UniqueUser->values();
             $daily__unique_users_change = 0;
 
-            if ($uniqueUsersCollection->count() >= 1) {
+            if ($uniqueUsersCollection->count() >= 2) {
                 $today_unique_users =  $uniqueUsersCollection->get(0)->count;
             $yesterday_unique_users =  $uniqueUsersCollection->get(1)->count;
             $daily_unique_users_percentage = (( $today_unique_users -   $yesterday_unique_users) /   $yesterday_unique_users) * 100;
@@ -125,7 +125,7 @@ class SpotLightController extends Controller {
        $avgMonthlySignupsCollections =  $avgMonthlySignups->values() ;
        $monthly_average_signups_change = 0;
 
-       if ($avgMonthlySignupsCollections->count() >= 1) {
+       if ($avgMonthlySignupsCollections->count() >= 2) {
 
         $today_avgMonthlySignups = $avgMonthlySignupsCollections->get(0)['average'];
         $yesterday_avgMonthlySignups = $avgMonthlySignupsCollections->get(1)['average'];
@@ -149,7 +149,7 @@ class SpotLightController extends Controller {
 
        $avg_monthly_transaction_collection = $avgMonthlyTransactions->values();
        $avg_monthly_transaction_change = 0;
-       if ( $avg_monthly_transaction_collection->count() >= 1) {
+       if ( $avg_monthly_transaction_collection->count() >= 2) {
 
         $today_avg_monthly_transactionm = $avg_monthly_transaction_collection->get(0)['average'];
         $yesterday_avg_monthly_transactionm = $avg_monthly_transaction_collection->get(1)['average'];
@@ -175,7 +175,7 @@ class SpotLightController extends Controller {
 
       $avg_monthly_volume_transaction_collection = $avgMonthlyVolumeTransactions->values();
       $avg_monthly_volume_transaction_change = 0;
-      if ( $avg_monthly_volume_transaction_collection->count() >= 1) {
+      if ( $avg_monthly_volume_transaction_collection->count() >= 2) {
 
        $today_avg_monthly_volume_transactionm = $avg_monthly_volume_transaction_collection->get(0)['average'];
        $yesterday_avg_monthly_volume_transactionm = $avg_monthly_volume_transaction_collection->get(1)['average'];
@@ -199,7 +199,7 @@ class SpotLightController extends Controller {
 
        $avg_monthly_verification_collection = $avgMonthlyVerification->values();
        $avg_monthly_verification_change = 0;
-       if($avg_monthly_verification_collection->count() >= 1){
+       if($avg_monthly_verification_collection->count() >= 2){
         $today_avg_monthly_verification = $avg_monthly_verification_collection->get(0)['average'];
         $yesterday_avg_monthly_verification = $avg_monthly_verification_collection->get(1)['average'];
         $avg_monthly_verification_percentage =  (( $today_avg_monthly_verification - $yesterday_avg_monthly_verification) /   $yesterday_avg_monthly_verification) * 100;
@@ -209,7 +209,7 @@ class SpotLightController extends Controller {
 
     //    Average Unique User
 
-    $UniqueUserAverageCollection =  collect($verification );
+    $UniqueUserAverageCollection =  collect($verification);
     $avgMonthlyUniqueUser =   $UniqueUserAverageCollection->map( function($item, $key){
         $fromDate = Carbon::now()->subMonth()->startOfMonth()->toDateString();
         $UniqueCount = NairaTransaction::where("status", "success")->whereBetween('created_at',[$fromDate,  $item->date])->count();
@@ -223,7 +223,7 @@ class SpotLightController extends Controller {
 
    $avg_monthly_unique_collection = $UniqueUserAverageCollection->values();
    $avg_monthly_unique_change = 0;
-   if($avg_monthly_unique_collection->count() >= 1){
+   if($avg_monthly_unique_collection->count() >= 2){
     $today_avg_monthly_unique = $avg_monthly_unique_collection->get(0)['average'];
     $yesterday_avg_monthly_unique = $avg_monthly_unique_collection->get(1)['average'];
     $avg_monthly_unique_percentage =  (( $today_avg_monthly_unique - $yesterday_avg_monthly_verification) /   $yesterday_avg_monthly_unique) * 100;
