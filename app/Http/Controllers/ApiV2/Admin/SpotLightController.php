@@ -440,6 +440,12 @@ class SpotLightController extends Controller {
             $days = $request['days'] - 1;
             $now = Carbon::now();
             $period = 1000;
+
+            if ($days < 1) {
+                $days = 1;
+                $period = $period / 2;
+            }
+
             $ticks = ceil($period/$days);
 
             for ($i=0; $i < $ticks; $i++) {
@@ -448,7 +454,13 @@ class SpotLightController extends Controller {
                 }
                 $frmd = $now->format('Y-m-d');
                 $from = $now->format('jS M');
-                $now->subDays($days + 1);
+
+                if ($days < 2) {
+                    $now->subDays($days);
+                }else{
+                    $now->subDays($days + 1);
+                }
+
                 $tod = $now->format('Y-m-d');
                 $to = $now->format('jS M');
                 $tick = $to.' - '.$from;
