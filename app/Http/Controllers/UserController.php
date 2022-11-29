@@ -2,30 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Nahid\Talk\Facades\Talk;
 use App\Account;
 use App\Bank;
-use Illuminate\Support\Facades\Auth;
 use App\Card;
-use App\Notification;
-use App\Rate;
-use App\Transaction;
-use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
-use Intervention\Image\Facades\Image;
 use App\Charts\UserChart;
 use App\Events\NewTransaction;
 use App\Mail\DantownNotification;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
 use App\NairaWallet;
-use App\UserTracking;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\DB;
+use App\Notification;
+use App\Rate;
+use App\Transaction;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -36,7 +32,7 @@ class UserController extends Controller
         $user = null;
         if ($user_id == 0) {
             $user = Auth::user();
-        }else {
+        } else {
             $user = User::find($user_id);
         }
 
@@ -67,12 +63,12 @@ class UserController extends Controller
         $borderColors = [
             "rgba(22,160,133, 1.0)",
             "rgba(255, 205, 86, 1.0)",
-            "rgba(51,105,232, 1.0)"
+            "rgba(51,105,232, 1.0)",
         ];
         $fillColors = [
             "rgba(22,160,133, 1.0)",
             "rgba(255, 205, 86, 1.0)",
-            "rgba(51,105,232, 1.0)"
+            "rgba(51,105,232, 1.0)",
 
         ];
         $usersChart = new UserChart;
@@ -109,16 +105,15 @@ class UserController extends Controller
         if ($user) {
             return response()->json([
                 'success' => true,
-                'user' => $user->first_name . ' ' . $user->last_name
+                'user' => $user->first_name . ' ' . $user->last_name,
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'msg' => "User not found"
+            'msg' => "User not found",
         ]);
     }
-
 
     /* Profile ajax functions */
     public function updateProfile(Request $request)
@@ -132,20 +127,27 @@ class UserController extends Controller
     public function updateBank(Request $request)
     {
 
-        // $validator = Validator::make($request->all(), [
-        //         'account_name' => 'required',
-        //         'name' => 'required',
-        //         'account_number' => 'required',
+        $validator = Validator::make($request->all(), [
+            'account_name' => 'required',
+            'bank_code' => 'required',
+            'account_number' => 'required| min:10',
 
-        //     ]);
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'msg' => $validator->errors(),
+            ], 401);
+        }
 
-        //     if ($validator->fails()) {
-        //         return response()->json([
-        //             'success' => false,
-        //             'msg' => $validator->errors(),
-        //         ], 401);
-        //     }
+        $bank = Bank::where('code', $request->bank_code)->first();
 
+        if ($bank == null) {
+            return response()->json([
+                'success' => false,
+                'msg' => 'Incorrect Bank',
+            ]);
+        }
 
         // if (Auth::user()->phone_verified_at == null) {
 
@@ -200,10 +202,35 @@ class UserController extends Controller
             if ($accts) {
                 return response()->json([
                     'success' => false,
-                    'msg' => 'Bank account already exist'
+                    'msg' => 'Bank account already exist',
                 ]);
             }
 
+            //Check for different account entirely
+
+            $initialAccount = Account::where('user_id', Auth::user()->id)->first();
+
+            if ($initialAccount != null) {
+
+                $fromDB = strtoupper($initialAccount->account_name);
+                $incoming = strtoupper($request->account_name);
+
+                $previous = explode(' ', $fromDB);
+                $newOne = explode(' ', $incoming);
+
+                $joinToCompare = array_intersect($previous, $newOne);
+
+                $determiner = (count($joinToCompare) * 100 / count($previous));
+
+                if ($determiner < 60) {
+
+                    return response()->json([
+                        'success' => false,
+                        'msg' => 'Account Name doesn\'t match the previous one',
+                    ]);
+
+                }
+            }
 
             $updated = explode(' ', trim($request->account_name));
 
@@ -236,7 +263,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'msg' => $msg
+            'msg' => $msg,
         ]);
     }
 
@@ -260,7 +287,6 @@ class UserController extends Controller
             return response()->json('Bank details deleted');
         }
     }
-
 
     /* Ajax functions end here */
 
@@ -296,7 +322,6 @@ class UserController extends Controller
         return view('newpages.profile');
     }
 
-
     public function profilePicture(Request $request)
     {
 
@@ -320,12 +345,11 @@ class UserController extends Controller
         return redirect()->back()->with(['success' => 'Profile updated']);
     }
 
-
     public function password(Request $request)
     {
         $request->validate([
             'old_password' => 'required',
-            'new_password' => 'required|string|confirmed|min:6|different:old_password'
+            'new_password' => 'required|string|confirmed|min:6|different:old_password',
         ]);
 
         if (Hash::check($request->old_password, Auth::user()->password) == false) {
@@ -343,7 +367,7 @@ class UserController extends Controller
     {
         $r->validate([
             'password' => 'required',
-            'new_email' => 'required|email|unique:users,email'
+            'new_email' => 'required|email|unique:users,email',
         ]);
 
         if (Hash::check($r->password, Auth::user()->password) == false) {
@@ -409,7 +433,6 @@ class UserController extends Controller
         $rate = Rate::where('card', $r->card)->where('rate_type', $r->rate_type)
             ->where('min', '<=', $tmp_amount)->where('max', '>=', $tmp_amount)->value($country);
 
-
         /* if it is a crypto and ngn / to get the equivalent in btc or eth */
         if ($r->country == 'ngn') {
             $value = $r->amount;
@@ -446,7 +469,6 @@ class UserController extends Controller
 
             $card_id = Card::where('name', $r->card)->first()->id;
 
-
             $t = new Transaction();
             $t->uid = uniqid();
             $t->user_email = Auth::user()->email;
@@ -468,7 +490,6 @@ class UserController extends Controller
 
             if ($r->pay_with == 'wallet' && $r->rate_type == 'buy') {
 
-
                 $reference = \Str::random(2) . '-' . $t->id;
                 $n = NairaWallet::find(1);
                 $currentSystemBalance = NairaWallet::sum('amount');
@@ -478,14 +499,12 @@ class UserController extends Controller
                 $nt->user_id = Auth::user()->id;
                 $nt->type = 'naira wallet';
 
-
                 $nt->previous_balance = $prev_bal;
                 $nt->current_balance = Auth::user()->nairaWallet->amount;
                 $nt->system_previous_balance = $systemBalance;
-                $nt->system_current_balance =  $currentSystemBalance;
+                $nt->system_current_balance = $currentSystemBalance;
                 $nt->charge = 0;
                 $nt->transaction_type_id = 5;
-
 
                 $nt->cr_wallet_id = $n->id;
                 $nt->dr_wallet_id = Auth::user()->nairaWallet->id;
@@ -508,7 +527,6 @@ class UserController extends Controller
             ]);
             if (Auth::user()->notificationSetting->trade_email == 1) {
                 Mail::to(Auth::user()->email)->send(new DantownNotification($title, $body, 'Transaction History', route('user.transactions')));
-
 
                 $title = 'Transaction Pending';
 
@@ -537,12 +555,10 @@ class UserController extends Controller
         return view('user.transaction', compact(['transaction']));
     }
 
-
-
     public function updateBankDetails(Request $request)
     {
 
-        // dd('something here');
+        dd('something here');
         $a = Account::find($request->id);
         if ($a->user_id != Auth::user()->id) {
             return redirect()->back()->with(["error" => 'Invalid Operation']);
@@ -555,10 +571,9 @@ class UserController extends Controller
         return redirect()->back()->with(["success" => 'Details updated']);
     }
 
-
     public function notifications(Request $request)
     {
-        $month =  $request->input('month');
+        $month = $request->input('month');
         if ($month) {
             $notifications = Auth::user()->notifications()->whereMonth('created_at', $month)->paginate(10);
         } else {
@@ -567,7 +582,6 @@ class UserController extends Controller
 
         return view('newpages.notifications', compact('notifications', 'month'));
     }
-
 
     public function readNot($id)
     {
@@ -593,7 +607,7 @@ class UserController extends Controller
             case 't-e':
                 Auth::user()->notificationSetting->trade_email = $v;
                 break;
-                //Mobile
+            //Mobile
             case 'w-s2':
                 Auth::user()->notificationSetting->wallet_sms = $v;
                 break;

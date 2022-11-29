@@ -621,8 +621,9 @@ class DashboardOverviewController extends Controller
             $depositChange = round((($number_and_volume_of_deposits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
             $withdrawalChange = round((($number_and_volume_of_withdrawals->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
             $cableElectricityChange = round((($number_and_volume_of_paybills_transactions->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
-            $manualCreditChange = round((($number_and_volume_of_manual_credits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
-            $manualDebitChange = round((($number_and_volume_of_manual_debits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $manualCreditChange = round((($number_and_volume_of_manual_credits->sum('previousTransactionAmount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $manualDebitChange = round((($number_and_volume_of_manual_debits->sum('previousTransactionAmount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+
         }
 
         if ($type == 'day') {

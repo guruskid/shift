@@ -144,6 +144,17 @@ class TradeController extends Controller
             ]);
         }
 
+        //Check for empty name
+        if (Auth::user()->first_name == '' || Auth::user()->last_name == null || Auth::user()->last_name == '' ) {
+            $initialAccount = Account::where('user_id', Auth::user()->id)->first();
+            $updated = explode(' ', trim($initialAccount->account_name));
+
+            Auth::user()->first_name = $updated[0];
+            Auth::user()->last_name = strstr($initialAccount->account_name, " ");
+            Auth::user()->save();
+
+        }
+
         $trade = NairaTrade::where(['user_id' => Auth::user()->id, 'type' => 'withdrawal'])->where( 'status','waiting')->get();
         if (count($trade) > 0) {
             return response()->json([
@@ -211,7 +222,7 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3) . time();
-        $charge = 100;
+        $charge = 50;
 
         if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
             $charge = 0;

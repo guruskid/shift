@@ -8,6 +8,7 @@ use App\Country;
 use App\Events\CustomNotification;
 use App\Http\Controllers\BillsPaymentController as BillsPayment;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\UserController;
 use App\Mail\DantownNotification;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTransaction;
