@@ -69,11 +69,9 @@ class SalesHelperController extends Controller
             foreach($splitData as $splitUserInformation){
                 // points to the individual user under that chunk data split 
                 // update the user information to update the user Tracking data to that account officer;
-                $splitUserInformation->custodian_id = $accountOfficersPersonnel->id;
-                $splitUserInformation->save();
-                // $splitUserInformation->update([
-                //     'custodian_id' => $accountOfficersPersonnel->id,
-                // ]);
+                $splitUserInformation->update([
+                    'custodian_id' => $accountOfficersPersonnel->id,
+                ]);
             }
         }
     }
@@ -98,14 +96,63 @@ class SalesHelperController extends Controller
         Artisan::call('check:quarterlyInactive');
     }
 
+    public static function DataAnalytics() {
+        $userTrackingByCustodianID = UserTracking::where('custodian_id',Auth::user()->id)->get();
+        $userTrackingBySalesID = UserTracking::where('sales_id',Auth::user()->id)->get();
+        ///////////////
+        //NEW USERS
+
+        // new inactive users
+        $newInactiveUsers = $userTrackingByCustodianID
+        ->where('Current_Cycle','NewInActiveUser')
+        ->count();
+
+        // new called users
+        $newCalledUsers = $userTrackingBySalesID
+        ->where('Current_Cycle','NewCalledUser')
+        ->count();
+
+        //unresponsive
+        $newUnresponsiveUsers =  $userTrackingBySalesID
+        ->where('Current_Cycle','NewUnresponsiveUser')
+        ->count();
+
+        ///////////////
+        //OLD USERS
+        $quarterlyInactive = $userTrackingByCustodianID
+        ->where('Current_Cycle','QuarterlyInactive')
+        ->count();
+
+        $calledUsers = $userTrackingBySalesID
+        ->whereIn('Current_Cycle',['Called','Responded','Recalcitrant'])
+        ->count();
+
+        $respondedUsers = $userTrackingBySalesID
+        ->where('Current_Cycle','Responded')
+        ->count();
+
+        $export = [
+            'newInactiveUsers' => $newInactiveUsers,
+            'newCalledUsers' => $newCalledUsers,
+            'newUnresponsiveUsers' => $newUnresponsiveUsers,
+            'quarterlyInactive' => $quarterlyInactive,
+            'calledUsers' => $calledUsers,
+            'respondedUsers' => $respondedUsers,
+        ];
+
+        return $export;
+    }
+
+
     public function sendingFollowUpEmailForFreeWithdrawal(){
         // get users that email has been sent to only once
         // NB: Bulk EMAIL needs to be implemented to this
         $usersForFollowUp = UserTracking::where('emailCount',1)->get();
         foreach($usersForFollowUp as $userData){
             BusinessDeveloperController::ActivationEmail($userData->user);
-            $userData->emailCount = 2;
-            $userData->save();
+            $userData->update([
+                'emailCount' => 2,
+            ]);
         }
     }
 
@@ -123,8 +170,9 @@ class SalesHelperController extends Controller
         // setting 10 free withdrawal for all quarterly inactive
         $quarterlyInactive = UserTracking::where('Current_Cycle','QuarterlyInactive')->where('free_withdrawal',0)->get();
         foreach($quarterlyInactive as $qiUser){
-            $qiUser->free_withdrawal = 10;
-            $qiUser->save();
+            $qiUser->update([
+                'free_withdrawal' => 10,
+            ]);
         }
     }
 
@@ -145,6 +193,7 @@ class SalesHelperController extends Controller
 
     public static function sortQuarterlyInactive(Request $request, $type, $call_categories){
         // Month Range is for how many month for going back
+        $salesCategory = 'old';
         $monthRange = NULL;
         if($request){
             $monthRange = $request->month;
@@ -178,7 +227,7 @@ class SalesHelperController extends Controller
         return view(
             'admin.business_developer.users',
             compact([
-                'data_table','type','segment','call_categories','count'
+                'data_table','type','segment','call_categories','count','salesCategory'
             ])
         );
     }
@@ -234,21 +283,13 @@ class SalesHelperController extends Controller
 
     public static function DisableMultiAccount(UserTracking $userTracking, $id){
 
-        $userTrackingData =  UserTracking::where('user_id',$id)->first();
-        $userTrackingData->Previous_Cycle = $userTracking->Current_Cycle;
-        $userTracking-> current_cycle_count_date = now();
-        $userTracking->Current_Cycle = "DeadUser";
-        $userTracking->sales_id = Auth::user()->id;
-        $userTracking->called_date = now();
-        $userTracking->save();
-
-        // $userTrackingData->update([
-        //     'Previous_Cycle' =>$userTracking->Current_Cycle,
-        //     'current_cycle_count_date' => now(),
-        //     'Current_Cycle' => "DeadUser",
-        //     'sales_id' => Auth::user()->id,
-        //     'called_date'=> now(),
-        // ]);
+        $userTracking->update([
+            'Previous_Cycle' =>$userTracking->Current_Cycle,
+            'current_cycle_count_date' => now(),
+            'Current_Cycle' => "DeadUser",
+            'sales_id' => Auth::user()->id,
+            'called_date'=> now(),
+        ]);
     }
 
     public static function noResponseUpdate(UserTracking $userTracking, $id){
@@ -257,23 +298,14 @@ class SalesHelperController extends Controller
             ++$streak; // increment streak by one
         }
 
-        $userTrackingData =  UserTracking::where('user_id',$id)->first();
-        $userTrackingData->Previous_Cycle = $userTracking->Current_Cycle;
-        $userTracking-> current_cycle_count_date = now();
-        $userTracking->Current_Cycle = "NoResponse";
-        $userTracking->sales_id = Auth::user()->id;
-        $userTracking->called_date = now();
-        $userTracking->noResponse_streak = $streak;
-        $userTracking->save();
-
-        // $userTrackingData->update([
-        //     'Previous_Cycle' =>$userTracking->Current_Cycle,
-        //     'current_cycle_count_date' => now(),
-        //     'Current_Cycle' => "NoResponse",
-        //     'sales_id' => Auth::user()->id,
-        //     'called_date'=> now(),
-        //     'noResponse_streak'=>$streak,
-        // ]);
+        $userTracking->update([
+            'Previous_Cycle' =>$userTracking->Current_Cycle,
+            'current_cycle_count_date' => now(),
+            'Current_Cycle' => "NoResponse",
+            'sales_id' => Auth::user()->id,
+            'called_date'=> now(),
+            'noResponse_streak'=>$streak,
+        ]);
 
     }
 
@@ -289,7 +321,7 @@ class SalesHelperController extends Controller
         $accountOfficersKeys = $newActiveUsers->groupBy('custodian_id')->keys()->toArray();
 
         // checking there is a user that is not assigned to an account officer
-        if(in_array('',$accountOfficersKeys)){
+        if(in_array(0,$accountOfficersKeys) OR in_array('',$accountOfficersKeys)){
             $this->AssignUserToAccountOfficers($newActiveUsers, $accountOfficers);
         }
 
@@ -300,21 +332,20 @@ class SalesHelperController extends Controller
         }
     }
 
-    public static function changingRecentlyJoinedUsersFromActiveToNewActiveUsers(){
-        //need to only run this once
-
+    public static function changingRecentlyJoinedUsersFromActiveToNewUsers(){
         //checking if the active data if there are active Users who just joined the system (based on the old build)
-        $twoMonthsAgo = now()->subMonths(3);
+        $threeMonthsAgo = now()->subMonths(3);
         $activeUsers = UserTracking::where('Current_Cycle','Active')
-        ->whereHas('user', function ($query) use ($twoMonthsAgo) {
-            $query->where('created_at','>', $twoMonthsAgo)->where('created_at','<=', now());
+        ->whereHas('user', function ($query) use ($threeMonthsAgo) {
+            $query->where('created_at','>', $threeMonthsAgo);
         })->get();
 
         //changing those users to New Users 
         foreach($activeUsers as $user){
-            $user->Current_Cycle = 'NewUser';
-            $user->custodian_id = "";
-            $user->save();
+            $user->update([
+                'Current_Cycle' => 'NewUser',
+                'custodian_id' => NULL,
+            ]);
         }
         return back()->with(['success'=>'Active Users Look Up Complete']);
     }
@@ -327,28 +358,30 @@ class SalesHelperController extends Controller
             $DifferenceInDays = $userCreationDate->diffInDays(now()); // checking if the user has been in the system for up to 14 days
             if($DifferenceInDays >= 14){
                 //checking the user transactions in those 14 days
-                $userTransactions = $userData->transactions
-                ->where('updated_at','>=',$userCreationDate)
-                ->where('updated_at','<=',now());
+                $userTransactions = $userData->transactions;
+                
+                $recentUserTransactions = $userTransactions
+                ->where('created_at','>=',$userCreationDate);
 
                 //user transactions count 
-                $userTransactionsCount = $userTransactions->count();
+                $userTransactionsCount = $recentUserTransactions->count();
                 if($userTransactionsCount > 0){
                     //if the transaction is more than one when the user joined the the user is an active user
-                    $userData->Current_Cycle = "NewActiveUser";
-                    $userData->current_cycle_count_date = now();
-                    $userData->custodian_id = "";
-                    $userData->save();
+                    $userData->update([
+                        'Current_Cycle' => "NewActiveUser",
+                        'current_cycle_count_date' => now(),
+                        'custodian_id' => NULL,
+                    ]);
                 } else {
                     //if the transaction is zero when the user joined the the user is an inactive user
-                    $userData->Current_Cycle = "NewInActiveUser";
-                    $userData->current_cycle_count_date = now();
-                    $userData->custodian_id = "";
-                    $userData->save();
+                    $userData->update([
+                        'Current_Cycle' => "NewInActiveUser",
+                        'current_cycle_count_date' => now(),
+                        'custodian_id' => NULL,
+                    ]);
                 }
             }
         }
     }
-
 
 }

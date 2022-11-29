@@ -88,7 +88,7 @@
                                     </div>
                                 @endif
 
-                                @if($segment == "Call Log")
+                                @if($type == "callLog")
                                     <div class="form-group mr-2">
                                         <select name="status" class="form-control" required>
                                             <option value="">Select Category</option>
@@ -102,118 +102,12 @@
                                 <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
                             </form>
                     </div>
+                    @if ($salesCategory =='old')
+                    @include('admin.business_developer.include.oldUsersViewCategory')
+                    @elseif($salesCategory =='new')
+                    @include('admin.business_developer.include.newUsersViewCategory')
+                    @endif
                     
-                    <div class="table-responsive p-3">
-                        <table
-                            class="align-middle mb-0 table table-borderless table-striped table-hover text-center 
-                            {{-- transactions-table --}}
-                            ">
-                            <thead>
-                                <tr>
-                                    <th><div class="">Name</div></th>
-                                    <th><div class="">Username</div></th>
-                                    @if ($type !="NoResponse")
-                                    <th><div class="">Last Transaction Date</div></th>
-                                    @endif
-                                    @if ($type == "NoResponse")
-                                    <th><div class="">No Response Cycle</div></th>
-                                    @endif
-                                    @if ($type =="callLog")
-                                    <th><div class="">Category</div></th>
-                                    @endif
-                                    @if ($type == "Called_Users")
-                                        <th><div class="">Called Date</div></th>
-                                    @endif
-                                    @if ($type == "Quarterly_Inactive")
-                                        <th><div class="">Responded Cycle</div></th>
-                                        <th><div class="">Recalcitrant Cycle</div></th>
-                                        <th><div class="">Transaction no</div></th>
-                                        <th><div class="">Priority</div></th>
-                                    @endif
-                                    @if($type == "Recalcitrant_Users")
-                                        <th><div class="">Recalcitrant Date</div></th>
-                                    @endif
-                                    @if ($type == "Quarterly_Inactive")
-                                        <th><div class="">Previous Cycle</div></th>
-                                    @endif
-                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog" OR $type =="NoResponse")
-                                        <th><div class="">Action</div></th>
-                                    @endif
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($data_table as $u)
-                                <tr>
-                                    <td><div class="td-content customer-name">{{$u->user->first_name." ".$u->user->last_name}}</div></td>
-                                    <td>{{ $u->user->username }}</td>
-                                    @if ($type !="NoResponse")
-                                    <td>{{ $u->last_transaction_date }}</td>
-                                    @endif
-                                    @if ($type == "NoResponse")
-                                    <td>{{ ($u->noResponse_streak == null) ? 0 : $u->noResponse_streak }}</td>
-                                    @endif
-                                    @if ($type =="callLog")
-                                    <td>{{ ($u->call_category) ? $u->call_category->category : 'none' }}</td>
-                                    @endif
-                                    @if ($type == "Called_Users")
-                                        <td>{{ $u->call_log->created_at->format('d M y, h:ia') }}</td>
-                                    @endif
-                                    @if ($type == "Quarterly_Inactive")
-                                    <td>{{ ($u->Responded_Cycle == null) ? 0 : $u->Responded_Cycle }}</td>
-                                    <td>{{ ($u->Recalcitrant_Cycle == null) ? 0 : $u->Recalcitrant_Cycle  }}</td>
-                                    <td>{{ ($u->transactionCount) ? number_format($u->transactionCount) : 0 }}</td>
-                                    <td>{{ ($u->priority) ? $u->priority : null }}</td>
-                                    @endif
-                                    @if($type == "Recalcitrant_Users")
-                                        <td>{{ $u->updated_at->format('d M y, h:ia') }}</td>
-                                    @endif
-                                    @if ($type == "Quarterly_Inactive")
-                                    <td>{{ ($u->Previous_Cycle == null) ? 'none' : $u->Previous_Cycle }}
-                                        @if ($u->Previous_Cycle == "Responded")
-                                            @if ($u->Responded_streak != null)
-                                                ({{ $u->Responded_streak }})
-                                            @endif
-                                        @else
-                                            @if ($u->Recalcitrant_streak != null)
-                                                 ({{ $u->Recalcitrant_streak }})
-                                             @endif
-                                        @endif
-                                        </td>
-                                    @endif
-                                    @if ($type == "Quarterly_Inactive" OR $type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog" OR $type =="NoResponse")
-                                    <td>
-                                        @if ($type == "Quarterly_Inactive" OR $type =="NoResponse")
-                                        <a href="#" class="my-2 mr-2" data-toggle="modal" data-target="#view-phone-number" onclick="showPhoneNumber({{$u->user}})">
-                                            <span class="btn btn btn-info">View Phone Number</span>
-                                        </a>
-                                        <a href="#" class="my-2" data-toggle="modal" data-target="#add-call-log" onclick="AddResponse({{$u->user}})">
-                                            <span class="btn btn btn-info">Response</span>
-                                        </a>
-                                        
-                                        @endif
-                                        @if ($type == "Called_Users")
-                                            @if ($type =="Responded_Users" OR $type == "Called_Users")
-                                            <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewResponse({{$u->call_log}},{{ $u->user }},{{ $u->call_log->call_category }})">
-                                                <span class="btn btn btn-info">View</span>
-                                            </a>
-                                            @endif 
-                                        @else
-                                            @if ($type =="Responded_Users" OR $type == "Called_Users" OR $type =="callLog")
-                                            <a href="#" class="my-2" data-toggle="modal" data-target="#view-call-log" onclick="ViewResponse({{$u}},{{ $u->user }},{{ $u->call_category }})">
-                                                <span class="btn btn btn-info">View</span>
-                                            </a>
-                                            @endif
-
-                                        @endif
-                                        
-                                    </td>
-                                    @endif
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $data_table->links() }}
-                    </div>
                 </div>
             </div>
         </div>
@@ -222,7 +116,7 @@
 </div>
 
 {{-- Add Called User Data Modal --}}
-<div class="modal fade  item-badge-rightm" id="add-call-log" role="dialog">
+{{-- <div class="modal fade  item-badge-rightm" id="add-call-log" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="{{route('business-developer.create.call-log')}} " method="POST" class="mb-3">
@@ -272,24 +166,62 @@
             </form>
         </div>
     </div>
-</div>
+</div> --}}
 
 <div class="modal fade  item-badge-rightm" id="view-phone-number" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+            <form action="{{route('business-developer.create.call-log')}} " method="POST" class="mb-3">
+                {{ csrf_field() }}
                 <div class="modal-header">
                     <div class="media">
                         <div class="media-body">
                             <h1 class="media-heading " id="ph_email">User Email</h1>
-                            <h1 class="media-heading" id="ph_phoneNumber">User PhoneNumber</h1>
+                            <h1 class="media-body" id="ph_phoneNumber">User PhoneNumber</h1>
                         </div>
                     </div>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">Cancel</button>
+                <div class="modal-body">
+                    <div class="d-block" id="ph_show_details_button">
+                        <button onclick="open_call_log()" id="e_button_continue" type="button" class="float-right btn btn-primary">Continue</button>
+                    </div>
+                    <div class="d-none" id="ph_show_phone_details">
+                        <div class="form-group">
+                            <input type="hidden" readonly name="id" id="ph_id">
+                            <input type="hidden" readonly name="start" id="ph_startTime">
+                            <input type="hidden" readonly name="end" id="ph_endTime">
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="">Category</label>
+                                    <select onchange="showFeedback()" id="ph_category" name="category_name" class="form-control" required>
+                                        <option value="" id="e_status">Select Category</option>
+                                        @foreach ($call_categories as $cc)
+                                            <option value="{{ $cc->id }}">{{ $cc->category }}</option>
+                                            @endforeach
+                                            <option value="NoResponse">No Response</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-none col-12" id="ph_feedback">
+                                <div class="form-group">
+                                <label for="feedback">Feedback</label>
+                                <textarea class="form-control" name="feedback" rows="5"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="d-none col-12" id="ph_proceed_button">
+                                <button type="submit" class=" mt-2 btn btn-primary">Create Query</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </form>
         </div>
     </div>
 </div>
@@ -316,7 +248,7 @@
                         <input type="hidden" readonly name="id" id="v_id">
                     </div>
                     <div class="row">
-                        @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $type =="callLog")
+                        @if (in_array($type,['newUnresponsiveUser','Responded_Users','Recalcitrant_Users','callLog']))
                             <div class="col">
                                 <div class="form-group">
                                     <label for="">Category</label>
@@ -341,7 +273,8 @@
                             <div class="form-group">
                             <label for="feedback">Feedback</label>
                             <textarea class="form-control" id="v_feedback" name="feedback" rows="5" required
-                            @if ($type =="Responded_Users" OR $type == "Recalcitrant_Users" OR $type =="callLog")
+                            
+                            @if (in_array($type,['newUnresponsiveUser','Responded_Users','Recalcitrant_Users','callLog']))
                                 disabled
                             @endif></textarea>
                             </div>

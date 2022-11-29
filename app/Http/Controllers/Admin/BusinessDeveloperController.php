@@ -23,12 +23,21 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class BusinessDeveloperController extends Controller
 {
+    // please NB the current cycle names is in mixed characters please don't mix it up
     public function index($type = null){
         $salesCategory = 'old';
         /**IMPORTANT NOTE
         There is custodian ID and sales ID on the DB means different things 
         The Sales ID mean that this user was either called by a user
         Custodian ID refers to the fact that no matter where the user the user is in the system loop he/she belongs to a sales personnel*/
+
+        //NEW USER DATA
+        $newUserData = SalesHelperController::DataAnalytics();
+        $activeUsersCount =  UserTracking::where('Current_Cycle','Active')->count();
+
+        $newInactiveUsersCount = $newUserData['newInactiveUsers'];
+        $newCalledUsersCount = $newUserData['newCalledUsers'];
+        $newUnresponsiveUsersCount = $newUserData['newUnresponsiveUsers'];
 
         //quarterly inactive 
         // quarterly inactive users are users that has not traded for 3 months
@@ -66,7 +75,7 @@ class BusinessDeveloperController extends Controller
 
         //Recalcitrant Users
         //Recalcitrant Users are Users who have not traded after being called
-        $RecalcitrantUsers =   $data_table = UserTracking::with('transactions','user')
+        $RecalcitrantUsers = UserTracking::with('transactions','user')
         ->where('Current_Cycle','Recalcitrant')
         ->where('sales_id',Auth::user()->id)
         ->latest('updated_at')
@@ -76,7 +85,9 @@ class BusinessDeveloperController extends Controller
 
         $call_categories = CallCategory::all();
 
-        $type = ($type == null) ? "Quarterly_Inactive" : $type;
+        if($type == null){
+            $type = 'Quarterly_Inactive';
+        }
 
         switch ($type) {
             case 'NoResponse':
@@ -92,7 +103,7 @@ class BusinessDeveloperController extends Controller
                 break;
 
             case 'Recalcitrant_Users':
-                $data_table = $NoResponse->take(20);
+                $data_table = $RecalcitrantUsers->take(20);
                 break;
             
             case 'Quarterly_Inactive':
@@ -110,6 +121,7 @@ class BusinessDeveloperController extends Controller
             foreach($data_table as $userData){
                 //getting the users successful transactions (NB: check the relationship in the model for more information)
                 $userTransactions = $userData->transactions;
+                $userData->called_date = Carbon::parse($userData->called_date)->format('d M Y, h:ia');
 
                 if($userTransactions->count() == 0){
                     $userData->last_transaction_date = 'No Transactions';
@@ -122,7 +134,7 @@ class BusinessDeveloperController extends Controller
             'admin.business_developer.index',
             compact([
                 'data_table','QuarterlyInactiveUsersCount','type','call_categories','calledUsersCount','RespondedUsersCount','RecalcitrantUsersCount',
-                'NoResponseCount','salesCategory'
+                'NoResponseCount','salesCategory','newInactiveUsersCount','newCalledUsersCount','newUnresponsiveUsersCount','activeUsersCount'
             ])
         );
     }
@@ -130,6 +142,7 @@ class BusinessDeveloperController extends Controller
     public function viewCategory($type = null, Request $request)
     {
         $call_categories = CallCategory::all();
+        $salesCategory = 'old';
 
         switch ($type) {
             case 'NoResponse':
@@ -186,6 +199,7 @@ class BusinessDeveloperController extends Controller
         foreach($data_table as $userData){
             //getting the users successful transactions (NB: check the relationship in the model for more information)
             $userTransactions = $userData->transactions;
+            $userData->called_date = Carbon::parse($userData->called_date)->format('d M Y, h:ia');
 
             if($userTransactions->count() == 0){
                 $userData->last_transaction_date = 'No Transactions';
@@ -196,7 +210,7 @@ class BusinessDeveloperController extends Controller
         return view(
             'admin.business_developer.users',
             compact([
-                'data_table','type','segment','call_categories','count'
+                'data_table','type','segment','call_categories','count','salesCategory'
             ])
         );
     }
@@ -204,26 +218,44 @@ class BusinessDeveloperController extends Controller
     public function createCallLog(Request $request)
     {
         $user_tracking = UserTracking::where('user_id',$request->id)->first();
-        if($request->status != "NoResponse"){ // validation fields
-            if(empty($request->id) OR empty($request->feedback) OR empty($request->status)){
-                return redirect()->back()->with(['error' => 'Missing Fields Please try again']);
-            }
-        }
 
-        if($request->status == "NoResponse") { // no response
+        if($request->category_name == "NoResponse") { // no response
             SalesHelperController::noResponseUpdate($user_tracking, $request->id);
             return redirect()->back()->with(['success' => 'success']);
         }
 
-        if($request->status == 12){ // multipleAccounts
+        if($request->category_name == 12){ // multipleAccounts
             SalesHelperController::DisableMultiAccount($user_tracking, $request->id);
             return redirect()->back()->with(['success' => 'success']);
         }
 
 
-        if($request->phoneNumber){ //if there is a phone number Viewed, this tracks 
+        if($request->start AND $request->end){ //if there is a phone number Viewed, this tracks 
             if($user_tracking->Current_Cycle == 'QuarterlyInactive'){
-                self::storeCalledData($user_tracking, $request->id,$request->feedback, $request->status, $request->phoneNumber);
+                $startTIme = Carbon::parse($request->start)->subSeconds(20);
+                $endTime = Carbon::parse($request->end);
+                $timeDifference = $startTIme->diffInSeconds($endTime);
+                
+                $call_log = new CallLog();
+                $call_log->user_id = $request->id;
+                $call_log->call_response = $request->feedback;
+                $call_log->call_category_id = $request->category_name;
+                $call_log->sales_id = Auth::user()->id;
+                $call_log->type = 'old';
+                $call_log->save();
+
+                UserTracking::where('user_id',$request->id)
+                ->update([
+                    'call_log_id' => $call_log->id,
+                    'Previous_Cycle' =>$user_tracking->Current_Cycle,
+                    'Current_Cycle' => "Called",
+                    'current_cycle_count_date' => now(),
+                    'call_duration' => $timeDifference,
+                    'call_duration_timestamp' => now(),
+                    'sales_id' => Auth::user()->id,
+                    'called_date'=> now(),
+                ]);
+                self::freeWithdrawalActivation($request->id);
                 return redirect()->back()->with(['success' => 'Call Log Added']);
             } else {
                 return redirect()->back()->with(['success' => 'User Already Called']);
@@ -235,66 +267,45 @@ class BusinessDeveloperController extends Controller
 
     }
 
-    public static function storeCalledData(UserTracking $user_tracking, $id, $feedback, $status, $phoneNumber)
-    {
-        // saving a call log 
-        $call_log = new CallLog();
-        $call_log->user_id = $id;
-        $call_log->call_response = $feedback;
-        $call_log->call_category_id = $status;
-        $call_log->sales_id = Auth::user()->id;
-        $call_log->save();
+    // public static function storeCalledData(UserTracking $user_tracking, $id, $feedback, $status, $phoneNumber)
+    // {
+    //     // saving a call log 
+    //     $call_log = new CallLog();
+    //     $call_log->user_id = $id;
+    //     $call_log->call_response = $feedback;
+    //     $call_log->call_category_id = $status;
+    //     $call_log->sales_id = Auth::user()->id;
+    //     $call_log->type = 'old';
+    //     $call_log->save();
 
-        // CallLog::create([
-        //     'user_id'=>$id,
-        //     'call_response' =>$feedback,
-        //     'call_category_id' => $status,
-        //     'sales_id' 
-        //     => Auth::user()->id,
-        // ]);
+    //     $time = now();
+    //     $openingPhoneTime = Carbon::parse($phoneNumber)->subSeconds(18);
+    //     $timeDifference = $openingPhoneTime->diffInSeconds($time);
 
+    //     UserTracking::where('user_id',$id)
+    //     ->update([
+    //         'call_log_id' => $call_log->id,
+    //         'Previous_Cycle' =>$user_tracking->Current_Cycle,
+    //         'Current_Cycle' => "Called",
+    //         'current_cycle_count_date' => $time,
+    //         'call_duration' => $timeDifference,
+    //         'call_duration_timestamp' => $time,
+    //         'sales_id' => Auth::user()->id,
+    //         'called_date'=> $time
+    //     ]);
 
-        $time = now();
-        $openingPhoneTime = Carbon::parse($phoneNumber)->subSeconds(18);
-        $timeDifference = $openingPhoneTime->diffInSeconds($time);
-
-        $userTrackingData = UserTracking::where('user_id',$id)->first();
-        $userTrackingData->call_log_id = $call_log->id;
-        $userTrackingData->Previous_Cycle = $user_tracking->Current_Cycle;
-        $userTrackingData->Current_Cycle = "Called";
-        $userTrackingData->current_cycle_count_date = $time;
-        $userTrackingData->call_duration = $timeDifference;
-        $userTrackingData->call_duration_timestamp = $time;
-        $userTrackingData->sales_id = Auth::user()->id;
-        $userTrackingData->called_date = $time;
-
-        // UserTracking::where('user_id',$id)
-        // ->update([
-        //     'call_log_id' => $call_log->id,
-        //     'Previous_Cycle' =>$user_tracking->Current_Cycle,
-        //     'Current_Cycle' => "Called",
-        //     'current_cycle_count_date' => $time,
-        //     'call_duration' => $timeDifference,
-        //     'call_duration_timestamp' => $time,
-        //     'sales_id' => Auth::user()->id,
-        //     'called_date'=> $time
-        // ]);
-
-        self::freeWithdrawalActivation($id);
-    }
+        
+    // }
 
     public static function freeWithdrawalActivation($user_id)
     {
         $user = User::find($user_id);
         $trackingData = UserTracking::where('user_id', $user->id)->first();
-        $trackingData->free_withdrawal = 10;
-        $trackingData->emailCount = 1;
-        $trackingData->save();
 
-        // $trackingData->update([
-        //     'free_withdrawal' => 10,
-        //     'emailCount' => 1,
-        // ]);
+        $trackingData->update([
+            'free_withdrawal' => 10,
+            'emailCount' => 1,
+        ]);
 
         self::ActivationEmail($user);
     }
@@ -355,12 +366,10 @@ class BusinessDeveloperController extends Controller
     public static function freeWithdrawalsReduction($number){
         $user = Auth::user();
         $userTracking = UserTracking::where('user_id', $user->id)->first();
-        $userTracking->free_withdrawal = ($userTracking->free_withdrawal - $number);
-        $userTracking->save();
 
-        // $userTracking->update([
-        //     'free_withdrawal' => ($userTracking->free_withdrawal - $number),
-        // ]);
+        $userTracking->update([
+            'free_withdrawal' => ($userTracking->free_withdrawal - $number),
+        ]);
     }
 
     public function UpdateCallLog(Request $request){
@@ -368,18 +377,20 @@ class BusinessDeveloperController extends Controller
         if(!$call_log){
             return redirect()->back()->with(['error' => 'Invalid Call Log']);
         }
-        $call_log->call_response = $request->feedback;
-        $call_log->call_category_id = $request->status;
-        // $call_log->update([
-        //     'call_response' =>$request->feedback,
-        //     'call_category_id' => $request->status
-        // ]);
+        $call_log->update([
+            'call_response' =>$request->feedback,
+            'call_category_id' => $request->status
+        ]);
         return redirect()->back()->with(['success' => 'Call Log Updated']);
     }
 
     public function CallLog(Request $request){
-        $data_table = CallLog::latest('updated_at');
-        $segment = "Call Log";
+        $salesCategory = 'old';
+        $data_table = CallLog::with('user','call_category')
+        ->where('type',$salesCategory)
+        ->latest('updated_at');
+        
+        $segment = "Old Users Call Log";
 
         $type = "callLog";
         $call_categories = CallCategory::all();
@@ -407,7 +418,7 @@ class BusinessDeveloperController extends Controller
         return view(
             'admin.business_developer.users',
             compact([
-                'data_table','segment','call_categories','type'
+                'data_table','segment','call_categories','type','salesCategory'
             ])
         );
     }
@@ -449,13 +460,10 @@ class BusinessDeveloperController extends Controller
 
     public function updateCallCategory(Request $request)
     {
-        $call_categories = CallCategory::where('id',$request->id)->first();
-        $call_categories->category = $request->feedback;
-        $call_categories->save();
-        // CallCategory::where('id',$request->id)
-        //     ->update([
-        //         'category' => $request->feedback,
-        //     ]);
+        CallCategory::where('id',$request->id)
+            ->update([
+                'category' => $request->feedback,
+            ]);
         return back()->with(['success'=>'Call Category updated']);
     }
 
@@ -464,16 +472,11 @@ class BusinessDeveloperController extends Controller
         $users = UserTracking::with('user')->where('Current_Cycle','QuarterlyInactive')->get();
         foreach($users as $userData){
             if($userData->user->phone == NULL) {
-                $userData->Current_Cycle = 'incipientUser';
-                $userData->Previous_Cycle = 'QuarterlyInactive';
-                $userData->current_cycle_count_date = now();
-                $userData->save();
-
-                // $u->update([
-                //     'Current_Cycle' => 'incipientUser',
-                //     'Previous_Cycle' => "QuarterlyInactive",
-                //     'current_cycle_count_date' => now()
-                // ]);
+                $userData->update([
+                    'Current_Cycle' => 'incipientUser',
+                    'Previous_Cycle' => "QuarterlyInactive",
+                    'current_cycle_count_date' => now()
+                ]);
             }
         }
         return back()->with(['success'=>'IncipientUser Generated']);
@@ -495,32 +498,23 @@ class BusinessDeveloperController extends Controller
                 $MonthDiff = $au->user->created_at->diffInMonths(now());
                 if($MonthDiff >= 3) {
                     //if the user since he joined has not traded make that user Quarterly inactive
-                    $au->Current_Cycle = "QuarterlyInactive";
-                    $au->Previous_Cycle = "Active";
-                    $au->current_cycle_count_date = now();
-                    $au->save();
 
-                    // UserTracking::find($au->id)->update([
-                    //     'Current_Cycle'=>"QuarterlyInactive",
-                    //     'Previous_Cycle' => "Active",
-                    //     'current_cycle_count_date' => now()
-                    // ]);
+                    UserTracking::find($au->id)->update([
+                        'Current_Cycle'=>"QuarterlyInactive",
+                        'Previous_Cycle' => "Active",
+                        'current_cycle_count_date' => now()
+                    ]);
                 }
             } else {
                 // if the user has traded check his last trade and if it is more than three months
                 $lastTranxDate = $user_tnx->sortByDesc('created_at')->first()->created_at;
                  $monthDiff = $lastTranxDate->diffInMonths(now());
                  if($monthDiff >= 3) {
-                    $au->Current_Cycle = "QuarterlyInactive";
-                    $au->Previous_Cycle = "Active";
-                    $au->current_cycle_count_date = now();
-                    $au->save();
-
-                    // UserTracking::find($au->id)->update([
-                    //     'Current_Cycle'=>"QuarterlyInactive",
-                    //     'Previous_Cycle' => "Active",
-                    //     'current_cycle_count_date' => now()
-                    // ]);
+                    UserTracking::find($au->id)->update([
+                        'Current_Cycle'=>"QuarterlyInactive",
+                        'Previous_Cycle' => "Active",
+                        'current_cycle_count_date' => now()
+                    ]);
                  }
             }
         }
@@ -533,22 +527,26 @@ class BusinessDeveloperController extends Controller
             // checking if the last transaction is less than three months since you entered a quarterly inactive
             $qiUserTransactions = $qiUser['transactions']
             ->where('created_at','>=',$qiUser->current_cycle_count_date)
-            ->sortByDesc('created_at')->first();
+            ->sortByDesc('id')->first();
 
             // count of the transactions
-            dd($qiUserTransactions);
-            $lastQiUserTransaction = $qiUserTransactions->created_at;
+            if($qiUserTransactions){
+                $lastQiUserTransaction = $qiUserTransactions->created_at;
+                // time difference in months
+                $timeFrame = $lastQiUserTransaction->diffInMonths(now());
 
-            // time difference in months
-            $timeFrame = $lastQiUserTransaction->diffInMonths(now());
+                if($timeFrame < 3){
+                    // if the last transaction was less than three months 
+                    // this is done incase the user traded the before being called by the sales personnel
 
-            if($timeFrame < 3){
-                // if the last transaction was less than three months 
-                // this is done incase the user traded the before being called by the sales personnel
-                $qiUser->Current_Cycle = 'Active';
-                $qiUser->current_cycle_count_date = now();
-                $qiUser->save();
+                    UserTracking::find($qiUser->id)->update([
+                        'Current_Cycle'=>"Active",
+                        'Previous_Cycle' => "QuarterlyInactive",
+                        'current_cycle_count_date' => now()
+                    ]);
             }
+            }
+            
         }
     }
 
@@ -564,31 +562,22 @@ class BusinessDeveloperController extends Controller
                 // getting the first transaction that was done after the user was called
                 $firstConversionTransactionDate= $userTransactions->sortBy('updated_at')->first()->updated_at; 
 
-                $cu->Current_Cycle = 'Responded';
-                $cu->Previous_Cycle = 'Called';
-                $cu->current_cycle_count_date = $firstConversionTransactionDate;
-                $cu->save();
-
-                // UserTracking::find($cu->id)->update([
-                //     'Current_Cycle'=>"Responded",
-                //     'Previous_Cycle' => "Called",
-                //     'current_cycle_count_date' => $firstConversionTransactionDate,
-                // ]);
+                UserTracking::find($cu->id)->update([
+                    'Current_Cycle'=>"Responded",
+                    'Previous_Cycle' => "Called",
+                    'current_cycle_count_date' => $firstConversionTransactionDate,
+                ]);
 
             } else {
                 // checking the month difference from when the user was called
                 $monthDiff = $cu->called_date->diffInMonths(now());
                 if($monthDiff >= 1){
-                    $cu->Current_Cycle = 'Recalcitrant';
-                    $cu->Previous_Cycle = 'Called';
-                    $cu->current_cycle_count_date = now();
-                    $cu->save();
 
-                    // UserTracking::find($cu->id)->update([
-                    //     'Current_Cycle'=>"Recalcitrant",
-                    //     'Previous_Cycle' => "Called",
-                    //     'current_cycle_count_date' => now()
-                    // ]);
+                    UserTracking::find($cu->id)->update([
+                        'Current_Cycle'=>"Recalcitrant",
+                        'Previous_Cycle' => "Called",
+                        'current_cycle_count_date' => now()
+                    ]);
 
                 }
             }
@@ -607,38 +596,26 @@ class BusinessDeveloperController extends Controller
             if($userTransactions->count() > 0){
                 // checking transaction after user became recalcitrant
                 $firstConversionTransaction = $userTransactions->sortBy('updated_at')->first()->updated_at; // getting the first transaction after the user became recalcitrant
-                $ru->Current_Cycle = 'Responded';
-                $ru->Previous_Cycle = 'Recalcitrant';
-                $ru->current_cycle_count_date = $firstConversionTransaction;
-                $ru->save();
 
-                // UserTracking::find($ru->id)->update([
-                //     'Current_Cycle'=>"Responded",
-                //     'Previous_Cycle' => "Recalcitrant",
-                //     'current_cycle_count_date' => $firstConversionTransaction,
-                // ]);
+                UserTracking::find($ru->id)->update([
+                    'Current_Cycle'=>"Responded",
+                    'Previous_Cycle' => "Recalcitrant",
+                    'current_cycle_count_date' => $firstConversionTransaction,
+                ]);
 
             }else{
                 // if the transaction count is less than 1 after two months then mark the user as recalcitrant
                 $monthDiff = $ru->current_cycle_count_date->diffInMonths(now()); 
                 if($monthDiff >= 2){
-                    $ru->Recalcitrant_Cycle = $ru->Recalcitrant_Cycle + 1;
-                    $ru->Recalcitrant_Cycle = $ru->Recalcitrant_Cycle + 1;
-                    $ru->Current_Cycle = "QuarterlyInactive";
-                    $ru->Previous_Cycle = "Recalcitrant";
-                    $ru->current_cycle_count_date = now();
-                    $ru->Recalcitrant_streak = $ru->Recalcitrant_streak + 1;
-                    $ru->Responded_streak = 0;
-                    $ru->save();
 
-                    // UserTracking::find($ru->id)->update([
-                    //     'Recalcitrant_Cycle' => $ru->Recalcitrant_Cycle + 1,
-                    //     'Current_Cycle'=>"QuarterlyInactive",
-                    //     'Previous_Cycle' => "Recalcitrant",
-                    //     'current_cycle_count_date' => now(),
-                    //     'Recalcitrant_streak' => $ru->Recalcitrant_streak + 1,
-                    //     'Responded_streak' => 0,
-                    // ]);
+                    UserTracking::find($ru->id)->update([
+                        'Recalcitrant_Cycle' => $ru->Recalcitrant_Cycle + 1,
+                        'Current_Cycle'=>"QuarterlyInactive",
+                        'Previous_Cycle' => "Recalcitrant",
+                        'current_cycle_count_date' => now(),
+                        'Recalcitrant_streak' => $ru->Recalcitrant_streak + 1,
+                        'Responded_streak' => 0,
+                    ]);
                 }
             }
         }
@@ -654,36 +631,26 @@ class BusinessDeveloperController extends Controller
             $monthDiff = $ru->current_cycle_count_date->diffInMonths(now());
             if($userTransactions->count() == 0){
                 if($monthDiff >= 3){
-                    $ru->Responded_Cycle  =  $ru->Responded_Cycle + 1; 
-                    $ru->Current_Cycle = "QuarterlyInactive";
-                    $ru->Previous_Cycle  =  "Responded";
-                    $ru->call_log_id  =  null;
-                    $ru->current_cycle_count_date  =  now();
-                    $ru->Responded_streak  =  $ru->Responded_streak + 1;
-                    $ru->Recalcitrant_streak  =  0;
-                    $ru->save();
 
-                    // UserTracking::find($ru->id)->update([
-                    //     'Responded_Cycle' => $ru->Responded_Cycle + 1,
-                    //     'Current_Cycle'=>"QuarterlyInactive",
-                    //     'Previous_Cycle' => "Responded",
-                    //     'call_log_id' => null,
-                    //     'current_cycle_count_date' => now(),
-                    //     'Responded_streak' => $ru->Responded_streak + 1,
-                    //     'Recalcitrant_streak' => 0,
-                    // ]);
+                    UserTracking::find($ru->id)->update([
+                        'Responded_Cycle' => $ru->Responded_Cycle + 1,
+                        'Current_Cycle'=>"QuarterlyInactive",
+                        'Previous_Cycle' => "Responded", 
+                        'call_log_id' => null,
+                        'current_cycle_count_date' => now(),
+                        'Responded_streak' => $ru->Responded_streak + 1,
+                        'Recalcitrant_streak' => 0,
+                    ]);
                 }
             }
             else{
                 // getting the last transaction date
                 $lastTranxDate = $userTransactions->first()->updated_at;
                 if($lastTranxDate){
-                    $ru->current_cycle_count_date = $lastTranxDate;
-                    $ru->save();
                     
-                    // UserTracking::find($ru->id)->update([
-                    //     'current_cycle_count_date' => $lastTranxDate
-                    // ]);
+                    UserTracking::find($ru->id)->update([
+                        'current_cycle_count_date' => $lastTranxDate
+                    ]);
                 }
 
             }
