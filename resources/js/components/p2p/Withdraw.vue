@@ -19,7 +19,7 @@
         <div>
           Kindly note that you are receiving the sum of
           <span class="font-weight-bold"
-            ><span id="amt">{{ amount >= 1000 ? amount - ((naira_charge === 1 && tranx < 10)? 0 : 100) : "0" }}</span> NGN</span
+            ><span id="amt">{{ amount >= 1000 ? amount - ((naira_charge === 1 && tranx < 10)? 0 : 50) : "0" }}</span> NGN</span
           >
           from
         </div>
