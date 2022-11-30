@@ -50,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return "$this->first_name $this->last_name";
     }
-    
+
     public function transactions()
     {
         return $this->hasMany('App\Transaction')->latest();
@@ -173,5 +173,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function loginSession()
     {
         return $this->hasMany('App\LoginSession')->latest();
+    }
+
+    /**
+     * Get all of the debtDetails for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function debtDetails(): HasMany
+    {
+        return $this->hasMany(DebtDetail::class);
     }
 }

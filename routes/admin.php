@@ -103,6 +103,11 @@ Route::group(['middleware' => 'accountant'], function () {
         Route::get('/clear/{flaggedTransaction}', 'FlaggedTransactionsController@clear')->name('admin.flagged.clear');
     });
 
+    Route::prefix('debt')->group(function () {
+        Route::post('add-debt/{user}', 'LedgerController@addDebt')->name('admin.add-debt');
+        Route::get('all', 'LedgerController@debtors')->name('admin.debtors');
+    });
+
 });
 
 

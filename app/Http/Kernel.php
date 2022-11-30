@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\BvnCheck;
+use App\Http\Middleware\DebtChecker;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -39,11 +40,13 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            DebtChecker::class,
         ],
 
         'api' => [
             'throttle:6000,1',
             'bindings',
+            DebtChecker::class,
         ],
     ];
 
