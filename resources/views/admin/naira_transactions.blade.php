@@ -202,7 +202,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td>₦{{number_format($t->amount) }} </td>
                                         <td>₦{{number_format($t->previous_balance) }}</td>
                                         <td>₦{{number_format($t->current_balance) }} </td>
-                                        @if (in_array(Auth::user()->role, [999, 889]))
+                                        @if (in_array(Auth::user()->role, [999, 889,777]))
                                             @if(($t->current_balance - $t->previous_balance) < 0)
                                             <td class="text-danger">₦{{number_format(($t->current_balance - $t->previous_balance)) }} </td>
                                             @else
