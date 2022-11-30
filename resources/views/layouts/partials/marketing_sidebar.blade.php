@@ -37,6 +37,33 @@
         </li>
     @endif
 
+    <li class="menu {{ Route::currentRouteName() == 'sales.loadSales' ? 'active' : '' }}  ">
+        <a href="{{route('sales.loadSales')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="settings"></ion-icon>
+                <span>Sales Setting</span>
+            </div>
+        </a>
+    </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'sales.loadPriority' ? 'active' : '' }}  ">
+        <a href="{{route('sales.loadPriority')}}"  aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="settings"></ion-icon>
+                <span>Sales Priority</span>
+            </div>
+        </a>
+    </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'admin.call-categories' ? 'active' : '' }}">
+        <a href="{{route('admin.call-categories')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="cube-outline"></ion-icon>
+                <span>Call Categories</span>
+            </div>
+        </a>
+    </li>
+
 
     <li class="menu {{ Route::currentRouteName() == 'logout' ? 'active' : '' }}">
         <a href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" aria-expanded="false" class="dropdown-toggle">
