@@ -15,10 +15,10 @@ class ChatAgentController extends Controller
 
     public function chatAgents()
     {
-        $users = User::where('role', 888)->orderBy('updated_at', 'desc')->paginate(10);
-        foreach ($users as $user ) {
-            $user->transactions = Transaction::where('agent_id', $user->id)->count();
-        }
+        $users = User::where('role', 888)
+        ->with('assignedTransactions')
+        ->orderBy('updated_at', 'DESC')
+        ->paginate(10);
 
         return view('admin.chat_agents', compact('users'));
     }
@@ -26,6 +26,14 @@ class ChatAgentController extends Controller
     public function addChatAgent(Request $r)
     {
         $user = User::where('email', $r->email)->first();
+        if(!$user){
+            return redirect()->back()->with(['error'=>'User Email Does not exist']);
+        }
+
+        if($user->role == 888){
+            return redirect()->back()->with(['error'=>'Agent Already Added']);
+        }
+
         $user->role = 888;
         $user->status = 'waiting';
         $user->save();
