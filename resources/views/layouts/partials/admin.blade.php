@@ -215,7 +215,7 @@
 
             @endif
 
-            @if (in_array(Auth::user()->role, [999] ))
+            @if (in_array(Auth::user()->role, [999,666] ))
             <li class="my-3">
                 <a href="{{route('admin.user-verifications-tracking')}}"
                     class=" {{ Route::currentRouteName() == 'admin.user-verifications-tracking' ? 'mm-active' : '' }} ">
