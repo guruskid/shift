@@ -61,6 +61,35 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="col-md-3 mb-2">
+                                    {{-- bg-primary text-white --}}
+                                        <div class="card mb-1 widget-content ">
+                                            <div class="widget-content-wrapper">
+                                                <div class="widget-heading">
+                                                    <h6 class="text-center" id='average_revenue_transaction_summary_name'>Average Revenue Per Transaction(Monthly)</h6>
+                                                    <div class="widget-n" style="justify-content: center; text-align: center;">
+                                                        <div id='average_revenue_transaction_summary_a' class="d-block">
+                                                            <h5 class="text-success" >${{ $averageRevenuePerTransaction->averageRevenuePerTransaction }}</h5>
+                                                        </div>
+        
+                                                        <div id='average_revenue_transaction_summary_b' class="d-none">
+                                                            <h5 class="" id='average_revenue_transaction_summary' >.......</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mr-2">
+                                                        <select name="sortingType" id='average_revenue_transaction_summary_sort' onchange="averageRevenuePerTransaction()" class="form-control">
+                                                            <option value="noData">SortingType</option>
+                                                            <option value="weekly">Weeekly</option>
+                                                            <option value="monthly">Monthly</option>
+                                                            <option value="quarterly">Quaterly</option>
+                                                            <option value="yearly">Yearly</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
                            {{-- all tnx start --}}
                            <form action="{{ route('admin.junior-summary-sort-details') }}" method="POST">

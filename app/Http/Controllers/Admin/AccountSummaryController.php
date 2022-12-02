@@ -176,6 +176,7 @@ class AccountSummaryController extends Controller
 
         $revenueGrowth = self::percentageRevenueGrowth()->getData();
         $averageRevenuePerUniqueUsers = self::averageRevenuePerUniqueUser()->getData();
+        $averageRevenuePerTransaction = self::averageRevenuePerTransaction()->getData();
 
         return view('admin.summary.JuniorAccountant.transaction',compact([
             'accountantName','accountant','showCategory','showSummary','showData','segment','month','day','transactions',
@@ -194,7 +195,7 @@ class AccountSummaryController extends Controller
 
             'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue',
 
-            'revenueGrowth','averageRevenuePerUniqueUsers'
+            'revenueGrowth','averageRevenuePerUniqueUsers','averageRevenuePerTransaction'
         ]));
     }
 
@@ -744,6 +745,68 @@ class AccountSummaryController extends Controller
             'duration' => ucwords($sortType)
         ],200);
 
+    }
+
+    public static function averageRevenuePerTransaction($sortType = NULL){
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        if($sortType == NULL){
+            $sortType = 'monthly';
+        }
+
+        switch ($sortType) {
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now()->endOfWeek();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now()->endOfYear();
+                break;
+
+            case 'quarterly':
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now()->subMonth(0)->endOfMonth();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+        }
+
+        $currentTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->where('status','success')
+        ->get();
+
+        $currentTimeFrameAmount = 0;
+
+        foreach($currentTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $currentTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $currentTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        $transactionCount = $currentTimeFrame->count();
+        $averageRevenuePerTransaction = ($transactionCount == 0) ? 0 : $currentTimeFrameAmount/$transactionCount;
+
+        return response()->json([
+            'success' => 'success',
+            'averageRevenuePerTransaction' => number_format($averageRevenuePerTransaction),
+            'duration' => ucwords($sortType)
+        ],200);
     }
 
 }

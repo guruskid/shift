@@ -334,6 +334,31 @@ function averageRevenuePerUniqueUser(){
     });
 }
 
+function averageRevenuePerTransaction(){
+    $('#average_revenue_transaction_summary_a').removeClass('d-block').addClass('d-none');
+    $('#average_revenue_transaction_summary_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#average_revenue_transaction_summary_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'monthly';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/average-revenue-per-transaction/' + timeFrame,
+        success: function (data) {
+            var amount = "$"+data['averageRevenuePerTransaction']
+            var name = "Average Revenue Per Transaction("+data['duration']+")"
+
+            $('#average_revenue_transaction_summary').html(amount)
+            $('#average_revenue_transaction_summary_name').html(name)
+            $('#average_revenue_transaction_summary').removeClass('text-danger').addClass('text-success');
+        }
+    });
+}
+
 
 /* Confirm transfer of funds */
 function confirmTransfer(id, user, amount) {
