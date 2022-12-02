@@ -222,7 +222,7 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3) . time();
-        $charge = 50;
+        $charge = 100;
 
         if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
             $charge = 0;
