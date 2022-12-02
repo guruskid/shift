@@ -311,7 +311,7 @@ class CustomerHappinessController extends Controller
         $researches = DB::table('naira_transactions')
             ->whereIn('transaction_type_id', [20, 19, 24, 5, 4])
             ->join('transactions', DB::raw("SUBSTRING(naira_transactions.narration, -13, 13)"), '=', 'transactions.uid')
-            ->select('transactions.id', 'transactions.uid', 'transactions.user_email', 'transactions.user_id', 'transactions.card', 'transactions.type', 'transactions.amount', 'transactions.amount_paid',
+            ->select('transactions.id', 'transactions.uid', 'transactions.user_first_name', 'transactions.user_email', 'transactions.user_id', 'transactions.card', 'transactions.type', 'transactions.amount', 'transactions.amount_paid',
                 'transactions.status', 'transactions.card_type', 'transactions.quantity', 'transactions.card_price', 'transactions.created_at', 'transactions.updated_at', 'transactions.ngn_rate',
                 'naira_transactions.previous_balance', 'naira_transactions.current_balance', DB::raw("SUBSTRING(naira_transactions.narration, -13, 13) as naira_transactions_uid"))
             ->orderBy('transactions.id', 'DESC')
