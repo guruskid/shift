@@ -33,6 +33,7 @@ class TradeController extends Controller
 {
     public function agents()
     {
+        \Artisan::call('naira:limit');
         $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
 
         if ($agents->count() == 0) {
@@ -62,6 +63,7 @@ class TradeController extends Controller
 
     public function getAgent(Request $request)
     {
+        \Artisan::call('naira:limit');
         $transactiontype = $request['type'];
 
         $user = Auth::user();
@@ -117,6 +119,7 @@ class TradeController extends Controller
 
     public function completeWihtdrawal(Request $request)
     {
+        \Artisan::call('naira:limit');
         $validator = Validator::make($request->all(), [
             'agent_id' => 'required',
             'amount' => 'required',
