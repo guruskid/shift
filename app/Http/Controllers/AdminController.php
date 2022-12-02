@@ -1193,6 +1193,7 @@ class AdminController extends Controller
             ->where('transaction_type_id', '!=', null)
             ->distinct('transaction_type_id')
             ->get();
+            
         $status = NairaTransaction::select('status')->distinct('status')->get();
         $data = $request->validate([
             'start' => 'required|date|string',
@@ -1219,8 +1220,9 @@ class AdminController extends Controller
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
         $total = $transactions->sum('amount');
 
+        $complianceCheck = NairaTransaction::orderBy('id','DESC')->first();
         return view('admin.naira_transactions', compact([
-            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges'
+            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges','complianceCheck'
         ]));
     }
 
