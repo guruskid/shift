@@ -436,6 +436,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
     Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
+    Route::get('/revenue-growth/{sortType?}', 'Admin\AccountSummaryController@percentageRevenueGrowth');
+    Route::get('/average-revenue-per-unique-user/{sortType?}', 'Admin\AccountSummaryController@averageRevenuePerUniqueUser');
 
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');

@@ -1,8 +1,71 @@
 
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            {{-- bg-primary text-white --}}
+                                <div class="card mb-1 widget-content ">
+                                    <div class="widget-content-wrapper">
+                                        <div class="widget-heading">
+                                            <h6 class="text-center" id='revenue_growth_summary_name'>% Revenue Growth(Monthly)</h6>
+                                            <div class="widget-n" style="justify-content: center; text-align: center;">
+                                                <div id='revenue_growth_summary_a' class="d-block">
+                                                    @if($revenueGrowth->revenueGrowth <= 0)
+                                                    <h5 class="text-danger">{{ $revenueGrowth->revenueGrowth }} %</h5>
+                                                    @else
+                                                    <h5 class="text-success" >{{ $revenueGrowth->revenueGrowth }} %</h5>
+                                                    @endif
+                                                </div>
+
+                                                <div id='revenue_growth_summary_b' class="d-none">
+                                                    <h5 class="" id='revenue_growth_summary' >.......</h5>
+                                                </div>
+                                            </div>
+                                            <div class="form-group mr-2">
+                                                <select name="sortingType" id='revenue_growth_summary_sort' onchange="revenueGrowthSort()" class="form-control">
+                                                    <option value="noData">SortingType</option>
+                                                    <option value="weekly">Weeekly</option>
+                                                    <option value="monthly">Monthly</option>
+                                                    <option value="quarterly">Quaterly</option>
+                                                    <option value="yearly">Yearly</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mb-2">
+                                {{-- bg-primary text-white --}}
+                                    <div class="card mb-1 widget-content ">
+                                        <div class="widget-content-wrapper">
+                                            <div class="widget-heading">
+                                                <h6 class="text-center" id='average_revenue_unique_summary_name'>Average Revenue Per Unique User(Monthly)</h6>
+                                                <div class="widget-n" style="justify-content: center; text-align: center;">
+                                                    <div id='average_revenue_unique_summary_a' class="d-block">
+                                                        <h5 class="text-success" >${{ $averageRevenuePerUniqueUsers->averageRevenuePerUser }}</h5>
+                                                    </div>
+    
+                                                    <div id='average_revenue_unique_summary_b' class="d-none">
+                                                        <h5 class="" id='average_revenue_unique_summary' >.......</h5>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mr-2">
+                                                    <select name="sortingType" id='average_revenue_unique_summary_sort' onchange="averageRevenuePerUniqueUser()" class="form-control">
+                                                        <option value="noData">SortingType</option>
+                                                        <option value="weekly">Weeekly</option>
+                                                        <option value="monthly">Monthly</option>
+                                                        <option value="quarterly">Quaterly</option>
+                                                        <option value="yearly">Yearly</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                            {{-- all tnx start --}}
                            <form action="{{ route('admin.junior-summary-sort-details') }}" method="POST">
                             @csrf
-                            <div class="form-inline mb-3">
+                            <div class="form-inline mb-3 mt-3">
                                 <label class="mr-1">Start Date</label>
                                 <input type="datetime-local" name="startdate"  value="{{app('request')->input('startdate')}}"class="form-control mr-1" >
 
