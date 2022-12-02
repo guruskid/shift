@@ -34,7 +34,26 @@
             </div>
         </a>
     </li>
+    
+    <li class="menu {{ Route::currentRouteName() == 'admin.user-verifications-tracking' ? 'active' : '' }}">
+        <a href="{{route('admin.user-verifications-tracking')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="people-outline"></ion-icon>
+                <span>Verification Tracking <span class="badge badge-warning">New</span></span>
+            </div>
+        </a>
+    </li>
 
+    @if ( in_array(Auth::user()->role, [666] ) )
+    <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
+        <a href="{{route('admin.user-verifications')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                <span>Users verification <span class="badge badge-warning">New</span></span>
+            </div>
+        </a>
+    </li>
+    @endif
 
 
     <li class="menu {{ Route::currentRouteName() == 'admin.chat_agents' ? 'active' : '' }}">

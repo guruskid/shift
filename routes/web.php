@@ -716,7 +716,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth','admin','marketing']]
     Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']], function () {
     Route::get('/user-verification-tracking', 'AdminController@userVerificationTracking')->name('admin.user-verifications-tracking');
 });
 

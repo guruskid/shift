@@ -15,7 +15,7 @@ Route::get('/rate/delete/{id}', 'RateController@deleteRate');
 Route::get('/index', 'CurrencyController@index')->name('admin.currency.index');
 Route::post('/usd-rate/update', 'RateController@updateUsd')->name('admin.usd.update');
 
-Route::group(['middleware'=>'accountant'], function(){
+Route::group(['middleware'=>'manager'], function(){
     // verify user
     Route::get('/user-verification', 'UserController@verifications')->name('admin.user-verifications');
     Route::put('/user-verification/{verification}', 'UserController@verify')->name('admin.verify');
