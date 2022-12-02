@@ -27,7 +27,9 @@ use App\NairaWallet;
 use App\Payout;
 use App\TransactionType;
 use App\UtilityTransaction;
+use App\Verification;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -972,6 +974,64 @@ class AdminController extends Controller
         return view('admin.assigned-transactions', compact(['transactions']));
     }
 
+    public function userVerificationTracking(Request $request){
+        $verifications = Verification::orderBy('id','DESC');
+        if($request->start){
+            $verifications = $verifications->where('created_at','>=',$request->start." 00:00:00");
+            if($request->end){
+                $verifications = $verifications->where('created_at','<=',$request->end." 23:59:59");
+            }
+        }
+        
+        $verifications = $verifications->with('user','verifiedUserBy')->get();
+
+        $waiting_verifications = $verifications->where('status','Waiting');
+        $waiting_verifications_count = $waiting_verifications->count();
+
+        $waiting_verifications_today = $verifications->where('status','Waiting')->where('created_at', '>=', Carbon::today());
+        $waiting_verifications_today_count = $waiting_verifications_today->count();
+
+        $avg_response = 0;
+
+        $verifications = $verifications->paginate(100);
+        $total = $verifications->count();
+        foreach ($verifications as $v) {
+            if($v->user){
+                $v->name = $v->user->first_name." ".$v->user->last_name;
+            }else{
+                $v->user = 'Not Available';
+            }
+
+            if($v->verifiedUserBy){
+                $v->verifiedBy = $v->verifiedUserBy->first_name." ".$v->verifiedUserBy->last_name;
+            }else{
+                $v->verifiedBy = 'Not Available';
+            }
+
+            if($v->status == 'Waiting'){
+                $time = now()->diffInSeconds($v->created_at);
+                $v->verifyTime = CarbonInterval::seconds($time)->cascade()->forHumans();
+                $avg_response += $time;
+            }else{
+                $time = $v->updated_at->diffInSeconds($v->created_at);
+                $v->verifyTime = CarbonInterval::seconds($time)->cascade()->forHumans();
+                $avg_response += $time;
+            }
+        }
+
+        if($total == 0){
+            $average = 0;
+        } else {
+            $average = $avg_response/$total;
+        }
+        $verification_average = CarbonInterval::seconds($average)->cascade()->forHumans();
+        return view('admin.verification_tracking',compact(['verifications','verification_average','total','waiting_verifications_count','waiting_verifications_today_count']));
+    }
+
+    public function verificationTimeData(){
+
+    }
+
     public function assetTransac($id)
     {
         $type = Transaction::select('type')->distinct('type')->get();
@@ -1133,6 +1193,7 @@ class AdminController extends Controller
             ->where('transaction_type_id', '!=', null)
             ->distinct('transaction_type_id')
             ->get();
+            
         $status = NairaTransaction::select('status')->distinct('status')->get();
         $data = $request->validate([
             'start' => 'required|date|string',
@@ -1159,8 +1220,9 @@ class AdminController extends Controller
         $segment = Carbon::parse($data['start'])->format('D d M y') . ' - ' . Carbon::parse($data['end'])->format('D d M Y') . ' Wallet';
         $total = $transactions->sum('amount');
 
+        $complianceCheck = NairaTransaction::orderBy('id','DESC')->first();
         return view('admin.naira_transactions', compact([
-            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges'
+            'segment', 'transactions', 'total', 'type', 'status', 'total_tnx', 'total_amount_paid', 'total_charges','complianceCheck'
         ]));
     }
 

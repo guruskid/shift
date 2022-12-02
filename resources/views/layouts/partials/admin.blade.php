@@ -215,6 +215,15 @@
 
             @endif
 
+            @if (in_array(Auth::user()->role, [999,666] ))
+            <li class="my-3">
+                <a href="{{route('admin.user-verifications-tracking')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.user-verifications-tracking' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Verification Tracking
+                </a>
+            </li>
+            @endif
 
             @if (in_array(Auth::user()->role, [999, 889, 777, 775] ))
                 <li class="my-3">
@@ -259,14 +268,7 @@
                     </a>
                 </li>
             @endif
-            @if (in_array(Auth::user()->role, [999, 666] ))
-            <li class="my-3">
-                <a href="{{route('sales.newUsers.salesAnalytics')}}"
-                    class=" {{ Route::currentRouteName() == 'sales.newUsers.salesAnalytics' ? 'mm-active' : '' }} ">
-                    <i class="metismenu-icon pe-7s-graph1"></i>
-                    Sales New Users
-                </a>
-            </li>
+            @if (in_array(Auth::user()->role, [999, 559] ))
 
             <li class="my-3">
                 <a href="{{route('sales.oldUsers.salesAnalytics')}}"
@@ -275,9 +277,17 @@
                     Sales Old Users
                 </a>
             </li>
+
+            <li class="my-3">
+                <a href="{{route('sales.loadPriority')}}"
+                    class=" {{ Route::currentRouteName() == 'sales.loadPriority' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-user"></i>
+                    Sales Priority
+                </a>
+            </li>
             @endif
             {{-- Here --}}
-            @if (in_array(Auth::user()->role, [888,999]))
+            @if (in_array(Auth::user()->role, [888,999,666]))
                 <li class="my-3">
                     <a href="{{route('admin.rates')}}"
                         class=" {{ Route::currentRouteName() == 'admin.rates' ? 'mm-active' : '' }} ">
@@ -317,13 +327,13 @@
             @endif
 
             @if (in_array(Auth::user()->role, [559,888] ))
-                <li class="my-3">
+                {{-- <li class="my-3">
                     <a href="{{route('admin.sales.users_verifications')}}"
                         class=" {{ Route::currentRouteName() == 'admin.sales.users_verifications' ? 'mm-active' : '' }} ">
                         <i class="metismenu-icon pe-7s-users"></i>
                          Users Verification
                     </a>
-                </li>
+                </li> --}}
             @endif
 
             @if (in_array(Auth::user()->role, [559] ))
@@ -345,13 +355,7 @@
                     </a>
                 </li>
 
-                <li class="my-3">
-                    <a href="{{route('sales.loadPriority')}}"
-                        class=" {{ Route::currentRouteName() == 'sales.loadPriority' ? 'mm-active' : '' }} ">
-                        <i class="metismenu-icon pe-7s-user"></i>
-                        Sales Priority
-                    </a>
-                </li>
+                
 
             <li class="my-3">
                 <a href="{{route('admin.users')}}"
@@ -369,7 +373,7 @@
                 </a>
             </li>
             @endif
-            @if (in_array(Auth::user()->role, [999, 666] ))
+            @if (in_array(Auth::user()->role, [999, 559] ))
             <li class="my-3">
                 <a href="{{route('sales.loadSales')}}"
                     class=" {{ Route::currentRouteName() == 'sales.loadSales' ? 'mm-active' : '' }} ">
@@ -461,7 +465,7 @@
             </li>
             @endif
             @endif
-            @if (in_array(Auth::user()->role, [999, 666] ))
+            @if (in_array(Auth::user()->role, [999, 559] ))
             <li class="my-3">
                 <a href="{{route('admin.call-categories')}}"
                     class=" {{ Route::currentRouteName() == 'admin.call-categories' ? 'mm-active' : '' }} ">
