@@ -50,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return "$this->first_name $this->last_name";
     }
-    
+
     public function transactions()
     {
         return $this->hasMany('App\Transaction')->latest();
@@ -173,5 +173,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function loginSession()
     {
         return $this->hasMany('App\LoginSession')->latest();
+    }
+
+    public function userRating(){
+        return $this->hasMany(UserRating::class);
     }
 }

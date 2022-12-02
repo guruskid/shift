@@ -718,12 +718,6 @@ class SpotLightController extends Controller {
             $days = $request['days'] - 1;
             $now = Carbon::now();
             $period = 1000;
-
-            if ($days < 1) {
-                $days = 1;
-                $period = $period / 2;
-            }
-
             $ticks = ceil($period/$days);
 
             for ($i=0; $i < $ticks; $i++) {
@@ -732,13 +726,7 @@ class SpotLightController extends Controller {
                 }
                 $frmd = $now->format('Y-m-d');
                 $from = $now->format('jS M');
-
-                if ($days < 2) {
-                    $now->subDays($days);
-                }else{
-                    $now->subDays($days + 1);
-                }
-
+                $now->subDays($days + 1);
                 $tod = $now->format('Y-m-d');
                 $to = $now->format('jS M');
                 $tick = $to.' - '.$from;
@@ -1175,6 +1163,43 @@ return $differenceInpercentage;
         $range = 30;
         $chartData = Transaction::whereHas('asset', function ($query) {
             $query->where('is_crypto', 0);
+        })
+        ->whereHas('naira_transactions', function ($query) {
+            $query->select('*');
+        })->select([
+            DB::raw('DATE(created_at) AS date'),
+            DB::raw('COUNT(id) AS count'),
+        ])
+        ->groupBy('date')
+        ->orderBy('date', 'ASC')
+        ->get()->toArray();
+        $dateRange = [];
+        $chartDataByDay = [];
+        foreach ($chartData as $data) {
+            $chartDataByDay[$data['date']] = $data['count'];
+        }
+        $date = new Carbon;
+        for ($i = 0; $i < $range - 1; $i++) {
+            $dateString = $date->format('Y-m-d');
+            if (!isset($chartDataByDay[$dateString])) {
+                $chartDataByDay[$dateString] = 0;
+            }
+
+            $dateRange[] = [
+                'date' => $dateString,
+                'count' => (!isset($chartDataByDay[$dateString]))? '0' : $chartDataByDay[$dateString],
+                'days' => substr($date->format('l'), 0, 3),
+                'date_day' => $date->format('d')
+            ];
+            $date->subDay();
+        }
+        return ($dateRange);
+    }
+
+    public static function getCryptoTransactionByDay(){
+        $range = 30;
+        $chartData = Transaction::whereHas('asset', function ($query) {
+            $query->where('is_crypto', 1);
         })
         ->whereHas('naira_transactions', function ($query) {
             $query->select('*');
