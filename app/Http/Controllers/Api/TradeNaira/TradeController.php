@@ -188,12 +188,12 @@ class TradeController extends Controller
             ]);
         }
 
-        if($account->status != 'active'){
-            return response()->json([
-                'success' => false,
-                'message' => "This Account number is not active for Withdrawal",
-            ]);
-        }
+       // if($account->status != 'active'){
+        //    return response()->json([
+        //        'success' => false,
+       //       'message' => "This Account number is not active for Withdrawal",
+      //       ]);
+      //  }
 
         if(($account->activateBy != null) AND (now() <= $account->activateBy)){
             $options = [
