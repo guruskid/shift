@@ -5320,8 +5320,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['free_naira_charge', 'tranx', 'daily_rem'],
+  props: ["free_naira_charge", "tranx", "daily_rem"],
   data: function data() {
     return {
       naira_charge: this.free_naira_charge,
@@ -54961,7 +54981,7 @@ var render = function() {
         [
           _c("div", [
             _vm._v(
-              "\n        Kindly note that you are receiving the sum of\n        "
+              "\n                Kindly note that you are receiving the sum of\n                "
             ),
             _c("span", { staticClass: "font-weight-bold" }, [
               _c("span", { attrs: { id: "amt" } }, [
@@ -54969,18 +54989,18 @@ var render = function() {
                   _vm._s(
                     _vm.amount >= 1000
                       ? _vm.amount -
-                          (_vm.naira_charge === 1 && _vm.tranx < 10 ? 0 : 50)
+                          (_vm.naira_charge === 1 && _vm.tranx < 10 ? 0 : 100)
                       : "0"
                   )
                 )
               ]),
-              _vm._v(" NGN")
+              _vm._v("\n                    NGN")
             ]),
-            _vm._v("\n        from\n      ")
+            _vm._v("\n                from\n            ")
           ]),
           _vm._v(" "),
           _c("div", { staticStyle: { color: "#8d8d93" } }, [
-            _vm._v("\n        Pay-bridge agent:\n        "),
+            _vm._v("\n                Pay-bridge agent:\n                "),
             _c(
               "span",
               { staticClass: "font-bold", staticStyle: { color: "#000070" } },
@@ -54989,7 +55009,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticStyle: { color: "#8d8d93" } }, [
-            _vm._v("\n        Bank: "),
+            _vm._v("\n                Bank:\n                "),
             _c(
               "span",
               { staticClass: "font-bold", staticStyle: { color: "#000070" } },
@@ -55009,7 +55029,7 @@ var render = function() {
                 attrs: { type: "submit" },
                 on: { click: _vm.processWithdrawal }
               },
-              [_vm._v("\n        Continue\n      ")]
+              [_vm._v("\n                Continue\n            ")]
             )
           : _c(
               "button",
@@ -55022,7 +55042,7 @@ var render = function() {
                   "data-target": "#verify-phone-notice"
                 }
               },
-              [_vm._v("\n        Continue\n      ")]
+              [_vm._v("\n                Continue\n            ")]
             )
       ])
     ]),
@@ -55033,7 +55053,9 @@ var render = function() {
         { staticClass: "container" },
         [
           _c("h4", { staticClass: "text-center" }, [
-            _vm._v("Kindly select the account to receive payment")
+            _vm._v(
+              "\n                Kindly select the account to receive payment\n            "
+            )
           ]),
           _vm._v(" "),
           _vm._l(_vm.accounts, function(account) {
@@ -55065,15 +55087,17 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n            " + _vm._s(account.bank_name) + " "
+                        "\n                        " +
+                          _vm._s(account.bank_name) +
+                          " "
                       ),
                       _c("br"),
                       _vm._v(
-                        "\n            " +
+                        "\n                        " +
                           _vm._s(account.account_number) +
-                          ", " +
+                          ",\n                        " +
                           _vm._s(account.account_name) +
-                          "\n          "
+                          "\n                    "
                       )
                     ]
                   )

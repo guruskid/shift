@@ -66,8 +66,6 @@ class UtilityTransactions extends Controller
         curl_close($ch);
         $response = json_decode($response,true);
 
-        dd($response);
-
         if(isset($response['content']) && isset($response['content']['transactions'])) {
             if($response['content']['transactions']['status'] == 'delivered') {
                 if ($transaction->type == 'Cable subscription') {
@@ -143,7 +141,7 @@ class UtilityTransactions extends Controller
 
                 return back()->with(['success' => 'Transaction processed']);
             }else{
-                if($response['content']['transactions']['status'] == 'failed') {
+                if($response['content']['transactions']['status'] == 'failed' || $response['content']['transactions']['status'] == 'reversed') {
                     $transaction->update([
                         'status' => 'failed'
                     ]);

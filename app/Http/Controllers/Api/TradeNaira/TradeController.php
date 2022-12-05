@@ -185,12 +185,12 @@ class TradeController extends Controller
             ]);
         }
 
-        if($account->status != 'active'){
-            return response()->json([
-                'success' => false,
-                'message' => "This Account number is not active for Withdrawal",
-            ]);
-        }
+       // if($account->status != 'active'){
+        //    return response()->json([
+        //        'success' => false,
+       //       'message' => "This Account number is not active for Withdrawal",
+      //       ]);
+      //  }
 
         if(($account->activateBy != null) AND (now() <= $account->activateBy)){
             $options = [
@@ -222,7 +222,7 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3) . time();
-        $charge = 50;
+        $charge = 100;
 
         if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
             $charge = 0;
