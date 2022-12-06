@@ -235,7 +235,7 @@ class UserController extends Controller
         }
 
         $file = $request->image;
-        $folderPath = public_path('storage/idcards/');
+        $folderPath = public_path('storage/address/');
         $image_base64 = base64_decode($file);
 
         $imageName = time() . uniqid() . '.png';

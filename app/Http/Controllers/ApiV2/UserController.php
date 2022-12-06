@@ -334,7 +334,7 @@ class UserController extends Controller
         if ($r->has('image')) {
             $file = $r->image;
             $location = $r->location;
-            $folderPath = public_path('storage/idcards/');
+            $folderPath = public_path('storage/address/');
 
             if (!File::isDirectory($folderPath)) {
 
@@ -376,7 +376,6 @@ class UserController extends Controller
 
     public function uploadId(Request $r)
     {
-
         $validator = Validator::make($r->all(), [
             'image' => 'required',
             'id_number' => 'required',

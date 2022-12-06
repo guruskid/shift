@@ -114,12 +114,17 @@
         <div class="modal-content  c-rounded">
             <div class="modal-body p-4">
                 <form action="{{route('admin.verify', $v)}}" id="freeze-form" method="post">@method('put') @csrf
-                    {{-- <img src="/storage/idcards/{{ $v->path }}" class="img-fluid"> --}}
-                    <img src="{{ asset('storage/idcards/'.$v->path) }}" class="img-fluid">
+                    @if($v->type == 'ID Card')
+                    <img src="/storage/idcards/{{ $v->path }}" class="img-fluid">
+                    {{-- <img src="{{ asset('storage/idcards/'.$v->path) }}" class="img-fluid"> --}}
                     <a href="/storage/idcards/{{ $v->path }}"><button type="button"
                             class="btn my-3 btn-outline-primary">View</button></a>
-                            {{-- <a href="/storage/public/idcards/{{ $v->path }}"><button type="button"
-                                class="btn my-3 btn-outline-primary">View 2</button></a> --}}
+                    @else
+                    <img src="/storage/address/{{ $v->path }}" class="img-fluid">
+                    {{-- <img src="{{ asset('storage/idcards/'.$v->path) }}" class="img-fluid"> --}}
+                    <a href="/storage/address/{{ $v->path }}"><button type="button"
+                            class="btn my-3 btn-outline-primary">View</button></a>
+                    @endif
                     @if ($v->type == 'Address')
                     <div class="form-group">
                         <label for="">Address</label>
