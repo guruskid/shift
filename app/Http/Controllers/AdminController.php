@@ -993,7 +993,6 @@ class AdminController extends Controller
 
         $avg_response = 0;
 
-        $verifications = $verifications->paginate(100);
         $total = $verifications->count();
         foreach ($verifications as $v) {
             if($v->user){
@@ -1025,6 +1024,7 @@ class AdminController extends Controller
             $average = $avg_response/$total;
         }
         $verification_average = CarbonInterval::seconds($average)->cascade()->forHumans();
+        $verifications = $verifications->paginate(100);
         return view('admin.verification_tracking',compact(['verifications','verification_average','total','waiting_verifications_count','waiting_verifications_today_count']));
     }
 

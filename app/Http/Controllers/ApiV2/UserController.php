@@ -334,7 +334,7 @@ class UserController extends Controller
         if ($r->has('image')) {
             $file = $r->image;
             $location = $r->location;
-            $folderPath = public_path('storage/address/');
+            $folderPath = public_path('storage/idcards/');
 
             if (!File::isDirectory($folderPath)) {
 
