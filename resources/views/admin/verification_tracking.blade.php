@@ -114,7 +114,23 @@
                                     <td class="text-center">{{ ++$n }}</td>
                                     <td class="text-center">{{ $v->name }}</td>
                                     <td class="text-center">{{ $v->type }}</td>
-                                    <td class="text-center">{{ $v->status }}</td>
+                                    @switch($v->status)
+                                        @case('failed')
+                                            <td class="text-center text-danger">{{ $v->status }}</td>
+                                            @break
+                                        
+                                        @case('Waiting')
+                                            <td class="text-center text-warning">{{ $v->status }}</td>
+                                            @break
+                                        @case('success')
+                                            <td class="text-center text-success">{{ $v->status }}</td>
+                                            @break
+                                    
+                                        @default
+                                        <td class="text-center text-warning">{{ $v->status }}</td>
+                                            
+                                    @endswitch
+                                    
                                     <td class="text-center">{{ $v->verifiedBy }}</td>
                                     <td class="text-center">{{ $v->verifyTime }}</td>
                                     <td class="text-center">{{ $v->created_at->format('d M Y h:ia') }}</td>
@@ -123,7 +139,7 @@
                                 
                             </tbody>
                         </table>
-                        {{-- {{ $users->links() }} --}}
+                        {{ $verifications->links() }}
                     </div>
                 </div>
             </div>

@@ -263,6 +263,7 @@ class UserController extends Controller
         }
 
 
+        $verification->verified_by = Auth::user()->id;
         $verification->save();
         // dd( $verification->user->address_verified_at);
 
