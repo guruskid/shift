@@ -334,7 +334,7 @@ class UserController extends Controller
         if ($r->has('image')) {
             $file = $r->image;
             $location = $r->location;
-            $folderPath = storage_path('app/public/address/');
+            $folderPath = public_path('storage/idcards/');
 
             if (!File::isDirectory($folderPath)) {
 
@@ -361,7 +361,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => 'You have successfully Address for verification.',
+                'data' => 'You have successfully uploaded your Address for verification.',
             ]);
         } else {
             return response()->json([
@@ -416,7 +416,7 @@ class UserController extends Controller
             $file = $r->image;
             $idtype = $r->idtype;
             $id_number = $r->id_number;
-            $folderPath = storage_path('app/public/idcards');
+            $folderPath = public_path('storage/idcards/');
             if (!File::isDirectory($folderPath)) {
 
                 File::makeDirectory($folderPath, 0777, true, true);
@@ -442,7 +442,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => 'You have successfully uploaded your verification.',
+                'data' => 'You have successfully uploaded your ID Card for verification.',
             ]);
         } else {
             return response()->json([
