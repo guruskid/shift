@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiV2;
 use App\Account;
 use App\Bank;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CryptoHelperController;
 use App\Http\Controllers\LiveRateController;
 use App\Http\Controllers\LoginSessionController;
 use App\ImageSlide;
@@ -273,9 +274,25 @@ class UserController extends Controller
 
             ],
         ];
+         // Total Balance
+         $usdt_wallet =  Auth::user()->usdtWallet;
+         $nairaWallet_balance = Auth::user()->nairaWallet->amount;
+
+         $usdt =  $usdt_wallet ? $usdt_wallet->usd : 0 ;
+         $btc =  $btc_wallet ? $btc_wallet->usd : 0;
+         $naira_in_usd =  LiveRateController::usdNgn(false);
+
+         $user_naira_wallet_balance_in_usd = $nairaWallet_balance / $naira_in_usd;
+         // add user naira balance , btc balance and usdt balance
+         $total_user_balance_in_usd = $usdt + $btc + $user_naira_wallet_balance_in_usd;
+
+         // convert  user dollars balance to BTC
+
+         $user_total_balance_in_btc = $total_user_balance_in_usd / $btc_real_time;
 
         return response()->json([
             'success' => true,
+            'total_balances_in_btc' => $user_total_balance_in_btc,
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balance_in_usd' => $btc_wallet->usd,
@@ -883,3 +900,4 @@ class UserController extends Controller
     }
 
 }
+
