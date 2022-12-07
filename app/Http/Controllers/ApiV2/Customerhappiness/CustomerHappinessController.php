@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\NairaTrade;
 use App\NairaTransaction;
 use App\NairaWallet;
+use App\QueryCategory;
 use App\Ticket;
 use App\TicketCategory;
 use App\Transaction;
@@ -221,6 +222,64 @@ class CustomerHappinessController extends Controller
         ]);
 
     }
+
+    public function listofCategories($category)
+    {
+        if($category == 'naira'){
+
+            $ticketcategory = QueryCategory::select('name')->where('name', 'Naira wallet and Withdrawals issues')->first();
+            $descriptios =  QueryCategory::select('description')->where('name', 'Naira wallet and Withdrawals issues')->get();
+
+            return response()->json([
+                "success" => true,
+                "query" =>[ $ticketcategory, $descriptios  ]
+            ], 200);
+
+        }
+
+        if($category == 'crypto'){
+
+            $ticketcategory = QueryCategory::select('name')->where('name', 'Crypto issues')->first();
+            $descriptios =  QueryCategory::select('description')->where('name', 'Crypto issues')->get();
+
+            return response()->json([
+                "success" => true,
+                "query" =>[ $ticketcategory, $descriptios  ]
+            ], 200);
+
+        }
+
+
+        if($category == 'giftcard'){
+
+            $ticketcategory = QueryCategory::select('name')->where('name', 'Gift Card issuess')->first();
+            $descriptios =  QueryCategory::select('description')->where('name', 'Gift Card issues')->get();
+
+            return response()->json([
+                "success" => true,
+                "query" =>[ $ticketcategory, $descriptios  ]
+            ], 200);
+
+        }
+
+
+
+        if($category == 'account'){
+
+            $ticketcategory = QueryCategory::select('name')->where('name', 'System and Account issues')->first();
+            $descriptios =  QueryCategory::select('description')->where('name', 'System and Account issues')->get();
+
+            return response()->json([
+                "success" => true,
+                "query" =>[ $ticketcategory, $descriptios  ]
+            ], 200);
+
+        }
+
+    }
+
+
+
 
     public function sortByDay()
     {
