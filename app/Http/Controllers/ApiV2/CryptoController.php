@@ -25,6 +25,10 @@ class CryptoController extends Controller
         $usdt = CryptoCurrency::find(7);
         $data['usdt_rate'] = LiveRateController::usdtRate();
         $data["btc_rate"] = LiveRateController::btcRate();
+        $data['usdt_rate_naira'] = LiveRateController::usdtNgn();
+        $data['btc_rate_naira'] = LiveRateController::btcNgn();
+
+
 
         $bitcoin->wallet = CryptoHelperController::balance(1);
         $bitcoin->network = "BRP-20";
