@@ -436,6 +436,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
     Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
+    Route::get('/revenue-growth/{sortType?}', 'Admin\AccountSummaryController@percentageRevenueGrowth');
+    Route::get('/average-revenue-per-unique-user/{sortType?}', 'Admin\AccountSummaryController@averageRevenuePerUniqueUser');
+    Route::get('/average-revenue-per-transaction/{sortType?}', 'Admin\AccountSummaryController@averageRevenuePerTransaction');
 
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
@@ -477,9 +480,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super', 'c
     Route::get('/cards', 'AdminController@cards')->name('admin.cards');
     Route::post('/wallet_id', 'AdminController@walletId')->name('admin.wallet');
 
-    // set verification limit
-    Route::GET('/verification-limit', 'Admin\VerificationLimitController@index')->name('admin.verification_limit');
-    Route::POST('/update-verification-limit', 'Admin\VerificationLimitController@addLimit')->name('admin.add_verification_limit');
 
     Route::get('/verify', 'AdminController@verify')->name('admin.verify');
     Route::post('/verify', 'AdminController@verifyUser')->name('admin.verify_user');
@@ -517,10 +517,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::POST('/update-image-slider', 'Admin\ImageSliderController@updateImage')->name('admin.update_image_slider');
     Route::GET('/delete-image-slider/{id}', 'Admin\ImageSliderController@deleteImage')->name('admin.delete_image_slider');
 
-    //?call category
-    Route::get('/call-category', 'Admin\BusinessDeveloperController@displayCallCategory')->name('admin.call-categories');
-    Route::POST('/call-category', 'Admin\BusinessDeveloperController@updateCallCategory')->name('admin.call-categories.action');
-    Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
+    // set verification limit
+    Route::GET('/verification-limit', 'Admin\VerificationLimitController@index')->name('admin.verification_limit');
+    Route::POST('/update-verification-limit', 'Admin\VerificationLimitController@addLimit')->name('admin.add_verification_limit');
 });
 
 
@@ -692,7 +691,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], 
     Route::GET('user/profile', 'Admin\SalesController@userProfile')->name('sales.user_profile');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth','admin','marketing']], function () {
     Route::GET('/LoadSalesUsers', 'Admin\TargetController@loadSales')->name('sales.loadSales');
     Route::POST('/addTarget', 'Admin\TargetController@addTarget')->name('sales.addTarget');
     Route::POST('/editTarget', 'Admin\TargetController@editTarget')->name('sales.editTarget');
@@ -703,10 +702,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::POST('/editPriority', 'Admin\PriorityController@editPriority')->name('sales.editPriority');
     Route::GET('/deletePriority/{id}', 'Admin\PriorityController@deletePriority')->name('sales.deletePriority');
 
-});
-
-
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','salesAnalyticsAccess']], function () {
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
     Route::ANY('/sortAnalytics/{type?}', 'Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
     Route::ANY('/showAnalysis/{type?}', 'Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
@@ -715,6 +710,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','salesAnalyt
     Route::ANY('/showAnalysisOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@showAllData')->name('sales.oldUsers.show.salesAnalytics');
     Route::ANY('/sortAnalyticsOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');
     Route::GET('/refreshTableData', 'Admin\OldUsersSalesAnalytics@refreshDownloadDate');
+
+    //?call category
+    Route::get('/call-category', 'Admin\BusinessDeveloperController@displayCallCategory')->name('admin.call-categories');
+    Route::POST('/call-category', 'Admin\BusinessDeveloperController@updateCallCategory')->name('admin.call-categories.action');
+    Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']], function () {
+    Route::get('/user-verification-tracking', 'AdminController@userVerificationTracking')->name('admin.user-verifications-tracking');
 });
 
 Route::group(['prefix' => 'trx'], function () {

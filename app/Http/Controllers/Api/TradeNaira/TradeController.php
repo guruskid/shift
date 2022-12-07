@@ -33,6 +33,7 @@ class TradeController extends Controller
 {
     public function agents()
     {
+        \Artisan::call('naira:limit');
         $agents = User::where(['role' => 777, 'status' => 'active'])->with(['nairaWallet', 'accounts'])->get();
 
         if ($agents->count() == 0) {
@@ -62,6 +63,7 @@ class TradeController extends Controller
 
     public function getAgent(Request $request)
     {
+        \Artisan::call('naira:limit');
         $transactiontype = $request['type'];
 
         $user = Auth::user();
@@ -117,6 +119,7 @@ class TradeController extends Controller
 
     public function completeWihtdrawal(Request $request)
     {
+        \Artisan::call('naira:limit');
         $validator = Validator::make($request->all(), [
             'agent_id' => 'required',
             'amount' => 'required',
@@ -185,12 +188,12 @@ class TradeController extends Controller
             ]);
         }
 
-        if($account->status != 'active'){
-            return response()->json([
-                'success' => false,
-                'message' => "This Account number is not active for Withdrawal",
-            ]);
-        }
+       // if($account->status != 'active'){
+        //    return response()->json([
+        //        'success' => false,
+       //       'message' => "This Account number is not active for Withdrawal",
+      //       ]);
+      //  }
 
         if(($account->activateBy != null) AND (now() <= $account->activateBy)){
             $options = [
@@ -222,7 +225,7 @@ class TradeController extends Controller
         }
 
         $ref = \Str::random(3) . time();
-        $charge = 50;
+        $charge = 100;
 
         if (GeneralSettings::getSettingValue('NAIRA_TRANSACTION_CHARGE') and UserController::successFulNairaTrx() < 10) {
             $charge = 0;
