@@ -206,14 +206,26 @@ class CustomerHappinessController extends Controller
     public function getList()
     {
 
+
+        $categories = QueryCategory::select('name')->distinct()->get()->toArray();
+
+        $new_array = array();
+
+        foreach($categories as $v) {
+
+            $new_array[] = $v['name'] ;
+        }
+
+        // dd($new_array);
+
         $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call'];
         $types = ['Enquiry', 'Complaint', 'Notice', 'Suggestion'];
-        $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings'];
+        // $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings'];
         $status = ['close', 'open'];
 
         $chAgents = User::where('role', 555)->pluck('first_name');
 
-        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $categories, 'agents' => $chAgents, 'status' => $status);
+        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $new_array, 'agents' => $chAgents, 'status' => $status);
 
         return response()->json([
             'success' => true,
