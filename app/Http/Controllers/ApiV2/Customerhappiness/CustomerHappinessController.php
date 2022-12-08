@@ -118,6 +118,7 @@ class CustomerHappinessController extends Controller
             'channel' => 'required',
             'username' => 'required',
             'category' => 'required',
+            'category_description' => 'required',
             'status' => ['required', 'in:open,close'],
         ]);
 
@@ -128,7 +129,7 @@ class CustomerHappinessController extends Controller
             'ticketNo' => time(),
             'user_id' => Auth::user()->id,
             'agent_id' => Auth::user()->id,
-            'description' => $req->description,
+            'description' => $req->description . ' This was categorized under' .$req->category.'('. $req->category_description .')',
             'status' => $req->status,
             'agent_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
             'type' => $req->type,
