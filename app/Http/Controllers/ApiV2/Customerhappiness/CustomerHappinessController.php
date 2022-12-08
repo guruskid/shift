@@ -227,24 +227,42 @@ class CustomerHappinessController extends Controller
     {
         if($category == 'naira'){
 
-            $ticketcategory = QueryCategory::select('name')->where('name', 'Naira wallet and Withdrawals issues')->first();
-            $descriptios =  QueryCategory::select('description')->where('name', 'Naira wallet and Withdrawals issues')->get();
+            $description =  QueryCategory::select('description')->where('name', 'Naira wallet and Withdrawals issues')->get()->toArray();
 
+            $new_array = array();
+
+            foreach($description as $v) {
+
+                $new_array[] = $v['description'] ;
+            }
+
+           $data = (object) array('Naira wallet and Withdrawals issues' =>  $new_array);
+        //    dd($new_array);
             return response()->json([
                 "success" => true,
-                "query" =>[ $ticketcategory, $descriptios  ]
+                "query" => $data
             ], 200);
 
         }
 
         if($category == 'crypto'){
 
-            $ticketcategory = QueryCategory::select('name')->where('name', 'Crypto issues')->first();
-            $descriptios =  QueryCategory::select('description')->where('name', 'Crypto issues')->get();
+
+            $description =  QueryCategory::select('description')->where('name', 'Crypto issues')->get()->toArray();
+
+
+            $new_array = array();
+
+            foreach($description as $v) {
+
+                $new_array[] = $v['description'] ;
+            }
+
+           $data = (object) array('Crypto issues' =>  $new_array);
 
             return response()->json([
                 "success" => true,
-                "query" =>[ $ticketcategory, $descriptios  ]
+                "query" => $data
             ], 200);
 
         }
@@ -252,12 +270,21 @@ class CustomerHappinessController extends Controller
 
         if($category == 'giftcard'){
 
-            $ticketcategory = QueryCategory::select('name')->where('name', 'Gift Card issuess')->first();
-            $descriptios =  QueryCategory::select('description')->where('name', 'Gift Card issues')->get();
+            $description =  QueryCategory::select('description')->where('name', 'Gift Card issues')->get()->toArray();
+
+
+            $new_array = array();
+
+            foreach($description as $v) {
+
+                $new_array[] = $v['description'] ;
+            }
+
+           $data = (object) array('Gift Card issues' =>  $new_array);
 
             return response()->json([
                 "success" => true,
-                "query" =>[ $ticketcategory, $descriptios  ]
+                "query" => $data
             ], 200);
 
         }
@@ -266,12 +293,21 @@ class CustomerHappinessController extends Controller
 
         if($category == 'account'){
 
-            $ticketcategory = QueryCategory::select('name')->where('name', 'System and Account issues')->first();
-            $descriptios =  QueryCategory::select('description')->where('name', 'System and Account issues')->get();
+            $description =  QueryCategory::select('description')->where('name', 'System and Account issues')->get()->toArray();
+
+
+            $new_array = array();
+
+            foreach($description as $v) {
+
+                $new_array[] = $v['description'] ;
+            }
+
+           $data = (object) array('System and Account issues' =>  $new_array);
 
             return response()->json([
                 "success" => true,
-                "query" =>[ $ticketcategory, $descriptios  ]
+                "query" => $data
             ], 200);
 
         }
