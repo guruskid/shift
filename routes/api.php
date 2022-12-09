@@ -58,6 +58,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/buy-airtime', 'Api\BillsPaymentController@buyAirtime');
         // Route::post('/bitcoin-airtime', 'Api\BillsPaymentController@bitcoinAirtime');
 
+        Route::get('/user-rating', 'Api\UserRatingController@store');
+
 
         // Data
         Route::get('/data', 'Api\BillsPaymentController@data');

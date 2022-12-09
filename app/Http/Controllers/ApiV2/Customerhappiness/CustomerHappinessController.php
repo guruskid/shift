@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\NairaTrade;
 use App\NairaTransaction;
 use App\NairaWallet;
+use App\QueryCategory;
 use App\Ticket;
 use App\TicketCategory;
 use App\Transaction;
@@ -117,6 +118,7 @@ class CustomerHappinessController extends Controller
             'channel' => 'required',
             'username' => 'required',
             'category' => 'required',
+            'category_description' => 'required',
             'status' => ['required', 'in:open,close'],
         ]);
 
@@ -127,7 +129,7 @@ class CustomerHappinessController extends Controller
             'ticketNo' => time(),
             'user_id' => Auth::user()->id,
             'agent_id' => Auth::user()->id,
-            'description' => $req->description,
+            'description' => $req->description . ' This was categorized under' .$req->category.'('. $req->category_description .')',
             'status' => $req->status,
             'agent_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
             'type' => $req->type,
@@ -222,6 +224,64 @@ class CustomerHappinessController extends Controller
 
     }
 
+    public function listofCategories($category)
+    {
+        if($category == 'naira'){
+
+            $ticketcategory = QueryCategory::select('name')->where('name', 'Naira wallet and Withdrawals issues')->first();
+            $descriptios =  QueryCategory::select('description')->where('name', 'Naira wallet and Withdrawals issues')->get();
+
+            return response()->json([
+                "success" => true,
+                "query" =>[ $ticketcategory, $descriptios  ]
+            ], 200);
+
+        }
+
+        if($category == 'crypto'){
+
+            $ticketcategory = QueryCategory::select('name')->where('name', 'Crypto issues')->first();
+            $descriptios =  QueryCategory::select('description')->where('name', 'Crypto issues')->get();
+
+            return response()->json([
+                "success" => true,
+                "query" =>[ $ticketcategory, $descriptios  ]
+            ], 200);
+
+        }
+
+
+        if($category == 'giftcard'){
+
+            $ticketcategory = QueryCategory::select('name')->where('name', 'Gift Card issuess')->first();
+            $descriptios =  QueryCategory::select('description')->where('name', 'Gift Card issues')->get();
+
+            return response()->json([
+                "success" => true,
+                "query" =>[ $ticketcategory, $descriptios  ]
+            ], 200);
+
+        }
+
+
+
+        if($category == 'account'){
+
+            $ticketcategory = QueryCategory::select('name')->where('name', 'System and Account issues')->first();
+            $descriptios =  QueryCategory::select('description')->where('name', 'System and Account issues')->get();
+
+            return response()->json([
+                "success" => true,
+                "query" =>[ $ticketcategory, $descriptios  ]
+            ], 200);
+
+        }
+
+    }
+
+
+
+
     public function sortByDay()
     {
 
@@ -306,25 +366,25 @@ class CustomerHappinessController extends Controller
         ], 200);
     }
 
-    public function trialTransactions2()
+    public function transactionsAll()
     {
         $researches = DB::table('naira_transactions')
             ->whereIn('transaction_type_id', [20, 19, 24, 5, 4])
             ->join('transactions', DB::raw("SUBSTRING(naira_transactions.narration, -13, 13)"), '=', 'transactions.uid')
-            ->select('transactions.id', 'transactions.uid', 'transactions.user_email', 'transactions.user_id', 'transactions.card', 'transactions.type', 'transactions.amount', 'transactions.amount_paid',
+            ->select('transactions.id', 'transactions.uid', 'transactions.user_first_name', 'transactions.user_email', 'transactions.user_id', 'transactions.card', 'transactions.type', 'transactions.amount', 'transactions.amount_paid',
                 'transactions.status', 'transactions.card_type', 'transactions.quantity', 'transactions.card_price', 'transactions.created_at', 'transactions.updated_at', 'transactions.ngn_rate',
                 'naira_transactions.previous_balance', 'naira_transactions.current_balance', DB::raw("SUBSTRING(naira_transactions.narration, -13, 13) as naira_transactions_uid"))
             ->orderBy('transactions.id', 'DESC')
             ->paginate(100);
 
-        $researches = DB::table('naira_transactions')
-            ->whereIn('transaction_type_id', [20, 19, 24, 5, 4])
-            ->join('transactions', DB::raw("SUBSTRING_INDEX(naira_transactions.narration,' ', -1)"), '=', 'transactions.uid')
-            ->select('transactions.id', 'transactions.uid', 'transactions.user_email', 'transactions.user_id', 'transactions.card', 'transactions.type', 'transactions.amount', 'transactions.amount_paid',
-                'transactions.status', 'transactions.card_type', 'transactions.quantity', 'transactions.card_price', 'transactions.created_at', 'transactions.updated_at', 'transactions.ngn_rate',
-                'naira_transactions.previous_balance', 'naira_transactions.current_balance', DB::raw("SUBSTRING_INDEX(naira_transactions.narration,' ', -1) as naira_transactions_uid"))
-            ->orderBy('transactions.id', 'DESC')
-            ->paginate(100);
+        // $researches = DB::table('naira_transactions')
+        //     ->whereIn('transaction_type_id', [20, 19, 24, 5, 4])
+        //     ->join('transactions', DB::raw("SUBSTRING_INDEX(naira_transactions.narration,' ', -1)"), '=', 'transactions.uid')
+        //     ->select('transactions.id', 'transactions.uid', 'transactions.user_email', 'transactions.user_id', 'transactions.card', 'transactions.type', 'transactions.amount', 'transactions.amount_paid',
+        //         'transactions.status', 'transactions.card_type', 'transactions.quantity', 'transactions.card_price', 'transactions.created_at', 'transactions.updated_at', 'transactions.ngn_rate',
+        //         'naira_transactions.previous_balance', 'naira_transactions.current_balance', DB::raw("SUBSTRING_INDEX(naira_transactions.narration,' ', -1) as naira_transactions_uid"))
+        //     ->orderBy('transactions.id', 'DESC')
+        //     ->paginate(100);
 
         return response()->json([
             'success' => true,

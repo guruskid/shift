@@ -311,6 +311,87 @@ function removeAgent(id) {
     }
 }
 
+function revenueGrowthSort(){
+    $('#revenue_growth_summary_a').removeClass('d-block').addClass('d-none');
+    $('#revenue_growth_summary_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#revenue_growth_summary_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'monthly';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/revenue-growth/' + timeFrame,
+        success: function (data) {
+            var percentage = data['revenueGrowth']+" %"
+            var revenueName = "% Revenue Growth("+data['duration']+")"
+
+            $('#revenue_growth_summary').html(percentage)
+            $('#revenue_growth_summary_name').html(revenueName)
+            
+            if(data['revenueGrowth'] <= 0){
+                $('#revenue_growth_summary_b').removeClass('text-success').addClass('text-danger');
+            } else {
+                $('#revenue_growth_summary_b').removeClass('text-danger').addClass('text-success');
+            }
+        }
+    });
+}
+
+function averageRevenuePerUniqueUser(){
+    $('#average_revenue_unique_summary_a').removeClass('d-block').addClass('d-none');
+    $('#average_revenue_unique_summary_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#average_revenue_unique_summary_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'monthly';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/average-revenue-per-unique-user/' + timeFrame,
+        success: function (data) {
+            var amount = "$"+data['averageRevenuePerUser']
+            var name = "Average Revenue Per Unique User("+data['duration']+")"
+
+            $('#average_revenue_unique_summary').html(amount)
+            $('#average_revenue_unique_summary_name').html(name)
+            $('#average_revenue_unique_summary').removeClass('text-danger').addClass('text-success');
+        }
+    });
+}
+
+function averageRevenuePerTransaction(){
+    $('#average_revenue_transaction_summary_a').removeClass('d-block').addClass('d-none');
+    $('#average_revenue_transaction_summary_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#average_revenue_transaction_summary_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'monthly';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/average-revenue-per-transaction/' + timeFrame,
+        success: function (data) {
+            var amount = "$"+data['averageRevenuePerTransaction']
+            var name = "Average Revenue Per Transaction("+data['duration']+")"
+
+            $('#average_revenue_transaction_summary').html(amount)
+            $('#average_revenue_transaction_summary_name').html(name)
+            $('#average_revenue_transaction_summary').removeClass('text-danger').addClass('text-success');
+        }
+    });
+}
+
+
 /* Confirm transfer of funds */
 function confirmTransfer(id, user, amount) {
     $('.amount').text(amount)

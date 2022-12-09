@@ -18,9 +18,13 @@ Route::group(['middleware' => ['auth:api', 'verified', 'cors']], function () {
 
         Route::get('/queryoption/dropdown', 'CustomerHappinessController@getList');
 
+        Route::get('/queryoption/category/{category}', 'CustomerHappinessController@listofCategories');
 
 
-        Route::get('/transactions', 'CustomerHappinessController@trialTransactions1');
+
+
+
+        Route::get('/transactions', 'CustomerHappinessController@transactionsAll');
 
         Route::get('/p2p', 'CustomerHappinessController@p2pTran');
         Route::get('/p2p/{status}', 'CustomerHappinessController@sortP2pbyStatus');

@@ -291,18 +291,19 @@ class DashboardOverviewController extends Controller
 
     public function transactionHistory($type)
     {
-
+        $data = '';
 
 
 
 
         // $tranx = [];
         if ($type == 'p2p') {
+            $data = SpotLightController::getTransactionByDay();
 
-            return response()->json([
-                'success' => true,
-                'data' => SpotLightController::getTransactionByDay()
-            ],200);
+            // return response()->json([
+            //     'success' => true,
+            //     'data' => SpotLightController::getTransactionByDay()
+            // ],200);
 
             // $data['count'] =    $this->p2pTransactionHistoryDetails()->latest()->limit(7)->get()
             //     ->groupBy(function($t) {
@@ -330,39 +331,41 @@ class DashboardOverviewController extends Controller
             //     ];
             // });
         } elseif ($type == 'crypto') {
-            $cryptoTrx =
-                Transaction::whereHas('asset', function ($query) {
-                    $query->where('is_crypto', 0);
-                })
-                ->whereHas('naira_transactions', function ($query) {
-                    $query->select('*');
-                })
-                ->with("naira_transactions", "user");
+            $data = SpotLightController::getCryptoTransactionByDay();
 
-                $data['count'] =  $cryptoTrx->latest()->limit(7)->get()
-                ->groupBy(function($t) {
-                    return $t->created_at->format('Y-m-d');
-                })
-                ->map(function($d) {
-                    return count($d);
-                });
-                $pt =  $cryptoTrx->get();
+        //     $cryptoTrx =
+        //         Transaction::whereHas('asset', function ($query) {
+        //             $query->where('is_crypto', 0);
+        //         })
+        //         ->whereHas('naira_transactions', function ($query) {
+        //             $query->select('*');
+        //         })
+        //         ->with("naira_transactions", "user");
 
-                $data['tranx'] = $pt->map(function ($item) {
+        //         $data['count'] =  $cryptoTrx->latest()->limit(7)->get()
+        //         ->groupBy(function($t) {
+        //             return $t->created_at->format('Y-m-d');
+        //         })
+        //         ->map(function($d) {
+        //             return count($d);
+        //         });
+        //         $pt =  $cryptoTrx->get();
 
-                    return [
-                          'reference' => $item->reference,
-                        'amount' => $item->naira_transactions->amount,
-                        "user" => $item->user->first_name . " " . $item->user->first_name,
-                        "username" => $item->user->username,
-                        "dp" => $item->user->dp,
-                        "previous_balance" => $item->naira_transactions->previous_balance,
-                        "current_balance" => $item->naira_transactions->current_balance,
-                        "date" => $item->created_at,
-                        "status"  => $item->status,
-                        "type" => $item->type
-                    ];
-        });
+        //         $data['tranx'] = $pt->map(function ($item) {
+
+        //             return [
+        //                   'reference' => $item->reference,
+        //                 'amount' => $item->naira_transactions->amount,
+        //                 "user" => $item->user->first_name . " " . $item->user->first_name,
+        //                 "username" => $item->user->username,
+        //                 "dp" => $item->user->dp,
+        //                 "previous_balance" => $item->naira_transactions->previous_balance,
+        //                 "current_balance" => $item->naira_transactions->current_balance,
+        //                 "date" => $item->created_at,
+        //                 "status"  => $item->status,
+        //                 "type" => $item->type
+        //             ];
+        // });
 
 
             // $this->getTransactionHistory();
@@ -630,9 +633,8 @@ class DashboardOverviewController extends Controller
             $depositChange = round((($number_and_volume_of_deposits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
             $withdrawalChange = round((($number_and_volume_of_withdrawals->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
             $cableElectricityChange = round((($number_and_volume_of_paybills_transactions->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
-            $manualCreditChange = round((($number_and_volume_of_manual_credits->sum('previousTransactionAmount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
-            $manualDebitChange = round((($number_and_volume_of_manual_debits->sum('previousTransactionAmount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
-
+            $manualCreditChange = round((($number_and_volume_of_manual_credits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
+            $manualDebitChange = round((($number_and_volume_of_manual_debits->sum('amount') - $avgMonthlyTransactions) / $avgMonthlyTransactions) * 100);
         }
 
         if ($type == 'day') {

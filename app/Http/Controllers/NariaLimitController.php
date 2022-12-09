@@ -23,6 +23,8 @@ class NariaLimitController extends Controller
         }
 
         $userDetails->v_progress = $v_progress;
+        
+        $LIMIT_USER_WITHDRAWAL = GeneralSettings::getSettingValue('LIMIT_USER_WITHDRAWAL');
 
         switch ($v_progress) {
             case 25:
@@ -35,6 +37,16 @@ class NariaLimitController extends Controller
                 $level1 = VerificationLimit::where('level', 1)->first();
                 $userDetails->daily_max = $level1->daily_widthdrawal_limit;
                 $userDetails->monthly_max = $level1->monthly_widthdrawal_limit;
+
+                if($LIMIT_USER_WITHDRAWAL == 1){
+                    if($userDetails->daily_max >= 500000){
+                        $userDetails->daily_max = 500000;
+                    }
+                    if($userDetails->monthly_max >= 500000){
+                        $userDetails->monthly_max = 500000;
+                    }
+                }
+                
                 $userDetails->save();
                 break;
 
@@ -42,6 +54,15 @@ class NariaLimitController extends Controller
                 $level2 = VerificationLimit::where('level', 2)->first();
                 $userDetails->daily_max = $level2->daily_widthdrawal_limit;
                 $userDetails->monthly_max = $level2->monthly_widthdrawal_limit;
+
+                if($LIMIT_USER_WITHDRAWAL == 1){
+                    if($userDetails->daily_max >= 500000){
+                        $userDetails->daily_max = 500000;
+                    }
+                    if($userDetails->monthly_max >= 500000){
+                        $userDetails->monthly_max = 500000;
+                    }
+                }
                 $userDetails->save();
                 break;
 
@@ -49,6 +70,15 @@ class NariaLimitController extends Controller
                 $level3 = VerificationLimit::where('level', 3)->first();
                 $userDetails->daily_max = $level3->daily_widthdrawal_limit;
                 $userDetails->monthly_max = $level3->monthly_widthdrawal_limit;
+
+                if($LIMIT_USER_WITHDRAWAL == 1){
+                    if($userDetails->daily_max >= 500000){
+                        $userDetails->daily_max = 500000;
+                    }
+                    if($userDetails->monthly_max >= 500000){
+                        $userDetails->monthly_max = 500000;
+                    }
+                }
                 $userDetails->save();
                 break;
 

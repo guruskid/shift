@@ -114,6 +114,17 @@
             </div>
         </a>
     </li>
+    @if ( in_array(Auth::user()->role, [889,777] ) )
+    <li class="menu {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
+        <a href="{{route('admin.user-verifications')}}" aria-expanded="false" class="dropdown-toggle" >
+            <div class="">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                <span>Users verification <span class="badge badge-warning">New</span></span>
+            </div>
+        </a>
+    </li>
+    @endif
+
 
     <li class="menu {{ Route::currentRouteName() == 'admin.rates' ? 'active' : '' }}">
         <a href="{{route('admin.rates')}}" aria-expanded="false" class="dropdown-toggle">
