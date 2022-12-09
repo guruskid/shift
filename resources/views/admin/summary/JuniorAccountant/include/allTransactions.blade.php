@@ -47,6 +47,7 @@
                                                 <th class="text-center">Total BItcoin Transactions</th>
                                                 <th class="text-center">Total USDT Transactions</th>
                                                 <th class="text-center">Total Giftcard Transactions</th>
+                                                <th class="text-center">Average transaction & revenue per hour</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -136,6 +137,23 @@
                                                                 <td>
                                                                     <div>Total <h6 class="text-right">${{ $giftCardSellUsdValue }}</h6></div>
                                                                     <div>Total Naira <h6 class="text-right">₦{{ $giftCardSellNairaValue }}</h6></div>
+                                                                </td>
+                                                            </tfoot>
+                                                        </table>
+                                                    </td>
+
+                                                    <td>
+                                                        <table class="table">
+                                                            <thead>
+                                                                <th class="text-center">Transaction</th>
+                                                                <th class="text-center">Revenue</th>
+                                                            </thead>
+                                                            <tfoot>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">{{ $avgTranxPerHour }}</h6></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>Total <h6 class="text-right">${{ $avgTranxRevenuePerHour }}</h6></div>
                                                                 </td>
                                                             </tfoot>
                                                         </table>

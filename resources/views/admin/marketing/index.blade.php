@@ -11,7 +11,7 @@
             </div>
         </div>
             <div class="row layout-top-spacing">
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing" 
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
                 onclick="window.location = '{{ route('admin.sales.type',['type'=>'All_Users_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='All_Users_App') bg-primary @endif">
                         <div class="widget-heading">
@@ -157,6 +157,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
                 onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_Transactions_Web']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_Transactions_Web') bg-primary @endif">
@@ -166,6 +167,21 @@
                             </div>
                             <div class="widget-n">
                                 <h5>{{ $monthly_web_transactions }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_New_Tranding_Users']) }}'">
+                    <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_New_Tranding_Users') bg-primary @endif">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="@if(isset($type) && $type =='Monthly_New_Tranding_Users') text-white @endif">Monthly New Trading <br>Users</h5>
+                            </div>
+                            <div class="widget-n">
+                                <h5>{{ $new_trading_users }}</h5>
+                                {{-- <h5>{{ $new_trading_users }}%</h5> --}}
                             </div>
                         </div>
                     </div>

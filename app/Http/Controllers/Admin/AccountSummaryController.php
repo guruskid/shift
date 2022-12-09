@@ -11,6 +11,7 @@ use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Support\Facades\DB;
 
 class AccountSummaryController extends Controller
 {
@@ -109,7 +110,7 @@ class AccountSummaryController extends Controller
 
         $bitcoinSellNairaValue = $bitcoinSellTransaction
         ->sum('amount_paid');
-        
+
 
         //** USDT */
         $usdtTransactions = $transactions
@@ -160,19 +161,48 @@ class AccountSummaryController extends Controller
 
         $giftCardBuyUsdValue = 0;
         foreach($giftCardBuyTransaction as $gcbt){
-            $giftCardBuyUsdValue += ($gcbt->amount * $gcbt->quantity); 
+            $giftCardBuyUsdValue += ($gcbt->amount * $gcbt->quantity);
         }
-        $giftCardBuyNairaValue = $giftCardBuyTransaction->sum('amount_paid');     
-        
+        $giftCardBuyNairaValue = $giftCardBuyTransaction->sum('amount_paid');
+
         //** GiftCard Sell Transactions */
 
         $giftCardSellCount = $giftCardSellTransaction->count();
 
         $giftCardSellUsdValue = 0;
         foreach($giftCardSellTransaction as $gcst){
-            $giftCardSellUsdValue += ($gcst->amount * $gcst->quantity); 
+            $giftCardSellUsdValue += ($gcst->amount * $gcst->quantity);
         }
-        $giftCardSellNairaValue = $giftCardSellTransaction->sum('amount_paid');  
+        $giftCardSellNairaValue = $giftCardSellTransaction->sum('amount_paid');
+
+        // Avg Tranx per hour
+        $tranxPerHour = Transaction::select([
+            DB::raw('HOUR(created_at) AS hour'),
+            DB::raw('COUNT(id) AS value')
+        ])
+        ->whereMonth('created_at', '=', $this->month)
+        ->whereDay('created_at', '=', $this->day)
+        ->whereYear('created_at', '=', Carbon::now()->format('Y'))
+        ->groupBy('hour')
+        ->get()
+        ->sum('value');
+        $avgTranxPerHour = $tranxPerHour/24;
+
+        // Avg Tranx per hour
+        $tranxRevenuePerHour = Transaction::select([
+            DB::raw('HOUR(created_at) AS hour'),
+            DB::raw('SUM(amount) AS value')
+        ])
+        ->whereMonth('created_at', '=', $this->month)
+        ->whereDay('created_at', '=', $this->day)
+        ->whereYear('created_at', '=', Carbon::now()->format('Y'))
+        ->groupBy('hour')
+        ->get()
+        ->sum('value');
+        $avgTranxRevenuePerHour = $tranxRevenuePerHour/24;
+
+        // dd($avgTranxRevenuePerHour);
+
 
         return view('admin.summary.JuniorAccountant.transaction',compact([
             'accountantName','accountant','showCategory','showSummary','showData','segment','month','day','transactions',
@@ -189,7 +219,9 @@ class AccountSummaryController extends Controller
 
             'giftCardBuyCount', 'giftCardBuyUsdValue', 'giftCardBuyNairaValue',
 
-            'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue'
+            'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue',
+
+            'avgTranxPerHour', 'avgTranxRevenuePerHour'
         ]));
     }
 
@@ -223,7 +255,7 @@ class AccountSummaryController extends Controller
             'accountantName','accountant','showCategory','showSummary','showData','segment','month','day','utilityTransactions',
             'utilitiesTotalCount','utilitiesTotalAmount','utilitiesTotalContinenceFee','utilitiesTotal'
         ]));
-    } 
+    }
 
     public function GetAverageResponseTime($data_collection)
     {
@@ -355,7 +387,7 @@ class AccountSummaryController extends Controller
 
         $this->segment = Carbon::parse($startDate)->format('d F Y-h:ia');
         $this->segment .= "  To  ".Carbon::parse($endDate)->format('d F Y-h:ia');
-        return $this->sortByDateRange($startDate, $endDate);   
+        return $this->sortByDateRange($startDate, $endDate);
     }
 
     public function sortByDateRange($startDate,$endDate){
@@ -409,7 +441,7 @@ class AccountSummaryController extends Controller
     public function sortByAccountants($startDate, $endDate, User $user){
         //** getting the Y-m-d format for start and end date */
         if($startDate){
-            
+
             $start = explode("T",$startDate);
             $startDate = $start[0];
 
@@ -464,11 +496,11 @@ class AccountSummaryController extends Controller
         if($this->category == "paybridge" OR $this->category == "paybridgewithdrawal"){
             $payBridgeTransactions =  $this->sortingByTimestampRange($accountantTimestamp);
             $payBridgeTransactions['payBridgeDepositWithdrawalTransactions'] = $payBridgeTransactions['payBridgeDepositWithdrawalTransactions']->sortByDesc('updated_at');
-            
+
 
             return $this->payBridge($payBridgeTransactions['payBridgeDepositWithdrawalTransactions'], $payBridgeTransactions['id']);
         }
-        
+
     }
 
     public function juniorAccountantSort($start, $end, $user){
@@ -504,7 +536,7 @@ class AccountSummaryController extends Controller
             $payBridgeTransactions['payBridgeDepositWithdrawalTransactions'] = $payBridgeTransactions['payBridgeDepositWithdrawalTransactions']->whereBetween('updated_at', [$start, $end]);
 
             $payBridgeTransactions['payBridgeDepositWithdrawalTransactions'] = $payBridgeTransactions['payBridgeDepositWithdrawalTransactions']->sortByDesc('updated_at');
-            
+
             return $this->payBridge($payBridgeTransactions['payBridgeDepositWithdrawalTransactions'], $payBridgeTransactions['id']);
         }
     }
@@ -551,7 +583,7 @@ class AccountSummaryController extends Controller
                 $payBridgeTranx = $this->sortingByAccountantTimestamp($payBridge, $at->activeTime, $at->inactiveTime);
                 $payBridgeTransactions = $payBridgeTransactions->concat($payBridgeTranx);
             }
-    
+
             if ($this->category == "paybridge"){
                 $id = 1;
             } elseif ($this->category == "paybridgewithdrawal"){
