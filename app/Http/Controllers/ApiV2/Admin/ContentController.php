@@ -8,6 +8,7 @@ use App\BlogHeading;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -51,7 +52,9 @@ class ContentController extends Controller
     }
 
     public function FetchCategories(){
-        $data = BlogCategory::where("is_published", true)->paginate(20);
+        $data = BlogCategory::select(DB::raw('id as value, title as label, slug'))
+        ->where("is_published", true)
+        ->paginate(20);
 
         return response()->json([
             'success' => true,
@@ -143,7 +146,10 @@ class ContentController extends Controller
     }
 
     public function fetchBlogHeadings(){
-        $data = BlogHeading::where("is_published", true)->paginate(20);
+        $data = BlogHeading::select(DB::raw('id as value, title as label, slug'))
+        ->where("is_published", true)
+        ->paginate(20);
+        
         return response()->json([
             'success' => true,
             'data' => $data
