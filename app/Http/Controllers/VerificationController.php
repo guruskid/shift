@@ -35,7 +35,8 @@ class VerificationController extends Controller
         $file = $request->id_card;
         $extension = $file->getClientOriginalExtension();
         $filenametostore =  $user->email . uniqid() . '.' . $extension;
-        Storage::put('public/idcards/' . $filenametostore, fopen($file, 'r+'));
+        // Storage::put('public/idcards/' . $filenametostore, fopen($file, 'r+'));
+        $file->move(public_path('storage/idcards/'), $filenametostore);
         $user->id_card = $filenametostore;
         $user->save();
 
@@ -64,7 +65,6 @@ class VerificationController extends Controller
 
     public function uploadAddress(Request $request)
     {
-
         if(Auth::user()->first_name == ' '){
             return back()->with(['error' => 'You must to add your bank details before proceeding for verification']);
         }
@@ -86,7 +86,9 @@ class VerificationController extends Controller
         $file = $request->address;
         $extension = $file->getClientOriginalExtension();
         $filenametostore =  $user->email . uniqid() . '.' . $extension;
-        Storage::put('public/idcards/' . $filenametostore, fopen($file, 'r+'));
+        // Storage::put('public/storage/idcards/' . $filenametostore, fopen($file, 'r+'));
+        $file->move(public_path('storage/idcards/'), $filenametostore);
+        // $file->move(public_path().'/idcards/' . $filenametostore);
         $user->address_img = $request->location;
         $user->save();
 

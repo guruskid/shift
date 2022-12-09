@@ -73,6 +73,16 @@ class GeneralSettings extends Controller
                 'settings_value'  => 0
             ]);
         }
+
+        if (!isset($data['limit_user_withdrawal'])) {
+            $res = SystemSettings::updateOrCreate([
+                'settings_name'   => strtoupper('limit_user_withdrawal'),
+                'notice' => ''
+            ],[
+                'settings_value'  => 0
+            ]);
+        }
+        
         if (!isset($data['hara_active'])) {
             $res = SystemSettings::updateOrCreate([
                 'settings_name'   => strtoupper('hara_active'),

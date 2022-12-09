@@ -204,6 +204,10 @@ class AccountSummaryController extends Controller
         // dd($avgTranxRevenuePerHour);
 
 
+        $revenueGrowth = self::percentageRevenueGrowth()->getData();
+        $averageRevenuePerUniqueUsers = self::averageRevenuePerUniqueUser()->getData();
+        $averageRevenuePerTransaction = self::averageRevenuePerTransaction()->getData();
+
         return view('admin.summary.JuniorAccountant.transaction',compact([
             'accountantName','accountant','showCategory','showSummary','showData','segment','month','day','transactions',
 
@@ -221,7 +225,11 @@ class AccountSummaryController extends Controller
 
             'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue',
 
+<<<<<<< HEAD
             'avgTranxPerHour', 'avgTranxRevenuePerHour'
+=======
+            'revenueGrowth','averageRevenuePerUniqueUsers','averageRevenuePerTransaction'
+>>>>>>> 128a29401837cc84d0600fbfcb3d15195a7b6b66
         ]));
     }
 
@@ -612,4 +620,227 @@ class AccountSummaryController extends Controller
 
         return $collectionData;
     }
+
+    public static function percentageRevenueGrowth($sortType = NULL){
+        if($sortType == NULL){
+            $sortType = 'monthly';
+        }
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        $previousStartDate = NULL;
+        $previousEndDate = NULL;
+
+        switch ($sortType) {
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now()->endOfWeek();
+
+                $previousStartDate = now()->subWeek()->startOfWeek();
+                $previousEndDate = now()->subWeek()->endOfWeek();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+
+                $previousStartDate = now()->subMonth()->startOfMonth();
+                $previousEndDate = now()->subMonth()->endOfMonth();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now()->endOfYear();
+
+                $previousStartDate = now()->subYear()->startOfYear();
+                $previousEndDate = now()->subYear()->endOfYear();
+                break;
+
+            case 'quarterly':
+                $previousStartDate = now()->subMonth(5)->startOfMonth();
+                $previousEndDate = now()->subMonth(3)->endOfMonth();
+
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now()->subMonth(0)->endOfMonth();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+
+                $previousStartDate = now()->subMonth()->startOfMonth();
+                $previousEndDate = now()->subMonth()->endOfMonth();
+                break;
+        }
+
+        $currentTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->where('status','success')
+        ->get();
+
+        $previousTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $previousStartDate)
+        ->where('created_at','<=', $previousEndDate)
+        ->where('status','success')
+        ->get();
+
+        $previousTimeFrameAmount = 0;
+        $currentTimeFrameAmount = 0;
+
+        foreach($currentTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $currentTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $currentTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        foreach($previousTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $previousTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $previousTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        $percentageRevenueGrowth = ($previousTimeFrameAmount == 0) ? 0 :
+         (($currentTimeFrameAmount - $previousTimeFrameAmount)/$previousTimeFrameAmount) * 100;
+
+        return response()->json([
+            'success' => 'success',
+            'revenueGrowth' => round($percentageRevenueGrowth,2),
+            'duration' => ucwords($sortType)
+        ],200);
+    }
+    
+
+    public static function averageRevenuePerUniqueUser($sortType = NULL){
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        if($sortType == NULL){
+            $sortType = 'monthly';
+        }
+
+        switch ($sortType) {
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now()->endOfWeek();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now()->endOfYear();
+                break;
+
+            case 'quarterly':
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now()->subMonth(0)->endOfMonth();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+        }
+
+        $currentTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->where('status','success')
+        ->get();
+
+        $currentTimeFrameAmount = 0;
+
+        foreach($currentTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $currentTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $currentTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        $uniqueUsers = $currentTimeFrame->groupBy('user_id');
+        $uniqueUsersCount = $uniqueUsers->count();
+
+        $averageRevenuePerUser = ($uniqueUsersCount == 0) ? 0 : $currentTimeFrameAmount/$uniqueUsersCount;
+
+        return response()->json([
+            'success' => 'success',
+            'averageRevenuePerUser' => number_format($averageRevenuePerUser),
+            'duration' => ucwords($sortType)
+        ],200);
+
+    }
+
+    public static function averageRevenuePerTransaction($sortType = NULL){
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        if($sortType == NULL){
+            $sortType = 'monthly';
+        }
+
+        switch ($sortType) {
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now()->endOfWeek();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now()->endOfYear();
+                break;
+
+            case 'quarterly':
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now()->subMonth(0)->endOfMonth();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+        }
+
+        $currentTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->where('status','success')
+        ->get();
+
+        $currentTimeFrameAmount = 0;
+
+        foreach($currentTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $currentTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $currentTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        $transactionCount = $currentTimeFrame->count();
+        $averageRevenuePerTransaction = ($transactionCount == 0) ? 0 : $currentTimeFrameAmount/$transactionCount;
+
+        return response()->json([
+            'success' => 'success',
+            'averageRevenuePerTransaction' => number_format($averageRevenuePerTransaction),
+            'duration' => ucwords($sortType)
+        ],200);
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Card;
+use App\Http\Controllers\Admin\AccountSummaryController;
 use App\Mail\GeneralTemplateOne;
 use App\Transaction;
 use App\User;
@@ -81,17 +82,20 @@ class MarketingController extends Controller
         // dd($new_trading_users);
 
 
+       $revenueGrowth = AccountSummaryController::percentageRevenueGrowth()->getData();
        return view('admin.marketing.index',compact([
            'table_data','total_web_signed_up','total_app_signed_up','daily_web_signed_up',
            'daily_app_signed_up','monthly_web_signed_up','monthly_app_signed_up',
            'daily_app_transactions','daily_web_transactions',
            'monthly_app_transactions','monthly_web_transactions',
-            'total_app_transactions','total_web_transactions','new_trading_users'
+            'total_app_transactions','total_web_transactions','new_trading_users',
+            'total_app_transactions','total_web_transactions','revenueGrowth'
        ]));
     }
 
     public function Category($type = null)
     {
+       $revenueGrowth = AccountSummaryController::percentageRevenueGrowth()->getData();
        $total_web_signed_up = User::where('platform','web')->count();
        $total_app_signed_up = User::where('platform','app')->count();
 
@@ -152,7 +156,8 @@ class MarketingController extends Controller
             'daily_app_signed_up','monthly_web_signed_up','monthly_app_signed_up',
             'daily_app_transactions','daily_web_transactions',
             'monthly_app_transactions','monthly_web_transactions','type',
-            'total_app_transactions','total_web_transactions','new_trading_users'
+            'total_app_transactions','total_web_transactions','new_trading_users',
+            'total_app_transactions','total_web_transactions','revenueGrowth'
         ]));
     }
 

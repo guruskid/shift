@@ -11,7 +11,12 @@
             </div>
         </div>
             <div class="row layout-top-spacing">
+<<<<<<< HEAD
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+=======
+                
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing" 
+>>>>>>> 128a29401837cc84d0600fbfcb3d15195a7b6b66
                 onclick="window.location = '{{ route('admin.sales.type',['type'=>'All_Users_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='All_Users_App') bg-primary @endif">
                         <div class="widget-heading">
@@ -172,6 +177,7 @@
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
                 onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_New_Tranding_Users']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_New_Tranding_Users') bg-primary @endif">
@@ -186,6 +192,40 @@
                         </div>
                     </div>
                 </div>
+=======
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    {{-- bg-primary text-white --}}
+                        <div class="card mb-1 widget-content ">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-heading">
+                                    <h6 class="text-center" id='revenue_growth_summary_name'>% Revenue Growth(Monthly)</h6>
+                                    <div class="widget-n" style="justify-content: center; text-align: center;">
+                                        <div id='revenue_growth_summary_a' class="d-block">
+                                            @if($revenueGrowth->revenueGrowth <= 0)
+                                            <h5 class="text-danger">{{ $revenueGrowth->revenueGrowth }} %</h5>
+                                            @else
+                                            <h5 class="text-success" >{{ $revenueGrowth->revenueGrowth }} %</h5>
+                                            @endif
+                                        </div>
+        
+                                        <div id='revenue_growth_summary_b' class="d-none">
+                                            <h5 class="" id='revenue_growth_summary' >.......</h5>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mr-2">
+                                        <select name="sortingType" id='revenue_growth_summary_sort' onchange="revenueGrowthSort()" class="form-control">
+                                            <option value="noData">SortingType</option>
+                                            <option value="weekly">Weeekly</option>
+                                            <option value="monthly">Monthly</option>
+                                            <option value="quarterly">Quaterly</option>
+                                            <option value="yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+>>>>>>> 128a29401837cc84d0600fbfcb3d15195a7b6b66
 
             @if(isset($type) AND strpos($type,'Users') !== false)
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">

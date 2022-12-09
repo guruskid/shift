@@ -174,4 +174,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\LoginSession')->latest();
     }
+
+    public function userRating(){
+        return $this->hasMany(UserRating::class);
+    }
 }
