@@ -277,22 +277,22 @@ class CustomerHappinessController extends Controller
                 ];
             })->toArray();
 
-            $output = array_map(function($element) {
-                return (object) $element;
-            }, $description);
+            foreach($description  as $k) {
 
-            $data = (object)  $description;
+                $result[] = array('value' => $k[0], 'label' => $k[0]);
+            }
+            // $data = (object)  $description;
 
             return response()->json([
                 "success" => true,
-                "query" =>  $output
+                "query" =>  $result
             ], 200);
          }
 
 
 
 
-        if(strpos($category, 'giftcard') !== false || strpos($category, 'Giftcard') !== false){
+        if(strpos($category, 'gift') !== false || strpos($category, 'Gift') !== false){
 
             // $ticketcategory = QueryCategory::select('name')->where('name', 'Gift Card issuess')->first();
             $description =  QueryCategory::select('description')->where('name', 'Gift Card issues')->get()->map(function ($thing) {
@@ -302,15 +302,14 @@ class CustomerHappinessController extends Controller
                 ];
             })->toArray();
 
-            $output = array_map(function($element) {
-                return (object) $element;
-            }, $description);
+            foreach($description  as $k) {
 
-            $data = (object)  $description;
+                $result[] = array('value' => $k[0], 'label' => $k[0]);
+            }
 
             return response()->json([
                 "success" => true,
-                "query" =>  $output
+                "query" =>  $result
             ], 200);
          }
 
@@ -327,15 +326,14 @@ class CustomerHappinessController extends Controller
                 ];
             })->toArray();
 
-            $output = array_map(function($element) {
-                return (object) $element;
-            }, $description);
+            foreach($description  as $k) {
 
-            $data = (object)  $description;
+                $result[] = array('value' => $k[0], 'label' => $k[0]);
+            }
 
             return response()->json([
                 "success" => true,
-                "query" =>  $output
+                "query" =>  $result
             ], 200);
          }
 
