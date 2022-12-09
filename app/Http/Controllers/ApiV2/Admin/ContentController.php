@@ -376,6 +376,7 @@ class ContentController extends Controller
 
 
         $blog->title = $request->title;
+        $blog->slug = Str::slug($request->title);
         $blog->description = $request->description;
         $blog->body = $request->body;
         // $blog->status->heard = $request->title;
