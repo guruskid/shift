@@ -251,7 +251,7 @@ class SummaryController extends Controller
         }
 
         $summaryPage = new AccountSummaryController();
-        return $summaryPage->index($month, $day, $category);
+        return $summaryPage->index($month, $day, $category); //
     }
 
     public function sorting(Request $request)
