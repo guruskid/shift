@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class BlogCategory extends Model
 {
@@ -17,7 +18,7 @@ class BlogCategory extends Model
 
         static::creating(function ($category) {
             // generate a slug base on the title
-          $slug =   $category->slug = Str::slug($category->title);
+          $slug = $category->slug = Str::slug($category->title);
 
             // check to see if any other slugs exist that are the same & count them
         $count = static::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
