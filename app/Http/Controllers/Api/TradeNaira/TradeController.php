@@ -406,10 +406,13 @@ class TradeController extends Controller
                 //throw $th;
             }
         }
+        //user successful transactions
+        $user_withdrawal_count = Auth::user()->nairaTrades()->where('status','success')->count();
 
         return response()->json([
             'success' => true,
             'message' => $msg,
+            'total_user_count' => $user_withdrawal_count
         ], 200);
     }
 
