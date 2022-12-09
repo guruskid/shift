@@ -207,14 +207,27 @@ class CustomerHappinessController extends Controller
     public function getList()
     {
 
+
+        $ticketcategory = QueryCategory::select('name')->distinct()->get()->map(function ($thing) {
+            return [
+                $thing->name,
+
+            ];
+        })->toArray();
+
         $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call'];
         $types = ['Enquiry', 'Complaint', 'Notice', 'Suggestion'];
-        $categories = ['Wallet and Withdraw', 'GiftCard', 'Crypto', 'Account Settings'];
+        $categories = $ticketcategory ;
         $status = ['close', 'open'];
+
+        foreach($categories as $k) {
+
+            $result[] = array('value' => $k[0], 'label' => $k[0]);
+        }
 
         $chAgents = User::where('role', 555)->pluck('first_name');
 
-        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $categories, 'agents' => $chAgents, 'status' => $status);
+        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $result, 'agents' => $chAgents, 'status' => $status);
 
         return response()->json([
             'success' => true,
@@ -226,55 +239,111 @@ class CustomerHappinessController extends Controller
 
     public function listofCategories($category)
     {
-        if($category == 'naira'){
 
-            $ticketcategory = QueryCategory::select('name')->where('name', 'Naira wallet and Withdrawals issues')->first();
-            $descriptios =  QueryCategory::select('description')->where('name', 'Naira wallet and Withdrawals issues')->get();
+        if(strpos($category, 'naira') !== false || strpos($category, 'Naira') !== false){
+
+            $description =  QueryCategory::select('description')->where('name', 'Naira wallet and Withdrawals issues')->get()->map(function ($thing) {
+                return [
+                    $thing->description,
+
+                ];
+            })->toArray();
+
+            foreach($description  as $k) {
+
+                $result[] = array('value' => $k[0], 'label' => $k[0]);
+            }
+            return response()->json([
+                "success" => true,
+                "query" =>  $result
+            ], 200);
+         }
+
+
+
+
+
+        // }
+
+
+
+        if(strpos($category, 'crypto') !== false || strpos($category, 'Crypto') !== false){
+
+            // $ticketcategory = QueryCategory::select('name')->where('name', 'Crypto issues')->first();
+            $description =  QueryCategory::select('description')->where('name', 'Crypto issues')->get()->map(function ($thing) {
+                return [
+                    $thing->description,
+
+                ];
+            })->toArray();
+
+            $output = array_map(function($element) {
+                return (object) $element;
+            }, $description);
+
+            $data = (object)  $description;
 
             return response()->json([
                 "success" => true,
-                "query" =>[ $ticketcategory, $descriptios  ]
+                "query" =>  $output
             ], 200);
+         }
 
-        }
 
-        if($category == 'crypto'){
 
-            $ticketcategory = QueryCategory::select('name')->where('name', 'Crypto issues')->first();
-            $descriptios =  QueryCategory::select('description')->where('name', 'Crypto issues')->get();
+
+        if(strpos($category, 'giftcard') !== false || strpos($category, 'Giftcard') !== false){
+
+            // $ticketcategory = QueryCategory::select('name')->where('name', 'Gift Card issuess')->first();
+            $description =  QueryCategory::select('description')->where('name', 'Gift Card issues')->get()->map(function ($thing) {
+                return [
+                    $thing->description,
+
+                ];
+            })->toArray();
+
+            $output = array_map(function($element) {
+                return (object) $element;
+            }, $description);
+
+            $data = (object)  $description;
 
             return response()->json([
                 "success" => true,
-                "query" =>[ $ticketcategory, $descriptios  ]
+                "query" =>  $output
             ], 200);
+         }
 
-        }
 
 
-        if($category == 'giftcard'){
 
-            $ticketcategory = QueryCategory::select('name')->where('name', 'Gift Card issuess')->first();
-            $descriptios =  QueryCategory::select('description')->where('name', 'Gift Card issues')->get();
+        if(strpos($category, 'system') !== false || strpos($category, 'System') !== false){
+
+            // $ticketcategory = QueryCategory::select('name')->where('name', 'System and Account issues')->first();
+            $description =  QueryCategory::select('description')->where('name', 'System and Account issues')->get()->map(function ($thing) {
+                return [
+                    $thing->description,
+
+                ];
+            })->toArray();
+
+            $output = array_map(function($element) {
+                return (object) $element;
+            }, $description);
+
+            $data = (object)  $description;
 
             return response()->json([
                 "success" => true,
-                "query" =>[ $ticketcategory, $descriptios  ]
+                "query" =>  $output
             ], 200);
+         }
 
-        }
-
-
-
-        if($category == 'account'){
-
-            $ticketcategory = QueryCategory::select('name')->where('name', 'System and Account issues')->first();
-            $descriptios =  QueryCategory::select('description')->where('name', 'System and Account issues')->get();
-
+          else{
             return response()->json([
-                "success" => true,
-                "query" =>[ $ticketcategory, $descriptios  ]
-            ], 200);
-
+                "success" => false,
+                "message" => "wrong filter"
+            ], 404);
         }
 
     }
