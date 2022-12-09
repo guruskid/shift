@@ -224,12 +224,10 @@ class AccountSummaryController extends Controller
             'giftCardBuyCount', 'giftCardBuyUsdValue', 'giftCardBuyNairaValue',
 
             'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue',
+            
+            'avgTranxPerHour', 'avgTranxRevenuePerHour',
 
-<<<<<<< HEAD
-            'avgTranxPerHour', 'avgTranxRevenuePerHour'
-=======
             'revenueGrowth','averageRevenuePerUniqueUsers','averageRevenuePerTransaction'
->>>>>>> 128a29401837cc84d0600fbfcb3d15195a7b6b66
         ]));
     }
 
