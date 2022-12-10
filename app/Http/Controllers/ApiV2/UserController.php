@@ -280,7 +280,7 @@ class UserController extends Controller
 
          $usdt =  $usdt_wallet ? $usdt_wallet->usd : 0 ;
          $btc =  $btc_wallet ? $btc_wallet->usd : 0;
-         $naira_in_usd =  LiveRateController::usdNgn(false);
+         $naira_in_usd =  LiveRateController::usdNgn();
 
          $user_naira_wallet_balance_in_usd = $nairaWallet_balance / $naira_in_usd;
          // add user naira balance , btc balance and usdt balance
