@@ -560,7 +560,7 @@ Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function
             Route::get('/', 'ContentController@fetchBlogPosts');
             Route::get('/{id}', 'ContentController@showPost');
             Route::delete('/{id}', 'ContentController@destroyBlog');
-            Route::put('/{id}', 'ContentController@updateBlog');
+            Route::post('/{id}', 'ContentController@updateBlog');
 
         });
 
