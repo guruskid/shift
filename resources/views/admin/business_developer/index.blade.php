@@ -2,6 +2,13 @@
 @section('content')
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
+        <div class="d-flex justify-content-between">
+            <div></div>
+        <div>
+            <h6 >Responded Trade Count(Month) <span class="badge bg-warning text-white">{{number_format($analyticsCount)}}</span></h6>
+            <h6 >Responded Trade Volume(Month) <span class="badge bg-warning text-white">{{number_format($analyticsVolume)}}</span></h6>
+        </div>
+        </div>
 
         <div class="dashboard-title d-flex">
             <ion-icon name="home-outline"></ion-icon>

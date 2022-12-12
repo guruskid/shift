@@ -25,11 +25,20 @@ class BusinessDeveloperController extends Controller
 {
     // please NB the current cycle names is in mixed characters please don't mix it up
     public function index($type = null){
+        // return[
+        //     'Volume' => $tranxVolume,
+        //     'Count' => $tranxCount,
+        // ];
         $salesCategory = 'old';
         /**IMPORTANT NOTE
         There is custodian ID and sales ID on the DB means different things 
         The Sales ID mean that this user was either called by a user
         Custodian ID refers to the fact that no matter where the user the user is in the system loop he/she belongs to a sales personnel*/
+
+        /** ANALYTICS */
+        $analytics = $this->respondedUsersData();
+        $analyticsVolume = $analytics['Volume'];
+        $analyticsCount = $analytics['Count'];
 
         //NEW USER DATA
         $newUserData = SalesHelperController::DataAnalytics();
@@ -134,7 +143,7 @@ class BusinessDeveloperController extends Controller
             'admin.business_developer.index',
             compact([
                 'data_table','QuarterlyInactiveUsersCount','type','call_categories','calledUsersCount','RespondedUsersCount','RecalcitrantUsersCount',
-                'NoResponseCount','salesCategory','newInactiveUsersCount','newCalledUsersCount','newUnresponsiveUsersCount','activeUsersCount'
+                'NoResponseCount','salesCategory','newInactiveUsersCount','newCalledUsersCount','newUnresponsiveUsersCount','activeUsersCount','analyticsVolume','analyticsCount'
             ])
         );
     }
@@ -705,6 +714,37 @@ class BusinessDeveloperController extends Controller
             }
         }
         return redirect()->back()->with("success", "Database Populated");
+    }
+
+    public function respondedUsersData(){
+        $targetRespondedUsers = UserTracking::with('transactions','user')
+        ->whereMonth('called_date',now()->month)
+        ->where('Current_Cycle','Responded')
+        ->where('sales_id',Auth::user()->id)->get();
+
+        $targetTranx = $this->RespondedTotal($targetRespondedUsers);
+
+        $tranxVolume = $targetTranx->sum('amount');
+        $tranxCount = $targetTranx->count();
+
+        return[
+            'Volume' => $tranxVolume,
+            'Count' => $tranxCount,
+        ];
+
+    }
+
+    public function RespondedTotal($data)
+    {
+        $totalData = collect([]);
+        foreach($data as $d){
+            $allTranx = $d['transactions']->where('created_at','>=',$d->called_date);
+            if($allTranx != null){
+                $totalData = $totalData->concat($allTranx);
+            }
+        }
+        $totalData = $totalData->sortByDesc('created_at');
+        return $totalData;
     }
 
 }
