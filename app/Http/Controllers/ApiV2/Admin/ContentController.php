@@ -213,45 +213,55 @@ class ContentController extends Controller
 
     public function storeBlog(Request $request)
     {
-        $validator =  Validator::make($request->all(), [
-            'title' => 'required',
-            "description" => "required",
-            'image' => 'image|mimes:jpeg,JPEG,png,jpg,svg|max:5048|required',
-            "body" => "required",
-            // "status" => "in:draft,published",
-            "blog_heading_id" => "required|exists:blog_headings,id",
-            "blog_category_id" => "required|exists:blog_categories,id"
-        ]);
+        try {
+            $validator =  Validator::make($request->all(), [
+                'title' => 'required',
+                "description" => "required",
+                'image' => 'image|mimes:jpeg,JPEG,png,jpg,svg|max:5048|required',
+                "body" => "required",
+                // "status" => "in:draft,published",
+                "blog_heading_id" => "required|exists:blog_headings,id",
+                "blog_category_id" => "required|exists:blog_categories,id"
+            ]);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages()
+                ], 422);
+            }
+            
+            $image =  $request->file('image');
+
+            // $status = $request->status;
+            // $publishedAt = null;
+            // if ($status == 'published') {
+                // $publishedAt = now();
+            // }
+
+            Blog::create([
+                "title" => $request->title,
+                "description" => $request->description,
+                "body" => $request->body,
+                "image" => $this->blogPostImage($image),
+                // "status" => $request->status ?? "draft",
+                "status" => "published",
+                "published_at" => now(),
+                "blog_heading_id" => $request->blog_heading_id ,
+                "blog_category_id" => $request->blog_category_id,
+                "author_id" => Auth::user()->id
+            ]);
+
             return response()->json([
-                'success' => false,
-                'message' => $validator->messages()
-            ], 422);
+                'success' => true,
+                'message' => "Blog created"
+            ], 200);
+            
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 500);
         }
-        $image =  $request->file('image');
-        $status = $request->status;
-        $publishedAt = null;
-        // if ($status == 'published') {
-            $publishedAt = now();
-        // }
-        Blog::create([
-            "title" => $request->title,
-            "description" => $request->description,
-            "body" => $request->body,
-            "image" => $this->blogPostImage($image),
-            // "status" => $request->status ?? "draft",
-            "status" => "published",
-            "published_at" => $publishedAt,
-            "blog_heading_id" => $request->blog_heading_id ?? null,
-            "blog_category_id" => $request->blog_category_id ?? null,
-            "author_id" => Auth::user()->id
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => "Blog created"
-        ], 200);
     }
 
     private function blogPostImage($image)
