@@ -11,8 +11,12 @@
             </div>
         </div>
             <div class="row layout-top-spacing">
+<<<<<<< HEAD
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+=======
                 
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing" 
+>>>>>>> 128a29401837cc84d0600fbfcb3d15195a7b6b66
                 onclick="window.location = '{{ route('admin.sales.type',['type'=>'All_Users_App']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='All_Users_App') bg-primary @endif">
                         <div class="widget-heading">
@@ -158,6 +162,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
                 onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_Transactions_Web']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_Transactions_Web') bg-primary @endif">
@@ -172,6 +177,22 @@
                     </div>
                 </div>
 
+<<<<<<< HEAD
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_New_Tranding_Users']) }}'">
+                    <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_New_Tranding_Users') bg-primary @endif">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="@if(isset($type) && $type =='Monthly_New_Tranding_Users') text-white @endif">Monthly New Trading <br>Users</h5>
+                            </div>
+                            <div class="widget-n">
+                                <h5>{{ $new_trading_users }}</h5>
+                                {{-- <h5>{{ $new_trading_users }}%</h5> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+=======
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                     {{-- bg-primary text-white --}}
                         <div class="card mb-1 widget-content ">
@@ -204,6 +225,7 @@
                             </div>
                         </div>
                     </div>
+>>>>>>> 128a29401837cc84d0600fbfcb3d15195a7b6b66
 
             @if(isset($type) AND strpos($type,'Users') !== false)
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">

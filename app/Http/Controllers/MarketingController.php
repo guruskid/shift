@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Card;
 use App\Http\Controllers\Admin\AccountSummaryController;
 use App\Mail\GeneralTemplateOne;
 use App\Transaction;
@@ -18,9 +19,9 @@ class MarketingController extends Controller
     {
         $total_web_signed_up = User::where('platform','web')->count();
        $total_app_signed_up = User::where('platform','app')->count();
- 
+
         $daily_web_signed_up = User::whereDate("created_at",Carbon::now())->where('platform','web')->count();
- 
+
         $daily_app_signed_up = User::whereDate("created_at",Carbon::now())->where('platform','app')->count();
 
         //?App total Transactions
@@ -30,7 +31,7 @@ class MarketingController extends Controller
         //?Web Total Transactions
         $Transaction_total_web_transactions = Transaction::where('platform','web')->where('status', 'success')->count();
         $total_web_transactions = $Transaction_total_web_transactions;
- 
+
         //?app Daily transaction
         $Transaction_daily_app_transactions = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','app')->count();
         $daily_app_transactions = $Transaction_daily_app_transactions;
@@ -38,13 +39,13 @@ class MarketingController extends Controller
         //?Web Daily transaction
         $Transaction_daily_web_transactions = Transaction::whereDate("created_at",Carbon::now())->where('status', 'success')->where('platform','web')->count();
         $daily_web_transactions = $Transaction_daily_web_transactions ;
- 
+
          $monthly_web_signed_up = User::whereMonth('created_at', Carbon::now()->month)
          ->whereYear('created_at', Carbon::now()->year)->where('platform','web')->count();
- 
+
         $monthly_app_signed_up = User::whereMonth('created_at', Carbon::now()->month)
         ->whereYear('created_at', Carbon::now()->year)->where('platform','app')->count();
- 
+
         //?App Monthly Transactions
         $Transaction_monthly_app_transactions = Transaction::whereMonth('created_at', Carbon::now()->month)
         ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->where('platform','app')->count();
@@ -57,12 +58,37 @@ class MarketingController extends Controller
         $monthly_web_transactions = $Transaction_monthly_web_transactions;
 
        $table_data = User::orderBy('id', 'DESC')->get()->take(10);
+
+        //?New Trading User %increase
+        // User who traded six months ago
+        $mtrading_users = User::whereHas('transactions', function ($tranx) {
+            $tranx->where('status','success')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'));
+        })->pluck('id')->toArray();
+
+        // User who registered six months ago but no trade
+        $old_users_with_no_tranx = User::whereDoesntHave('transactions')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'))->pluck('id')->toArray();
+
+        $new_trading_users = User::orWhereIn('id',$mtrading_users)
+        // ->orWhereIn('id',$old_users_with_no_tranx)
+        ->whereHas('transactions', function ($tranx) {
+            $tranx->where('status','success')->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'));
+        })->count();
+
+        // $firstTransactionDate = User::first()->created_at;
+        // $fdate = Carbon::parse($firstTransactionDate);
+        // $totalTransactionsDays = $fdate->diffInDays(Carbon::now()->format('y-m-d'));
+        // $totalTransactions = Transaction::where('status','success')->sum('amount_paid');
+        // $avgDailyTransactions = $totalTransactions / $totalTransactionsDays;
+        // dd($new_trading_users);
+
+
        $revenueGrowth = AccountSummaryController::percentageRevenueGrowth()->getData();
        return view('admin.marketing.index',compact([
            'table_data','total_web_signed_up','total_app_signed_up','daily_web_signed_up',
            'daily_app_signed_up','monthly_web_signed_up','monthly_app_signed_up',
            'daily_app_transactions','daily_web_transactions',
            'monthly_app_transactions','monthly_web_transactions',
+            'total_app_transactions','total_web_transactions','new_trading_users',
             'total_app_transactions','total_web_transactions','revenueGrowth'
        ]));
     }
@@ -109,6 +135,20 @@ class MarketingController extends Controller
         ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->where('platform','web')->count();
         $monthly_web_transactions = $Transaction_monthly_web_transactions;
 
+        //?New Trading User %increase
+        // User who traded six months ago
+        $mtrading_users = User::whereHas('transactions', function ($tranx) {
+            $tranx->where('status','success')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'));
+        })->pluck('id')->toArray();
+
+        // User who registered six months ago but no trade
+        $old_users_with_no_tranx = User::whereDoesntHave('transactions')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'))->pluck('id')->toArray();
+
+        $new_trading_users = User::orWhereIn('id',$mtrading_users)
+        // ->orWhereIn('id',$old_users_with_no_tranx)
+        ->whereHas('transactions', function ($tranx) {
+            $tranx->where('status','success')->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'));
+        })->count();
 
         $table_data = $this->tableDataForCategory($type);
         return view('admin.marketing.index',compact([
@@ -116,6 +156,7 @@ class MarketingController extends Controller
             'daily_app_signed_up','monthly_web_signed_up','monthly_app_signed_up',
             'daily_app_transactions','daily_web_transactions',
             'monthly_app_transactions','monthly_web_transactions','type',
+            'total_app_transactions','total_web_transactions','new_trading_users',
             'total_app_transactions','total_web_transactions','revenueGrowth'
         ]));
     }
@@ -230,7 +271,26 @@ class MarketingController extends Controller
 
             return $monthly_app_transaction->sortByDesc('created_at');
         }
-        
+
+
+        if ($type == 'Monthly_New_Tranding_Users') {
+            // User who traded six months ago
+            $mtrading_users = User::whereHas('transactions', function ($tranx) {
+                $tranx->where('status','success')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'));
+            })->pluck('id')->toArray();
+
+            // User who registered six months ago but no trade
+            $old_users_with_no_tranx = User::whereDoesntHave('transactions')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'))->pluck('id')->toArray();
+
+            $new_trading_users = User::orWhereIn('id',$mtrading_users)
+            // ->orWhereIn('id',$old_users_with_no_tranx)
+            ->whereHas('transactions', function ($tranx) {
+                $tranx->where('status','success')->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'));
+            })->latest()->get();
+
+            return $new_trading_users;
+        }
+
     }
 
     public function viewTransactionsCategory($type = null, Request $request)
@@ -244,7 +304,7 @@ class MarketingController extends Controller
             return view('admin.marketing.transacitonsMonthly',compact([
                 'collection','segment','show_data','date_collection'
             ]));
-            
+
         }
         if($type == "All_Transactions_Web")
         {
@@ -357,8 +417,8 @@ class MarketingController extends Controller
     public function userMonthlyCards($type)
     {
         $collection = collect([]);
-            //? months 
-            for ($i=1; $i <= 12; $i++) { 
+            //? months
+            for ($i=1; $i <= 12; $i++) {
                 $month_name = Carbon::parse("2020-$i-1")->format('F');
                 $data =  User::where('platform',$type)->whereMonth('created_at', $i)
                 ->whereYear('created_at', Carbon::now()->year)->orderBy('id','desc')->count();
@@ -367,19 +427,19 @@ class MarketingController extends Controller
                                 "Month_number"=>$i,
                                 "number_of_Transactions"=>$data,
                                 "type"=>$type
-                            ]); 
+                            ]);
             $collection = $collection->concat($collection_holder);
             }
 
-            
+
             return $collection;
-            
+
     }
 
     public function transactionMonthlyCards($type)
     {
         $collection = collect([]);
-            for ($i=1; $i <= 12; $i++) { 
+            for ($i=1; $i <= 12; $i++) {
                 $month_name = Carbon::parse("2020-$i-1")->format('F');
                 $transaction = Transaction::whereMonth('created_at', $i)
                 ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->where('platform',$type)->orderBy('id','desc')->count();
@@ -390,7 +450,7 @@ class MarketingController extends Controller
                                 "Month_number"=>$i,
                                 "number_of_Transactions"=>$data,
                                 "type"=>$type
-                            ]); 
+                            ]);
             $collection = $collection->concat($collection_holder);
             }
             return $collection;
@@ -410,7 +470,7 @@ class MarketingController extends Controller
             return view('admin.marketing.userMonthly',compact([
                 'collection','segment','show_data','date_collection'
             ]));
-            
+
         }
         if($type == "All_Users_Web")
         {
@@ -582,7 +642,7 @@ class MarketingController extends Controller
             $title = 'Welcome To Dantown';
             $body = "You made a good decision!<br><br>";
             $body .="Welcome to the Dantown community, we're glad to have you here.<br><br>";
-            $body .="Dantown is an African top Cryptocurrency platform founded to create a trustworthy and secure place to trade your Cryptocurrency conveniently."; 
+            $body .="Dantown is an African top Cryptocurrency platform founded to create a trustworthy and secure place to trade your Cryptocurrency conveniently.";
             (new MarketingController)->sendMail($u,$title,$body);
         }
 
@@ -591,14 +651,14 @@ class MarketingController extends Controller
             if($u->transactions()->count() == 0){
                 $title = 'Check Up E-Mail';
                 $body = "We noticed since you signed up on the Dantown platform, you haven’t performed transactions.<br><br>";
-                
+
                 $body .= "We'd like to know if you are experiencing any difficulty on our platform.<br><br>";
-                
+
                 $body .= "The good thing is, We are always available for you.<br><br>";
                 $body .= "Kindly reach out to us if you need any assistance by responding to this mail.<br><br>";
-                
+
                 $body .= "We promise to always provide you with the best experience with Dantown.<br><br>";
-                
+
                 $body .= "Thank you for choosing Dantown now and always.";
                 (new MarketingController)->sendMail($u,$title,$body);
             }
