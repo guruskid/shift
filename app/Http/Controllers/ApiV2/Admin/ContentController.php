@@ -275,9 +275,10 @@ class ContentController extends Controller
         //     $constraint->aspectRatio();
         // })->save($destinationPath . "/" . $image_name);
 
-        $destinationPath = public_path('/blog/images');
+        // $destinationPath = public_path('/blog/images');
 
-        $image->move($destinationPath, $image_name);
+        // $image->move($destinationPath, $image_name);
+        Storage::put('public/blog/images/' . $image_name, fopen($image, 'r+'));
         return  $image_name;
     }
 
