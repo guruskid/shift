@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 class ContentController extends Controller
 {
@@ -285,7 +286,7 @@ class ContentController extends Controller
 
     public function fetchBlogPosts()
     {
-        $data['posts'] = Blog::where("status", "published")->with(
+        $data = Blog::where("status", "published")->with(
             [
                 'categories' => function ($query) {
                     $query->select('id', 'title');
@@ -295,7 +296,12 @@ class ContentController extends Controller
                 },
 
             ],
-        )->select('id', "title", "status", "description", "blog_heading_id", "blog_category_id")->get();
+        )->orderBy('id','DESC')->get();
+
+        foreach($data as $dataValues){
+            $dataValues->image = URL::to('/').'/storage/'.'blog/images'.'/'.$dataValues->image;
+            $dataValues->date = $dataValues->created_at->format('d M Y h:ia');
+        }
 
         return response()->json([
             'success' => true,
@@ -334,7 +340,7 @@ class ContentController extends Controller
 
     public function showPost($id)
     {
-        $data['posts'] = Blog::where("id", $id)->with(
+        $data = Blog::where("id", $id)->with(
             [
                 'categories' => function ($query) {
                     $query->select('id', 'title');
@@ -344,7 +350,12 @@ class ContentController extends Controller
                 },
 
             ],
-        )->select('id', "title", "status", "description", "blog_heading_id", "blog_category_id", "body")->get();
+        )->get();
+
+        foreach($data as $dataValues){
+            $dataValues->image = URL::to('/').'/storage/'.'blog/images'.'/'.$dataValues->image;
+            $dataValues->date = $dataValues->created_at->format('d M Y h:ia');
+        }
 
         return response()->json([
             'success' => true,
