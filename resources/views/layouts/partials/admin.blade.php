@@ -475,13 +475,29 @@
             </li>
             @endif
             @if (in_array(Auth::user()->role, [999, 557] ))
-                <li class="my-3">
-                    <a href="{{route('business-developer.call-log')}}"
-                        class=" {{ Route::currentRouteName() == 'business-developer.call-log' ? 'mm-active' : '' }} ">
-                        <i class="metismenu-icon pe-7s-users"></i>
-                        Call Logs
-                    </a>
-                </li>
+            <li>
+                <a href="#">
+                    <i class="metismenu-icon pe-7s-users"></i>
+                    Call Logs
+                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{route('business-developer.call-log')}}"
+                            class=" {{ Route::currentRouteName() == 'business-developer.call-log' ? 'mm-active' : '' }} ">
+                            <i class="metismenu-icon"></i>
+                            Old Users Call Log
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('business-developer.new-users.call-log')}}"
+                            class=" {{ Route::currentRouteName() == 'business-developer.new-users.call-log' ? 'mm-active' : '' }} ">
+                            <i class="metismenu-icon">
+                            </i>New Users Call Log
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
                 <li class="my-3">
                     <a href="{{route('business-developer.user-profile')}}"
@@ -490,6 +506,8 @@
                         User Profile
                     </a>
                 </li>
+
+                
             @endif
             @if (in_array(Auth::user()->role, [556] ))
                 <li class="my-3">

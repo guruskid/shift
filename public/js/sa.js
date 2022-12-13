@@ -135,14 +135,46 @@ function showPhoneNumber(user)
 {
     $('#ph_email').html(user['first_name'] + " " + user['last_name']);
     $('#ph_phoneNumber').html(user['phone']);
-    
+
+    $('#ph_id').val(user['id']);
     
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var dateTime = date+' '+time;
-    $('#e_phoneNumber').val(dateTime);
+    $('#ph_startTime').val(dateTime);
 }
+
+function open_call_log(){
+    $('#ph_show_phone_details').removeClass('d-none');
+    $('#ph_show_details_button').removeClass('d-block');
+    $('#ph_show_details_button').addClass('d-none');
+
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    $('#ph_endTime').val(dateTime);
+}
+
+function showFeedback(){
+    var feedbackText = document.getElementById('ph_category')
+
+    if (!(feedbackText.value == "NoResponse")) {
+        $('#ph_feedback').removeClass('d-none').addClass('d-block');
+        $('#ph_proceed_button').removeClass('d-none').addClass('d-block');
+    } else {
+        $('#ph_feedback').removeClass('d-block').addClass('d-none');
+        $('#ph_proceed_button').removeClass('d-none').addClass('d-block');
+    }
+
+    if(feedbackText.value == "") {
+        $('#ph_feedback').removeClass('d-block').addClass('d-none');
+        $('#ph_proceed_button').removeClass('d-block').addClass('d-none');
+    }
+    
+}
+
 /* Edit Transaction */
 function editTransac(data) {
     $('#e_email').html(data['user_email']);

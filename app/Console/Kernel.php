@@ -6,11 +6,17 @@ use App\Console\Commands\BirthdayWish;
 use App\Console\Commands\FollowUpMail;
 use App\Console\Commands\CheckActiveUsers;
 use App\Console\Commands\CheckCalledUsers;
+use App\Console\Commands\checkingUnresponsiveNewUsers;
+use App\Console\Commands\checkNewCalledUsers;
 use App\Console\Commands\CheckRecalcitrantUsers;
 use App\Console\Commands\CheckRespondedUsers;
 use App\Console\Commands\GetCurrentRate;
+use App\Console\Commands\inactiveusersplit;
+use App\Console\Commands\moveActivetoNewUsers;
+use App\Console\Commands\newusers;
 use App\Console\Commands\NoResponseCheck;
 use App\Console\Commands\ResolveLedger;
+use App\Console\Commands\salesOldDailyConfig;
 use App\Http\Controllers\MarketingController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -32,6 +38,12 @@ class Kernel extends ConsoleKernel
         NoResponseCheck::class,
         BirthdayWish::class,
         ResolveLedger::class,
+        salesOldDailyConfig::class,
+        checkNewCalledUsers::class,
+        inactiveusersplit::class,
+        moveActivetoNewUsers::class,
+        newusers::class,
+        checkingUnresponsiveNewUsers::class,
     ];
 
     /**
@@ -44,15 +56,21 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('followup:mail')->daily();
+        $schedule->command('sales:unresponsive')->daily();
+        $schedule->command('sales:newusers')->daily();
+        $schedule->command('sales:checkactive')->daily();
+        $schedule->command('sales:moveActive')->daily();
+        $schedule->command('sales:inactiveSplit')->daily(); 
         $schedule->command('check:active')->daily();
         $schedule->command('check:called')->daily();
         $schedule->command('check:Responded')->daily();
         $schedule->command('check:Recalcitrant')->daily();
         $schedule->command('check:quarterlyInactive')->daily();
         $schedule->command('noResponse:check')->daily();
+        $schedule->command('sales:config')->daily();
         $schedule->command('birthday:wish')->dailyAt('08:00');
         $schedule->command('ledger:resolve')->everyFiveMinutes();
+        $schedule->command('followup:mail')->daily();
     }
 
     /**

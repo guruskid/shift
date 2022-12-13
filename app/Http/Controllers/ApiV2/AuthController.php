@@ -311,8 +311,9 @@ class AuthController extends Controller
         $password = '';
 
         UserTracking::create([
-            'user_id' =>$user->id,
-            'Current_Cycle' => "Active"
+            'user_id' => $user->id,
+            'Current_Cycle' => "NewUser",
+            'current_cycle_count_date' => now(),
         ]);
 
         NairaWallet::create([
