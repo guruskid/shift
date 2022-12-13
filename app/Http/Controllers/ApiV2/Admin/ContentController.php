@@ -57,7 +57,7 @@ class ContentController extends Controller
     public function FetchCategories(){
         $data = BlogCategory::select(DB::raw('id as value, title as label, slug'))
         ->where("is_published", true)
-        ->paginate(20);
+        ->get();
 
         return response()->json([
             'success' => true,
@@ -151,7 +151,7 @@ class ContentController extends Controller
     public function fetchBlogHeadings(){
         $data = BlogHeading::select(DB::raw('id as value, title as label, slug'))
         ->where("is_published", true)
-        ->paginate(20);
+        ->get();
         
         return response()->json([
             'success' => true,
@@ -414,5 +414,38 @@ class ContentController extends Controller
             ], 500);
         }
 
+    }
+
+    public function loadBlogView($type = NULL){
+        $data = Blog::where("status", "published")->with(
+            [
+                'categories' => function ($query) {
+                    $query->select('id', 'title');
+                },
+                'headings' => function ($query) {
+                    $query->select("id", "title");
+                },
+
+            ],
+        );
+        if($type != NULL){
+            $data = $data->where('blog_category_id',$type);
+        }
+
+        $data = $data->orderBy('id','DESC')->get();
+
+        foreach($data as $dataValues){
+            $dataValues->image = URL::to('/').'/storage/'.'assets'.'/'.$dataValues->image;
+            $dataValues->date = $dataValues->created_at->format('d M Y h:ia');
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
+    }
+
+    public function loadCategories(){
+        return $this->FetchCategories();
     }
 }

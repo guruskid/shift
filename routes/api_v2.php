@@ -21,6 +21,10 @@ Route::post('change-password', 'AuthController@changePassword');
 Route::get('/user-db', 'UserDbController@getNameAndEmail');
 Route::POST('/add-data', 'UserDbController@addUser');
 
+//blog view and categories
+Route::get('/all-blogs/{type?}', 'Admin\ContentController@loadBlogView');
+Route::get('/all-blogs-categories', 'Admin\ContentController@loadCategories');
+
 Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
 
     //Authenticated routes here
