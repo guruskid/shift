@@ -379,9 +379,8 @@ class ContentController extends Controller
                 ], 422);
             }
 
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $blog->image =  $this->blogPostImage($image);
+            if ($request->image) {
+                $blog->image =  $this->blogPostImage($request->image);
             }
 
             // $status = $request->status;
