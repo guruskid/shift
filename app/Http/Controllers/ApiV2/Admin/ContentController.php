@@ -365,7 +365,7 @@ class ContentController extends Controller
             $validator =  Validator::make($request->all(), [
                 'title' => 'required',
                 "description" => "required",
-                'image' => 'image|mimes:jpeg,JPEG,png,jpg,svg|max:5048',
+                // 'image' => 'image|mimes:jpeg,JPEG,png,jpg,svg|max:5048',
                 "body" => "required",
                 // "status" => "in:draft,published",
                 "blog_heading_id" => "required|exists:blog_headings,id",
