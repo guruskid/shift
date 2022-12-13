@@ -292,18 +292,16 @@ class ContentController extends Controller
     //     $imageFullPath = $folderPath . $image_name;
 
     //     file_put_contents($imageFullPath, $image);
-    //     // Storage::put('public/blog/images/' . $image_name, fopen($image, 'r+'));
+        // Storage::put('public/blog/images/' . $image_name, fopen($image, 'r+'));
     //     return  $image_name;
     // }
 
     private function blogPostImage($image)
     {
         $file = $image;
-        $filename= "";
         $extension = $file->getClientOriginalExtension();
         $filename = time() . uniqid() . '.' . $extension;
-        $folder = '/public/blog';
-        $file->storeAs($folder,$filename);
+        Storage::put('public/assets/' . $filename, fopen($file, 'r+'));
 
         return  $filename;
     }
@@ -324,7 +322,7 @@ class ContentController extends Controller
         )->orderBy('id','DESC')->get();
 
         foreach($data as $dataValues){
-            $dataValues->image = URL::to('/').'/storage/'.'blog'.'/'.$dataValues->image;
+            $dataValues->image = URL::to('/').'/storage/'.'assets'.'/'.$dataValues->image;
             $dataValues->date = $dataValues->created_at->format('d M Y h:ia');
         }
 
@@ -378,7 +376,7 @@ class ContentController extends Controller
         )->get();
 
         foreach($data as $dataValues){
-            $dataValues->image = URL::to('/').'/storage/'.'blog'.'/'.$dataValues->image;
+            $dataValues->image = URL::to('/').'/storage/'.'assets'.'/'.$dataValues->image;
             $dataValues->date = $dataValues->created_at->format('d M Y h:ia');
         }
 
