@@ -275,7 +275,7 @@ class BusinessDeveloperController extends Controller
                 return redirect()->back()->with(['error' => 'Invalid Request User Number Not Viewed']);
             }
         } catch (\Throwable $e) {
-            return redirect()->back()->with(['error' => $e->getMessage()]);
+            // return redirect()->back()->with(['error' => $e->getMessage()]);
         }
 
     }
@@ -363,7 +363,7 @@ class BusinessDeveloperController extends Controller
             $firstname = ucfirst($name);
             Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
         } catch (\Throwable $e) {
-            return redirect()->back()->with(['error' => $e->getMessage()]);
+            // return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }
 
