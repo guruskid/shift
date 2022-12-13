@@ -7,8 +7,10 @@ use App\BlogCategory;
 use App\BlogHeading;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -265,22 +267,45 @@ class ContentController extends Controller
         }
     }
 
+    // private function blogPostImage($image)
+    // {
+
+    //     $image_name = time() . "." . $image->getClientOriginalExtension();
+    //     // $destinationPath = public_path('/thumbnail');
+
+    //     // $resize_image = Image::make($image->getRealPath());
+    //     // $resize_image->resize(300, 300, function ($constraint) {
+    //     //     $constraint->aspectRatio();
+    //     // })->save($destinationPath . "/" . $image_name);
+
+    //     // $destinationPath = public_path('/blog/images');
+
+    //     // $image->move($destinationPath, $image_name);
+    //     // Artisan::call('storage:link');
+    //     $folderPath = public_path('storage/blog/');
+
+    //     if (!File::isDirectory($folderPath)) {
+
+    //         File::makeDirectory($folderPath, 0777, true, true);
+
+    //     }
+    //     $imageFullPath = $folderPath . $image_name;
+
+    //     file_put_contents($imageFullPath, $image);
+    //     // Storage::put('public/blog/images/' . $image_name, fopen($image, 'r+'));
+    //     return  $image_name;
+    // }
+
     private function blogPostImage($image)
     {
+        $file = $image;
+        $filename= "";
+        $extension = $file->getClientOriginalExtension();
+        $filename = time() . uniqid() . '.' . $extension;
+        $folder = '/public/blog';
+        $file->storeAs($folder,$filename);
 
-        $image_name = time() . "." . $image->getClientOriginalExtension();
-        // $destinationPath = public_path('/thumbnail');
-
-        // $resize_image = Image::make($image->getRealPath());
-        // $resize_image->resize(300, 300, function ($constraint) {
-        //     $constraint->aspectRatio();
-        // })->save($destinationPath . "/" . $image_name);
-
-        // $destinationPath = public_path('/blog/images');
-
-        // $image->move($destinationPath, $image_name);
-        Storage::put('public/blog/images/' . $image_name, fopen($image, 'r+'));
-        return  $image_name;
+        return  $filename;
     }
 
 
@@ -299,7 +324,7 @@ class ContentController extends Controller
         )->orderBy('id','DESC')->get();
 
         foreach($data as $dataValues){
-            $dataValues->image = URL::to('/').'/storage/'.'blog/images'.'/'.$dataValues->image;
+            $dataValues->image = URL::to('/').'/storage/'.'blog'.'/'.$dataValues->image;
             $dataValues->date = $dataValues->created_at->format('d M Y h:ia');
         }
 
@@ -353,7 +378,7 @@ class ContentController extends Controller
         )->get();
 
         foreach($data as $dataValues){
-            $dataValues->image = URL::to('/').'/storage/'.'blog/images'.'/'.$dataValues->image;
+            $dataValues->image = URL::to('/').'/storage/'.'blog'.'/'.$dataValues->image;
             $dataValues->date = $dataValues->created_at->format('d M Y h:ia');
         }
 
@@ -390,7 +415,8 @@ class ContentController extends Controller
                 ], 422);
             }
 
-            if ($image = $request->hasFile('image')) {
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
                 $blog->image =  $this->blogPostImage($image);
             }
 
