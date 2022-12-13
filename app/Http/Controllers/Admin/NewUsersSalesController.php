@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Auth;
 class NewUsersSalesController extends Controller
 {
     public function index($type = NULL){
+        $analytics = BusinessDeveloperController::respondedUsersData();
+        $analyticsVolume = $analytics['Volume'];
+        $analyticsCount = $analytics['Count'];
+
         $salesCategory = 'new';
         $call_categories = CallCategory::all();
         $activeUsersCount =  UserTracking::where('Current_Cycle','Active')->count();
@@ -120,7 +124,7 @@ class NewUsersSalesController extends Controller
         return view('admin.business_developer.index',
             compact([
                 'data_table','QuarterlyInactiveUsersCount','type','call_categories','calledUsersCount','RespondedUsersCount','RecalcitrantUsersCount',
-                'NoResponseCount','salesCategory','newInactiveUsersCount','newCalledUsersCount','newUnresponsiveUsersCount','activeUsersCount'
+                'NoResponseCount','salesCategory','newInactiveUsersCount','newCalledUsersCount','newUnresponsiveUsersCount','activeUsersCount','analyticsVolume','analyticsCount'
             ])
         );
 

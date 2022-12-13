@@ -36,7 +36,7 @@ class BusinessDeveloperController extends Controller
         Custodian ID refers to the fact that no matter where the user the user is in the system loop he/she belongs to a sales personnel*/
 
         /** ANALYTICS */
-        $analytics = $this->respondedUsersData();
+        $analytics = self::respondedUsersData();
         $analyticsVolume = $analytics['Volume'];
         $analyticsCount = $analytics['Count'];
 
@@ -226,52 +226,56 @@ class BusinessDeveloperController extends Controller
 
     public function createCallLog(Request $request)
     {
-        $user_tracking = UserTracking::where('user_id',$request->id)->first();
+        try{
+            $user_tracking = UserTracking::where('user_id',$request->id)->first();
 
-        if($request->category_name == "NoResponse") { // no response
-            SalesHelperController::noResponseUpdate($user_tracking, $request->id);
-            return redirect()->back()->with(['success' => 'success']);
-        }
-
-        if($request->category_name == 12){ // multipleAccounts
-            SalesHelperController::DisableMultiAccount($user_tracking, $request->id);
-            return redirect()->back()->with(['success' => 'success']);
-        }
-
-
-        if($request->start AND $request->end){ //if there is a phone number Viewed, this tracks 
-            if($user_tracking->Current_Cycle == 'QuarterlyInactive'){
-                $startTIme = Carbon::parse($request->start)->subSeconds(20);
-                $endTime = Carbon::parse($request->end);
-                $timeDifference = $startTIme->diffInSeconds($endTime);
-                
-                $call_log = new CallLog();
-                $call_log->user_id = $request->id;
-                $call_log->call_response = $request->feedback;
-                $call_log->call_category_id = $request->category_name;
-                $call_log->sales_id = Auth::user()->id;
-                $call_log->type = 'old';
-                $call_log->save();
-
-                UserTracking::where('user_id',$request->id)
-                ->update([
-                    'call_log_id' => $call_log->id,
-                    'Previous_Cycle' =>$user_tracking->Current_Cycle,
-                    'Current_Cycle' => "Called",
-                    'current_cycle_count_date' => now(),
-                    'call_duration' => $timeDifference,
-                    'call_duration_timestamp' => now(),
-                    'sales_id' => Auth::user()->id,
-                    'called_date'=> now(),
-                ]);
-                self::freeWithdrawalActivation($request->id);
-                return redirect()->back()->with(['success' => 'Call Log Added']);
-            } else {
-                return redirect()->back()->with(['success' => 'User Already Called']);
+            if($request->category_name == "NoResponse") { // no response
+                SalesHelperController::noResponseUpdate($user_tracking, $request->id);
+                return redirect()->back()->with(['success' => 'success']);
             }
 
-        } else {
-            return redirect()->back()->with(['error' => 'Invalid Request User Number Not Viewed']);
+            if($request->category_name == 12){ // multipleAccounts
+                SalesHelperController::DisableMultiAccount($user_tracking, $request->id);
+                return redirect()->back()->with(['success' => 'success']);
+            }
+
+
+            if($request->start AND $request->end){ //if there is a phone number Viewed, this tracks 
+                if($user_tracking->Current_Cycle == 'QuarterlyInactive'){
+                    $startTIme = Carbon::parse($request->start)->subSeconds(20);
+                    $endTime = Carbon::parse($request->end);
+                    $timeDifference = $startTIme->diffInSeconds($endTime);
+                    
+                    $call_log = new CallLog();
+                    $call_log->user_id = $request->id;
+                    $call_log->call_response = $request->feedback;
+                    $call_log->call_category_id = $request->category_name;
+                    $call_log->sales_id = Auth::user()->id;
+                    $call_log->type = 'old';
+                    $call_log->save();
+
+                    UserTracking::where('user_id',$request->id)
+                    ->update([
+                        'call_log_id' => $call_log->id,
+                        'Previous_Cycle' =>$user_tracking->Current_Cycle,
+                        'Current_Cycle' => "Called",
+                        'current_cycle_count_date' => now(),
+                        'call_duration' => $timeDifference,
+                        'call_duration_timestamp' => now(),
+                        'sales_id' => Auth::user()->id,
+                        'called_date'=> now(),
+                    ]);
+                    self::freeWithdrawalActivation($request->id);
+                    return redirect()->back()->with(['success' => 'Call Log Added']);
+                } else {
+                    return redirect()->back()->with(['success' => 'User Already Called']);
+                }
+
+            } else {
+                return redirect()->back()->with(['error' => 'Invalid Request User Number Not Viewed']);
+            }
+        } catch (\Throwable $e) {
+            return redirect()->back()->with(['error' => $e->getMessage()]);
         }
 
     }
@@ -321,42 +325,46 @@ class BusinessDeveloperController extends Controller
 
     public static function ActivationEmail(User $user)
     {
-        //? Mail Here.
-        //Image Data start
-        $image = url('images/FreeWithdrawal.jpeg');
-        $body = "
-          <table border='0' cellpadding='0'  cellspacing='0' width='400'>
-            <tr>
-              <td align='center' width='400' valign='top' style='
-                  background-color: #ffffff;
-                  padding: 25px;
-                  margin-top:-30px;
-                  '>
-                <a href='#' target='_blank'>
-                  <img src='$image' width='480' height='300' style='
-                        display: block;
-                        font-family: 'Lato', Helvetica, Arial, sans-serif;
-                        color: #ffffff;
-                        font-size: 18px;
-                        background-color:none;
-                      ' border='0' />
-                </a>
-              </td>
-            </tr>
-          </table>";
-          //Image Data end
+        try{
+            //? Mail Here.
+            //Image Data start
+            $image = url('images/FreeWithdrawal.jpeg');
+            $body = "
+            <table border='0' cellpadding='0'  cellspacing='0' width='400'>
+                <tr>
+                <td align='center' width='400' valign='top' style='
+                    background-color: #ffffff;
+                    padding: 25px;
+                    margin-top:-30px;
+                    '>
+                    <a href='#' target='_blank'>
+                    <img src='$image' width='480' height='300' style='
+                            display: block;
+                            font-family: 'Lato', Helvetica, Arial, sans-serif;
+                            color: #ffffff;
+                            font-size: 18px;
+                            background-color:none;
+                        ' border='0' />
+                    </a>
+                </td>
+                </tr>
+            </table>";
+            //Image Data end
 
-        $body .= "<div style='text-align:justify'>".'Your 10 free withdrawals offer is now activated and you can begin enjoying this offer immediately.<br><br>';
-        $body .= 'Kindly log in, trade your crypto, and make your withdrawals without any charges.<br><br>';
-        $body .= 'If you no longer have the Dantown app, kindly click on the Logo representing your platform below to download the app.'."</div>";
-        $title = 'Free Withdrawal From Dantown';
+            $body .= "<div style='text-align:justify'>".'Your 10 free withdrawals offer is now activated and you can begin enjoying this offer immediately.<br><br>';
+            $body .= 'Kindly log in, trade your crypto, and make your withdrawals without any charges.<br><br>';
+            $body .= 'If you no longer have the Dantown app, kindly click on the Logo representing your platform below to download the app.'."</div>";
+            $title = 'Free Withdrawal From Dantown';
 
-        $btn_text = '';
-        $btn_url = '';
-        $name = ($user->first_name == " ") ? $user->username : $user->first_name;
-        $name = str_replace(' ', '', $name);
-        $firstname = ucfirst($name);
-        Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+            $btn_text = '';
+            $btn_url = '';
+            $name = ($user->first_name == " ") ? $user->username : $user->first_name;
+            $name = str_replace(' ', '', $name);
+            $firstname = ucfirst($name);
+            Mail::to($user->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $firstname));
+        } catch (\Throwable $e) {
+            return redirect()->back()->with(['error' => $e->getMessage()]);
+        }
     }
 
     public static function freeWithdrawals(){
@@ -716,13 +724,13 @@ class BusinessDeveloperController extends Controller
         return redirect()->back()->with("success", "Database Populated");
     }
 
-    public function respondedUsersData(){
+    public static function respondedUsersData(){
         $targetRespondedUsers = UserTracking::with('transactions','user')
         ->whereMonth('called_date',now()->month)
         ->where('Current_Cycle','Responded')
         ->where('sales_id',Auth::user()->id)->get();
 
-        $targetTranx = $this->RespondedTotal($targetRespondedUsers);
+        $targetTranx = self::RespondedTotal($targetRespondedUsers);
 
         $tranxVolume = $targetTranx->sum('amount');
         $tranxCount = $targetTranx->count();
@@ -734,7 +742,7 @@ class BusinessDeveloperController extends Controller
 
     }
 
-    public function RespondedTotal($data)
+    public static function RespondedTotal($data)
     {
         $totalData = collect([]);
         foreach($data as $d){
