@@ -220,7 +220,7 @@ class ContentController extends Controller
             $validator =  Validator::make($request->all(), [
                 'title' => 'required',
                 "description" => "required",
-                'image' => 'image|mimes:jpeg,JPEG,png,jpg,svg|max:5048|required',
+                'image' => 'required',
                 "body" => "required",
                 // "status" => "in:draft,published",
                 "blog_heading_id" => "required|exists:blog_headings,id",
@@ -234,26 +234,19 @@ class ContentController extends Controller
                 ], 422);
             }
             
-            $image =  $request->file('image');
+            $imageName = $this->blogPostImage($request->image);
 
-            // $status = $request->status;
-            // $publishedAt = null;
-            // if ($status == 'published') {
-                // $publishedAt = now();
-            // }
-
-            Blog::create([
-                "title" => $request->title,
-                "description" => $request->description,
-                "body" => $request->body,
-                "image" => $this->blogPostImage($image),
-                // "status" => $request->status ?? "draft",
-                "status" => "published",
-                "published_at" => now(),
-                "blog_heading_id" => $request->blog_heading_id ,
-                "blog_category_id" => $request->blog_category_id,
-                "author_id" => Auth::user()->id
-            ]);
+            $blog = new Blog();
+            $blog->title = $request->title;
+            $blog->description = $request->description;
+            $blog->body = $request->body;
+            $blog->image = $imageName;
+            $blog->status = 'published';
+            $blog->published_at = now();
+            $blog->blog_heading_id = $request->blog_heading_id ;
+            $blog->blog_category_id = $request->blog_category_id;
+            $blog->author_id = Auth::user()->id;
+            $blog->save();
 
             return response()->json([
                 'success' => true,
@@ -267,43 +260,16 @@ class ContentController extends Controller
         }
     }
 
-    // private function blogPostImage($image)
-    // {
-
-    //     $image_name = time() . "." . $image->getClientOriginalExtension();
-    //     // $destinationPath = public_path('/thumbnail');
-
-    //     // $resize_image = Image::make($image->getRealPath());
-    //     // $resize_image->resize(300, 300, function ($constraint) {
-    //     //     $constraint->aspectRatio();
-    //     // })->save($destinationPath . "/" . $image_name);
-
-    //     // $destinationPath = public_path('/blog/images');
-
-    //     // $image->move($destinationPath, $image_name);
-    //     // Artisan::call('storage:link');
-    //     $folderPath = public_path('storage/blog/');
-
-    //     if (!File::isDirectory($folderPath)) {
-
-    //         File::makeDirectory($folderPath, 0777, true, true);
-
-    //     }
-    //     $imageFullPath = $folderPath . $image_name;
-
-    //     file_put_contents($imageFullPath, $image);
-        // Storage::put('public/blog/images/' . $image_name, fopen($image, 'r+'));
-    //     return  $image_name;
-    // }
-
-    private function blogPostImage($image)
+    private function blogPostImage($file)
     {
-        $file = $image;
-        $extension = $file->getClientOriginalExtension();
-        $filename = time() . uniqid() . '.' . $extension;
-        Storage::put('public/assets/' . $filename, fopen($file, 'r+'));
+        $folderPath = public_path('storage/assets/');
+        $image_base64 = base64_decode($file);
 
-        return  $filename;
+        $imageName = time() . uniqid() . '.png';
+        $imageFullPath = $folderPath . $imageName;
+
+        file_put_contents($imageFullPath, $image_base64);
+        return $imageName;
     }
 
 
