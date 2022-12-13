@@ -639,6 +639,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
 
     Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
 
+    Route::GET('/newUserCategories/{type?}', 'Admin\NewUsersSalesController@index')->name('business-developer.new-users.index');
+    Route::POST('/create-new-user-call-log', 'Admin\NewUsersSalesController@creatingCalledLog')->name('business-developer.new-users.create.call-log');
+    Route::GET('/new-user-view/{type?}', 'Admin\NewUsersSalesController@viewNewCategory')->name('business-developer.new-user.view-type');
+    Route::GET('new-users-call-log', 'Admin\NewUsersSalesController@newUsersCallLog')->name('business-developer.new-users.call-log');
+
     // Route::GET('/QuarterlyInactiveUsersFromDB', function () {
     //     Artisan::call('check:trackingTable');
     //     return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
@@ -648,6 +653,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('/CheckingActiveUserOnline', function () {
         Artisan::call('check:active');
         return redirect()->back()->with("success", "Active Users Checked");
+    });
+
+    Route::GET('/test', function () {
+        Artisan::call('sales:inactiveSplit');
+        return redirect()->back()->with("success", "tester Done");
     });
 
     //? checking called Users for responded or recalcitrant

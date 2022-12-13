@@ -118,7 +118,8 @@ class AuthController extends Controller
 
         UserTracking::create([
             'user_id' => $user->id,
-            'Current_Cycle' => "Active",
+            'Current_Cycle' => "NewUser",
+            'current_cycle_count_date' => now(),
         ]);
 
         $btc_hd = HdWallet::where('currency_id', 1)->first();
