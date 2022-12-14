@@ -21,6 +21,7 @@ class CryptoController extends Controller
 {
     public function index()
     {
+
         $bitcoin = CryptoCurrency::find(1);
         $usdt = CryptoCurrency::find(7);
         $data['usdt_rate'] = LiveRateController::usdtRate();
@@ -34,7 +35,7 @@ class CryptoController extends Controller
         $bitcoin->network = "BRP-20";
         $bitcoin->image = env('APP_URL') . '/storage/crypto/bitcoin.png';
         $btc_rates = BtcWalletController::fees()->getData();
-        $bitcoin->rates = [
+       $bitcoin->rates = [
             'send_charge' => $btc_rates->send_fee,
             'coin_to_usd' => $btc_rates->btc_to_usd,
             'coin_to_ngn' => LiveRateController::btcNgn(),

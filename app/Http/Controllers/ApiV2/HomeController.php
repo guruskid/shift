@@ -13,8 +13,10 @@ class HomeController extends Controller
 {
     public function index()
     {
+
         $user = Auth::user();
-        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        // $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $usdRate = LiveRateController::usdNgn();
 
 
 
@@ -63,7 +65,7 @@ class HomeController extends Controller
 
         $total_user_balance_in_btc =   $total_user_balance_in_usd /  $btc_real_time;
 
-       
+
 
 
 

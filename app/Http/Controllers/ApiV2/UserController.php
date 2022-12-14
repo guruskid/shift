@@ -158,6 +158,8 @@ class UserController extends Controller
 
         $btc_real_time = $res->value;
 
+        $dantown_btc_rate = LiveRateController::btcRate();
+
         $url = env('TATUM_URL') . '/tatum/rate/USD?basePair=NGN';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
@@ -180,9 +182,11 @@ class UserController extends Controller
 
         $btc_wallet = Auth::user()->btcWallet;
         $btc_wallet->balance = $btc_balance;
-        $btc_wallet->usd = $btc_wallet->balance * $btc_real_time;
+        // $btc_wallet->usd = $btc_wallet->balance * $btc_real_time;
+        $btc_wallet->usd = $btc_wallet->balance *  $dantown_btc_rate;
 
-        $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
+        // $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
+        $naira_balance = $btc_wallet->usd * LiveRateController::usdNgn();
 
         function curl_get_contents($url)
         {
@@ -288,7 +292,7 @@ class UserController extends Controller
 
          // convert  user dollars balance to BTC
 
-         $user_total_balance_in_btc = $total_user_balance_in_usd / $btc_real_time;
+         $user_total_balance_in_btc = $total_user_balance_in_usd / $dantown_btc_rate;
 
         return response()->json([
             'success' => true,
@@ -296,7 +300,7 @@ class UserController extends Controller
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balance_in_usd' => $btc_wallet->usd,
-            'btc_rate' => $btc_real_time,
+            'btc_rate' => $dantown_btc_rate,
             'advert_image' => $slides,
             'notifications' => $notify,
             'version' => $versions,
