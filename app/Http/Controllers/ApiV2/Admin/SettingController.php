@@ -52,6 +52,9 @@ class SettingController extends Controller
             case 444:
                 $role_name = "Chinese Operator";
                 break;
+            case 333:
+                $role_name = "Content Curator";
+                break;
             case 449:
                 $role_name = "Chinese Administrator";
                 break;
@@ -363,5 +366,29 @@ class SettingController extends Controller
             'message' => "$user->first_name $user->last_name is not a of role SALES",
         ], 401);
 
+    }
+
+    public function myProfile(){
+      $userData =  auth()->user();
+    //   $userData->role_name = $this->roleName($userData->role);
+
+      $data = [
+        'id' => $userData->id,
+        'first_name' => $userData->first_name,
+        'last_name' => $userData->last_name,
+        'username' => $userData->userName,
+        'email' => $userData->email,
+        'phone' => $userData->phone,
+        'password' => 'Cannot be decrypted',
+        'username' => $userData->username,
+        'staffId' => $userData->staffId,
+        'role' => $this->roleName($userData->role),
+        'profile_image' => $userData->dp
+    ];
+
+    return response()->json([
+        'success' => true,
+        'my_profile' => $data,
+    ], 200);
     }
 }
