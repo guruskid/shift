@@ -504,11 +504,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
 
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
 
-    Route::get('/faq', 'FaqController@index')->name('admin.faq');
-    Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
-    Route::get('/edit-faq/{id}/{title}', 'FaqController@editFaqView')->name('admin.edit-faq');
-    Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
-    Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
     Route::GET('/download-database', 'AdminController@downloadUserDb')->name('admin.userdb');
     Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
 
@@ -627,6 +622,21 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing'
     Route::get('/customer-happiness', 'Admin\CustomerHappinessController@index')->name('admin.customerHappinessAgent');
     Route::post('/add-happiness-agent', 'Admin\CustomerHappinessController@addAgent')->name('happiness.addAgent');
     Route::get('/customer-happiness-action/{id}/{action}', 'Admin\CustomerHappinessController@action')->name('happiness.action');
+
+    //faq categories
+    Route::GET('/faq-category', 'Admin\FaqCategoryController@index')->name('faq.category.index');
+    Route::POST('/faq-category-create', 'Admin\FaqCategoryController@store')->name('faq.category.create');
+    Route::POST('/faq-category-update', 'Admin\FaqCategoryController@update')->name('faq.category.update');
+    Route::POST('/faq-category-delete', 'Admin\FaqCategoryController@destroy')->name('faq.category.delete');
+
+    //faq
+    Route::get('/faq', 'FaqController@index')->name('admin.faq');
+    Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
+    Route::get('/edit-faq/{id}', 'FaqController@editFaqView')->name('admin.edit-faq');
+    Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
+    Route::GET('/delete-faq/{id}', 'FaqController@deleteFaq')->name('admin.deletefaq');
+
+    // Route::get('/faq/category/{category}', 'Admin\FaqController@category')->name('faq.category');
 });
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
     Route::GET('/Categories/{type?}', 'Admin\BusinessDeveloperController@index')->name('business-developer.user-category');
