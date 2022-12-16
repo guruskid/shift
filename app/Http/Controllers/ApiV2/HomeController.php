@@ -13,8 +13,12 @@ class HomeController extends Controller
 {
     public function index()
     {
+
         $user = Auth::user();
-        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        // $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $usdRate = LiveRateController::usdNgn();
+
+
 
         //  dd($usdRate);
 
@@ -75,6 +79,8 @@ class HomeController extends Controller
 
 
 
+
+
         $netWalletBalanceNGN = $nairaWalletNGN + $BTC_NGN + $USDT_NGN;
         $netWalletBalanceUSD = $nairaWalletUSD + $BTC_USD + $USDT_USD;
 
@@ -97,7 +103,7 @@ class HomeController extends Controller
         $featuredCoinsUSDT['image'] = env('APP_URL') . '/storage/crypto/tether.png';
         $featuredCoinsUSDT['balance'] = (string)$USDT_VOLUME;
         $featuredCoinsUSDT['USD_value'] = $USDT_USD;
-        $featuredCoinsUSDT['NGN_value'] =  $USDT_USD;
+        $featuredCoinsUSDT['NGN_value'] =  $USDT_NGN;
         $featuredCoinsUSDT['coin_to_usd'] = LiveRateController::usdtRate();
         $featuredCoinsUSDT['coin_to_ng'] = $usdRate;
 
