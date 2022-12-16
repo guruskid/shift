@@ -13,8 +13,12 @@ class HomeController extends Controller
 {
     public function index()
     {
+
         $user = Auth::user();
-        $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        // $usdRate = CryptoRate::where(['type' => 'sell', 'crypto_currency_id' => 2])->first()->rate;
+        $usdRate = LiveRateController::usdNgn();
+
+
 
         //  dd($usdRate);
 
@@ -51,19 +55,46 @@ class HomeController extends Controller
             $USDT_VOLUME = $usdtWallet->balance;
         }
 
+        // -----------  Converting to user balance --------- //
+
+        // add total user balance in dollars
+        $total_user_balance_in_usd =  $nairaWalletUSD + $USDT_USD + $BTC_USD;
+
+        // converts  $total_user_balance_in_usd  to bitcoin
+        $btc_real_time = LiveRateController::btcRate();
+
+        $total_user_balance_in_btc =   $total_user_balance_in_usd /  $btc_real_time;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         $netWalletBalanceNGN = $nairaWalletNGN + $BTC_NGN + $USDT_NGN;
         $netWalletBalanceUSD = $nairaWalletUSD + $BTC_USD + $USDT_USD;
 
         $walletData = array();
         $walletData['netWalletBalanceNGN'] = $netWalletBalanceNGN;
         $walletData['netWalletBalanceUSD'] = $netWalletBalanceUSD;
-        $walletData['BTC_balance'] = $BTC_VOLUME;
+        $walletData['BTC_balance'] =  $total_user_balance_in_btc;  //$BTC_VOLUME;
 
         $featuredCoinsBTC = array();
         $featuredCoinsBTC['name'] = 'BTC';
         $featuredCoinsBTC['image'] = env('APP_URL') . '/storage/crypto/bitcoin.png';
         $featuredCoinsBTC['balance'] = $BTC_VOLUME;
         $featuredCoinsBTC['USD_value'] = $BTC_USD;
+        $featuredCoinsBTC['NGN_value'] = $BTC_NGN;
         $featuredCoinsBTC['coin_to_usd'] = LiveRateController::btcRate();
         $featuredCoinsBTC['coin_to_ng'] = LiveRateController::btcRate() * $usdRate;
 
@@ -72,6 +103,7 @@ class HomeController extends Controller
         $featuredCoinsUSDT['image'] = env('APP_URL') . '/storage/crypto/tether.png';
         $featuredCoinsUSDT['balance'] = (string)$USDT_VOLUME;
         $featuredCoinsUSDT['USD_value'] = $USDT_USD;
+        $featuredCoinsUSDT['NGN_value'] =  $USDT_NGN;
         $featuredCoinsUSDT['coin_to_usd'] = LiveRateController::usdtRate();
         $featuredCoinsUSDT['coin_to_ng'] = $usdRate;
 
@@ -80,6 +112,7 @@ class HomeController extends Controller
             'success' => true,
             'netWalletBalance' => $walletData,
             'featuredCoins' => $featuredCoins,
+
         ],200);
     }
 }

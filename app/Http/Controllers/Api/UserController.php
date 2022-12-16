@@ -19,6 +19,7 @@ class UserController extends Controller
 
     public function dashboard()
     {
+        
         \Artisan::call('naira:limit');
         $transactions = Auth::user()->transactions->take(3);
         $naira_wallet = Auth::user()->nairaWallet;

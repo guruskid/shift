@@ -572,3 +572,6 @@ Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function
     });
 });
 
+Route::group(['middleware' => ['auth:api','cors']], function () {
+    Route::get('/my-profile', 'SettingController@myProfile');
+});

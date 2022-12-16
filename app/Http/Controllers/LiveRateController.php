@@ -98,4 +98,8 @@ class LiveRateController extends Controller
     {
         return CryptoRate::where(['type' => 'buy', 'crypto_currency_id' => 7])->first()->rate ?? 0;
     }
+    public static function btcNgn(){
+        $btc_dollar = self::btcRate();
+        return $btc_dollar *  self::usdNgn();
+     }
 }
