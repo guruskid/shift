@@ -89,6 +89,7 @@ class TradeController extends Controller
         $batch_id = uniqid();
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
 
+        try{
          foreach ($r->trades as $key => $i) {
             $card = Card::where('name', $i['cardName'])->first();
 
@@ -147,6 +148,10 @@ class TradeController extends Controller
                 $p->path = $imageName;
                 $p->save();
             }
+        }
+
+        } catch (\Throwable $th) {
+            Log::info("Error uploading Data: ".$th->getMessage());
         }
 
         // broadcast(new NewTransaction($t))->toOthers();
