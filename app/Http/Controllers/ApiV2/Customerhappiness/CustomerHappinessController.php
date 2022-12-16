@@ -16,6 +16,7 @@ use App\Verification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\Null_;
 
 class CustomerHappinessController extends Controller
 {
@@ -124,17 +125,28 @@ class CustomerHappinessController extends Controller
 
         // $agent_id = User::where('role', 555)->where('status', 'active')->first();
 
+        $complainer_id = User::where('email', $req->username)->first();
+        $user_id =  $complainer_id->id;
+
+        if(!$complainer_id){
+            $user_id = 1;
+
+        }
+
+
+
         $ticket = Ticket::create([
             'username' => $req->username,
             'ticketNo' => time(),
-            'user_id' => Auth::user()->id,
+            'user_id' => $user_id,
             'agent_id' => Auth::user()->id,
-            'description' => $req->description . ' This was categorized under' .$req->category.'('. $req->category_description .')',
+            'description' => $req->description,
             'status' => $req->status,
             'agent_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
             'type' => $req->type,
             'channel' => $req->channel,
             'category' => $req->category,
+            'category_description' =>  $req->category_description,
         ]);
 
         // $category = $this->getCategory($req->subcategory_id);
