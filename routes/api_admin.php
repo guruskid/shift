@@ -222,6 +222,10 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], functi
         Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
     });
 
+    Route::prefix('user-rating')->group(function () {
+        Route::get('/', 'UserRateManager@index');
+    });
+
 
     //Customer Happiness
     Route::group(['prefix' => 'customerHappiness'], function () {
