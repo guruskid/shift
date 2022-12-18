@@ -115,6 +115,14 @@ class TradeController extends Controller
         return $total;
     }
 
+    public function countUserTransaction(){
+      $data =  NairaTrade::where("user_id", Auth::user()->id)->where('type', 'withdrawal')->where('status', "success")->count();
+      return response()->json([
+        'success' => true,
+        'successful_withdrawal_count' =>  $data ,
+    ], 200);
+    }
+
     public function completeWihtdrawal(Request $request)
     {
         $validator = Validator::make($request->all(), [

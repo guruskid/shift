@@ -586,7 +586,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'user' => Auth::user(),
+            'user' => Auth::user()->load('accounts'),
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balnace_in_usd' => $btc_wallet->usd,

@@ -12,6 +12,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/sell_naira', 'TradeController@sellNaira');
 
     Route::post('/complete_withdrawal', 'TradeController@completeWihtdrawal');
+    Route::get('/successful_withdrawal_count', 'TradeController@countUserTransaction');
     Route::post('/complete_deposit', 'TradeController@completeDeposit');
     Route::get('/get_stat', 'TradeController@getStat');
 
@@ -31,6 +32,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth']], function () {
     Route::post('/sell_naira', 'TradeController@sellNaira');
 
     Route::post('/complete_withdrawal', 'TradeController@completeWihtdrawal');
+    Route::get('/successful_withdrawal_count', 'TradeController@countUserTransaction');
     Route::post('/complete_deposit', 'TradeController@completeDeposit');
     Route::get('/get_stat', 'TradeController@getStat');
 
