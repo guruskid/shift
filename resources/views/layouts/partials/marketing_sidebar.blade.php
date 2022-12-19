@@ -17,6 +17,25 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.faq' ? 'active' : '' }}">
+        <a href="{{route('admin.faq')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Faq</span>
+            </div>
+        </a>
+    </li>
+
+    <li class="menu {{ Route::currentRouteName() == 'faq.category.index' ? 'active' : '' }}">
+        <a href="{{route('faq.category.index')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Faq Categories</span>
+            </div>
+        </a>
+    </li>
+
+
     <li class="menu {{ Route::currentRouteName() == 'sales.oldUsers.salesAnalytics' ? 'active' : '' }}  ">
         <a href="{{route('sales.oldUsers.salesAnalytics')}}"  aria-expanded="false" class="dropdown-toggle">
             <div class="">

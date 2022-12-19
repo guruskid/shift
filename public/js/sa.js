@@ -94,7 +94,6 @@ function EditTarget(user,user_target)
 
 function EditPriority(priority)
 {
-    console.log(priority['id'])
     $('#tn_id').val(priority['id']);
     
     $('#tn_name').val(priority['priority_name']);
@@ -102,6 +101,19 @@ function EditPriority(priority)
 
     $('#tn_price').val(priority['priority_price']);
     $('#tn_price').html(priority['priority_price']);
+}
+
+function EditFaqCategory(category)
+{
+    $('#cat_id').val(category['id']);
+    
+    $('#cat_value').val(category['name']);
+    $('#cat_value').html(category['name']);
+}
+
+function DeleteFaqCategory(category){
+    $('#cat_del_id').val(category['id']);
+    $('#cat_text').html('Do you want to Delete Category<b> '+ category['name']+'</b>');
 }
 
 //**View Response Data for Called Users*/

@@ -9,7 +9,10 @@ use App\UserRating;
 class UserRateManager extends Controller
 {
     public function index(){
-        $data['user_ratings'] = UserRating::with('user')->latest()->get();
-        return response()->json($data);
+        $data = UserRating::with('user')->latest()->get();
+        return response()->json([
+            'success' => true,
+            'data' => $data, 
+        ]);
     }
 }
