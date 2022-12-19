@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth:api', 'frozenUserCheckApi']], function () {
         Route::get('/', 'TransactionController@AllUserTransactions');
         Route::get('/show', 'TransactionController@showUserTransaction');
     });
+    Route::post('/user-rating', 'UserController@storeUserRate');
 
 
 });
