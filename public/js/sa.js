@@ -403,6 +403,34 @@ function averageRevenuePerTransaction(){
     });
 }
 
+function averageTransactionPerHour(){
+    $('#average_revenue_per_hour_a').removeClass('d-block').addClass('d-none');
+    $('#average_revenue_per_hour_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#average_revenue_per_hour_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'daily';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/average-revenue-per-hour/' + timeFrame,
+        success: function (data) {
+            var revenuePerHour = "$"+data['tranxRevenuePerHour']
+            var tranxPerHour = data['avgTranxPerHour']
+            var name = "Average transaction & revenue per hour("+data['duration']+")"
+
+            $('#average_revenue_per_hour_tnx').html(tranxPerHour)
+            $('#average_revenue_per_hour_rev').html(revenuePerHour)
+
+            $('#average_revenue_per_hour_name').html(name)
+            // $('#average_revenue_transaction_summary').removeClass('text-danger').addClass('text-success');
+        }
+    });
+}
+
 
 /* Confirm transfer of funds */
 function confirmTransfer(id, user, amount) {

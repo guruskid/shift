@@ -90,6 +90,52 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                <div class="col-md-3 mb-2">
+                                    <div class="card mb-1 widget-content ">
+                                        <div class="widget-content-wrapper">
+                                            <div class="widget-heading">
+                                                <h6 class="text-center" id='average_revenue_per_hour_name'>Average transaction & revenue per hour(Daily)</h6>
+                                                <div class="widget-n" style="justify-content: center; text-align: center;">
+                                                    <div id='average_revenue_per_hour_a' class="d-block">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label>Transactions</label>
+                                                                <h5 class="text-success" >{{ $averageTransactions->avgTranxPerHour }}</h5>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label>Revenue</label>
+                                                                <h5 class="text-success" >${{ $averageTransactions->tranxRevenuePerHour }}</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+    
+                                                    <div id='average_revenue_per_hour_b' class="d-none">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <label>Transactions</label>
+                                                                <h5 class="text-success"  id='average_revenue_per_hour_tnx'>...........</h5>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label>Revenue</label>
+                                                                <h5 class="text-success" id='average_revenue_per_hour_rev' >...........</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mr-2">
+                                                    <select name="sortingType" id='average_revenue_per_hour_sort' onchange="averageTransactionPerHour()" class="form-control">
+                                                        <option value="noData">SortingType</option>
+                                                        <option value="weekly">Weeekly</option>
+                                                        <option value="monthly">Monthly</option>
+                                                        <option value="quarterly">Quaterly</option>
+                                                        <option value="yearly">Yearly</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                            {{-- all tnx start --}}
                            <form action="{{ route('admin.junior-summary-sort-details') }}" method="POST">
@@ -139,7 +185,6 @@
                                                 <th class="text-center">Total BItcoin Transactions</th>
                                                 <th class="text-center">Total USDT Transactions</th>
                                                 <th class="text-center">Total Giftcard Transactions</th>
-                                                <th class="text-center">Average transaction & revenue per hour</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -229,23 +274,6 @@
                                                                 <td>
                                                                     <div>Total <h6 class="text-right">${{ $giftCardSellUsdValue }}</h6></div>
                                                                     <div>Total Naira <h6 class="text-right">₦{{ $giftCardSellNairaValue }}</h6></div>
-                                                                </td>
-                                                            </tfoot>
-                                                        </table>
-                                                    </td>
-
-                                                    <td>
-                                                        <table class="table">
-                                                            <thead>
-                                                                <th class="text-center">Transaction</th>
-                                                                <th class="text-center">Revenue</th>
-                                                            </thead>
-                                                            <tfoot>
-                                                                <td>
-                                                                    <div>Total <h6 class="text-right">{{ $avgTranxPerHour }}</h6></div>
-                                                                </td>
-                                                                <td>
-                                                                    <div>Total <h6 class="text-right">${{ $avgTranxRevenuePerHour }}</h6></div>
                                                                 </td>
                                                             </tfoot>
                                                         </table>
