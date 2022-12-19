@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\UserRating;
 
 class UserController extends Controller
 {
@@ -902,6 +903,28 @@ class UserController extends Controller
 
         ]);
     }
+
+    public function storeUserRate(Request $request){
+        $data = Validator::make($request->all(), [
+            'rate' => "required|numeric",
+            "text" => "sometimes|string"
+        ]);
+        if( $data->fails()){
+            return response()->json([
+                "message" => $data->errors()
+            ],422);
+        }
+
+        UserRating::create([
+            'user_id'=> auth()->user()->id,
+            $data
+        ]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "User rate created"
+        ],201);
+}
 
 }
 
