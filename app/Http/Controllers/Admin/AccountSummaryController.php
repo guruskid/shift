@@ -186,7 +186,9 @@ class AccountSummaryController extends Controller
         ->groupBy('hour')
         ->get()
         ->sum('value');
-        $avgTranxPerHour = $tranxPerHour/24;
+
+        $hours = now()->hour;
+        $avgTranxPerHour = $tranxPerHour/$hours;
 
         // Avg Tranx per hour
         $tranxRevenuePerHour = Transaction::select([
@@ -199,7 +201,7 @@ class AccountSummaryController extends Controller
         ->groupBy('hour')
         ->get()
         ->sum('value');
-        $avgTranxRevenuePerHour = $tranxRevenuePerHour/24;
+        $avgTranxRevenuePerHour = $tranxRevenuePerHour/$hours;
 
         // dd($avgTranxRevenuePerHour);
 

@@ -123,8 +123,6 @@
             </div>
         </a>
     </li>
-    @endif
-
 
     <li class="menu {{ Route::currentRouteName() == 'admin.rates' ? 'active' : '' }}">
         <a href="{{route('admin.rates')}}" aria-expanded="false" class="dropdown-toggle">
@@ -134,6 +132,7 @@
             </div>
         </a>
     </li>
+    @endif
 
     <li class="menu {{ Route::currentRouteName() == 'admin.chat_agents' ? 'active' : '' }}">
         <a href="{{route('admin.chat_agents')}}" aria-expanded="false" class="dropdown-toggle">

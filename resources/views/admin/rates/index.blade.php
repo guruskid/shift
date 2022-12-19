@@ -218,7 +218,7 @@
                 </div>
             </div>
 
-            @if (in_array(Auth::user()->role,[999,888]))
+            @if (in_array(Auth::user()->role,[999,888,777]))
             <div class="row mb-5">
                 <div class="col-md-12">
                     <div class="card card-body">
@@ -232,7 +232,7 @@
                                     <button class="btn btn-primary">Save</button>
                                 </form>
                             </div>
-
+                            @if (!in_array(Auth::user()->role,[777]))
                             <div class="col-md-4">
                                 <form action="{{ route('admin.settings.update') }} " method="post">@csrf
                                     <h5>Sell Commission (%)</h5>
@@ -254,6 +254,7 @@
                                     <button class="btn btn-primary">Save</button>
                                 </form>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
