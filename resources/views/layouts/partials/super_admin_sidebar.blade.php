@@ -111,6 +111,23 @@
         </a>
     </li>
 
+    <li class="menu {{ Route::currentRouteName() == 'admin.faq' ? 'active' : '' }}">
+        <a href="{{route('admin.faq')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Faq</span>
+            </div>
+        </a>
+    </li>
+    
+    <li class="menu {{ Route::currentRouteName() == 'faq.category.index' ? 'active' : '' }}">
+        <a href="{{route('faq.category.index')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="people-circle-outline"></ion-icon>
+                <span>Faq Categories</span>
+            </div>
+        </a>
+    </li>
 
     <li class="menu {{ Route::currentRouteName() == 'admin.user-verifications-tracking' ? 'active' : '' }}">
         <a href="{{route('admin.user-verifications-tracking')}}" aria-expanded="false" class="dropdown-toggle" >

@@ -225,6 +225,24 @@
             </li>
             @endif
 
+            @if (in_array(Auth::user()->role, [999,559] ))
+            <li class="my-3">
+                <a href="{{route('admin.faq')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.faq' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-graph1"></i>
+                    Faq
+                </a>
+            </li>
+
+            <li class="my-3">
+                <a href="{{route('faq.category.index')}}"
+                    class=" {{ Route::currentRouteName() == 'faq.category.index' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-graph1"></i>
+                    Faq Categories
+                </a>
+            </li>
+            @endif
+
             @if (in_array(Auth::user()->role, [999, 889, 777, 775] ))
                 <li class="my-3">
                     <a href="{{route('admin.crypto-summary', 1)}}"

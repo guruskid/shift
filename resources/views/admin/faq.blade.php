@@ -43,10 +43,9 @@
                             <div class="form-group">
                                 <label for="">Category</label>
                                 <select name="category" id="" class="form-control">
-                                    {{-- <option value="" disabled>Choose Category</option> --}}
-                                    <option value="finance">Finance</option>
-                                    <option value="tech">Tech</option>
-                                    <option value="transactions">Transactions</option>
+                                  @foreach ($faq_categories as $category_data)
+                                    <option value={{ $category_data->id }}>{{ $category_data->name }}</option>
+                                  @endforeach
                                 </select>
                             </div>
                             <div class="form-group">
@@ -68,82 +67,36 @@
 
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#home" class="btn btn-sm btn-primary" data-toggle="tab">Finance</a></li>
-                            <li><a class="btn btn-sm btn-primary" href="#profile" data-toggle="tab">Tech</a></li>
-                            <li><a class="btn btn-sm btn-primary" href="#messages" data-toggle="tab">Transactions</a></li>
+                              <li><a class="btn btn-sm btn-primary" href="#all" data-toggle="tab">ALL</a></li>
                         </ul>
 
                         <!-- Tab panes -->
                         <div class="tab-content">
-                            <div class="tab-pane active" id="home">
-
+                            <div class="tab-pane active" id="all">
+                              @foreach ($faq as $faqData)
                                 <div class="panel-group" id="accordion">
                                     <div class="panel panel-default">
-                                      @foreach ($finances as $finance)
                                       <div class="panel-heading">
-                                        <h5 class="panel-title">
-                                            <a href="{{route('admin.edit-faq', [$finance->id, $finance->title])}}" class="badge badge-primary"> <ion-icon name="create-outline"></ion-icon></a>
-                                            <a href="{{route('admin.deletefaq', [$finance->id, $finance->title])}}" class="badge badge-danger"> <ion-icon name="trash"></ion-icon></a>
-                                            <a data-toggle="collapse" data-parent="#accordion" data-toggle="collapse"href="#collapseOne{{$finance->id}}">
-                                            {{ $finance->title }}
+                                        <h3 class="panel-title">
+                                            <a href="{{route('admin.edit-faq', [$faqData->id])}}" class="badge badge-primary"> <ion-icon name="create-outline"></ion-icon></a>
+                                            <a href="{{route('admin.deletefaq', [$faqData->id])}}" class="badge badge-danger"> <ion-icon name="trash"></ion-icon></a>
+                                            <a data-toggle="collapse" data-parent="#accordion" data-toggle="collapse"href="#collapseOne{{$faqData->category->id}}">
+                                              {{-- <img src="/storage/faq/{{ $faqData->image }}" class="img-fluid"> --}}
+                                            {{ $faqData->title }}
+                                            <h6>Category:<b>{{$faqData->category->name}}</b></h6>
                                           </a>
-                                        </h5>
+                                        </h3>
                                       </div>
-                                      <div id="collapseOne{{$finance->id}}" class="panel-collapse collapse">
+                                      <div id="collapseOn{{$faqData->category->id}}" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                          {{ $finance->body }}
+                                          {{ $faqData->title }}
                                         </div>
                                       </div>
-                                      @endforeach
                                     </div>
                                   </div>
+                              @endforeach
                             </div>
-
-                            <div class="tab-pane" id="profile">
-                                <div class="panel-group" id="accordion">
-                                    <div class="panel panel-default">
-                                      @foreach ($techs as $tech)
-                                      <div class="panel-heading">
-                                        <h5 class="panel-title">
-                                            <a href="{{route('admin.edit-faq', [$tech->id, $tech->title])}}" class="badge badge-primary"> <ion-icon name="create-outline"></ion-icon></a>
-                                            <a href="{{route('admin.deletefaq', [$tech->id, $tech->title])}}" class="badge badge-danger"> <ion-icon name="trash"></ion-icon></a>
-                                            <a data-toggle="collapse" data-parent="#accordion" data-toggle="collapse"href="#collapseOne{{$tech->id}}">
-                                            {{ $tech->title }}
-                                          </a>
-                                        </h5>
-                                      </div>
-                                      <div id="collapseOne{{$tech->id}}" class="panel-collapse collapse">
-                                        <div class="panel-body">
-                                          {{ $tech->body }}
-                                        </div>
-                                      </div>
-                                      @endforeach
-                                    </div>
-                                  </div>
-                            </div>
-                            <div class="tab-pane" id="messages">
-                                <div class="panel-group" id="accordion">
-                                    <div class="panel panel-default">
-                                      @foreach ($transactions as $transaction)
-                                      <div class="panel-heading">
-                                        <h5 class="panel-title">
-                                            <a href="{{route('admin.edit-faq', [$transaction->id, $transaction->title])}}" class="badge badge-primary"> <ion-icon name="create-outline"></ion-icon></a>
-                                            <a href="{{route('admin.deletefaq', [$transaction->id, $transaction->title])}}" class="badge badge-danger"> <ion-icon name="trash"></ion-icon></a>
-                                            <a data-toggle="collapse" data-parent="#accordion" data-toggle="collapse"href="#collapseOne{{$transaction->id}}">
-                                            {{ $transaction->title }}
-                                          </a>
-                                        </h5>
-                                      </div>
-                                      <div id="collapseOne{{$transaction->id}}" class="panel-collapse collapse">
-                                        <div class="panel-body">
-                                          {{ $transaction->body }}
-                                        </div>
-                                      </div>
-                                      @endforeach
-                                    </div>
-                                  </div>
-                            </div>
-
+                          
                         </div>
 
                     </div>

@@ -416,6 +416,7 @@ class ContentController extends Controller
 
     }
 
+
     public function loadBlogView($type = NULL){
         $data = Blog::where("status", "published")->with(
             [
@@ -447,5 +448,9 @@ class ContentController extends Controller
 
     public function loadCategories(){
         return $this->FetchCategories();
+    }
+
+    public function loadSingleBlog($id){
+        return $this->showPost($id);
     }
 }
