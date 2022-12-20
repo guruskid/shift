@@ -28,7 +28,7 @@ class CryptoController extends Controller
 
         $bitcoin->wallet = CryptoHelperController::balance(1);
         $bitcoin->network = "BRP-20";
-        $bitcoin->image = env('APP_URL') . '/storage/assets/BITCOINS.png';
+        $bitcoin->image = env('APP_URL') . '/storage/assets/Bitcoins.png';
         $btc_rates = BtcWalletController::fees()->getData();
         $bitcoin->rates = [
             'send_charge' => $btc_rates->send_fee,
