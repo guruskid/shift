@@ -252,11 +252,19 @@ class TradeController extends Controller
             $name = Auth::user()->first_name;
             Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
         }
+
+        $emailDescripion = 'BUY';
+        $transType = "debited from";
+
+        if($buy_sell == 'sell'){
+            $emailDescripion = "SELL";
+            $transType = "credited to";
+        }
         $user = Auth::user();
-        $title = 'TRANSACTION PENDING - BUY
-        ';
-        $body = "Your order to   $t->type an <b>$t->card</b> worth NGN" . number_format($t->amount_paid) . " is currently
-        <b style='color:red'>pending</b> and will be debited from your naria wallet once the transaction is successful<br>
+        $title = "TRANSACTION PENDING - " . $emailDescripion;
+
+        $body = "Your order to "  . $t->type ." an <b>" . $t->card ."</b> worth NGN" . number_format($t->amount_paid) . " is currently
+        <b style='color:red'>pending</b> and will be $transType  your naria wallet once the transaction is successful<br>
         <b>Transaction ID: $transaction_id <br>
         Date: " . date("Y-m-d; h:ia") . "</b>
         ";
