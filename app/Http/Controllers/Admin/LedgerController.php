@@ -158,7 +158,7 @@ class LedgerController extends Controller
         }
 
         $reference = \Str::random(5);
-        // $narration = 
+        // $narration =
         //create debit txn
         $currentSystemBalance = NairaWallet::sum('amount');
         $nt = new NairaTransaction();
@@ -185,7 +185,7 @@ class LedgerController extends Controller
 
         //send email and pushN
         $title = 'Debt Recovery';
-        $body = 'We don collect our money back, come beat us. <br> <br><br> Thank you for Trading with Dantown.';
+        $body = 'Your account has been debited due to discrepancy previously noted on your account. Please contact the customer happiness for further details. <br> <br><br> Thank you for Trading with Dantown.';
         $btn_text = '';
         $btn_url = '';
 
