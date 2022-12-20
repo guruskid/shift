@@ -61,11 +61,11 @@ class CardController extends Controller
             $filenametostore = $r->name . '.' . $extension;
             Storage::put('public/assets/' . $filenametostore, fopen($file, 'r+'));
             //Resize image here
-            $thumbnailpath = 'storage/assets/' . $filenametostore;
-            $img = Image::make($thumbnailpath)->resize(300, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $img->save($thumbnailpath);
+            // $thumbnailpath = 'storage/assets/' . $filenametostore;
+            // $img = Image::make($thumbnailpath)->resize(300, null, function ($constraint) {
+            //     $constraint->aspectRatio();
+            // });
+            // $img->save($thumbnailpath);
             $card->image = $filenametostore;
             $card->save();
         }

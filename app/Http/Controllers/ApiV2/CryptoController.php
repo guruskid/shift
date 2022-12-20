@@ -28,7 +28,7 @@ class CryptoController extends Controller
 
         $bitcoin->wallet = CryptoHelperController::balance(1);
         $bitcoin->network = "BRP-20";
-        $bitcoin->image = env('APP_URL') . '/storage/crypto/bitcoin.png';
+        $bitcoin->image = env('APP_URL') . '/storage/assets/BITCOINS.png';
         $btc_rates = BtcWalletController::fees()->getData();
         $bitcoin->rates = [
             'send_charge' => $btc_rates->send_fee,
@@ -41,7 +41,7 @@ class CryptoController extends Controller
 
         $usdt->wallet = CryptoHelperController::balance(7);
         $usdt->network = "TRC-20";
-        $usdt->image = env('APP_URL') . '/storage/crypto/tether.png';
+        $usdt->image = env('APP_URL') . '/storage/assets/tether.png';
         $usdt->rates = [
             'send_charge' => Setting::where('name', 'usdt_send_charge')->first()->value,
             'coin_to_usd' => LiveRateController::usdtRate(),
