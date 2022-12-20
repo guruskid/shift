@@ -21,18 +21,24 @@ class CryptoController extends Controller
 {
     public function index()
     {
+
         $bitcoin = CryptoCurrency::find(1);
         $usdt = CryptoCurrency::find(7);
         $data['usdt_rate'] = LiveRateController::usdtRate();
         $data["btc_rate"] = LiveRateController::btcRate();
+        // $data['usdt_rate_naira'] = LiveRateController::usdtNgn();
+        // $data['btc_rate_naira'] = LiveRateController::btcNgn();
+
+
 
         $bitcoin->wallet = CryptoHelperController::balance(1);
         $bitcoin->network = "BRP-20";
         $bitcoin->image = env('APP_URL') . '/storage/crypto/bitcoin.png';
         $btc_rates = BtcWalletController::fees()->getData();
-        $bitcoin->rates = [
+       $bitcoin->rates = [
             'send_charge' => $btc_rates->send_fee,
             'coin_to_usd' => $btc_rates->btc_to_usd,
+            'coin_to_ngn' => LiveRateController::btcNgn(),
             'usd_to_ngn' => LiveRateController::usdNgn(), // Similar to sell rate
             'buy_rate' => LiveRateController::usdNgn(true, 'buy'),
             'sell_rate' => LiveRateController::usdNgn(),
@@ -45,6 +51,7 @@ class CryptoController extends Controller
         $usdt->rates = [
             'send_charge' => Setting::where('name', 'usdt_send_charge')->first()->value,
             'coin_to_usd' => LiveRateController::usdtRate(),
+            'coin_to_ngn' => LiveRateController::usdtNgn(),
             'usd_to_ngn' => LiveRateController::usdNgn(),
             'buy_rate' => LiveRateController::usdNgn(true, 'buy'),
             'sell_rate' => LiveRateController::usdNgn(),

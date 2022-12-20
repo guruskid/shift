@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiV2;
 use App\Account;
 use App\Bank;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CryptoHelperController;
 use App\Http\Controllers\LiveRateController;
 use App\Http\Controllers\LoginSessionController;
 use App\ImageSlide;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\UserRating;
 
 class UserController extends Controller
 {
@@ -157,6 +159,8 @@ class UserController extends Controller
 
         $btc_real_time = $res->value;
 
+        $dantown_btc_rate = LiveRateController::btcRate();
+
         $url = env('TATUM_URL') . '/tatum/rate/USD?basePair=NGN';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
         $res = json_decode($res->getBody());
@@ -179,9 +183,11 @@ class UserController extends Controller
 
         $btc_wallet = Auth::user()->btcWallet;
         $btc_wallet->balance = $btc_balance;
-        $btc_wallet->usd = $btc_wallet->balance * $btc_real_time;
+        // $btc_wallet->usd = $btc_wallet->balance * $btc_real_time;
+        $btc_wallet->usd = $btc_wallet->balance *  $dantown_btc_rate;
 
-        $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
+        // $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
+        $naira_balance = $btc_wallet->usd * LiveRateController::usdNgn();
 
         function curl_get_contents($url)
         {
@@ -273,13 +279,29 @@ class UserController extends Controller
 
             ],
         ];
+         // Total Balance
+         $usdt_wallet =  Auth::user()->usdtWallet;
+         $nairaWallet_balance = Auth::user()->nairaWallet->amount;
+
+         $usdt =  $usdt_wallet ? $usdt_wallet->usd : 0 ;
+         $btc =  $btc_wallet ? $btc_wallet->usd : 0;
+         $naira_in_usd =  LiveRateController::usdNgn();
+
+         $user_naira_wallet_balance_in_usd = $nairaWallet_balance / $naira_in_usd;
+         // add user naira balance , btc balance and usdt balance
+         $total_user_balance_in_usd = $usdt + $btc + $user_naira_wallet_balance_in_usd;
+
+         // convert  user dollars balance to BTC
+
+         $user_total_balance_in_btc = $total_user_balance_in_usd / $dantown_btc_rate;
 
         return response()->json([
             'success' => true,
+            'total_balances_in_btc' => $user_total_balance_in_btc,
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balance_in_usd' => $btc_wallet->usd,
-            'btc_rate' => $btc_real_time,
+            'btc_rate' => $dantown_btc_rate,
             'advert_image' => $slides,
             'notifications' => $notify,
             'version' => $versions,
@@ -565,7 +587,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'user' => Auth::user(),
+            'user' => Auth::user()->load('accounts'),
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balnace_in_usd' => $btc_wallet->usd,
@@ -882,4 +904,27 @@ class UserController extends Controller
         ]);
     }
 
+    public function storeUserRate(Request $request){
+        $data = Validator::make($request->all(), [
+            'rate' => "required|numeric",
+            "text" => "sometimes|string"
+        ]);
+        if( $data->fails()){
+            return response()->json([
+                "message" => $data->errors()
+            ],422);
+        }
+
+        UserRating::create([
+            'user_id'=> auth()->user()->id,
+            $data
+        ]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "User rate created"
+        ],201);
 }
+
+}
+
