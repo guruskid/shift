@@ -439,6 +439,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/revenue-growth/{sortType?}', 'Admin\AccountSummaryController@percentageRevenueGrowth');
     Route::get('/average-revenue-per-unique-user/{sortType?}', 'Admin\AccountSummaryController@averageRevenuePerUniqueUser');
     Route::get('/average-revenue-per-transaction/{sortType?}', 'Admin\AccountSummaryController@averageRevenuePerTransaction');
+    Route::get('/average-revenue-per-hour/{sortType?}', 'Admin\AccountSummaryController@averageTransactionsPerHour');
+
 
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');

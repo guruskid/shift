@@ -175,33 +175,37 @@ class AccountSummaryController extends Controller
         }
         $giftCardSellNairaValue = $giftCardSellTransaction->sum('amount_paid');
 
+        $averageTransactions = self::averageTransactionsPerHour()->getData();
         // Avg Tranx per hour
-        $tranxPerHour = Transaction::select([
-            DB::raw('HOUR(created_at) AS hour'),
-            DB::raw('COUNT(id) AS value')
-        ])
-        ->whereMonth('created_at', '=', $this->month)
-        ->whereDay('created_at', '=', $this->day)
-        ->whereYear('created_at', '=', Carbon::now()->format('Y'))
-        ->groupBy('hour')
-        ->get()
-        ->sum('value');
 
-        $hours = now()->hour;
-        $avgTranxPerHour = $tranxPerHour/$hours;
+        // $tranxPerHour = self::averageTransactionsPerHour()->getData();
+        //  Transaction::select([
+        //     DB::raw('HOUR(created_at) AS hour'),
+        //     DB::raw('COUNT(id) AS value')
+        // ])
+        // ->whereMonth('created_at', '=', $this->month)
+        // ->whereDay('created_at', '=', $this->day)
+        // ->whereYear('created_at', '=', Carbon::now()->format('Y'))
+        // ->groupBy('hour')
+        // ->get()
+        // ->sum('value');
 
-        // Avg Tranx per hour
-        $tranxRevenuePerHour = Transaction::select([
-            DB::raw('HOUR(created_at) AS hour'),
-            DB::raw('SUM(amount) AS value')
-        ])
-        ->whereMonth('created_at', '=', $this->month)
-        ->whereDay('created_at', '=', $this->day)
-        ->whereYear('created_at', '=', Carbon::now()->format('Y'))
-        ->groupBy('hour')
-        ->get()
-        ->sum('value');
-        $avgTranxRevenuePerHour = $tranxRevenuePerHour/$hours;
+        // $hours = now()->hour;
+        // $avgTranxPerHour = $tranxPerHour/$hours;
+
+        // // Avg Tranx per hour
+        // $tranxRevenuePerHour = $averageTransactions->tranxRevenuePerHour;
+        //  = Transaction::select([
+        //     DB::raw('HOUR(created_at) AS hour'),
+        //     DB::raw('SUM(amount) AS value')
+        // ])
+        // ->whereMonth('created_at', '=', $this->month)
+        // ->whereDay('created_at', '=', $this->day)
+        // ->whereYear('created_at', '=', Carbon::now()->format('Y'))
+        // ->groupBy('hour')
+        // ->get()
+        // ->sum('value');
+        // $avgTranxRevenuePerHour = $tranxRevenuePerHour/$hours;
 
         // dd($avgTranxRevenuePerHour);
 
@@ -225,9 +229,7 @@ class AccountSummaryController extends Controller
 
             'giftCardBuyCount', 'giftCardBuyUsdValue', 'giftCardBuyNairaValue',
 
-            'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue',
-            
-            'avgTranxPerHour', 'avgTranxRevenuePerHour',
+            'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue','averageTransactions',
 
             'revenueGrowth','averageRevenuePerUniqueUsers','averageRevenuePerTransaction'
         ]));
@@ -839,6 +841,63 @@ class AccountSummaryController extends Controller
         return response()->json([
             'success' => 'success',
             'averageRevenuePerTransaction' => number_format($averageRevenuePerTransaction),
+            'duration' => ucwords($sortType)
+        ],200);
+    }
+
+    public static function averageTransactionsPerHour($sortType = NULL){
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        if($sortType == NULL){
+            $sortType = 'daily';
+        }
+
+        switch ($sortType) {
+            case 'daily':
+                $currentStartDate = now()->startOfDay();
+                $currentEndDate = now();
+                break;
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now();
+                break;
+
+            case 'quarterly':
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfDay();
+                $currentEndDate = now();
+                break;
+        }
+
+        $diffInHours = $currentStartDate->diffInHours($currentEndDate);
+        $tranxPerHour = Transaction::where('status','success')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->get();
+
+        $avgTranxPerHour = number_format(($tranxPerHour->count()/$diffInHours),3,".",",");
+        $tranxRevenuePerHour = number_format(($tranxPerHour->sum('amount')/$diffInHours),3,".",",");
+
+        return response()->json([
+            'success' => true,
+            'avgTranxPerHour' => $avgTranxPerHour,
+            'tranxRevenuePerHour' => $tranxRevenuePerHour,
             'duration' => ucwords($sortType)
         ],200);
     }
