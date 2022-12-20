@@ -47,7 +47,7 @@ class CryptoController extends Controller
 
         $usdt->wallet = CryptoHelperController::balance(7);
         $usdt->network = "TRC-20";
-        $usdt->image = env('APP_URL') . '/storage/assets/tether.png';
+        $usdt->image = env('APP_URL') . '/storage/assets/Tether.png';
         $usdt->rates = [
             'send_charge' => Setting::where('name', 'usdt_send_charge')->first()->value,
             'coin_to_usd' => LiveRateController::usdtRate(),
