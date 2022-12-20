@@ -16,7 +16,6 @@ use App\Verification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use phpDocumentor\Reflection\Types\Null_;
 
 class CustomerHappinessController extends Controller
 {
@@ -126,14 +125,12 @@ class CustomerHappinessController extends Controller
         // $agent_id = User::where('role', 555)->where('status', 'active')->first();
 
         $complainer_id = User::where('email', $req->username)->first();
-        $user_id =  $complainer_id->id;
+        $user_id = $complainer_id->id;
 
-        if(!$complainer_id){
+        if (!$complainer_id) {
             $user_id = 1;
 
         }
-
-
 
         $ticket = Ticket::create([
             'username' => $req->username,
@@ -146,7 +143,7 @@ class CustomerHappinessController extends Controller
             'type' => $req->type,
             'channel' => $req->channel,
             'category' => $req->category,
-            'category_description' =>  $req->category_description,
+            'category_description' => $req->category_description,
         ]);
 
         // $category = $this->getCategory($req->subcategory_id);
@@ -219,7 +216,6 @@ class CustomerHappinessController extends Controller
     public function getList()
     {
 
-
         $ticketcategory = QueryCategory::select('name')->distinct()->get()->map(function ($thing) {
             return [
                 $thing->name,
@@ -229,17 +225,26 @@ class CustomerHappinessController extends Controller
 
         $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call'];
         $types = ['Enquiry', 'Complaint', 'Notice', 'Suggestion'];
-        $categories = $ticketcategory ;
+        $categories = $ticketcategory;
+
         $status = ['close', 'open'];
 
-        foreach($categories as $k) {
+        foreach ($categories as $k) {
 
             $result[] = array('value' => $k[0], 'label' => $k[0]);
         }
 
-        $chAgents = User::where('role', 555)->pluck('first_name');
+        $chAgents = User::where('role', 555)->select('first_name')->distinct()->get()->map(function ($agent) {
+            return [
+                $agent->first_name,
+            ];
+        })->toArray();
 
-        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $result, 'agents' => $chAgents, 'status' => $status);
+        foreach ($chAgents as $agent) {
+            $agents[] = array('value' => $agent[0], 'label' => $agent[0]);
+        }
+
+        $data = (object) array('channel' => $channel, 'type' => $types, 'category' => $result, 'agents' => $agents, 'status' => $status);
 
         return response()->json([
             'success' => true,
@@ -252,44 +257,38 @@ class CustomerHappinessController extends Controller
     public function listofCategories($category)
     {
 
-        if(strpos($category, 'naira') !== false || strpos($category, 'Naira') !== false){
+        if (strpos($category, 'naira') !== false || strpos($category, 'Naira') !== false) {
 
-            $description =  QueryCategory::select('description')->where('name', 'Naira wallet and Withdrawals issues')->get()->map(function ($thing) {
+            $description = QueryCategory::select('description')->where('name', 'Naira wallet and Withdrawals issues')->get()->map(function ($thing) {
                 return [
                     $thing->description,
 
                 ];
             })->toArray();
 
-            foreach($description  as $k) {
+            foreach ($description as $k) {
 
                 $result[] = array('value' => $k[0], 'label' => $k[0]);
             }
             return response()->json([
                 "success" => true,
-                "query" =>  $result
+                "query" => $result,
             ], 200);
-         }
-
-
-
-
+        }
 
         // }
 
-
-
-        if(strpos($category, 'crypto') !== false || strpos($category, 'Crypto') !== false){
+        if (strpos($category, 'crypto') !== false || strpos($category, 'Crypto') !== false) {
 
             // $ticketcategory = QueryCategory::select('name')->where('name', 'Crypto issues')->first();
-            $description =  QueryCategory::select('description')->where('name', 'Crypto issues')->get()->map(function ($thing) {
+            $description = QueryCategory::select('description')->where('name', 'Crypto issues')->get()->map(function ($thing) {
                 return [
                     $thing->description,
 
                 ];
             })->toArray();
 
-            foreach($description  as $k) {
+            foreach ($description as $k) {
 
                 $result[] = array('value' => $k[0], 'label' => $k[0]);
             }
@@ -297,69 +296,58 @@ class CustomerHappinessController extends Controller
 
             return response()->json([
                 "success" => true,
-                "query" =>  $result
+                "query" => $result,
             ], 200);
-         }
+        }
 
-
-
-
-        if(strpos($category, 'gift') !== false || strpos($category, 'Gift') !== false){
+        if (strpos($category, 'gift') !== false || strpos($category, 'Gift') !== false) {
 
             // $ticketcategory = QueryCategory::select('name')->where('name', 'Gift Card issuess')->first();
-            $description =  QueryCategory::select('description')->where('name', 'Gift Card issues')->get()->map(function ($thing) {
+            $description = QueryCategory::select('description')->where('name', 'Gift Card issues')->get()->map(function ($thing) {
                 return [
                     $thing->description,
 
                 ];
             })->toArray();
 
-            foreach($description  as $k) {
+            foreach ($description as $k) {
 
                 $result[] = array('value' => $k[0], 'label' => $k[0]);
             }
 
             return response()->json([
                 "success" => true,
-                "query" =>  $result
+                "query" => $result,
             ], 200);
-         }
+        }
 
-
-
-
-        if(strpos($category, 'system') !== false || strpos($category, 'System') !== false){
+        if (strpos($category, 'system') !== false || strpos($category, 'System') !== false) {
 
             // $ticketcategory = QueryCategory::select('name')->where('name', 'System and Account issues')->first();
-            $description =  QueryCategory::select('description')->where('name', 'System and Account issues')->get()->map(function ($thing) {
+            $description = QueryCategory::select('description')->where('name', 'System and Account issues')->get()->map(function ($thing) {
                 return [
                     $thing->description,
 
                 ];
             })->toArray();
 
-            foreach($description  as $k) {
+            foreach ($description as $k) {
 
                 $result[] = array('value' => $k[0], 'label' => $k[0]);
             }
 
             return response()->json([
                 "success" => true,
-                "query" =>  $result
+                "query" => $result,
             ], 200);
-         }
-
-          else{
+        } else {
             return response()->json([
                 "success" => false,
-                "message" => "wrong filter"
+                "message" => "wrong filter",
             ], 404);
         }
 
     }
-
-
-
 
     public function sortByDay()
     {
@@ -520,6 +508,20 @@ class CustomerHappinessController extends Controller
 
     // User Section
 
+
+    public function searchUserwithCount($search)
+    {
+
+        $user = User::whereHas('transactions')->withCount(['transactions'])->where('email', 'like', '%' . $search . '%')->orWhere('first_name', 'like', '%' . $search . '%')->orWhere('last_name', 'like', '%' . $search . '%')->get();
+
+        return response()->json([
+            'success' => true,
+            'users' => $user,
+
+        ]);
+
+    }
+
     public function getUsers()
     {
         // $user = User::latest('id')->where('role', 1)->withCount('user_id')->get();
@@ -619,18 +621,12 @@ class CustomerHappinessController extends Controller
         $data = NairaTransaction::with('utility')->where('type', 'mobile data')->with('user')->latest()->paginate(10);
         $cable = NairaTransaction::with('utility')->where('type', 'cable')->with('user')->latest()->paginate(10);
 
-
-
-
-
         if ($type == 'giftcard') {
             $nairaTransactions = NairaTransaction::with('user')->orderBy('id', 'DESC')->paginate(100);
-
 
             $gcard = Transaction::orderBy('id', 'DESC')->whereHas('asset', function ($query) {
                 $query->where('is_crypto', 0);
             });
-
 
             // dd($gcard);
             // $transactions = Transaction::with('user')->orderBy('id', 'DESC')->paginate(100);
@@ -638,8 +634,7 @@ class CustomerHappinessController extends Controller
 
             foreach ($nairaTransactions as $nt) {
 
-                $giftCard_transaction =  $gcard->where('uid', substr($nt->narration, -13, 13))->get();
-
+                $giftCard_transaction = $gcard->where('uid', substr($nt->narration, -13, 13))->get();
 
                 if ($giftCard_transaction) {
                     $giftCard_transaction->nairaTransaction = $nt;
@@ -653,10 +648,6 @@ class CustomerHappinessController extends Controller
                 'usersData' => $array,
             ], 200);
         }
-
-
-
-
 
         if ($type == 'power') {
             return response()->json([
@@ -694,8 +685,6 @@ class CustomerHappinessController extends Controller
             'msg' => "Wrong filter type",
 
         ]);
-
-
 
     }
 
