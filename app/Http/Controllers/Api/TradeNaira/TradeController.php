@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebasePushNotificationController;
 use App\Http\Controllers\GeneralSettings;
+use App\Http\Controllers\LiveRateController;
 use App\Http\Controllers\UserController;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTrade;
@@ -589,6 +590,7 @@ class TradeController extends Controller
         // } else {
         //     $pin = NULL;
         // }
+        $buyRate = LiveRateController::usdtRate();
 
         $user_data = [
             'success' => true,
@@ -600,6 +602,7 @@ class TradeController extends Controller
             'pending_withdrawal' => $pendingWithdrawal,
             'pending_deposit' => $pendingDeposit,
             'pin' => $pin,
+            'buy_rate' => $buyRate
         ];
 
         return $user_data;
