@@ -69,6 +69,7 @@ class AssetTransactionController extends Controller
         if(Auth::user()->role !=888){
             $t->status = $r->status;
         }
+
         $t->feedback = $actualFeedback;
         $t->quantity = $r->quantity;
         $t->last_edited = Auth::user()->email;
@@ -394,6 +395,10 @@ class AssetTransactionController extends Controller
             }
             return back()->with(['error' => 'Transaction already completed']);
         }
+
+        if($amount_paid < 0){
+            return back()->with(['error' => 'Value cant be negative']);
+           }
 
         $t->card = Card::find($r->card_id)->name;
         $t->card_id = $r->card_id;
