@@ -94,7 +94,6 @@ function EditTarget(user,user_target)
 
 function EditPriority(priority)
 {
-    console.log(priority['id'])
     $('#tn_id').val(priority['id']);
     
     $('#tn_name').val(priority['priority_name']);
@@ -102,6 +101,19 @@ function EditPriority(priority)
 
     $('#tn_price').val(priority['priority_price']);
     $('#tn_price').html(priority['priority_price']);
+}
+
+function EditFaqCategory(category)
+{
+    $('#cat_id').val(category['id']);
+    
+    $('#cat_value').val(category['name']);
+    $('#cat_value').html(category['name']);
+}
+
+function DeleteFaqCategory(category){
+    $('#cat_del_id').val(category['id']);
+    $('#cat_text').html('Do you want to Delete Category<b> '+ category['name']+'</b>');
 }
 
 //**View Response Data for Called Users*/
@@ -135,14 +147,46 @@ function showPhoneNumber(user)
 {
     $('#ph_email').html(user['first_name'] + " " + user['last_name']);
     $('#ph_phoneNumber').html(user['phone']);
-    
+
+    $('#ph_id').val(user['id']);
     
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var dateTime = date+' '+time;
-    $('#e_phoneNumber').val(dateTime);
+    $('#ph_startTime').val(dateTime);
 }
+
+function open_call_log(){
+    $('#ph_show_phone_details').removeClass('d-none');
+    $('#ph_show_details_button').removeClass('d-block');
+    $('#ph_show_details_button').addClass('d-none');
+
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    $('#ph_endTime').val(dateTime);
+}
+
+function showFeedback(){
+    var feedbackText = document.getElementById('ph_category')
+
+    if (!(feedbackText.value == "NoResponse")) {
+        $('#ph_feedback').removeClass('d-none').addClass('d-block');
+        $('#ph_proceed_button').removeClass('d-none').addClass('d-block');
+    } else {
+        $('#ph_feedback').removeClass('d-block').addClass('d-none');
+        $('#ph_proceed_button').removeClass('d-none').addClass('d-block');
+    }
+
+    if(feedbackText.value == "") {
+        $('#ph_feedback').removeClass('d-block').addClass('d-none');
+        $('#ph_proceed_button').removeClass('d-block').addClass('d-none');
+    }
+    
+}
+
 /* Edit Transaction */
 function editTransac(data) {
     $('#e_email').html(data['user_email']);
@@ -278,6 +322,115 @@ function removeAgent(id) {
         });
     }
 }
+
+function revenueGrowthSort(){
+    $('#revenue_growth_summary_a').removeClass('d-block').addClass('d-none');
+    $('#revenue_growth_summary_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#revenue_growth_summary_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'monthly';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/revenue-growth/' + timeFrame,
+        success: function (data) {
+            var percentage = data['revenueGrowth']+" %"
+            var revenueName = "% Revenue Growth("+data['duration']+")"
+
+            $('#revenue_growth_summary').html(percentage)
+            $('#revenue_growth_summary_name').html(revenueName)
+            
+            if(data['revenueGrowth'] <= 0){
+                $('#revenue_growth_summary_b').removeClass('text-success').addClass('text-danger');
+            } else {
+                $('#revenue_growth_summary_b').removeClass('text-danger').addClass('text-success');
+            }
+        }
+    });
+}
+
+function averageRevenuePerUniqueUser(){
+    $('#average_revenue_unique_summary_a').removeClass('d-block').addClass('d-none');
+    $('#average_revenue_unique_summary_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#average_revenue_unique_summary_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'monthly';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/average-revenue-per-unique-user/' + timeFrame,
+        success: function (data) {
+            var amount = "$"+data['averageRevenuePerUser']
+            var name = "Average Revenue Per Unique User("+data['duration']+")"
+
+            $('#average_revenue_unique_summary').html(amount)
+            $('#average_revenue_unique_summary_name').html(name)
+            $('#average_revenue_unique_summary').removeClass('text-danger').addClass('text-success');
+        }
+    });
+}
+
+function averageRevenuePerTransaction(){
+    $('#average_revenue_transaction_summary_a').removeClass('d-block').addClass('d-none');
+    $('#average_revenue_transaction_summary_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#average_revenue_transaction_summary_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'monthly';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/average-revenue-per-transaction/' + timeFrame,
+        success: function (data) {
+            var amount = "$"+data['averageRevenuePerTransaction']
+            var name = "Average Revenue Per Transaction("+data['duration']+")"
+
+            $('#average_revenue_transaction_summary').html(amount)
+            $('#average_revenue_transaction_summary_name').html(name)
+            $('#average_revenue_transaction_summary').removeClass('text-danger').addClass('text-success');
+        }
+    });
+}
+
+function averageTransactionPerHour(){
+    $('#average_revenue_per_hour_a').removeClass('d-block').addClass('d-none');
+    $('#average_revenue_per_hour_b').removeClass('d-none').addClass('d-block');
+
+    var dropdownValue = $('#average_revenue_per_hour_sort').val();
+    var timeFrame = dropdownValue
+
+    if(dropdownValue == 'noData'){
+        var timeFrame = 'daily';
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/admin/average-revenue-per-hour/' + timeFrame,
+        success: function (data) {
+            var revenuePerHour = "$"+data['tranxRevenuePerHour']
+            var tranxPerHour = data['avgTranxPerHour']
+            var name = "Average transaction & revenue per hour("+data['duration']+")"
+
+            $('#average_revenue_per_hour_tnx').html(tranxPerHour)
+            $('#average_revenue_per_hour_rev').html(revenuePerHour)
+
+            $('#average_revenue_per_hour_name').html(name)
+            // $('#average_revenue_transaction_summary').removeClass('text-danger').addClass('text-success');
+        }
+    });
+}
+
 
 /* Confirm transfer of funds */
 function confirmTransfer(id, user, amount) {

@@ -11,6 +11,7 @@ use App\User;
 use App\UtilityTransaction;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Support\Facades\DB;
 
 class AccountSummaryController extends Controller
 {
@@ -109,7 +110,7 @@ class AccountSummaryController extends Controller
 
         $bitcoinSellNairaValue = $bitcoinSellTransaction
         ->sum('amount_paid');
-        
+
 
         //** USDT */
         $usdtTransactions = $transactions
@@ -160,19 +161,58 @@ class AccountSummaryController extends Controller
 
         $giftCardBuyUsdValue = 0;
         foreach($giftCardBuyTransaction as $gcbt){
-            $giftCardBuyUsdValue += ($gcbt->amount * $gcbt->quantity); 
+            $giftCardBuyUsdValue += ($gcbt->amount * $gcbt->quantity);
         }
-        $giftCardBuyNairaValue = $giftCardBuyTransaction->sum('amount_paid');     
-        
+        $giftCardBuyNairaValue = $giftCardBuyTransaction->sum('amount_paid');
+
         //** GiftCard Sell Transactions */
 
         $giftCardSellCount = $giftCardSellTransaction->count();
 
         $giftCardSellUsdValue = 0;
         foreach($giftCardSellTransaction as $gcst){
-            $giftCardSellUsdValue += ($gcst->amount * $gcst->quantity); 
+            $giftCardSellUsdValue += ($gcst->amount * $gcst->quantity);
         }
-        $giftCardSellNairaValue = $giftCardSellTransaction->sum('amount_paid');  
+        $giftCardSellNairaValue = $giftCardSellTransaction->sum('amount_paid');
+
+        $averageTransactions = self::averageTransactionsPerHour()->getData();
+        // Avg Tranx per hour
+
+        // $tranxPerHour = self::averageTransactionsPerHour()->getData();
+        //  Transaction::select([
+        //     DB::raw('HOUR(created_at) AS hour'),
+        //     DB::raw('COUNT(id) AS value')
+        // ])
+        // ->whereMonth('created_at', '=', $this->month)
+        // ->whereDay('created_at', '=', $this->day)
+        // ->whereYear('created_at', '=', Carbon::now()->format('Y'))
+        // ->groupBy('hour')
+        // ->get()
+        // ->sum('value');
+
+        // $hours = now()->hour;
+        // $avgTranxPerHour = $tranxPerHour/$hours;
+
+        // // Avg Tranx per hour
+        // $tranxRevenuePerHour = $averageTransactions->tranxRevenuePerHour;
+        //  = Transaction::select([
+        //     DB::raw('HOUR(created_at) AS hour'),
+        //     DB::raw('SUM(amount) AS value')
+        // ])
+        // ->whereMonth('created_at', '=', $this->month)
+        // ->whereDay('created_at', '=', $this->day)
+        // ->whereYear('created_at', '=', Carbon::now()->format('Y'))
+        // ->groupBy('hour')
+        // ->get()
+        // ->sum('value');
+        // $avgTranxRevenuePerHour = $tranxRevenuePerHour/$hours;
+
+        // dd($avgTranxRevenuePerHour);
+
+
+        $revenueGrowth = self::percentageRevenueGrowth()->getData();
+        $averageRevenuePerUniqueUsers = self::averageRevenuePerUniqueUser()->getData();
+        $averageRevenuePerTransaction = self::averageRevenuePerTransaction()->getData();
 
         return view('admin.summary.JuniorAccountant.transaction',compact([
             'accountantName','accountant','showCategory','showSummary','showData','segment','month','day','transactions',
@@ -189,7 +229,9 @@ class AccountSummaryController extends Controller
 
             'giftCardBuyCount', 'giftCardBuyUsdValue', 'giftCardBuyNairaValue',
 
-            'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue'
+            'giftCardSellCount', 'giftCardSellUsdValue', 'giftCardSellNairaValue','averageTransactions',
+
+            'revenueGrowth','averageRevenuePerUniqueUsers','averageRevenuePerTransaction'
         ]));
     }
 
@@ -223,7 +265,7 @@ class AccountSummaryController extends Controller
             'accountantName','accountant','showCategory','showSummary','showData','segment','month','day','utilityTransactions',
             'utilitiesTotalCount','utilitiesTotalAmount','utilitiesTotalContinenceFee','utilitiesTotal'
         ]));
-    } 
+    }
 
     public function GetAverageResponseTime($data_collection)
     {
@@ -355,7 +397,7 @@ class AccountSummaryController extends Controller
 
         $this->segment = Carbon::parse($startDate)->format('d F Y-h:ia');
         $this->segment .= "  To  ".Carbon::parse($endDate)->format('d F Y-h:ia');
-        return $this->sortByDateRange($startDate, $endDate);   
+        return $this->sortByDateRange($startDate, $endDate);
     }
 
     public function sortByDateRange($startDate,$endDate){
@@ -409,7 +451,7 @@ class AccountSummaryController extends Controller
     public function sortByAccountants($startDate, $endDate, User $user){
         //** getting the Y-m-d format for start and end date */
         if($startDate){
-            
+
             $start = explode("T",$startDate);
             $startDate = $start[0];
 
@@ -464,11 +506,11 @@ class AccountSummaryController extends Controller
         if($this->category == "paybridge" OR $this->category == "paybridgewithdrawal"){
             $payBridgeTransactions =  $this->sortingByTimestampRange($accountantTimestamp);
             $payBridgeTransactions['payBridgeDepositWithdrawalTransactions'] = $payBridgeTransactions['payBridgeDepositWithdrawalTransactions']->sortByDesc('updated_at');
-            
+
 
             return $this->payBridge($payBridgeTransactions['payBridgeDepositWithdrawalTransactions'], $payBridgeTransactions['id']);
         }
-        
+
     }
 
     public function juniorAccountantSort($start, $end, $user){
@@ -504,7 +546,7 @@ class AccountSummaryController extends Controller
             $payBridgeTransactions['payBridgeDepositWithdrawalTransactions'] = $payBridgeTransactions['payBridgeDepositWithdrawalTransactions']->whereBetween('updated_at', [$start, $end]);
 
             $payBridgeTransactions['payBridgeDepositWithdrawalTransactions'] = $payBridgeTransactions['payBridgeDepositWithdrawalTransactions']->sortByDesc('updated_at');
-            
+
             return $this->payBridge($payBridgeTransactions['payBridgeDepositWithdrawalTransactions'], $payBridgeTransactions['id']);
         }
     }
@@ -551,7 +593,7 @@ class AccountSummaryController extends Controller
                 $payBridgeTranx = $this->sortingByAccountantTimestamp($payBridge, $at->activeTime, $at->inactiveTime);
                 $payBridgeTransactions = $payBridgeTransactions->concat($payBridgeTranx);
             }
-    
+
             if ($this->category == "paybridge"){
                 $id = 1;
             } elseif ($this->category == "paybridgewithdrawal"){
@@ -580,4 +622,284 @@ class AccountSummaryController extends Controller
 
         return $collectionData;
     }
+
+    public static function percentageRevenueGrowth($sortType = NULL){
+        if($sortType == NULL){
+            $sortType = 'monthly';
+        }
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        $previousStartDate = NULL;
+        $previousEndDate = NULL;
+
+        switch ($sortType) {
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now()->endOfWeek();
+
+                $previousStartDate = now()->subWeek()->startOfWeek();
+                $previousEndDate = now()->subWeek()->endOfWeek();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+
+                $previousStartDate = now()->subMonth()->startOfMonth();
+                $previousEndDate = now()->subMonth()->endOfMonth();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now()->endOfYear();
+
+                $previousStartDate = now()->subYear()->startOfYear();
+                $previousEndDate = now()->subYear()->endOfYear();
+                break;
+
+            case 'quarterly':
+                $previousStartDate = now()->subMonth(5)->startOfMonth();
+                $previousEndDate = now()->subMonth(3)->endOfMonth();
+
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now()->subMonth(0)->endOfMonth();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+
+                $previousStartDate = now()->subMonth()->startOfMonth();
+                $previousEndDate = now()->subMonth()->endOfMonth();
+                break;
+        }
+
+        $currentTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->where('status','success')
+        ->get();
+
+        $previousTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $previousStartDate)
+        ->where('created_at','<=', $previousEndDate)
+        ->where('status','success')
+        ->get();
+
+        $previousTimeFrameAmount = 0;
+        $currentTimeFrameAmount = 0;
+
+        foreach($currentTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $currentTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $currentTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        foreach($previousTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $previousTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $previousTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        $percentageRevenueGrowth = ($previousTimeFrameAmount == 0) ? 0 :
+         (($currentTimeFrameAmount - $previousTimeFrameAmount)/$previousTimeFrameAmount) * 100;
+
+        return response()->json([
+            'success' => 'success',
+            'revenueGrowth' => round($percentageRevenueGrowth,2),
+            'duration' => ucwords($sortType)
+        ],200);
+    }
+    
+
+    public static function averageRevenuePerUniqueUser($sortType = NULL){
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        if($sortType == NULL){
+            $sortType = 'monthly';
+        }
+
+        switch ($sortType) {
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now()->endOfWeek();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now()->endOfYear();
+                break;
+
+            case 'quarterly':
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now()->subMonth(0)->endOfMonth();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+        }
+
+        $currentTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->where('status','success')
+        ->get();
+
+        $currentTimeFrameAmount = 0;
+
+        foreach($currentTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $currentTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $currentTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        $uniqueUsers = $currentTimeFrame->groupBy('user_id');
+        $uniqueUsersCount = $uniqueUsers->count();
+
+        $averageRevenuePerUser = ($uniqueUsersCount == 0) ? 0 : $currentTimeFrameAmount/$uniqueUsersCount;
+
+        return response()->json([
+            'success' => 'success',
+            'averageRevenuePerUser' => number_format($averageRevenuePerUser),
+            'duration' => ucwords($sortType)
+        ],200);
+
+    }
+
+    public static function averageRevenuePerTransaction($sortType = NULL){
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        if($sortType == NULL){
+            $sortType = 'monthly';
+        }
+
+        switch ($sortType) {
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now()->endOfWeek();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now()->endOfYear();
+                break;
+
+            case 'quarterly':
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now()->subMonth(0)->endOfMonth();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now()->endOfMonth();
+                break;
+        }
+
+        $currentTimeFrame = Transaction::with('asset')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->where('status','success')
+        ->get();
+
+        $currentTimeFrameAmount = 0;
+
+        foreach($currentTimeFrame as $transactions){
+            if($transactions->asset->is_crypto = 0){
+                $currentTimeFrameAmount += $transactions->amount * $transactions->quantity;
+            }else{
+                $currentTimeFrameAmount += $transactions->amount;
+            }
+        }
+
+        $transactionCount = $currentTimeFrame->count();
+        $averageRevenuePerTransaction = ($transactionCount == 0) ? 0 : $currentTimeFrameAmount/$transactionCount;
+
+        return response()->json([
+            'success' => 'success',
+            'averageRevenuePerTransaction' => number_format($averageRevenuePerTransaction),
+            'duration' => ucwords($sortType)
+        ],200);
+    }
+
+    public static function averageTransactionsPerHour($sortType = NULL){
+        $currentStartDate = NULL;
+        $currentEndDate = NULL;
+
+        if($sortType == NULL){
+            $sortType = 'daily';
+        }
+
+        switch ($sortType) {
+            case 'daily':
+                $currentStartDate = now()->startOfDay();
+                $currentEndDate = now();
+                break;
+            case 'weekly':
+                $currentStartDate = now()->startOfWeek();
+                $currentEndDate = now();
+                break;
+
+            case 'monthly':
+                $currentStartDate = now()->startOfMonth();
+                $currentEndDate = now();
+                break;
+
+            case 'yearly':
+                $currentStartDate = now()->startOfYear();
+                $currentEndDate = now();
+                break;
+
+            case 'quarterly':
+                $currentStartDate = now()->subMonth(2)->startOfMonth();
+                $currentEndDate = now();
+                break;
+                
+            
+            default:
+                $currentStartDate = now()->startOfDay();
+                $currentEndDate = now();
+                break;
+        }
+
+        $diffInHours = $currentStartDate->diffInHours($currentEndDate);
+        $tranxPerHour = Transaction::where('status','success')
+        ->where('created_at','>=', $currentStartDate)
+        ->where('created_at','<=', $currentEndDate)
+        ->get();
+
+        $avgTranxPerHour = number_format(($tranxPerHour->count()/$diffInHours),3,".",",");
+        $tranxRevenuePerHour = number_format(($tranxPerHour->sum('amount')/$diffInHours),3,".",",");
+
+        return response()->json([
+            'success' => true,
+            'avgTranxPerHour' => $avgTranxPerHour,
+            'tranxRevenuePerHour' => $tranxRevenuePerHour,
+            'duration' => ucwords($sortType)
+        ],200);
+    }
+
 }

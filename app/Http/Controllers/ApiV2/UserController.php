@@ -200,52 +200,7 @@ class UserController extends Controller
             curl_close($ch);
             return $data;
         }
-        // No longer needed
-        // $url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true";
-        // $data = json_decode(curl_get_contents($url), true);
-
-        // $currencies = [
-        //     [
-        //         'name' => 'Tether',
-        //         'short_name' => 'USDT',
-        //         'rate' => $data['tether']['ngn'],
-        //         '24h_change' => $data['tether']['ngn_24h_change'],
-        //         'img' => url('/crypto/tether.png'),
-        //     ],
-        //     [
-        //         'name' => 'Bitcoin',
-        //         'short_name' => 'BTC',
-        //         'rate' => $data['bitcoin']['ngn'],
-        //         '24h_change' => $data['bitcoin']['ngn_24h_change'],
-        //         'img' => url('/crypto/bitcoin.png'),
-        //     ],
-        //     [
-        //         'name' => 'Ethereum',
-        //         'short_name' => 'ETH',
-        //         'rate' => $data['ethereum']['ngn'],
-        //         '24h_change' => $data['ethereum']['ngn_24h_change'],
-        //         'img' => url('/crypto/ethereum.png'),
-        //     ],
-        //     [
-        //         'name' => 'Litecoin',
-        //         'short_name' => 'LTC',
-        //         'rate' => $data['litecoin']['ngn'],
-        //         '24h_change' => $data['litecoin']['ngn_24h_change'],
-        //         'img' => url('/crypto/litecoin.png'),
-        //     ],
-        //     [
-        //         'name' => 'Ripple',
-        //         'short_name' => 'XRP',
-        //         'rate' => $data['ripple']['ngn'],
-        //         '24h_change' => $data['ripple']['ngn_24h_change'],
-        //         'img' => url('/crypto/xrp.png'),
-        //     ],
-        // ];
-
-        // //Cache for 15 minutes
-
-        // Cache::put('coin', $currencies, 900);
-        // $newFeatured = Cache::get('coin');
+        
 
         $notify = array();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
@@ -356,7 +311,7 @@ class UserController extends Controller
         if ($r->has('image')) {
             $file = $r->image;
             $location = $r->location;
-            $folderPath = storage_path('app/public/address/');
+            $folderPath = public_path('storage/idcards/');
 
             if (!File::isDirectory($folderPath)) {
 
@@ -383,7 +338,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => 'You have successfully Address for verification.',
+                'data' => 'You have successfully uploaded your Address for verification.',
             ]);
         } else {
             return response()->json([
@@ -398,7 +353,6 @@ class UserController extends Controller
 
     public function uploadId(Request $r)
     {
-
         $validator = Validator::make($r->all(), [
             'image' => 'required',
             'id_number' => 'required',
@@ -438,7 +392,7 @@ class UserController extends Controller
             $file = $r->image;
             $idtype = $r->idtype;
             $id_number = $r->id_number;
-            $folderPath = storage_path('app/public/idcards');
+            $folderPath = public_path('storage/idcards/');
             if (!File::isDirectory($folderPath)) {
 
                 File::makeDirectory($folderPath, 0777, true, true);
@@ -464,7 +418,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => 'You have successfully uploaded your verification.',
+                'data' => 'You have successfully uploaded your ID Card for verification.',
             ]);
         } else {
             return response()->json([

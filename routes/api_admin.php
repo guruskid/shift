@@ -222,6 +222,10 @@ Route::group(['middleware' => ['auth:api', 'verified', 'super', 'cors']], functi
         Route::GET('/turnover-graph-analytics',  'SpotLightController@turnOverGraphAnalytics');
     });
 
+    Route::prefix('user-rating')->group(function () {
+        Route::get('/', 'UserRateManager@index');
+    });
+
 
     //Customer Happiness
     Route::group(['prefix' => 'customerHappiness'], function () {
@@ -560,7 +564,7 @@ Route::group(['middleware' => ['auth:api', 'contentCurator',  'cors']], function
             Route::get('/', 'ContentController@fetchBlogPosts');
             Route::get('/{id}', 'ContentController@showPost');
             Route::delete('/{id}', 'ContentController@destroyBlog');
-            Route::put('/{id}', 'ContentController@updateBlog');
+            Route::post('/{id}', 'ContentController@updateBlog');
 
         });
 

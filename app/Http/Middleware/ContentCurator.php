@@ -17,7 +17,7 @@ class ContentCurator
     public function handle($request, Closure $next)
     {
         $user = Auth::user();
-        if ($user->role == 333) {
+        if (in_array($user->role,[999,333])) {
            if ($user->status != 'active') {
             abort(404);
            }

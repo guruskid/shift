@@ -117,8 +117,7 @@
                     <img src="/storage/idcards/{{ $v->path }}" class="img-fluid">
                     <a href="/storage/idcards/{{ $v->path }}"><button type="button"
                             class="btn my-3 btn-outline-primary">View</button></a>
-                            <a href="/storage/public/idcards/{{ $v->path }}"><button type="button"
-                                class="btn my-3 btn-outline-primary">View 2</button></a>
+                            
                     @if ($v->type == 'Address')
                     <div class="form-group">
                         <label for="">Address</label>

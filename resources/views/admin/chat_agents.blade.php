@@ -1,6 +1,6 @@
-@php
+{{-- @php
 $emails = App\User::orderBy('email', 'asc' )->pluck('email');
-@endphp
+@endphp --}}
 @extends('layouts.app')
 @section('content')
 <div class="app-main">
@@ -64,12 +64,13 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
 								@csrf
                                 <div class="form-group">
                                     <label for="">User Email</label>
-                                    <select name="email" class="form-control">
+                                    <input type="text" class="form-control" name="email">
+                                    {{-- <select name="email" class="form-control">
                                         <option value=""></option>
                                         @foreach ($emails as $e)
                                         <option value="{{$e}}"> {{ ucfirst($e) }} </option>
                                         @endforeach
-                                    </select>
+                                    </select> --}}
 								</div>
 								<button class="btn btn-success">Add</button>
                             </form>
@@ -103,7 +104,7 @@ $emails = App\User::orderBy('email', 'asc' )->pluck('email');
                                         <td class="text-center">{{$u->last_name}}</td>
                                         <td class="text-center">{{$u->email}}</td>
                                         <td class="text-center">{{$u->phone}}</td>
-                                        <td class="text-center">{{$u->transactions}}</td>
+                                        <td class="text-center">{{$u->assignedTransactions->count()}}</td>
                                         <td class="text-center">
                                             @switch($u->status)
                                             @case('verified')

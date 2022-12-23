@@ -436,6 +436,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function 
     Route::get('/accountant-summary/{month?}/{day?}', 'Admin\SummaryController@summaryhomepage')->name('admin.junior-summary');
     Route::get('/accountant-summary/{month}/{day}/{category}', 'Admin\SummaryController@summary_tnx_category')->name('admin.junior-summary-details');
     Route::any('/sort-accountant-summary', 'Admin\SummaryController@sorting')->name('admin.junior-summary-sort-details');
+    Route::get('/revenue-growth/{sortType?}', 'Admin\AccountSummaryController@percentageRevenueGrowth');
+    Route::get('/average-revenue-per-unique-user/{sortType?}', 'Admin\AccountSummaryController@averageRevenuePerUniqueUser');
+    Route::get('/average-revenue-per-transaction/{sortType?}', 'Admin\AccountSummaryController@averageRevenuePerTransaction');
+    Route::get('/average-revenue-per-hour/{sortType?}', 'Admin\AccountSummaryController@averageTransactionsPerHour');
+
 
 
     Route::GET('/users_verifications', 'MarketingController@user_verification')->name('admin.sales.users_verifications');
@@ -477,9 +482,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'super', 'c
     Route::get('/cards', 'AdminController@cards')->name('admin.cards');
     Route::post('/wallet_id', 'AdminController@walletId')->name('admin.wallet');
 
-    // set verification limit
-    Route::GET('/verification-limit', 'Admin\VerificationLimitController@index')->name('admin.verification_limit');
-    Route::POST('/update-verification-limit', 'Admin\VerificationLimitController@addLimit')->name('admin.add_verification_limit');
 
     Route::get('/verify', 'AdminController@verify')->name('admin.verify');
     Route::post('/verify', 'AdminController@verifyUser')->name('admin.verify_user');
@@ -504,11 +506,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
 
     Route::get('/remove-agent/{id}', 'ChatAgentController@removeAgent');
 
-    Route::get('/faq', 'FaqController@index')->name('admin.faq');
-    Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
-    Route::get('/edit-faq/{id}/{title}', 'FaqController@editFaqView')->name('admin.edit-faq');
-    Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
-    Route::GET('/delete-faq/{id}/{title}', 'FaqController@deleteFaq')->name('admin.deletefaq');
     Route::GET('/download-database', 'AdminController@downloadUserDb')->name('admin.userdb');
     Route::POST('/download-database-search', 'AdminController@downloadUserDbsearch')->name('admin.userdbsearch');
 
@@ -517,10 +514,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::POST('/update-image-slider', 'Admin\ImageSliderController@updateImage')->name('admin.update_image_slider');
     Route::GET('/delete-image-slider/{id}', 'Admin\ImageSliderController@deleteImage')->name('admin.delete_image_slider');
 
-    //?call category
-    Route::get('/call-category', 'Admin\BusinessDeveloperController@displayCallCategory')->name('admin.call-categories');
-    Route::POST('/call-category', 'Admin\BusinessDeveloperController@updateCallCategory')->name('admin.call-categories.action');
-    Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
+    // set verification limit
+    Route::GET('/verification-limit', 'Admin\VerificationLimitController@index')->name('admin.verification_limit');
+    Route::POST('/update-verification-limit', 'Admin\VerificationLimitController@addLimit')->name('admin.add_verification_limit');
 });
 
 
@@ -628,6 +624,21 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'marketing'
     Route::get('/customer-happiness', 'Admin\CustomerHappinessController@index')->name('admin.customerHappinessAgent');
     Route::post('/add-happiness-agent', 'Admin\CustomerHappinessController@addAgent')->name('happiness.addAgent');
     Route::get('/customer-happiness-action/{id}/{action}', 'Admin\CustomerHappinessController@action')->name('happiness.action');
+
+    //faq categories
+    Route::GET('/faq-category', 'Admin\FaqCategoryController@index')->name('faq.category.index');
+    Route::POST('/faq-category-create', 'Admin\FaqCategoryController@store')->name('faq.category.create');
+    Route::POST('/faq-category-update', 'Admin\FaqCategoryController@update')->name('faq.category.update');
+    Route::POST('/faq-category-delete', 'Admin\FaqCategoryController@destroy')->name('faq.category.delete');
+
+    //faq
+    Route::get('/faq', 'FaqController@index')->name('admin.faq');
+    Route::post('/faqs', 'FaqController@addFaq')->name('admin.newfaq');
+    Route::get('/edit-faq/{id}', 'FaqController@editFaqView')->name('admin.edit-faq');
+    Route::POST('/edit-faq', 'FaqController@updateFaq')->name('admin.updatefaq');
+    Route::GET('/delete-faq/{id}', 'FaqController@deleteFaq')->name('admin.deletefaq');
+
+    // Route::get('/faq/category/{category}', 'Admin\FaqController@category')->name('faq.category');
 });
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDeveloper']], function () {
     Route::GET('/Categories/{type?}', 'Admin\BusinessDeveloperController@index')->name('business-developer.user-category');
@@ -640,6 +651,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
 
     Route::GET('user_profile', 'Admin\BusinessDeveloperController@UserProfile')->name('business-developer.user-profile');
 
+    Route::GET('/newUserCategories/{type?}', 'Admin\NewUsersSalesController@index')->name('business-developer.new-users.index');
+    Route::POST('/create-new-user-call-log', 'Admin\NewUsersSalesController@creatingCalledLog')->name('business-developer.new-users.create.call-log');
+    Route::GET('/new-user-view/{type?}', 'Admin\NewUsersSalesController@viewNewCategory')->name('business-developer.new-user.view-type');
+    Route::GET('new-users-call-log', 'Admin\NewUsersSalesController@newUsersCallLog')->name('business-developer.new-users.call-log');
+
     // Route::GET('/QuarterlyInactiveUsersFromDB', function () {
     //     Artisan::call('check:trackingTable');
     //     return redirect()->back()->with("success", "Quarterly Inactive Data Generated");
@@ -649,6 +665,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'businessDe
     Route::GET('/CheckingActiveUserOnline', function () {
         Artisan::call('check:active');
         return redirect()->back()->with("success", "Active Users Checked");
+    });
+
+    Route::GET('/test', function () {
+        Artisan::call('sales:inactiveSplit');
+        return redirect()->back()->with("success", "tester Done");
     });
 
     //? checking called Users for responded or recalcitrant
@@ -692,7 +713,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'sales']], 
     Route::GET('user/profile', 'Admin\SalesController@userProfile')->name('sales.user_profile');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth','admin','marketing']], function () {
     Route::GET('/LoadSalesUsers', 'Admin\TargetController@loadSales')->name('sales.loadSales');
     Route::POST('/addTarget', 'Admin\TargetController@addTarget')->name('sales.addTarget');
     Route::POST('/editTarget', 'Admin\TargetController@editTarget')->name('sales.editTarget');
@@ -703,10 +724,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'manager']]
     Route::POST('/editPriority', 'Admin\PriorityController@editPriority')->name('sales.editPriority');
     Route::GET('/deletePriority/{id}', 'Admin\PriorityController@deletePriority')->name('sales.deletePriority');
 
-});
-
-
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','salesAnalyticsAccess']], function () {
     Route::GET('/salesAnalytics/{type?}', 'Admin\SalesAnalyticsController@index')->name('sales.newUsers.salesAnalytics');
     Route::ANY('/sortAnalytics/{type?}', 'Admin\SalesAnalyticsController@sortingAnalytics')->name('sales.sort.salesAnalytics');
     Route::ANY('/showAnalysis/{type?}', 'Admin\SalesAnalyticsController@viewAllTransaction')->name('sales.show.salesAnalytics');
@@ -715,6 +732,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','salesAnalyt
     Route::ANY('/showAnalysisOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@showAllData')->name('sales.oldUsers.show.salesAnalytics');
     Route::ANY('/sortAnalyticsOldUsers/{type?}', 'Admin\OldUsersSalesAnalytics@sortingAnalytics')->name('sales.oldUsers.sort.salesAnalytics');
     Route::GET('/refreshTableData', 'Admin\OldUsersSalesAnalytics@refreshDownloadDate');
+
+    //?call category
+    Route::get('/call-category', 'Admin\BusinessDeveloperController@displayCallCategory')->name('admin.call-categories');
+    Route::POST('/call-category', 'Admin\BusinessDeveloperController@updateCallCategory')->name('admin.call-categories.action');
+    Route::post('/add-call-category', 'Admin\BusinessDeveloperController@addCallCategory')->name('admin.call-categories.add');
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin','manager']], function () {
+    Route::get('/user-verification-tracking', 'AdminController@userVerificationTracking')->name('admin.user-verifications-tracking');
 });
 
 Route::group(['prefix' => 'trx'], function () {

@@ -91,7 +91,7 @@ class HomeController extends Controller
 
         $featuredCoinsBTC = array();
         $featuredCoinsBTC['name'] = 'BTC';
-        $featuredCoinsBTC['image'] = env('APP_URL') . '/storage/crypto/bitcoin.png';
+        $featuredCoinsBTC['image'] = env('APP_URL') . '/crypto/bitcoin.png';
         $featuredCoinsBTC['balance'] = $BTC_VOLUME;
         $featuredCoinsBTC['USD_value'] = $BTC_USD;
         $featuredCoinsBTC['NGN_value'] = $BTC_NGN;
@@ -100,7 +100,7 @@ class HomeController extends Controller
 
         $featuredCoinsUSDT = array();
         $featuredCoinsUSDT['name'] = 'USDT';
-        $featuredCoinsUSDT['image'] = env('APP_URL') . '/storage/crypto/tether.png';
+        $featuredCoinsUSDT['image'] = env('APP_URL') . '/crypto/tether.png';
         $featuredCoinsUSDT['balance'] = (string)$USDT_VOLUME;
         $featuredCoinsUSDT['USD_value'] = $USDT_USD;
         $featuredCoinsUSDT['NGN_value'] =  $USDT_NGN;

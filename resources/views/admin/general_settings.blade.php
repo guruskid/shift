@@ -320,26 +320,6 @@
                                             @endif
                                         </div>
                                     </fieldset>
-
-                                    {{-- <fieldset>
-                                    <legend>Buy/Sell Airtime</legend>
-                                    <div class="row">
-                                        @if (!empty($settings['NAIRA_TRANSACTION_CHARGE']))
-                                            <div class="col-md-4">
-                                                <div class="form-group form-material">
-                                                    <div class="d-flex flex-row my-3">
-                                                        <div class="float-left mr-20">
-                                                            <div class="custom-control custom-switch">
-                                                                <input type="checkbox" name="NAIRA_TRANSACTION_CHARGE" id="naira-transaction-charge"  class="custom-control-input toggle-settings s-active" {{($settings['NAIRA_TRANSACTION_CHARGE']['settings_value'] == 1) ? 'checked' : ''}} data-notice="{{$settings['NAIRA_TRANSACTION_CHARGE']['notice']}}" data-name="NAIRA_TRANSACTION_CHARGE">
-                                                                <label for="naira-transaction-charge" class="custom-control-label">Naira Transaction Charge</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </fieldset> --}}
                                 </form>
 
                                 {{-- {{$settings['POWER_CONVENIENCE_FEE']}} --}}
@@ -379,6 +359,15 @@
                                                     <label class="form-check-label " for="ref"
                                                         style="color: #676B87;">Referral
                                                         Active
+                                                    </label>
+                                                </div>
+
+                                                <div class="custom-control mr-4 mb-3">
+                                                    <input type="checkbox" name="limit_user_withdrawal"
+                                                        class="form-check-input" id="ref"
+                                                        {{ !empty($settings['LIMIT_USER_WITHDRAWAL']) && $settings['LIMIT_USER_WITHDRAWAL']['settings_value'] == 1 ? 'checked' : '' }}>
+                                                    <label class="form-check-label " for="ref"
+                                                        style="color: #676B87;">Limit User Withdrawal to 500,000
                                                     </label>
                                                 </div>
 

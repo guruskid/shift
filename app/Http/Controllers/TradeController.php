@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
 use \App\Http\Controllers\GeneralSettings;
 use App\Mail\GeneralTemplateOne;
 use App\PaymentMedia;
+use Illuminate\Support\Facades\Log;
 
 class TradeController extends Controller
 {
@@ -157,6 +158,7 @@ class TradeController extends Controller
         $online_agent = User::where('role', 888)->where('status', 'active')->inRandomOrder()->first();
         $r->buy_sell == 1 ? $buy_sell = 'buy' : $buy_sell = 'sell';
 
+        try{
         foreach ($r->cards as $i => $total) {
             $cardType = $r->card_types[$i];
             $payment_medium_id = PaymentMedia::where('name', $cardType)->first()->id;
@@ -211,6 +213,10 @@ class TradeController extends Controller
             }
         }
 
+        } catch (\Throwable $th) {
+            Log::info("Error uploading Data: ".$th->getMessage());
+        }
+
         broadcast(new NewTransaction($t))->toOthers();
 
         $chinese = User::where(['role' => 444, 'status' => 'active'])->get();
@@ -246,11 +252,19 @@ class TradeController extends Controller
             $name = Auth::user()->first_name;
             Mail::to(Auth::user()->email)->send(new GeneralTemplateOne($title, $body, $btn_text, $btn_url, $name));
         }
+
+        $emailDescripion = 'BUY';
+        $transType = "debited from";
+
+        if($buy_sell == 'sell'){
+            $emailDescripion = "SELL";
+            $transType = "credited to";
+        }
         $user = Auth::user();
-        $title = 'TRANSACTION PENDING - BUY
-        ';
-        $body = "Your order to   $t->type an <b>$t->card</b> worth NGN" . number_format($t->amount_paid) . " is currently
-        <b style='color:red'>pending</b> and will be debited from your naria wallet once the transaction is successful<br>
+        $title = "TRANSACTION PENDING - " . $emailDescripion;
+
+        $body = "Your order to "  . $t->type ." an <b>" . $t->card ."</b> worth NGN" . number_format($t->amount_paid) . " is currently
+        <b style='color:red'>pending</b> and will be $transType  your naria wallet once the transaction is successful<br>
         <b>Transaction ID: $transaction_id <br>
         Date: " . date("Y-m-d; h:ia") . "</b>
         ";

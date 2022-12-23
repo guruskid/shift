@@ -13,7 +13,7 @@
                         text-white
                          @endif">Deposit</h5>
                     </div>
-                    
+
                 </div>
             </div>
         </a>
@@ -30,7 +30,7 @@
                         text-white
                          @endif">Withdrawal</h6>
                     </div>
-                    
+
                 </div>
             </div>
         </a>
@@ -60,12 +60,12 @@
             @if (isset($accountant))
                 <select name="Accountant" class="ml-1 form-control">
                     <option value="null">Accountant</option>
-                    @foreach ($accountant as $a) 
+                    @foreach ($accountant as $a)
                         <option value="{{ $a->id }}">{{ $a->first_name ?:$a->email }}</option>
                     @endforeach
                 </select>
             @endif
-            
+
             <button class="btn btn-primary ml-1"><i class="fa fa-search"></i></button>
         </div>
     </form>
@@ -103,7 +103,7 @@
                                 <td class="text-center">₦ {{ isset($payBridgeTransactionsAmount) ? number_format($payBridgeTransactionsAmount) :0 }}</td>
                                 <td class="text-center">{{ $averageResponseTime }}</td>
                                 <td class="text-center">[{{ isset($payBridgeTransactionsPendingCount) ? number_format($payBridgeTransactionsPendingCount) :0 }}] ₦ {{ isset($payBridgeTransactionsPendingAmount) ? number_format($payBridgeTransactionsPendingAmount) :0 }}</td>
-                                
+
                                 <td class="text-center">
                                     [{{ isset($pendingTotalCount) ? number_format($pendingTotalCount) :0 }}]
                                         ₦ {{ isset($pendingTotalAmount) ? number_format($pendingTotalAmount) :0 }}
@@ -128,8 +128,8 @@
                     </tbody>
                 </table>
             @endif
-    </div>  
-                
+    </div>
+
         <table class="mb-2 table table-bordered transactions-table">
             <thead>
                 <tr>
@@ -187,7 +187,7 @@
                                 @else
                                 <td class="text-success">₦{{number_format(($t->current_balance - $t->previous_balance)) }} </td>
                                 @endif
-                                
+
                                 <td>₦{{number_format($t->system_previous_balance) }} </td>
                                 <td>₦{{number_format($t->system_current_balance) }} </td>
                                 @if(($t->system_current_balance - $t->system_previous_balance) < 0)
@@ -224,7 +224,7 @@
                 @endif
             </tbody>
         </table>
-                
+
       </div>
 </div>
 
