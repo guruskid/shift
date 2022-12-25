@@ -199,7 +199,7 @@ class UserController extends Controller
             curl_close($ch);
             return $data;
         }
-        
+
 
         $notify = array();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
@@ -280,9 +280,13 @@ class UserController extends Controller
 
     public function uploadAddress(Request $r)
     {
+
+      
         $validator = Validator::make($r->all(), [
             'image' => 'required',
             'location' => 'required',
+            'local_government' => 'required|string|max:250',
+            'state' => "required|string|max:250"
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -326,6 +330,8 @@ class UserController extends Controller
             file_put_contents($imageFullPath, $image_base64);
 
             Auth::user()->address_img = $imageName;
+            Auth::user()->local_government = $r->local_government;
+            Auth::user()->state = $r->state;
             Auth::user()->save();
 
             $user->verifications()->create([
