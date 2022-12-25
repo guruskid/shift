@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\FlaggedTransactionsController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\FirebasePushNotificationController;
 use App\Http\Controllers\GeneralSettings;
+use App\Http\Controllers\LiveRateController;
 use App\Http\Controllers\UserController;
 use App\Mail\GeneralTemplateOne;
 use App\NairaTrade;
@@ -548,6 +549,7 @@ class TradeController extends Controller
 
     public function getStat()
     {
+
         $user = Auth::user();
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
@@ -581,7 +583,7 @@ class TradeController extends Controller
         // } else {
         //     $pin = NULL;
         // }
-
+$buyRate = LiveRateController::usdtNgn('buy');
         $user_data = [
             'success' => true,
             'total_withdrawn_today' => $withdrawalToday,
@@ -592,6 +594,7 @@ class TradeController extends Controller
             'pending_withdrawal' => $pendingWithdrawal,
             'pending_deposit' => $pendingDeposit,
             'pin' => $pin,
+            'buy_rate' => $buyRate
         ];
 
         return $user_data;

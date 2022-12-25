@@ -32,7 +32,8 @@ class CryptoController extends Controller
         $btc_rates = BtcWalletController::fees()->getData();
         $bitcoin->rates = [
             'send_charge' => $btc_rates->send_fee,
-            'coin_to_usd' => $btc_rates->btc_to_usd,
+            // 'coin_to_usd' => $btc_rates->btc_to_usd,
+            'coin_to_usd' => LiveRateController::btcRate(),
             'usd_to_ngn' => LiveRateController::usdNgn(), // Similar to sell rate
             'buy_rate' => LiveRateController::usdNgn(true, 'buy'),
             'sell_rate' => LiveRateController::usdNgn(),
