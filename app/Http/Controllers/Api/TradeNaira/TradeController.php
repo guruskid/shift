@@ -550,6 +550,7 @@ class TradeController extends Controller
     public function getStat()
     {
 
+
         $user = Auth::user();
         $withdrawalToday = $this->getTodaysTotalTransactions('sell');
         $withdrawalThisMonth = $this->getThisMonthTotalTransactions('sell');
@@ -583,7 +584,7 @@ class TradeController extends Controller
         // } else {
         //     $pin = NULL;
         // }
-$buyRate = LiveRateController::usdtNgn('buy');
+$buyRate =  LiveRateController::usdNgn(true, 'buy');
         $user_data = [
             'success' => true,
             'total_withdrawn_today' => $withdrawalToday,
