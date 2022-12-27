@@ -281,7 +281,7 @@ class UserController extends Controller
     public function uploadAddress(Request $r)
     {
 
-      
+
         $validator = Validator::make($r->all(), [
             'image' => 'required',
             'location' => 'required',
@@ -358,6 +358,8 @@ class UserController extends Controller
 
     public function uploadId(Request $r)
     {
+
+       
         $validator = Validator::make($r->all(), [
             'image' => 'required',
             'id_number' => 'required',
@@ -510,6 +512,7 @@ class UserController extends Controller
 
     public function profile()
     {
+
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
@@ -544,9 +547,11 @@ class UserController extends Controller
 
         // $res = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true");
 
+
+        $user = Auth::user();
         return response()->json([
             'success' => true,
-            'user' => Auth::user(),
+            'user' => $user->load('accounts'),
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balnace_in_usd' => $btc_wallet->usd,

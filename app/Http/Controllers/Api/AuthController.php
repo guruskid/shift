@@ -37,11 +37,20 @@ class AuthController extends Controller
             //After successfull authentication, notice how I return json parameters
             \Artisan::call('naira:limit');
 
-            if (null !== request('fcm_id')) {
+            // if (null !== request('fcm_id')) {
+            //     $user->update([
+            //         'fcm_id' => request('fcm_id'),
+            //     ]);
+            // }
+
+            if (request('fcm_id') !== null) {
                 $user->update([
                     'fcm_id' => request('fcm_id'),
                 ]);
             }
+
+
+
             if ($user->role == 1) {
                 $loginSession = new LoginSessionController();
                 $loginSession->createSessionData($user->id);
