@@ -52,7 +52,8 @@ class CryptoController extends Controller
         $usdt->image = env('APP_URL') . '/storage/assets/Tether.png';
         $usdt->rates = [
             'send_charge' => Setting::where('name', 'usdt_send_charge')->first()->value,
-            'coin_to_usd' => LiveRateController::usdtRate(),
+            'coin_to_usd_sell' => LiveRateController::usdtRate(),
+            'coin_to_usd_buy' => LiveRateController::usdtBuy(),
             'coin_to_ngn' => LiveRateController::usdtNgn(),
             'usd_to_ngn' => LiveRateController::usdNgn(),
             'buy_rate' => LiveRateController::usdNgn(true, 'buy'),
