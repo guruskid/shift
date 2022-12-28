@@ -49,7 +49,10 @@ Route::group(['middleware' => ['auth:api', 'verified', 'cors']], function () {
 
         Route::get('/trans', 'CustomerHappinessController@recentTransactions');
 
-        ;
+        //Verification routes 
+        Route::get('/view-verifications', 'CustomerHappinessController@viewVerifications');
+        Route::post('/approve-verifications', 'CustomerHappinessController@approveVerification');
+        Route::post('/cancel-verifications', 'CustomerHappinessController@cancelVerification');
     });
 
 });
