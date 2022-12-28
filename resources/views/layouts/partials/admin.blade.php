@@ -430,6 +430,14 @@
                 </li>
 
                 <li class="my-3">
+                    <a href="{{route('admin.top-transfers')}}"
+                        class=" {{ Route::currentRouteName() == 'admin.top-transfers' ? 'mm-active' : '' }} ">
+                        <i class="metismenu-icon pe-7s-user"></i>
+                        Top Trader's
+                    </a>
+                </li>
+
+                <li class="my-3">
                     <a href="{{route('admin.accountants')}}"
                         class=" {{ Route::currentRouteName() == 'admin.accountants' ? 'mm-active' : '' }} ">
                         <i class="metismenu-icon pe-7s-users"></i>
