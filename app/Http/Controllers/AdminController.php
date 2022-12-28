@@ -1525,7 +1525,7 @@ class AdminController extends Controller
         }
 
         $segment = $start->format("d M Y")." to ".$end->format("d M Y");
-        $users = collect($_users)->sortByDesc('transactionAmountUSD')->paginate(1000);
+        $users = collect($_users)->sortByDesc('transactionAmountUSD')->take(1000);
         return view('admin.top_traders', compact('users','segment'));
     }
 
