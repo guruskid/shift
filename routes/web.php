@@ -552,6 +552,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'AccountOff
     Route::any('/users/search', 'AdminController@user_search')->name('admin.user-search');
     Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 
+    Route::get('/top-traders', 'AdminController@getTopTraders')->name('admin.top-transfers');
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
     Route::post('/chat-agents', 'ChatAgentController@addChatAgent')->name('admin.add_chat_agent');

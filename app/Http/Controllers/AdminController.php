@@ -1312,6 +1312,7 @@ class AdminController extends Controller
         $users = $users->paginate(1000);
         return view('admin.users', compact(['users']));
     }
+
     public function user_search(Request $request)
     {
         if ($request->search) {
@@ -1494,6 +1495,28 @@ class AdminController extends Controller
         $n->save();
 
         return redirect()->back()->with(['success' => 'Notification updated']);
+    }
+
+    public function getTopTraders(){
+        //year is the current year
+        $_users = array();
+
+        $transactions = Transaction::with('user')
+        ->where('status','success')
+        ->where('created_at','>=', now()->startOfYear())
+        ->where('created_at','<=', now()->endOfYear())
+        ->get()
+        ->groupBy('user_id');
+
+        foreach($transactions as $t){
+            $user = $t[0]->user;
+            $user->transactionCount = $t->count();
+            $user->transactionAmount = $t->sum('amount');
+            
+            $_users[] = $user;
+        }
+        $users = collect($_users)->sortByDesc('transactionAmount')->paginate(10);
+        return view('admin.top_traders', compact('users'));
     }
 
     public function getNotification($id)
