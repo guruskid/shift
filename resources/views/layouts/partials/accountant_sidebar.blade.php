@@ -55,6 +55,15 @@
                 </div>
             </a>
         </li>
+
+        <li class="menu {{ Route::currentRouteName() == 'admin.top-transfers' ? 'active' : '' }}">
+            <a href="{{route('admin.top-transfers')}}" aria-expanded="false" class="dropdown-toggle">
+                <div class="">
+                    <ion-icon name="people-circle-outline"></ion-icon>
+                    <span>Top Trader's</span>
+                </div>
+            </a>
+        </li>
     @endif
 
     <li class="menu {{ Route::currentRouteName() == 'admin.naira-p2p' ? 'active' : '' }}  ">

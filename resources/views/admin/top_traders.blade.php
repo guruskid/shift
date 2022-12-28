@@ -56,9 +56,9 @@
                 <div class="col-md-12">
                     <div class="main-card mb-3 pb-3 card">
                         <div class="card-header d-flex justify-content-between">
-                            {{-- <div class="">
-                                Top Traders
-                            </div> --}}
+                            <div class="">
+                                Top Traders({{ $segment }})
+                            </div>
                             {{--  <div class="">
                                 <form action="{{route('admin.search')}}" method="post" class="form-inline" >
                             @csrf
@@ -69,6 +69,19 @@
                             <button class="ml-3 btn btn-outline-secondary"> <i class="fa fa-search"></i></button>
                             </form>
                         </div> --}}
+                        <form class="form-inline p-2"
+                                method="GET">
+                                {{-- @csrf --}}
+                                <div class="form-group mr-2">
+                                    <label for="">Start date </label>
+                                    <input type="date" required name="start" value="{{app('request')->input('start')}}" class="ml-2 form-control">
+                                </div>
+                                <div class="form-group mr-2">
+                                    <label for="">End date </label>
+                                    <input type="date" required name="end" value="{{app('request')->input('end')}}" class="ml-2 form-control">
+                                </div>
+                                <button class="btn btn-outline-primary"><i class="fa fa-filter"></i></button>
+                            </form>
                     </div>
                     <div class="table-responsive p-3">
                         <table
@@ -80,7 +93,8 @@
                                     <th class="text-center">Email</th>
                                     <th class="text-center">Phone</th>
                                     <th class="text-center">Transaction No</th>
-                                    <th class="text-center">Transaction Amount</th>
+                                    <th class="text-center">Transaction Amount USD</th>
+                                    <th class="text-center">Transaction Amount NGN</th>
                                     <th class="text-center">Signed Up Date</th>
                                 </tr>
                             </thead>
@@ -98,7 +112,8 @@
                                     <td class="text-center">{{$u->email}}</td>
                                     <td class="text-center">{{$u->phone}}</td>
                                     <td class="text-center">{{number_format($u->transactionCount)}}</td>
-                                    <td class="text-center">{{number_format($u->transactionAmount,2,".",",")}}</td>
+                                    <td class="text-center">${{number_format($u->transactionAmountUSD,2,".",",")}}</td>
+                                    <td class="text-center">₦{{number_format($u->transactionAmountNGN,2,".",",")}}</td>
                                     <td class="text-center">{{$u->created_at->format('d M Y h:ia')}}</td>
                                 </tr>
                                 @endforeach
