@@ -1497,26 +1497,36 @@ class AdminController extends Controller
         return redirect()->back()->with(['success' => 'Notification updated']);
     }
 
-    public function getTopTraders(){
+    public function getTopTraders(Request $request){
         //year is the current year
         $_users = array();
+        if($request->start AND $request->end){
+            $start = Carbon::parse($request->start)->startOfMonth();
+            $end = Carbon::parse($request->end)->endOfMonth();
+        } else{
+            $start = now()->startOfYear();
+            $end = now()->endOfYear();
+        }
 
         $transactions = Transaction::with('user')
         ->where('status','success')
-        ->where('created_at','>=', now()->startOfYear())
-        ->where('created_at','<=', now()->endOfYear())
+        ->where('created_at','>=', $start)
+        ->where('created_at','<=', $end)
         ->get()
         ->groupBy('user_id');
 
         foreach($transactions as $t){
             $user = $t[0]->user;
             $user->transactionCount = $t->count();
-            $user->transactionAmount = $t->sum('amount');
+            $user->transactionAmountUSD = $t->sum('amount');
+            $user->transactionAmountNGN = $t->sum('amount_paid');
             
             $_users[] = $user;
         }
-        $users = collect($_users)->sortByDesc('transactionAmount')->paginate(10);
-        return view('admin.top_traders', compact('users'));
+
+        $segment = $start->format("d M Y")." to ".$end->format("d M Y");
+        $users = collect($_users)->sortByDesc('transactionAmountUSD')->paginate(10);
+        return view('admin.top_traders', compact('users','segment'));
     }
 
     public function getNotification($id)
