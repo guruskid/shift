@@ -312,7 +312,6 @@ class UserController extends Controller
         }
 
         if ($r->has('image')) {
-            $file = $r->image;
             $location = $r->location;
             $folderPath = public_path('storage/idcards/');
 
@@ -322,12 +321,18 @@ class UserController extends Controller
 
             }
 
-            $image_base64 = base64_decode($file);
+            $image = $r->image;  // your base64 encoded
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = time() . uniqid() . '.' . 'png';
 
-            $imageName = time() . uniqid() . '.png';
-            $imageFullPath = $folderPath . $imageName;
+            \File::put(storage_path() . '/app/public/idcards/' . $imageName, base64_decode($image));
 
-            file_put_contents($imageFullPath, $image_base64);
+
+            // $image_base64 = base64_decode($file);
+            // $imageFullPath = $folderPath . $imageName;
+
+            // file_put_contents($imageFullPath, $image_base64);
 
             Auth::user()->address_img = $imageName;
             Auth::user()->local_government = $r->local_government;
@@ -359,7 +364,7 @@ class UserController extends Controller
     public function uploadId(Request $r)
     {
 
-       
+
         $validator = Validator::make($r->all(), [
             'image' => 'required',
             'id_number' => 'required',
