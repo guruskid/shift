@@ -328,12 +328,6 @@ class UserController extends Controller
 
             \File::put(storage_path() . '/app/public/idcards/' . $imageName, base64_decode($image));
 
-
-            // $image_base64 = base64_decode($file);
-            // $imageFullPath = $folderPath . $imageName;
-
-            // file_put_contents($imageFullPath, $image_base64);
-
             Auth::user()->address_img = $imageName;
             Auth::user()->local_government = $r->local_government;
             Auth::user()->state = $r->state;
