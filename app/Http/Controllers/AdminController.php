@@ -30,6 +30,7 @@ use App\TransactionType;
 use App\UtilityTransaction;
 use App\Verification;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Carbon\CarbonInterval;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -1499,6 +1500,11 @@ class AdminController extends Controller
 
     public function getTopTraders(Request $request){
         //year is the current year
+        $options = [
+            'join' => ', ',
+            'parts' => 2,
+            'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+        ];
         $_users = array();
         if($request->start AND $request->end){
             $start = Carbon::parse($request->start)->startOfMonth();
@@ -1520,6 +1526,8 @@ class AdminController extends Controller
             $user->transactionCount = $t->count();
             $user->transactionAmountUSD = $t->sum('amount');
             $user->transactionAmountNGN = $t->sum('amount_paid');
+            $user->lastTranxDate = $user->transactions->first()->created_at->format('d M Y h:ia');
+            $user->ltd_date = $user->transactions->first()->created_at->diffForHumans(now(),$options)." ago";
             
             $_users[] = $user;
         }

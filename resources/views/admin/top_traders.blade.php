@@ -93,6 +93,7 @@
                                     <th class="text-center">Email</th>
                                     <th class="text-center">Phone</th>
                                     <th class="text-center">Transaction No</th>
+                                    <th class="text-center">Last Transaction Date</th>
                                     <th class="text-center">Transaction Amount USD</th>
                                     <th class="text-center">Transaction Amount NGN</th>
                                     <th class="text-center">Signed Up Date</th>
@@ -112,6 +113,7 @@
                                     <td class="text-center">{{$u->email}}</td>
                                     <td class="text-center">{{$u->phone}}</td>
                                     <td class="text-center">{{number_format($u->transactionCount)}}</td>
+                                    <td class="text-center">{{$u->lastTranxDate}}<br>({{ $u->ltd_date }})</td>
                                     <td class="text-center">${{number_format($u->transactionAmountUSD,2,".",",")}}</td>
                                     <td class="text-center">₦{{number_format($u->transactionAmountNGN,2,".",",")}}</td>
                                     <td class="text-center">{{$u->created_at->format('d M Y h:ia')}}</td>
