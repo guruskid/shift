@@ -97,6 +97,7 @@
                                             <th><div class="">Recalcitrant Cycle</div></th>
                                             <th><div class="">Transaction no</div></th>
                                             <th><div class="">Priority</div></th>
+                                            <th><div class="">Transaction Amount</div></th>
                                         @endif
                                         @if($type == "Recalcitrant_Users")
                                             <th><div class="">Recalcitrant Date</div></th>
@@ -115,19 +116,20 @@
                                         <td class="text-center"><div class="td-content customer-name">{{$u->user->first_name." ".$u->user->last_name}}</div></td>
                                         <td class="text-center">{{ $u->user->username }}</td>
                                         @if ($type !="NoResponse")
-                                        <td class="text-center">{{ $u->last_transaction_date }}</td>
+                                        <td class="text-center">{{ $u->last_transaction_date }}<br>({{ $u->ltd_date }})</td>
                                         @endif
                                         @if ($type == "NoResponse")
                                         <td class="text-center">{{ ($u->noResponse_streak == null) ? 0 : $u->noResponse_streak }}</td>
                                         @endif
                                         @if ($type == "Called_Users")
-                                            <td class="text-center">{{ $u->called_date }}</td>
+                                            <td class="text-center">{{ $u->called_date }}<br>({{ $u->cd_date }})</td>
                                         @endif
                                         @if ($type == "Quarterly_Inactive")
                                             <td class="text-center">{{ ($u->Responded_Cycle == null) ? 0 : $u->Responded_Cycle }}</td>
                                             <td class="text-center">{{ ($u->Recalcitrant_Cycle == null) ? 0 : $u->Recalcitrant_Cycle  }}</td>
                                             <td class="text-center">{{ ($u->transactionCount) ? number_format($u->transactionCount) : 0 }}</td>
                                             <td class="text-center">{{ ($u->priority) ? $u->priority : null }}</td>
+                                            <td class="text-center">{{ ($u->transactionAmount) ? number_format($u->transactionAmount) : 0 }}</td>
                                         @endif
                                         @if($type == "Recalcitrant_Users")
                                             <td class="text-center">{{ $u->updated_at->format('d M y, h:ia') }}</td>

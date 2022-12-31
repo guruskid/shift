@@ -174,6 +174,34 @@
                 </div>
 
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Daily_Utility_Transactions']) }}'">
+                    <div class="widget widget-chart-one @if(isset($type) && $type =='Daily_Utility_Transactions') bg-primary @endif">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="@if(isset($type) && $type =='Daily_Utility_Transactions') text-white @endif">Utility Transactions(Daily)</h5>
+                            </div>
+                            <div class="widget-n">
+                                <h5>{{ $utility_daily }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
+                onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_Utility_Transactions']) }}'">
+                    <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_Utility_Transactions') bg-primary @endif">
+                        <div class="widget-heading">
+                            <div>
+                                <h5 class="@if(isset($type) && $type =='Monthly_Utility_Transactions') text-white @endif">Utility Transactions(Monthly)</h5>
+                            </div>
+                            <div class="widget-n">
+                                <h5>{{ $utility_monthly }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing"
                 onclick="window.location = '{{ route('admin.sales.type',['type'=>'Monthly_New_Tranding_Users']) }}'">
                     <div class="widget widget-chart-one @if(isset($type) && $type =='Monthly_New_Tranding_Users') bg-primary @endif">
                         <div class="widget-heading">
@@ -187,6 +215,7 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                     {{-- bg-primary text-white --}}
                         <div class="card mb-1 widget-content ">

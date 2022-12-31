@@ -15,6 +15,7 @@ use App\Transaction;
 use App\User;
 use App\UserTracking;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -127,15 +128,25 @@ class BusinessDeveloperController extends Controller
         if($type != 'Quarterly_Inactive'){
             // the quarterly inactive has checks for the transactions there is no need to run it through this iteration
             // checking UserData
+            $options = [
+                'join' => ', ',
+                'parts' => 2,
+                'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+            ];
+
             foreach($data_table as $userData){
                 //getting the users successful transactions (NB: check the relationship in the model for more information)
                 $userTransactions = $userData->transactions;
                 $userData->called_date = Carbon::parse($userData->called_date)->format('d M Y, h:ia');
+                $userData->cd_date = Carbon::parse($userData->called_date)->diffForHumans(now(),$options)." ago";
 
                 if($userTransactions->count() == 0){
                     $userData->last_transaction_date = 'No Transactions';
                 } else {
                     $userData->last_transaction_date = $userTransactions->first()->created_at->format('d M Y, h:ia');
+                    
+        
+                    $userData->ltd_date = $userTransactions->first()->created_at->diffForHumans(now(),$options)." ago";
                 }
             }
         }

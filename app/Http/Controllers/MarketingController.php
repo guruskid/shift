@@ -8,6 +8,7 @@ use App\Mail\GeneralTemplateOne;
 use App\Transaction;
 use App\User;
 use App\UserTracking;
+use App\UtilityTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -57,6 +58,14 @@ class MarketingController extends Controller
         ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->where('platform','web')->count();
         $monthly_web_transactions = $Transaction_monthly_web_transactions;
 
+        //?monthly Utility Transactions
+        $utility_monthly = UtilityTransaction::whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->count();
+
+        //?daily Utility Transactions
+        $utility_daily = UtilityTransaction::whereDate("created_at",Carbon::now())
+        ->where('status', 'success')->count();
+
        $table_data = User::orderBy('id', 'DESC')->get()->take(10);
 
         //?New Trading User %increase
@@ -66,9 +75,9 @@ class MarketingController extends Controller
         })->pluck('id')->toArray();
 
         // User who registered six months ago but no trade
-        $old_users_with_no_tranx = User::whereDoesntHave('transactions')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'))->pluck('id')->toArray();
+        // $old_users_with_no_tranx = User::whereDoesntHave('transactions')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'))->pluck('id')->toArray();
 
-        $new_trading_users = User::orWhereIn('id',$mtrading_users)
+        $new_trading_users =User::orWhereIn('id',$mtrading_users)
         // ->orWhereIn('id',$old_users_with_no_tranx)
         ->whereHas('transactions', function ($tranx) {
             $tranx->where('status','success')->whereDate('created_at', '=', Carbon::now()->format('Y-m-d'));
@@ -89,7 +98,7 @@ class MarketingController extends Controller
            'daily_app_transactions','daily_web_transactions',
            'monthly_app_transactions','monthly_web_transactions',
             'total_app_transactions','total_web_transactions','new_trading_users',
-            'total_app_transactions','total_web_transactions','revenueGrowth'
+            'total_app_transactions','total_web_transactions','revenueGrowth','utility_monthly','utility_daily'
        ]));
     }
 
@@ -135,6 +144,14 @@ class MarketingController extends Controller
         ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->where('platform','web')->count();
         $monthly_web_transactions = $Transaction_monthly_web_transactions;
 
+        //?monthly Utility Transactions
+        $utility_monthly = UtilityTransaction::whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->count();
+
+        //?daily Utility Transactions
+        $utility_daily = UtilityTransaction::whereDate("created_at",Carbon::now())
+        ->where('status', 'success')->count();
+
         //?New Trading User %increase
         // User who traded six months ago
         $mtrading_users = User::whereHas('transactions', function ($tranx) {
@@ -142,7 +159,7 @@ class MarketingController extends Controller
         })->pluck('id')->toArray();
 
         // User who registered six months ago but no trade
-        $old_users_with_no_tranx = User::whereDoesntHave('transactions')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'))->pluck('id')->toArray();
+        // $old_users_with_no_tranx = User::whereDoesntHave('transactions')->where('created_at', '<=', Carbon::now()->subMonths(6)->format('Y-m-d'))->pluck('id')->toArray();
 
         $new_trading_users = User::orWhereIn('id',$mtrading_users)
         // ->orWhereIn('id',$old_users_with_no_tranx)
@@ -157,7 +174,7 @@ class MarketingController extends Controller
             'daily_app_transactions','daily_web_transactions',
             'monthly_app_transactions','monthly_web_transactions','type',
             'total_app_transactions','total_web_transactions','new_trading_users',
-            'total_app_transactions','total_web_transactions','revenueGrowth'
+            'total_app_transactions','total_web_transactions','revenueGrowth','utility_monthly','utility_daily'
         ]));
     }
 
@@ -261,7 +278,7 @@ class MarketingController extends Controller
         if( $type == "Monthly_Transactions_App")
         {
             $monthly_app_transaction = collect([]);
-            $transaction = Transaction::whereMonth('created_at', Carbon::now()->month)
+            $transaction = Transaction::with('user')->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->where('platform','app')->orderBy('id','desc')->limit(10)->get();
 
             foreach ($transaction as $t) {
@@ -270,6 +287,26 @@ class MarketingController extends Controller
             $monthly_app_transaction = $monthly_app_transaction->concat($transaction);
 
             return $monthly_app_transaction->sortByDesc('created_at');
+        }
+
+        if($type == 'Daily_Utility_Transactions'){
+            $utility_daily = UtilityTransaction::with('user')->whereDate("created_at",Carbon::now())
+            ->where('status', 'success')->orderBy('id','DESC')->limit(10)->get();
+
+            foreach ($utility_daily as $t) {
+                $t->tradename = $t->type;
+            }
+            return $utility_daily;
+        }
+
+        if($type == 'Monthly_Utility_Transactions'){
+            $utility_daily = UtilityTransaction::with('user')->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)->where('status', 'success')->orderBy('id','DESC')->limit(10)->get();
+
+            foreach ($utility_daily as $t) {
+                $t->tradename = $t->type;
+            }
+            return $utility_daily;
         }
 
 
@@ -385,6 +422,55 @@ class MarketingController extends Controller
             $data = $monthly_web_transaction->sortByDesc('created_at')->paginate(100);
             $segment = "Monthly Transactions Web";
         }
+        if($type == "Monthly_Utility_Transactions")
+        {
+            $data = UtilityTransaction::with('user')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->where('status', 'success');
+
+            if($request->start)
+            {
+                $data = $data->whereDate('created_at','>=',$request->start);
+            }
+            if($request->end)
+            {
+                $data = $data->whereDate('created_at','<=',$request->end);
+            }
+
+            $data = $data->orderBy('id','DESC')->get();
+            $count = $data->count();
+            foreach ($data as $t) {
+                $t->tradename = $t->type;
+            }
+            $data = $data->paginate(100);
+            $segment = "Monthly Utility Transactions";
+        }
+
+        if($type == "Daily_Utility_Transactions")
+        {
+            $data = UtilityTransaction::with('user')
+            ->whereDate("created_at",Carbon::now())
+            ->where('status', 'success');
+
+            if($request->start)
+            {
+                $data = $data->whereDate('created_at','>=',$request->start);
+            }
+            if($request->end)
+            {
+                $data = $data->whereDate('created_at','<=',$request->end);
+            }
+
+            $data = $data->orderBy('id','DESC')->get();
+            $count = $data->count();
+            foreach ($data as $t) {
+                $t->tradename = $t->type;
+            }
+            $data = $data->paginate(100);
+            $segment = "Daily Utility Transactions";
+        }
+
         if($type == "Monthly_Transactions_App")
         {
             $monthly_app_transaction = collect([]);
