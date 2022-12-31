@@ -9,6 +9,7 @@ use App\PriorityRanking;
 use App\User;
 use App\UserTracking;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 
@@ -233,6 +234,12 @@ class SalesHelperController extends Controller
     }
 
     public static function quarterlyInactiveMonthlySort($startDate, $endDate, $collection){
+        $options = [
+            'join' => ', ',
+            'parts' => 2,
+            'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+        ];
+        
         foreach($collection as $col){
             if($startDate != null AND $endDate != null){
                 $sortTranx = $col['transactions']->where('created_at','>=',$startDate)->where('created_at','<=',$endDate);
@@ -250,6 +257,9 @@ class SalesHelperController extends Controller
                 $col->last_transaction_date = 'No Transactions';
             } else {
                 $col->last_transaction_date = $transactions->first()->created_at->format('d M Y, h:ia');
+                
+    
+                $col->ltd_date = $transactions->first()->created_at->diffForHumans(now(),$options)." ago";
             }
         }
         return $collection;

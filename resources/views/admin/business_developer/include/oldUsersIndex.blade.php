@@ -116,13 +116,13 @@
                                         <td class="text-center"><div class="td-content customer-name">{{$u->user->first_name." ".$u->user->last_name}}</div></td>
                                         <td class="text-center">{{ $u->user->username }}</td>
                                         @if ($type !="NoResponse")
-                                        <td class="text-center">{{ $u->last_transaction_date }}</td>
+                                        <td class="text-center">{{ $u->last_transaction_date }}<br>({{ $u->ltd_date }})</td>
                                         @endif
                                         @if ($type == "NoResponse")
                                         <td class="text-center">{{ ($u->noResponse_streak == null) ? 0 : $u->noResponse_streak }}</td>
                                         @endif
                                         @if ($type == "Called_Users")
-                                            <td class="text-center">{{ $u->called_date }}</td>
+                                            <td class="text-center">{{ $u->called_date }}<br>({{ $u->cd_date }})</td>
                                         @endif
                                         @if ($type == "Quarterly_Inactive")
                                             <td class="text-center">{{ ($u->Responded_Cycle == null) ? 0 : $u->Responded_Cycle }}</td>
