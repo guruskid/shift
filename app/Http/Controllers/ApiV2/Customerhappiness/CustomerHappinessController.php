@@ -203,7 +203,7 @@ class CustomerHappinessController extends Controller
     public function querySort($status)
     {
 
-        $ticket = Ticket::with('user')->where('status', $status)->latest('id')->get()->paginate(20);
+        $ticket = Ticket::with('user')->where('status', $status)->latest('id')->get()->paginate(50);
 
         return response()->json([
             'success' => true,
@@ -223,7 +223,7 @@ class CustomerHappinessController extends Controller
             ];
         })->toArray();
 
-        $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call'];
+        $channel = ['Facebook', 'Instagram', 'Twitter', 'Phone Call', 'Jivo', 'Mail', 'iMessage'];
         $types = ['Enquiry', 'Complaint', 'Notice', 'Suggestion'];
         $categories = $ticketcategory;
 
@@ -357,7 +357,7 @@ class CustomerHappinessController extends Controller
             $date = Carbon::now()->format('Y-m-d');
         }
 
-        $ticket = Ticket::where(DB::raw('date(created_at)'), $date)->with('user')->latest('id')->get()->paginate(10);
+        $ticket = Ticket::where(DB::raw('date(created_at)'), $date)->with('user')->latest('id')->get()->paginate(20);
 
 //    dd($query);
         return response()->json([
@@ -404,7 +404,7 @@ class CustomerHappinessController extends Controller
 
     // public function transactions()
     // {
-    //     $transactions = Transaction::with('user')->latest('id')->paginate(10);
+    //     $transactions = Transaction::with('user')->latest('id')->paginate(20);
 
     //     return response()->json([
     //         'success' => true,
@@ -461,7 +461,7 @@ class CustomerHappinessController extends Controller
 
     public function p2pTran()
     {
-        $transactions = NairaTrade::with('user', 'naira_transactions')->latest('id')->paginate(10);
+        $transactions = NairaTrade::with('user', 'naira_transactions')->latest('id')->paginate(20);
 
         return response()->json([
             'success' => true,
@@ -531,7 +531,7 @@ class CustomerHappinessController extends Controller
 
         // });
 
-        $user = User::whereHas('transactions')->withCount(['transactions'])->get()->paginate(20);
+        $user = User::whereHas('transactions')->withCount(['transactions'])->get()->paginate(30);
 
         return response()->json([
             'success' => true,
@@ -603,7 +603,7 @@ class CustomerHappinessController extends Controller
     public function sortByStatus($status)
     {
 
-        $transactions = Transaction::with('user')->where('status', $status)->latest()->paginate(10);
+        $transactions = Transaction::with('user')->where('status', $status)->latest()->paginate(20);
 
         return response()->json([
             'success' => true,
@@ -616,10 +616,10 @@ class CustomerHappinessController extends Controller
     public function filterByType($type)
     {
 
-        $airtime = NairaTransaction::with('utility')->where('type', 'recharge card')->with('user')->latest()->paginate(10);
-        $electricity = NairaTransaction::with('utility')->where('type', 'electricity bills')->with('user')->latest()->paginate(10);
-        $data = NairaTransaction::with('utility')->where('type', 'mobile data')->with('user')->latest()->paginate(10);
-        $cable = NairaTransaction::with('utility')->where('type', 'cable')->with('user')->latest()->paginate(10);
+        $airtime = NairaTransaction::with('utility')->where('type', 'recharge card')->with('user')->latest()->paginate(20);
+        $electricity = NairaTransaction::with('utility')->where('type', 'electricity bills')->with('user')->latest()->paginate(20);
+        $data = NairaTransaction::with('utility')->where('type', 'mobile data')->with('user')->latest()->paginate(20);
+        $cable = NairaTransaction::with('utility')->where('type', 'cable')->with('user')->latest()->paginate(20);
 
         if ($type == 'giftcard') {
             $nairaTransactions = NairaTransaction::with('user')->orderBy('id', 'DESC')->paginate(100);
@@ -691,7 +691,7 @@ class CustomerHappinessController extends Controller
     public function filterUtility($type)
     {
 
-        $transactions = UtilityTransaction::where('type', 'LIKE', "%{$type}%")->latest('id')->paginate(10);
+        $transactions = UtilityTransaction::where('type', 'LIKE', "%{$type}%")->latest('id')->paginate(20);
 
         return response()->json([
             'success' => true,
