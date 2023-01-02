@@ -204,7 +204,8 @@ class TradeController extends Controller
                 /* dd($file); */
                 $extension = $file->getClientOriginalExtension();
                 $filenametostore = time() . uniqid() . '.' . $extension;
-                Storage::put('public/pop/' . $filenametostore, fopen($file, 'r+'));
+                // Storage::put('public/pop/' . $filenametostore, fopen($file, 'r+'));
+                $file->move(public_path('storage/pop/'), $filenametostore);
                 $p = new Pop();
                 $p->user_id = Auth::user()->id;
                 $p->transaction_id = $batch_id;
