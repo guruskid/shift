@@ -252,6 +252,15 @@
                     </a>
                 </li>
             @if (!in_array(Auth::user()->role, [775] ))
+
+            <li class="my-3">
+                <a href="{{route('admin.top-transfers')}}"
+                    class=" {{ Route::currentRouteName() == 'admin.top-transfers' ? 'mm-active' : '' }} ">
+                    <i class="metismenu-icon pe-7s-user"></i>
+                    Top Trader's
+                </a>
+            </li>
+            
             <li class="menu {{ Route::currentRouteName() == 'admin.junior-summary' ? 'active' : '' }}  ">
                 <a href="{{route('admin.junior-summary')}}">
                     <div class="">

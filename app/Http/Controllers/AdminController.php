@@ -30,6 +30,7 @@ use App\TransactionType;
 use App\UtilityTransaction;
 use App\Verification;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Carbon\CarbonInterval;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -1312,6 +1313,7 @@ class AdminController extends Controller
         $users = $users->paginate(1000);
         return view('admin.users', compact(['users']));
     }
+
     public function user_search(Request $request)
     {
         if ($request->search) {
@@ -1494,6 +1496,45 @@ class AdminController extends Controller
         $n->save();
 
         return redirect()->back()->with(['success' => 'Notification updated']);
+    }
+
+    public function getTopTraders(Request $request){
+        //year is the current year
+        $options = [
+            'join' => ', ',
+            'parts' => 2,
+            'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+        ];
+        $_users = array();
+        if($request->start AND $request->end){
+            $start = Carbon::parse($request->start)->startOfMonth();
+            $end = Carbon::parse($request->end)->endOfMonth();
+        } else{
+            $start = now()->startOfYear();
+            $end = now()->endOfYear();
+        }
+
+        $transactions = Transaction::with('user')
+        ->where('status','success')
+        ->where('created_at','>=', $start)
+        ->where('created_at','<=', $end)
+        ->get()
+        ->groupBy('user_id');
+
+        foreach($transactions as $t){
+            $user = $t[0]->user;
+            $user->transactionCount = $t->count();
+            $user->transactionAmountUSD = $t->sum('amount');
+            $user->transactionAmountNGN = $t->sum('amount_paid');
+            $user->lastTranxDate = $user->transactions->first()->created_at->format('d M Y h:ia');
+            $user->ltd_date = $user->transactions->first()->created_at->diffForHumans(now(),$options)." ago";
+            
+            $_users[] = $user;
+        }
+
+        $segment = $start->format("d M Y")." to ".$end->format("d M Y");
+        $users = collect($_users)->sortByDesc('transactionAmountUSD')->take(1000);
+        return view('admin.top_traders', compact('users','segment'));
     }
 
     public function getNotification($id)

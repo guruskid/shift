@@ -17,6 +17,15 @@
         </a>
     </li>
 
+    <li class="menu">
+        <a href="{{route('admin.transaction.index')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="speedometer-outline"></ion-icon>
+                <span>Resolve Transactions</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'active' : '' }}  ">
         <a href="{{route('admin.wallet-transactions')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">
@@ -52,6 +61,15 @@
                 <div class="">
                     <ion-icon name="cash-outline"></ion-icon>
                     <span>Pay Birdge Accounts <span class="badge badge-warning">New</span></span>
+                </div>
+            </a>
+        </li>
+
+        <li class="menu {{ Route::currentRouteName() == 'admin.top-transfers' ? 'active' : '' }}">
+            <a href="{{route('admin.top-transfers')}}" aria-expanded="false" class="dropdown-toggle">
+                <div class="">
+                    <ion-icon name="people-circle-outline"></ion-icon>
+                    <span>Top Trader's</span>
                 </div>
             </a>
         </li>

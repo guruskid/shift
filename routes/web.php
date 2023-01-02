@@ -536,6 +536,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'accountant']], func
     Route::get('/account-officers', 'JuniorAccountantController@showAccountOfficers')->name('admin.account_officers');
     Route::post('/add_accountantOfficers', 'JuniorAccountantController@addAccountOfficer')->name('admin.account_officers.add');
     Route::get('/junior_accountant_action/{id}/{action}', 'JuniorAccountantController@action')->name('admin.Junior_accountant_action');
+
+    //top-traders
+    Route::get('/top-traders', 'AdminController@getTopTraders')->name('admin.top-transfers');
 });
 
 /* for super admin and all accountants */
@@ -552,6 +555,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin', 'AccountOff
     Route::any('/users/search', 'AdminController@user_search')->name('admin.user-search');
     Route::get('/user/{id}/{email}', 'AdminController@user')->name('admin.user');
 
+    
 
     Route::get('/chat-agents', 'ChatAgentController@chatAgents')->name('admin.chat_agents');
     Route::post('/chat-agents', 'ChatAgentController@addChatAgent')->name('admin.add_chat_agent');

@@ -37,8 +37,10 @@ class CryptoController extends Controller
         $btc_rates = BtcWalletController::fees()->getData();
        $bitcoin->rates = [
             'send_charge' => $btc_rates->send_fee,
-            'coin_to_usd' => $btc_rates->btc_to_usd,
             'coin_to_ngn' => LiveRateController::btcNgn(),
+            'coin_to_usd_sell' => LiveRateController::btcRate(),
+            'coin_to_usd_buy' => LiveRateController::btcRate('buy'),
+
             'usd_to_ngn' => LiveRateController::usdNgn(), // Similar to sell rate
             'buy_rate' => LiveRateController::usdNgn(true, 'buy'),
             'sell_rate' => LiveRateController::usdNgn(),
@@ -50,7 +52,8 @@ class CryptoController extends Controller
         $usdt->image = env('APP_URL') . '/storage/assets/Tether.png';
         $usdt->rates = [
             'send_charge' => Setting::where('name', 'usdt_send_charge')->first()->value,
-            'coin_to_usd' => LiveRateController::usdtRate(),
+            'coin_to_usd_sell' => LiveRateController::usdtRate(),
+            'coin_to_usd_buy' => LiveRateController::usdtRate(),
             'coin_to_ngn' => LiveRateController::usdtNgn(),
             'usd_to_ngn' => LiveRateController::usdNgn(),
             'buy_rate' => LiveRateController::usdNgn(true, 'buy'),

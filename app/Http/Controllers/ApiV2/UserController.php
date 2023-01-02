@@ -200,7 +200,7 @@ class UserController extends Controller
             curl_close($ch);
             return $data;
         }
-        
+
 
         $notify = array();
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
@@ -281,9 +281,13 @@ class UserController extends Controller
 
     public function uploadAddress(Request $r)
     {
+
+
         $validator = Validator::make($r->all(), [
             'image' => 'required',
             'location' => 'required',
+            'local_government' => 'required|string|max:250',
+            'state' => "required|string|max:250"
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -309,7 +313,6 @@ class UserController extends Controller
         }
 
         if ($r->has('image')) {
-            $file = $r->image;
             $location = $r->location;
             $folderPath = public_path('storage/idcards/');
 
@@ -319,14 +322,16 @@ class UserController extends Controller
 
             }
 
-            $image_base64 = base64_decode($file);
+            $image = $r->image;  // your base64 encoded
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = time() . uniqid() . '.' . 'png';
 
-            $imageName = time() . uniqid() . '.png';
-            $imageFullPath = $folderPath . $imageName;
-
-            file_put_contents($imageFullPath, $image_base64);
+            \File::put(storage_path() . '/app/public/idcards/' . $imageName, base64_decode($image));
 
             Auth::user()->address_img = $imageName;
+            Auth::user()->local_government = $r->local_government;
+            Auth::user()->state = $r->state;
             Auth::user()->save();
 
             $user->verifications()->create([
@@ -353,6 +358,8 @@ class UserController extends Controller
 
     public function uploadId(Request $r)
     {
+
+
         $validator = Validator::make($r->all(), [
             'image' => 'required',
             'id_number' => 'required',
@@ -505,6 +512,7 @@ class UserController extends Controller
 
     public function profile()
     {
+
         $client = new Client();
         $url = env('TATUM_URL') . '/tatum/rate/BTC?basePair=USD';
         $res = $client->request('GET', $url, ['headers' => ['x-api-key' => env('TATUM_KEY')]]);
@@ -539,9 +547,11 @@ class UserController extends Controller
 
         // $res = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true");
 
+
+        $user = Auth::user();
         return response()->json([
             'success' => true,
-            'user' => Auth::user()->load('accounts'),
+            'user' => $user->load('accounts'),
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balnace_in_usd' => $btc_wallet->usd,
