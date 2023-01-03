@@ -25,6 +25,7 @@
                     <th><div class="">Transaction no</div></th>
                     <th><div class="">Priority</div></th>
                     <th><div class="">Transaction Amount</div></th>
+                    <th><div class="">SignUp Date</div></th>
                 @endif
                 @if($type == "Recalcitrant_Users")
                     <th><div class="">Recalcitrant Date</div></th>
@@ -43,7 +44,7 @@
                 <td><div class="td-content customer-name">{{$u->user->first_name." ".$u->user->last_name}}</div></td>
                 <td>{{ $u->user->username }}</td>
                 @if ($type !="NoResponse")
-                <td>{{ $u->last_transaction_date }}</td>
+                <td>{{ $u->last_transaction_date }}<br>({{ $u->ltd_date }})</td>
                 @endif
                 @if ($type == "NoResponse")
                 <td>{{ ($u->noResponse_streak == null) ? 0 : $u->noResponse_streak }}</td>
@@ -60,6 +61,7 @@
                 <td>{{ ($u->transactionCount) ? number_format($u->transactionCount) : 0 }}</td>
                 <td>{{ ($u->priority) ? $u->priority : null }}</td>
                 <td class="text-center">{{ ($u->transactionAmount) ? number_format($u->transactionAmount) : 0 }}</td>
+                <td class="text-center">{{ $u->signUpDate}}</td>
                 @endif
                 @if($type == "Recalcitrant_Users")
                     <td>{{ $u->updated_at->format('d M y, h:ia') }}</td>

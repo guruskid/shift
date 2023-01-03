@@ -98,6 +98,8 @@
                                             <th><div class="">Transaction no</div></th>
                                             <th><div class="">Priority</div></th>
                                             <th><div class="">Transaction Amount</div></th>
+                                            <th><div class="">SignUp Date</div></th>
+                                            
                                         @endif
                                         @if($type == "Recalcitrant_Users")
                                             <th><div class="">Recalcitrant Date</div></th>
@@ -130,6 +132,7 @@
                                             <td class="text-center">{{ ($u->transactionCount) ? number_format($u->transactionCount) : 0 }}</td>
                                             <td class="text-center">{{ ($u->priority) ? $u->priority : null }}</td>
                                             <td class="text-center">{{ ($u->transactionAmount) ? number_format($u->transactionAmount) : 0 }}</td>
+                                            <td class="text-center">{{ $u->signUpDate}}</td>
                                         @endif
                                         @if($type == "Recalcitrant_Users")
                                             <td class="text-center">{{ $u->updated_at->format('d M y, h:ia') }}</td>

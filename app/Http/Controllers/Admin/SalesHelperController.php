@@ -257,8 +257,7 @@ class SalesHelperController extends Controller
                 $col->last_transaction_date = 'No Transactions';
             } else {
                 $col->last_transaction_date = $transactions->first()->created_at->format('d M Y, h:ia');
-                
-    
+                $col->signUpDate = $transactions->first()->user->created_at->diffForHumans(now(),$options)." ago";
                 $col->ltd_date = $transactions->first()->created_at->diffForHumans(now(),$options)." ago";
             }
         }
