@@ -425,6 +425,7 @@ class AssetTransactionController extends Controller
 
         if ($approvedFromHara) {
             $user_wallet->amount += $amount;
+            $t->type = 'sell';
         }else {
             if ($t->type == 'sell') {
                 $user_wallet->amount += $amount;
