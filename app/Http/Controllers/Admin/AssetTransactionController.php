@@ -422,10 +422,15 @@ class AssetTransactionController extends Controller
         $reference = \Str::random(2) . '-' . $t->id;
 
         $prev_bal = $user_wallet->amount;
-        if ($t->type == 'sell') {
+
+        if ($approvedFromHara) {
             $user_wallet->amount += $amount;
-        } else {
-            $user_wallet->amount -= $amount;
+        }else {
+            if ($t->type == 'sell') {
+                $user_wallet->amount += $amount;
+            } else {
+                $user_wallet->amount -= $amount;
+            }
         }
 
         $user_wallet->save();
@@ -505,7 +510,7 @@ class AssetTransactionController extends Controller
         /* $snd_sms = $client->request('GET', $sms_url); */
 
 
-        if ($type == 2) {
+        if ($approvedFromHara) {
             return response()->json([
                 'data' => 'Transfer made successfully'
             ], 200);
