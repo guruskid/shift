@@ -13,6 +13,7 @@ use App\NairaTransaction;
 use App\Notification;
 use App\Transaction;
 use App\User;
+use App\Verification;
 use App\VerificationLimit;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -146,7 +147,6 @@ class UserController extends Controller
             'total' => $naira_balance,
 
         ]);
-
     }
 
     public function dashboard()
@@ -205,7 +205,6 @@ class UserController extends Controller
         $notifications = Notification::where('user_id', 0)->latest()->get()->take(5);
         foreach ($notifications as $body) {
             array_push($notify, array("notify" => $body->body));
-
         }
 
         $slides = array();
@@ -233,21 +232,21 @@ class UserController extends Controller
 
             ],
         ];
-         // Total Balance
-         $usdt_wallet =  Auth::user()->usdtWallet;
-         $nairaWallet_balance = Auth::user()->nairaWallet->amount;
+        // Total Balance
+        $usdt_wallet =  Auth::user()->usdtWallet;
+        $nairaWallet_balance = Auth::user()->nairaWallet->amount;
 
-         $usdt =  $usdt_wallet ? $usdt_wallet->usd : 0 ;
-         $btc =  $btc_wallet ? $btc_wallet->usd : 0;
-         $naira_in_usd =  LiveRateController::usdNgn();
+        $usdt =  $usdt_wallet ? $usdt_wallet->usd : 0;
+        $btc =  $btc_wallet ? $btc_wallet->usd : 0;
+        $naira_in_usd =  LiveRateController::usdNgn();
 
-         $user_naira_wallet_balance_in_usd = $nairaWallet_balance / $naira_in_usd;
-         // add user naira balance , btc balance and usdt balance
-         $total_user_balance_in_usd = $usdt + $btc + $user_naira_wallet_balance_in_usd;
+        $user_naira_wallet_balance_in_usd = $nairaWallet_balance / $naira_in_usd;
+        // add user naira balance , btc balance and usdt balance
+        $total_user_balance_in_usd = $usdt + $btc + $user_naira_wallet_balance_in_usd;
 
-         // convert  user dollars balance to BTC
+        // convert  user dollars balance to BTC
 
-         $user_total_balance_in_btc = $total_user_balance_in_usd / $dantown_btc_rate;
+        $user_total_balance_in_btc = $total_user_balance_in_usd / $dantown_btc_rate;
 
         return response()->json([
             'success' => true,
@@ -276,7 +275,7 @@ class UserController extends Controller
         ]);
     }
 
-//Level 2 Verification
+    //Level 2 Verification
 
     public function uploadAddress(Request $r)
     {
@@ -318,7 +317,6 @@ class UserController extends Controller
             if (!File::isDirectory($folderPath)) {
 
                 File::makeDirectory($folderPath, 0777, true, true);
-
             }
 
             $image = $r->image;  // your base64 encoded
@@ -350,7 +348,6 @@ class UserController extends Controller
                 'msg' => 'Image file not present',
             ]);
         }
-
     }
 
     //Level 3 Verification Begins Here
@@ -402,7 +399,6 @@ class UserController extends Controller
             if (!File::isDirectory($folderPath)) {
 
                 File::makeDirectory($folderPath, 0777, true, true);
-
             }
             $image_base64 = base64_decode($file);
 
@@ -432,7 +428,6 @@ class UserController extends Controller
                 'msg' => 'Image file not present',
             ]);
         }
-
     }
 
     //Level 3 Verification Begins Here
@@ -447,7 +442,6 @@ class UserController extends Controller
             if (!File::isDirectory($folderPath)) {
 
                 File::makeDirectory($folderPath, 0777, true, true);
-
             }
             $image_base64 = base64_decode($file);
 
@@ -469,7 +463,6 @@ class UserController extends Controller
                 'msg' => 'Image file not present',
             ]);
         }
-
     }
 
     public function crypto()
@@ -483,7 +476,6 @@ class UserController extends Controller
             'success' => true,
             'data' => $cryptoTran,
         ]);
-
     }
 
     public function updateBirthday(Request $r)
@@ -545,17 +537,47 @@ class UserController extends Controller
         $naira_balance = $btc_wallet->usd * $naira_usd_real_time;
 
         // $res = file_get_contents("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin,ripple,tether&vs_currencies=ngn&include_24hr_change=true");
-
+        // $level2 = Verification::where('id', auth::user()->id)->whereNotNull('address_verified_at')
 
         $user = Auth::user();
+        
         return response()->json([
             'success' => true,
-            'user' => $user->load('accounts', 'verifications'),
+            'verifications' => $this->userVerifications(),
+            'user' => $user->load('accounts'),
             'btc_balance' => $btc_balance,
             'btc_balance_in_naira' => $naira_balance,
             'btc_balnace_in_usd' => $btc_wallet->usd,
             'btc_rate' => $btc_real_time,
         ]);
+    }
+
+    public static function userVerifications()
+    {
+
+
+        $location = Verification::where("user_id", auth()->user()->id)->where("status", "success")
+            ->whereHas('user', function ($query) {
+                $query->where("id", auth::user()->id)->whereNotNUll("address_verified_at");
+            })->select("location")
+            ->first();
+
+        $idType = Verification::where("user_id", auth()->user()->id)->where("status", "success")
+        ->whereHas('user', function ($query) {
+            $query->where("id", auth::user()->id)->whereNotNUll("idcard_verified_at");
+        })->select("id_type")
+        ->first();
+
+
+
+
+
+     $verifcation = [
+        "location" =>$location,
+        "id_type" => $idType
+     ];
+
+        return $verifcation;
     }
     public function listOfBanks()
     {
@@ -565,7 +587,6 @@ class UserController extends Controller
             'success' => true,
             'data' => $banks,
         ]);
-
     }
 
     public function deleteBankAccount($id)
@@ -594,7 +615,6 @@ class UserController extends Controller
             'success' => true,
             'data' => $accounts,
         ]);
-
     }
 
     //Verify Account
@@ -648,7 +668,6 @@ class UserController extends Controller
             'success' => true,
             'data' => $data,
         ], 200);
-
     }
 
     //New Way
@@ -694,7 +713,6 @@ class UserController extends Controller
                 'success' => false,
                 'msg' => 'Account Already added',
             ]);
-
         }
 
         $addNew->save();
@@ -712,7 +730,6 @@ class UserController extends Controller
             'bank_accounts' => Auth::user()->accounts,
             'naira_wallet' => Auth::user()->nairaWallet,
         ]);
-
     }
 
     // OLd Way
@@ -747,7 +764,6 @@ class UserController extends Controller
             'success' => true,
             'msg' => 'Account added successfully',
         ]);
-
     }
 
     public function deleteUserAccount(Request $request)
@@ -778,14 +794,12 @@ class UserController extends Controller
                 'success' => true,
                 'msg' => 'Account deleted successfully',
             ]);
-
         } else {
             return response()->json([
                 'success' => false,
                 'msg' => 'Invalid Operation',
             ]);
         }
-
     }
 
     public function userVerification()
@@ -827,16 +841,13 @@ class UserController extends Controller
                 'notification' => $notify,
 
             ]);
-
         } else {
             return response()->json([
                 'success' => false,
                 'msg' => 'invalid id',
 
             ]);
-
         }
-
     }
 
     public function clearAllNotify()
@@ -866,6 +877,4 @@ class UserController extends Controller
 
         ]);
     }
-
 }
-
