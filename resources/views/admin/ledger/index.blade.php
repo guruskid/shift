@@ -59,6 +59,7 @@
                             <a href="{{ route('admin.negative-ledger') }}" class="btn btn-primary">View</a>
                         </div>
                     </div>
+
                     <div class="col-md-4">
                         <div class="card card-body shadow">
                             <h4 class="text-center">Resolve Ledger Txns</h4>
@@ -69,8 +70,11 @@
                     @foreach ($extra_data as $data)
                         <div class="col-md-4">
                             <div class="card card-body shadow">
-                                <h4 class="text-center">{{ $data['name'] }}</h4>
-                                <h5 class="text-center">{{ $data['value'] }}</h5>
+                                <div class="d-flex justify-content-between">
+                                    <h4 class="text-center">{{ $data['name'] }}</h4>
+                                    <h5 class="text-center">{{ $data['value'] }}</h5>
+                                </div>
+                                <a href="{{ $data['url'] }}" class="btn btn-primary">View</a>
                             </div>
                         </div>
                     @endforeach

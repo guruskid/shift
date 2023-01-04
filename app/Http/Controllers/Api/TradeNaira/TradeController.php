@@ -118,6 +118,19 @@ class TradeController extends Controller
         return $total;
     }
 
+    public static function countUserWithdrawal(){
+        $data =  NairaTrade::where("user_id", Auth::user()->id)->where('type', 'withdrawal')->where('status', "success")->count();
+        return $data;
+    }
+
+    public function countUserTransaction(){
+      $data = $this->countUserWithdrawal();
+      return response()->json([
+        'success' => true,
+        'successful_withdrawal_count' =>  $data ,
+    ], 200);
+    }
+
     public function completeWihtdrawal(Request $request)
     {
         \Artisan::call('naira:limit');
@@ -413,6 +426,7 @@ class TradeController extends Controller
         return response()->json([
             'success' => true,
             'message' => $msg,
+            'successful_withdraw_count' => $this->countUserWithdrawal(),
             'total_user_count' => $user_withdrawal_count
         ], 200);
     }
