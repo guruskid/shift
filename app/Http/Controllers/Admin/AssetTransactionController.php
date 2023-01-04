@@ -402,7 +402,7 @@ class AssetTransactionController extends Controller
 
         $t->card = Card::find($r->card_id)->name;
         $t->card_id = $r->card_id;
-        $t->type = $r->trade_type;
+        // $t->type = $r->trade_type;
         $t->country = $r->country;
         $t->amount = $r->amount;
         $t->amount_paid = $amount_paid;
