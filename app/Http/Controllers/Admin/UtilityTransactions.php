@@ -148,7 +148,7 @@ class UtilityTransactions extends Controller
                     $nt->update([
                         'status' => 'failed'
                     ]);
-                    $wallet->amount = $wallet->amount + $transaction->amount + $transaction->convenience_fee;
+                    $wallet->amount = $wallet->amount + $transaction->amount;
                     $wallet->save();
                     return back()->with(['success' => 'Transaction failed']);
                 }else{
