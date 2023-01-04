@@ -175,6 +175,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\LoginSession')->latest();
     }
 
+    /**
+     * Get all of the debtDetails for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function debtDetails(): HasMany
+    {
+        return $this->hasMany(DebtDetail::class);
+    }
+    
     public function userRating(){
         return $this->hasMany(UserRating::class);
     }

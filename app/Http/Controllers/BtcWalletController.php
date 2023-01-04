@@ -418,6 +418,8 @@ class BtcWalletController extends Controller
             $lastTranxAmount = FlaggedTransactionsController::getLastTransaction(Auth::user()->id);
         endif;
 
+        $reference = \Str::random(5) . '-' . Auth::user()->id;
+
         $t = Auth::user()->transactions()->create([
             'card_id' => 102,
             'type' => 'Sell',
@@ -426,7 +428,7 @@ class BtcWalletController extends Controller
             'quantity' => number_format((float) $r->quantity, 8),
             'card_price' => $current_btc_rate,
             'status' => 'success',
-            'uid' => uniqid(),
+            'uid' => $reference,
             'user_email' => Auth::user()->email,
             'card' => 'bitcoin',
             'platform' => $r->platform,
@@ -440,7 +442,6 @@ class BtcWalletController extends Controller
 
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
-        $reference = \Str::random(2) . '-' . $t->id;
         $n = NairaWallet::find(1);
 
         Auth::user()->nairaWallet->amount += $t->amount_paid;
@@ -495,7 +496,7 @@ class BtcWalletController extends Controller
             $reference = \Str::upper($rand);
 
             $nt = new NairaTransaction();
-            $nt->reference = $reference;
+            $nt->reference = uniqid();
             $nt->amount = $referral_bonus;
             $nt->user_id = $getReferrer->id;
             $nt->system_previous_balance = $systemBalance;

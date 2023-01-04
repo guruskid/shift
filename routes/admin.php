@@ -86,13 +86,16 @@ Route::group(['middleware' => 'seniorAccountant'], function () {
     Route::get('/resolve-ledger', 'LedgerController@resolve');
     Route::get('/resolve-ledger-transactions', 'LedgerController@resolveTransactions')->name('admin.resolve-transactions');
 
+    //Resolve transactions
+    Route::any('/resolve-transaction', 'TransactionController@index')->name('admin.transaction.index');
+    Route::post('/transaction-resolved/{transaction}', 'TransactionController@credit')->name('admin.transaction.resolve');
+
 });
 
 Route::group(['middleware' => 'accountant'], function () {
 
     Route::prefix('trade-naira')->group(function () {
         Route::get('/accounts', 'TradeNairaController@accounts')->name('p2p.accounts');
-
         Route::post('/add-account', 'TradeNairaController@addAccount')->name('agent.add-account');
         Route::post('/update-account', 'TradeNairaController@updateAccount')->name('agent.update-account');
         Route::post('/delete-paybridge-account', 'TradeNairaController@deleteAccount')->name('agent.delete-paybridge-account');
@@ -101,6 +104,11 @@ Route::group(['middleware' => 'accountant'], function () {
     Route::prefix('flagged')->group(function () {
         Route::get('/{type?}', 'FlaggedTransactionsController@index')->name('admin.flagged.home');
         Route::get('/clear/{flaggedTransaction}', 'FlaggedTransactionsController@clear')->name('admin.flagged.clear');
+    });
+
+    Route::prefix('debt')->group(function () {
+        Route::post('add-debt/{user}', 'LedgerController@addDebt')->name('admin.add-debt');
+        Route::get('all', 'LedgerController@debtors')->name('admin.debtors');
     });
 
 });

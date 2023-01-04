@@ -463,6 +463,8 @@ class UsdtController extends Controller
             $lastTranxAmount = FlaggedTransactionsController::getLastTransaction(Auth::user()->id);
         endif;
 
+        $reference = \Str::random(5) . '-' . Auth::user()->id;
+
         $t = Auth::user()->transactions()->create([
             'card_id' => 143,
             'type' => 'sell',
@@ -471,7 +473,7 @@ class UsdtController extends Controller
             'quantity' => number_format((float) $request->amount, 8),
             'card_price' => $amt_usd,
             'status' => 'success',
-            'uid' => uniqid(),
+            'uid' => $reference,
             'user_email' => Auth::user()->email,
             'card' => 'USDT',
             'agent_id' => 1,
@@ -479,10 +481,10 @@ class UsdtController extends Controller
             'commission' => $commission,
             'is_flagged' => $is_flagged,
         ]);
+
         $systemBalance = NairaWallet::sum('amount');
         $user_naira_wallet = Auth::user()->nairaWallet;
         $user = Auth::user();
-        $reference = \Str::random(2) . '-' . $t->id;
         $n = NairaWallet::find(1);
 
         Auth::user()->nairaWallet->amount += $t->amount_paid;

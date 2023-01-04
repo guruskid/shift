@@ -17,6 +17,15 @@
         </a>
     </li>
 
+    <li class="menu">
+        <a href="{{route('admin.transaction.index')}}" aria-expanded="false" class="dropdown-toggle">
+            <div class="">
+                <ion-icon name="speedometer-outline"></ion-icon>
+                <span>Resolve Transactions</span>
+            </div>
+        </a>
+    </li>
+
     <li class="menu {{ Route::currentRouteName() == 'admin.wallet-transactions' ? 'active' : '' }}  ">
         <a href="{{route('admin.wallet-transactions')}}" aria-expanded="false" class="dropdown-toggle">
             <div class="">
